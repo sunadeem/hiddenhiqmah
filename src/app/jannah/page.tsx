@@ -4,19 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
-import {
-  BookOpen,
-  Sparkles,
-  Droplets,
-  Home,
-  Grape,
-  Users,
-  Eye,
-  Star,
-  ArrowUp,
-  Heart,
-  Crown,
-} from "lucide-react";
+import { BookOpen } from "lucide-react";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -49,7 +37,7 @@ const whyItMatters = [
     point: "Its inhabitants will live forever",
     detail:
       "There is no death in Jannah, no aging, no sickness, no sorrow. Its people will live in eternal bliss. Allah says: 'They will not taste death therein except the first death, and He will have protected them from the punishment of Hellfire.'",
-    reference: "Quran 44:56; Sahih Muslim 2837 (death will be slaughtered between Jannah and the Fire)",
+    reference: "Quran 44:56; Sahih Muslim 2849 (death will be slaughtered between Jannah and the Fire)",
   },
   {
     point: "The greatest reward: seeing the Face of Allah",
@@ -62,7 +50,6 @@ const whyItMatters = [
 type DescriptionTopic = {
   id: string;
   name: string;
-  icon: React.ElementType;
   content: {
     intro: string;
     points: { title: string; detail: string; note?: string }[];
@@ -75,7 +62,6 @@ const descriptionTopics: DescriptionTopic[] = [
   {
     id: "rivers-gardens",
     name: "Rivers & Gardens",
-    icon: Droplets,
     content: {
       intro:
         "The Quran describes Jannah as 'gardens beneath which rivers flow' — a phrase repeated over 30 times. These are not ordinary rivers or gardens, but creations beyond anything in this world.",
@@ -89,36 +75,35 @@ const descriptionTopics: DescriptionTopic[] = [
         {
           title: "Four types of rivers",
           detail:
-            "The rivers of Jannah flow with four substances: pure water that never becomes stale, milk whose taste never changes, wine that is delightful without intoxication or harm, and clear purified honey. These rivers flow without channels or banks — they flow wherever the people of Jannah wish.",
+            "The rivers of Jannah flow with four substances: pure water that never becomes stale, milk whose taste never changes, wine that is delightful without intoxication or harm, and clear purified honey. In Paradise there is a sea of water, a sea of honey, a sea of milk, and a sea of wine, and the rivers branch off from them.",
           note: "Quran 47:15; Sunan at-Tirmidhi 2571",
         },
         {
           title: "Al-Kawthar",
           detail:
-            "Al-Kawthar is a river in Jannah granted exclusively to the Prophet Muhammad (peace be upon him). Its banks are of gold, its bed is of pearls and rubies, its water is whiter than milk, sweeter than honey, and its drinking vessels are as numerous as the stars.",
-          note: "Sahih al-Bukhari 6581; Sahih Muslim 400; Quran 108:1",
+            "Al-Kawthar is a river in Jannah granted exclusively to the Prophet Muhammad (peace be upon him). On its two banks are tents of hollow pearls, and its scent is of sharp musk. Its water is whiter than milk and sweeter than honey, and its drinking vessels are as numerous as the stars.",
+          note: "Sahih al-Bukhari 6581; Sahih Muslim 2300; Sahih Muslim 400; Quran 108:1",
         },
         {
           title: "Trees and shade",
           detail:
-            "The trees of Jannah are immense. The Prophet (peace be upon him) said: 'In Paradise there is a tree under whose shade a rider could travel for a hundred years and not cross it.' Their trunks are of gold, and fruits hang low and are always within reach.",
+            "The trees of Jannah are immense. The Prophet (peace be upon him) said: 'In Paradise there is a tree under whose shade a rider could travel for a hundred years and not cross it.' Their fruits hang low and are always within reach.",
           note: "Sahih al-Bukhari 3251; Sahih Muslim 2826; Quran 56:28-30",
         },
         {
           title: "The soil and fragrance",
           detail:
-            "The Prophet (peace be upon him) described the soil of Paradise as fine white musk, its pebbles as pearls and rubies, and its fragrance as detectable from a distance of forty years' travel.",
-          note: "Sunan at-Tirmidhi 2526; Sahih Muslim 2928",
+            "The Prophet (peace be upon him) described the soil of Paradise as fine white musk and its pebbles as pearls and rubies. In another narration, the soil is described as saffron, its mortar as fragrant musk, and its bricks as gold and silver.",
+          note: "Sahih Muslim 2928; Sunan at-Tirmidhi 2526",
         },
       ],
       source:
-        "Quran 47:15; Quran 56:28-34; Sahih al-Bukhari 3251, 6581; Sahih Muslim 400, 2826; Sunan at-Tirmidhi 2526, 2571",
+        "Quran 47:15; Quran 56:28-34; Sahih al-Bukhari 3251, 6581; Sahih Muslim 400, 2300, 2826, 2928; Sunan at-Tirmidhi 2526, 2571",
     },
   },
   {
     id: "dwellings",
     name: "Dwellings",
-    icon: Home,
     content: {
       intro:
         "The dwellings of Jannah range from grand palaces to lofty rooms built upon rooms, each described in extraordinary detail by the Prophet (peace be upon him). Every believer will have a home beyond imagination.",
@@ -127,7 +112,7 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "Palaces of gold and silver",
           detail:
             "The Prophet (peace be upon him) described Paradise: 'Its bricks are of gold and silver, its mortar is fragrant musk, its pebbles are pearls and rubies, and its soil is saffron. Whoever enters it will enjoy bliss and never be miserable, will live forever and never die, their clothes will never wear out, and their youth will never fade.'",
-          note: "Sunan at-Tirmidhi 2526; Musnad Ahmad 8030",
+          note: "Sunan at-Tirmidhi 2526 (graded Sahih li-shawahidihi by al-Albani via Mishkat 5630); also transmitted by Ahmad and ad-Darimi",
         },
         {
           title: "Rooms built upon rooms",
@@ -155,7 +140,6 @@ const descriptionTopics: DescriptionTopic[] = [
   {
     id: "food-drink",
     name: "Food & Drink",
-    icon: Grape,
     content: {
       intro:
         "The food and drink of Jannah are described in vivid detail — not for sustenance (there is no hunger), but for pure pleasure and delight. Everything is available in abundance, instantly, and in forms never seen in this world.",
@@ -192,7 +176,6 @@ const descriptionTopics: DescriptionTopic[] = [
   {
     id: "companions",
     name: "Companions & Family",
-    icon: Users,
     content: {
       intro:
         "Jannah is not a place of solitude — it is a place of reunion, love, and companionship. Believers will be with their families, their loved ones, and in the company of the prophets and the righteous.",
@@ -229,7 +212,6 @@ const descriptionTopics: DescriptionTopic[] = [
   {
     id: "greatest-reward",
     name: "The Greatest Reward",
-    icon: Eye,
     content: {
       intro:
         "Above all the rivers, palaces, fruits, and companions, the greatest blessing of Jannah — the one that surpasses everything else — is seeing the Face of Allah, the Lord of all creation.",
@@ -254,8 +236,8 @@ const descriptionTopics: DescriptionTopic[] = [
         {
           title: "The people of the highest level",
           detail:
-            "Those closest to Allah will see Him morning and evening, while others will see Him less frequently. This is what differentiates the levels of Jannah — not the size of the palace or the beauty of the garden, but the closeness to Allah.",
-          note: "Sunan at-Tirmidhi 2555; Sahih al-Bukhari 7437",
+            "The believers will see their Lord in Paradise as clearly as they see the full moon — without any difficulty. Those most honoured by Allah will look upon His Face morning and evening. This closeness to Allah is what truly differentiates the levels of Jannah.",
+          note: "Sahih al-Bukhari 7434; Sunan at-Tirmidhi 2553 (regarding morning and evening)",
         },
         {
           title: "Allah's pleasure — the greatest of all",
@@ -265,7 +247,7 @@ const descriptionTopics: DescriptionTopic[] = [
         },
       ],
       source:
-        "Quran 10:26, 75:22-23; Sahih al-Bukhari 6549, 7437; Sahih Muslim 181, 2829; Sunan at-Tirmidhi 2552, 2555",
+        "Quran 10:26, 75:22-23; Sahih al-Bukhari 6549, 7434; Sahih Muslim 181, 2829; Sunan at-Tirmidhi 2552, 2553",
     },
   },
 ];
@@ -273,7 +255,6 @@ const descriptionTopics: DescriptionTopic[] = [
 type HowToTopic = {
   id: string;
   name: string;
-  icon: React.ElementType;
   content: {
     intro: string;
     points: { title: string; detail: string; note?: string }[];
@@ -285,7 +266,6 @@ const howToTopics: HowToTopic[] = [
   {
     id: "conditions",
     name: "The Conditions",
-    icon: Heart,
     content: {
       intro:
         "Entry into Jannah requires two fundamental things: sincere faith (iman) and righteous deeds ('amal salih). Neither is sufficient without the other, and both are ultimately accepted through the mercy of Allah.",
@@ -312,17 +292,16 @@ const howToTopics: HowToTopic[] = [
           title: "The mercy of Allah",
           detail:
             "Ultimately, no one enters Paradise by their deeds alone — it is by Allah's mercy. Deeds are the means, but mercy is the cause. The Prophet (peace be upon him) said: 'Do good deeds properly, sincerely and moderately... and always adopt a middle, moderate course, whereby you will reach your target (Paradise).'",
-          note: "Sahih al-Bukhari 6464; Sahih al-Bukhari 5673",
+          note: "Sahih al-Bukhari 6463; Sahih al-Bukhari 5673",
         },
       ],
       source:
-        "Quran 2:82, 4:48, 4:124; Sahih al-Bukhari 1, 5673, 6464; Sahih Muslim 26, 1907",
+        "Quran 2:82, 4:48, 4:124; Sahih al-Bukhari 1, 5673, 6463; Sahih Muslim 26, 1907",
     },
   },
   {
     id: "deeds",
     name: "Deeds That Lead to It",
-    icon: Star,
     content: {
       intro:
         "The Prophet (peace be upon him) mentioned specific deeds that lead to Jannah. These are not exhaustive, but they show the breadth of actions that earn Paradise — from major acts of worship to simple words and daily kindness.",
@@ -361,7 +340,7 @@ const howToTopics: HowToTopic[] = [
           title: "Patience in trials",
           detail:
             "The Prophet (peace be upon him) said: 'No Muslim is afflicted with harm — whether it be a thorn prick or something greater — except that Allah expiates some of his sins because of it, as a tree sheds its leaves.' And: 'Whoever loses two children (who die before puberty), they will be a shield for him from the Fire.'",
-          note: "Sahih al-Bukhari 5641; Sahih Muslim 2632",
+          note: "Sahih al-Bukhari 5648; Sahih Muslim 2632",
         },
         {
           title: "The 12 sunnah rak'at daily",
@@ -371,13 +350,12 @@ const howToTopics: HowToTopic[] = [
         },
       ],
       source:
-        "Sahih al-Bukhari 450, 1397, 5304, 5641, 6405; Sahih Muslim 13, 533, 728, 2632, 2692; Sunan at-Tirmidhi 415, 2004",
+        "Sahih al-Bukhari 450, 1397, 5304, 5648, 6405; Sahih Muslim 13, 533, 728, 2632, 2692; Sunan at-Tirmidhi 415, 2004",
     },
   },
   {
     id: "levels",
     name: "Levels of Jannah",
-    icon: ArrowUp,
     content: {
       intro:
         "Jannah is not a single flat destination — it has degrees, levels, and ranks. The highest is Jannatul Firdaus al-A'la, directly beneath the Throne of Allah. The differences between levels are vast.",
@@ -426,7 +404,6 @@ const howToTopics: HowToTopic[] = [
   {
     id: "last-person",
     name: "The Last to Enter",
-    icon: Crown,
     content: {
       intro:
         "One of the most remarkable hadiths in all of Islam describes the last person to be taken out of the Hellfire and admitted into Paradise. It is a powerful reminder of Allah's limitless generosity.",
@@ -478,17 +455,11 @@ function TopicInfoCard({
 }: {
   topic: DescriptionTopic | HowToTopic;
 }) {
-  const Icon = topic.icon;
   const hasVerse = "verse" in topic.content && topic.content.verse;
   return (
     <ContentCard>
       <div className="mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0">
-            <Icon size={18} className="text-gold" />
-          </div>
-          <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
-        </div>
+        <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
       </div>
 
       <p className="text-themed-muted text-sm leading-relaxed mb-5">
@@ -772,7 +743,7 @@ export default function JannahPage() {
                   "Sahih al-Bukhari 5673; Sahih Muslim 2816 — None enters Paradise by deeds alone",
                   "Sahih al-Bukhari 6488 — Paradise is closer than your sandal strap",
                   "Sahih Muslim 181 — The lifting of the veil; seeing the Face of Allah",
-                  "Sahih Muslim 2837 — Death slaughtered between Paradise and the Fire",
+                  "Sahih Muslim 2849 — Death slaughtered between Paradise and the Fire",
                 ].map((source) => (
                   <li
                     key={source}
@@ -799,9 +770,7 @@ export default function JannahPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {descriptionTopics.map((topic) => {
-                  const Icon = topic.icon;
-                  return (
+                {descriptionTopics.map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveDescription(topic.id)}
@@ -811,11 +780,9 @@ export default function JannahPage() {
                           : "text-themed-muted hover:text-themed border sidebar-border"
                       }`}
                     >
-                      <Icon size={14} />
                       {topic.name}
                     </button>
-                  );
-                })}
+                ))}
               </div>
 
               {/* Right side — content */}
@@ -856,7 +823,7 @@ export default function JannahPage() {
                   "Sahih al-Bukhari 6581; Sahih Muslim 400 — Al-Kawthar river",
                   "Sahih al-Bukhari 3245 — No envy or rancor in the hearts of Paradise's people",
                   "Sahih Muslim 181 — The greatest reward: looking at the Face of Allah",
-                  "Sunan at-Tirmidhi 2526 — Bricks of gold and silver, soil of musk",
+                  "Sunan at-Tirmidhi 2526 — Bricks of gold and silver, soil of saffron; Sahih Muslim 2928 — Soil of white musk",
                 ].map((source) => (
                   <li
                     key={source}
@@ -883,9 +850,7 @@ export default function JannahPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {howToTopics.map((topic) => {
-                  const Icon = topic.icon;
-                  return (
+                {howToTopics.map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveHowTo(topic.id)}
@@ -895,11 +860,9 @@ export default function JannahPage() {
                           : "text-themed-muted hover:text-themed border sidebar-border"
                       }`}
                     >
-                      <Icon size={14} />
                       {topic.name}
                     </button>
-                  );
-                })}
+                ))}
               </div>
 
               {/* Right side — content */}

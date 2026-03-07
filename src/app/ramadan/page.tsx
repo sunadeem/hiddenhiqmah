@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
-import { BookOpen, Moon, Sun, Heart, ShieldCheck, Utensils, Clock, AlertTriangle, CheckCircle, XCircle, Users, Gift } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -50,7 +50,6 @@ const whyItMatters = [
 type FastingTopic = {
   id: string;
   name: string;
-  icon: React.ElementType;
   content: {
     intro: string;
     points: { title: string; detail: string; note?: string }[];
@@ -62,7 +61,6 @@ const fastingTopics: FastingTopic[] = [
   {
     id: "basics",
     name: "Basics",
-    icon: Sun,
     content: {
       intro:
         "Fasting (sawm) in Ramadan is the fourth pillar of Islam. It is obligatory upon every sane, adult Muslim who is able to fast. The fast begins at true dawn (Fajr) and ends at sunset (Maghrib) each day.",
@@ -104,7 +102,6 @@ const fastingTopics: FastingTopic[] = [
   {
     id: "breaks",
     name: "What Breaks It",
-    icon: XCircle,
     content: {
       intro:
         "The following actions invalidate the fast if done intentionally and with full knowledge during the fasting hours (from Fajr to Maghrib). If done out of forgetfulness, the fast remains valid.",
@@ -146,7 +143,6 @@ const fastingTopics: FastingTopic[] = [
   {
     id: "doesnt-break",
     name: "What Doesn't Break It",
-    icon: CheckCircle,
     content: {
       intro:
         "Many people worry about actions that do NOT actually break the fast. The following are permissible during fasting hours according to the majority of scholars.",
@@ -198,7 +194,6 @@ const fastingTopics: FastingTopic[] = [
   {
     id: "exemptions",
     name: "Exemptions",
-    icon: ShieldCheck,
     content: {
       intro:
         "Islam does not place hardship beyond what a person can bear. Several categories of people are exempt from fasting, with different rulings on whether they must make up the days or pay fidyah.",
@@ -246,7 +241,6 @@ const fastingTopics: FastingTopic[] = [
   {
     id: "makeup",
     name: "Making Up Days",
-    icon: Clock,
     content: {
       intro:
         "Missed days of Ramadan must be made up (qada) before the next Ramadan arrives. Understanding the rules of qada, fidyah, and kaffarah ensures that the obligation is properly fulfilled.",
@@ -283,7 +277,6 @@ const fastingTopics: FastingTopic[] = [
 type LastTenTopic = {
   id: string;
   name: string;
-  icon: React.ElementType;
   content: {
     intro: string;
     points: { title: string; detail: string; note?: string }[];
@@ -296,7 +289,6 @@ const lastTenTopics: LastTenTopic[] = [
   {
     id: "laylatul-qadr",
     name: "Laylatul Qadr",
-    icon: Moon,
     content: {
       intro:
         "Laylatul Qadr (the Night of Decree) is the single most important night in the Islamic calendar. It is the night on which the Quran was first revealed, and worship on this night is better than 1,000 months (over 83 years).",
@@ -337,7 +329,6 @@ const lastTenTopics: LastTenTopic[] = [
   {
     id: "itikaf",
     name: "I'tikaf",
-    icon: Heart,
     content: {
       intro:
         "I'tikaf is the practice of secluding oneself in the masjid for worship, especially during the last ten days and nights of Ramadan. It is a sunnah mu'akkadah (emphasized sunnah) that the Prophet (peace be upon him) observed every Ramadan.",
@@ -372,7 +363,6 @@ const lastTenTopics: LastTenTopic[] = [
   {
     id: "zakat-al-fitr",
     name: "Zakat al-Fitr",
-    icon: Gift,
     content: {
       intro:
         "Zakat al-Fitr is an obligatory charity given at the end of Ramadan, before the Eid prayer. It purifies the fasting person from any shortcomings during the fast and provides for the poor so they can also celebrate Eid.",
@@ -408,7 +398,6 @@ const lastTenTopics: LastTenTopic[] = [
   {
     id: "eid",
     name: "Eid al-Fitr",
-    icon: Users,
     content: {
       intro:
         "Eid al-Fitr marks the end of Ramadan and the beginning of Shawwal. It is a day of celebration, gratitude, and community — a reward from Allah for the month of fasting and worship.",
@@ -455,17 +444,11 @@ type SectionKey = (typeof sections)[number]["key"];
 /* ───────────────────────── sub-components ───────────────────────── */
 
 function FastingInfoCard({ topic }: { topic: FastingTopic }) {
-  const Icon = topic.icon;
   return (
     <>
       <ContentCard>
         <div className="mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0">
-              <Icon size={18} className="text-gold" />
-            </div>
-            <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
-          </div>
+          <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
         </div>
 
         <p className="text-themed-muted text-sm leading-relaxed mb-5">
@@ -497,17 +480,11 @@ function FastingInfoCard({ topic }: { topic: FastingTopic }) {
 }
 
 function LastTenInfoCard({ topic }: { topic: LastTenTopic }) {
-  const Icon = topic.icon;
   return (
     <>
       <ContentCard>
         <div className="mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0">
-              <Icon size={18} className="text-gold" />
-            </div>
-            <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
-          </div>
+          <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
         </div>
 
         <p className="text-themed-muted text-sm leading-relaxed mb-5">
@@ -745,23 +722,19 @@ export default function RamadanPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {fastingTopics.map((topic) => {
-                  const Icon = topic.icon;
-                  return (
+                {fastingTopics.map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveFasting(topic.id)}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeFasting === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
                       }`}
                     >
-                      <Icon size={14} />
                       {topic.name}
                     </button>
-                  );
-                })}
+                ))}
               </div>
 
               {/* Right side — content */}
@@ -827,23 +800,19 @@ export default function RamadanPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {lastTenTopics.map((topic) => {
-                  const Icon = topic.icon;
-                  return (
+                {lastTenTopics.map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveLastTen(topic.id)}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeLastTen === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
                       }`}
                     >
-                      <Icon size={14} />
                       {topic.name}
                     </button>
-                  );
-                })}
+                ))}
               </div>
 
               {/* Right side — content */}

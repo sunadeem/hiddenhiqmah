@@ -40,7 +40,7 @@ const navItems = [
   { href: "/salah", label: "Salah", labelAr: "الصلاة", icon: Clock },
   { href: "/ramadan", label: "Ramadan", labelAr: "رمضان", icon: Moon },
   { href: "/jannah", label: "Jannah", labelAr: "الجنة", icon: Sparkles },
-  { href: "/the-grave", label: "The Grave", labelAr: "القبر", icon: Flame },
+  { href: "/barzakh", label: "Barzakh", labelAr: "البرزخ", icon: Flame },
   { href: "/day-of-judgement", label: "Day of Judgement", labelAr: "يوم القيامة", icon: Scale },
   { href: "/history", label: "History", labelAr: "التاريخ", icon: History },
   { href: "/islamic-calendar", label: "Islamic Calendar", labelAr: "التقويم الهجري", icon: CalendarDays },
