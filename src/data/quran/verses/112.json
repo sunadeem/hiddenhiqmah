@@ -1,0 +1,42 @@
+[
+  {
+    "id": 6222,
+    "number": 1,
+    "key": "112:1",
+    "textAr": "قُلْ هُوَ ٱللَّهُ أَحَدٌ",
+    "textEn": "Say, \"He is Allāh, [who is] One,",
+    "juz": 30,
+    "page": 604,
+    "hizb": 60
+  },
+  {
+    "id": 6223,
+    "number": 2,
+    "key": "112:2",
+    "textAr": "ٱللَّهُ ٱلصَّمَدُ",
+    "textEn": "Allāh, the Eternal Refuge.",
+    "juz": 30,
+    "page": 604,
+    "hizb": 60
+  },
+  {
+    "id": 6224,
+    "number": 3,
+    "key": "112:3",
+    "textAr": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+    "textEn": "He neither begets nor is born,",
+    "juz": 30,
+    "page": 604,
+    "hizb": 60
+  },
+  {
+    "id": 6225,
+    "number": 4,
+    "key": "112:4",
+    "textAr": "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
+    "textEn": "Nor is there to Him any equivalent.\"",
+    "juz": 30,
+    "page": 604,
+    "hizb": 60
+  }
+]

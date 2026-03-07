@@ -1,0 +1,1826 @@
+[
+  {
+    "id": 1,
+    "name": "Al-Fatihah",
+    "nameAr": "الفاتحة",
+    "nameComplex": "Al-Fātiĥah",
+    "meaning": "The Opener",
+    "verses": 7,
+    "revelationPlace": "makkah",
+    "revelationOrder": 5,
+    "pages": [
+      1,
+      1
+    ],
+    "bismillahPre": false,
+    "overview": "The opening prayer of the Quran, recited in every unit of prayer. A concise supplication for divine guidance."
+  },
+  {
+    "id": 2,
+    "name": "Al-Baqarah",
+    "nameAr": "البقرة",
+    "nameComplex": "Al-Baqarah",
+    "meaning": "The Cow",
+    "verses": 286,
+    "revelationPlace": "madinah",
+    "revelationOrder": 87,
+    "pages": [
+      2,
+      49
+    ],
+    "bismillahPre": true,
+    "overview": "The longest surah, covering faith, law, stories of earlier prophets, and detailed guidance for the Muslim community."
+  },
+  {
+    "id": 3,
+    "name": "Ali 'Imran",
+    "nameAr": "آل عمران",
+    "nameComplex": "Āli `Imrān",
+    "meaning": "Family of Imran",
+    "verses": 200,
+    "revelationPlace": "madinah",
+    "revelationOrder": 89,
+    "pages": [
+      50,
+      76
+    ],
+    "bismillahPre": true,
+    "overview": "Discusses the family of Imran, the birth of Isa (Jesus), the Battle of Uhud, and steadfastness in faith."
+  },
+  {
+    "id": 4,
+    "name": "An-Nisa",
+    "nameAr": "النساء",
+    "nameComplex": "An-Nisā",
+    "meaning": "The Women",
+    "verses": 176,
+    "revelationPlace": "madinah",
+    "revelationOrder": 92,
+    "pages": [
+      77,
+      106
+    ],
+    "bismillahPre": true,
+    "overview": "Addresses women's rights, inheritance laws, marriage, orphans' welfare, and justice within the community."
+  },
+  {
+    "id": 5,
+    "name": "Al-Ma'idah",
+    "nameAr": "المائدة",
+    "nameComplex": "Al-Mā'idah",
+    "meaning": "The Table Spread",
+    "verses": 120,
+    "revelationPlace": "madinah",
+    "revelationOrder": 112,
+    "pages": [
+      106,
+      127
+    ],
+    "bismillahPre": true,
+    "overview": "Covers dietary laws, fulfilling covenants, the stories of earlier nations, and the completion of the religion."
+  },
+  {
+    "id": 6,
+    "name": "Al-An'am",
+    "nameAr": "الأنعام",
+    "nameComplex": "Al-'An`ām",
+    "meaning": "The Cattle",
+    "verses": 165,
+    "revelationPlace": "makkah",
+    "revelationOrder": 55,
+    "pages": [
+      128,
+      150
+    ],
+    "bismillahPre": true,
+    "overview": "A powerful declaration of tawhid (monotheism), refuting idolatry and presenting signs of Allah in creation."
+  },
+  {
+    "id": 7,
+    "name": "Al-A'raf",
+    "nameAr": "الأعراف",
+    "nameComplex": "Al-'A`rāf",
+    "meaning": "The Heights",
+    "verses": 206,
+    "revelationPlace": "makkah",
+    "revelationOrder": 39,
+    "pages": [
+      151,
+      176
+    ],
+    "bismillahPre": true,
+    "overview": "Recounts the stories of Adam, Nuh, Hud, Salih, Lut, Shu'ayb, and Musa, and the consequences of rejecting prophets."
+  },
+  {
+    "id": 8,
+    "name": "Al-Anfal",
+    "nameAr": "الأنفال",
+    "nameComplex": "Al-'Anfāl",
+    "meaning": "The Spoils of War",
+    "verses": 75,
+    "revelationPlace": "madinah",
+    "revelationOrder": 88,
+    "pages": [
+      177,
+      186
+    ],
+    "bismillahPre": true,
+    "overview": "Revealed after the Battle of Badr, addressing the distribution of war gains and the ethics of warfare."
+  },
+  {
+    "id": 9,
+    "name": "At-Tawbah",
+    "nameAr": "التوبة",
+    "nameComplex": "At-Tawbah",
+    "meaning": "The Repentance",
+    "verses": 129,
+    "revelationPlace": "madinah",
+    "revelationOrder": 113,
+    "pages": [
+      187,
+      207
+    ],
+    "bismillahPre": false,
+    "overview": "Addresses relations with polytheists, the hypocrites, and obligations of the Muslim community. The only surah without Bismillah."
+  },
+  {
+    "id": 10,
+    "name": "Yunus",
+    "nameAr": "يونس",
+    "nameComplex": "Yūnus",
+    "meaning": "Jonah",
+    "verses": 109,
+    "revelationPlace": "makkah",
+    "revelationOrder": 51,
+    "pages": [
+      208,
+      221
+    ],
+    "bismillahPre": true,
+    "overview": "Named after Prophet Yunus, discussing the Quran's divine origin, earlier prophets, and Allah's mercy."
+  },
+  {
+    "id": 11,
+    "name": "Hud",
+    "nameAr": "هود",
+    "nameComplex": "Hūd",
+    "meaning": "Hud",
+    "verses": 123,
+    "revelationPlace": "makkah",
+    "revelationOrder": 52,
+    "pages": [
+      221,
+      235
+    ],
+    "bismillahPre": true,
+    "overview": "Tells the stories of Nuh, Hud, Salih, Ibrahim, Lut, Shu'ayb, and Musa, emphasizing patience and perseverance."
+  },
+  {
+    "id": 12,
+    "name": "Yusuf",
+    "nameAr": "يوسف",
+    "nameComplex": "Yūsuf",
+    "meaning": "Joseph",
+    "verses": 111,
+    "revelationPlace": "makkah",
+    "revelationOrder": 53,
+    "pages": [
+      235,
+      248
+    ],
+    "bismillahPre": true,
+    "overview": "The detailed and continuous narrative of Prophet Yusuf — a story of patience, temptation, and divine wisdom."
+  },
+  {
+    "id": 13,
+    "name": "Ar-Ra'd",
+    "nameAr": "الرعد",
+    "nameComplex": "Ar-Ra`d",
+    "meaning": "The Thunder",
+    "verses": 43,
+    "revelationPlace": "madinah",
+    "revelationOrder": 96,
+    "pages": [
+      249,
+      255
+    ],
+    "bismillahPre": true,
+    "overview": "Reflects on thunder as a sign of Allah's power, the truth of revelation, and the fate of believers and deniers."
+  },
+  {
+    "id": 14,
+    "name": "Ibrahim",
+    "nameAr": "ابراهيم",
+    "nameComplex": "Ibrāhīm",
+    "meaning": "Abraham",
+    "verses": 52,
+    "revelationPlace": "makkah",
+    "revelationOrder": 72,
+    "pages": [
+      255,
+      261
+    ],
+    "bismillahPre": true,
+    "overview": "Prophet Ibrahim's prayers, gratitude for blessings, and warnings against ingratitude and disbelief."
+  },
+  {
+    "id": 15,
+    "name": "Al-Hijr",
+    "nameAr": "الحجر",
+    "nameComplex": "Al-Ĥijr",
+    "meaning": "The Rocky Tract",
+    "verses": 99,
+    "revelationPlace": "makkah",
+    "revelationOrder": 54,
+    "pages": [
+      262,
+      267
+    ],
+    "bismillahPre": true,
+    "overview": "References the rocky tract of Thamud, the creation of Adam, and Iblis's refusal to prostrate."
+  },
+  {
+    "id": 16,
+    "name": "An-Nahl",
+    "nameAr": "النحل",
+    "nameComplex": "An-Naĥl",
+    "meaning": "The Bee",
+    "verses": 128,
+    "revelationPlace": "makkah",
+    "revelationOrder": 70,
+    "pages": [
+      267,
+      281
+    ],
+    "bismillahPre": true,
+    "overview": "Enumerates Allah's countless blessings — the bee, livestock, rain, and natural provisions — calling for gratitude."
+  },
+  {
+    "id": 17,
+    "name": "Al-Isra",
+    "nameAr": "الإسراء",
+    "nameComplex": "Al-'Isrā",
+    "meaning": "The Night Journey",
+    "verses": 111,
+    "revelationPlace": "makkah",
+    "revelationOrder": 50,
+    "pages": [
+      282,
+      293
+    ],
+    "bismillahPre": true,
+    "overview": "Opens with the Night Journey (Isra) of the Prophet, followed by moral commandments and the excellence of the Quran."
+  },
+  {
+    "id": 18,
+    "name": "Al-Kahf",
+    "nameAr": "الكهف",
+    "nameComplex": "Al-Kahf",
+    "meaning": "The Cave",
+    "verses": 110,
+    "revelationPlace": "makkah",
+    "revelationOrder": 69,
+    "pages": [
+      293,
+      304
+    ],
+    "bismillahPre": true,
+    "overview": "Contains four famous narratives: the People of the Cave, the two garden owners, Musa and Khidr, and Dhul-Qarnayn."
+  },
+  {
+    "id": 19,
+    "name": "Maryam",
+    "nameAr": "مريم",
+    "nameComplex": "Maryam",
+    "meaning": "Mary",
+    "verses": 98,
+    "revelationPlace": "makkah",
+    "revelationOrder": 44,
+    "pages": [
+      305,
+      312
+    ],
+    "bismillahPre": true,
+    "overview": "Recounts the births of Yahya and Isa, and stories of Ibrahim, Musa, Isma'il, and Idris."
+  },
+  {
+    "id": 20,
+    "name": "Taha",
+    "nameAr": "طه",
+    "nameComplex": "Ţāhā",
+    "meaning": "Ta-Ha",
+    "verses": 135,
+    "revelationPlace": "makkah",
+    "revelationOrder": 45,
+    "pages": [
+      312,
+      321
+    ],
+    "bismillahPre": true,
+    "overview": "Centers on the story of Prophet Musa — from his calling at the burning bush to the confrontation with Pharaoh."
+  },
+  {
+    "id": 21,
+    "name": "Al-Anbya",
+    "nameAr": "الأنبياء",
+    "nameComplex": "Al-'Anbyā",
+    "meaning": "The Prophets",
+    "verses": 112,
+    "revelationPlace": "makkah",
+    "revelationOrder": 73,
+    "pages": [
+      322,
+      331
+    ],
+    "bismillahPre": true,
+    "overview": "Presents numerous prophets and their struggles, emphasizing that all messengers called to the same message of tawhid."
+  },
+  {
+    "id": 22,
+    "name": "Al-Hajj",
+    "nameAr": "الحج",
+    "nameComplex": "Al-Ĥajj",
+    "meaning": "The Pilgrimage",
+    "verses": 78,
+    "revelationPlace": "madinah",
+    "revelationOrder": 103,
+    "pages": [
+      332,
+      341
+    ],
+    "bismillahPre": true,
+    "overview": "Discusses the Hajj pilgrimage, resurrection, divine judgment, and permission for self-defense."
+  },
+  {
+    "id": 23,
+    "name": "Al-Mu'minun",
+    "nameAr": "المؤمنون",
+    "nameComplex": "Al-Mu'minūn",
+    "meaning": "The Believers",
+    "verses": 118,
+    "revelationPlace": "makkah",
+    "revelationOrder": 74,
+    "pages": [
+      342,
+      349
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the qualities of successful believers and recounts stories of earlier prophets and their peoples."
+  },
+  {
+    "id": 24,
+    "name": "An-Nur",
+    "nameAr": "النور",
+    "nameComplex": "An-Nūr",
+    "meaning": "The Light",
+    "verses": 64,
+    "revelationPlace": "madinah",
+    "revelationOrder": 102,
+    "pages": [
+      350,
+      359
+    ],
+    "bismillahPre": true,
+    "overview": "Establishes laws of modesty, the punishment for slander, the Light Verse (Ayat an-Nur), and social etiquette."
+  },
+  {
+    "id": 25,
+    "name": "Al-Furqan",
+    "nameAr": "الفرقان",
+    "nameComplex": "Al-Furqān",
+    "meaning": "The Criterion",
+    "verses": 77,
+    "revelationPlace": "makkah",
+    "revelationOrder": 42,
+    "pages": [
+      359,
+      366
+    ],
+    "bismillahPre": true,
+    "overview": "Defends the Quran against objections, describes the qualities of the servants of the Most Merciful."
+  },
+  {
+    "id": 26,
+    "name": "Ash-Shu'ara",
+    "nameAr": "الشعراء",
+    "nameComplex": "Ash-Shu`arā",
+    "meaning": "The Poets",
+    "verses": 227,
+    "revelationPlace": "makkah",
+    "revelationOrder": 47,
+    "pages": [
+      367,
+      376
+    ],
+    "bismillahPre": true,
+    "overview": "Retells the stories of Musa, Ibrahim, Nuh, Hud, Salih, Lut, and Shu'ayb in a rhythmic, powerful style."
+  },
+  {
+    "id": 27,
+    "name": "An-Naml",
+    "nameAr": "النمل",
+    "nameComplex": "An-Naml",
+    "meaning": "The Ant",
+    "verses": 93,
+    "revelationPlace": "makkah",
+    "revelationOrder": 48,
+    "pages": [
+      377,
+      385
+    ],
+    "bismillahPre": true,
+    "overview": "Features the stories of Sulayman with the hoopoe bird and the Queen of Sheba, and Musa and Salih."
+  },
+  {
+    "id": 28,
+    "name": "Al-Qasas",
+    "nameAr": "القصص",
+    "nameComplex": "Al-Qaşaş",
+    "meaning": "The Stories",
+    "verses": 88,
+    "revelationPlace": "makkah",
+    "revelationOrder": 49,
+    "pages": [
+      385,
+      396
+    ],
+    "bismillahPre": true,
+    "overview": "The detailed story of Musa from birth through Pharaoh's defeat, and the story of Qarun's arrogance."
+  },
+  {
+    "id": 29,
+    "name": "Al-'Ankabut",
+    "nameAr": "العنكبوت",
+    "nameComplex": "Al-`Ankabūt",
+    "meaning": "The Spider",
+    "verses": 69,
+    "revelationPlace": "makkah",
+    "revelationOrder": 85,
+    "pages": [
+      396,
+      404
+    ],
+    "bismillahPre": true,
+    "overview": "Uses the metaphor of the spider's fragile web to illustrate false beliefs, emphasizing trials test true faith."
+  },
+  {
+    "id": 30,
+    "name": "Ar-Rum",
+    "nameAr": "الروم",
+    "nameComplex": "Ar-Rūm",
+    "meaning": "The Romans",
+    "verses": 60,
+    "revelationPlace": "makkah",
+    "revelationOrder": 84,
+    "pages": [
+      404,
+      410
+    ],
+    "bismillahPre": true,
+    "overview": "Prophesies the Roman victory after defeat, and reflects on signs of Allah in creation and human history."
+  },
+  {
+    "id": 31,
+    "name": "Luqman",
+    "nameAr": "لقمان",
+    "nameComplex": "Luqmān",
+    "meaning": "Luqman",
+    "verses": 34,
+    "revelationPlace": "makkah",
+    "revelationOrder": 57,
+    "pages": [
+      411,
+      414
+    ],
+    "bismillahPre": true,
+    "overview": "Contains the wise advice of Luqman to his son on monotheism, gratitude, patience, and good character."
+  },
+  {
+    "id": 32,
+    "name": "As-Sajdah",
+    "nameAr": "السجدة",
+    "nameComplex": "As-Sajdah",
+    "meaning": "The Prostration",
+    "verses": 30,
+    "revelationPlace": "makkah",
+    "revelationOrder": 75,
+    "pages": [
+      415,
+      417
+    ],
+    "bismillahPre": true,
+    "overview": "Affirms the truth of revelation, describes creation, and contrasts the fate of believers and disbelievers."
+  },
+  {
+    "id": 33,
+    "name": "Al-Ahzab",
+    "nameAr": "الأحزاب",
+    "nameComplex": "Al-'Aĥzāb",
+    "meaning": "The Combined Forces",
+    "verses": 73,
+    "revelationPlace": "madinah",
+    "revelationOrder": 90,
+    "pages": [
+      418,
+      427
+    ],
+    "bismillahPre": true,
+    "overview": "Addresses the Battle of the Trench, rules for the Prophet's household, and social reforms including hijab."
+  },
+  {
+    "id": 34,
+    "name": "Saba",
+    "nameAr": "سبإ",
+    "nameComplex": "Saba",
+    "meaning": "Sheba",
+    "verses": 54,
+    "revelationPlace": "makkah",
+    "revelationOrder": 58,
+    "pages": [
+      428,
+      434
+    ],
+    "bismillahPre": true,
+    "overview": "Named after the kingdom of Sheba, discussing divine blessings, gratitude, and the story of Dawud and Sulayman."
+  },
+  {
+    "id": 35,
+    "name": "Fatir",
+    "nameAr": "فاطر",
+    "nameComplex": "Fāţir",
+    "meaning": "Originator",
+    "verses": 45,
+    "revelationPlace": "makkah",
+    "revelationOrder": 43,
+    "pages": [
+      434,
+      440
+    ],
+    "bismillahPre": true,
+    "overview": "Praises Allah as the Creator and Originator, contrasting light and darkness, and the seen and unseen."
+  },
+  {
+    "id": 36,
+    "name": "Ya-Sin",
+    "nameAr": "يس",
+    "nameComplex": "Yā-Sīn",
+    "meaning": "Ya Sin",
+    "verses": 83,
+    "revelationPlace": "makkah",
+    "revelationOrder": 41,
+    "pages": [
+      440,
+      445
+    ],
+    "bismillahPre": true,
+    "overview": "A surah of great virtue, often called the 'Heart of the Quran.' Addresses resurrection, the signs of Allah, and the certainty of the hereafter."
+  },
+  {
+    "id": 37,
+    "name": "As-Saffat",
+    "nameAr": "الصافات",
+    "nameComplex": "Aş-Şāffāt",
+    "meaning": "Those who set the Ranks",
+    "verses": 182,
+    "revelationPlace": "makkah",
+    "revelationOrder": 56,
+    "pages": [
+      446,
+      452
+    ],
+    "bismillahPre": true,
+    "overview": "Describes angels standing in ranks, recounts stories of prophets, and affirms the Day of Judgment."
+  },
+  {
+    "id": 38,
+    "name": "Sad",
+    "nameAr": "ص",
+    "nameComplex": "Şād",
+    "meaning": "The Letter \"Saad\"",
+    "verses": 88,
+    "revelationPlace": "makkah",
+    "revelationOrder": 38,
+    "pages": [
+      453,
+      458
+    ],
+    "bismillahPre": true,
+    "overview": "Discusses Dawud's judgment, Sulayman's kingdom, Ayyub's patience, and the story of Adam and Iblis."
+  },
+  {
+    "id": 39,
+    "name": "Az-Zumar",
+    "nameAr": "الزمر",
+    "nameComplex": "Az-Zumar",
+    "meaning": "The Troops",
+    "verses": 75,
+    "revelationPlace": "makkah",
+    "revelationOrder": 59,
+    "pages": [
+      458,
+      467
+    ],
+    "bismillahPre": true,
+    "overview": "Emphasizes sincerity in worship, the contrast between believers and disbelievers, and Allah's mercy."
+  },
+  {
+    "id": 40,
+    "name": "Ghafir",
+    "nameAr": "غافر",
+    "nameComplex": "Ghāfir",
+    "meaning": "The Forgiver",
+    "verses": 85,
+    "revelationPlace": "makkah",
+    "revelationOrder": 60,
+    "pages": [
+      467,
+      476
+    ],
+    "bismillahPre": true,
+    "overview": "Features a believing man from Pharaoh's family who concealed his faith while defending Musa, and emphasizes Allah's forgiveness."
+  },
+  {
+    "id": 41,
+    "name": "Fussilat",
+    "nameAr": "فصلت",
+    "nameComplex": "Fuşşilat",
+    "meaning": "Explained in Detail",
+    "verses": 54,
+    "revelationPlace": "makkah",
+    "revelationOrder": 61,
+    "pages": [
+      477,
+      482
+    ],
+    "bismillahPre": true,
+    "overview": "Presents the Quran as a detailed revelation, describes creation, and warns against rejecting divine signs."
+  },
+  {
+    "id": 42,
+    "name": "Ash-Shuraa",
+    "nameAr": "الشورى",
+    "nameComplex": "Ash-Shūraá",
+    "meaning": "The Consultation",
+    "verses": 53,
+    "revelationPlace": "makkah",
+    "revelationOrder": 62,
+    "pages": [
+      483,
+      489
+    ],
+    "bismillahPre": true,
+    "overview": "Discusses consultation (shura) as a principle, divine revelation, and unity in the message of all prophets."
+  },
+  {
+    "id": 43,
+    "name": "Az-Zukhruf",
+    "nameAr": "الزخرف",
+    "nameComplex": "Az-Zukhruf",
+    "meaning": "The Ornaments of Gold",
+    "verses": 89,
+    "revelationPlace": "makkah",
+    "revelationOrder": 63,
+    "pages": [
+      489,
+      495
+    ],
+    "bismillahPre": true,
+    "overview": "Refutes the worship of false gods, recounts Ibrahim's arguments against idolatry, and mentions Isa."
+  },
+  {
+    "id": 44,
+    "name": "Ad-Dukhan",
+    "nameAr": "الدخان",
+    "nameComplex": "Ad-Dukhān",
+    "meaning": "The Smoke",
+    "verses": 59,
+    "revelationPlace": "makkah",
+    "revelationOrder": 64,
+    "pages": [
+      496,
+      498
+    ],
+    "bismillahPre": true,
+    "overview": "Warns of a day when the sky will bring visible smoke, recounts Pharaoh's destruction, and the hereafter."
+  },
+  {
+    "id": 45,
+    "name": "Al-Jathiyah",
+    "nameAr": "الجاثية",
+    "nameComplex": "Al-Jāthiyah",
+    "meaning": "The Crouching",
+    "verses": 37,
+    "revelationPlace": "makkah",
+    "revelationOrder": 65,
+    "pages": [
+      499,
+      502
+    ],
+    "bismillahPre": true,
+    "overview": "Presents signs of Allah in creation and warns those who mock divine revelation of accountability."
+  },
+  {
+    "id": 46,
+    "name": "Al-Ahqaf",
+    "nameAr": "الأحقاف",
+    "nameComplex": "Al-'Aĥqāf",
+    "meaning": "The Wind-Curved Sandhills",
+    "verses": 35,
+    "revelationPlace": "makkah",
+    "revelationOrder": 66,
+    "pages": [
+      502,
+      506
+    ],
+    "bismillahPre": true,
+    "overview": "Named after the sand dunes where the people of 'Ad lived, stressing the Quran's truth and patience."
+  },
+  {
+    "id": 47,
+    "name": "Muhammad",
+    "nameAr": "محمد",
+    "nameComplex": "Muĥammad",
+    "meaning": "Muhammad",
+    "verses": 38,
+    "revelationPlace": "madinah",
+    "revelationOrder": 95,
+    "pages": [
+      507,
+      510
+    ],
+    "bismillahPre": true,
+    "overview": "Named after the Prophet Muhammad, discussing fighting in Allah's cause and the nature of hypocrites."
+  },
+  {
+    "id": 48,
+    "name": "Al-Fath",
+    "nameAr": "الفتح",
+    "nameComplex": "Al-Fatĥ",
+    "meaning": "The Victory",
+    "verses": 29,
+    "revelationPlace": "madinah",
+    "revelationOrder": 111,
+    "pages": [
+      511,
+      515
+    ],
+    "bismillahPre": true,
+    "overview": "Revealed after the Treaty of Hudaybiyyah, declaring it a clear victory and promising future conquests."
+  },
+  {
+    "id": 49,
+    "name": "Al-Hujurat",
+    "nameAr": "الحجرات",
+    "nameComplex": "Al-Ĥujurāt",
+    "meaning": "The Rooms",
+    "verses": 18,
+    "revelationPlace": "madinah",
+    "revelationOrder": 106,
+    "pages": [
+      515,
+      517
+    ],
+    "bismillahPre": true,
+    "overview": "Teaches manners and ethics — avoiding suspicion, backbiting, and mockery — and affirms human equality."
+  },
+  {
+    "id": 50,
+    "name": "Qaf",
+    "nameAr": "ق",
+    "nameComplex": "Qāf",
+    "meaning": "The Letter \"Qaf\"",
+    "verses": 45,
+    "revelationPlace": "makkah",
+    "revelationOrder": 34,
+    "pages": [
+      518,
+      520
+    ],
+    "bismillahPre": true,
+    "overview": "Opens with an oath by the Quran, discusses creation, death, resurrection, and Allah's closeness to mankind."
+  },
+  {
+    "id": 51,
+    "name": "Adh-Dhariyat",
+    "nameAr": "الذاريات",
+    "nameComplex": "Adh-Dhāriyāt",
+    "meaning": "The Winnowing Winds",
+    "verses": 60,
+    "revelationPlace": "makkah",
+    "revelationOrder": 67,
+    "pages": [
+      520,
+      523
+    ],
+    "bismillahPre": true,
+    "overview": "Swears by the scattering winds, recounts stories of Ibrahim's guests, Musa, and destroyed nations."
+  },
+  {
+    "id": 52,
+    "name": "At-Tur",
+    "nameAr": "الطور",
+    "nameComplex": "Aţ-Ţūr",
+    "meaning": "The Mount",
+    "verses": 49,
+    "revelationPlace": "makkah",
+    "revelationOrder": 76,
+    "pages": [
+      523,
+      525
+    ],
+    "bismillahPre": true,
+    "overview": "Swears by Mount Sinai, describes the bliss of Paradise, and refutes the disbelievers' accusations."
+  },
+  {
+    "id": 53,
+    "name": "An-Najm",
+    "nameAr": "النجم",
+    "nameComplex": "An-Najm",
+    "meaning": "The Star",
+    "verses": 62,
+    "revelationPlace": "makkah",
+    "revelationOrder": 23,
+    "pages": [
+      526,
+      528
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the Prophet's ascension (Mi'raj), refutes idol worship, and affirms divine authority."
+  },
+  {
+    "id": 54,
+    "name": "Al-Qamar",
+    "nameAr": "القمر",
+    "nameComplex": "Al-Qamar",
+    "meaning": "The Moon",
+    "verses": 55,
+    "revelationPlace": "makkah",
+    "revelationOrder": 37,
+    "pages": [
+      528,
+      531
+    ],
+    "bismillahPre": true,
+    "overview": "Opens with the splitting of the moon, retells stories of destroyed nations, and repeats the refrain of easy remembrance."
+  },
+  {
+    "id": 55,
+    "name": "Ar-Rahman",
+    "nameAr": "الرحمن",
+    "nameComplex": "Ar-Raĥmān",
+    "meaning": "The Beneficent",
+    "verses": 78,
+    "revelationPlace": "madinah",
+    "revelationOrder": 97,
+    "pages": [
+      531,
+      534
+    ],
+    "bismillahPre": true,
+    "overview": "Enumerates Allah's countless blessings with the repeated refrain: 'Which of the favors of your Lord will you deny?'"
+  },
+  {
+    "id": 56,
+    "name": "Al-Waqi'ah",
+    "nameAr": "الواقعة",
+    "nameComplex": "Al-Wāqi`ah",
+    "meaning": "The Inevitable",
+    "verses": 96,
+    "revelationPlace": "makkah",
+    "revelationOrder": 46,
+    "pages": [
+      534,
+      537
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the three groups on the Day of Judgment: the foremost, the companions of the right, and the left."
+  },
+  {
+    "id": 57,
+    "name": "Al-Hadid",
+    "nameAr": "الحديد",
+    "nameComplex": "Al-Ĥadīd",
+    "meaning": "The Iron",
+    "verses": 29,
+    "revelationPlace": "madinah",
+    "revelationOrder": 94,
+    "pages": [
+      537,
+      541
+    ],
+    "bismillahPre": true,
+    "overview": "Reflects on Allah's sovereignty over the heavens and earth, the nature of worldly life, and spending in charity."
+  },
+  {
+    "id": 58,
+    "name": "Al-Mujadila",
+    "nameAr": "المجادلة",
+    "nameComplex": "Al-Mujādila",
+    "meaning": "The Pleading Woman",
+    "verses": 22,
+    "revelationPlace": "madinah",
+    "revelationOrder": 105,
+    "pages": [
+      542,
+      545
+    ],
+    "bismillahPre": true,
+    "overview": "Opens with a woman's complaint to the Prophet about her husband, addressing unjust divorce customs."
+  },
+  {
+    "id": 59,
+    "name": "Al-Hashr",
+    "nameAr": "الحشر",
+    "nameComplex": "Al-Ĥashr",
+    "meaning": "The Exile",
+    "verses": 24,
+    "revelationPlace": "madinah",
+    "revelationOrder": 101,
+    "pages": [
+      545,
+      548
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the exile of the Banu Nadir, the distribution of gains, and concludes with Allah's beautiful names."
+  },
+  {
+    "id": 60,
+    "name": "Al-Mumtahanah",
+    "nameAr": "الممتحنة",
+    "nameComplex": "Al-Mumtaĥanah",
+    "meaning": "She that is to be examined",
+    "verses": 13,
+    "revelationPlace": "madinah",
+    "revelationOrder": 91,
+    "pages": [
+      549,
+      551
+    ],
+    "bismillahPre": true,
+    "overview": "Guides believers on relations with non-hostile and hostile disbelievers, and the testing of emigrant women."
+  },
+  {
+    "id": 61,
+    "name": "As-Saf",
+    "nameAr": "الصف",
+    "nameComplex": "Aş-Şaf",
+    "meaning": "The Ranks",
+    "verses": 14,
+    "revelationPlace": "madinah",
+    "revelationOrder": 109,
+    "pages": [
+      551,
+      552
+    ],
+    "bismillahPre": true,
+    "overview": "Calls believers to stand firm in ranks for Allah's cause and mentions Isa's prophecy of a messenger after him."
+  },
+  {
+    "id": 62,
+    "name": "Al-Jumu'ah",
+    "nameAr": "الجمعة",
+    "nameComplex": "Al-Jumu`ah",
+    "meaning": "The Congregation, Friday",
+    "verses": 11,
+    "revelationPlace": "madinah",
+    "revelationOrder": 110,
+    "pages": [
+      553,
+      554
+    ],
+    "bismillahPre": true,
+    "overview": "Discusses Friday congregational prayer and warns against being distracted by commerce during worship."
+  },
+  {
+    "id": 63,
+    "name": "Al-Munafiqun",
+    "nameAr": "المنافقون",
+    "nameComplex": "Al-Munāfiqūn",
+    "meaning": "The Hypocrites",
+    "verses": 11,
+    "revelationPlace": "madinah",
+    "revelationOrder": 104,
+    "pages": [
+      554,
+      555
+    ],
+    "bismillahPre": true,
+    "overview": "Exposes the deception of the hypocrites in Madinah and their undermining of the Muslim community."
+  },
+  {
+    "id": 64,
+    "name": "At-Taghabun",
+    "nameAr": "التغابن",
+    "nameComplex": "At-Taghābun",
+    "meaning": "The Mutual Disillusion",
+    "verses": 18,
+    "revelationPlace": "madinah",
+    "revelationOrder": 108,
+    "pages": [
+      556,
+      557
+    ],
+    "bismillahPre": true,
+    "overview": "Reminds of Allah's knowledge of all things, the test of wealth and children, and mutual loss and gain."
+  },
+  {
+    "id": 65,
+    "name": "At-Talaq",
+    "nameAr": "الطلاق",
+    "nameComplex": "Aţ-Ţalāq",
+    "meaning": "The Divorce",
+    "verses": 12,
+    "revelationPlace": "madinah",
+    "revelationOrder": 99,
+    "pages": [
+      558,
+      559
+    ],
+    "bismillahPre": true,
+    "overview": "Details the rules and waiting periods of divorce, emphasizing fairness and consciousness of Allah."
+  },
+  {
+    "id": 66,
+    "name": "At-Tahrim",
+    "nameAr": "التحريم",
+    "nameComplex": "At-Taĥrīm",
+    "meaning": "The Prohibition",
+    "verses": 12,
+    "revelationPlace": "madinah",
+    "revelationOrder": 107,
+    "pages": [
+      560,
+      561
+    ],
+    "bismillahPre": true,
+    "overview": "Addresses an incident in the Prophet's household and uses the examples of righteous and unrighteous women."
+  },
+  {
+    "id": 67,
+    "name": "Al-Mulk",
+    "nameAr": "الملك",
+    "nameComplex": "Al-Mulk",
+    "meaning": "The Sovereignty",
+    "verses": 30,
+    "revelationPlace": "makkah",
+    "revelationOrder": 77,
+    "pages": [
+      562,
+      564
+    ],
+    "bismillahPre": true,
+    "overview": "Reflects on Allah's dominion over creation, the perfection of the heavens, and accountability after death."
+  },
+  {
+    "id": 68,
+    "name": "Al-Qalam",
+    "nameAr": "القلم",
+    "nameComplex": "Al-Qalam",
+    "meaning": "The Pen",
+    "verses": 52,
+    "revelationPlace": "makkah",
+    "revelationOrder": 2,
+    "pages": [
+      564,
+      566
+    ],
+    "bismillahPre": true,
+    "overview": "One of the earliest revelations. Defends the Prophet's character and tells the parable of the garden owners."
+  },
+  {
+    "id": 69,
+    "name": "Al-Haqqah",
+    "nameAr": "الحاقة",
+    "nameComplex": "Al-Ĥāqqah",
+    "meaning": "The Reality",
+    "verses": 52,
+    "revelationPlace": "makkah",
+    "revelationOrder": 78,
+    "pages": [
+      566,
+      568
+    ],
+    "bismillahPre": true,
+    "overview": "Vividly describes the Day of Judgment, the destruction of 'Ad and Thamud, and the weighing of deeds."
+  },
+  {
+    "id": 70,
+    "name": "Al-Ma'arij",
+    "nameAr": "المعارج",
+    "nameComplex": "Al-Ma`ārij",
+    "meaning": "The Ascending Stairways",
+    "verses": 44,
+    "revelationPlace": "makkah",
+    "revelationOrder": 79,
+    "pages": [
+      568,
+      570
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the Day when angels ascend, the nature of human impatience, and the qualities of the righteous."
+  },
+  {
+    "id": 71,
+    "name": "Nuh",
+    "nameAr": "نوح",
+    "nameComplex": "Nūĥ",
+    "meaning": "Noah",
+    "verses": 28,
+    "revelationPlace": "makkah",
+    "revelationOrder": 71,
+    "pages": [
+      570,
+      571
+    ],
+    "bismillahPre": true,
+    "overview": "Prophet Nuh's long call to his people, their persistent rejection, and his prayer against them."
+  },
+  {
+    "id": 72,
+    "name": "Al-Jinn",
+    "nameAr": "الجن",
+    "nameComplex": "Al-Jinn",
+    "meaning": "The Jinn",
+    "verses": 28,
+    "revelationPlace": "makkah",
+    "revelationOrder": 40,
+    "pages": [
+      572,
+      573
+    ],
+    "bismillahPre": true,
+    "overview": "Describes a group of jinn who heard the Quran, believed in it, and returned to warn their people."
+  },
+  {
+    "id": 73,
+    "name": "Al-Muzzammil",
+    "nameAr": "المزمل",
+    "nameComplex": "Al-Muzzammil",
+    "meaning": "The Enshrouded One",
+    "verses": 20,
+    "revelationPlace": "makkah",
+    "revelationOrder": 3,
+    "pages": [
+      574,
+      575
+    ],
+    "bismillahPre": true,
+    "overview": "Commands the Prophet to stand in night prayer, emphasizing devotion and patience in the early mission."
+  },
+  {
+    "id": 74,
+    "name": "Al-Muddaththir",
+    "nameAr": "المدثر",
+    "nameComplex": "Al-Muddaththir",
+    "meaning": "The Cloaked One",
+    "verses": 56,
+    "revelationPlace": "makkah",
+    "revelationOrder": 4,
+    "pages": [
+      575,
+      577
+    ],
+    "bismillahPre": true,
+    "overview": "One of the earliest revelations, commanding the Prophet to rise and warn, and describing the hereafter."
+  },
+  {
+    "id": 75,
+    "name": "Al-Qiyamah",
+    "nameAr": "القيامة",
+    "nameComplex": "Al-Qiyāmah",
+    "meaning": "The Resurrection",
+    "verses": 40,
+    "revelationPlace": "makkah",
+    "revelationOrder": 31,
+    "pages": [
+      577,
+      578
+    ],
+    "bismillahPre": true,
+    "overview": "Affirms the resurrection, describes the soul's departure at death, and Allah's power to recreate."
+  },
+  {
+    "id": 76,
+    "name": "Al-Insan",
+    "nameAr": "الانسان",
+    "nameComplex": "Al-'Insān",
+    "meaning": "The Man",
+    "verses": 31,
+    "revelationPlace": "madinah",
+    "revelationOrder": 98,
+    "pages": [
+      578,
+      580
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the creation of man, the rewards of the righteous in Paradise, and Allah's will over all things."
+  },
+  {
+    "id": 77,
+    "name": "Al-Mursalat",
+    "nameAr": "المرسلات",
+    "nameComplex": "Al-Mursalāt",
+    "meaning": "The Emissaries",
+    "verses": 50,
+    "revelationPlace": "makkah",
+    "revelationOrder": 33,
+    "pages": [
+      580,
+      581
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the winds sent forth, the Day of Judgment, and repeatedly asks: 'Woe that Day to the deniers.'"
+  },
+  {
+    "id": 78,
+    "name": "An-Naba",
+    "nameAr": "النبإ",
+    "nameComplex": "An-Naba",
+    "meaning": "The Tidings",
+    "verses": 40,
+    "revelationPlace": "makkah",
+    "revelationOrder": 80,
+    "pages": [
+      582,
+      583
+    ],
+    "bismillahPre": true,
+    "overview": "Presents evidence for resurrection through signs in creation — mountains, sleep, rain, and the heavens."
+  },
+  {
+    "id": 79,
+    "name": "An-Nazi'at",
+    "nameAr": "النازعات",
+    "nameComplex": "An-Nāzi`āt",
+    "meaning": "Those who drag forth",
+    "verses": 46,
+    "revelationPlace": "makkah",
+    "revelationOrder": 81,
+    "pages": [
+      583,
+      584
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the angels who extract souls, the Day of Judgment, and retells Musa's encounter with Pharaoh."
+  },
+  {
+    "id": 80,
+    "name": "'Abasa",
+    "nameAr": "عبس",
+    "nameComplex": "`Abasa",
+    "meaning": "He Frowned",
+    "verses": 42,
+    "revelationPlace": "makkah",
+    "revelationOrder": 24,
+    "pages": [
+      585,
+      585
+    ],
+    "bismillahPre": true,
+    "overview": "Addresses the Prophet for turning away from a blind man, emphasizing that guidance is for all who seek it."
+  },
+  {
+    "id": 81,
+    "name": "At-Takwir",
+    "nameAr": "التكوير",
+    "nameComplex": "At-Takwīr",
+    "meaning": "The Overthrowing",
+    "verses": 29,
+    "revelationPlace": "makkah",
+    "revelationOrder": 7,
+    "pages": [
+      586,
+      586
+    ],
+    "bismillahPre": true,
+    "overview": "Depicts the cosmic upheaval of the Last Day — the sun folding up, stars falling, and souls being paired."
+  },
+  {
+    "id": 82,
+    "name": "Al-Infitar",
+    "nameAr": "الإنفطار",
+    "nameComplex": "Al-'Infiţār",
+    "meaning": "The Cleaving",
+    "verses": 19,
+    "revelationPlace": "makkah",
+    "revelationOrder": 82,
+    "pages": [
+      587,
+      587
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the breaking apart of the sky and seas on the Day of Judgment, and the recording of all deeds."
+  },
+  {
+    "id": 83,
+    "name": "Al-Mutaffifin",
+    "nameAr": "المطففين",
+    "nameComplex": "Al-Muţaffifīn",
+    "meaning": "The Defrauding",
+    "verses": 36,
+    "revelationPlace": "makkah",
+    "revelationOrder": 86,
+    "pages": [
+      587,
+      589
+    ],
+    "bismillahPre": true,
+    "overview": "Warns those who cheat in weights and measures, and contrasts the record books of the wicked and righteous."
+  },
+  {
+    "id": 84,
+    "name": "Al-Inshiqaq",
+    "nameAr": "الإنشقاق",
+    "nameComplex": "Al-'Inshiqāq",
+    "meaning": "The Sundering",
+    "verses": 25,
+    "revelationPlace": "makkah",
+    "revelationOrder": 83,
+    "pages": [
+      589,
+      589
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the sky splitting open, the earth flattening, and people receiving their record in their right hand or behind their back."
+  },
+  {
+    "id": 85,
+    "name": "Al-Buruj",
+    "nameAr": "البروج",
+    "nameComplex": "Al-Burūj",
+    "meaning": "The Mansions of the Stars",
+    "verses": 22,
+    "revelationPlace": "makkah",
+    "revelationOrder": 27,
+    "pages": [
+      590,
+      590
+    ],
+    "bismillahPre": true,
+    "overview": "References the People of the Trench who were persecuted for their faith, and affirms Allah's encompassing power."
+  },
+  {
+    "id": 86,
+    "name": "At-Tariq",
+    "nameAr": "الطارق",
+    "nameComplex": "Aţ-Ţāriq",
+    "meaning": "The Nightcommer",
+    "verses": 17,
+    "revelationPlace": "makkah",
+    "revelationOrder": 36,
+    "pages": [
+      591,
+      591
+    ],
+    "bismillahPre": true,
+    "overview": "Swears by the night star, reflects on human creation from fluid, and affirms the Quran's decisive word."
+  },
+  {
+    "id": 87,
+    "name": "Al-A'la",
+    "nameAr": "الأعلى",
+    "nameComplex": "Al-'A`lá",
+    "meaning": "The Most High",
+    "verses": 19,
+    "revelationPlace": "makkah",
+    "revelationOrder": 8,
+    "pages": [
+      591,
+      592
+    ],
+    "bismillahPre": true,
+    "overview": "Glorifies Allah the Most High, discusses the creation of all things, and the superiority of the hereafter."
+  },
+  {
+    "id": 88,
+    "name": "Al-Ghashiyah",
+    "nameAr": "الغاشية",
+    "nameComplex": "Al-Ghāshiyah",
+    "meaning": "The Overwhelming",
+    "verses": 26,
+    "revelationPlace": "makkah",
+    "revelationOrder": 68,
+    "pages": [
+      592,
+      592
+    ],
+    "bismillahPre": true,
+    "overview": "Contrasts the faces of the wretched and the blessed on the Day of Judgment, and calls to reflect on creation."
+  },
+  {
+    "id": 89,
+    "name": "Al-Fajr",
+    "nameAr": "الفجر",
+    "nameComplex": "Al-Fajr",
+    "meaning": "The Dawn",
+    "verses": 30,
+    "revelationPlace": "makkah",
+    "revelationOrder": 10,
+    "pages": [
+      593,
+      594
+    ],
+    "bismillahPre": true,
+    "overview": "Swears by the dawn, recounts the destruction of 'Ad, Thamud, and Pharaoh, and warns against love of wealth."
+  },
+  {
+    "id": 90,
+    "name": "Al-Balad",
+    "nameAr": "البلد",
+    "nameComplex": "Al-Balad",
+    "meaning": "The City",
+    "verses": 20,
+    "revelationPlace": "makkah",
+    "revelationOrder": 35,
+    "pages": [
+      594,
+      594
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the struggles of life in this city (Makkah) and the steep path of righteousness — freeing slaves and feeding the poor."
+  },
+  {
+    "id": 91,
+    "name": "Ash-Shams",
+    "nameAr": "الشمس",
+    "nameComplex": "Ash-Shams",
+    "meaning": "The Sun",
+    "verses": 15,
+    "revelationPlace": "makkah",
+    "revelationOrder": 26,
+    "pages": [
+      595,
+      595
+    ],
+    "bismillahPre": true,
+    "overview": "Swears by the sun and the soul, recounts the destruction of Thamud, and affirms that success lies in purifying the soul."
+  },
+  {
+    "id": 92,
+    "name": "Al-Layl",
+    "nameAr": "الليل",
+    "nameComplex": "Al-Layl",
+    "meaning": "The Night",
+    "verses": 21,
+    "revelationPlace": "makkah",
+    "revelationOrder": 9,
+    "pages": [
+      595,
+      596
+    ],
+    "bismillahPre": true,
+    "overview": "Contrasts those who give and fear Allah with those who are miserly, and affirms that Allah guides to what is easy."
+  },
+  {
+    "id": 93,
+    "name": "Ad-Duhaa",
+    "nameAr": "الضحى",
+    "nameComplex": "Ađ-Đuĥaá",
+    "meaning": "The Morning Hours",
+    "verses": 11,
+    "revelationPlace": "makkah",
+    "revelationOrder": 11,
+    "pages": [
+      596,
+      596
+    ],
+    "bismillahPre": true,
+    "overview": "A comforting revelation to the Prophet during a period when revelation paused, assuring him of Allah's care."
+  },
+  {
+    "id": 94,
+    "name": "Ash-Sharh",
+    "nameAr": "الشرح",
+    "nameComplex": "Ash-Sharĥ",
+    "meaning": "The Relief",
+    "verses": 8,
+    "revelationPlace": "makkah",
+    "revelationOrder": 12,
+    "pages": [
+      596,
+      596
+    ],
+    "bismillahPre": true,
+    "overview": "Reassures the Prophet that Allah has expanded his chest, eased his burden, and that relief comes with hardship."
+  },
+  {
+    "id": 95,
+    "name": "At-Tin",
+    "nameAr": "التين",
+    "nameComplex": "At-Tīn",
+    "meaning": "The Fig",
+    "verses": 8,
+    "revelationPlace": "makkah",
+    "revelationOrder": 28,
+    "pages": [
+      597,
+      597
+    ],
+    "bismillahPre": true,
+    "overview": "Swears by the fig and olive, affirming that man was created in the best form but can fall to the lowest."
+  },
+  {
+    "id": 96,
+    "name": "Al-'Alaq",
+    "nameAr": "العلق",
+    "nameComplex": "Al-`Alaq",
+    "meaning": "The Clot",
+    "verses": 19,
+    "revelationPlace": "makkah",
+    "revelationOrder": 1,
+    "pages": [
+      597,
+      597
+    ],
+    "bismillahPre": true,
+    "overview": "Contains the first verses revealed to the Prophet — the command to read (Iqra) — and warns against arrogance."
+  },
+  {
+    "id": 97,
+    "name": "Al-Qadr",
+    "nameAr": "القدر",
+    "nameComplex": "Al-Qadr",
+    "meaning": "The Power",
+    "verses": 5,
+    "revelationPlace": "makkah",
+    "revelationOrder": 25,
+    "pages": [
+      598,
+      598
+    ],
+    "bismillahPre": true,
+    "overview": "Declares the Night of Decree (Laylatul Qadr) better than a thousand months, when angels descend with peace."
+  },
+  {
+    "id": 98,
+    "name": "Al-Bayyinah",
+    "nameAr": "البينة",
+    "nameComplex": "Al-Bayyinah",
+    "meaning": "The Clear Proof",
+    "verses": 8,
+    "revelationPlace": "madinah",
+    "revelationOrder": 100,
+    "pages": [
+      598,
+      599
+    ],
+    "bismillahPre": true,
+    "overview": "Distinguishes between the People of the Book who believed and those who rejected the clear evidence."
+  },
+  {
+    "id": 99,
+    "name": "Az-Zalzalah",
+    "nameAr": "الزلزلة",
+    "nameComplex": "Az-Zalzalah",
+    "meaning": "The Earthquake",
+    "verses": 8,
+    "revelationPlace": "madinah",
+    "revelationOrder": 93,
+    "pages": [
+      599,
+      599
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the violent earthquake of the Last Day when the earth will reveal all that was done upon it."
+  },
+  {
+    "id": 100,
+    "name": "Al-'Adiyat",
+    "nameAr": "العاديات",
+    "nameComplex": "Al-`Ādiyāt",
+    "meaning": "The Courser",
+    "verses": 11,
+    "revelationPlace": "makkah",
+    "revelationOrder": 14,
+    "pages": [
+      599,
+      600
+    ],
+    "bismillahPre": true,
+    "overview": "Swears by charging warhorses and describes man's ingratitude and love of wealth."
+  },
+  {
+    "id": 101,
+    "name": "Al-Qari'ah",
+    "nameAr": "القارعة",
+    "nameComplex": "Al-Qāri`ah",
+    "meaning": "The Calamity",
+    "verses": 11,
+    "revelationPlace": "makkah",
+    "revelationOrder": 30,
+    "pages": [
+      600,
+      600
+    ],
+    "bismillahPre": true,
+    "overview": "Describes the striking calamity of the Day of Judgment when people will be like scattered moths."
+  },
+  {
+    "id": 102,
+    "name": "At-Takathur",
+    "nameAr": "التكاثر",
+    "nameComplex": "At-Takāthur",
+    "meaning": "The Rivalry in world increase",
+    "verses": 8,
+    "revelationPlace": "makkah",
+    "revelationOrder": 16,
+    "pages": [
+      600,
+      600
+    ],
+    "bismillahPre": true,
+    "overview": "Warns that competition for worldly increase distracts people until they visit their graves."
+  },
+  {
+    "id": 103,
+    "name": "Al-'Asr",
+    "nameAr": "العصر",
+    "nameComplex": "Al-`Aşr",
+    "meaning": "The Declining Day",
+    "verses": 3,
+    "revelationPlace": "makkah",
+    "revelationOrder": 13,
+    "pages": [
+      601,
+      601
+    ],
+    "bismillahPre": true,
+    "overview": "A concise oath by time that mankind is in loss except those who believe, do good, and counsel truth and patience."
+  },
+  {
+    "id": 104,
+    "name": "Al-Humazah",
+    "nameAr": "الهمزة",
+    "nameComplex": "Al-Humazah",
+    "meaning": "The Traducer",
+    "verses": 9,
+    "revelationPlace": "makkah",
+    "revelationOrder": 32,
+    "pages": [
+      601,
+      601
+    ],
+    "bismillahPre": true,
+    "overview": "Warns those who slander, backbite, and hoard wealth, describing the crushing fire that awaits them."
+  },
+  {
+    "id": 105,
+    "name": "Al-Fil",
+    "nameAr": "الفيل",
+    "nameComplex": "Al-Fīl",
+    "meaning": "The Elephant",
+    "verses": 5,
+    "revelationPlace": "makkah",
+    "revelationOrder": 19,
+    "pages": [
+      601,
+      601
+    ],
+    "bismillahPre": true,
+    "overview": "Recounts how Allah destroyed the army of Abraha and his elephants who tried to demolish the Ka'bah."
+  },
+  {
+    "id": 106,
+    "name": "Quraysh",
+    "nameAr": "قريش",
+    "nameComplex": "Quraysh",
+    "meaning": "Quraysh",
+    "verses": 4,
+    "revelationPlace": "makkah",
+    "revelationOrder": 29,
+    "pages": [
+      602,
+      602
+    ],
+    "bismillahPre": true,
+    "overview": "Reminds the Quraysh of Allah's blessings — their trade caravans and security — and calls them to worship."
+  },
+  {
+    "id": 107,
+    "name": "Al-Ma'un",
+    "nameAr": "الماعون",
+    "nameComplex": "Al-Mā`ūn",
+    "meaning": "The Small kindnesses",
+    "verses": 7,
+    "revelationPlace": "makkah",
+    "revelationOrder": 17,
+    "pages": [
+      602,
+      602
+    ],
+    "bismillahPre": true,
+    "overview": "Rebukes those who deny the Day of Judgment, mistreat orphans, neglect the needy, and pray without sincerity."
+  },
+  {
+    "id": 108,
+    "name": "Al-Kawthar",
+    "nameAr": "الكوثر",
+    "nameComplex": "Al-Kawthar",
+    "meaning": "The Abundance",
+    "verses": 3,
+    "revelationPlace": "makkah",
+    "revelationOrder": 15,
+    "pages": [
+      602,
+      602
+    ],
+    "bismillahPre": true,
+    "overview": "Grants the Prophet the river of Al-Kawthar in Paradise and tells him to pray and sacrifice for Allah alone."
+  },
+  {
+    "id": 109,
+    "name": "Al-Kafirun",
+    "nameAr": "الكافرون",
+    "nameComplex": "Al-Kāfirūn",
+    "meaning": "The Disbelievers",
+    "verses": 6,
+    "revelationPlace": "makkah",
+    "revelationOrder": 18,
+    "pages": [
+      603,
+      603
+    ],
+    "bismillahPre": true,
+    "overview": "A clear declaration of separation between the Prophet's worship and that of the disbelievers."
+  },
+  {
+    "id": 110,
+    "name": "An-Nasr",
+    "nameAr": "النصر",
+    "nameComplex": "An-Naşr",
+    "meaning": "The Divine Support",
+    "verses": 3,
+    "revelationPlace": "madinah",
+    "revelationOrder": 114,
+    "pages": [
+      603,
+      603
+    ],
+    "bismillahPre": true,
+    "overview": "The last surah revealed, acknowledging the conquest of Makkah and the spread of Islam, and commanding praise and seeking forgiveness."
+  },
+  {
+    "id": 111,
+    "name": "Al-Masad",
+    "nameAr": "المسد",
+    "nameComplex": "Al-Masad",
+    "meaning": "The Palm Fiber",
+    "verses": 5,
+    "revelationPlace": "makkah",
+    "revelationOrder": 6,
+    "pages": [
+      603,
+      603
+    ],
+    "bismillahPre": true,
+    "overview": "Condemns Abu Lahab and his wife for their fierce opposition to the Prophet and the message of Islam."
+  },
+  {
+    "id": 112,
+    "name": "Al-Ikhlas",
+    "nameAr": "الإخلاص",
+    "nameComplex": "Al-'Ikhlāş",
+    "meaning": "The Sincerity",
+    "verses": 4,
+    "revelationPlace": "makkah",
+    "revelationOrder": 22,
+    "pages": [
+      604,
+      604
+    ],
+    "bismillahPre": true,
+    "overview": "A concise declaration of pure monotheism — Allah is One, eternal, unbegotten, and without equal."
+  },
+  {
+    "id": 113,
+    "name": "Al-Falaq",
+    "nameAr": "الفلق",
+    "nameComplex": "Al-Falaq",
+    "meaning": "The Daybreak",
+    "verses": 5,
+    "revelationPlace": "makkah",
+    "revelationOrder": 20,
+    "pages": [
+      604,
+      604
+    ],
+    "bismillahPre": true,
+    "overview": "A prayer seeking refuge in Allah from external harms — darkness, magic, and the envy of others."
+  },
+  {
+    "id": 114,
+    "name": "An-Nas",
+    "nameAr": "الناس",
+    "nameComplex": "An-Nās",
+    "meaning": "Mankind",
+    "verses": 6,
+    "revelationPlace": "makkah",
+    "revelationOrder": 21,
+    "pages": [
+      604,
+      604
+    ],
+    "bismillahPre": true,
+    "overview": "A prayer seeking refuge in Allah from the whispering of Shaytan — whether from jinn or mankind — into the hearts of people."
+  }
+]

@@ -1,0 +1,841 @@
+"use client";
+
+import { Suspense, useState, useEffect, useCallback, useRef } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ChevronUp,
+  ChevronDown,
+  Search,
+  BookOpen,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import PageHeader from "@/components/PageHeader";
+import chapters from "@/data/quran/chapters.json";
+
+interface Verse {
+  id: number;
+  number: number;
+  key: string;
+  textAr: string;
+  textEn: string;
+  juz: number;
+  page: number;
+  hizb: number;
+}
+
+type TafsirData = Record<string, string>;
+type TafsirImportMap = Record<number, () => Promise<{ default: TafsirData }>>;
+type TafsirSource = "ibn-kathir" | "maarif";
+
+const TAFSIR_LABELS: Record<TafsirSource, string> = {
+  "ibn-kathir": "Ibn Kathir",
+  maarif: "Ma'arif al-Qur'an",
+};
+
+function toArabicNumeral(n: number): string {
+  return n.toString().replace(/\d/g, (d) => "\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"[parseInt(d)]);
+}
+
+// Static imports for all 114 surahs — Next.js needs deterministic import paths
+const verseImports: Record<number, () => Promise<{ default: Verse[] }>> = {
+  1: () => import("@/data/quran/verses/1.json"),
+  2: () => import("@/data/quran/verses/2.json"),
+  3: () => import("@/data/quran/verses/3.json"),
+  4: () => import("@/data/quran/verses/4.json"),
+  5: () => import("@/data/quran/verses/5.json"),
+  6: () => import("@/data/quran/verses/6.json"),
+  7: () => import("@/data/quran/verses/7.json"),
+  8: () => import("@/data/quran/verses/8.json"),
+  9: () => import("@/data/quran/verses/9.json"),
+  10: () => import("@/data/quran/verses/10.json"),
+  11: () => import("@/data/quran/verses/11.json"),
+  12: () => import("@/data/quran/verses/12.json"),
+  13: () => import("@/data/quran/verses/13.json"),
+  14: () => import("@/data/quran/verses/14.json"),
+  15: () => import("@/data/quran/verses/15.json"),
+  16: () => import("@/data/quran/verses/16.json"),
+  17: () => import("@/data/quran/verses/17.json"),
+  18: () => import("@/data/quran/verses/18.json"),
+  19: () => import("@/data/quran/verses/19.json"),
+  20: () => import("@/data/quran/verses/20.json"),
+  21: () => import("@/data/quran/verses/21.json"),
+  22: () => import("@/data/quran/verses/22.json"),
+  23: () => import("@/data/quran/verses/23.json"),
+  24: () => import("@/data/quran/verses/24.json"),
+  25: () => import("@/data/quran/verses/25.json"),
+  26: () => import("@/data/quran/verses/26.json"),
+  27: () => import("@/data/quran/verses/27.json"),
+  28: () => import("@/data/quran/verses/28.json"),
+  29: () => import("@/data/quran/verses/29.json"),
+  30: () => import("@/data/quran/verses/30.json"),
+  31: () => import("@/data/quran/verses/31.json"),
+  32: () => import("@/data/quran/verses/32.json"),
+  33: () => import("@/data/quran/verses/33.json"),
+  34: () => import("@/data/quran/verses/34.json"),
+  35: () => import("@/data/quran/verses/35.json"),
+  36: () => import("@/data/quran/verses/36.json"),
+  37: () => import("@/data/quran/verses/37.json"),
+  38: () => import("@/data/quran/verses/38.json"),
+  39: () => import("@/data/quran/verses/39.json"),
+  40: () => import("@/data/quran/verses/40.json"),
+  41: () => import("@/data/quran/verses/41.json"),
+  42: () => import("@/data/quran/verses/42.json"),
+  43: () => import("@/data/quran/verses/43.json"),
+  44: () => import("@/data/quran/verses/44.json"),
+  45: () => import("@/data/quran/verses/45.json"),
+  46: () => import("@/data/quran/verses/46.json"),
+  47: () => import("@/data/quran/verses/47.json"),
+  48: () => import("@/data/quran/verses/48.json"),
+  49: () => import("@/data/quran/verses/49.json"),
+  50: () => import("@/data/quran/verses/50.json"),
+  51: () => import("@/data/quran/verses/51.json"),
+  52: () => import("@/data/quran/verses/52.json"),
+  53: () => import("@/data/quran/verses/53.json"),
+  54: () => import("@/data/quran/verses/54.json"),
+  55: () => import("@/data/quran/verses/55.json"),
+  56: () => import("@/data/quran/verses/56.json"),
+  57: () => import("@/data/quran/verses/57.json"),
+  58: () => import("@/data/quran/verses/58.json"),
+  59: () => import("@/data/quran/verses/59.json"),
+  60: () => import("@/data/quran/verses/60.json"),
+  61: () => import("@/data/quran/verses/61.json"),
+  62: () => import("@/data/quran/verses/62.json"),
+  63: () => import("@/data/quran/verses/63.json"),
+  64: () => import("@/data/quran/verses/64.json"),
+  65: () => import("@/data/quran/verses/65.json"),
+  66: () => import("@/data/quran/verses/66.json"),
+  67: () => import("@/data/quran/verses/67.json"),
+  68: () => import("@/data/quran/verses/68.json"),
+  69: () => import("@/data/quran/verses/69.json"),
+  70: () => import("@/data/quran/verses/70.json"),
+  71: () => import("@/data/quran/verses/71.json"),
+  72: () => import("@/data/quran/verses/72.json"),
+  73: () => import("@/data/quran/verses/73.json"),
+  74: () => import("@/data/quran/verses/74.json"),
+  75: () => import("@/data/quran/verses/75.json"),
+  76: () => import("@/data/quran/verses/76.json"),
+  77: () => import("@/data/quran/verses/77.json"),
+  78: () => import("@/data/quran/verses/78.json"),
+  79: () => import("@/data/quran/verses/79.json"),
+  80: () => import("@/data/quran/verses/80.json"),
+  81: () => import("@/data/quran/verses/81.json"),
+  82: () => import("@/data/quran/verses/82.json"),
+  83: () => import("@/data/quran/verses/83.json"),
+  84: () => import("@/data/quran/verses/84.json"),
+  85: () => import("@/data/quran/verses/85.json"),
+  86: () => import("@/data/quran/verses/86.json"),
+  87: () => import("@/data/quran/verses/87.json"),
+  88: () => import("@/data/quran/verses/88.json"),
+  89: () => import("@/data/quran/verses/89.json"),
+  90: () => import("@/data/quran/verses/90.json"),
+  91: () => import("@/data/quran/verses/91.json"),
+  92: () => import("@/data/quran/verses/92.json"),
+  93: () => import("@/data/quran/verses/93.json"),
+  94: () => import("@/data/quran/verses/94.json"),
+  95: () => import("@/data/quran/verses/95.json"),
+  96: () => import("@/data/quran/verses/96.json"),
+  97: () => import("@/data/quran/verses/97.json"),
+  98: () => import("@/data/quran/verses/98.json"),
+  99: () => import("@/data/quran/verses/99.json"),
+  100: () => import("@/data/quran/verses/100.json"),
+  101: () => import("@/data/quran/verses/101.json"),
+  102: () => import("@/data/quran/verses/102.json"),
+  103: () => import("@/data/quran/verses/103.json"),
+  104: () => import("@/data/quran/verses/104.json"),
+  105: () => import("@/data/quran/verses/105.json"),
+  106: () => import("@/data/quran/verses/106.json"),
+  107: () => import("@/data/quran/verses/107.json"),
+  108: () => import("@/data/quran/verses/108.json"),
+  109: () => import("@/data/quran/verses/109.json"),
+  110: () => import("@/data/quran/verses/110.json"),
+  111: () => import("@/data/quran/verses/111.json"),
+  112: () => import("@/data/quran/verses/112.json"),
+  113: () => import("@/data/quran/verses/113.json"),
+  114: () => import("@/data/quran/verses/114.json"),
+};
+
+const ibnKathirImports: TafsirImportMap = {
+  1: () => import("@/data/quran/tafsirs/ibn-kathir/1.json"),
+  2: () => import("@/data/quran/tafsirs/ibn-kathir/2.json"),
+  3: () => import("@/data/quran/tafsirs/ibn-kathir/3.json"),
+  4: () => import("@/data/quran/tafsirs/ibn-kathir/4.json"),
+  5: () => import("@/data/quran/tafsirs/ibn-kathir/5.json"),
+  6: () => import("@/data/quran/tafsirs/ibn-kathir/6.json"),
+  7: () => import("@/data/quran/tafsirs/ibn-kathir/7.json"),
+  8: () => import("@/data/quran/tafsirs/ibn-kathir/8.json"),
+  9: () => import("@/data/quran/tafsirs/ibn-kathir/9.json"),
+  10: () => import("@/data/quran/tafsirs/ibn-kathir/10.json"),
+  11: () => import("@/data/quran/tafsirs/ibn-kathir/11.json"),
+  12: () => import("@/data/quran/tafsirs/ibn-kathir/12.json"),
+  13: () => import("@/data/quran/tafsirs/ibn-kathir/13.json"),
+  14: () => import("@/data/quran/tafsirs/ibn-kathir/14.json"),
+  15: () => import("@/data/quran/tafsirs/ibn-kathir/15.json"),
+  16: () => import("@/data/quran/tafsirs/ibn-kathir/16.json"),
+  17: () => import("@/data/quran/tafsirs/ibn-kathir/17.json"),
+  18: () => import("@/data/quran/tafsirs/ibn-kathir/18.json"),
+  19: () => import("@/data/quran/tafsirs/ibn-kathir/19.json"),
+  20: () => import("@/data/quran/tafsirs/ibn-kathir/20.json"),
+  21: () => import("@/data/quran/tafsirs/ibn-kathir/21.json"),
+  22: () => import("@/data/quran/tafsirs/ibn-kathir/22.json"),
+  23: () => import("@/data/quran/tafsirs/ibn-kathir/23.json"),
+  24: () => import("@/data/quran/tafsirs/ibn-kathir/24.json"),
+  25: () => import("@/data/quran/tafsirs/ibn-kathir/25.json"),
+  26: () => import("@/data/quran/tafsirs/ibn-kathir/26.json"),
+  27: () => import("@/data/quran/tafsirs/ibn-kathir/27.json"),
+  28: () => import("@/data/quran/tafsirs/ibn-kathir/28.json"),
+  29: () => import("@/data/quran/tafsirs/ibn-kathir/29.json"),
+  30: () => import("@/data/quran/tafsirs/ibn-kathir/30.json"),
+  31: () => import("@/data/quran/tafsirs/ibn-kathir/31.json"),
+  32: () => import("@/data/quran/tafsirs/ibn-kathir/32.json"),
+  33: () => import("@/data/quran/tafsirs/ibn-kathir/33.json"),
+  34: () => import("@/data/quran/tafsirs/ibn-kathir/34.json"),
+  35: () => import("@/data/quran/tafsirs/ibn-kathir/35.json"),
+  36: () => import("@/data/quran/tafsirs/ibn-kathir/36.json"),
+  37: () => import("@/data/quran/tafsirs/ibn-kathir/37.json"),
+  38: () => import("@/data/quran/tafsirs/ibn-kathir/38.json"),
+  39: () => import("@/data/quran/tafsirs/ibn-kathir/39.json"),
+  40: () => import("@/data/quran/tafsirs/ibn-kathir/40.json"),
+  41: () => import("@/data/quran/tafsirs/ibn-kathir/41.json"),
+  42: () => import("@/data/quran/tafsirs/ibn-kathir/42.json"),
+  43: () => import("@/data/quran/tafsirs/ibn-kathir/43.json"),
+  44: () => import("@/data/quran/tafsirs/ibn-kathir/44.json"),
+  45: () => import("@/data/quran/tafsirs/ibn-kathir/45.json"),
+  46: () => import("@/data/quran/tafsirs/ibn-kathir/46.json"),
+  47: () => import("@/data/quran/tafsirs/ibn-kathir/47.json"),
+  48: () => import("@/data/quran/tafsirs/ibn-kathir/48.json"),
+  49: () => import("@/data/quran/tafsirs/ibn-kathir/49.json"),
+  50: () => import("@/data/quran/tafsirs/ibn-kathir/50.json"),
+  51: () => import("@/data/quran/tafsirs/ibn-kathir/51.json"),
+  52: () => import("@/data/quran/tafsirs/ibn-kathir/52.json"),
+  53: () => import("@/data/quran/tafsirs/ibn-kathir/53.json"),
+  54: () => import("@/data/quran/tafsirs/ibn-kathir/54.json"),
+  55: () => import("@/data/quran/tafsirs/ibn-kathir/55.json"),
+  56: () => import("@/data/quran/tafsirs/ibn-kathir/56.json"),
+  57: () => import("@/data/quran/tafsirs/ibn-kathir/57.json"),
+  58: () => import("@/data/quran/tafsirs/ibn-kathir/58.json"),
+  59: () => import("@/data/quran/tafsirs/ibn-kathir/59.json"),
+  60: () => import("@/data/quran/tafsirs/ibn-kathir/60.json"),
+  61: () => import("@/data/quran/tafsirs/ibn-kathir/61.json"),
+  62: () => import("@/data/quran/tafsirs/ibn-kathir/62.json"),
+  63: () => import("@/data/quran/tafsirs/ibn-kathir/63.json"),
+  64: () => import("@/data/quran/tafsirs/ibn-kathir/64.json"),
+  65: () => import("@/data/quran/tafsirs/ibn-kathir/65.json"),
+  66: () => import("@/data/quran/tafsirs/ibn-kathir/66.json"),
+  67: () => import("@/data/quran/tafsirs/ibn-kathir/67.json"),
+  68: () => import("@/data/quran/tafsirs/ibn-kathir/68.json"),
+  69: () => import("@/data/quran/tafsirs/ibn-kathir/69.json"),
+  70: () => import("@/data/quran/tafsirs/ibn-kathir/70.json"),
+  71: () => import("@/data/quran/tafsirs/ibn-kathir/71.json"),
+  72: () => import("@/data/quran/tafsirs/ibn-kathir/72.json"),
+  73: () => import("@/data/quran/tafsirs/ibn-kathir/73.json"),
+  74: () => import("@/data/quran/tafsirs/ibn-kathir/74.json"),
+  75: () => import("@/data/quran/tafsirs/ibn-kathir/75.json"),
+  76: () => import("@/data/quran/tafsirs/ibn-kathir/76.json"),
+  77: () => import("@/data/quran/tafsirs/ibn-kathir/77.json"),
+  78: () => import("@/data/quran/tafsirs/ibn-kathir/78.json"),
+  79: () => import("@/data/quran/tafsirs/ibn-kathir/79.json"),
+  80: () => import("@/data/quran/tafsirs/ibn-kathir/80.json"),
+  81: () => import("@/data/quran/tafsirs/ibn-kathir/81.json"),
+  82: () => import("@/data/quran/tafsirs/ibn-kathir/82.json"),
+  83: () => import("@/data/quran/tafsirs/ibn-kathir/83.json"),
+  84: () => import("@/data/quran/tafsirs/ibn-kathir/84.json"),
+  85: () => import("@/data/quran/tafsirs/ibn-kathir/85.json"),
+  86: () => import("@/data/quran/tafsirs/ibn-kathir/86.json"),
+  87: () => import("@/data/quran/tafsirs/ibn-kathir/87.json"),
+  88: () => import("@/data/quran/tafsirs/ibn-kathir/88.json"),
+  89: () => import("@/data/quran/tafsirs/ibn-kathir/89.json"),
+  90: () => import("@/data/quran/tafsirs/ibn-kathir/90.json"),
+  91: () => import("@/data/quran/tafsirs/ibn-kathir/91.json"),
+  92: () => import("@/data/quran/tafsirs/ibn-kathir/92.json"),
+  93: () => import("@/data/quran/tafsirs/ibn-kathir/93.json"),
+  94: () => import("@/data/quran/tafsirs/ibn-kathir/94.json"),
+  95: () => import("@/data/quran/tafsirs/ibn-kathir/95.json"),
+  96: () => import("@/data/quran/tafsirs/ibn-kathir/96.json"),
+  97: () => import("@/data/quran/tafsirs/ibn-kathir/97.json"),
+  98: () => import("@/data/quran/tafsirs/ibn-kathir/98.json"),
+  99: () => import("@/data/quran/tafsirs/ibn-kathir/99.json"),
+  100: () => import("@/data/quran/tafsirs/ibn-kathir/100.json"),
+  101: () => import("@/data/quran/tafsirs/ibn-kathir/101.json"),
+  102: () => import("@/data/quran/tafsirs/ibn-kathir/102.json"),
+  103: () => import("@/data/quran/tafsirs/ibn-kathir/103.json"),
+  104: () => import("@/data/quran/tafsirs/ibn-kathir/104.json"),
+  105: () => import("@/data/quran/tafsirs/ibn-kathir/105.json"),
+  106: () => import("@/data/quran/tafsirs/ibn-kathir/106.json"),
+  107: () => import("@/data/quran/tafsirs/ibn-kathir/107.json"),
+  108: () => import("@/data/quran/tafsirs/ibn-kathir/108.json"),
+  109: () => import("@/data/quran/tafsirs/ibn-kathir/109.json"),
+  110: () => import("@/data/quran/tafsirs/ibn-kathir/110.json"),
+  111: () => import("@/data/quran/tafsirs/ibn-kathir/111.json"),
+  112: () => import("@/data/quran/tafsirs/ibn-kathir/112.json"),
+  113: () => import("@/data/quran/tafsirs/ibn-kathir/113.json"),
+  114: () => import("@/data/quran/tafsirs/ibn-kathir/114.json"),
+};
+
+const maarifImports: TafsirImportMap = {
+  1: () => import("@/data/quran/tafsirs/maarif/1.json"),
+  2: () => import("@/data/quran/tafsirs/maarif/2.json"),
+  3: () => import("@/data/quran/tafsirs/maarif/3.json"),
+  4: () => import("@/data/quran/tafsirs/maarif/4.json"),
+  5: () => import("@/data/quran/tafsirs/maarif/5.json"),
+  6: () => import("@/data/quran/tafsirs/maarif/6.json"),
+  7: () => import("@/data/quran/tafsirs/maarif/7.json"),
+  8: () => import("@/data/quran/tafsirs/maarif/8.json"),
+  9: () => import("@/data/quran/tafsirs/maarif/9.json"),
+  10: () => import("@/data/quran/tafsirs/maarif/10.json"),
+  11: () => import("@/data/quran/tafsirs/maarif/11.json"),
+  12: () => import("@/data/quran/tafsirs/maarif/12.json"),
+  13: () => import("@/data/quran/tafsirs/maarif/13.json"),
+  14: () => import("@/data/quran/tafsirs/maarif/14.json"),
+  15: () => import("@/data/quran/tafsirs/maarif/15.json"),
+  16: () => import("@/data/quran/tafsirs/maarif/16.json"),
+  17: () => import("@/data/quran/tafsirs/maarif/17.json"),
+  18: () => import("@/data/quran/tafsirs/maarif/18.json"),
+  19: () => import("@/data/quran/tafsirs/maarif/19.json"),
+  20: () => import("@/data/quran/tafsirs/maarif/20.json"),
+  21: () => import("@/data/quran/tafsirs/maarif/21.json"),
+  22: () => import("@/data/quran/tafsirs/maarif/22.json"),
+  23: () => import("@/data/quran/tafsirs/maarif/23.json"),
+  24: () => import("@/data/quran/tafsirs/maarif/24.json"),
+  25: () => import("@/data/quran/tafsirs/maarif/25.json"),
+  26: () => import("@/data/quran/tafsirs/maarif/26.json"),
+  27: () => import("@/data/quran/tafsirs/maarif/27.json"),
+  28: () => import("@/data/quran/tafsirs/maarif/28.json"),
+  29: () => import("@/data/quran/tafsirs/maarif/29.json"),
+  30: () => import("@/data/quran/tafsirs/maarif/30.json"),
+  31: () => import("@/data/quran/tafsirs/maarif/31.json"),
+  32: () => import("@/data/quran/tafsirs/maarif/32.json"),
+  33: () => import("@/data/quran/tafsirs/maarif/33.json"),
+  34: () => import("@/data/quran/tafsirs/maarif/34.json"),
+  35: () => import("@/data/quran/tafsirs/maarif/35.json"),
+  36: () => import("@/data/quran/tafsirs/maarif/36.json"),
+  37: () => import("@/data/quran/tafsirs/maarif/37.json"),
+  38: () => import("@/data/quran/tafsirs/maarif/38.json"),
+  39: () => import("@/data/quran/tafsirs/maarif/39.json"),
+  40: () => import("@/data/quran/tafsirs/maarif/40.json"),
+  41: () => import("@/data/quran/tafsirs/maarif/41.json"),
+  42: () => import("@/data/quran/tafsirs/maarif/42.json"),
+  43: () => import("@/data/quran/tafsirs/maarif/43.json"),
+  44: () => import("@/data/quran/tafsirs/maarif/44.json"),
+  45: () => import("@/data/quran/tafsirs/maarif/45.json"),
+  46: () => import("@/data/quran/tafsirs/maarif/46.json"),
+  47: () => import("@/data/quran/tafsirs/maarif/47.json"),
+  48: () => import("@/data/quran/tafsirs/maarif/48.json"),
+  49: () => import("@/data/quran/tafsirs/maarif/49.json"),
+  50: () => import("@/data/quran/tafsirs/maarif/50.json"),
+  51: () => import("@/data/quran/tafsirs/maarif/51.json"),
+  52: () => import("@/data/quran/tafsirs/maarif/52.json"),
+  53: () => import("@/data/quran/tafsirs/maarif/53.json"),
+  54: () => import("@/data/quran/tafsirs/maarif/54.json"),
+  55: () => import("@/data/quran/tafsirs/maarif/55.json"),
+  56: () => import("@/data/quran/tafsirs/maarif/56.json"),
+  57: () => import("@/data/quran/tafsirs/maarif/57.json"),
+  58: () => import("@/data/quran/tafsirs/maarif/58.json"),
+  59: () => import("@/data/quran/tafsirs/maarif/59.json"),
+  60: () => import("@/data/quran/tafsirs/maarif/60.json"),
+  61: () => import("@/data/quran/tafsirs/maarif/61.json"),
+  62: () => import("@/data/quran/tafsirs/maarif/62.json"),
+  63: () => import("@/data/quran/tafsirs/maarif/63.json"),
+  64: () => import("@/data/quran/tafsirs/maarif/64.json"),
+  65: () => import("@/data/quran/tafsirs/maarif/65.json"),
+  66: () => import("@/data/quran/tafsirs/maarif/66.json"),
+  67: () => import("@/data/quran/tafsirs/maarif/67.json"),
+  68: () => import("@/data/quran/tafsirs/maarif/68.json"),
+  69: () => import("@/data/quran/tafsirs/maarif/69.json"),
+  70: () => import("@/data/quran/tafsirs/maarif/70.json"),
+  71: () => import("@/data/quran/tafsirs/maarif/71.json"),
+  72: () => import("@/data/quran/tafsirs/maarif/72.json"),
+  73: () => import("@/data/quran/tafsirs/maarif/73.json"),
+  74: () => import("@/data/quran/tafsirs/maarif/74.json"),
+  75: () => import("@/data/quran/tafsirs/maarif/75.json"),
+  76: () => import("@/data/quran/tafsirs/maarif/76.json"),
+  77: () => import("@/data/quran/tafsirs/maarif/77.json"),
+  78: () => import("@/data/quran/tafsirs/maarif/78.json"),
+  79: () => import("@/data/quran/tafsirs/maarif/79.json"),
+  80: () => import("@/data/quran/tafsirs/maarif/80.json"),
+  81: () => import("@/data/quran/tafsirs/maarif/81.json"),
+  82: () => import("@/data/quran/tafsirs/maarif/82.json"),
+  83: () => import("@/data/quran/tafsirs/maarif/83.json"),
+  84: () => import("@/data/quran/tafsirs/maarif/84.json"),
+  85: () => import("@/data/quran/tafsirs/maarif/85.json"),
+  86: () => import("@/data/quran/tafsirs/maarif/86.json"),
+  87: () => import("@/data/quran/tafsirs/maarif/87.json"),
+  88: () => import("@/data/quran/tafsirs/maarif/88.json"),
+  89: () => import("@/data/quran/tafsirs/maarif/89.json"),
+  90: () => import("@/data/quran/tafsirs/maarif/90.json"),
+  91: () => import("@/data/quran/tafsirs/maarif/91.json"),
+  92: () => import("@/data/quran/tafsirs/maarif/92.json"),
+  93: () => import("@/data/quran/tafsirs/maarif/93.json"),
+  94: () => import("@/data/quran/tafsirs/maarif/94.json"),
+  95: () => import("@/data/quran/tafsirs/maarif/95.json"),
+  96: () => import("@/data/quran/tafsirs/maarif/96.json"),
+  97: () => import("@/data/quran/tafsirs/maarif/97.json"),
+  98: () => import("@/data/quran/tafsirs/maarif/98.json"),
+  99: () => import("@/data/quran/tafsirs/maarif/99.json"),
+  100: () => import("@/data/quran/tafsirs/maarif/100.json"),
+  101: () => import("@/data/quran/tafsirs/maarif/101.json"),
+  102: () => import("@/data/quran/tafsirs/maarif/102.json"),
+  103: () => import("@/data/quran/tafsirs/maarif/103.json"),
+  104: () => import("@/data/quran/tafsirs/maarif/104.json"),
+  105: () => import("@/data/quran/tafsirs/maarif/105.json"),
+  106: () => import("@/data/quran/tafsirs/maarif/106.json"),
+  107: () => import("@/data/quran/tafsirs/maarif/107.json"),
+  108: () => import("@/data/quran/tafsirs/maarif/108.json"),
+  109: () => import("@/data/quran/tafsirs/maarif/109.json"),
+  110: () => import("@/data/quran/tafsirs/maarif/110.json"),
+  111: () => import("@/data/quran/tafsirs/maarif/111.json"),
+  112: () => import("@/data/quran/tafsirs/maarif/112.json"),
+  113: () => import("@/data/quran/tafsirs/maarif/113.json"),
+  114: () => import("@/data/quran/tafsirs/maarif/114.json"),
+};
+
+const tafsirImportMaps: Record<TafsirSource, TafsirImportMap> = {
+  "ibn-kathir": ibnKathirImports,
+  maarif: maarifImports,
+};
+
+function highlightText(text: string, query: string) {
+  if (!query || query.length < 3) return text;
+  const lowerText = text.toLowerCase();
+  const lowerQuery = query.toLowerCase();
+  const parts: (string | React.ReactElement)[] = [];
+  let lastIndex = 0;
+  let idx = lowerText.indexOf(lowerQuery);
+  while (idx !== -1) {
+    if (idx > lastIndex) parts.push(text.slice(lastIndex, idx));
+    parts.push(
+      <mark key={idx} className="bg-[var(--color-gold)]/30 text-themed rounded px-0.5">
+        {text.slice(idx, idx + query.length)}
+      </mark>
+    );
+    lastIndex = idx + query.length;
+    idx = lowerText.indexOf(lowerQuery, lastIndex);
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts.length > 0 ? <>{parts}</> : text;
+}
+
+export default function SurahPage() {
+  return (
+    <Suspense>
+      <SurahPageContent />
+    </Suspense>
+  );
+}
+
+function SurahPageContent() {
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const id = Number(params.id);
+  const chapter = chapters.find((ch) => ch.id === id);
+
+  const highlightQuery = searchParams.get("q") || "";
+  const highlightVerse = Number(searchParams.get("v")) || 0;
+  const scrolledRef = useRef(false);
+
+  const [verses, setVerses] = useState<Verse[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  // Tafsir state
+  const [tafsirSource, setTafsirSource] = useState<TafsirSource>("ibn-kathir");
+  const [tafsirData, setTafsirData] = useState<TafsirData | null>(null);
+  const [tafsirLoading, setTafsirLoading] = useState(false);
+  const [showAllTafsir, setShowAllTafsir] = useState(false);
+  const [openTafsirs, setOpenTafsirs] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    setVerses(null);
+    setLoading(true);
+    setSearch("");
+    scrolledRef.current = false;
+    setTafsirData(null);
+    setOpenTafsirs(new Set());
+    setShowAllTafsir(false);
+    const loader = verseImports[id];
+    if (loader) {
+      loader().then((mod) => {
+        setVerses(mod.default);
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
+    }
+  }, [id]);
+
+  // Load tafsir data when source changes or on demand
+  const loadTafsir = useCallback(async (source: TafsirSource) => {
+    setTafsirLoading(true);
+    const loader = tafsirImportMaps[source][id];
+    if (loader) {
+      const mod = await loader();
+      setTafsirData(mod.default);
+    }
+    setTafsirLoading(false);
+  }, [id]);
+
+  // Load tafsir when source changes and we have open tafsirs or showAll
+  useEffect(() => {
+    if (showAllTafsir || openTafsirs.size > 0) {
+      loadTafsir(tafsirSource);
+    }
+  }, [tafsirSource, loadTafsir, showAllTafsir, openTafsirs.size]);
+
+  const toggleVerseTafsir = useCallback(async (verseNum: number) => {
+    setOpenTafsirs((prev) => {
+      const next = new Set(prev);
+      if (next.has(verseNum)) {
+        next.delete(verseNum);
+      } else {
+        next.add(verseNum);
+      }
+      return next;
+    });
+    // Ensure data is loaded
+    if (!tafsirData) {
+      await loadTafsir(tafsirSource);
+    }
+  }, [tafsirData, loadTafsir, tafsirSource]);
+
+  const toggleShowAll = useCallback(async () => {
+    const willShow = !showAllTafsir;
+    setShowAllTafsir(willShow);
+    if (willShow && !tafsirData) {
+      await loadTafsir(tafsirSource);
+    }
+    if (!willShow) {
+      setOpenTafsirs(new Set());
+    }
+  }, [showAllTafsir, tafsirData, loadTafsir, tafsirSource]);
+
+  // Scroll to highlighted verse after verses load
+  useEffect(() => {
+    if (!verses || !highlightVerse || scrolledRef.current) return;
+    scrolledRef.current = true;
+    setTimeout(() => {
+      const el = document.getElementById(`verse-${highlightVerse}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 400);
+  }, [verses, highlightVerse]);
+
+  useEffect(() => {
+    const onScroll = () => setShowScrollTop(window.scrollY > 600);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  if (!chapter) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-themed-muted text-lg">Surah not found.</p>
+        <Link href="/quran" className="text-accent mt-4 inline-block">
+          Back to Quran
+        </Link>
+      </div>
+    );
+  }
+
+  const prevChapter = id > 1 ? chapters.find((ch) => ch.id === id - 1) : null;
+  const nextChapter = id < 114 ? chapters.find((ch) => ch.id === id + 1) : null;
+
+  const filtered = verses?.filter((v) => {
+    if (!search) return true;
+    return (
+      v.textEn.toLowerCase().includes(search.toLowerCase()) ||
+      v.textAr.includes(search) ||
+      v.number.toString() === search.trim()
+    );
+  });
+
+  const isTafsirOpen = (verseNum: number) => showAllTafsir || openTafsirs.has(verseNum);
+
+  return (
+    <div>
+      {/* Back link */}
+      <Link
+        href="/quran"
+        className="inline-flex items-center gap-2 text-sm text-themed-muted hover:text-themed transition-colors mb-4"
+      >
+        <ArrowLeft size={14} />
+        All Surahs
+      </Link>
+
+      <PageHeader
+        title={chapter.name}
+        titleAr={chapter.nameAr}
+        subtitle={`${chapter.meaning} · ${chapter.verses} verses · ${chapter.revelationPlace === "makkah" ? "Meccan" : "Medinan"} · Juz ${verses?.[0]?.juz ?? "..."}`}
+      />
+
+      {/* Surah info bar */}
+      <div className="flex flex-wrap gap-3 mb-6">
+        <span className="text-xs border sidebar-border rounded-full px-3 py-1 text-themed-muted">
+          Revelation #{chapter.revelationOrder}
+        </span>
+        <span
+          className="tooltip text-xs border sidebar-border rounded-full px-3 py-1 text-themed-muted cursor-help"
+          data-tip="Page numbers refer to the Medina Mushaf (King Fahd Complex edition)"
+        >
+          Pages {chapter.pages[0]}&ndash;{chapter.pages[1]}
+        </span>
+        <span className="text-xs border border-gold/30 rounded-full px-3 py-1 text-gold">
+          Saheeh International
+        </span>
+      </div>
+
+      {/* Overview */}
+      {"overview" in chapter && (
+        <p className="text-themed-muted text-sm leading-relaxed mb-6">
+          {(chapter as unknown as { overview: string }).overview}
+        </p>
+      )}
+
+      {/* Tafsir controls + Search row */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        {/* Search within surah */}
+        {chapter.verses > 10 && (
+          <div className="relative flex-1 max-w-md">
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-themed-muted"
+            />
+            <input
+              type="text"
+              placeholder="Search within this surah..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl card-bg border sidebar-border text-themed text-sm placeholder:text-themed-muted focus:outline-none focus:border-[var(--color-gold)] transition-colors"
+            />
+          </div>
+        )}
+
+        {/* Tafsir source selector */}
+        <div className="flex items-center gap-2">
+          <BookOpen size={14} className="text-themed-muted shrink-0" />
+          <select
+            value={tafsirSource}
+            onChange={(e) => {
+              setTafsirSource(e.target.value as TafsirSource);
+              setTafsirData(null);
+            }}
+            className="text-sm py-2 px-3 rounded-lg card-bg border sidebar-border text-themed focus:outline-none focus:border-[var(--color-gold)] transition-colors cursor-pointer"
+          >
+            {(Object.entries(TAFSIR_LABELS) as [TafsirSource, string][]).map(
+              ([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              )
+            )}
+          </select>
+
+          {/* Show/hide all tafsir */}
+          <button
+            onClick={toggleShowAll}
+            className={`flex items-center gap-1.5 text-sm px-3 py-2 rounded-lg border transition-colors ${
+              showAllTafsir
+                ? "bg-[var(--color-gold)]/15 border-[var(--color-gold)]/30 text-gold"
+                : "card-bg sidebar-border text-themed-muted hover:text-themed"
+            }`}
+          >
+            {showAllTafsir ? <EyeOff size={14} /> : <Eye size={14} />}
+            <span className="hidden sm:inline">
+              {showAllTafsir ? "Hide All" : "Show All"}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Bismillah */}
+      {chapter.bismillahPre && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-6 mb-4"
+        >
+          <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose">
+            {"\u0628\u0650\u0633\u0652\u0645\u0650 \u0671\u0644\u0644\u0651\u064E\u0647\u0650 \u0671\u0644\u0631\u0651\u064E\u062D\u0652\u0645\u064E\u0640\u0670\u0646\u0650 \u0671\u0644\u0631\u0651\u064E\u062D\u0650\u064A\u0645\u0650"}
+          </p>
+          <p className="text-xs text-themed-muted mt-2">
+            In the name of All&#257;h, the Entirely Merciful, the Especially Merciful
+          </p>
+        </motion.div>
+      )}
+
+      {/* Loading state */}
+      {loading && (
+        <div className="text-center py-12">
+          <div className="inline-block w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+          <p className="text-themed-muted text-sm mt-3">Loading verses...</p>
+        </div>
+      )}
+
+      {/* Verses */}
+      {filtered && (
+        <div className="space-y-1">
+          {filtered.map((verse, i) => {
+            const isHighlighted = highlightVerse === verse.number && !!highlightQuery;
+            const tafsirOpen = isTafsirOpen(verse.number);
+            const tafsirText = tafsirData?.[String(verse.number)];
+
+            return (
+              <motion.div
+                key={verse.id}
+                id={`verse-${verse.number}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3, delay: Math.min(i * 0.02, 0.6) }}
+                className={`group rounded-xl border p-4 md:p-6 transition-colors ${
+                  isHighlighted
+                    ? "border-[var(--color-gold)]/50 bg-[var(--color-gold)]/5"
+                    : "sidebar-border hover:border-[var(--color-gold)]/30"
+                }`}
+              >
+                {/* Verse number badge */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center text-gold text-xs font-semibold">
+                      {verse.number}
+                    </span>
+                    <span
+                      className="tooltip text-[10px] text-themed-muted cursor-help"
+                      data-tip="Medina Mushaf (King Fahd Complex edition)"
+                    >
+                      Juz {verse.juz} &middot; Page {verse.page}
+                    </span>
+                  </div>
+
+                  {/* Per-verse tafsir toggle */}
+                  {!showAllTafsir && (
+                    <button
+                      onClick={() => toggleVerseTafsir(verse.number)}
+                      className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-lg border transition-colors ${
+                        tafsirOpen
+                          ? "bg-[var(--color-gold)]/10 border-[var(--color-gold)]/30 text-gold"
+                          : "sidebar-border text-themed-muted hover:text-themed hover:border-[var(--color-gold)]/20"
+                      }`}
+                    >
+                      <BookOpen size={11} />
+                      Tafsir
+                      {tafsirOpen ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                    </button>
+                  )}
+                </div>
+
+                {/* Arabic text */}
+                <p
+                  className="text-2xl md:text-3xl font-arabic text-themed leading-[2.2] md:leading-[2.4] text-right mb-5"
+                  dir="rtl"
+                >
+                  {verse.textAr}{" "}
+                  <span className="text-gold text-lg font-arabic">
+                    &#xFD3F;{toArabicNumeral(verse.number)}&#xFD3E;
+                  </span>
+                </p>
+
+                {/* English translation */}
+                <p className="text-themed-muted text-sm md:text-base leading-relaxed">
+                  {isHighlighted ? highlightText(verse.textEn, highlightQuery) : verse.textEn}
+                </p>
+
+                {/* Tafsir commentary */}
+                <AnimatePresence>
+                  {tafsirOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-4 pt-4 border-t sidebar-border">
+                        <div className="flex items-center gap-2 mb-3">
+                          <BookOpen size={12} className="text-gold" />
+                          <span className="text-xs font-medium text-gold">
+                            {TAFSIR_LABELS[tafsirSource]}
+                          </span>
+                        </div>
+                        {tafsirLoading ? (
+                          <div className="flex items-center gap-2 text-themed-muted text-xs py-2">
+                            <div className="w-3 h-3 border border-gold/30 border-t-gold rounded-full animate-spin" />
+                            Loading tafsir...
+                          </div>
+                        ) : tafsirText ? (
+                          <p className="text-themed-muted text-xs md:text-sm leading-relaxed whitespace-pre-line">
+                            {tafsirText}
+                          </p>
+                        ) : (
+                          <p className="text-themed-muted text-xs italic">
+                            No tafsir available for this verse.
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+
+      {filtered && filtered.length === 0 && search && (
+        <div className="text-center py-12 text-themed-muted">
+          <p>No verses found matching &ldquo;{search}&rdquo;</p>
+        </div>
+      )}
+
+      {/* Navigation between surahs */}
+      <div className="flex items-center justify-between mt-10 pt-6 border-t sidebar-border">
+        {prevChapter ? (
+          <Link
+            href={`/quran/${prevChapter.id}`}
+            className="flex items-center gap-2 text-sm text-themed-muted hover:text-themed transition-colors"
+          >
+            <ArrowLeft size={16} />
+            <div>
+              <p className="text-xs text-themed-muted">Previous</p>
+              <p className="font-medium text-themed">{prevChapter.name}</p>
+            </div>
+          </Link>
+        ) : (
+          <div />
+        )}
+        {nextChapter ? (
+          <Link
+            href={`/quran/${nextChapter.id}`}
+            className="flex items-center gap-2 text-sm text-themed-muted hover:text-themed transition-colors text-right"
+          >
+            <div>
+              <p className="text-xs text-themed-muted">Next</p>
+              <p className="font-medium text-themed">{nextChapter.name}</p>
+            </div>
+            <ArrowRight size={16} />
+          </Link>
+        ) : (
+          <div />
+        )}
+      </div>
+
+      {/* Scroll to top */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-[var(--color-gold)] text-[var(--color-bg)] flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-50"
+        >
+          <ChevronUp size={20} />
+        </button>
+      )}
+    </div>
+  );
+}
