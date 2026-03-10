@@ -668,9 +668,9 @@ function TheGraveContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — vertical pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
                 {whatHappensTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
@@ -748,9 +748,9 @@ function TheGraveContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — vertical pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
                 {protectionTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}

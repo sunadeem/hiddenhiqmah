@@ -320,7 +320,7 @@ function NamesGrid({ search }: { search: string }) {
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="mb-4"
           >
-            <div className="card-bg rounded-xl border border-gold/30 p-6">
+            <div className="card-bg rounded-xl border border-gold/30 p-4 sm:p-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <div className="text-center shrink-0">

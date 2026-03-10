@@ -711,12 +711,12 @@ function SectsContent() {
     active: string,
     setActive: (id: string) => void
   ) => (
-    <div className="flex flex-col gap-1 min-w-[160px]">
+    <div className="flex md:flex-col flex-row gap-1 overflow-x-auto md:overflow-x-visible md:w-48 w-full shrink-0">
       {topics.map((topic) => (
         <button
           key={topic.id}
           onClick={() => setActive(topic.id)}
-          className={`text-left px-3 py-2 rounded-lg text-sm transition-all ${
+          className={`text-left px-3 py-2 rounded-lg text-sm whitespace-nowrap md:whitespace-normal transition-all ${
             active === topic.id
               ? "bg-gold/15 text-gold font-medium"
               : "text-themed-muted hover:text-themed hover:bg-[var(--color-bg)]"
@@ -735,13 +735,13 @@ function SectsContent() {
   ) => {
     const activeTopic = topics.find((t) => t.id === active);
     return (
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-        <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 scrollbar-hide lg:min-w-[180px]">
+      <div className="flex flex-col md:flex-row gap-4 items-start">
+        <div className="flex md:flex-col flex-row gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 scrollbar-hide md:w-48 w-full shrink-0">
           {topics.map((topic) => (
             <button
               key={topic.id}
               onClick={() => setActive(topic.id)}
-              className={`text-left px-3 py-2 rounded-lg text-sm whitespace-nowrap lg:whitespace-normal transition-all ${
+              className={`text-left px-3 py-2 rounded-lg text-sm whitespace-nowrap md:whitespace-normal transition-all ${
                 active === topic.id
                   ? "bg-gold/15 text-gold font-medium"
                   : "text-themed-muted hover:text-themed hover:bg-[var(--color-bg)]"
@@ -814,7 +814,7 @@ function SectsContent() {
             className="space-y-6"
           >
             <ContentCard>
-              <div className="text-center py-6">
+              <div className="text-center py-4 sm:py-6">
                 <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
                   The Prophet ﷺ said
                 </p>

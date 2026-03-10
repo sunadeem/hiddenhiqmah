@@ -267,7 +267,7 @@ export default function AskHiqmahFloat() {
             exit={{ scale: 0, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-24 right-4 z-50 lg:hidden p-3.5 rounded-full bg-[#2563eb]/20 border border-[#2563eb]/40 text-[#3b82f6] hover:bg-[#2563eb]/30 transition-colors shadow-lg shadow-black/20"
+            className="fixed bottom-6 right-4 z-50 lg:hidden p-3.5 rounded-full bg-[#2563eb]/20 border border-[#2563eb]/40 text-[#3b82f6] hover:bg-[#2563eb]/30 transition-colors shadow-lg shadow-black/20"
             title="Ask Hiqmah"
           >
             <Sparkles size={20} />
@@ -392,7 +392,7 @@ export default function AskHiqmahFloat() {
               </div>
 
               {/* Input */}
-              <form onSubmit={handleSubmit} className="border-t sidebar-border p-3 shrink-0">
+              <form onSubmit={handleSubmit} className="border-t sidebar-border p-3 shrink-0 safe-area-bottom">
                 <div className="flex items-center gap-2">
                   <input
                     ref={inputRef}

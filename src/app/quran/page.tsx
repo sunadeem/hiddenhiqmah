@@ -140,7 +140,7 @@ export default function QuranPage() {
 
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="relative flex-1 max-w-md">
+        <div className="relative flex-1 sm:max-w-md">
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-themed-muted" />
           <input
             type="text"

@@ -1256,7 +1256,7 @@ function ProphetMuhammadContent() {
             <button
               key={s.id}
               onClick={() => setActiveSection(s.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all cursor-pointer ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium border transition-all cursor-pointer ${
                 isActive
                   ? "border-gold/40 bg-gold/20 text-gold"
                   : "sidebar-border text-themed-muted hover:text-gold hover:border-gold/30"
@@ -1278,14 +1278,14 @@ function ProphetMuhammadContent() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — vertical timeline pills */}
-              <div className="flex flex-col gap-2 shrink-0 max-h-[70vh] overflow-y-auto pr-1">
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
                 {filteredTimeline.map((event, i) => (
                   <button
                     key={i}
                     onClick={() => setActiveTimeline(i)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeTimeline === i
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1349,14 +1349,14 @@ function ProphetMuhammadContent() {
               </p>
             </ContentCard>
 
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — virtue pills */}
-              <div className="flex flex-col gap-2 shrink-0 max-h-[70vh] overflow-y-auto pr-1">
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
                 {filteredVirtues.map((v, i) => (
                   <button
                     key={i}
                     onClick={() => setActiveVirtue(i)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeVirtue === i
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1449,9 +1449,9 @@ function ProphetMuhammadContent() {
               </div>
             </ContentCard>
 
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — category pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible w-full md:w-auto pb-2 md:pb-0">
                 {([
                   { id: "face" as const, label: "Face & Features" },
                   { id: "body" as const, label: "Body & Build" },
@@ -1460,7 +1460,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveAppearance(tab.id)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeAppearance === tab.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1510,9 +1510,9 @@ function ProphetMuhammadContent() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — vertical pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible w-full md:w-auto pb-2 md:pb-0">
                 {[
                   { id: "wives", label: "Wives" },
                   { id: "children", label: "Children" },
@@ -1521,7 +1521,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={tab.id}
                     onClick={() => setFamilyTab(tab.id)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
                       familyTab === tab.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1633,14 +1633,14 @@ function ProphetMuhammadContent() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — prophecy pills */}
-              <div className="flex flex-col gap-2 shrink-0 max-h-[70vh] overflow-y-auto pr-1">
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
                 {filteredProphecies.map((p, i) => (
                   <button
                     key={i}
                     onClick={() => setActiveProphecy(i)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeProphecy === i
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1703,14 +1703,14 @@ function ProphetMuhammadContent() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — worship pills */}
-              <div className="flex flex-col gap-2 shrink-0 max-h-[70vh] overflow-y-auto pr-1">
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
                 {worshipAspects.map((w, i) => (
                   <button
                     key={i}
                     onClick={() => setActiveWorship(i)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeWorship === i
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1759,14 +1759,14 @@ function ProphetMuhammadContent() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — vertical pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible w-full md:w-auto pb-2 md:pb-0">
                 {dailySunnah.map((cat) => (
                   <button
                     key={cat.category}
                     onClick={() => setSunnahTab(cat.category)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
                       sunnahTab === cat.category
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"

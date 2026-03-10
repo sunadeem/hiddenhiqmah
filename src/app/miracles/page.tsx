@@ -521,16 +521,18 @@ function MiraclesContent() {
             return (
               <ContentCard key={`${miracle.category}-${i}`} delay={Math.min(i * 0.05, 0.4)} id={`section-${miracle.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
                 {/* Header */}
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div>
-                    <span className="text-xs text-gold font-medium">{catLabel}</span>
-                    <h2 className="text-xl font-semibold text-themed mt-1">{miracle.title}</h2>
-                    <p className="text-xs text-themed-muted mt-0.5">{miracle.reference}</p>
+                <div className="mb-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="text-xs text-gold font-medium">{catLabel}</span>
+                      <h2 className="text-xl font-semibold text-themed mt-1">{miracle.title}</h2>
+                      <p className="text-xs text-themed-muted mt-0.5">{miracle.reference}</p>
+                    </div>
+                    <span className={`flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full border shrink-0 mt-1 ${cfg.bgColor} ${cfg.color} ${cfg.borderColor}`}>
+                      <StrengthIcon size={11} />
+                      {cfg.label}
+                    </span>
                   </div>
-                  <span className={`flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full border shrink-0 ${cfg.bgColor} ${cfg.color} ${cfg.borderColor}`}>
-                    <StrengthIcon size={11} />
-                    {cfg.label}
-                  </span>
                 </div>
 
                 {/* Arabic + Translation */}

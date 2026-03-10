@@ -1526,9 +1526,9 @@ function TopicSection({
   setActiveId: (id: string) => void;
 }) {
   return (
-    <div className="flex gap-4 items-start">
-      {/* Left — vertical pills */}
-      <div className="flex flex-col gap-2 shrink-0">
+    <div className="flex flex-col md:flex-row gap-4 items-start">
+      {/* Left — vertical pills (horizontal scrollable on mobile) */}
+      <div className="flex flex-row md:flex-col gap-2 w-full md:w-48 shrink-0 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 scrollbar-hide">
         {topics.map((topic) => (
           <button
             key={topic.id}
@@ -1545,7 +1545,7 @@ function TopicSection({
       </div>
 
       {/* Right — content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1 w-full">
         <AnimatePresence mode="wait">
           {topics.map(
             (topic) =>

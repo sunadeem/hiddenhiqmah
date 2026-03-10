@@ -859,9 +859,9 @@ function DayOfJudgementContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — vertical pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
                 {filteredSigns.map((topic) => (
                   <button
                     key={topic.id}
@@ -942,9 +942,9 @@ function DayOfJudgementContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — vertical pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
                 {filteredEvents.map((topic) => (
                   <button
                     key={topic.id}
@@ -1018,9 +1018,9 @@ function DayOfJudgementContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — vertical pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
                 {filteredSalvation.map((topic) => (
                   <button
                     key={topic.id}

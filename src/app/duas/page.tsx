@@ -780,12 +780,14 @@ function DuasContent() {
             return (
               <ContentCard key={`${dua.title}-${i}`} delay={Math.min(i * 0.05, 0.4)} id={`section-${dua.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
                 {/* Header */}
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div>
-                    <span className="text-xs text-gold font-medium">{catLabel}</span>
-                    <h2 className="text-xl font-semibold text-themed mt-1">{dua.title}</h2>
+                <div className="mb-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <span className="text-xs text-gold font-medium">{catLabel}</span>
+                      <h2 className="text-xl font-semibold text-themed mt-1">{dua.title}</h2>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
                     {dua.repeat && (
                       <span className="text-[11px] px-2.5 py-1 rounded-full border bg-[var(--color-gold)]/10 text-gold border-[var(--color-gold)]/30">
                         {dua.repeat}

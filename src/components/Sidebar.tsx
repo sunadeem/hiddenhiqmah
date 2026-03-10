@@ -131,7 +131,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed left-0 top-0 h-full w-72 z-50 lg:hidden sidebar-bg border-r sidebar-border"
+              className="fixed left-0 top-0 h-full w-[85vw] max-w-xs z-50 lg:hidden sidebar-bg border-r sidebar-border"
             >
               <button
                 onClick={onClose}

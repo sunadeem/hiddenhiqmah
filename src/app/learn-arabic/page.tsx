@@ -485,12 +485,12 @@ function LearnArabicContent() {
       <PageSearch value={search} onChange={setSearch} placeholder="Search letters, words, phrases..." className="mb-6" />
 
       {/* Section navigation */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
+      <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide -mx-1 px-1">
         {sections.map((section) => (
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -526,7 +526,7 @@ function LearnArabicContent() {
               </p>
 
               {/* Letter grid */}
-              <div className="grid grid-cols-7 sm:grid-cols-14 gap-1.5 mb-6">
+              <div className="grid grid-cols-4 min-[480px]:grid-cols-7 sm:grid-cols-14 gap-1.5 mb-6">
                 {filteredAlphabet.map((l, i) => (
                   <button
                     key={l.name}
@@ -551,12 +551,12 @@ function LearnArabicContent() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="rounded-xl border sidebar-border p-5"
+                    className="rounded-xl border sidebar-border p-3 sm:p-5"
                     style={{ backgroundColor: "var(--color-bg)" }}
                   >
                     <div className="flex flex-col sm:flex-row gap-6">
                       <div className="text-center sm:text-left">
-                        <p className="text-6xl font-arabic text-gold mb-2">{currentLetter.letter}</p>
+                        <p className="text-4xl sm:text-6xl font-arabic text-gold mb-2">{currentLetter.letter}</p>
                         <p className="text-lg font-semibold text-themed">{currentLetter.name}</p>
                         <p className="text-sm text-themed-muted">{currentLetter.transliteration}</p>
                       </div>
@@ -570,7 +570,7 @@ function LearnArabicContent() {
                           <div className="flex gap-3">
                             {(["isolated", "initial", "medial", "final"] as const).map((pos) => (
                               <div key={pos} className="text-center">
-                                <p className="text-2xl font-arabic text-themed">{currentLetter.position[pos]}</p>
+                                <p className="text-xl sm:text-2xl font-arabic text-themed">{currentLetter.position[pos]}</p>
                                 <p className="text-[10px] text-themed-muted capitalize">{pos}</p>
                               </div>
                             ))}
@@ -605,11 +605,11 @@ function LearnArabicContent() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="rounded-lg border sidebar-border p-4 flex flex-col sm:flex-row gap-4"
+                    className="rounded-lg border sidebar-border p-3 sm:p-4 flex flex-col sm:flex-row gap-3 sm:gap-4"
                     style={{ backgroundColor: "var(--color-bg)" }}
                   >
                     <div className="text-center sm:w-20 shrink-0">
-                      <p className="text-4xl font-arabic text-gold">{d.mark}</p>
+                      <p className="text-3xl sm:text-4xl font-arabic text-gold">{d.mark}</p>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-baseline gap-2 mb-1">
@@ -618,8 +618,8 @@ function LearnArabicContent() {
                         <span className="text-xs text-themed-muted">({d.transliteration})</span>
                       </div>
                       <p className="text-xs text-themed-muted leading-relaxed mb-2">{d.description}</p>
-                      <div className="flex items-center gap-2 text-xs">
-                        <span className="font-arabic text-gold text-base">{d.example.word}</span>
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
+                        <span className="font-arabic text-gold text-sm sm:text-base">{d.example.word}</span>
                         <span className="text-themed-muted">—</span>
                         <span className="text-themed italic">{d.example.transliteration}</span>
                         <span className="text-themed-muted">({d.example.meaning})</span>
@@ -637,16 +637,16 @@ function LearnArabicContent() {
               </p>
               <div className="space-y-3">
                 {longVowels.map((v, i) => (
-                  <div key={v.name} className="rounded-lg border sidebar-border p-4 flex flex-col sm:flex-row gap-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                  <div key={v.name} className="rounded-lg border sidebar-border p-3 sm:p-4 flex flex-col sm:flex-row gap-3 sm:gap-4" style={{ backgroundColor: "var(--color-bg)" }}>
                     <div className="text-center sm:w-20 shrink-0">
-                      <p className="text-3xl font-arabic text-gold">{v.letters}</p>
+                      <p className="text-2xl sm:text-3xl font-arabic text-gold">{v.letters}</p>
                       <p className="text-xs text-themed-muted mt-1">{v.sound}</p>
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-sm text-themed mb-1">{v.name}</h3>
                       <p className="text-xs text-themed-muted leading-relaxed mb-2">{v.description}</p>
-                      <div className="flex items-center gap-2 text-xs">
-                        <span className="font-arabic text-gold text-base">{v.example.word}</span>
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
+                        <span className="font-arabic text-gold text-sm sm:text-base">{v.example.word}</span>
                         <span className="text-themed-muted">—</span>
                         <span className="text-themed italic">{v.example.transliteration}</span>
                         <span className="text-themed-muted">({v.example.meaning})</span>
@@ -693,10 +693,10 @@ function LearnArabicContent() {
                           initial={{ opacity: 0, x: 10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.03 }}
-                          className="flex items-center gap-4 py-2.5 px-3 rounded-lg border sidebar-border"
+                          className="flex items-center gap-3 sm:gap-4 py-2 px-2.5 sm:py-2.5 sm:px-3 rounded-lg border sidebar-border"
                           style={{ backgroundColor: "var(--color-bg)" }}
                         >
-                          <span className="text-2xl font-arabic text-gold min-w-[80px] text-right">{w.arabic}</span>
+                          <span className="text-xl sm:text-2xl font-arabic text-gold sm:min-w-[80px] text-right">{w.arabic}</span>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-themed font-medium">{w.meaning}</p>
                             <p className="text-xs text-themed-muted italic">{w.transliteration}</p>
@@ -745,10 +745,10 @@ function LearnArabicContent() {
                           {currentGrammar.examples.map((ex, i) => (
                             <div
                               key={i}
-                              className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 py-3 px-4 rounded-lg border sidebar-border"
+                              className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 py-2.5 px-3 sm:py-3 sm:px-4 rounded-lg border sidebar-border"
                               style={{ backgroundColor: "var(--color-bg)" }}
                             >
-                              <span className="text-2xl font-arabic text-gold min-w-[120px] text-right">{ex.arabic}</span>
+                              <span className="text-xl sm:text-2xl font-arabic text-gold sm:min-w-[120px] text-right">{ex.arabic}</span>
                               <div className="flex-1">
                                 <p className="text-sm text-themed font-medium">{ex.meaning}</p>
                                 <p className="text-xs text-themed-muted italic">{ex.transliteration}</p>
@@ -799,10 +799,10 @@ function LearnArabicContent() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.04 }}
-                          className="rounded-lg border sidebar-border p-4"
+                          className="rounded-lg border sidebar-border p-3 sm:p-4"
                           style={{ backgroundColor: "var(--color-bg)" }}
                         >
-                          <p className="text-2xl font-arabic text-gold mb-2 text-right leading-loose">{p.arabic}</p>
+                          <p className="text-xl sm:text-2xl font-arabic text-gold mb-2 text-right leading-loose">{p.arabic}</p>
                           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
                             <p className="text-sm text-themed font-semibold">{p.transliteration}</p>
                             <p className="text-sm text-themed-muted">{p.meaning}</p>
@@ -833,15 +833,15 @@ function LearnArabicContent() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: i * 0.03 }}
-                    className="rounded-lg border sidebar-border p-3 text-center"
+                    className="rounded-lg border sidebar-border p-2.5 sm:p-3 text-center"
                     style={{ backgroundColor: "var(--color-bg)" }}
                   >
-                    <div className="flex items-center justify-center gap-3 mb-1">
-                      <span className="text-2xl font-arabic text-gold">{n.arabic}</span>
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 mb-1">
+                      <span className="text-xl sm:text-2xl font-arabic text-gold">{n.arabic}</span>
                       <span className="text-lg text-themed-muted">=</span>
                       <span className="text-lg text-themed font-mono">{n.numeral}</span>
                     </div>
-                    <p className="text-base font-arabic text-themed">{n.word}</p>
+                    <p className="text-sm sm:text-base font-arabic text-themed">{n.word}</p>
                     <p className="text-[10px] text-themed-muted italic">{n.transliteration}</p>
                   </motion.div>
                 ))}

@@ -72,39 +72,39 @@ export default function ProphetsPage() {
       {/* Timeline */}
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-[88px] md:left-[140px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-[var(--color-gold)] via-[var(--color-border)] to-transparent" />
+        <div className="absolute left-[52px] sm:left-[88px] md:left-[140px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-[var(--color-gold)] via-[var(--color-border)] to-transparent" />
 
         <div className="space-y-4">
           {filtered.map((prophet, i) => {
             const dateLabel = prophet.date === "Unknown" ? "Time Unknown" : prophet.date;
             const yearsAgo = getYearsAgo(prophet.date);
             return (
-            <div key={prophet.slug} className="relative pl-[108px] md:pl-[168px]">
+            <div key={prophet.slug} className="relative pl-[68px] sm:pl-[108px] md:pl-[168px]">
               {/* Date label (left of line) */}
               <div
-                className="absolute left-0 top-4 w-[78px] md:w-[130px] text-right pr-3"
+                className="absolute left-0 top-4 w-[42px] sm:w-[78px] md:w-[130px] text-right pr-2 sm:pr-3"
                 title={prophet.dateNote}
               >
-                <span className="text-[9px] md:text-[10px] leading-tight text-themed-muted block">
+                <span className="text-[8px] sm:text-[9px] md:text-[10px] leading-tight text-themed-muted block">
                   {dateLabel}
                 </span>
                 {yearsAgo && (
-                  <span className="text-[8px] md:text-[9px] leading-tight text-gold/60 block mt-0.5">
+                  <span className="text-[7px] sm:text-[8px] md:text-[9px] leading-tight text-gold/60 block mt-0.5">
                     ({yearsAgo})
                   </span>
                 )}
               </div>
               {/* Timeline dot */}
-              <div className="absolute left-[83px] md:left-[135px] top-6 w-3 h-3 rounded-full bg-gold border-2 border-[var(--color-card)]" />
+              <div className="absolute left-[47px] sm:left-[83px] md:left-[135px] top-6 w-3 h-3 rounded-full bg-gold border-2 border-[var(--color-card)]" />
 
               <ContentCard delay={i * 0.06}>
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <div className="flex items-baseline gap-3">
-                      <h2 className="text-xl font-semibold text-themed">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                  <div className="min-w-0">
+                    <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                      <h2 className="text-lg sm:text-xl font-semibold text-themed">
                         Prophet {prophet.name}
                       </h2>
-                      <span className="text-lg font-arabic text-gold">
+                      <span className="text-base sm:text-lg font-arabic text-gold">
                         {prophet.nameAr}
                       </span>
                     </div>
@@ -118,12 +118,12 @@ export default function ProphetsPage() {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col items-end gap-1 shrink-0">
-                    <span className="text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
+                  <div className="flex flex-wrap sm:flex-col sm:items-end gap-1 shrink-0">
+                    <span className="text-[10px] sm:text-xs text-themed-muted border sidebar-border rounded-full px-2 sm:px-3 py-0.5 sm:py-1">
                       {prophet.era}
                     </span>
                     {prophet.source !== "quran" && (
-                      <span className="text-xs text-gold border border-gold/30 rounded-full px-3 py-1">
+                      <span className="text-[10px] sm:text-xs text-gold border border-gold/30 rounded-full px-2 sm:px-3 py-0.5 sm:py-1">
                         {prophet.source === "hadith" ? "Hadith" : "Scholarly"}
                       </span>
                     )}
@@ -134,7 +134,7 @@ export default function ProphetsPage() {
                   {prophet.summary}
                 </p>
 
-                <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-themed-muted mb-3">
+                <div className="flex flex-wrap gap-x-4 sm:gap-x-6 gap-y-1 text-xs text-themed-muted mb-3">
                   {prophet.mentions > 0 && (
                     <span>
                       Mentioned:{" "}

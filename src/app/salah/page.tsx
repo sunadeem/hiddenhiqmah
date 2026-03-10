@@ -588,7 +588,7 @@ function PrayerGuide({
     >
       {/* Header */}
       <ContentCard>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
           <button
             onClick={onBack}
             className="flex items-center gap-1 text-sm text-themed-muted hover:text-gold transition-colors"
@@ -865,8 +865,8 @@ function PrayerInfoCard({
         </p>
 
         {/* Time and rak'at info */}
-        <div className="rounded-lg p-4 mb-4 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
-          <div className="grid grid-cols-2 gap-4">
+        <div className="rounded-lg p-3 sm:p-4 mb-4 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <p className="text-xs text-themed-muted uppercase tracking-wider mb-1">Time</p>
               <p className="text-sm text-themed">{prayer.time}</p>
@@ -1154,7 +1154,7 @@ function SalahContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              className="flex flex-wrap items-center justify-between gap-4"
+              className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-3 sm:gap-4"
             >
               <div>
                 {ptDisplayLocation && (
@@ -1209,14 +1209,14 @@ function SalahContent() {
                     placeholder="City (e.g. London)"
                     value={ptSearchCity}
                     onChange={(e) => setPtSearchCity(e.target.value)}
-                    className="flex-1 min-w-[140px] px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
+                    className="flex-1 min-w-0 px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
                   />
                   <input
                     type="text"
                     placeholder="Country (optional)"
                     value={ptSearchCountry}
                     onChange={(e) => setPtSearchCountry(e.target.value)}
-                    className="flex-1 min-w-[140px] px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
+                    className="flex-1 min-w-0 px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
                   />
                   <button
                     type="submit"
@@ -1257,7 +1257,7 @@ function SalahContent() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
               >
-                <div className="card-bg rounded-xl border sidebar-border p-5 text-center relative overflow-hidden">
+                <div className="card-bg rounded-xl border sidebar-border p-4 sm:p-5 text-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/5 to-transparent pointer-events-none" />
                   <div className="relative">
                     <p className="text-xs text-themed-muted uppercase tracking-widest mb-1">
@@ -1371,11 +1371,11 @@ function SalahContent() {
             className="space-y-6"
           >
             <ContentCard>
-              <div className="text-center py-6">
+              <div className="text-center py-4 sm:py-6">
                 <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
                   The Quran
                 </p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
+                <p className="text-xl sm:text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
                   إِنَّ ٱلصَّلَوٰةَ كَانَتْ عَلَى ٱلْمُؤْمِنِينَ كِتَـٰبًۭا مَّوْقُوتًۭا
                 </p>
                 <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
@@ -1565,9 +1565,9 @@ function SalahContent() {
             transition={{ duration: 0.3 }}
           >
             {!showGuide && (
-              <div className="flex gap-4 items-start">
-                {/* Left side — vertical prayer pills */}
-                <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex flex-col md:flex-row gap-4 items-start">
+                {/* Left side — prayer pills (horizontal scroll on mobile, vertical on md+) */}
+                <div className="flex md:flex-col gap-2 shrink-0 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
                   {filteredPrayers.map((prayer) => (
                     <button
                       key={prayer.id}
@@ -1590,7 +1590,7 @@ function SalahContent() {
                 </div>
 
                 {/* Right side — prayer content */}
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 w-full">
                   <AnimatePresence mode="wait">
                     {filteredPrayers.map(
                       (prayer) =>
@@ -1668,9 +1668,9 @@ function SalahContent() {
             transition={{ duration: 0.3 }}
           >
             {!showGuide && (
-              <div className="flex gap-4 items-start">
-                {/* Left side — vertical prayer pills */}
-                <div className="flex flex-col gap-2 shrink-0">
+              <div className="flex flex-col md:flex-row gap-4 items-start">
+                {/* Left side — prayer pills (horizontal scroll on mobile, vertical on md+) */}
+                <div className="flex md:flex-col gap-2 shrink-0 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
                   {filteredVoluntary.map((prayer) => (
                     <button
                       key={prayer.id}
@@ -1693,7 +1693,7 @@ function SalahContent() {
                 </div>
 
                 {/* Right side — prayer content */}
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 w-full">
                   <AnimatePresence mode="wait">
                     {filteredVoluntary.map(
                       (prayer) =>

@@ -293,7 +293,7 @@ export default function HomePage() {
             <p className="text-2xl md:text-3xl font-arabic text-gold mt-4 leading-relaxed">
               {inspiration.arabic}
             </p>
-            <p className="text-themed text-base md:text-lg mt-4 font-cursive text-lg">
+            <p className="text-themed text-base md:text-lg mt-4 font-cursive">
               &ldquo;{inspiration.english}&rdquo;
             </p>
             <p className="text-themed-muted text-xs mt-3">
