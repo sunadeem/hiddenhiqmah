@@ -1,38 +1,54 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { ThemeName, themes, getThemeCSSVariables } from "@/lib/themes";
+import { getThemeCSSVariables } from "@/lib/themes";
 
 interface ThemeContextType {
-  themeName: ThemeName;
   isDark: boolean;
-  setThemeName: (name: ThemeName) => void;
   toggleDarkMode: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [themeName, setThemeName] = useState<ThemeName>("celestial");
   const [isDark, setIsDark] = useState(true);
 
-  const applyTheme = useCallback((name: ThemeName, dark: boolean) => {
-    const theme = themes[name];
-    const vars = getThemeCSSVariables(theme, dark);
+  const applyTheme = useCallback((dark: boolean) => {
+    const vars = getThemeCSSVariables(dark);
     const root = document.documentElement;
     Object.entries(vars).forEach(([key, value]) => {
       root.style.setProperty(key, value);
     });
   }, []);
 
+  // Load saved theme preference on mount
   useEffect(() => {
-    applyTheme(themeName, isDark);
-  }, [themeName, isDark, applyTheme]);
+    try {
+      const saved = localStorage.getItem("hiqmah-theme");
+      if (saved !== null) {
+        const dark = saved === "dark";
+        setIsDark(dark);
+        applyTheme(dark);
+      }
+    } catch {
+      // localStorage unavailable
+    }
+  }, [applyTheme]);
 
-  const toggleDarkMode = () => setIsDark((prev) => !prev);
+  useEffect(() => {
+    applyTheme(isDark);
+  }, [isDark, applyTheme]);
+
+  const toggleDarkMode = () => {
+    setIsDark((prev) => {
+      const next = !prev;
+      try { localStorage.setItem("hiqmah-theme", next ? "dark" : "light"); } catch {}
+      return next;
+    });
+  };
 
   return (
-    <ThemeContext.Provider value={{ themeName, isDark, setThemeName, toggleDarkMode }}>
+    <ThemeContext.Provider value={{ isDark, toggleDarkMode }}>
       {children}
     </ThemeContext.Provider>
   );

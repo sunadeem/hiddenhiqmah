@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import PageSearch from "@/components/PageSearch";
 import ContentCard from "@/components/ContentCard";
+import { textMatch } from "@/lib/search";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { BookOpen } from "lucide-react";
 
 /* ───────────────────────── data ───────────────────────── */
@@ -411,10 +415,27 @@ function TopicInfoCard({ topic }: { topic: GraveTopic }) {
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function TheGravePage() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("intro");
+function TheGraveContent() {
+  const searchParams = useSearchParams();
+  useScrollToSection();
+  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
   const [activeWhatHappens, setActiveWhatHappens] = useState("departure-soul");
   const [activeProtection, setActiveProtection] = useState("deeds-protect");
+  const [search, setSearch] = useState("");
+
+  const topicMatches = (t: GraveTopic) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, t.name, t.content.intro, t.content.source,
+      t.content.verse?.text,
+      ...t.content.points.map(p => p.title),
+      ...t.content.points.map(p => p.detail),
+    );
+  };
+
+  const mattersMatches = (item: { point: string; detail: string; reference: string }) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, item.point, item.detail, item.reference);
+  };
 
   return (
     <div>
@@ -423,6 +444,8 @@ export default function TheGravePage() {
         titleAr="البرزخ"
         subtitle="The life of al-Barzakh — what happens after death according to authentic sources."
       />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search topics, verses..." className="mb-6" />
 
       {/* Section navigation */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
@@ -582,7 +605,7 @@ export default function TheGravePage() {
             </ContentCard>
 
             {/* Numbered points */}
-            {whyItMatters.map((item, i) => (
+            {whyItMatters.filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -648,7 +671,7 @@ export default function TheGravePage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {whatHappensTopics.map((topic) => (
+                {whatHappensTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveWhatHappens(topic.id)}
@@ -666,11 +689,12 @@ export default function TheGravePage() {
               {/* Right side — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {whatHappensTopics.map(
+                  {whatHappensTopics.filter(topicMatches).map(
                     (topic) =>
                       activeWhatHappens === topic.id && (
                         <motion.div
                           key={topic.id}
+                          id={`section-${topic.id}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -727,7 +751,7 @@ export default function TheGravePage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {protectionTopics.map((topic) => (
+                {protectionTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveProtection(topic.id)}
@@ -745,11 +769,12 @@ export default function TheGravePage() {
               {/* Right side — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {protectionTopics.map(
+                  {protectionTopics.filter(topicMatches).map(
                     (topic) =>
                       activeProtection === topic.id && (
                         <motion.div
                           key={topic.id}
+                          id={`section-${topic.id}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -797,4 +822,8 @@ export default function TheGravePage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function TheGravePage() {
+  return <Suspense><TheGraveContent /></Suspense>;
 }

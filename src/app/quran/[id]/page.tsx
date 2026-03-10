@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState, useEffect, useCallback, useRef } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -13,15 +13,25 @@ import {
   BookOpen,
   Eye,
   EyeOff,
+  Play,
+  Pause,
+  Share2,
+  Minus,
+  Plus,
+  Check,
+  Bookmark as BookmarkIcon,
+  SkipForward,
 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import chapters from "@/data/quran/chapters.json";
+import { getFontSize, setFontSize as saveFontSize, markSurahRead, addBookmark, removeBookmark, isBookmarked, getAutoPlayNextSurah, setAutoPlayNextSurah } from "@/lib/storage";
 
 interface Verse {
   id: number;
   number: number;
   key: string;
   textAr: string;
+  textTranslit?: string;
   textEn: string;
   juz: number;
   page: number;
@@ -398,6 +408,133 @@ const tafsirImportMaps: Record<TafsirSource, TafsirImportMap> = {
   maarif: maarifImports,
 };
 
+// Word-by-word data
+type WordData = { t: string; tr: string; m: string };
+type WordsMap = Record<string, WordData[]>;
+type WordsImportMap = Record<number, () => Promise<{ default: WordsMap }>>;
+
+const wordsImports: WordsImportMap = {
+  1: () => import("@/data/quran/words/1.json"),
+  2: () => import("@/data/quran/words/2.json"),
+  3: () => import("@/data/quran/words/3.json"),
+  4: () => import("@/data/quran/words/4.json"),
+  5: () => import("@/data/quran/words/5.json"),
+  6: () => import("@/data/quran/words/6.json"),
+  7: () => import("@/data/quran/words/7.json"),
+  8: () => import("@/data/quran/words/8.json"),
+  9: () => import("@/data/quran/words/9.json"),
+  10: () => import("@/data/quran/words/10.json"),
+  11: () => import("@/data/quran/words/11.json"),
+  12: () => import("@/data/quran/words/12.json"),
+  13: () => import("@/data/quran/words/13.json"),
+  14: () => import("@/data/quran/words/14.json"),
+  15: () => import("@/data/quran/words/15.json"),
+  16: () => import("@/data/quran/words/16.json"),
+  17: () => import("@/data/quran/words/17.json"),
+  18: () => import("@/data/quran/words/18.json"),
+  19: () => import("@/data/quran/words/19.json"),
+  20: () => import("@/data/quran/words/20.json"),
+  21: () => import("@/data/quran/words/21.json"),
+  22: () => import("@/data/quran/words/22.json"),
+  23: () => import("@/data/quran/words/23.json"),
+  24: () => import("@/data/quran/words/24.json"),
+  25: () => import("@/data/quran/words/25.json"),
+  26: () => import("@/data/quran/words/26.json"),
+  27: () => import("@/data/quran/words/27.json"),
+  28: () => import("@/data/quran/words/28.json"),
+  29: () => import("@/data/quran/words/29.json"),
+  30: () => import("@/data/quran/words/30.json"),
+  31: () => import("@/data/quran/words/31.json"),
+  32: () => import("@/data/quran/words/32.json"),
+  33: () => import("@/data/quran/words/33.json"),
+  34: () => import("@/data/quran/words/34.json"),
+  35: () => import("@/data/quran/words/35.json"),
+  36: () => import("@/data/quran/words/36.json"),
+  37: () => import("@/data/quran/words/37.json"),
+  38: () => import("@/data/quran/words/38.json"),
+  39: () => import("@/data/quran/words/39.json"),
+  40: () => import("@/data/quran/words/40.json"),
+  41: () => import("@/data/quran/words/41.json"),
+  42: () => import("@/data/quran/words/42.json"),
+  43: () => import("@/data/quran/words/43.json"),
+  44: () => import("@/data/quran/words/44.json"),
+  45: () => import("@/data/quran/words/45.json"),
+  46: () => import("@/data/quran/words/46.json"),
+  47: () => import("@/data/quran/words/47.json"),
+  48: () => import("@/data/quran/words/48.json"),
+  49: () => import("@/data/quran/words/49.json"),
+  50: () => import("@/data/quran/words/50.json"),
+  51: () => import("@/data/quran/words/51.json"),
+  52: () => import("@/data/quran/words/52.json"),
+  53: () => import("@/data/quran/words/53.json"),
+  54: () => import("@/data/quran/words/54.json"),
+  55: () => import("@/data/quran/words/55.json"),
+  56: () => import("@/data/quran/words/56.json"),
+  57: () => import("@/data/quran/words/57.json"),
+  58: () => import("@/data/quran/words/58.json"),
+  59: () => import("@/data/quran/words/59.json"),
+  60: () => import("@/data/quran/words/60.json"),
+  61: () => import("@/data/quran/words/61.json"),
+  62: () => import("@/data/quran/words/62.json"),
+  63: () => import("@/data/quran/words/63.json"),
+  64: () => import("@/data/quran/words/64.json"),
+  65: () => import("@/data/quran/words/65.json"),
+  66: () => import("@/data/quran/words/66.json"),
+  67: () => import("@/data/quran/words/67.json"),
+  68: () => import("@/data/quran/words/68.json"),
+  69: () => import("@/data/quran/words/69.json"),
+  70: () => import("@/data/quran/words/70.json"),
+  71: () => import("@/data/quran/words/71.json"),
+  72: () => import("@/data/quran/words/72.json"),
+  73: () => import("@/data/quran/words/73.json"),
+  74: () => import("@/data/quran/words/74.json"),
+  75: () => import("@/data/quran/words/75.json"),
+  76: () => import("@/data/quran/words/76.json"),
+  77: () => import("@/data/quran/words/77.json"),
+  78: () => import("@/data/quran/words/78.json"),
+  79: () => import("@/data/quran/words/79.json"),
+  80: () => import("@/data/quran/words/80.json"),
+  81: () => import("@/data/quran/words/81.json"),
+  82: () => import("@/data/quran/words/82.json"),
+  83: () => import("@/data/quran/words/83.json"),
+  84: () => import("@/data/quran/words/84.json"),
+  85: () => import("@/data/quran/words/85.json"),
+  86: () => import("@/data/quran/words/86.json"),
+  87: () => import("@/data/quran/words/87.json"),
+  88: () => import("@/data/quran/words/88.json"),
+  89: () => import("@/data/quran/words/89.json"),
+  90: () => import("@/data/quran/words/90.json"),
+  91: () => import("@/data/quran/words/91.json"),
+  92: () => import("@/data/quran/words/92.json"),
+  93: () => import("@/data/quran/words/93.json"),
+  94: () => import("@/data/quran/words/94.json"),
+  95: () => import("@/data/quran/words/95.json"),
+  96: () => import("@/data/quran/words/96.json"),
+  97: () => import("@/data/quran/words/97.json"),
+  98: () => import("@/data/quran/words/98.json"),
+  99: () => import("@/data/quran/words/99.json"),
+  100: () => import("@/data/quran/words/100.json"),
+  101: () => import("@/data/quran/words/101.json"),
+  102: () => import("@/data/quran/words/102.json"),
+  103: () => import("@/data/quran/words/103.json"),
+  104: () => import("@/data/quran/words/104.json"),
+  105: () => import("@/data/quran/words/105.json"),
+  106: () => import("@/data/quran/words/106.json"),
+  107: () => import("@/data/quran/words/107.json"),
+  108: () => import("@/data/quran/words/108.json"),
+  109: () => import("@/data/quran/words/109.json"),
+  110: () => import("@/data/quran/words/110.json"),
+  111: () => import("@/data/quran/words/111.json"),
+  112: () => import("@/data/quran/words/112.json"),
+  113: () => import("@/data/quran/words/113.json"),
+  114: () => import("@/data/quran/words/114.json"),
+};
+
+// Audio URL builder for Mishari Rashid al-Afasy
+function getAudioUrl(globalVerseId: number): string {
+  return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalVerseId}.mp3`;
+}
+
 function highlightText(text: string, query: string) {
   if (!query || query.length < 3) return text;
   const lowerText = text.toLowerCase();
@@ -430,6 +567,7 @@ export default function SurahPage() {
 function SurahPageContent() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const id = Number(params.id);
   const chapter = chapters.find((ch) => ch.id === id);
 
@@ -449,6 +587,36 @@ function SurahPageContent() {
   const [showAllTafsir, setShowAllTafsir] = useState(false);
   const [openTafsirs, setOpenTafsirs] = useState<Set<number>>(new Set());
 
+  // Word-by-word data
+  const [wordsData, setWordsData] = useState<WordsMap | null>(null);
+
+  // Font size: 0=small, 1=medium, 2=large (default), 3=xl
+  const [fontSize, setFontSizeState] = useState(2);
+  const [shareCopied, setShareCopied] = useState<number | null>(null);
+
+  // Bookmark state
+  const [bookmarkedVerses, setBookmarkedVerses] = useState<Set<string>>(new Set());
+
+  // Audio state
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playingVerse, setPlayingVerse] = useState<number | null>(null);
+  const autoPlayRef = useRef(false);
+  const [audioProgress, setAudioProgress] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const [audioPaused, setAudioPaused] = useState(false);
+  const [autoNextSurah, setAutoNextSurah] = useState(false);
+  const autoNextSurahRef = useRef(false);
+
+  // Load auto-play-next preference
+  useEffect(() => {
+    const val = getAutoPlayNextSurah();
+    setAutoNextSurah(val);
+    autoNextSurahRef.current = val;
+  }, []);
+
+  const shouldAutoPlay = searchParams.get("autoplay") === "1";
+  const autoPlayTriggered = useRef(false);
+
   useEffect(() => {
     setVerses(null);
     setLoading(true);
@@ -457,6 +625,14 @@ function SurahPageContent() {
     setTafsirData(null);
     setOpenTafsirs(new Set());
     setShowAllTafsir(false);
+    setWordsData(null);
+    setPlayingVerse(null);
+    autoPlayRef.current = false;
+    autoPlayTriggered.current = false;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     const loader = verseImports[id];
     if (loader) {
       loader().then((mod) => {
@@ -465,6 +641,24 @@ function SurahPageContent() {
       });
     } else {
       setLoading(false);
+    }
+    // Load word-by-word data
+    const wordLoader = wordsImports[id];
+    if (wordLoader) {
+      wordLoader().then((mod) => setWordsData(mod.default));
+    }
+    // Load font size preference
+    setFontSizeState(getFontSize());
+    // Mark surah as read
+    markSurahRead(id);
+    // Load bookmark state for all verses in this surah
+    if (chapter) {
+      const bSet = new Set<string>();
+      for (let v = 1; v <= chapter.verses; v++) {
+        const key = `${id}:${v}`;
+        if (isBookmarked("verse", key)) bSet.add(key);
+      }
+      setBookmarkedVerses(bSet);
     }
   }, [id]);
 
@@ -554,11 +748,172 @@ function SurahPageContent() {
     return (
       v.textEn.toLowerCase().includes(search.toLowerCase()) ||
       v.textAr.includes(search) ||
+      (v.textTranslit && v.textTranslit.toLowerCase().includes(search.toLowerCase())) ||
       v.number.toString() === search.trim()
     );
   });
 
   const isTafsirOpen = (verseNum: number) => showAllTafsir || openTafsirs.has(verseNum);
+
+  const fontSizeClasses = [
+    "text-lg md:text-xl",     // 0 = small
+    "text-xl md:text-2xl",     // 1 = medium
+    "text-2xl md:text-3xl",    // 2 = large (default)
+    "text-3xl md:text-4xl",    // 3 = xl
+  ];
+
+  const changeFontSize = (delta: number) => {
+    const newSize = Math.max(0, Math.min(3, fontSize + delta));
+    setFontSizeState(newSize);
+    saveFontSize(newSize);
+  };
+
+  const shareVerse = async (verse: Verse) => {
+    const text = `${verse.textAr}\n\n"${verse.textEn}"\n\n— Quran ${verse.key}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setShareCopied(verse.number);
+      setTimeout(() => setShareCopied(null), 2000);
+    } catch {
+      // fallback
+    }
+  };
+
+  const toggleBookmark = (verse: Verse) => {
+    const key = verse.key; // e.g. "1:5"
+    if (bookmarkedVerses.has(key)) {
+      removeBookmark("verse", key);
+      setBookmarkedVerses((prev) => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
+    } else {
+      addBookmark({
+        type: "verse",
+        id: key,
+        title: `Surah ${chapter?.name ?? id} - Verse ${verse.number}`,
+        subtitle: verse.textEn.slice(0, 60) + (verse.textEn.length > 60 ? "..." : ""),
+      });
+      setBookmarkedVerses((prev) => new Set(prev).add(key));
+    }
+  };
+
+  // Audio playback
+  const playVerse = useCallback((verse: Verse) => {
+    // If same verse is playing, pause it
+    if (playingVerse === verse.number) {
+      audioRef.current?.pause();
+      setPlayingVerse(null);
+      autoPlayRef.current = false;
+      return;
+    }
+
+    // Stop any currently playing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+
+    const audio = new Audio(getAudioUrl(verse.id));
+    audioRef.current = audio;
+    setPlayingVerse(verse.number);
+    setAudioProgress(0);
+    setAudioDuration(0);
+    setAudioPaused(false);
+
+    audio.play();
+
+    audio.onloadedmetadata = () => {
+      setAudioDuration(audio.duration);
+    };
+
+    audio.ontimeupdate = () => {
+      setAudioProgress(audio.currentTime);
+    };
+
+    audio.onended = () => {
+      if (autoPlayRef.current && verses) {
+        const currentIdx = verses.findIndex((v) => v.id === verse.id);
+        const nextVerse = verses[currentIdx + 1];
+        if (nextVerse) {
+          playVerse(nextVerse);
+          document.getElementById(`verse-${nextVerse.number}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else if (autoNextSurahRef.current && id < 114) {
+          // Navigate to next surah and auto-start
+          setPlayingVerse(null);
+          router.push(`/quran/${id + 1}?autoplay=1`);
+        } else {
+          setPlayingVerse(null);
+          autoPlayRef.current = false;
+        }
+      } else {
+        setPlayingVerse(null);
+      }
+    };
+
+    audio.onerror = () => {
+      setPlayingVerse(null);
+    };
+  }, [playingVerse, verses]);
+
+  const playSurah = useCallback(() => {
+    if (!verses || verses.length === 0) return;
+    if (playingVerse !== null) {
+      // Stop playback
+      audioRef.current?.pause();
+      setPlayingVerse(null);
+      autoPlayRef.current = false;
+      return;
+    }
+    autoPlayRef.current = true;
+    playVerse(verses[0]);
+  }, [verses, playingVerse, playVerse]);
+
+  // Auto-start playback if navigated with ?autoplay=1
+  useEffect(() => {
+    if (shouldAutoPlay && verses && verses.length > 0 && !autoPlayTriggered.current) {
+      autoPlayTriggered.current = true;
+      autoPlayRef.current = true;
+      setTimeout(() => playVerse(verses[0]), 300);
+    }
+  }, [shouldAutoPlay, verses, playVerse]);
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      // Don't trigger when typing in search
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        if (playingVerse !== null && audioRef.current) {
+          if (audioRef.current.paused) {
+            audioRef.current.play();
+            setAudioPaused(false);
+          } else {
+            audioRef.current.pause();
+            setAudioPaused(true);
+          }
+        } else if (verses && verses.length > 0) {
+          autoPlayRef.current = true;
+          playVerse(verses[0]);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [playingVerse, verses, playVerse]);
 
   return (
     <div>
@@ -600,8 +955,23 @@ function SurahPageContent() {
         </p>
       )}
 
-      {/* Tafsir controls + Search row */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      {/* Search + Tafsir controls row */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+        {/* Play surah button — left side */}
+        <button
+          onClick={playSurah}
+          className={`flex items-center gap-1.5 text-sm px-3 py-2 rounded-lg border transition-colors shrink-0 ${
+            playingVerse !== null
+              ? "bg-[var(--color-gold)]/15 border-[var(--color-gold)]/30 text-gold"
+              : "card-bg sidebar-border text-themed-muted hover:text-themed"
+          }`}
+        >
+          {playingVerse !== null ? <Pause size={14} /> : <Play size={14} />}
+          <span>
+            {playingVerse !== null ? "Stop" : "Play Surah"}
+          </span>
+        </button>
+
         {/* Search within surah */}
         {chapter.verses > 10 && (
           <div className="relative flex-1 max-w-md">
@@ -619,8 +989,8 @@ function SurahPageContent() {
           </div>
         )}
 
-        {/* Tafsir source selector */}
-        <div className="flex items-center gap-2">
+        {/* Controls — right side */}
+        <div className="flex items-center gap-2 sm:ml-auto flex-wrap">
           <BookOpen size={14} className="text-themed-muted shrink-0" />
           <select
             value={tafsirSource}
@@ -653,6 +1023,29 @@ function SurahPageContent() {
               {showAllTafsir ? "Hide All" : "Show All"}
             </span>
           </button>
+
+          {/* Font size controls */}
+          <div className="flex items-center gap-0.5 card-bg border sidebar-border rounded-lg">
+            <button
+              onClick={() => changeFontSize(-1)}
+              disabled={fontSize === 0}
+              className="px-2 py-2 text-themed-muted hover:text-themed disabled:opacity-30 transition-colors"
+              title="Decrease font size"
+            >
+              <Minus size={12} />
+            </button>
+            <span className="text-[10px] text-themed-muted w-5 text-center font-mono">
+              {["S", "M", "L", "XL"][fontSize]}
+            </span>
+            <button
+              onClick={() => changeFontSize(1)}
+              disabled={fontSize === 3}
+              className="px-2 py-2 text-themed-muted hover:text-themed disabled:opacity-30 transition-colors"
+              title="Increase font size"
+            >
+              <Plus size={12} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -701,12 +1094,28 @@ function SurahPageContent() {
                     : "sidebar-border hover:border-[var(--color-gold)]/30"
                 }`}
               >
-                {/* Verse number badge */}
+                {/* Verse number badge + controls */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center text-gold text-xs font-semibold">
+                    <span className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${
+                      playingVerse === verse.number
+                        ? "bg-gold text-[var(--color-bg)]"
+                        : "bg-[var(--color-gold)]/15 text-gold"
+                    }`}>
                       {verse.number}
                     </span>
+                    {/* Play verse button */}
+                    <button
+                      onClick={() => { autoPlayRef.current = false; playVerse(verse); }}
+                      className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
+                        playingVerse === verse.number
+                          ? "bg-gold/20 text-gold"
+                          : "text-themed-muted hover:text-gold hover:bg-gold/10"
+                      }`}
+                      title={playingVerse === verse.number ? "Pause" : "Play verse"}
+                    >
+                      {playingVerse === verse.number ? <Pause size={12} /> : <Play size={12} />}
+                    </button>
                     <span
                       className="tooltip text-[10px] text-themed-muted cursor-help"
                       data-tip="Medina Mushaf (King Fahd Complex edition)"
@@ -715,33 +1124,78 @@ function SurahPageContent() {
                     </span>
                   </div>
 
-                  {/* Per-verse tafsir toggle */}
-                  {!showAllTafsir && (
+                  <div className="flex items-center gap-1.5">
+                    {/* Share verse */}
                     <button
-                      onClick={() => toggleVerseTafsir(verse.number)}
-                      className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-lg border transition-colors ${
-                        tafsirOpen
-                          ? "bg-[var(--color-gold)]/10 border-[var(--color-gold)]/30 text-gold"
-                          : "sidebar-border text-themed-muted hover:text-themed hover:border-[var(--color-gold)]/20"
-                      }`}
+                      onClick={() => shareVerse(verse)}
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-themed-muted hover:text-gold hover:bg-gold/10 transition-colors"
+                      title="Copy verse"
                     >
-                      <BookOpen size={11} />
-                      Tafsir
-                      {tafsirOpen ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                      {shareCopied === verse.number ? <Check size={11} className="text-green-400" /> : <Share2 size={11} />}
                     </button>
-                  )}
+
+                    {/* Bookmark verse */}
+                    <button
+                      onClick={() => toggleBookmark(verse)}
+                      className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
+                        bookmarkedVerses.has(verse.key)
+                          ? "text-gold bg-gold/15"
+                          : "text-themed-muted hover:text-gold hover:bg-gold/10"
+                      }`}
+                      title={bookmarkedVerses.has(verse.key) ? "Remove bookmark" : "Bookmark verse"}
+                    >
+                      <BookmarkIcon size={11} fill={bookmarkedVerses.has(verse.key) ? "currentColor" : "none"} />
+                    </button>
+
+                    {/* Per-verse tafsir toggle */}
+                    {!showAllTafsir && (
+                      <button
+                        onClick={() => toggleVerseTafsir(verse.number)}
+                        className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-lg border transition-colors ${
+                          tafsirOpen
+                            ? "bg-[var(--color-gold)]/10 border-[var(--color-gold)]/30 text-gold"
+                            : "sidebar-border text-themed-muted hover:text-themed hover:border-[var(--color-gold)]/20"
+                        }`}
+                      >
+                        <BookOpen size={11} />
+                        Tafsir
+                        {tafsirOpen ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                      </button>
+                    )}
+                  </div>
                 </div>
 
-                {/* Arabic text */}
-                <p
-                  className="text-2xl md:text-3xl font-arabic text-themed leading-[2.2] md:leading-[2.4] text-right mb-5"
+                {/* Arabic text — word-by-word with hover tooltips */}
+                <div
+                  className={`${fontSizeClasses[fontSize]} font-arabic text-themed leading-[2.2] md:leading-[2.4] text-right mb-5 flex flex-wrap-reverse justify-end gap-x-2`}
                   dir="rtl"
                 >
-                  {verse.textAr}{" "}
+                  {wordsData?.[String(verse.number)]
+                    ? wordsData[String(verse.number)].map((word, wi) => (
+                        <span
+                          key={wi}
+                          className="relative group/word inline-block cursor-help hover:text-gold transition-colors"
+                        >
+                          {word.t}
+                          <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-lg bg-[var(--color-card)] border sidebar-border shadow-lg opacity-0 group-hover/word:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 text-center">
+                            <span className="block text-xs text-gold font-medium" dir="ltr">{word.m}</span>
+                            {word.tr && <span className="block text-[10px] text-themed-muted italic mt-0.5" dir="ltr">{word.tr}</span>}
+                          </span>
+                        </span>
+                      ))
+                    : <span>{verse.textAr}</span>
+                  }{" "}
                   <span className="text-gold text-lg font-arabic">
                     &#xFD3F;{toArabicNumeral(verse.number)}&#xFD3E;
                   </span>
-                </p>
+                </div>
+
+                {/* Transliteration */}
+                {verse.textTranslit && (
+                  <p className="text-gold/80 text-sm md:text-base leading-relaxed mb-3 italic">
+                    {verse.textTranslit}
+                  </p>
+                )}
 
                 {/* English translation */}
                 <p className="text-themed-muted text-sm md:text-base leading-relaxed">
@@ -796,7 +1250,7 @@ function SurahPageContent() {
       )}
 
       {/* Navigation between surahs */}
-      <div className="flex items-center justify-between mt-10 pt-6 border-t sidebar-border">
+      <div className={`flex items-center justify-between mt-10 pt-6 border-t sidebar-border ${playingVerse !== null ? "pb-20" : ""}`}>
         {prevChapter ? (
           <Link
             href={`/quran/${prevChapter.id}`}
@@ -827,11 +1281,95 @@ function SurahPageContent() {
         )}
       </div>
 
+      {/* Sticky audio player */}
+      <AnimatePresence>
+        {playingVerse !== null && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed bottom-0 left-0 right-0 lg:left-64 z-40 card-bg border-t sidebar-border shadow-2xl"
+          >
+            {/* Progress bar at top of player */}
+            <div
+              className="h-1 bg-[var(--color-gold)]/10 cursor-pointer"
+              onClick={(e) => {
+                if (!audioRef.current || !audioDuration) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const pct = (e.clientX - rect.left) / rect.width;
+                audioRef.current.currentTime = pct * audioDuration;
+              }}
+            >
+              <div
+                className="h-full bg-[var(--color-gold)] transition-[width] duration-200"
+                style={{ width: audioDuration ? `${(audioProgress / audioDuration) * 100}%` : "0%" }}
+              />
+            </div>
+            <div className="flex items-center gap-3 px-4 py-2.5 max-w-4xl mx-auto">
+              <button
+                onClick={() => {
+                  if (audioRef.current) {
+                    if (audioRef.current.paused) {
+                      audioRef.current.play();
+                      setAudioPaused(false);
+                    } else {
+                      audioRef.current.pause();
+                      setAudioPaused(true);
+                    }
+                  }
+                }}
+                className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold shrink-0"
+              >
+                {audioPaused ? <Play size={14} /> : <Pause size={14} />}
+              </button>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-themed font-medium truncate">{chapter.name} — Verse {playingVerse}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xs text-themed-muted">Mishari Rashid al-Afasy</p>
+                  {audioDuration > 0 && (
+                    <span className="text-xs text-themed-muted">
+                      {Math.floor(audioProgress / 60)}:{String(Math.floor(audioProgress % 60)).padStart(2, "0")}
+                      {" / "}
+                      {Math.floor(audioDuration / 60)}:{String(Math.floor(audioDuration % 60)).padStart(2, "0")}
+                    </span>
+                  )}
+                </div>
+              </div>
+              {/* Auto-play next surah toggle */}
+              <button
+                onClick={() => {
+                  const next = !autoNextSurah;
+                  setAutoNextSurah(next);
+                  autoNextSurahRef.current = next;
+                  setAutoPlayNextSurah(next);
+                }}
+                className={`flex items-center gap-1 text-xs px-2 py-1.5 rounded-lg border transition-colors shrink-0 ${
+                  autoNextSurah
+                    ? "bg-[var(--color-gold)]/15 border-[var(--color-gold)]/30 text-gold"
+                    : "sidebar-border text-themed-muted hover:text-themed"
+                }`}
+                title={autoNextSurah ? "Auto Play Surahs: ON" : "Auto Play Surahs: OFF"}
+              >
+                <SkipForward size={12} />
+                <span className="hidden sm:inline">Auto Play Surahs</span>
+              </button>
+              <button
+                onClick={() => { audioRef.current?.pause(); setPlayingVerse(null); autoPlayRef.current = false; }}
+                className="text-xs text-themed-muted hover:text-themed transition-colors shrink-0"
+              >
+                ✕
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Scroll to top */}
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-[var(--color-gold)] text-[var(--color-bg)] flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-50"
+          className={`fixed ${playingVerse !== null ? "bottom-20" : "bottom-6"} right-6 w-10 h-10 rounded-full bg-[var(--color-gold)] text-[var(--color-bg)] flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-50`}
         >
           <ChevronUp size={20} />
         </button>

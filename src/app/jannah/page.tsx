@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import PageSearch from "@/components/PageSearch";
 import ContentCard from "@/components/ContentCard";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
+import { textMatch } from "@/lib/search";
 import { BookOpen } from "lucide-react";
 
 /* ───────────────────────── data ───────────────────────── */
@@ -510,10 +514,27 @@ function TopicInfoCard({
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function JannahPage() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("intro");
+function JannahContent() {
+  const searchParams = useSearchParams();
+  useScrollToSection();
+  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
   const [activeDescription, setActiveDescription] = useState("rivers-gardens");
   const [activeHowTo, setActiveHowTo] = useState("conditions");
+  const [search, setSearch] = useState("");
+
+  const topicMatches = (t: { name: string; content: { intro: string; points: { title: string; detail: string }[]; verse?: { text: string }; source?: string } }) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, t.name, t.content.intro, t.content.source,
+      t.content.verse?.text,
+      ...t.content.points.map(p => p.title),
+      ...t.content.points.map(p => p.detail),
+    );
+  };
+
+  const mattersMatches = (item: { point: string; detail: string; reference: string }) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, item.point, item.detail, item.reference);
+  };
 
   return (
     <div>
@@ -522,6 +543,8 @@ export default function JannahPage() {
         titleAr="الجنة"
         subtitle="Paradise — the eternal home prepared for the believers"
       />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search topics, descriptions, verses..." className="mb-6" />
 
       {/* Section navigation */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
@@ -686,7 +709,7 @@ export default function JannahPage() {
             </ContentCard>
 
             {/* Numbered points */}
-            {whyItMatters.map((item, i) => (
+            {whyItMatters.filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -770,7 +793,7 @@ export default function JannahPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {descriptionTopics.map((topic) => (
+                {descriptionTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveDescription(topic.id)}
@@ -793,6 +816,7 @@ export default function JannahPage() {
                       activeDescription === topic.id && (
                         <motion.div
                           key={topic.id}
+                          id={`section-${topic.id}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -850,7 +874,7 @@ export default function JannahPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {howToTopics.map((topic) => (
+                {howToTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveHowTo(topic.id)}
@@ -873,6 +897,7 @@ export default function JannahPage() {
                       activeHowTo === topic.id && (
                         <motion.div
                           key={topic.id}
+                          id={`section-${topic.id}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -923,4 +948,8 @@ export default function JannahPage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function JannahPage() {
+  return <Suspense><JannahContent /></Suspense>;
 }

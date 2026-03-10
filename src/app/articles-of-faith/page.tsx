@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import PageSearch from "@/components/PageSearch";
+import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import {
   BookOpen,
   AlertTriangle,
@@ -258,7 +262,7 @@ const articles: Article[] = [
     description:
       "To believe that Allah sent prophets and messengers to every nation, calling them to worship Allah alone and reject false gods. They were the best of humanity — truthful, trustworthy, and delivered the message faithfully.",
     detailedExplanation:
-      "Belief in the messengers includes four aspects: (1) Believing that their message is truly from Allah. (2) Believing in those named in the Quran — 25 prophets are mentioned by name, including Adam, Nuh, Ibrahim, Musa, Isa, and Muhammad (peace be upon them all). (3) Believing in what has been authentically reported about them. (4) Acting upon the Shariah of the one sent to us — Muhammad (peace be upon him), the final messenger. Every nation was sent a messenger with the same core message: worship Allah alone. The prophets were protected from major sins, were truthful in everything they conveyed from Allah, and delivered the message completely without hiding anything.",
+      "Belief in the messengers includes four aspects: (1) Believing that their message is truly from Allah. (2) Believing in those named in the Quran — 25 prophets are mentioned by name, including Adam, Nuh, Ibrahim, Musa, Dawud, Sulayman, Isa, and Muhammad (peace be upon them all). (3) Believing in what has been authentically reported about them. (4) Acting upon the Shariah of the one sent to us — Muhammad (peace be upon him), the final messenger. Every nation was sent a messenger with the same core message: worship Allah alone. The prophets were protected from major sins, were truthful in everything they conveyed from Allah, and delivered the message completely without hiding anything.",
     keyVerses: [
       {
         ref: "Quran 16:36",
@@ -288,6 +292,7 @@ const articles: Article[] = [
     ],
     points: [
       "25 prophets are mentioned by name in the Quran — but many more were sent",
+      "Some prophets were also given scriptures: Musa received the Tawrat, Dawud the Zabur, Isa the Injil, and Muhammad the Quran",
       "The five greatest messengers (Ulul-Azm) are Nuh, Ibrahim, Musa, Isa, and Muhammad (peace be upon them)",
       "All prophets called to the same message: La ilaha illallah — worship Allah alone",
       "Muhammad (peace be upon him) is the final prophet — no prophet will come after him",
@@ -322,7 +327,7 @@ const articles: Article[] = [
     description:
       "To believe in the Day of Judgement when all people will be resurrected, held accountable for their deeds, and given their final abode — Paradise or the Hellfire. This includes everything after death: the grave, the resurrection, and the reckoning.",
     detailedExplanation:
-      "Belief in the Last Day encompasses everything that happens after death: (1) The trial of the grave — the questioning by Munkar and Nakir, and either punishment or bliss in the grave. (2) The signs of the Hour — minor signs (most have occurred) and major signs (the Dajjal, the descent of Isa, Gog and Magog, the rising of the sun from the west, and others). (3) The blowing of the Trumpet — all creation will perish, then be resurrected. (4) The gathering (Hashr) — all of humanity from Adam to the last person, standing before Allah. (5) The reckoning (Hisab) — being shown one's deeds. (6) The Scale (Mizan) — deeds are weighed. (7) The Bridge (Sirat) — laid across Hellfire, crossed according to one's deeds. (8) The intercession (Shafa'ah) — the Prophet (peace be upon him) will be granted the great intercession. (9) The final destination — Paradise for the believers and Hellfire for the disbelievers.",
+      "Belief in the Last Day encompasses everything that happens after death: (1) The trial of the grave — the questioning by Munkar and Nakir, and either punishment or bliss in the grave. (2) The signs of the Hour — minor signs (most have occurred) and major signs including the appearance of the Mahdi, the Dajjal (False Messiah), the descent of Isa (Jesus), Gog and Magog (Ya'juj and Ma'juj), the Dabbah (Beast of the Earth), the rising of the sun from the west, and the smoke (Dukhan). (3) The blowing of the Trumpet — all creation will perish, then be resurrected. (4) The gathering (Hashr) — all of humanity from Adam to the last person, standing before Allah. (5) The reckoning (Hisab) — being shown one's deeds. (6) The Scale (Mizan) — deeds are weighed. (7) The Bridge (Sirat) — laid across Hellfire, crossed according to one's deeds. (8) The intercession (Shafa'ah) — the Prophet (peace be upon him) will be granted the great intercession. (9) The final destination — Paradise for the believers and Hellfire for the disbelievers.",
     keyVerses: [
       {
         ref: "Quran 3:185",
@@ -339,6 +344,11 @@ const articles: Article[] = [
         arabic: "يَوْمَ يَقُومُ ٱلنَّاسُ لِرَبِّ ٱلْعَـٰلَمِينَ",
         text: "The Day when mankind will stand before the Lord of the worlds.",
       },
+      {
+        ref: "Quran 27:82",
+        arabic: "وَإِذَا وَقَعَ ٱلْقَوْلُ عَلَيْهِمْ أَخْرَجْنَا لَهُمْ دَآبَّةًۭ مِّنَ ٱلْأَرْضِ تُكَلِّمُهُمْ أَنَّ ٱلنَّاسَ كَانُوا بِـَٔايَـٰتِنَا لَا يُوقِنُونَ",
+        text: "And when the Word is fulfilled against them, We will produce for them a creature from the earth speaking to them — that the people were not certain of Our signs.",
+      },
     ],
     hadith: [
       {
@@ -349,12 +359,16 @@ const articles: Article[] = [
         ref: "Sahih Muslim 2864",
         text: "The sun will be brought close to the people on the Day of Resurrection, about a mile away. People will be in their own sweat according to their deeds — some to their ankles, some to their knees, some to their waists, and some will be bridled by it.",
       },
+      {
+        ref: "Sunan Abu Dawud 4284",
+        text: "The Prophet (peace be upon him) said: 'The Mahdi is from my progeny, from the descendants of Fatimah.' He will fill the earth with justice after it has been filled with oppression.",
+      },
     ],
     points: [
       "Death is not the end — it is the beginning of the next life",
       "The grave is either a garden from the gardens of Paradise or a pit from the pits of Hellfire",
       "Minor signs of the Hour include the spread of ignorance, widespread killing, and the slave girl giving birth to her master",
-      "Major signs include the Dajjal, the descent of Isa (Jesus), Gog and Magog, and the sun rising from the west",
+      "Major signs include the Mahdi, the Dajjal (False Messiah), the descent of Isa (Jesus), Gog and Magog, the Dabbah (Beast), and the sun rising from the west",
       "All of humanity will be resurrected and gathered before Allah",
       "Deeds will be weighed on the Scale — good deeds on one side, bad on the other",
       "The Bridge (Sirat) over Hellfire will be crossed — some like lightning, some crawling",
@@ -558,9 +572,36 @@ function ArticleCard({ article }: { article: Article }) {
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function ArticlesOfFaithPage() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("intro");
+function ArticlesOfFaithContent() {
+  const searchParams = useSearchParams();
+  useScrollToSection();
+  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
   const [activeArticle, setActiveArticle] = useState("allah");
+  const [search, setSearch] = useState("");
+
+  const mattersMatches = (item: { point: string; detail: string; reference: string }) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, item.point, item.detail, item.reference);
+  };
+
+  const articleMatches = (article: Article) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(
+      search,
+      article.title,
+      article.titleAr,
+      article.description,
+      article.detailedExplanation,
+      ...article.points,
+      ...article.keyVerses.flatMap((v) => [v.ref, v.text, v.arabic]),
+      ...article.hadith.flatMap((h) => [h.ref, h.text]),
+      ...article.misconceptions.flatMap((m) => [m.title, m.clarification]),
+      ...article.sources,
+    );
+  };
+
+  const filteredWhyItMatters = whyItMatters.filter(mattersMatches);
+  const filteredArticles = articles.filter(articleMatches);
 
   return (
     <div>
@@ -569,6 +610,8 @@ export default function ArticlesOfFaithPage() {
         titleAr="أركان الإيمان"
         subtitle="The six pillars of Iman — the core beliefs every Muslim holds"
       />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search beliefs, articles, verses..." className="mb-6" />
 
       {/* Section navigation */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
@@ -664,7 +707,7 @@ export default function ArticlesOfFaithPage() {
                 Each article builds upon the others — together they form a complete worldview of faith:
               </p>
               <div className="space-y-3">
-                {articles.map((article) => (
+                {filteredArticles.map((article) => (
                   <button
                     key={article.id}
                     onClick={() => {
@@ -681,6 +724,9 @@ export default function ArticlesOfFaithPage() {
                     <p className="text-xs text-themed-muted mt-0.5 line-clamp-1">{article.description}</p>
                   </button>
                 ))}
+                {filteredArticles.length === 0 && (
+                  <p className="text-themed-muted text-sm text-center py-4">No articles match your search.</p>
+                )}
               </div>
             </ContentCard>
 
@@ -729,7 +775,7 @@ export default function ArticlesOfFaithPage() {
               </div>
             </ContentCard>
 
-            {whyItMatters.map((item, i) => (
+            {filteredWhyItMatters.map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -743,6 +789,11 @@ export default function ArticlesOfFaithPage() {
                 </div>
               </ContentCard>
             ))}
+            {filteredWhyItMatters.length === 0 && (
+              <ContentCard>
+                <p className="text-themed-muted text-sm text-center py-4">No results match your search.</p>
+              </ContentCard>
+            )}
 
             {/* Quran 4:136 */}
             <ContentCard delay={0.35}>
@@ -791,7 +842,7 @@ export default function ArticlesOfFaithPage() {
           >
             {/* Article subtabs */}
             <div className="flex justify-center gap-2 overflow-x-auto pb-4 mb-2 scrollbar-hide">
-              {articles.map((article) => (
+              {filteredArticles.map((article) => (
                 <button
                   key={article.id}
                   onClick={() => setActiveArticle(article.id)}
@@ -806,12 +857,19 @@ export default function ArticlesOfFaithPage() {
               ))}
             </div>
 
+            {filteredArticles.length === 0 && (
+              <ContentCard>
+                <p className="text-themed-muted text-sm text-center py-4">No articles match your search.</p>
+              </ContentCard>
+            )}
+
             <AnimatePresence mode="wait">
-              {articles.map(
+              {filteredArticles.map(
                 (article) =>
-                  activeArticle === article.id && (
+                  (activeArticle === article.id || (filteredArticles.length > 0 && !filteredArticles.find(a => a.id === activeArticle) && article.id === filteredArticles[0].id)) && (
                     <motion.div
                       key={article.id}
+                      id={`section-${article.id}`}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -847,4 +905,8 @@ export default function ArticlesOfFaithPage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function ArticlesOfFaithPage() {
+  return <Suspense><ArticlesOfFaithContent /></Suspense>;
 }

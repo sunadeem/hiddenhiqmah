@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
@@ -56,13 +58,14 @@ const miracles: Miracle[] = [
   {
     category: "prophecy",
     title: "The Conquest of Constantinople",
-    reference: "Musnad Ahmad 14:331",
+    reference: "Sahih Muslim 2897; Jami' at-Tirmidhi 2239",
     arabic: "لَتُفْتَحَنَّ الْقُسْطَنْطِينِيَّةُ فَلَنِعْمَ الْأَمِيرُ أَمِيرُهَا وَلَنِعْمَ الْجَيْشُ ذَٰلِكَ الْجَيْشُ",
     translation: "Verily, Constantinople will be conquered. How excellent will be the commander who conquers it, and how excellent will be his army.",
-    explanation: "Prophet Muhammad ﷺ prophesied the conquest of Constantinople (modern-day Istanbul), praising both the commander and the army that would achieve it. This prophecy was fulfilled in 1453 CE — over 800 years later — when the Ottoman Sultan Mehmed II conquered the city.",
+    explanation: "Prophet Muhammad ﷺ prophesied the conquest of Constantinople (modern-day Istanbul). Multiple authentic narrations confirm this prophecy. The specific narration praising the commander and army is from Musnad Ahmad (grading disputed among scholars). This prophecy was fulfilled in 1453 CE — over 800 years later — when the Ottoman Sultan Mehmed II conquered the city.",
     historicalContext: "Constantinople was the capital of the Byzantine Empire and one of the most fortified cities in the world. Multiple Muslim attempts to conquer it had failed over centuries before Mehmed II's successful siege.",
-    sources: ["Musnad Ahmad 14:331", "Historical: Fall of Constantinople, 1453 CE"],
+    sources: ["Sahih Muslim 2897", "Jami' at-Tirmidhi 2239", "Musnad Ahmad 18189 (grading disputed)", "Historical: Fall of Constantinople, 1453 CE"],
     strength: "strong",
+    strengthNote: "The general prophecy of Constantinople's conquest is in Sahih Muslim and other authentic collections. The specific 'how excellent the commander' wording (Musnad Ahmad) has been weakened by al-Albani and al-Arna'ut, but authenticated by al-Hakim and al-Dhahabi.",
   },
   {
     category: "prophecy",
@@ -116,21 +119,21 @@ const miracles: Miracle[] = [
   {
     category: "prophecy",
     title: "Widespread Senseless Killing",
-    reference: "Sahih al-Bukhari 7061, Sahih Muslim 157",
+    reference: "Sahih al-Bukhari 7061, Sahih Muslim 2908",
     arabic: "يَتَقَارَبُ الزَّمَانُ وَيَكْثُرُ الْهَرْجُ ... الْقَتْلُ الْقَتْلُ",
     translation: "Time will pass rapidly and al-harj will increase... killing, killing.",
     explanation: "The Prophet ﷺ prophesied a time when senseless, widespread killing (al-harj) would become commonplace — where the killer would not know why he kills and the victim would not know why he was killed. This describes an era of indiscriminate violence, terrorism, and mass conflict that the modern world has witnessed in unprecedented scale.",
-    sources: ["Sahih al-Bukhari 7061", "Sahih Muslim 157"],
+    sources: ["Sahih al-Bukhari 7061", "Sahih Muslim 2908"],
     strength: "strong",
   },
   {
     category: "prophecy",
     title: "Time Passing Rapidly",
-    reference: "Musnad Ahmad 10560",
+    reference: "Sunan at-Tirmidhi 2332",
     arabic: "لَا تَقُومُ السَّاعَةُ حَتَّى يَتَقَارَبَ الزَّمَانُ",
     translation: "The Hour will not come until time passes rapidly — a year will be like a month, a month like a week, a week like a day.",
     explanation: "The Prophet ﷺ described a time when time itself would seem to accelerate. Modern life, with its constant connectivity, information overload, and rapid pace, has made this perception of accelerating time a widely shared experience across cultures.",
-    sources: ["Musnad Ahmad 10560", "Sunan al-Tirmidhi 2332"],
+    sources: ["Sunan at-Tirmidhi 2332 (graded sahih by al-Albani)", "Musnad Ahmad"],
     strength: "strong",
     strengthNote: "The prophecy is authentic; its fulfillment is based on the widely shared perception of modern life's accelerating pace.",
   },
@@ -144,6 +147,18 @@ const miracles: Miracle[] = [
     sources: ["Musnad Ahmad 10724"],
     strength: "strong",
     strengthNote: "Authentic hadith; interpretation of 'closeness' as global commerce is a modern reading.",
+  },
+
+  {
+    category: "prophecy",
+    title: "The Mongol Siege and Destruction of Baghdad",
+    reference: "Sahih al-Bukhari 2928; Sahih Muslim 2912",
+    arabic: "لَا تَقُومُ السَّاعَةُ حَتَّى تُقَاتِلُوا قَوْمًا نِعَالُهُمُ الشَّعَرُ وَلَا تَقُومُ السَّاعَةُ حَتَّى تُقَاتِلُوا قَوْمًا صِغَارَ الْأَعْيُنِ ذُلْفَ الْأُنُوفِ",
+    translation: "The Hour will not come until you fight a people whose shoes are made of hair, and the Hour will not come until you fight a people with small eyes and flat noses.",
+    explanation: "The Prophet ﷺ warned that Muslims would fight a people 'whose faces are like hammered shields' with small eyes and flat noses, who wear shoes made of hair. In 1258 CE, the Mongol army under Hulagu Khan — matching this description exactly — sacked Baghdad, the capital of the Abbasid Caliphate. An estimated 200,000 to over a million people were killed, the House of Wisdom was destroyed, and the Tigris ran black with ink from the books thrown into it. This was one of the most catastrophic events in human history.",
+    historicalContext: "The Mongol invasion ended the Islamic Golden Age. Baghdad, which had been the intellectual and political center of the Muslim world for over 500 years, was utterly devastated. The last Abbasid Caliph, al-Musta'sim, was executed by being wrapped in a carpet and trampled by horses.",
+    sources: ["Sahih al-Bukhari 2928", "Sahih Muslim 2912", "Historical: Siege of Baghdad, 1258 CE"],
+    strength: "strong",
   },
 
   // === SCIENTIFIC REFERENCES ===
@@ -402,8 +417,10 @@ const strengthConfig = {
   debated: { label: "Debated", color: "text-orange-400", bgColor: "bg-orange-400/10", borderColor: "border-orange-400/30", icon: AlertCircle },
 };
 
-export default function MiraclesPage() {
-  const [activeCategory, setActiveCategory] = useState("all");
+function MiraclesContent() {
+  useScrollToSection();
+  const searchParams = useSearchParams();
+  const [activeCategory, setActiveCategory] = useState(searchParams.get("tab") || "all");
   const [search, setSearch] = useState("");
 
   const searchLower = search.toLowerCase().trim();
@@ -502,7 +519,7 @@ export default function MiraclesPage() {
             const catLabel = categories.find((c) => c.key === miracle.category)?.label ?? miracle.category;
 
             return (
-              <ContentCard key={`${miracle.category}-${i}`} delay={Math.min(i * 0.05, 0.4)}>
+              <ContentCard key={`${miracle.category}-${i}`} delay={Math.min(i * 0.05, 0.4)} id={`section-${miracle.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div>
@@ -578,4 +595,8 @@ export default function MiraclesPage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function MiraclesPage() {
+  return <Suspense><MiraclesContent /></Suspense>;
 }

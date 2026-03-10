@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import PageSearch from "@/components/PageSearch";
+import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import {
   Shield,
   Heart,
   Star,
   AlertTriangle,
   BookOpen,
+  X,
 } from "lucide-react";
+import namesOfAllahData from "@/data/names-of-allah";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -269,107 +275,7 @@ const categories: Category[] = [
   },
 ];
 
-const namesOfAllah = [
-  { name: "Allah", nameAr: "الله", meaning: "The Greatest Name" },
-  { name: "Ar-Rahman", nameAr: "الرحمن", meaning: "The Most Gracious" },
-  { name: "Ar-Raheem", nameAr: "الرحيم", meaning: "The Most Merciful" },
-  { name: "Al-Malik", nameAr: "الملك", meaning: "The King" },
-  { name: "Al-Quddus", nameAr: "القدوس", meaning: "The Most Holy" },
-  { name: "As-Salam", nameAr: "السلام", meaning: "The Source of Peace" },
-  { name: "Al-Mu'min", nameAr: "المؤمن", meaning: "The Granter of Security" },
-  { name: "Al-Muhaymin", nameAr: "المهيمن", meaning: "The Guardian" },
-  { name: "Al-Aziz", nameAr: "العزيز", meaning: "The Almighty" },
-  { name: "Al-Jabbar", nameAr: "الجبار", meaning: "The Compeller" },
-  { name: "Al-Mutakabbir", nameAr: "المتكبر", meaning: "The Supreme" },
-  { name: "Al-Khaliq", nameAr: "الخالق", meaning: "The Creator" },
-  { name: "Al-Bari", nameAr: "البارئ", meaning: "The Originator" },
-  { name: "Al-Musawwir", nameAr: "المصور", meaning: "The Fashioner" },
-  { name: "Al-Ghaffar", nameAr: "الغفار", meaning: "The Ever-Forgiving" },
-  { name: "Al-Qahhar", nameAr: "القهار", meaning: "The Subduer" },
-  { name: "Al-Wahhab", nameAr: "الوهاب", meaning: "The Bestower" },
-  { name: "Ar-Razzaq", nameAr: "الرزاق", meaning: "The Provider" },
-  { name: "Al-Fattah", nameAr: "الفتاح", meaning: "The Opener" },
-  { name: "Al-Aleem", nameAr: "العليم", meaning: "The All-Knowing" },
-  { name: "Al-Qabid", nameAr: "القابض", meaning: "The Withholder" },
-  { name: "Al-Basit", nameAr: "الباسط", meaning: "The Extender" },
-  { name: "Al-Khafid", nameAr: "الخافض", meaning: "The Humbler" },
-  { name: "Ar-Rafi", nameAr: "الرافع", meaning: "The Exalter" },
-  { name: "Al-Mu'izz", nameAr: "المعز", meaning: "The Honourer" },
-  { name: "Al-Mudhill", nameAr: "المذل", meaning: "The Humiliator" },
-  { name: "As-Sami", nameAr: "السميع", meaning: "The All-Hearing" },
-  { name: "Al-Basir", nameAr: "البصير", meaning: "The All-Seeing" },
-  { name: "Al-Hakam", nameAr: "الحكم", meaning: "The Judge" },
-  { name: "Al-Adl", nameAr: "العدل", meaning: "The Just" },
-  { name: "Al-Latif", nameAr: "اللطيف", meaning: "The Subtle" },
-  { name: "Al-Khabir", nameAr: "الخبير", meaning: "The All-Aware" },
-  { name: "Al-Halim", nameAr: "الحليم", meaning: "The Forbearing" },
-  { name: "Al-Azim", nameAr: "العظيم", meaning: "The Magnificent" },
-  { name: "Al-Ghafur", nameAr: "الغفور", meaning: "The All-Forgiving" },
-  { name: "Ash-Shakur", nameAr: "الشكور", meaning: "The Appreciative" },
-  { name: "Al-Aliyy", nameAr: "العلي", meaning: "The Most High" },
-  { name: "Al-Kabir", nameAr: "الكبير", meaning: "The Greatest" },
-  { name: "Al-Hafiz", nameAr: "الحفيظ", meaning: "The Preserver" },
-  { name: "Al-Muqit", nameAr: "المقيت", meaning: "The Sustainer" },
-  { name: "Al-Hasib", nameAr: "الحسيب", meaning: "The Reckoner" },
-  { name: "Al-Jalil", nameAr: "الجليل", meaning: "The Majestic" },
-  { name: "Al-Karim", nameAr: "الكريم", meaning: "The Generous" },
-  { name: "Ar-Raqib", nameAr: "الرقيب", meaning: "The Watchful" },
-  { name: "Al-Mujib", nameAr: "المجيب", meaning: "The Responsive" },
-  { name: "Al-Wasi", nameAr: "الواسع", meaning: "The All-Encompassing" },
-  { name: "Al-Hakim", nameAr: "الحكيم", meaning: "The All-Wise" },
-  { name: "Al-Wadud", nameAr: "الودود", meaning: "The Most Loving" },
-  { name: "Al-Majid", nameAr: "المجيد", meaning: "The Glorious" },
-  { name: "Al-Ba'ith", nameAr: "الباعث", meaning: "The Resurrector" },
-  { name: "Ash-Shahid", nameAr: "الشهيد", meaning: "The Witness" },
-  { name: "Al-Haqq", nameAr: "الحق", meaning: "The Truth" },
-  { name: "Al-Wakil", nameAr: "الوكيل", meaning: "The Trustee" },
-  { name: "Al-Qawiyy", nameAr: "القوي", meaning: "The Most Strong" },
-  { name: "Al-Matin", nameAr: "المتين", meaning: "The Firm" },
-  { name: "Al-Waliyy", nameAr: "الولي", meaning: "The Protecting Friend" },
-  { name: "Al-Hamid", nameAr: "الحميد", meaning: "The Praiseworthy" },
-  { name: "Al-Muhsi", nameAr: "المحصي", meaning: "The Accounter" },
-  { name: "Al-Mubdi", nameAr: "المبدئ", meaning: "The Originator" },
-  { name: "Al-Mu'id", nameAr: "المعيد", meaning: "The Restorer" },
-  { name: "Al-Muhyi", nameAr: "المحيي", meaning: "The Giver of Life" },
-  { name: "Al-Mumit", nameAr: "المميت", meaning: "The Bringer of Death" },
-  { name: "Al-Hayy", nameAr: "الحي", meaning: "The Ever-Living" },
-  { name: "Al-Qayyum", nameAr: "القيوم", meaning: "The Self-Sustaining" },
-  { name: "Al-Wajid", nameAr: "الواجد", meaning: "The Finder" },
-  { name: "Al-Majid", nameAr: "الماجد", meaning: "The Noble" },
-  { name: "Al-Wahid", nameAr: "الواحد", meaning: "The One" },
-  { name: "As-Samad", nameAr: "الصمد", meaning: "The Eternal Refuge" },
-  { name: "Al-Qadir", nameAr: "القادر", meaning: "The Able" },
-  { name: "Al-Muqtadir", nameAr: "المقتدر", meaning: "The Powerful" },
-  { name: "Al-Muqaddim", nameAr: "المقدم", meaning: "The Expediter" },
-  { name: "Al-Mu'akhkhir", nameAr: "المؤخر", meaning: "The Delayer" },
-  { name: "Al-Awwal", nameAr: "الأول", meaning: "The First" },
-  { name: "Al-Akhir", nameAr: "الآخر", meaning: "The Last" },
-  { name: "Az-Zahir", nameAr: "الظاهر", meaning: "The Manifest" },
-  { name: "Al-Batin", nameAr: "الباطن", meaning: "The Hidden" },
-  { name: "Al-Wali", nameAr: "الوالي", meaning: "The Governing Lord" },
-  { name: "Al-Muta'ali", nameAr: "المتعالي", meaning: "The Most Exalted" },
-  { name: "Al-Barr", nameAr: "البر", meaning: "The Source of Goodness" },
-  { name: "At-Tawwab", nameAr: "التواب", meaning: "The Ever-Accepting of Repentance" },
-  { name: "Al-Muntaqim", nameAr: "المنتقم", meaning: "The Avenger" },
-  { name: "Al-Afuww", nameAr: "العفو", meaning: "The Pardoner" },
-  { name: "Ar-Ra'uf", nameAr: "الرؤوف", meaning: "The Most Kind" },
-  { name: "Malik al-Mulk", nameAr: "مالك الملك", meaning: "Owner of Sovereignty" },
-  { name: "Dhul-Jalali wal-Ikram", nameAr: "ذو الجلال والإكرام", meaning: "Lord of Majesty and Generosity" },
-  { name: "Al-Muqsit", nameAr: "المقسط", meaning: "The Equitable" },
-  { name: "Al-Jami", nameAr: "الجامع", meaning: "The Gatherer" },
-  { name: "Al-Ghaniyy", nameAr: "الغني", meaning: "The Self-Sufficient" },
-  { name: "Al-Mughni", nameAr: "المغني", meaning: "The Enricher" },
-  { name: "Al-Mani", nameAr: "المانع", meaning: "The Withholder" },
-  { name: "Ad-Darr", nameAr: "الضار", meaning: "The Distresser" },
-  { name: "An-Nafi", nameAr: "النافع", meaning: "The Propitious" },
-  { name: "An-Nur", nameAr: "النور", meaning: "The Light" },
-  { name: "Al-Hadi", nameAr: "الهادي", meaning: "The Guide" },
-  { name: "Al-Badi", nameAr: "البديع", meaning: "The Incomparable" },
-  { name: "Al-Baqi", nameAr: "الباقي", meaning: "The Everlasting" },
-  { name: "Al-Warith", nameAr: "الوارث", meaning: "The Inheritor" },
-  { name: "Ar-Rashid", nameAr: "الرشيد", meaning: "The Guide to the Right Path" },
-  { name: "As-Sabur", nameAr: "الصبور", meaning: "The Patient" },
-];
+const namesOfAllah = namesOfAllahData;
 
 const sections = [
   { key: "intro", label: "What is Tawheed?" },
@@ -381,6 +287,131 @@ const sections = [
 type SectionKey = (typeof sections)[number]["key"];
 
 /* ───────────────────────── components ───────────────────────── */
+
+function NamesGrid({ search }: { search: string }) {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const selected = selectedIndex !== null ? namesOfAllah[selectedIndex] : null;
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const filteredNames = namesOfAllah
+    .map((name, i) => ({ ...name, originalIndex: i }))
+    .filter((name) => textMatch(search, name.name, name.meaning, name.explanation));
+
+  const selectName = useCallback((i: number | null) => {
+    setSelectedIndex(i);
+    if (i !== null) {
+      setTimeout(() => {
+        panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 50);
+    }
+  }, []);
+
+  return (
+    <div className="mt-4">
+      {/* Detail panel */}
+      <AnimatePresence mode="wait">
+        {selected && selectedIndex !== null && (
+          <motion.div
+            key={selectedIndex}
+            ref={panelRef}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            className="mb-4"
+          >
+            <div className="card-bg rounded-xl border border-gold/30 p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="text-center shrink-0">
+                    <p className="text-4xl font-arabic text-gold">{selected.nameAr}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-themed">{selected.name}</h3>
+                    <p className="text-gold text-sm">{selected.meaning}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => selectName(null)}
+                  className="text-themed-muted hover:text-themed transition-colors shrink-0 mt-1"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <p className="text-themed-muted text-sm leading-relaxed mt-4">
+                {selected.explanation}
+              </p>
+
+              {selected.verse && (
+                <div
+                  className="rounded-lg p-4 mt-4"
+                  style={{ backgroundColor: "var(--color-bg)" }}
+                >
+                  <p className="text-base font-arabic text-gold leading-loose mb-2 text-right">
+                    {selected.verse.arabic}
+                  </p>
+                  <p className="text-themed text-sm italic">
+                    &ldquo;{selected.verse.text}&rdquo;
+                  </p>
+                  <p className="text-xs text-themed-muted mt-2">
+                    {selected.verse.ref}
+                  </p>
+                </div>
+              )}
+
+              {/* Prev / Next */}
+              <div className="flex justify-between mt-4 pt-3 border-t sidebar-border">
+                <button
+                  onClick={() => selectName(selectedIndex > 0 ? selectedIndex - 1 : namesOfAllah.length - 1)}
+                  className="text-xs text-themed-muted hover:text-gold transition-colors"
+                >
+                  &larr; {namesOfAllah[selectedIndex > 0 ? selectedIndex - 1 : namesOfAllah.length - 1].name}
+                </button>
+                <span className="text-[10px] text-themed-muted/40">{selectedIndex + 1} / {namesOfAllah.length}</span>
+                <button
+                  onClick={() => selectName(selectedIndex < namesOfAllah.length - 1 ? selectedIndex + 1 : 0)}
+                  className="text-xs text-themed-muted hover:text-gold transition-colors"
+                >
+                  {namesOfAllah[selectedIndex < namesOfAllah.length - 1 ? selectedIndex + 1 : 0].name} &rarr;
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Grid */}
+      {filteredNames.length === 0 && search.length >= 2 && (
+        <p className="text-center text-themed-muted text-sm py-8">No names match your search.</p>
+      )}
+      <div className="flex flex-wrap justify-center gap-3">
+        {filteredNames.map((name) => (
+          <div
+            key={name.name + name.originalIndex}
+            className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] md:w-[calc(25%-9px)] lg:w-[calc(16.666%-10px)]"
+          >
+            <div
+              className={`card-bg rounded-xl border p-5 md:p-6 cursor-pointer transition-colors duration-200 ${
+                selectedIndex === name.originalIndex
+                  ? "border-gold/50 bg-gold/5"
+                  : "sidebar-border card-hover"
+              }`}
+              onClick={() => selectName(selectedIndex === name.originalIndex ? null : name.originalIndex)}
+            >
+              <div className="text-center py-3">
+                <p className="text-3xl font-arabic text-gold mb-2">{name.nameAr}</p>
+                <p className="text-themed font-medium text-base">{name.name}</p>
+                <p className="text-themed-muted text-sm mt-1">{name.meaning}</p>
+                <p className="text-[10px] text-themed-muted/30 mt-2">{name.originalIndex + 1}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function CategoryCard({ cat, index }: { cat: Category; index: number }) {
   return (
@@ -483,9 +514,12 @@ function CategoryCard({ cat, index }: { cat: Category; index: number }) {
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function TawhidPage() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("intro");
+function TawhidContent() {
+  const searchParams = useSearchParams();
+  useScrollToSection();
+  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
   const [activeCategory, setActiveCategory] = useState("rububiyyah");
+  const [search, setSearch] = useState("");
 
   return (
     <div>
@@ -494,6 +528,8 @@ export default function TawhidPage() {
         titleAr="التوحيد"
         subtitle="The foundation of Islam — understanding the Oneness of Allah in all aspects"
       />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search names, categories, concepts..." className="mb-6" />
 
       {/* Section navigation */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
@@ -654,7 +690,7 @@ export default function TawhidPage() {
               </div>
             </ContentCard>
 
-            {whyItMatters.map((item, i) => (
+            {whyItMatters.filter((item) => textMatch(search, item.point, item.detail, item.reference)).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -702,7 +738,7 @@ export default function TawhidPage() {
           >
             {/* Category subtabs */}
             <div className="flex justify-center gap-2 overflow-x-auto pb-4 mb-2 scrollbar-hide">
-              {categories.map((cat) => (
+              {categories.filter((cat) => textMatch(search, cat.title, cat.meaning, cat.description, ...cat.points)).map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat.id)}
@@ -718,11 +754,12 @@ export default function TawhidPage() {
             </div>
 
             <AnimatePresence mode="wait">
-              {categories.map(
+              {categories.filter((cat) => textMatch(search, cat.title, cat.meaning, cat.description, ...cat.points)).map(
                 (cat, i) =>
                   activeCategory === cat.id && (
                     <motion.div
                       key={cat.id}
+                      id={`section-${cat.id}`}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -784,24 +821,15 @@ export default function TawhidPage() {
               </div>
             </ContentCard>
 
-            <div className="flex flex-wrap justify-center gap-3 mt-4">
-              {namesOfAllah.map((name, i) => (
-                <div key={name.name + i} className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] md:w-[calc(25%-9px)] lg:w-[calc(16.666%-10px)]">
-                  <ContentCard delay={Math.min(i * 0.02, 0.4)}>
-                    <div className="text-center py-3">
-                      <p className="text-3xl font-arabic text-gold mb-2">{name.nameAr}</p>
-                      <p className="text-themed font-medium text-base">{name.name}</p>
-                      <p className="text-themed-muted text-sm mt-1">{name.meaning}</p>
-                      <p className="text-[10px] text-themed-muted/30 mt-2">{i + 1}</p>
-                    </div>
-                  </ContentCard>
-                </div>
-              ))}
-            </div>
+            <NamesGrid search={search} />
 
           </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
+}
+
+export default function TawhidPage() {
+  return <Suspense><TawhidContent /></Suspense>;
 }

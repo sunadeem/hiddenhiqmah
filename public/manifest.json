@@ -1,0 +1,16 @@
+{
+  "name": "Hidden Hiqmah — Hidden Wisdom",
+  "short_name": "Hiqmah",
+  "description": "Explore Islam through the Quran, Hadith, stories of the Prophets, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#c9a84c",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

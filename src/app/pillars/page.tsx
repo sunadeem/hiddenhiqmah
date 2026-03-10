@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import PageSearch from "@/components/PageSearch";
 import ContentCard from "@/components/ContentCard";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
+import { textMatch } from "@/lib/search";
 import {
   BookOpen,
   AlertTriangle,
@@ -529,9 +533,33 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function PillarsPage() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("intro");
+function PillarsContent() {
+  const searchParams = useSearchParams();
+  useScrollToSection();
+  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
   const [activePillar, setActivePillar] = useState("shahada");
+  const [search, setSearch] = useState("");
+
+  const mattersMatches = (item: { point: string; detail: string; reference: string }) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, item.point, item.detail, item.reference);
+  };
+
+  const pillarMatches = (pillar: Pillar) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(
+      search,
+      pillar.title,
+      pillar.titleAr,
+      pillar.description,
+      pillar.detailedExplanation,
+      ...pillar.points,
+      ...pillar.keyVerses.flatMap((v) => [v.ref, v.text, v.arabic]),
+      ...pillar.hadith.flatMap((h) => [h.ref, h.text]),
+      ...pillar.misconceptions.flatMap((m) => [m.title, m.clarification]),
+      ...pillar.sources,
+    );
+  };
 
   return (
     <div>
@@ -540,6 +568,8 @@ export default function PillarsPage() {
         titleAr="أركان الإسلام"
         subtitle="The five foundational acts of worship upon which Islam is built"
       />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search pillars, practices, verses..." className="mb-6" />
 
       {/* Section navigation */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
@@ -632,7 +662,7 @@ export default function PillarsPage() {
                 Each pillar addresses a different aspect of the Muslim&apos;s life and worship:
               </p>
               <div className="space-y-3">
-                {pillars.map((pillar) => (
+                {pillars.filter(pillarMatches).map((pillar) => (
                   <button
                     key={pillar.id}
                     onClick={() => {
@@ -697,7 +727,7 @@ export default function PillarsPage() {
               </div>
             </ContentCard>
 
-            {whyItMatters.map((item, i) => (
+            {whyItMatters.filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -759,7 +789,7 @@ export default function PillarsPage() {
           >
             {/* Pillar subtabs */}
             <div className="flex justify-center gap-2 overflow-x-auto pb-4 mb-2 scrollbar-hide">
-              {pillars.map((pillar) => (
+              {pillars.filter(pillarMatches).map((pillar) => (
                 <button
                   key={pillar.id}
                   onClick={() => setActivePillar(pillar.id)}
@@ -775,11 +805,12 @@ export default function PillarsPage() {
             </div>
 
             <AnimatePresence mode="wait">
-              {pillars.map(
+              {pillars.filter(pillarMatches).map(
                 (pillar) =>
                   activePillar === pillar.id && (
                     <motion.div
                       key={pillar.id}
+                      id={`section-${pillar.id}`}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -815,4 +846,8 @@ export default function PillarsPage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function PillarsPage() {
+  return <Suspense><PillarsContent /></Suspense>;
 }

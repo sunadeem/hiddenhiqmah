@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
+import PageSearch from "@/components/PageSearch";
+import { textMatch } from "@/lib/search";
 import { BookMarked, ExternalLink } from "lucide-react";
 
 const categories = [
@@ -35,6 +38,17 @@ const categories = [
 ];
 
 export default function ResourcesPage() {
+  const [search, setSearch] = useState("");
+
+  const filteredCategories = categories
+    .map((cat) => ({
+      ...cat,
+      items: cat.items.filter((item) =>
+        textMatch(search, cat.title, item.name, item.description)
+      ),
+    }))
+    .filter((cat) => cat.items.length > 0);
+
   return (
     <>
       <PageHeader
@@ -43,8 +57,10 @@ export default function ResourcesPage() {
         subtitle="Authentic Islamic references and sources used throughout this app."
       />
 
+      <PageSearch value={search} onChange={setSearch} placeholder="Search resources..." className="mb-6" />
+
       <div className="space-y-6 mt-2">
-        {categories.map((category, ci) => (
+        {filteredCategories.map((category, ci) => (
           <div key={category.title}>
             <h2 className="text-lg font-semibold text-themed mb-3 flex items-center gap-2">
               <BookMarked size={18} className="text-gold" />

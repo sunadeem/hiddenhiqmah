@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import PageSearch from "@/components/PageSearch";
+import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
 import PrayerFigure, { type Position } from "@/components/PrayerFigure";
 import {
@@ -13,6 +17,14 @@ import {
   ChevronRight,
   ArrowLeft,
   User,
+  Sunrise,
+  Sun,
+  CloudSun,
+  Sunset,
+  Moon,
+  Search,
+  MapPin,
+  LocateFixed,
 } from "lucide-react";
 
 /* ───────────────────────── prayer step data ───────────────────────── */
@@ -450,7 +462,101 @@ const whyItMatters = [
   },
 ];
 
+/* ───────────────────────── prayer times data ───────────────────────── */
+
+interface PrayerTimings {
+  Fajr: string;
+  Sunrise: string;
+  Dhuhr: string;
+  Asr: string;
+  Maghrib: string;
+  Isha: string;
+}
+
+interface HijriDate {
+  day: string;
+  month: { en: string; ar: string };
+  year: string;
+  designation: { abbreviated: string };
+}
+
+interface AladhanResponse {
+  data: {
+    timings: PrayerTimings;
+    date: {
+      hijri: HijriDate;
+    };
+  };
+}
+
+const PRAYER_TIME_LIST = [
+  { key: "Fajr", english: "Fajr", arabic: "الفجر", icon: Sunrise, isPrayer: true },
+  { key: "Sunrise", english: "Sunrise", arabic: "الشروق", icon: Sun, isPrayer: false },
+  { key: "Dhuhr", english: "Dhuhr", arabic: "الظهر", icon: CloudSun, isPrayer: true },
+  { key: "Asr", english: "Asr", arabic: "العصر", icon: CloudSun, isPrayer: true },
+  { key: "Maghrib", english: "Maghrib", arabic: "المغرب", icon: Sunset, isPrayer: true },
+  { key: "Isha", english: "Isha", arabic: "العشاء", icon: Moon, isPrayer: true },
+] as const;
+
+const CALCULATION_METHODS = [
+  { value: 2, label: "ISNA" },
+  { value: 3, label: "Muslim World League" },
+  { value: 4, label: "Umm Al-Qura" },
+  { value: 5, label: "Egyptian General Authority" },
+  { value: 9, label: "Kuwait" },
+  { value: 10, label: "Qatar" },
+  { value: 11, label: "Singapore" },
+  { value: 16, label: "Dubai" },
+];
+
+function parseTime(timeStr: string): Date {
+  const [h, m] = timeStr.split(":").map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function formatCountdown(ms: number): string {
+  if (ms <= 0) return "00:00:00";
+  const totalSec = Math.floor(ms / 1000);
+  const hrs = Math.floor(totalSec / 3600);
+  const mins = Math.floor((totalSec % 3600) / 60);
+  const secs = totalSec % 60;
+  return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
+
+function getNextPrayerInfo(timings: PrayerTimings): { key: string; timeUntil: number } | null {
+  const now = new Date();
+  const prayerKeys = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"] as const;
+  for (const key of prayerKeys) {
+    const raw = timings[key];
+    if (!raw) continue;
+    const clean = raw.replace(/\s*\(.*\)/, "");
+    const prayerTime = parseTime(clean);
+    if (prayerTime > now) {
+      return { key, timeUntil: prayerTime.getTime() - now.getTime() };
+    }
+  }
+  const fajrRaw = timings.Fajr;
+  if (!fajrRaw) return null;
+  const clean = fajrRaw.replace(/\s*\(.*\)/, "");
+  const tomorrow = parseTime(clean);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return { key: "Fajr", timeUntil: tomorrow.getTime() - now.getTime() };
+}
+
+function formatDisplayTime(raw: string) {
+  const clean = raw.replace(/\s*\(.*\)/, "");
+  const [h, m] = clean.split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
+}
+
+/* ───────────────────────── sections ───────────────────────── */
+
 const sections = [
+  { key: "times", label: "Prayer Times" },
   { key: "intro", label: "What is Salah?" },
   { key: "importance", label: "Why It Matters" },
   { key: "prayers", label: "The Five Prayers" },
@@ -840,11 +946,163 @@ function PrayerInfoCard({
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function SalahPage() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("intro");
+function SalahContent() {
+  useScrollToSection();
+  const searchParams = useSearchParams();
+  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "times");
   const [activePrayer, setActivePrayer] = useState("fajr");
   const [activeVoluntary, setActiveVoluntary] = useState("tahajjud");
   const [showGuide, setShowGuide] = useState(false);
+  const [search, setSearch] = useState("");
+
+  /* ── Prayer Times state ── */
+  const [ptTimings, setPtTimings] = useState<PrayerTimings | null>(null);
+  const [ptHijri, setPtHijri] = useState<HijriDate | null>(null);
+  const [ptCity, setPtCity] = useState("");
+  const [ptCountry, setPtCountry] = useState("");
+  const [ptDisplayLocation, setPtDisplayLocation] = useState("");
+  const [ptMethod, setPtMethod] = useState(2);
+  const [ptLoading, setPtLoading] = useState(true);
+  const [ptError, setPtError] = useState("");
+  const [ptCountdown, setPtCountdown] = useState("");
+  const [ptNextPrayerKey, setPtNextPrayerKey] = useState("");
+  const [ptSearchCity, setPtSearchCity] = useState("");
+  const [ptSearchCountry, setPtSearchCountry] = useState("");
+  const [ptShowManualInput, setPtShowManualInput] = useState(false);
+  const [ptLocating, setPtLocating] = useState(false);
+  const ptIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const ptFetched = useRef(false);
+
+  const ptFetchTimes = useCallback(
+    async (c: string, co: string, m: number) => {
+      setPtLoading(true);
+      setPtError("");
+      try {
+        const res = await fetch(
+          `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(c)}&country=${encodeURIComponent(co)}&method=${m}`
+        );
+        if (!res.ok) throw new Error("Failed to fetch prayer times");
+        const data: AladhanResponse = await res.json();
+        setPtTimings(data.data.timings);
+        setPtHijri(data.data.date.hijri);
+        setPtDisplayLocation(`${c}, ${co}`);
+      } catch {
+        setPtError("Could not load prayer times. Please try a different city.");
+      } finally {
+        setPtLoading(false);
+      }
+    },
+    []
+  );
+
+  const ptAutoLocate = useCallback(async () => {
+    if (!navigator.geolocation) return;
+    setPtLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const geoRes = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}`
+          );
+          const geo = await geoRes.json();
+          const c = geo.city || geo.locality || "Makkah";
+          const co = geo.countryName || "Saudi Arabia";
+          setPtCity(c);
+          setPtCountry(co);
+          ptFetchTimes(c, co, ptMethod);
+        } catch {
+          setPtCity("Makkah");
+          setPtCountry("Saudi Arabia");
+          ptFetchTimes("Makkah", "Saudi Arabia", ptMethod);
+        }
+        setPtLocating(false);
+      },
+      () => {
+        setPtCity("Makkah");
+        setPtCountry("Saudi Arabia");
+        setPtShowManualInput(true);
+        ptFetchTimes("Makkah", "Saudi Arabia", ptMethod);
+        setPtLocating(false);
+      },
+      { timeout: 5000 }
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ptFetchTimes]);
+
+  useEffect(() => {
+    if (ptFetched.current) return;
+    ptFetched.current = true;
+    if (!navigator.geolocation) {
+      setPtCity("Makkah");
+      setPtCountry("Saudi Arabia");
+      setPtShowManualInput(true);
+      ptFetchTimes("Makkah", "Saudi Arabia", ptMethod);
+      return;
+    }
+    ptAutoLocate();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!ptTimings) return;
+    function tick() {
+      if (!ptTimings) return;
+      const next = getNextPrayerInfo(ptTimings);
+      if (next) {
+        setPtNextPrayerKey(next.key);
+        setPtCountdown(formatCountdown(next.timeUntil));
+      }
+    }
+    tick();
+    ptIntervalRef.current = setInterval(tick, 1000);
+    return () => {
+      if (ptIntervalRef.current) clearInterval(ptIntervalRef.current);
+    };
+  }, [ptTimings]);
+
+  const ptHandleMethodChange = (newMethod: number) => {
+    setPtMethod(newMethod);
+    if (ptCity && ptCountry) {
+      ptFetchTimes(ptCity, ptCountry, newMethod);
+    }
+  };
+
+  const ptHandleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ptSearchCity.trim()) return;
+    const c = ptSearchCity.trim();
+    const co = ptSearchCountry.trim() || "auto";
+    setPtCity(c);
+    setPtCountry(co);
+    ptFetchTimes(c, co, ptMethod);
+    setPtShowManualInput(false);
+  };
+
+  /* ── search matchers ── */
+  const mattersMatches = (item: { point: string; detail: string; reference: string }) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, item.point, item.detail, item.reference);
+  };
+
+  const prayerMatches = (p: Prayer) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(
+      search,
+      p.name,
+      p.nameAr,
+      p.time,
+      p.description,
+      p.additionalNote,
+      p.verse?.text,
+      p.verse?.ref,
+      p.hadith?.text,
+      p.hadith?.ref,
+    );
+  };
+
+  const filteredPrayers = prayers.filter(prayerMatches);
+  const filteredVoluntary = voluntaryPrayers.filter(prayerMatches);
+  const filteredMatters = whyItMatters.filter(mattersMatches);
 
   const currentPrayer = activeSection === "voluntary"
     ? voluntaryPrayers.find((p) => p.id === activeVoluntary)!
@@ -857,6 +1115,8 @@ export default function SalahPage() {
         titleAr="الصلاة"
         subtitle="The five daily prayers — the direct connection between the servant and Allah"
       />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search prayers, steps, duas..." className="mb-6" />
 
       {/* Section navigation */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
@@ -879,6 +1139,227 @@ export default function SalahPage() {
       </div>
 
       <AnimatePresence mode="wait">
+        {/* ─── Prayer Times ─── */}
+        {activeSection === "times" && (
+          <motion.div
+            key="times"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6 max-w-4xl"
+          >
+            {/* Location & Hijri Date */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="flex flex-wrap items-center justify-between gap-4"
+            >
+              <div>
+                {ptDisplayLocation && (
+                  <div className="flex items-center gap-1.5">
+                    <MapPin size={14} className="text-gold" />
+                    <p className="text-themed text-sm font-medium">{ptDisplayLocation}</p>
+                  </div>
+                )}
+                {ptHijri && (
+                  <p className="text-themed-muted text-xs mt-1">
+                    {ptHijri.day} {ptHijri.month.en} {ptHijri.year} {ptHijri.designation.abbreviated}
+                    <span className="font-arabic ml-2 text-gold/60">
+                      {ptHijri.month.ar}
+                    </span>
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    ptAutoLocate();
+                    setPtShowManualInput(false);
+                  }}
+                  disabled={ptLocating}
+                  className="flex items-center gap-1.5 text-xs text-themed-muted hover:text-gold transition-colors disabled:opacity-50"
+                  title="Auto-detect location"
+                >
+                  <LocateFixed size={14} className={ptLocating ? "animate-spin" : ""} />
+                  Auto-locate
+                </button>
+                <button
+                  onClick={() => setPtShowManualInput((v) => !v)}
+                  className="flex items-center gap-1.5 text-xs text-themed-muted hover:text-gold transition-colors"
+                >
+                  <Search size={14} />
+                  Change Location
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Manual Input */}
+            {ptShowManualInput && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <form onSubmit={ptHandleSearch} className="flex flex-wrap gap-2">
+                  <input
+                    type="text"
+                    placeholder="City (e.g. London)"
+                    value={ptSearchCity}
+                    onChange={(e) => setPtSearchCity(e.target.value)}
+                    className="flex-1 min-w-[140px] px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Country (optional)"
+                    value={ptSearchCountry}
+                    onChange={(e) => setPtSearchCountry(e.target.value)}
+                    className="flex-1 min-w-[140px] px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 hover:bg-[var(--color-gold)]/30 transition-colors"
+                  >
+                    Search
+                  </button>
+                </form>
+              </motion.div>
+            )}
+
+            {/* Calculation Method */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
+            >
+              <label className="text-xs text-themed-muted block mb-1.5">
+                Calculation Method
+              </label>
+              <select
+                value={ptMethod}
+                onChange={(e) => ptHandleMethodChange(Number(e.target.value))}
+                className="px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed focus:outline-none focus:border-[var(--color-gold)]/50 cursor-pointer"
+              >
+                {CALCULATION_METHODS.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.label}
+                  </option>
+                ))}
+              </select>
+            </motion.div>
+
+            {/* Next Prayer Countdown */}
+            {ptNextPrayerKey && !ptLoading && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+              >
+                <div className="card-bg rounded-xl border sidebar-border p-5 text-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/5 to-transparent pointer-events-none" />
+                  <div className="relative">
+                    <p className="text-xs text-themed-muted uppercase tracking-widest mb-1">
+                      Next Prayer
+                    </p>
+                    <p className="text-gold text-lg font-semibold">{ptNextPrayerKey}</p>
+                    <p className="text-2xl md:text-3xl font-mono text-themed mt-2 tracking-wider">
+                      {ptCountdown}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Loading / Error */}
+            {ptLoading && (
+              <div className="text-center py-12">
+                <div className="inline-block w-8 h-8 border-2 border-[var(--color-gold)]/30 border-t-[var(--color-gold)] rounded-full animate-spin" />
+                <p className="text-themed-muted text-sm mt-3">Loading prayer times...</p>
+              </div>
+            )}
+            {ptError && (
+              <div className="text-center py-8">
+                <p className="text-red-400 text-sm">{ptError}</p>
+              </div>
+            )}
+
+            {/* Prayer Time Cards */}
+            {ptTimings && !ptLoading && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {PRAYER_TIME_LIST.map((prayer, i) => {
+                  const raw = ptTimings[prayer.key as keyof PrayerTimings];
+                  if (!raw) return null;
+                  const isNext = prayer.isPrayer && prayer.key === ptNextPrayerKey;
+                  const Icon = prayer.icon;
+                  return (
+                    <ContentCard
+                      key={prayer.key}
+                      delay={0.25 + i * 0.06}
+                      className={
+                        isNext
+                          ? "!border-[var(--color-gold)]/60 shadow-[0_0_20px_rgba(212,175,55,0.15)]"
+                          : !prayer.isPrayer
+                          ? "opacity-60"
+                          : ""
+                      }
+                    >
+                      <div className="flex items-center gap-4">
+                        <div
+                          className={`p-2.5 rounded-lg shrink-0 ${
+                            isNext
+                              ? "bg-[var(--color-gold)]/20"
+                              : "bg-[var(--color-gold)]/10"
+                          }`}
+                        >
+                          <Icon
+                            size={22}
+                            className={isNext ? "text-gold" : "text-gold/70"}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-baseline gap-2">
+                            <h3
+                              className={`font-semibold text-sm ${
+                                isNext ? "text-gold" : "text-themed"
+                              }`}
+                            >
+                              {prayer.english}
+                            </h3>
+                            <span className="text-xs font-arabic text-gold/50">
+                              {prayer.arabic}
+                            </span>
+                          </div>
+                          {!prayer.isPrayer && (
+                            <span className="text-[10px] text-themed-muted uppercase tracking-wide">
+                              Not a prayer
+                            </span>
+                          )}
+                        </div>
+                        <p
+                          className={`text-lg font-mono font-semibold shrink-0 ${
+                            isNext ? "text-gold" : "text-themed"
+                          }`}
+                        >
+                          {formatDisplayTime(raw)}
+                        </p>
+                      </div>
+                      {isNext && (
+                        <motion.div
+                          initial={{ scaleX: 0 }}
+                          animate={{ scaleX: 1 }}
+                          className="mt-3 h-[2px] rounded-full bg-gradient-to-r from-[var(--color-gold)] to-transparent origin-left"
+                        />
+                      )}
+                    </ContentCard>
+                  );
+                })}
+              </div>
+            )}
+          </motion.div>
+        )}
+
         {/* ─── What is Salah? ─── */}
         {activeSection === "intro" && (
           <motion.div
@@ -949,7 +1430,7 @@ export default function SalahPage() {
             <ContentCard delay={0.3}>
               <h2 className="text-xl font-semibold text-themed mb-4">The Five Daily Prayers</h2>
               <div className="space-y-3">
-                {prayers.map((prayer) => (
+                {filteredPrayers.map((prayer) => (
                   <button
                     key={prayer.id}
                     onClick={() => {
@@ -1023,7 +1504,7 @@ export default function SalahPage() {
               </div>
             </ContentCard>
 
-            {whyItMatters.map((item, i) => (
+            {filteredMatters.map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -1087,7 +1568,7 @@ export default function SalahPage() {
               <div className="flex gap-4 items-start">
                 {/* Left side — vertical prayer pills */}
                 <div className="flex flex-col gap-2 shrink-0">
-                  {prayers.map((prayer) => (
+                  {filteredPrayers.map((prayer) => (
                     <button
                       key={prayer.id}
                       onClick={() => {
@@ -1111,11 +1592,12 @@ export default function SalahPage() {
                 {/* Right side — prayer content */}
                 <div className="flex-1 min-w-0">
                   <AnimatePresence mode="wait">
-                    {prayers.map(
+                    {filteredPrayers.map(
                       (prayer) =>
                         activePrayer === prayer.id && (
                           <motion.div
                             key={prayer.id}
+                            id={`section-${prayer.id}`}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
@@ -1189,7 +1671,7 @@ export default function SalahPage() {
               <div className="flex gap-4 items-start">
                 {/* Left side — vertical prayer pills */}
                 <div className="flex flex-col gap-2 shrink-0">
-                  {voluntaryPrayers.map((prayer) => (
+                  {filteredVoluntary.map((prayer) => (
                     <button
                       key={prayer.id}
                       onClick={() => {
@@ -1213,11 +1695,12 @@ export default function SalahPage() {
                 {/* Right side — prayer content */}
                 <div className="flex-1 min-w-0">
                   <AnimatePresence mode="wait">
-                    {voluntaryPrayers.map(
+                    {filteredVoluntary.map(
                       (prayer) =>
                         activeVoluntary === prayer.id && (
                           <motion.div
                             key={prayer.id}
+                            id={`section-${prayer.id}`}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
@@ -1280,4 +1763,8 @@ export default function SalahPage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function SalahPage() {
+  return <Suspense><SalahContent /></Suspense>;
 }

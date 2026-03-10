@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import PageSearch from "@/components/PageSearch";
 import ContentCard from "@/components/ContentCard";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
+import { textMatch } from "@/lib/search";
 import { BookOpen } from "lucide-react";
 
 /* ───────────────────────── data ───────────────────────── */
@@ -529,10 +533,27 @@ function LastTenInfoCard({ topic }: { topic: LastTenTopic }) {
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function RamadanPage() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("intro");
+function RamadanContent() {
+  const searchParams = useSearchParams();
+  useScrollToSection();
+  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
   const [activeFasting, setActiveFasting] = useState("basics");
   const [activeLastTen, setActiveLastTen] = useState("laylatul-qadr");
+  const [search, setSearch] = useState("");
+
+  const topicMatches = (t: { name: string; content: { intro: string; points: { title: string; detail: string; note?: string }[]; verse?: { text: string }; source?: string } }) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, t.name, t.content.intro, t.content.source,
+      t.content.verse?.text,
+      ...t.content.points.map(p => p.title),
+      ...t.content.points.map(p => p.detail),
+    );
+  };
+
+  const mattersMatches = (item: { point: string; detail: string; reference: string }) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, item.point, item.detail, item.reference);
+  };
 
   return (
     <div>
@@ -541,6 +562,8 @@ export default function RamadanPage() {
         titleAr="رمضان"
         subtitle="The blessed month of fasting, Quran, and spiritual renewal"
       />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search fasting, prayers, virtues..." className="mb-6" />
 
       {/* Section navigation */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
@@ -656,7 +679,7 @@ export default function RamadanPage() {
             </ContentCard>
 
             {/* Numbered points */}
-            {whyItMatters.map((item, i) => (
+            {whyItMatters.filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -722,7 +745,7 @@ export default function RamadanPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {fastingTopics.map((topic) => (
+                {fastingTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveFasting(topic.id)}
@@ -745,6 +768,7 @@ export default function RamadanPage() {
                       activeFasting === topic.id && (
                         <motion.div
                           key={topic.id}
+                          id={`section-${topic.id}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -800,7 +824,7 @@ export default function RamadanPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {lastTenTopics.map((topic) => (
+                {lastTenTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => setActiveLastTen(topic.id)}
@@ -823,6 +847,7 @@ export default function RamadanPage() {
                       activeLastTen === topic.id && (
                         <motion.div
                           key={topic.id}
+                          id={`section-${topic.id}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -867,4 +892,8 @@ export default function RamadanPage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function RamadanPage() {
+  return <Suspense><RamadanContent /></Suspense>;
 }

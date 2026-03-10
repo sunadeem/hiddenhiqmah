@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
@@ -652,8 +654,10 @@ const duas: Dua[] = [
   },
 ];
 
-export default function DuasPage() {
-  const [activeCategory, setActiveCategory] = useState("powerful");
+function DuasContent() {
+  useScrollToSection();
+  const searchParams = useSearchParams();
+  const [activeCategory, setActiveCategory] = useState(searchParams.get("tab") || "all");
   const [search, setSearch] = useState("");
 
   const searchLower = search.toLowerCase().trim();
@@ -774,7 +778,7 @@ export default function DuasPage() {
             const catLabel = categories.find((c) => c.key === displayTag)?.label ?? displayTag;
 
             return (
-              <ContentCard key={`${dua.title}-${i}`} delay={Math.min(i * 0.05, 0.4)}>
+              <ContentCard key={`${dua.title}-${i}`} delay={Math.min(i * 0.05, 0.4)} id={`section-${dua.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div>
@@ -834,4 +838,8 @@ export default function DuasPage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function DuasPage() {
+  return <Suspense><DuasContent /></Suspense>;
 }

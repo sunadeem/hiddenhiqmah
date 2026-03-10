@@ -1,12 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
 import BottomTabBar from "./BottomTabBar";
+import AskHiqmahFloat from "./AskHiqmah";
+
+const BARE_ROUTES = ["/ask"];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Render without shell chrome for popup routes
+  if (BARE_ROUTES.includes(pathname)) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-themed">
@@ -34,6 +44,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </main>
 
       <BottomTabBar />
+      <AskHiqmahFloat />
     </div>
   );
 }

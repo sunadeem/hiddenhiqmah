@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import PageSearch from "@/components/PageSearch";
+import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
 import { BookOpen } from "lucide-react";
 
@@ -582,11 +586,51 @@ function TopicInfoCard({ topic }: { topic: Topic }) {
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function DayOfJudgementPage() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("intro");
+function DayOfJudgementContent() {
+  useScrollToSection();
+  const searchParams = useSearchParams();
+  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
+  const [search, setSearch] = useState("");
   const [activeSigns, setActiveSigns] = useState("minor-signs");
   const [activeEvents, setActiveEvents] = useState("trumpet");
   const [activeSalvation, setActiveSalvation] = useState("intercession");
+
+  const topicMatches = (t: { name?: string; point?: string; detail?: string; reference?: string; content?: { intro: string; points: { title: string; detail: string; note?: string }[]; verse?: { arabic: string; text: string; ref: string }; source?: string } }) => {
+    if (!search || search.length < 2) return true;
+    if ('content' in t && t.content) {
+      return textMatch(search, t.name, t.content.intro, t.content.source,
+        t.content.verse?.text, t.content.verse?.ref,
+        ...t.content.points.map(p => p.title),
+        ...t.content.points.map(p => p.detail),
+      );
+    }
+    // For whyItMatters items
+    return textMatch(search, t.point, t.detail, t.reference);
+  };
+
+  const filteredSigns = signsTopics.filter(topicMatches);
+  const filteredEvents = eventsTopics.filter(topicMatches);
+  const filteredSalvation = salvationTopics.filter(topicMatches);
+  const filteredWhyItMatters = whyItMatters.filter(topicMatches);
+
+  // Auto-select first visible topic if current selection is filtered out
+  useEffect(() => {
+    if (filteredSigns.length > 0 && !filteredSigns.find(t => t.id === activeSigns)) {
+      setActiveSigns(filteredSigns[0].id);
+    }
+  }, [filteredSigns, activeSigns]);
+
+  useEffect(() => {
+    if (filteredEvents.length > 0 && !filteredEvents.find(t => t.id === activeEvents)) {
+      setActiveEvents(filteredEvents[0].id);
+    }
+  }, [filteredEvents, activeEvents]);
+
+  useEffect(() => {
+    if (filteredSalvation.length > 0 && !filteredSalvation.find(t => t.id === activeSalvation)) {
+      setActiveSalvation(filteredSalvation[0].id);
+    }
+  }, [filteredSalvation, activeSalvation]);
 
   return (
     <div>
@@ -595,6 +639,8 @@ export default function DayOfJudgementPage() {
         titleAr="يوم القيامة"
         subtitle="The greatest day — when every soul will stand before Allah and be held accountable."
       />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search signs, events, verses..." className="mb-6" />
 
       {/* Section navigation */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
@@ -753,8 +799,8 @@ export default function DayOfJudgementPage() {
             </ContentCard>
 
             {/* Numbered points */}
-            {whyItMatters.map((item, i) => (
-              <ContentCard key={i} delay={0.05 + i * 0.05}>
+            {filteredWhyItMatters.map((item, i) => (
+              <ContentCard key={item.point} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
                     <span className="text-gold font-semibold text-sm">
@@ -816,7 +862,7 @@ export default function DayOfJudgementPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {signsTopics.map((topic) => (
+                {filteredSigns.map((topic) => (
                   <button
                     key={topic.id}
                     onClick={() => setActiveSigns(topic.id)}
@@ -834,11 +880,12 @@ export default function DayOfJudgementPage() {
               {/* Right side — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {signsTopics.map(
+                  {filteredSigns.map(
                     (topic) =>
                       activeSigns === topic.id && (
                         <motion.div
                           key={topic.id}
+                          id={`section-${topic.id}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -898,7 +945,7 @@ export default function DayOfJudgementPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {eventsTopics.map((topic) => (
+                {filteredEvents.map((topic) => (
                   <button
                     key={topic.id}
                     onClick={() => setActiveEvents(topic.id)}
@@ -916,11 +963,12 @@ export default function DayOfJudgementPage() {
               {/* Right side — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {eventsTopics.map(
+                  {filteredEvents.map(
                     (topic) =>
                       activeEvents === topic.id && (
                         <motion.div
                           key={topic.id}
+                          id={`section-${topic.id}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -973,7 +1021,7 @@ export default function DayOfJudgementPage() {
             <div className="flex gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex flex-col gap-2 shrink-0">
-                {salvationTopics.map((topic) => (
+                {filteredSalvation.map((topic) => (
                   <button
                     key={topic.id}
                     onClick={() => setActiveSalvation(topic.id)}
@@ -991,11 +1039,12 @@ export default function DayOfJudgementPage() {
               {/* Right side — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {salvationTopics.map(
+                  {filteredSalvation.map(
                     (topic) =>
                       activeSalvation === topic.id && (
                         <motion.div
                           key={topic.id}
+                          id={`section-${topic.id}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -1041,4 +1090,8 @@ export default function DayOfJudgementPage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function DayOfJudgementPage() {
+  return <Suspense><DayOfJudgementContent /></Suspense>;
 }

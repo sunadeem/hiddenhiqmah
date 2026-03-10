@@ -12,7 +12,7 @@ export default function ProphetsLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isDetailView = pathname !== "/prophets";
+  const isDetailView = pathname !== "/prophets" && pathname !== "/prophets/family-tree";
   const activeSlug = pathname.split("/").pop();
 
   if (!isDetailView) {

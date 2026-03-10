@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
+import PageSearch from "@/components/PageSearch";
+import { textMatch } from "@/lib/search";
 import { ArrowRight, GitBranch } from "lucide-react";
 import { prophets } from "@/data/prophets";
 
@@ -40,6 +43,11 @@ function getYearsAgo(date: string): string | null {
 }
 
 export default function ProphetsPage() {
+  const [search, setSearch] = useState("");
+  const filtered = prophets.filter((p) =>
+    textMatch(search, p.name, p.nameAr, p.date, p.era, p.summary, p.surahs)
+  );
+
   return (
     <div>
       <PageHeader
@@ -59,13 +67,15 @@ export default function ProphetsPage() {
         }
       />
 
+      <PageSearch value={search} onChange={setSearch} placeholder="Search prophets by name, era, story..." className="mb-6" />
+
       {/* Timeline */}
       <div className="relative">
         {/* Vertical line */}
         <div className="absolute left-[88px] md:left-[140px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-[var(--color-gold)] via-[var(--color-border)] to-transparent" />
 
         <div className="space-y-4">
-          {prophets.map((prophet, i) => {
+          {filtered.map((prophet, i) => {
             const dateLabel = prophet.date === "Unknown" ? "Time Unknown" : prophet.date;
             const yearsAgo = getYearsAgo(prophet.date);
             return (

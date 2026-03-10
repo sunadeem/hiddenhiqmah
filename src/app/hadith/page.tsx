@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import { ArrowRight, ScrollText, Search, Star, X } from "lucide-react";
+import { parseHadithRef } from "@/lib/search";
 import {
   SincerityIllustration,
   SafeFromHarmIllustration,
@@ -310,7 +311,22 @@ export default function HadithPage() {
     );
   }
 
-  const isSearching = search.length >= 3;
+  // Check for structured hadith reference (e.g. "bukhari 50", "muslim:2912")
+  const hadithRef = parseHadithRef(search);
+  const hadithRefBook = (() => {
+    if (!hadithRef) return null;
+    const meta = metadataMap[hadithRef.collection];
+    if (!meta) return null;
+    const book = meta.books.find(
+      (b) => hadithRef.hadithId >= b.startHadith && hadithRef.hadithId <= b.endHadith
+    );
+    return book ? { bookId: book.id, bookName: book.name } : null;
+  })();
+  const hadithRefCollection = hadithRef
+    ? collections.find((c) => c.slug === hadithRef.collection)
+    : null;
+
+  const isSearching = search.length >= 3 || !!hadithRef;
 
   const isFeatured = selected === "featured";
   const selectedInfo = collections.find((c) => c.slug === selected);
@@ -334,7 +350,7 @@ export default function HadithPage() {
         />
         <input
           type="text"
-          placeholder="Search across all collections..."
+          placeholder="Search hadiths or references (e.g. bukhari 50, muslim 2912)..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full pl-10 pr-10 py-3 rounded-xl card-bg border sidebar-border text-themed placeholder:text-themed-muted focus:outline-none focus:border-[var(--color-gold)] transition-colors"
@@ -368,6 +384,35 @@ export default function HadithPage() {
                   : `${searchResults.length}${searchResults.length >= 50 ? "+" : ""} results`}
               </span>
             </div>
+
+            {/* Direct reference match */}
+            {hadithRef && hadithRefCollection && hadithRefBook && (
+              <Link
+                href={`/hadith/${hadithRef.collection}/${hadithRefBook.bookId}?h=${hadithRef.hadithId}`}
+              >
+                <div className="card-bg rounded-lg border border-[var(--color-gold)]/40 p-4 mb-3 hover:border-[var(--color-gold)] transition-colors">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-semibold text-gold">
+                      #{hadithRef.hadithId}
+                    </span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded bg-[var(--color-gold)]/10 text-gold">
+                      {hadithRefCollection.shortName}
+                    </span>
+                    <span className="text-[11px] text-themed-muted">
+                      {hadithRefBook.bookName}
+                    </span>
+                  </div>
+                  <p className="text-sm text-themed">
+                    Go to {hadithRefCollection.name} — Hadith #{hadithRef.hadithId}
+                  </p>
+                </div>
+              </Link>
+            )}
+            {hadithRef && hadithRefCollection && !hadithRefBook && (
+              <p className="text-sm text-themed-muted py-2">
+                Hadith #{hadithRef.hadithId} not found in {hadithRefCollection.name}
+              </p>
+            )}
 
             {searchResults.length > 0 ? (
               <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">

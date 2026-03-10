@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import { getProphetBySlug } from "@/data/prophets";
@@ -571,6 +571,14 @@ export default function FamilyTreePage() {
 
   return (
     <div>
+      <Link
+        href="/prophets"
+        className="inline-flex items-center gap-1 text-sm text-themed-muted hover:text-gold transition-colors mb-4"
+      >
+        <ArrowLeft size={16} />
+        All Prophets
+      </Link>
+
       <PageHeader
         title="Family Tree of the Prophets"
         titleAr="شجرة أنساب الأنبياء"

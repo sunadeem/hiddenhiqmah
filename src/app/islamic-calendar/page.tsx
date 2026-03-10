@@ -1,8 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import PageSearch from "@/components/PageSearch";
+import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
 import { BookOpen, Calendar } from "lucide-react";
 
@@ -366,13 +370,46 @@ type SectionKey = (typeof sections)[number]["key"];
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function IslamicCalendarPage() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("overview");
+function IslamicCalendarContent() {
+  useScrollToSection();
+  const searchParams = useSearchParams();
+  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "overview");
+  const [search, setSearch] = useState("");
   const [expandedMonth, setExpandedMonth] = useState<number | null>(1);
   const [selectedDate, setSelectedDate] = useState(() => {
     const now = new Date();
     return now.toISOString().split("T")[0]; // YYYY-MM-DD
   });
+
+  const filteredMonths = useMemo(
+    () =>
+      search
+        ? months.filter(
+            (m) =>
+              textMatch(m.name, search) ||
+              textMatch(m.nameAr, search) ||
+              textMatch(m.meaning, search) ||
+              textMatch(m.intro, search) ||
+              m.points.some(
+                (p) => textMatch(p.title, search) || textMatch(p.detail, search)
+              )
+          )
+        : months,
+    [search]
+  );
+
+  const filteredKeyDates = useMemo(
+    () =>
+      search
+        ? keyDates.filter(
+            (d) =>
+              textMatch(d.date, search) ||
+              textMatch(d.event, search) ||
+              textMatch(d.note, search)
+          )
+        : keyDates,
+    [search]
+  );
 
   const todayHijri = useMemo(() => {
     try {
@@ -456,6 +493,8 @@ export default function IslamicCalendarPage() {
           ) : undefined
         }
       />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search months, events, dates..." className="mb-6" />
 
       {/* Section navigation */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
@@ -560,10 +599,10 @@ export default function IslamicCalendarPage() {
           >
             {/* Month grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-              {months.map((month, i) => {
+              {filteredMonths.map((month, i) => {
                 const isExpanded = expandedMonth === month.id;
                 return (
-                  <ContentCard key={month.id} delay={0.02 + i * 0.015}>
+                  <ContentCard key={month.id} delay={0.02 + i * 0.015} id={`section-${month.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
                     <button
                       onClick={() =>
                         setExpandedMonth(isExpanded ? null : month.id)
@@ -719,7 +758,7 @@ export default function IslamicCalendarPage() {
             </ContentCard>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {months
+              {filteredMonths
                 .filter((m) => m.sacred)
                 .map((month, i) => (
                   <ContentCard key={month.id} delay={0.15 + i * 0.05}>
@@ -843,8 +882,8 @@ export default function IslamicCalendarPage() {
             </ContentCard>
 
             <div className="space-y-2">
-              {keyDates.map((item, i) => (
-                <ContentCard key={item.event} delay={0.03 + i * 0.02}>
+              {filteredKeyDates.map((item, i) => (
+                <ContentCard key={item.event} delay={0.03 + i * 0.02} id={`section-${item.event.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
                   <div className="flex items-start gap-4">
                     <div className="w-20 shrink-0">
                       <span className="text-xs text-gold font-medium bg-gold/10 border border-gold/20 rounded-lg px-2 py-1 inline-block">
@@ -1030,4 +1069,8 @@ export default function IslamicCalendarPage() {
       </AnimatePresence>
     </div>
   );
+}
+
+export default function IslamicCalendarPage() {
+  return <Suspense><IslamicCalendarContent /></Suspense>;
 }

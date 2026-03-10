@@ -18,6 +18,8 @@
     format("woff2");
 }
 
+/* Display font loaded via Google Fonts */
+
 :root {
   --color-bg: #0a1628;
   --color-sidebar: #0d1f3c;
@@ -86,6 +88,15 @@ body {
   border-color: var(--color-gold);
 }
 
+.font-display {
+  font-family: "Cinzel", Georgia, serif;
+}
+
+.font-cursive {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+}
+
 .font-arabic {
   font-family: var(--font-arabic);
 }
@@ -151,6 +162,27 @@ body {
 .tooltip:hover::after {
   opacity: 1;
   transform: translateX(-50%) scale(1);
+}
+
+/* Shimmer sweep for Ask Hiqmah button */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+/* Scroll-to-section highlight glow */
+@keyframes section-glow {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+  20% { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+.section-highlight {
+  animation: section-glow 2s ease-out;
+  border-radius: inherit;
 }
 
 /* Subtle glow pulse */
