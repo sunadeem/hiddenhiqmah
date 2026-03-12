@@ -1,10 +1,13 @@
 // localStorage utility for bookmarks, reading progress, and user preferences
 
+export type BookmarkType = "verse" | "hadith" | "dua" | "dhikr" | "name" | "topic" | "page";
+
 export type Bookmark = {
-  type: "verse" | "hadith" | "page";
-  id: string; // e.g., "1:5" for verse, "bukhari-1" for hadith, "/salah" for page
+  type: BookmarkType;
+  id: string; // e.g., "1:5" for verse, "bukhari-1" for hadith, "dua-3" for dua
   title: string;
   subtitle?: string;
+  href?: string; // optional deep link for navigation
   timestamp: number;
 };
 

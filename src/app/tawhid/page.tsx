@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef, useCallback, Suspense } from "react";
+import { useState, useRef, useCallback, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import PageSearch from "@/components/PageSearch";
 import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
+import BookmarkButton from "@/components/BookmarkButton";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import {
   Shield,
@@ -288,14 +289,33 @@ type SectionKey = (typeof sections)[number]["key"];
 
 /* ───────────────────────── components ───────────────────────── */
 
-function NamesGrid({ search }: { search: string }) {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+function NamesGrid({ search, initialNameIndex }: { search: string; initialNameIndex: number | null }) {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(initialNameIndex);
   const selected = selectedIndex !== null ? namesOfAllah[selectedIndex] : null;
   const panelRef = useRef<HTMLDivElement>(null);
+  const gridItemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const hasScrolledToInitial = useRef(false);
 
   const filteredNames = namesOfAllah
     .map((name, i) => ({ ...name, originalIndex: i }))
     .filter((name) => textMatch(search, name.name, name.meaning, name.explanation));
+
+  // Auto-scroll to the initial name from URL param
+  useEffect(() => {
+    if (initialNameIndex !== null && !hasScrolledToInitial.current) {
+      hasScrolledToInitial.current = true;
+      setTimeout(() => {
+        const gridItem = gridItemRefs.current.get(initialNameIndex);
+        if (gridItem) {
+          gridItem.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        // Also scroll the detail panel into view after the grid item
+        setTimeout(() => {
+          panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }, 300);
+      }, 100);
+    }
+  }, [initialNameIndex]);
 
   const selectName = useCallback((i: number | null) => {
     setSelectedIndex(i);
@@ -331,12 +351,21 @@ function NamesGrid({ search }: { search: string }) {
                     <p className="text-gold text-sm">{selected.meaning}</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => selectName(null)}
-                  className="text-themed-muted hover:text-themed transition-colors shrink-0 mt-1"
-                >
-                  <X size={18} />
-                </button>
+                <div className="flex items-center gap-2 shrink-0 mt-1">
+                  <BookmarkButton
+                    type="name"
+                    id={`name-${selectedIndex + 1}`}
+                    title={selected.name}
+                    subtitle={selected.nameAr}
+                    href={`/tawhid?tab=names&name=${selectedIndex}`}
+                  />
+                  <button
+                    onClick={() => selectName(null)}
+                    className="text-themed-muted hover:text-themed transition-colors"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
               </div>
 
               <p className="text-themed-muted text-sm leading-relaxed mt-4">
@@ -389,6 +418,7 @@ function NamesGrid({ search }: { search: string }) {
         {filteredNames.map((name) => (
           <div
             key={name.name + name.originalIndex}
+            ref={(el) => { if (el) gridItemRefs.current.set(name.originalIndex, el); }}
             className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] md:w-[calc(25%-9px)] lg:w-[calc(16.666%-10px)]"
           >
             <div
@@ -517,6 +547,10 @@ function CategoryCard({ cat, index }: { cat: Category; index: number }) {
 function TawhidContent() {
   const searchParams = useSearchParams();
   useScrollToSection();
+  const nameParam = searchParams.get("name");
+  const initialNameIndex = nameParam !== null && !isNaN(Number(nameParam)) && Number(nameParam) >= 0 && Number(nameParam) < namesOfAllah.length
+    ? Number(nameParam)
+    : null;
   const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
   const [activeCategory, setActiveCategory] = useState("rububiyyah");
   const [search, setSearch] = useState("");
@@ -821,7 +855,7 @@ function TawhidContent() {
               </div>
             </ContentCard>
 
-            <NamesGrid search={search} />
+            <NamesGrid search={search} initialNameIndex={initialNameIndex} />
 
           </motion.div>
         )}

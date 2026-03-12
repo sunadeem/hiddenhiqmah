@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import { getDhikrCounts, setDhikrCount } from "@/lib/storage";
 import { RotateCcw } from "lucide-react";
+import BookmarkButton from "@/components/BookmarkButton";
 
 type DhikrItem = {
   id: string;
@@ -175,7 +177,7 @@ function DhikrCard({
   }, [isComplete]);
 
   return (
-    <ContentCard delay={delay} className="relative overflow-hidden">
+    <ContentCard id={dhikr.id} delay={delay} className="relative overflow-hidden">
       {/* Completion glow overlay */}
       <AnimatePresence>
         {showComplete && (
@@ -213,21 +215,30 @@ function DhikrCard({
         </div>
       </button>
 
-      {/* Reset button */}
-      {count > 0 && (
-        <motion.button
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onReset();
-          }}
-          className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-white/10 text-themed-muted hover:text-themed transition-colors"
-          title="Reset count"
-        >
-          <RotateCcw size={14} />
-        </motion.button>
-      )}
+      {/* Top-right actions */}
+      <div className="absolute top-3 right-3 flex items-center gap-1">
+        {count > 0 && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onReset();
+            }}
+            className="p-1.5 rounded-lg hover:bg-white/10 text-themed-muted hover:text-themed transition-colors"
+            title="Reset count"
+          >
+            <RotateCcw size={14} />
+          </motion.button>
+        )}
+        <BookmarkButton
+          type="dhikr"
+          id={dhikr.id}
+          title={dhikr.transliteration}
+          subtitle={dhikr.english}
+          href={`/dhikr?item=${dhikr.id}`}
+        />
+      </div>
 
       {/* Completion badge */}
       <AnimatePresence>
@@ -248,7 +259,9 @@ function DhikrCard({
   );
 }
 
-export default function DhikrPage() {
+function DhikrPageInner() {
+  const searchParams = useSearchParams();
+  const scrollToItem = searchParams.get("item");
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
 
@@ -256,6 +269,19 @@ export default function DhikrPage() {
     setCounts(getDhikrCounts());
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!scrollToItem) return;
+    const timer = setTimeout(() => {
+      const el = document.getElementById(scrollToItem);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add("section-highlight");
+        setTimeout(() => el.classList.remove("section-highlight"), 2000);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [scrollToItem]);
 
   const increment = useCallback((id: string) => {
     setCounts((prev) => {
@@ -319,5 +345,13 @@ export default function DhikrPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function DhikrPage() {
+  return (
+    <Suspense>
+      <DhikrPageInner />
+    </Suspense>
   );
 }

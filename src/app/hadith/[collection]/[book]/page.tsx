@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import BookmarkButton from "@/components/BookmarkButton";
 import { ArrowLeft, ChevronDown, ChevronUp, Search } from "lucide-react";
 
 type HadithEntry = {
@@ -41,6 +42,7 @@ const metadataImports: Record<
   tirmidhi: () => import("@/data/hadith/tirmidhi/metadata.json"),
   nasai: () => import("@/data/hadith/nasai/metadata.json"),
   ibnmajah: () => import("@/data/hadith/ibnmajah/metadata.json"),
+  ahmad: () => import("@/data/hadith/ahmad/metadata.json"),
 };
 
 // We need static import paths for webpack — build a lookup per collection
@@ -73,6 +75,10 @@ function loadBookData(
       );
     case "ibnmajah":
       return import(`@/data/hadith/ibnmajah/${bookId}.json`).then(
+        (m) => m.default
+      );
+    case "ahmad":
+      return import(`@/data/hadith/ahmad/${bookId}.json`).then(
         (m) => m.default
       );
     default:
@@ -123,10 +129,15 @@ function BookPageContent() {
   // Scroll to highlighted hadith
   useEffect(() => {
     if (highlightId && !loading) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         const el = document.getElementById(`hadith-${highlightId}`);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 300);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.classList.add("section-highlight");
+          setTimeout(() => el.classList.remove("section-highlight"), 2000);
+        }
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [highlightId, loading]);
 
@@ -266,11 +277,20 @@ function BookPageContent() {
                       Ref: {hadith.reference}
                     </span>
                   </div>
-                  {collection === "bukhari" || collection === "muslim" ? (
-                    <span className="px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 text-[11px]">
-                      Sahih
-                    </span>
-                  ) : null}
+                  <div className="flex items-center gap-2">
+                    {collection === "bukhari" || collection === "muslim" ? (
+                      <span className="px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 text-[11px]">
+                        Sahih
+                      </span>
+                    ) : null}
+                    <BookmarkButton
+                      type="hadith"
+                      id={`${collection}-${hadith.id}`}
+                      title={hadith.english?.slice(0, 80) || hadith.reference || "Hadith"}
+                      subtitle={hadith.reference}
+                      href={`/hadith/${collection}/${bookId}?h=${hadith.id}`}
+                    />
+                  </div>
                 </div>
 
                 <p className="text-themed leading-relaxed text-[15px] mb-3">

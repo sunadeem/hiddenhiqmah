@@ -19,12 +19,12 @@ import {
   Minus,
   Plus,
   Check,
-  Bookmark as BookmarkIcon,
   SkipForward,
 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
+import BookmarkButton from "@/components/BookmarkButton";
 import chapters from "@/data/quran/chapters.json";
-import { getFontSize, setFontSize as saveFontSize, markSurahRead, addBookmark, removeBookmark, isBookmarked, getAutoPlayNextSurah, setAutoPlayNextSurah } from "@/lib/storage";
+import { getFontSize, setFontSize as saveFontSize, markSurahRead, getAutoPlayNextSurah, setAutoPlayNextSurah } from "@/lib/storage";
 
 interface Verse {
   id: number;
@@ -41,6 +41,9 @@ interface Verse {
 type TafsirData = Record<string, string>;
 type TafsirImportMap = Record<number, () => Promise<{ default: TafsirData }>>;
 type TafsirSource = "ibn-kathir" | "maarif";
+
+// Word-level audio timestamps: { "verseNum": [[start_ms, end_ms], ...] }
+type TimestampData = Record<string, number[][]>;
 
 const TAFSIR_LABELS: Record<TafsirSource, string> = {
   "ibn-kathir": "Ibn Kathir",
@@ -530,6 +533,124 @@ const wordsImports: WordsImportMap = {
   114: () => import("@/data/quran/words/114.json"),
 };
 
+// Static imports for word-level audio timestamps (Mishari al-Afasy)
+const timestampImports: Record<number, () => Promise<{ default: TimestampData }>> = {
+  1: () => import("@/data/quran/timestamps/1.json"),
+  2: () => import("@/data/quran/timestamps/2.json"),
+  3: () => import("@/data/quran/timestamps/3.json"),
+  4: () => import("@/data/quran/timestamps/4.json"),
+  5: () => import("@/data/quran/timestamps/5.json"),
+  6: () => import("@/data/quran/timestamps/6.json"),
+  7: () => import("@/data/quran/timestamps/7.json"),
+  8: () => import("@/data/quran/timestamps/8.json"),
+  9: () => import("@/data/quran/timestamps/9.json"),
+  10: () => import("@/data/quran/timestamps/10.json"),
+  11: () => import("@/data/quran/timestamps/11.json"),
+  12: () => import("@/data/quran/timestamps/12.json"),
+  13: () => import("@/data/quran/timestamps/13.json"),
+  14: () => import("@/data/quran/timestamps/14.json"),
+  15: () => import("@/data/quran/timestamps/15.json"),
+  16: () => import("@/data/quran/timestamps/16.json"),
+  17: () => import("@/data/quran/timestamps/17.json"),
+  18: () => import("@/data/quran/timestamps/18.json"),
+  19: () => import("@/data/quran/timestamps/19.json"),
+  20: () => import("@/data/quran/timestamps/20.json"),
+  21: () => import("@/data/quran/timestamps/21.json"),
+  22: () => import("@/data/quran/timestamps/22.json"),
+  23: () => import("@/data/quran/timestamps/23.json"),
+  24: () => import("@/data/quran/timestamps/24.json"),
+  25: () => import("@/data/quran/timestamps/25.json"),
+  26: () => import("@/data/quran/timestamps/26.json"),
+  27: () => import("@/data/quran/timestamps/27.json"),
+  28: () => import("@/data/quran/timestamps/28.json"),
+  29: () => import("@/data/quran/timestamps/29.json"),
+  30: () => import("@/data/quran/timestamps/30.json"),
+  31: () => import("@/data/quran/timestamps/31.json"),
+  32: () => import("@/data/quran/timestamps/32.json"),
+  33: () => import("@/data/quran/timestamps/33.json"),
+  34: () => import("@/data/quran/timestamps/34.json"),
+  35: () => import("@/data/quran/timestamps/35.json"),
+  36: () => import("@/data/quran/timestamps/36.json"),
+  37: () => import("@/data/quran/timestamps/37.json"),
+  38: () => import("@/data/quran/timestamps/38.json"),
+  39: () => import("@/data/quran/timestamps/39.json"),
+  40: () => import("@/data/quran/timestamps/40.json"),
+  41: () => import("@/data/quran/timestamps/41.json"),
+  42: () => import("@/data/quran/timestamps/42.json"),
+  43: () => import("@/data/quran/timestamps/43.json"),
+  44: () => import("@/data/quran/timestamps/44.json"),
+  45: () => import("@/data/quran/timestamps/45.json"),
+  46: () => import("@/data/quran/timestamps/46.json"),
+  47: () => import("@/data/quran/timestamps/47.json"),
+  48: () => import("@/data/quran/timestamps/48.json"),
+  49: () => import("@/data/quran/timestamps/49.json"),
+  50: () => import("@/data/quran/timestamps/50.json"),
+  51: () => import("@/data/quran/timestamps/51.json"),
+  52: () => import("@/data/quran/timestamps/52.json"),
+  53: () => import("@/data/quran/timestamps/53.json"),
+  54: () => import("@/data/quran/timestamps/54.json"),
+  55: () => import("@/data/quran/timestamps/55.json"),
+  56: () => import("@/data/quran/timestamps/56.json"),
+  57: () => import("@/data/quran/timestamps/57.json"),
+  58: () => import("@/data/quran/timestamps/58.json"),
+  59: () => import("@/data/quran/timestamps/59.json"),
+  60: () => import("@/data/quran/timestamps/60.json"),
+  61: () => import("@/data/quran/timestamps/61.json"),
+  62: () => import("@/data/quran/timestamps/62.json"),
+  63: () => import("@/data/quran/timestamps/63.json"),
+  64: () => import("@/data/quran/timestamps/64.json"),
+  65: () => import("@/data/quran/timestamps/65.json"),
+  66: () => import("@/data/quran/timestamps/66.json"),
+  67: () => import("@/data/quran/timestamps/67.json"),
+  68: () => import("@/data/quran/timestamps/68.json"),
+  69: () => import("@/data/quran/timestamps/69.json"),
+  70: () => import("@/data/quran/timestamps/70.json"),
+  71: () => import("@/data/quran/timestamps/71.json"),
+  72: () => import("@/data/quran/timestamps/72.json"),
+  73: () => import("@/data/quran/timestamps/73.json"),
+  74: () => import("@/data/quran/timestamps/74.json"),
+  75: () => import("@/data/quran/timestamps/75.json"),
+  76: () => import("@/data/quran/timestamps/76.json"),
+  77: () => import("@/data/quran/timestamps/77.json"),
+  78: () => import("@/data/quran/timestamps/78.json"),
+  79: () => import("@/data/quran/timestamps/79.json"),
+  80: () => import("@/data/quran/timestamps/80.json"),
+  81: () => import("@/data/quran/timestamps/81.json"),
+  82: () => import("@/data/quran/timestamps/82.json"),
+  83: () => import("@/data/quran/timestamps/83.json"),
+  84: () => import("@/data/quran/timestamps/84.json"),
+  85: () => import("@/data/quran/timestamps/85.json"),
+  86: () => import("@/data/quran/timestamps/86.json"),
+  87: () => import("@/data/quran/timestamps/87.json"),
+  88: () => import("@/data/quran/timestamps/88.json"),
+  89: () => import("@/data/quran/timestamps/89.json"),
+  90: () => import("@/data/quran/timestamps/90.json"),
+  91: () => import("@/data/quran/timestamps/91.json"),
+  92: () => import("@/data/quran/timestamps/92.json"),
+  93: () => import("@/data/quran/timestamps/93.json"),
+  94: () => import("@/data/quran/timestamps/94.json"),
+  95: () => import("@/data/quran/timestamps/95.json"),
+  96: () => import("@/data/quran/timestamps/96.json"),
+  97: () => import("@/data/quran/timestamps/97.json"),
+  98: () => import("@/data/quran/timestamps/98.json"),
+  99: () => import("@/data/quran/timestamps/99.json"),
+  100: () => import("@/data/quran/timestamps/100.json"),
+  101: () => import("@/data/quran/timestamps/101.json"),
+  102: () => import("@/data/quran/timestamps/102.json"),
+  103: () => import("@/data/quran/timestamps/103.json"),
+  104: () => import("@/data/quran/timestamps/104.json"),
+  105: () => import("@/data/quran/timestamps/105.json"),
+  106: () => import("@/data/quran/timestamps/106.json"),
+  107: () => import("@/data/quran/timestamps/107.json"),
+  108: () => import("@/data/quran/timestamps/108.json"),
+  109: () => import("@/data/quran/timestamps/109.json"),
+  110: () => import("@/data/quran/timestamps/110.json"),
+  111: () => import("@/data/quran/timestamps/111.json"),
+  112: () => import("@/data/quran/timestamps/112.json"),
+  113: () => import("@/data/quran/timestamps/113.json"),
+  114: () => import("@/data/quran/timestamps/114.json"),
+};
+
 // Audio URL builder for Mishari Rashid al-Afasy
 function getAudioUrl(globalVerseId: number): string {
   return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalVerseId}.mp3`;
@@ -589,13 +710,11 @@ function SurahPageContent() {
 
   // Word-by-word data
   const [wordsData, setWordsData] = useState<WordsMap | null>(null);
+  const [timestampData, setTimestampData] = useState<TimestampData | null>(null);
 
   // Font size: 0=small, 1=medium, 2=large (default), 3=xl
   const [fontSize, setFontSizeState] = useState(2);
   const [shareCopied, setShareCopied] = useState<number | null>(null);
-
-  // Bookmark state
-  const [bookmarkedVerses, setBookmarkedVerses] = useState<Set<string>>(new Set());
 
   // Audio state
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -618,6 +737,7 @@ function SurahPageContent() {
   const autoPlayTriggered = useRef(false);
 
   useEffect(() => {
+    const isAutoPlayTransition = shouldAutoPlay && !autoPlayTriggered.current;
     setVerses(null);
     setLoading(true);
     setSearch("");
@@ -626,12 +746,16 @@ function SurahPageContent() {
     setOpenTafsirs(new Set());
     setShowAllTafsir(false);
     setWordsData(null);
-    setPlayingVerse(null);
-    autoPlayRef.current = false;
-    autoPlayTriggered.current = false;
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
+    setTimestampData(null);
+    // Don't reset audio state during autoplay transitions
+    if (!isAutoPlayTransition) {
+      setPlayingVerse(null);
+      autoPlayRef.current = false;
+      autoPlayTriggered.current = false;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     }
     const loader = verseImports[id];
     if (loader) {
@@ -647,19 +771,15 @@ function SurahPageContent() {
     if (wordLoader) {
       wordLoader().then((mod) => setWordsData(mod.default));
     }
+    // Load word-level audio timestamps
+    const tsLoader = timestampImports[id];
+    if (tsLoader) {
+      tsLoader().then((mod) => setTimestampData(mod.default));
+    }
     // Load font size preference
     setFontSizeState(getFontSize());
     // Mark surah as read
     markSurahRead(id);
-    // Load bookmark state for all verses in this surah
-    if (chapter) {
-      const bSet = new Set<string>();
-      for (let v = 1; v <= chapter.verses; v++) {
-        const key = `${id}:${v}`;
-        if (isBookmarked("verse", key)) bSet.add(key);
-      }
-      setBookmarkedVerses(bSet);
-    }
   }, [id]);
 
   // Load tafsir data when source changes or on demand
@@ -779,26 +899,6 @@ function SurahPageContent() {
     }
   };
 
-  const toggleBookmark = (verse: Verse) => {
-    const key = verse.key; // e.g. "1:5"
-    if (bookmarkedVerses.has(key)) {
-      removeBookmark("verse", key);
-      setBookmarkedVerses((prev) => {
-        const next = new Set(prev);
-        next.delete(key);
-        return next;
-      });
-    } else {
-      addBookmark({
-        type: "verse",
-        id: key,
-        title: `Surah ${chapter?.name ?? id} - Verse ${verse.number}`,
-        subtitle: verse.textEn.slice(0, 60) + (verse.textEn.length > 60 ? "..." : ""),
-      });
-      setBookmarkedVerses((prev) => new Set(prev).add(key));
-    }
-  };
-
   // Audio playback
   const playVerse = useCallback((verse: Verse) => {
     // If same verse is playing, pause it
@@ -874,7 +974,7 @@ function SurahPageContent() {
     if (shouldAutoPlay && verses && verses.length > 0 && !autoPlayTriggered.current) {
       autoPlayTriggered.current = true;
       autoPlayRef.current = true;
-      setTimeout(() => playVerse(verses[0]), 300);
+      playVerse(verses[0]);
     }
   }, [shouldAutoPlay, verses, playVerse]);
 
@@ -1089,7 +1189,9 @@ function SurahPageContent() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: Math.min(i * 0.02, 0.6) }}
                 className={`group rounded-xl border p-4 md:p-6 transition-colors ${
-                  isHighlighted
+                  playingVerse === verse.number
+                    ? "border-[var(--color-gold)]/40 bg-[var(--color-gold)]/5 shadow-[0_0_15px_rgba(201,168,76,0.1)]"
+                    : isHighlighted
                     ? "border-[var(--color-gold)]/50 bg-[var(--color-gold)]/5"
                     : "sidebar-border hover:border-[var(--color-gold)]/30"
                 }`}
@@ -1106,7 +1208,7 @@ function SurahPageContent() {
                     </span>
                     {/* Play verse button */}
                     <button
-                      onClick={() => { autoPlayRef.current = false; playVerse(verse); }}
+                      onClick={() => { autoPlayRef.current = autoNextSurahRef.current; playVerse(verse); }}
                       className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
                         playingVerse === verse.number
                           ? "bg-gold/20 text-gold"
@@ -1135,17 +1237,14 @@ function SurahPageContent() {
                     </button>
 
                     {/* Bookmark verse */}
-                    <button
-                      onClick={() => toggleBookmark(verse)}
-                      className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
-                        bookmarkedVerses.has(verse.key)
-                          ? "text-gold bg-gold/15"
-                          : "text-themed-muted hover:text-gold hover:bg-gold/10"
-                      }`}
-                      title={bookmarkedVerses.has(verse.key) ? "Remove bookmark" : "Bookmark verse"}
-                    >
-                      <BookmarkIcon size={11} fill={bookmarkedVerses.has(verse.key) ? "currentColor" : "none"} />
-                    </button>
+                    <BookmarkButton
+                      type="verse"
+                      id={verse.key}
+                      title={`Surah ${chapter?.name ?? id} ${verse.key}`}
+                      subtitle={verse.textEn.slice(0, 80)}
+                      href={`/quran/${id}?v=${verse.number}`}
+                      size={11}
+                    />
 
                     {/* Per-verse tafsir toggle */}
                     {!showAllTafsir && (
@@ -1171,18 +1270,51 @@ function SurahPageContent() {
                   dir="rtl"
                 >
                   {wordsData?.[String(verse.number)]
-                    ? wordsData[String(verse.number)].map((word, wi) => (
-                        <span
-                          key={wi}
-                          className="relative group/word inline-block cursor-help hover:text-gold transition-colors"
-                        >
-                          {word.t}
-                          <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-lg bg-[var(--color-card)] border sidebar-border shadow-lg opacity-0 group-hover/word:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 text-center">
-                            <span className="block text-xs text-gold font-medium" dir="ltr">{word.m}</span>
-                            {word.tr && <span className="block text-[10px] text-themed-muted italic mt-0.5" dir="ltr">{word.tr}</span>}
-                          </span>
-                        </span>
-                      ))
+                    ? (() => {
+                        const words = wordsData[String(verse.number)];
+                        const isCurrentlyPlaying = playingVerse === verse.number && !audioPaused;
+                        const timestamps = timestampData?.[String(verse.number)];
+                        const currentMs = audioProgress * 1000;
+                        let activeWordIndex = -1;
+                        if (isCurrentlyPlaying && timestamps && timestamps.length > 0) {
+                          // Use real word-level timestamps from Quran.com
+                          for (let wi = 0; wi < timestamps.length; wi++) {
+                            const [start, end] = timestamps[wi];
+                            if (currentMs >= start && currentMs < end) {
+                              activeWordIndex = wi;
+                              break;
+                            }
+                          }
+                          // If past all timestamps, highlight last word
+                          if (activeWordIndex === -1 && currentMs >= timestamps[timestamps.length - 1][0]) {
+                            activeWordIndex = timestamps.length - 1;
+                          }
+                        } else if (isCurrentlyPlaying && audioDuration > 0) {
+                          // Fallback: even distribution if no timestamp data
+                          activeWordIndex = Math.min(Math.floor((audioProgress / audioDuration) * words.length), words.length - 1);
+                        }
+                        return words.map((word, wi) => {
+                          const isActiveWord = wi === activeWordIndex;
+                          return (
+                            <span
+                              key={wi}
+                              className={`relative group/word inline-block cursor-help transition-colors duration-200 ${
+                                isActiveWord
+                                  ? "text-gold scale-105"
+                                  : isCurrentlyPlaying && wi < activeWordIndex
+                                  ? "text-gold/60"
+                                  : "hover:text-gold"
+                              }`}
+                            >
+                              {word.t}
+                              <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-lg bg-[var(--color-card)] border sidebar-border shadow-lg opacity-0 group-hover/word:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 text-center">
+                                <span className="block text-xs text-gold font-medium" dir="ltr">{word.m}</span>
+                                {word.tr && <span className="block text-[10px] text-themed-muted italic mt-0.5" dir="ltr">{word.tr}</span>}
+                              </span>
+                            </span>
+                          );
+                        });
+                      })()
                     : <span>{verse.textAr}</span>
                   }{" "}
                   <span className="text-gold text-lg font-arabic">

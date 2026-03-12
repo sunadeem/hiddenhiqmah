@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
+import BookmarkButton from "@/components/BookmarkButton";
 import { Search, X, Sun, Moon as MoonIcon, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles } from "lucide-react";
 
 type Dua = {
@@ -657,8 +658,22 @@ const duas: Dua[] = [
 function DuasContent() {
   useScrollToSection();
   const searchParams = useSearchParams();
+  const scrollToDua = searchParams.get("d");
   const [activeCategory, setActiveCategory] = useState(searchParams.get("tab") || "all");
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (!scrollToDua) return;
+    const timer = setTimeout(() => {
+      const el = document.getElementById(`dua-${scrollToDua}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add("section-highlight");
+        setTimeout(() => el.classList.remove("section-highlight"), 2000);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [scrollToDua]);
 
   const searchLower = search.toLowerCase().trim();
   const categoryFiltered = activeCategory === "all"
@@ -778,7 +793,7 @@ function DuasContent() {
             const catLabel = categories.find((c) => c.key === displayTag)?.label ?? displayTag;
 
             return (
-              <ContentCard key={`${dua.title}-${i}`} delay={Math.min(i * 0.05, 0.4)} id={`section-${dua.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
+              <ContentCard key={`${dua.title}-${i}`} delay={Math.min(i * 0.05, 0.4)} id={`dua-${duas.indexOf(dua)}`}>
                 {/* Header */}
                 <div className="mb-3">
                   <div className="flex items-start justify-between gap-3">
@@ -786,6 +801,13 @@ function DuasContent() {
                       <span className="text-xs text-gold font-medium">{catLabel}</span>
                       <h2 className="text-xl font-semibold text-themed mt-1">{dua.title}</h2>
                     </div>
+                    <BookmarkButton
+                      type="dua"
+                      id={`dua-${duas.indexOf(dua)}`}
+                      title={dua.title}
+                      subtitle={dua.source}
+                      href={`/duas?d=${duas.indexOf(dua)}`}
+                    />
                   </div>
                   <div className="flex flex-wrap items-center gap-2 mt-2">
                     {dua.repeat && (

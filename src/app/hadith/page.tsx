@@ -60,6 +60,7 @@ const collections = [
   { slug: "tirmidhi", name: "Jami at-Tirmidhi", shortName: "Tirmidhi", nameAr: "جامع الترمذي", grade: "Mixed", description: "Notable for including grading of hadiths and commentary on different scholarly opinions." },
   { slug: "nasai", name: "Sunan an-Nasai", shortName: "Nasai", nameAr: "سنن النسائي", grade: "Mixed", description: "Known for its strict criteria in hadith selection, considered among the most reliable Sunan collections." },
   { slug: "ibnmajah", name: "Sunan Ibn Majah", shortName: "Ibn Majah", nameAr: "سنن ابن ماجه", grade: "Mixed", description: "Completes the six major collections, containing unique hadiths not found in the other five. Note: some scholars considered the Muwatta of Imam Malik as the sixth book instead, and some of Ibn Majah's unique hadiths are weaker in grading." },
+  { slug: "ahmad", name: "Musnad Ahmad", shortName: "Ahmad", nameAr: "مسند أحمد", grade: "Mixed", description: "One of the largest and most important collections of hadith, compiled by Imam Ahmad ibn Hanbal. Organized by the companion who narrated each hadith (musnad style), containing approximately 28,199 hadiths." },
 ];
 
 const featuredHadiths = [
@@ -182,6 +183,7 @@ const metadataImports: Record<string, () => Promise<{ default: CollectionMeta }>
   tirmidhi: () => import("@/data/hadith/tirmidhi/metadata.json"),
   nasai: () => import("@/data/hadith/nasai/metadata.json"),
   ibnmajah: () => import("@/data/hadith/ibnmajah/metadata.json"),
+  ahmad: () => import("@/data/hadith/ahmad/metadata.json"),
 };
 
 function loadBookData(collection: string, bookId: number): Promise<HadithEntry[]> {
@@ -198,6 +200,8 @@ function loadBookData(collection: string, bookId: number): Promise<HadithEntry[]
       return import(`@/data/hadith/nasai/${bookId}.json`).then((m) => m.default);
     case "ibnmajah":
       return import(`@/data/hadith/ibnmajah/${bookId}.json`).then((m) => m.default);
+    case "ahmad":
+      return import(`@/data/hadith/ahmad/${bookId}.json`).then((m) => m.default);
     default:
       return Promise.resolve([]);
   }
@@ -339,7 +343,7 @@ export default function HadithPage() {
       <PageHeader
         title="Hadith Collections"
         titleAr="الحديث النبوي"
-        subtitle="The six authentic collections of Prophet Muhammad's ﷺ sayings and traditions"
+        subtitle="The major collections of Prophet Muhammad's ﷺ sayings and traditions"
       />
 
       {/* Search bar */}

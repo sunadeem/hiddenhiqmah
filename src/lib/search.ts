@@ -129,6 +129,10 @@ const collectionAliases: Record<string, string> = {
   "ibn majah": "ibnmajah",
   ibnmajah: "ibnmajah",
   "sunan ibn majah": "ibnmajah",
+  ahmad: "ahmad",
+  "musnad ahmad": "ahmad",
+  "imam ahmad": "ahmad",
+  "ibn hanbal": "ahmad",
 };
 
 /**

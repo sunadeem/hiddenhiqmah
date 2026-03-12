@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bookmark, Trash2, X, BookOpen, ScrollText, FileText } from "lucide-react";
+import { Bookmark, Trash2, X, BookOpen, ScrollText, FileText, HandHeart, Repeat, Star, Lightbulb } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
-import { getBookmarks, removeBookmark, type Bookmark as BookmarkType } from "@/lib/storage";
+import { getBookmarks, removeBookmark, type Bookmark as BookmarkData } from "@/lib/storage";
 
 function formatRelativeTime(timestamp: number): string {
   const now = Date.now();
@@ -26,14 +26,25 @@ function formatRelativeTime(timestamp: number): string {
   return `${months} month${months !== 1 ? "s" : ""} ago`;
 }
 
-function getBookmarkHref(bookmark: BookmarkType): string {
+function getBookmarkHref(bookmark: BookmarkData): string {
+  // Use stored href if available
+  if (bookmark.href) return bookmark.href;
+
   switch (bookmark.type) {
     case "verse": {
       const [surah, verse] = bookmark.id.split(":");
       return `/quran/${surah}?v=${verse}`;
     }
     case "hadith":
-      return `/hadith`;
+      return "/hadith";
+    case "dua":
+      return "/duas";
+    case "dhikr":
+      return "/dhikr";
+    case "name":
+      return "/tawhid?tab=names";
+    case "topic":
+      return "/";
     case "page":
       return bookmark.id;
     default:
@@ -41,14 +52,20 @@ function getBookmarkHref(bookmark: BookmarkType): string {
   }
 }
 
-const typeConfig: Record<string, { label: string; icon: typeof BookOpen; color: string }> = {
-  verse: { label: "Verse", icon: BookOpen, color: "text-emerald-400" },
-  hadith: { label: "Hadith", icon: ScrollText, color: "text-amber-400" },
-  page: { label: "Page", icon: FileText, color: "text-blue-400" },
+const typeConfig: Record<string, { label: string; pluralLabel: string; icon: typeof BookOpen; color: string }> = {
+  verse: { label: "Verse", pluralLabel: "Verses", icon: BookOpen, color: "text-emerald-400" },
+  hadith: { label: "Hadith", pluralLabel: "Hadiths", icon: ScrollText, color: "text-amber-400" },
+  dua: { label: "Dua", pluralLabel: "Duas", icon: HandHeart, color: "text-purple-400" },
+  dhikr: { label: "Dhikr", pluralLabel: "Dhikr", icon: Repeat, color: "text-teal-400" },
+  name: { label: "Name of Allah", pluralLabel: "Names of Allah", icon: Star, color: "text-gold" },
+  topic: { label: "Topic", pluralLabel: "Topics", icon: Lightbulb, color: "text-sky-400" },
+  page: { label: "Page", pluralLabel: "Pages", icon: FileText, color: "text-blue-400" },
 };
 
+const groupOrder = ["verse", "hadith", "dua", "dhikr", "name", "topic", "page"];
+
 export default function BookmarksPage() {
-  const [bookmarks, setBookmarks] = useState<BookmarkType[]>([]);
+  const [bookmarks, setBookmarks] = useState<BookmarkData[]>([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -68,25 +85,27 @@ export default function BookmarksPage() {
   };
 
   // Group bookmarks by type
-  const grouped = bookmarks.reduce<Record<string, BookmarkType[]>>((acc, b) => {
+  const grouped = bookmarks.reduce<Record<string, BookmarkData[]>>((acc, b) => {
     if (!acc[b.type]) acc[b.type] = [];
     acc[b.type].push(b);
     return acc;
   }, {});
 
-  const groupOrder = ["verse", "hadith", "page"];
   const sortedGroups = groupOrder.filter((t) => grouped[t]?.length);
 
   return (
-    <main className="min-h-screen p-6 md:p-10 max-w-4xl mx-auto">
+    <main className="min-h-screen max-w-4xl mx-auto">
       <PageHeader
         title="Bookmarks"
         titleAr="المحفوظات"
-        subtitle="Your saved verses, hadiths, and pages"
+        subtitle="Your saved verses, hadiths, duas, and more"
       />
 
       {mounted && bookmarks.length > 0 && (
-        <div className="flex justify-end mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-sm text-themed-muted">
+            {bookmarks.length} saved item{bookmarks.length !== 1 ? "s" : ""}
+          </p>
           <button
             onClick={handleClearAll}
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-red-400 hover:bg-red-400/10 border border-red-400/20 hover:border-red-400/40 transition-colors"
@@ -103,7 +122,7 @@ export default function BookmarksPage() {
             <Bookmark size={48} className="mx-auto text-themed-muted/30 mb-4" />
             <h3 className="text-lg font-semibold text-themed mb-2">No bookmarks yet</h3>
             <p className="text-themed-muted text-sm max-w-md mx-auto">
-              Bookmark verses from the Quran to save them here for easy access later.
+              Bookmark verses, hadiths, duas, and more across the site to save them here.
             </p>
           </div>
         </ContentCard>
@@ -124,7 +143,7 @@ export default function BookmarksPage() {
               <div className="flex items-center gap-2 mb-4">
                 <Icon size={16} className={config.color} />
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-themed-muted">
-                  {config.label}s
+                  {config.pluralLabel}
                 </h2>
                 <span className="text-xs text-themed-muted/50">({grouped[type].length})</span>
               </div>

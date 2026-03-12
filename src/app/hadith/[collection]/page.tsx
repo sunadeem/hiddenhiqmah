@@ -45,6 +45,7 @@ const metadataImports: Record<string, () => Promise<{ default: CollectionMeta }>
   tirmidhi: () => import("@/data/hadith/tirmidhi/metadata.json"),
   nasai: () => import("@/data/hadith/nasai/metadata.json"),
   ibnmajah: () => import("@/data/hadith/ibnmajah/metadata.json"),
+  ahmad: () => import("@/data/hadith/ahmad/metadata.json"),
 };
 
 function loadBookData(collection: string, bookId: number): Promise<HadithEntry[]> {
@@ -61,6 +62,8 @@ function loadBookData(collection: string, bookId: number): Promise<HadithEntry[]
       return import(`@/data/hadith/nasai/${bookId}.json`).then((m) => m.default);
     case "ibnmajah":
       return import(`@/data/hadith/ibnmajah/${bookId}.json`).then((m) => m.default);
+    case "ahmad":
+      return import(`@/data/hadith/ahmad/${bookId}.json`).then((m) => m.default);
     default:
       return Promise.resolve([]);
   }
