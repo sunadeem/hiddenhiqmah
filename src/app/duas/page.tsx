@@ -8,6 +8,7 @@ import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import BookmarkButton from "@/components/BookmarkButton";
 import { Search, X, Sun, Moon as MoonIcon, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles } from "lucide-react";
+import TabBar from "@/components/TabBar";
 
 type Dua = {
   tags: string[];
@@ -729,30 +730,18 @@ function DuasContent() {
         )}
       </div>
 
-      {/* Category pills */}
-      <div className="flex gap-2 flex-wrap mb-6">
-        {categories.map((cat) => {
-          const isActive = activeCategory === cat.key;
-          const Icon = cat.icon;
-          return (
-            <button
-              key={cat.key}
-              onClick={() => setActiveCategory(cat.key)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                isActive
-                  ? "bg-[var(--color-gold)] text-[#1a1a2e] shadow-lg shadow-[var(--color-gold)]/20"
-                  : "card-bg border sidebar-border text-themed-muted hover:text-themed hover:border-[var(--color-gold)]/30"
-              }`}
-            >
-              {Icon && <Icon size={15} />}
-              <span>{cat.label}</span>
-              <span className={`text-xs ${isActive ? "opacity-70" : "opacity-50"}`}>
-                ({counts[cat.key]})
-              </span>
-            </button>
-          );
-        })}
-      </div>
+      {/* Category pills / dropdown */}
+      <TabBar
+        tabs={categories.map((cat) => ({
+          key: cat.key,
+          label: cat.label,
+          icon: cat.icon ? <cat.icon size={15} /> : undefined,
+          count: counts[cat.key],
+        }))}
+        activeTab={activeCategory}
+        onTabChange={setActiveCategory}
+        className="mb-6"
+      />
 
       {/* Most Powerful description */}
       {activeCategory === "powerful" && (
