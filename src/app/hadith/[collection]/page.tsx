@@ -230,6 +230,18 @@ export default function CollectionPage() {
         />
       </div>
 
+      {collection === "ahmad" && (
+        <div className="mb-6 p-4 rounded-xl card-bg border sidebar-border">
+          <p className="text-sm text-themed-muted leading-relaxed">
+            Musnad Ahmad contains approximately <strong className="text-themed">28,199</strong> hadiths
+            in its complete Arabic edition. Currently, only{" "}
+            <strong className="text-themed">{metadata.totalHadiths.toLocaleString()}</strong> hadiths
+            are available in English translation across {books.length} books. Full English translations
+            exist only in print (Darussalam 6-volume edition).
+          </p>
+        </div>
+      )}
+
       {/* Search results */}
       {isSearching && searchResults.length > 0 && (
         <div className="mb-8">

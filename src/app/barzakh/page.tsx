@@ -9,6 +9,7 @@ import ContentCard from "@/components/ContentCard";
 import { textMatch } from "@/lib/search";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { BookOpen } from "lucide-react";
+import HadithRefText from "@/components/HadithRefText";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -17,7 +18,7 @@ const whyItMatters = [
     point: "The first stage of the Hereafter",
     detail:
       "The grave is the first station of the afterlife. The Prophet (peace be upon him) said: 'The grave is the first stage of the Hereafter. If one is saved from it, then what comes after is easier. And if one is not saved from it, then what comes after is worse.'",
-    reference: "Sunan at-Tirmidhi 2308; Sunan Ibn Majah 4267",
+    reference: "Tirmidhi 36:5; Ibn Majah 37:168",
   },
   {
     point: "Every soul will experience it",
@@ -29,19 +30,19 @@ const whyItMatters = [
     point: "The Prophet sought refuge from its punishment",
     detail:
       "The Prophet (peace be upon him) used to regularly seek refuge from the punishment of the grave, and he instructed his companions to include this supplication in every prayer. This shows how seriously this matter should be taken.",
-    reference: "Sahih Muslim 588",
+    reference: "Muslim 10:9",
   },
   {
     point: "It is a place of either bliss or torment",
     detail:
       "The grave is not a place of nothingness. The believer's grave is expanded as far as the eye can see, and a gate to Paradise is opened so that its fragrance and breeze reach him. The disbeliever's grave is constricted until his ribs interlock, and a gate to the Hellfire is opened so that its heat and scorching wind reach him. Every deceased person is shown their place — in Paradise or in the Fire — morning and evening.",
-    reference: "Abu Dawud 4753 (graded Sahih by al-Albani); Sahih al-Bukhari 1379",
+    reference: "Abu Dawud 42:158 (graded Sahih by al-Albani); Bukhari 23:131",
   },
   {
     point: "Awareness of this life motivates good deeds",
     detail:
       "Remembering death and what follows it is one of the greatest motivators to leave sin and hasten to good deeds. The Prophet (peace be upon him) said: 'Remember often the destroyer of pleasures — death.'",
-    reference: "Sunan at-Tirmidhi 2307; Sunan an-Nasa'i 1824",
+    reference: "Tirmidhi 36:4; Nasai 21:7",
   },
   {
     point: "The Quran confirms the soul's experience before Resurrection",
@@ -111,23 +112,23 @@ const whatHappensTopics: GraveTopic[] = [
           title: "Hasten the funeral",
           detail:
             "The Prophet (peace be upon him) said: 'Hasten the funeral. If the deceased was righteous, you are advancing them to good. And if they were otherwise, then it is an evil you are putting off your necks.'",
-          note: "Sahih al-Bukhari 1315; Sahih Muslim 944",
+          note: "Bukhari 23:72; Muslim 11:66",
         },
         {
           title: "The deceased hears the footsteps",
           detail:
             "The Prophet (peace be upon him) said: 'When a person is placed in their grave and his companions depart from him, he hears the sound of their sandals.'",
-          note: "Sahih al-Bukhari 1338; Sahih Muslim 2870",
+          note: "Bukhari 23:93; Muslim 53:85",
         },
         {
           title: "The grave squeezes",
           detail:
             "No one is spared from the squeezing of the grave. The Prophet (peace be upon him) said about Sa'd ibn Mu'adh — the companion at whose death the Throne of Allah shook and the gates of heaven were opened: 'It squeezed him once, then released him.'",
-          note: "Sunan an-Nasa'i 2055",
+          note: "Nasai 21:238",
         },
       ],
       source:
-        "Sahih al-Bukhari 1315, 1338; Sahih Muslim 944, 2870; Sunan an-Nasa'i 2055",
+        "Bukhari 23:72, 23:93; Muslim 4:106, 15:80; Nasai 21:238",
     },
   },
   {
@@ -147,23 +148,23 @@ const whatHappensTopics: GraveTopic[] = [
           title: "Three questions",
           detail:
             "Two angels come to the deceased and sit them up. They ask three questions: 'Who is your Lord?' 'What is your religion?' and 'What do you say about this man who was sent among you?'",
-          note: "Abu Dawud 4753; Sahih al-Bukhari 1338",
+          note: "Abu Dawud 42:158; Bukhari 23:93",
         },
         {
           title: "The believer answers with certainty",
           detail:
             "The believer will say: 'My Lord is Allah, my religion is Islam, and he is Muhammad, the Messenger of Allah (peace be upon him).' A caller from heaven will say: 'My servant has spoken the truth, so spread for him a bed from Paradise, clothe him from Paradise, and open for him a gate to Paradise.'",
-          note: "Abu Dawud 4753",
+          note: "Abu Dawud 42:158",
         },
         {
           title: "The hypocrite and disbeliever cannot answer",
           detail:
             "The disbeliever or hypocrite will say: 'I don't know... I heard the people saying something and I said it too.' It will be said: 'You did not know and you did not recite (follow guidance).' Then he will be struck with an iron hammer between his ears, and he will let out a scream that is heard by everything near him except humans and jinn.",
-          note: "Sahih al-Bukhari 1338; Abu Dawud 4753",
+          note: "Bukhari 23:93; Abu Dawud 42:158",
         },
       ],
       source:
-        "Sahih al-Bukhari 1338; Sahih Muslim 2870; Abu Dawud 4753; Quran 14:27",
+        "Bukhari 23:93; Muslim 53:85; Abu Dawud 42:158; Quran 14:27",
     },
   },
   {
@@ -177,29 +178,29 @@ const whatHappensTopics: GraveTopic[] = [
           title: "The grave is expanded",
           detail:
             "After the believer answers correctly, his grave is expanded for him as far as his eye can see. It is furnished with furnishings from Paradise, and a gate to Paradise is opened for him so that its fragrance and breeze reach him.",
-          note: "Abu Dawud 4753; Sahih al-Bukhari 1338",
+          note: "Abu Dawud 42:158; Bukhari 23:93",
         },
         {
           title: "A beautiful companion appears",
           detail:
             "A man with a beautiful face, fine clothing, and pleasant fragrance comes and says: 'Receive glad tidings of that which will please you. This is the day you were promised.' The believer asks: 'Who are you? Your face brings good.' He replies: 'I am your righteous deeds.'",
-          note: "Abu Dawud 4753; Mishkat al-Masabih 1630",
+          note: "Abu Dawud 42:158; Mishkat al-Masabih 1630",
         },
         {
           title: "The believer asks for the Hour to come",
           detail:
             "The believer will say: 'My Lord, establish the Hour so that I may return to my family and my wealth!' — so eager is he for what awaits him in the Hereafter.",
-          note: "Abu Dawud 4753",
+          note: "Abu Dawud 42:158",
         },
         {
           title: "Sleep like a bride",
           detail:
             "The righteous person will sleep in their grave in comfort, like a bride whom no one wakes except the dearest of her family — until Allah raises them on the Day of Resurrection.",
-          note: "Sunan at-Tirmidhi 1071; graded Hasan by al-Albani",
+          note: "Tirmidhi 10:107; graded Hasan by al-Albani",
         },
       ],
       source:
-        "Abu Dawud 4753; Sahih al-Bukhari 1338; Mishkat al-Masabih 1630; Sunan at-Tirmidhi 1071",
+        "Abu Dawud 42:158; Bukhari 23:93; Mishkat al-Masabih 1630; Tirmidhi 10:107",
     },
   },
   {
@@ -213,13 +214,13 @@ const whatHappensTopics: GraveTopic[] = [
           title: "The grave constricts upon them",
           detail:
             "After they fail to answer, their grave is constricted until their ribs interlock. A gate to the Hellfire is opened, and its heat and scorching wind reach them.",
-          note: "Abu Dawud 4753; Sahih al-Bukhari 1338",
+          note: "Abu Dawud 42:158; Bukhari 23:93",
         },
         {
           title: "An ugly companion appears",
           detail:
             "A man with a hideous face, foul clothing, and terrible stench comes and says: 'Receive the tidings of that which will grieve you. This is the day you were promised.' The person asks: 'Who are you? Your face brings evil.' He says: 'I am your wicked deeds.'",
-          note: "Abu Dawud 4753; Mishkat al-Masabih 1630",
+          note: "Abu Dawud 42:158; Mishkat al-Masabih 1630",
         },
         {
           title: "Ongoing punishment until the Hour",
@@ -231,11 +232,11 @@ const whatHappensTopics: GraveTopic[] = [
           title: "Punishment for specific sins",
           detail:
             "The Prophet (peace be upon him) passed by two graves and said: 'They are being punished, and they are not being punished for something major (that was difficult to avoid). One of them used to not protect himself from his urine, and the other used to walk about spreading malicious gossip.'",
-          note: "Sahih al-Bukhari 1361; Sahih Muslim 292a",
+          note: "Bukhari 23:114; Muslim 1:198a",
         },
       ],
       source:
-        "Abu Dawud 4753; Mishkat al-Masabih 1630; Quran 40:46; Sahih al-Bukhari 1361; Sahih Muslim 292a",
+        "Abu Dawud 42:158; Mishkat al-Masabih 1630; Quran 40:46; Bukhari 23:114; Muslim 1:198a",
     },
   },
 ];
@@ -252,35 +253,35 @@ const protectionTopics: GraveTopic[] = [
           title: "Reciting Surah al-Mulk",
           detail:
             "The Prophet (peace be upon him) said: 'There is a surah in the Quran of thirty verses that interceded for a man until he was forgiven. It is: Blessed is He in Whose Hand is the dominion (Surah al-Mulk).' It is known as the protector from the punishment of the grave.",
-          note: "Sunan at-Tirmidhi 2891; Sunan Abu Dawud 1400",
+          note: "Tirmidhi 45:17; Abu Dawud 6:30",
         },
         {
           title: "Dying as a shaheed (martyr)",
           detail:
             "The Prophet (peace be upon him) said: 'There are six things with Allah for the martyr...' and among them: 'He is protected from the punishment of the grave.'",
-          note: "Sunan at-Tirmidhi 1663; Sunan Ibn Majah 2799",
+          note: "Tirmidhi 22:46; Ibn Majah 24:47",
         },
         {
           title: "Dying on a Friday",
           detail:
             "The Prophet (peace be upon him) said: 'There is no Muslim who dies on the day of Friday or the night of Friday except that Allah protects him from the trial of the grave.'",
-          note: "Sunan at-Tirmidhi 1074 (graded Hasan)",
+          note: "Tirmidhi 10:110 (graded Hasan)",
         },
         {
           title: "Dying while guarding the frontier (ribat)",
           detail:
             "The Prophet (peace be upon him) said: 'Guarding the frontier for one day in the cause of Allah is better than the world and everything in it... and he is protected from the trial of the grave.'",
-          note: "Sunan at-Tirmidhi 1665",
+          note: "Tirmidhi 22:48",
         },
         {
           title: "Dying from a stomach ailment",
           detail:
             "The Prophet (peace be upon him) said: 'Whoever is killed by a stomach ailment will not be punished in his grave.'",
-          note: "Sunan at-Tirmidhi 1064; graded Sahih by al-Albani",
+          note: "Tirmidhi 10:100; graded Sahih by al-Albani",
         },
       ],
       source:
-        "Sunan at-Tirmidhi 2891, 1663, 1074, 1665, 1064; Sunan Abu Dawud 1400; Sunan Ibn Majah 2799",
+        "Tirmidhi 45:17, 10:100; Abu Dawud 6:30; Ibn Majah 24:47",
     },
   },
   {
@@ -294,23 +295,23 @@ const protectionTopics: GraveTopic[] = [
           title: "Dua in every prayer",
           detail:
             "The Prophet (peace be upon him) said: 'When one of you finishes the last tashahhud, let him seek refuge with Allah from four things: from the punishment of the Hellfire, from the punishment of the grave, from the trials of life and death, and from the evil of the trial of al-Masih al-Dajjal.'",
-          note: "Sahih Muslim 588; Sahih al-Bukhari 1377",
+          note: "Muslim 10:9; Bukhari 23:129",
         },
         {
           title: "The Prophet's regular practice",
           detail:
             "A'ishah (may Allah be pleased with her) reported that the Prophet (peace be upon him) used to supplicate in prayer: 'O Allah, I seek refuge with You from the punishment of the grave, and I seek refuge with You from the trial of al-Masih al-Dajjal, and I seek refuge with You from the trials of life and the trials of death.'",
-          note: "Sahih Muslim 589",
+          note: "Muslim 2:56",
         },
         {
           title: "Supplication after burial",
           detail:
             "The Prophet (peace be upon him) would stand at the grave after burial and say: 'Ask Allah to forgive your brother and ask that he be made firm, for he is now being questioned.'",
-          note: "Sunan Abu Dawud 3221; graded Sahih by al-Albani",
+          note: "Abu Dawud 21:133; graded Sahih by al-Albani",
         },
       ],
       source:
-        "Sahih al-Bukhari 1377; Sahih Muslim 588, 589; Sunan Abu Dawud 3221",
+        "Bukhari 23:129; Muslim 10:9, 2:56; Abu Dawud 21:133",
     },
   },
   {
@@ -324,19 +325,19 @@ const protectionTopics: GraveTopic[] = [
           title: "Dying with the shahadah on one's lips",
           detail:
             "The Prophet (peace be upon him) said: 'He whose last words are La ilaha illallah (There is no god but Allah) will enter Paradise.'",
-          note: "Sunan Abu Dawud 3116; graded Sahih by al-Albani",
+          note: "Abu Dawud 21:28; graded Sahih by al-Albani",
         },
         {
           title: "Sweat on the forehead at death",
           detail:
             "The Prophet (peace be upon him) said: 'The believer dies with sweat on his forehead.' This is considered one of the signs of a good ending.",
-          note: "Sunan at-Tirmidhi 982; Sunan an-Nasa'i 1828",
+          note: "Tirmidhi 10:18; Nasai 21:11",
         },
         {
           title: "Dying while performing a righteous deed",
           detail:
             "The Prophet (peace be upon him) said: 'When Allah wills good for His servant, He uses him.' They asked: 'How does He use him?' He said: 'He guides him to do a righteous deed before his death.'",
-          note: "Sunan at-Tirmidhi 2142 (graded Sahih)",
+          note: "Tirmidhi 32:10 (graded Sahih)",
         },
         {
           title: "The state of the face after death",
@@ -345,7 +346,7 @@ const protectionTopics: GraveTopic[] = [
         },
       ],
       source:
-        "Sunan Abu Dawud 3116; Sunan at-Tirmidhi 982, 2142; Sunan an-Nasa'i 1828",
+        "Abu Dawud 21:28; Tirmidhi 10:18, 32:10; Nasai 21:11",
     },
   },
 ];
@@ -385,7 +386,7 @@ function TopicInfoCard({ topic }: { topic: GraveTopic }) {
             &ldquo;{topic.content.verse!.text}&rdquo;
           </p>
           <p className="text-xs text-themed-muted mt-2">
-            {topic.content.verse!.ref}
+            <HadithRefText text={topic.content.verse!.ref} />
           </p>
         </div>
       )}
@@ -404,7 +405,7 @@ function TopicInfoCard({ topic }: { topic: GraveTopic }) {
               {point.detail}
             </p>
             {point.note && (
-              <p className="text-xs text-gold/60 mt-2">{point.note}</p>
+              <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
             )}
           </div>
         ))}
@@ -525,7 +526,7 @@ function TheGraveContent() {
                     is saved from it, then what comes after is easier. And if one
                     is not saved from it, then what comes after is worse.&rdquo;
                   </em>{" "}
-                  (Sunan at-Tirmidhi 2308). This hadith establishes the grave as
+                  (Tirmidhi 36:5). This hadith establishes the grave as
                   the beginning of the journey — the first test of the
                   Hereafter.
                 </p>
@@ -563,15 +564,15 @@ function TheGraveContent() {
                   "Quran 2:3 — Those who believe in the unseen",
                   "Quran 23:100 — Behind them is a Barzakh until the Day they are resurrected",
                   "Quran 40:46 — Pharaoh's people exposed to Fire morning and evening",
-                  "Sunan at-Tirmidhi 2308 — The grave is the first stage of the Hereafter",
-                  "Sahih Muslim 588 — Seeking refuge from the punishment of the grave in prayer",
+                  "Tirmidhi 36:5 — The grave is the first stage of the Hereafter",
+                  "Muslim 10:9 — Seeking refuge from the punishment of the grave in prayer",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -621,7 +622,7 @@ function TheGraveContent() {
                       {item.detail}
                     </p>
                     <p className="text-xs text-gold/60 mt-2">
-                      {item.reference}
+                      <HadithRefText text={item.reference} />
                     </p>
                   </div>
                 </div>
@@ -639,19 +640,19 @@ function TheGraveContent() {
                   "Quran 3:185 — Every soul will taste death",
                   "Quran 23:100 — Behind them is a Barzakh",
                   "Quran 40:46 — Pharaoh's people exposed to the Fire morning and evening",
-                  "Sahih Muslim 588 — Seeking refuge from the punishment of the grave",
-                  "Sunan at-Tirmidhi 2307 — Remember often the destroyer of pleasures",
-                  "Sunan at-Tirmidhi 2308; Sunan Ibn Majah 4267 — The grave is the first stage of the Hereafter",
-                  "Abu Dawud 4753 — The believer's grave is expanded; the disbeliever's is constricted",
-                  "Sahih al-Bukhari 1379 — The deceased is shown their place morning and evening",
-                  "Sunan an-Nasa'i 1824 — Remember death often",
+                  "Muslim 10:9 — Seeking refuge from the punishment of the grave",
+                  "Tirmidhi 36:4 — Remember often the destroyer of pleasures",
+                  "Tirmidhi 36:5; Ibn Majah 37:168 — The grave is the first stage of the Hereafter",
+                  "Abu Dawud 42:158 — The believer's grave is expanded; the disbeliever's is constricted",
+                  "Bukhari 23:131 — The deceased is shown their place morning and evening",
+                  "Nasai 21:7 — Remember death often",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -719,19 +720,19 @@ function TheGraveContent() {
                   "Quran 14:27 — Allah keeps firm those who believe with the firm word",
                   "Quran 32:11 — The angel of death will take your souls",
                   "Quran 40:46 — Pharaoh's people exposed to Fire morning and evening",
-                  "Sahih al-Bukhari 1315; Sahih Muslim 944 — Hasten the funeral",
-                  "Sahih al-Bukhari 1338; Sahih Muslim 2870 — The questioning in the grave; hearing footsteps",
-                  "Sahih al-Bukhari 1361; Sahih Muslim 292a — Punishment for not avoiding urine and gossip",
+                  "Bukhari 23:72; Muslim 4:106 — Hasten the funeral",
+                  "Bukhari 23:93; Muslim 53:85 — The questioning in the grave; hearing footsteps",
+                  "Bukhari 23:114; Muslim 1:198a — Punishment for not avoiding urine and gossip",
                   "Mishkat al-Masabih 1630 (from Musnad Ahmad) — Full hadith of al-Bara' ibn 'Azib on the soul's journey",
-                  "Sunan an-Nasa'i 2055 — Sa'd ibn Mu'adh and the squeezing of the grave",
-                  "Sunan at-Tirmidhi 1071 — The righteous sleeps like a bride",
+                  "Nasai 21:238 — Sa'd ibn Mu'adh and the squeezing of the grave",
+                  "Tirmidhi 10:107 — The righteous sleeps like a bride",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -796,23 +797,23 @@ function TheGraveContent() {
               </h4>
               <ul className="space-y-1.5">
                 {[
-                  "Sahih al-Bukhari 1377; Sahih Muslim 588, 589 — Seeking refuge from the punishment of the grave in prayer",
-                  "Sunan Abu Dawud 3116 — Dying with La ilaha illallah on one's lips",
-                  "Sunan Abu Dawud 3221 — Supplication after burial for firmness",
-                  "Sunan at-Tirmidhi 982; Sunan an-Nasa'i 1828 — Sweat on the forehead at death",
-                  "Sunan at-Tirmidhi 1064 — Dying from a stomach ailment",
-                  "Sunan at-Tirmidhi 1074 — Dying on Friday (graded Hasan)",
-                  "Sunan at-Tirmidhi 1663; Sunan Ibn Majah 2799 — The shaheed is protected",
-                  "Sunan at-Tirmidhi 1665 — Guarding the frontier (ribat)",
-                  "Sunan at-Tirmidhi 2142 — Allah guides to a righteous deed before death (graded Sahih)",
-                  "Sunan at-Tirmidhi 2891; Sunan Abu Dawud 1400 — Surah al-Mulk intercedes",
+                  "Bukhari 23:129; Muslim 10:9, 2:56 — Seeking refuge from the punishment of the grave in prayer",
+                  "Abu Dawud 21:28 — Dying with La ilaha illallah on one's lips",
+                  "Abu Dawud 21:133 — Supplication after burial for firmness",
+                  "Tirmidhi 10:18; Nasai 21:11 — Sweat on the forehead at death",
+                  "Tirmidhi 10:100 — Dying from a stomach ailment",
+                  "Tirmidhi 10:110 — Dying on Friday (graded Hasan)",
+                  "Tirmidhi 22:46; Ibn Majah 24:47 — The shaheed is protected",
+                  "Tirmidhi 22:48 — Guarding the frontier (ribat)",
+                  "Tirmidhi 32:10 — Allah guides to a righteous deed before death (graded Sahih)",
+                  "Tirmidhi 45:17; Abu Dawud 6:30 — Surah al-Mulk intercedes",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>

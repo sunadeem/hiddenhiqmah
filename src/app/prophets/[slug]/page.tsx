@@ -9,6 +9,7 @@ import { getStoryBySlug } from "@/data/prophet-stories";
 import ContentCard from "@/components/ContentCard";
 import Link from "next/link";
 import { prophets } from "@/data/prophets";
+import HadithRefText from "@/components/HadithRefText";
 
 export default function ProphetDetailPage({
   params,
@@ -110,7 +111,7 @@ export default function ProphetDetailPage({
                       <div className="flex items-center gap-2 mb-2">
                         <BookOpen size={14} className="text-gold" />
                         <span className="text-xs text-gold font-medium">
-                          {verse.reference}
+                          <HadithRefText text={verse.reference} />
                         </span>
                       </div>
                       <p className="text-xl md:text-2xl font-arabic text-gold text-right leading-loose mb-3">
@@ -143,7 +144,7 @@ export default function ProphetDetailPage({
                           </p>
                           <p className="text-xs text-themed-muted">
                             Source:{" "}
-                            <strong className="text-themed">{h.source}</strong>
+                            <strong className="text-themed"><HadithRefText text={h.source} /></strong>
                           </p>
                         </div>
                       </div>
@@ -183,7 +184,7 @@ export default function ProphetDetailPage({
               <ul className="space-y-1">
                 {story.references.map((ref, ri) => (
                   <li key={ri} className="text-xs text-themed-muted">
-                    {ref}
+                    <HadithRefText text={ref} />
                   </li>
                 ))}
               </ul>

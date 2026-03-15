@@ -165,7 +165,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "During the Night Journey (Isra and Mi'raj), the Prophet ﷺ met Idris in the fourth heaven and greeted him.",
-            source: "Sahih al-Bukhari 3207, Sahih Muslim 162",
+            source: "Bukhari 59:18, Muslim 1:321",
           },
         ],
       },
@@ -190,7 +190,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Maryam (19:56-57), Al-Anbiya (21:85-86)",
-      "Sahih al-Bukhari 3207 — Night Journey (Isra and Mi'raj)",
+      "Bukhari 59:18, Muslim 1:321 — Night Journey (Isra and Mi'raj)",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -447,7 +447,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Al-Baqarah (2:124-132), Al-An'am (6:74-83), Al-Anbiya (21:51-73), As-Saffat (37:83-113), Ibrahim (14:35-41), Maryam (19:41-50)",
-      "Sahih al-Bukhari 3364 — Ibrahim as Khalilullah",
+      "Bukhari 60:38 — Ibrahim as Khalilullah",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -518,7 +518,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ narrated the story of Hajar running between Safa and Marwa, saying that is why people walk between them during Hajj.",
-            source: "Sahih al-Bukhari 3364",
+            source: "Bukhari 60:38",
           },
         ],
       },
@@ -556,7 +556,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Al-Baqarah (2:125-129), As-Saffat (37:100-111), Maryam (19:54-55), Ibrahim (14:37-41)",
-      "Sahih al-Bukhari 3364",
+      "Bukhari 60:38",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -943,8 +943,8 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Al-Baqarah (2:49-73), Al-A'raf (7:103-171), Taha (20:9-98), Al-Qasas (28:1-46), Ash-Shu'ara (26:10-68), An-Naziat (79:15-26)",
-      "Sahih al-Bukhari 3407 — Musa and the Angel of Death",
-      "Sahih Muslim 166 — Night Journey, Musa in the sixth heaven",
+      "Bukhari 60:80 — Musa and the Angel of Death",
+      "Muslim 1:321 — Night Journey, Musa in the sixth heaven",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -986,7 +986,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said to Ali: 'You are to me as Harun was to Musa, except that there is no prophet after me.'",
-            source: "Sahih al-Bukhari 3706, Sahih Muslim 2404",
+            source: "Bukhari 62:56, Muslim 44:47",
           },
         ],
       },
@@ -998,7 +998,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Taha (20:29-36, 90-94), Al-A'raf (7:142, 150-151), Al-Qasas (28:33-35)",
-      "Sahih al-Bukhari 3706, Sahih Muslim 2404",
+      "Bukhari 65:261, Muslim 29:37",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -1022,7 +1022,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ identified the young companion (fata) of Musa as Yusha ibn Nun.",
-            source: "Sahih al-Bukhari 3124",
+            source: "Bukhari 57:33",
           },
         ],
       },
@@ -1033,7 +1033,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ mentioned that the sun was held back (delayed in setting) for Yusha ibn Nun when he was fighting on a Friday.",
-            source: "Sahih Muslim 1747, Ahmad 8296",
+            source: "Muslim 32:36",
           },
         ],
       },
@@ -1045,8 +1045,8 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran 18:60-65 — identified as the young companion of Musa",
-      "Sahih al-Bukhari 3124",
-      "Sahih Muslim 1747",
+      "Bukhari 57:33",
+      "Muslim 32:36",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -1131,7 +1131,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said: 'The most beloved fasting to Allah is the fasting of Dawud — he would fast one day and not fast the next.'",
-            source: "Sahih al-Bukhari 1131, Sahih Muslim 1159",
+            source: "Bukhari 19:11, Muslim 13:261",
           },
         ],
       },
@@ -1144,7 +1144,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Al-Baqarah (2:249-252), Sad (38:17-26), Saba (34:10-11), Al-Anbiya (21:78-80)",
-      "Sahih al-Bukhari 1131, Sahih Muslim 1159",
+      "Bukhari 19:11, Muslim 13:261",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -1340,7 +1340,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said: 'The supplication of Dhun-Nun (Yunus) when he was in the belly of the whale: La ilaha illa anta, subhanaka, inni kuntu min az-zalimin. No Muslim ever prays to his Lord with these words for anything, but He will answer him.'",
-            source: "Sunan at-Tirmidhi 3505 (graded Sahih)",
+            source: "Tirmidhi 48:136 (graded Sahih)",
           },
         ],
       },
@@ -1353,7 +1353,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Yunus (10:98), Al-Anbiya (21:87-88), As-Saffat (37:139-148), Al-Qalam (68:48-50)",
-      "Sunan at-Tirmidhi 3505",
+      "Tirmidhi 48:136",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -1545,7 +1545,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said: 'By Him in Whose Hand is my life, the son of Maryam will soon descend among you as a just judge. He will break the cross, kill the swine, and abolish the jizyah.'",
-            source: "Sahih al-Bukhari 2222, Sahih Muslim 155",
+            source: "Bukhari 34:169, Muslim 1:321",
           },
         ],
       },
@@ -1559,7 +1559,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Maryam (19:16-40), Aal-E-Imran (3:42-62), Al-Ma'idah (5:110-120), An-Nisa (4:156-159), As-Saff (61:6)",
-      "Sahih al-Bukhari 2222, Sahih Muslim 155",
+      "Bukhari 34:169, Muslim 1:321",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -1575,7 +1575,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said: 'I was sent to perfect good character.'",
-            source: "Musnad Ahmad 8952 (graded Sahih by Al-Albani)",
+            source: "Ahmad 8952 (graded Sahih by Al-Albani)",
           },
         ],
       },
@@ -1599,7 +1599,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said about the people of Ta'if who rejected and stoned him: 'Perhaps Allah will bring from their descendants people who will worship Allah alone.'",
-            source: "Sahih al-Bukhari 3231, Sahih Muslim 1795",
+            source: "Bukhari 59:42, Muslim 54:44",
           },
         ],
       },
@@ -1637,7 +1637,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "In his Farewell Sermon, the Prophet ﷺ said: 'All mankind is from Adam and Eve. An Arab has no superiority over a non-Arab, nor does a non-Arab have any superiority over an Arab; a white has no superiority over a black, nor does a black have any superiority over a white — except by piety and good action.'",
-            source: "Musnad Ahmad 23489",
+            source: "Ahmad 23489",
           },
         ],
       },

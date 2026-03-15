@@ -12,6 +12,7 @@ import {
   type FamilyNode,
   type WifeNode,
 } from "@/data/prophet-family-tree";
+import HadithRefText from "@/components/HadithRefText";
 
 // Layout constants
 const LEVEL_H = 80;
@@ -697,7 +698,7 @@ export default function FamilyTreePage() {
         <ul className="space-y-1">
           {treeReferences.map((ref, i) => (
             <li key={i} className="text-xs text-themed-muted">
-              {ref}
+              <HadithRefText text={ref} />
             </li>
           ))}
         </ul>

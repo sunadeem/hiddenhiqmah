@@ -9,6 +9,7 @@ import ContentCard from "@/components/ContentCard";
 import BookmarkButton from "@/components/BookmarkButton";
 import { Search, X, Sun, Moon as MoonIcon, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles } from "lucide-react";
 import TabBar from "@/components/TabBar";
+import HadithRefText from "@/components/HadithRefText";
 
 type Dua = {
   tags: string[];
@@ -48,7 +49,7 @@ const duas: Dua[] = [
     arabic: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     transliteration: "Asbahna wa asbahal-mulku lillah, walhamdu lillah, la ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadeer",
     translation: "We have reached the morning and at this very time the kingdom belongs to Allah. All praise is due to Allah. None has the right to be worshipped except Allah alone, without any partner. To Him belongs the dominion, to Him belongs all praise, and He is over all things capable.",
-    source: "Sahih Muslim 2723",
+    source: "Muslim 48:27",
     when: "Every morning",
   },
   {
@@ -57,7 +58,7 @@ const duas: Dua[] = [
     arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     transliteration: "Amsayna wa amsal-mulku lillah, walhamdu lillah, la ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadeer",
     translation: "We have reached the evening and at this very time the kingdom belongs to Allah. All praise is due to Allah. None has the right to be worshipped except Allah alone, without any partner. To Him belongs the dominion, to Him belongs all praise, and He is over all things capable.",
-    source: "Sahih Muslim 2723",
+    source: "Muslim 48:27",
     when: "Every evening",
   },
   {
@@ -66,7 +67,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
     transliteration: "Allahumma anta Rabbi la ilaha illa anta, khalaqtani wa ana 'abduka, wa ana 'ala 'ahdika wa wa'dika mastata't, a'udhu bika min sharri ma sana't, abu'u laka bi ni'matika 'alayya, wa abu'u bi dhanbi, faghfir li fa innahu la yaghfirudh-dhunuba illa anta",
     translation: "O Allah, You are my Lord. There is no god but You. You created me and I am Your servant, and I hold to Your covenant and promise as best I can. I seek refuge in You from the evil I have done. I acknowledge Your blessings upon me and I acknowledge my sin. So forgive me, for none forgives sins but You.",
-    source: "Sahih al-Bukhari 6306",
+    source: "Bukhari 80:3",
     when: "Morning and evening",
     virtue: "Whoever says this during the day with firm belief and dies that day before evening, he will be among the people of Paradise. Whoever says it at night with firm belief and dies before morning, he will be among the people of Paradise.",
   },
@@ -76,7 +77,7 @@ const duas: Dua[] = [
     arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
     transliteration: "Bismillahil-ladhi la yadurru ma'as-mihi shay'un fil-ardi wa la fis-sama'i wa huwas-sami'ul-'alim",
     translation: "In the name of Allah, with whose name nothing on earth or in heaven can cause harm, and He is the All-Hearing, All-Knowing.",
-    source: "Abu Dawud 5088, Tirmidhi 3388",
+    source: "Abu Dawud 43:316, Tirmidhi 48:19",
     when: "Morning and evening",
     repeat: "3 times",
     virtue: "Nothing will harm the one who says this three times in the morning and three times in the evening.",
@@ -87,7 +88,7 @@ const duas: Dua[] = [
     arabic: "رَضِيتُ بِاللَّهِ رَبًّا وَبِالْإِسْلَامِ دِينًا وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا",
     transliteration: "Raditu billahi rabba, wa bil-islami deena, wa bi Muhammadin sallallahu 'alayhi wa sallama nabiyya",
     translation: "I am pleased with Allah as my Lord, with Islam as my religion, and with Muhammad (peace be upon him) as my Prophet.",
-    source: "Abu Dawud 5072, Tirmidhi 3389",
+    source: "Abu Dawud 43:300, Tirmidhi 48:20",
     when: "Morning and evening",
     repeat: "3 times",
     virtue: "It is a right upon Allah to please whoever says this three times every morning and evening.",
@@ -98,7 +99,7 @@ const duas: Dua[] = [
     arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
     transliteration: "SubhanAllahi wa bihamdihi",
     translation: "Glory and praise be to Allah.",
-    source: "Sahih Muslim 2692",
+    source: "Muslim 48:31",
     when: "Morning and evening",
     repeat: "100 times",
     virtue: "Whoever says this one hundred times a day, his sins will be forgiven even if they were as much as the foam of the sea.",
@@ -109,7 +110,7 @@ const duas: Dua[] = [
     arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     transliteration: "La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadeer",
     translation: "None has the right to be worshipped except Allah alone, without any partner. To Him belongs the dominion and to Him belongs all praise, and He is over all things capable.",
-    source: "Sahih al-Bukhari 6403, Sahih Muslim 2693",
+    source: "Bukhari 80:98, Muslim 48:32",
     when: "Morning and evening",
     repeat: "100 times",
     virtue: "Equivalent to freeing ten slaves, one hundred good deeds are recorded, one hundred sins are erased, and it is a protection from Shaytan until evening.",
@@ -120,7 +121,7 @@ const duas: Dua[] = [
     arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
     transliteration: "A'udhu bi kalimatillahit-tammati min sharri ma khalaq",
     translation: "I seek refuge in the perfect words of Allah from the evil of what He has created.",
-    source: "Sahih Muslim 2708",
+    source: "Muslim 48:52",
     when: "Evening",
     repeat: "3 times",
     virtue: "Nothing will harm the one who says this three times in the evening.",
@@ -133,7 +134,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ",
     transliteration: "Allahumma rabba hadhihid-da'watit-tammah, was-salatil-qa'imah, ati Muhammadanil-waseelata wal-fadeelah, wab'athhu maqamam mahmudanil-ladhi wa'adtah",
     translation: "O Allah, Lord of this perfect call and established prayer, grant Muhammad the intercession and virtue, and raise him to the praised station that You have promised him.",
-    source: "Sahih al-Bukhari 614",
+    source: "Bukhari 10:12",
     when: "After hearing the adhan",
     virtue: "My intercession will be granted to whoever says this after hearing the adhan.",
   },
@@ -143,7 +144,7 @@ const duas: Dua[] = [
     arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَٰهَ غَيْرُكَ",
     transliteration: "Subhanakallahumma wa bihamdika, wa tabarakasmuka, wa ta'ala jadduka, wa la ilaha ghayruk",
     translation: "Glory and praise be to You, O Allah. Blessed is Your name, exalted is Your majesty, and there is no god but You.",
-    source: "Abu Dawud 775, Tirmidhi 243",
+    source: "Abu Dawud 2:385, Tirmidhi 2:95",
     when: "After opening takbeer in prayer",
   },
   {
@@ -152,7 +153,7 @@ const duas: Dua[] = [
     arabic: "رَبِّ اغْفِرْ لِي رَبِّ اغْفِرْ لِي",
     transliteration: "Rabbighfir li, Rabbighfir li",
     translation: "My Lord, forgive me. My Lord, forgive me.",
-    source: "Abu Dawud 874, Ibn Majah 897",
+    source: "Abu Dawud 2:484, Ibn Majah 5:95",
     when: "While sitting between the two prostrations",
   },
   {
@@ -161,7 +162,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ جَهَنَّمَ وَمِنْ عَذَابِ الْقَبْرِ وَمِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ وَمِنْ شَرِّ فِتْنَةِ الْمَسِيحِ الدَّجَّالِ",
     transliteration: "Allahumma inni a'udhu bika min 'adhabi jahannam, wa min 'adhabil-qabr, wa min fitnatil-mahya wal-mamat, wa min sharri fitnatil-masihid-dajjal",
     translation: "O Allah, I seek refuge in You from the punishment of Hellfire, from the punishment of the grave, from the trials of life and death, and from the evil trial of the False Messiah.",
-    source: "Sahih Muslim 588",
+    source: "Muslim 4:129",
     when: "After the final tashahhud, before salam",
     virtue: "The Prophet (peace be upon him) used to seek refuge from these four things before giving salam.",
   },
@@ -171,7 +172,7 @@ const duas: Dua[] = [
     arabic: "أَسْتَغْفِرُ اللَّهَ أَسْتَغْفِرُ اللَّهَ أَسْتَغْفِرُ اللَّهَ اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ",
     transliteration: "Astaghfirullah, Astaghfirullah, Astaghfirullah. Allahumma antas-salam wa minkas-salam, tabarakta ya dhal-jalali wal-ikram",
     translation: "I seek the forgiveness of Allah (three times). O Allah, You are Peace and from You comes peace. Blessed are You, O Owner of Majesty and Honor.",
-    source: "Sahih Muslim 591",
+    source: "Muslim 2:1",
     when: "Immediately after salam",
   },
   {
@@ -180,7 +181,7 @@ const duas: Dua[] = [
     arabic: "سُبْحَانَ اللَّهِ (٣٣) الْحَمْدُ لِلَّهِ (٣٣) اللَّهُ أَكْبَرُ (٣٣) لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     transliteration: "SubhanAllah (33x), Alhamdulillah (33x), Allahu Akbar (33x), La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadeer",
     translation: "Glory be to Allah (33x). Praise be to Allah (33x). Allah is the Greatest (33x). None has the right to be worshipped except Allah alone, with no partner. To Him belongs the dominion and praise, and He is over all things capable.",
-    source: "Sahih Muslim 597",
+    source: "Muslim 2:1",
     when: "After every obligatory prayer",
     virtue: "The sins of whoever says this after every prayer will be forgiven, even if they were as much as the foam of the sea.",
   },
@@ -190,7 +191,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ وَتَعْلَمُ وَلَا أَعْلَمُ وَأَنْتَ عَلَّامُ الْغُيُوبِ",
     transliteration: "Allahumma inni astakhiruka bi 'ilmika, wa astaqdiruka bi qudratika, wa as'aluka min fadlikal-'azeem, fa innaka taqdiru wa la aqdir, wa ta'lamu wa la a'lam, wa anta 'allamul-ghuyub",
     translation: "O Allah, I seek Your guidance by virtue of Your knowledge, and I seek ability by virtue of Your power, and I ask You of Your great bounty. You are capable and I am not. You know and I do not, and You are the Knower of the unseen.",
-    source: "Sahih al-Bukhari 1166",
+    source: "Bukhari 19:45",
     when: "When making a decision, after praying two rak'ahs",
   },
 
@@ -201,7 +202,7 @@ const duas: Dua[] = [
     arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
     transliteration: "Bismika Allahumma amutu wa ahya",
     translation: "In Your name, O Allah, I die and I live.",
-    source: "Sahih al-Bukhari 6324",
+    source: "Bukhari 80:21",
     when: "Every night before sleep",
   },
   {
@@ -210,7 +211,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ وَفَوَّضْتُ أَمْرِي إِلَيْكَ وَوَجَّهْتُ وَجْهِي إِلَيْكَ وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ رَغْبَةً وَرَهْبَةً إِلَيْكَ لَا مَلْجَأَ وَلَا مَنْجَا مِنْكَ إِلَّا إِلَيْكَ آمَنْتُ بِكِتَابِكَ الَّذِي أَنْزَلْتَ وَبِنَبِيِّكَ الَّذِي أَرْسَلْتَ",
     transliteration: "Allahumma aslamtu nafsi ilayk, wa fawwadtu amri ilayk, wa wajjahtu wajhi ilayk, wa alja'tu zahri ilayk, raghbatan wa rahbatan ilayk, la malja'a wa la manja minka illa ilayk, amantu bi kitabikal-ladhi anzalt, wa bi nabiyyikal-ladhi arsalt",
     translation: "O Allah, I submit myself to You, I entrust my affairs to You, I turn my face to You, and I lean my back on You, out of hope and fear of You. There is no refuge and no escape from You except to You. I believe in Your Book which You have revealed and in Your Prophet whom You have sent.",
-    source: "Sahih al-Bukhari 247, Sahih Muslim 2710",
+    source: "Bukhari 4:113, Muslim 48:54",
     when: "Before sleeping, lying on right side",
     virtue: "If you die that night, you will die upon the fitrah (natural disposition of Islam).",
   },
@@ -220,7 +221,7 @@ const duas: Dua[] = [
     arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
     transliteration: "Alhamdulillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur",
     translation: "All praise is due to Allah, who gave us life after causing us to die, and to Him is the resurrection.",
-    source: "Sahih al-Bukhari 6324",
+    source: "Bukhari 80:21",
     when: "Upon waking up",
   },
   {
@@ -229,7 +230,7 @@ const duas: Dua[] = [
     arabic: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
     transliteration: "A'udhu billahi minash-shaytanir-rajeem",
     translation: "I seek refuge in Allah from the accursed Shaytan.",
-    source: "Sahih Muslim 2262",
+    source: "Muslim 42:12",
     when: "After a bad dream",
     virtue: "Spit lightly to your left three times, seek refuge in Allah from Shaytan, and turn to your other side. Do not tell anyone about the bad dream.",
   },
@@ -241,7 +242,7 @@ const duas: Dua[] = [
     arabic: "بِسْمِ اللَّهِ",
     transliteration: "Bismillah",
     translation: "In the name of Allah.",
-    source: "Sahih al-Bukhari 5376, Sahih Muslim 2017",
+    source: "Bukhari 70:4, Muslim 36:136",
     when: "Before every meal",
   },
   {
@@ -250,7 +251,7 @@ const duas: Dua[] = [
     arabic: "بِسْمِ اللَّهِ أَوَّلَهُ وَآخِرَهُ",
     transliteration: "Bismillahi awwalahu wa akhirah",
     translation: "In the name of Allah, at its beginning and at its end.",
-    source: "Abu Dawud 3767, Tirmidhi 1858",
+    source: "Abu Dawud 28:32, Tirmidhi 25:75",
     when: "If you forget to say Bismillah before eating",
   },
   {
@@ -259,7 +260,7 @@ const duas: Dua[] = [
     arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
     transliteration: "Alhamdulillahil-ladhi at'amani hadha wa razaqaneehi min ghayri hawlin minni wa la quwwah",
     translation: "All praise is due to Allah who fed me this and provided it for me without any power or might from me.",
-    source: "Abu Dawud 4023, Tirmidhi 3458",
+    source: "Abu Dawud 34:4, Tirmidhi 48:89",
     when: "After finishing a meal",
     virtue: "Whoever says this after eating, his past sins will be forgiven.",
   },
@@ -269,7 +270,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ بَارِكْ لَهُمْ فِيمَا رَزَقْتَهُمْ وَاغْفِرْ لَهُمْ وَارْحَمْهُمْ",
     transliteration: "Allahumma barik lahum feema razaqtahum, waghfir lahum, warhamhum",
     translation: "O Allah, bless them in what You have provided for them, forgive them, and have mercy upon them.",
-    source: "Sahih Muslim 2042",
+    source: "Muslim 36:175",
     when: "When eating at someone's home",
   },
   {
@@ -278,7 +279,7 @@ const duas: Dua[] = [
     arabic: "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ",
     transliteration: "Dhahabadh-dhama'u wabtallatil-'uruqu wa thabatal-ajru in sha'Allah",
     translation: "The thirst has gone, the veins have been moistened, and the reward is confirmed, if Allah wills.",
-    source: "Abu Dawud 2357",
+    source: "Abu Dawud 14:45",
     when: "When breaking the fast (iftar)",
   },
 
@@ -289,7 +290,7 @@ const duas: Dua[] = [
     arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
     transliteration: "Subhanal-ladhi sakh-khara lana hadha wa ma kunna lahu muqrineen, wa inna ila Rabbina la munqalibun",
     translation: "Glory to Him who has subjected this to us, and we could never have it by our efforts. And to our Lord we will surely return.",
-    source: "Quran 43:13-14, Sahih Muslim 1342",
+    source: "Quran 43:13-14, Muslim 5:179",
     when: "When beginning a journey",
   },
   {
@@ -298,7 +299,7 @@ const duas: Dua[] = [
     arabic: "آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
     transliteration: "Ayibuna, ta'ibuna, 'abiduna, li Rabbina hamidun",
     translation: "We are returning, repenting, worshipping, and praising our Lord.",
-    source: "Sahih al-Bukhari 1797, Sahih Muslim 1342",
+    source: "Bukhari 64:22, Muslim 5:179",
     when: "When returning from a journey",
   },
   {
@@ -307,7 +308,7 @@ const duas: Dua[] = [
     arabic: "أَسْتَوْدِعُ اللَّهَ دِينَكَ وَأَمَانَتَكَ وَخَوَاتِيمَ عَمَلِكَ",
     transliteration: "Astawdi'ullaha deenaka wa amanataka wa khawateema 'amalik",
     translation: "I entrust to Allah your religion, your trust, and the conclusion of your deeds.",
-    source: "Abu Dawud 2600, Tirmidhi 3443",
+    source: "Abu Dawud 15:124, Tirmidhi 48:74",
     when: "When saying farewell to someone traveling",
   },
 
@@ -318,7 +319,7 @@ const duas: Dua[] = [
     arabic: "بِسْمِ اللَّهِ وَلَجْنَا وَبِسْمِ اللَّهِ خَرَجْنَا وَعَلَى رَبِّنَا تَوَكَّلْنَا",
     transliteration: "Bismillahi walajna, wa bismillahi kharajna, wa 'ala Rabbina tawakkalna",
     translation: "In the name of Allah we enter, in the name of Allah we leave, and upon our Lord we rely.",
-    source: "Abu Dawud 5096",
+    source: "Abu Dawud 43:324",
     when: "When entering your home",
   },
   {
@@ -327,7 +328,7 @@ const duas: Dua[] = [
     arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
     transliteration: "Bismillah, tawakkaltu 'alAllah, wa la hawla wa la quwwata illa billah",
     translation: "In the name of Allah, I place my trust in Allah, and there is no power nor might except with Allah.",
-    source: "Abu Dawud 5095, Tirmidhi 3426",
+    source: "Abu Dawud 43:323, Tirmidhi 48:57",
     when: "When leaving the home",
     virtue: "It will be said to him: You are guided, sufficed, and protected. And the devil will turn away from him.",
   },
@@ -337,7 +338,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
     transliteration: "Allahummaf-tah li abwaba rahmatik",
     translation: "O Allah, open for me the gates of Your mercy.",
-    source: "Sahih Muslim 713",
+    source: "Muslim 4:128",
     when: "When entering the mosque",
   },
   {
@@ -346,7 +347,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
     transliteration: "Allahumma inni as'aluka min fadlik",
     translation: "O Allah, I ask You for Your bounty.",
-    source: "Sahih Muslim 713",
+    source: "Muslim 4:128",
     when: "When leaving the mosque",
   },
   {
@@ -355,7 +356,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
     transliteration: "Allahumma inni a'udhu bika minal-khubuthi wal-khaba'ith",
     translation: "O Allah, I seek refuge in You from the male and female evil jinn.",
-    source: "Sahih al-Bukhari 142, Sahih Muslim 375",
+    source: "Bukhari 4:8, Muslim 4:128",
     when: "Before entering the bathroom",
   },
   {
@@ -364,7 +365,7 @@ const duas: Dua[] = [
     arabic: "غُفْرَانَكَ",
     transliteration: "Ghufranaka",
     translation: "I seek Your forgiveness.",
-    source: "Abu Dawud 30, Tirmidhi 7",
+    source: "Abu Dawud 1:30, Tirmidhi 1:7",
     when: "After leaving the bathroom",
   },
 
@@ -375,7 +376,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
     transliteration: "Allahu la ilaha illa huwal-hayyul-qayyum, la ta'khudhuhu sinatun wa la nawm, lahu ma fis-samawati wa ma fil-ard, man dhal-ladhi yashfa'u 'indahu illa bi idhnih, ya'lamu ma bayna aydeehim wa ma khalfahum, wa la yuheetuna bi shay'in min 'ilmihi illa bima sha', wasi'a kursiyyuhus-samawati wal-ard, wa la ya'uduhu hifzuhuma, wa huwal-'aliyyul-'azeem",
     translation: "Allah — there is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is before them and what will be after them, and they encompass nothing of His knowledge except what He wills. His Kursi extends over the heavens and the earth, and their preservation does not tire Him. And He is the Most High, the Most Great.",
-    source: "Quran 2:255, Sahih al-Bukhari 5010, Sahih Muslim 810",
+    source: "Quran 2:255, Bukhari 59:32, Muslim 4:128",
     when: "After every obligatory prayer, before sleep, morning and evening",
     virtue: "Whoever recites Ayatul Kursi after every obligatory prayer, nothing prevents him from entering Paradise except death.",
   },
@@ -385,7 +386,7 @@ const duas: Dua[] = [
     arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿٤﴾ · قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِنْ شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾ · قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾",
     transliteration: "Qul huwa Allahu ahad. Allahus-samad. Lam yalid wa lam yulad. Wa lam yakun lahu kufuwan ahad. · Qul a'udhu bi rabbil-falaq. Min sharri ma khalaq. Wa min sharri ghasiqin idha waqab. Wa min sharrin-naffathati fil-'uqad. Wa min sharri hasidin idha hasad. · Qul a'udhu bi rabbin-nas. Malikin-nas. Ilahin-nas. Min sharril-waswasil-khannas. Alladhi yuwaswisu fi sudurin-nas. Minal-jinnati wan-nas.",
     translation: "Say: He is Allah, the One. Allah, the Eternal Refuge. He neither begets nor is born. Nor is there to Him any equivalent. · Say: I seek refuge in the Lord of daybreak, from the evil of that which He created, from the evil of darkness when it settles, from the evil of the blowers in knots, and from the evil of an envier when he envies. · Say: I seek refuge in the Lord of mankind, the Sovereign of mankind, the God of mankind, from the evil of the retreating whisperer, who whispers in the breasts of mankind, from among the jinn and mankind.",
-    source: "Quran 112, 113, 114, Abu Dawud 5082, Tirmidhi 3575",
+    source: "Quran 112, 113, 114, Abu Dawud 43:310, Tirmidhi 48:206",
     when: "Morning and evening",
     repeat: "3 times each",
     virtue: "These three surahs will suffice you against everything.",
@@ -396,7 +397,7 @@ const duas: Dua[] = [
     arabic: "أُعِيذُكُمَا بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ",
     transliteration: "U'idhukuma bi kalimatillahit-tammati min kulli shaytanin wa hammah, wa min kulli 'aynin lammah",
     translation: "I seek protection for you both in the perfect words of Allah, from every devil and poisonous creature, and from every evil eye.",
-    source: "Sahih al-Bukhari 3371",
+    source: "Bukhari 60:45",
     when: "When seeking protection for children",
     virtue: "The Prophet (peace be upon him) used to seek protection for Hasan and Husayn with this dua.",
   },
@@ -406,7 +407,7 @@ const duas: Dua[] = [
     arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ غَضَبِهِ وَعِقَابِهِ وَشَرِّ عِبَادِهِ وَمِنْ هَمَزَاتِ الشَّيَاطِينِ وَأَنْ يَحْضُرُونِ",
     transliteration: "A'udhu bi kalimatillahit-tammati min ghadabihi wa 'iqabihi wa sharri 'ibadihi wa min hamazatish-shayateeni wa an yahduroon",
     translation: "I seek refuge in the perfect words of Allah from His anger and His punishment, from the evil of His servants, and from the whisperings of the devils and from their presence.",
-    source: "Abu Dawud 3893, Tirmidhi 3528",
+    source: "Abu Dawud 29:39, Tirmidhi 48:159",
     when: "When feeling afraid, especially at night",
   },
 
@@ -417,7 +418,7 @@ const duas: Dua[] = [
     arabic: "أَسْتَغْفِرُ اللَّهَ الَّذِي لَا إِلَٰهَ إِلَّا هُوَ الْحَيَّ الْقَيُّومَ وَأَتُوبُ إِلَيْهِ",
     transliteration: "Astaghfirullahal-ladhi la ilaha illa huwal-hayyul-qayyumu wa atubu ilayh",
     translation: "I seek the forgiveness of Allah, there is no god but He, the Ever-Living, the Sustainer of existence, and I repent to Him.",
-    source: "Abu Dawud 1517, Tirmidhi 3577",
+    source: "Abu Dawud 8:102, Tirmidhi 48:208",
     when: "Anytime, especially after sinning",
     virtue: "Whoever says this, Allah will forgive him even if he fled from battle.",
   },
@@ -436,7 +437,7 @@ const duas: Dua[] = [
     arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا أَنْتَ أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
     transliteration: "Subhanaka Allahumma wa bihamdika, ash-hadu an la ilaha illa anta, astaghfiruka wa atubu ilayk",
     translation: "Glory and praise be to You, O Allah. I bear witness that there is no god but You. I seek Your forgiveness and I repent to You.",
-    source: "Abu Dawud 4859, Tirmidhi 3433",
+    source: "Abu Dawud 43:87, Tirmidhi 48:64",
     when: "At the end of any gathering or meeting",
     virtue: "It serves as an expiation for any shortcomings that may have occurred during the gathering.",
   },
@@ -446,7 +447,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ وَارْحَمْنِي إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ",
     transliteration: "Allahumma inni zalamtu nafsi zulman katheeran wa la yaghfirudh-dhunuba illa anta, faghfir li maghfiratan min 'indika warhamni innaka antal-ghafurur-raheem",
     translation: "O Allah, I have greatly wronged myself and no one forgives sins but You. So grant me forgiveness from You and have mercy on me. Surely, You are the Oft-Forgiving, Most Merciful.",
-    source: "Sahih al-Bukhari 834, Sahih Muslim 2705",
+    source: "Bukhari 10:227, Muslim 48:49",
     when: "In prayer and anytime",
     virtue: "The Prophet (peace be upon him) taught this to Abu Bakr to say in his prayer.",
   },
@@ -458,7 +459,7 @@ const duas: Dua[] = [
     arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ",
     transliteration: "La ilaha illallahul-'azeemul-haleem, la ilaha illallahu rabbul-'arshil-'azeem, la ilaha illallahu rabbus-samawati wa rabbul-ardi wa rabbul-'arshil-kareem",
     translation: "There is no god but Allah, the Great, the Forbearing. There is no god but Allah, Lord of the Magnificent Throne. There is no god but Allah, Lord of the heavens, Lord of the earth, and Lord of the Noble Throne.",
-    source: "Sahih al-Bukhari 6346, Sahih Muslim 2730",
+    source: "Bukhari 80:43, Muslim 48:72",
     when: "In moments of severe distress or difficulty",
   },
   {
@@ -467,7 +468,7 @@ const duas: Dua[] = [
     arabic: "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
     transliteration: "La ilaha illa anta, subhanaka inni kuntu minaz-zalimeen",
     translation: "There is no god but You, glory be to You. Indeed, I have been of the wrongdoers.",
-    source: "Quran 21:87, Tirmidhi 3505",
+    source: "Quran 21:87, Tirmidhi 48:136",
     when: "In times of distress and difficulty",
     virtue: "No Muslim supplicates with this except that Allah will answer his prayer.",
   },
@@ -477,7 +478,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ وَالْعَجْزِ وَالْكَسَلِ وَالْبُخْلِ وَالْجُبْنِ وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ",
     transliteration: "Allahumma inni a'udhu bika minal-hammi wal-hazan, wal-'ajzi wal-kasal, wal-bukhli wal-jubn, wa dala'id-dayni wa ghalabatir-rijal",
     translation: "O Allah, I seek refuge in You from worry and grief, from weakness and laziness, from miserliness and cowardice, from the burden of debt and being overpowered by men.",
-    source: "Sahih al-Bukhari 6369",
+    source: "Bukhari 80:66",
     when: "When feeling overwhelmed, anxious, or burdened",
   },
   {
@@ -486,7 +487,7 @@ const duas: Dua[] = [
     arabic: "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا",
     transliteration: "Inna lillahi wa inna ilayhi raji'un. Allahumma'jurni fi museebati wa akhlif li khayran minha",
     translation: "Indeed, to Allah we belong and to Him we shall return. O Allah, reward me in my calamity and replace it with something better.",
-    source: "Sahih Muslim 918",
+    source: "Muslim 11:5",
     when: "When afflicted by a calamity or loss",
     virtue: "Umm Salamah said this when her husband died, and Allah replaced him with the Prophet (peace be upon him).",
   },
@@ -496,7 +497,7 @@ const duas: Dua[] = [
     arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
     transliteration: "Hasbunallahu wa ni'mal-wakeel",
     translation: "Allah is sufficient for us, and He is the best Disposer of affairs.",
-    source: "Quran 3:173, Sahih al-Bukhari 4563",
+    source: "Quran 3:173, Bukhari 65:85",
     when: "When facing a threat or overwhelming situation",
     virtue: "This was said by Ibrahim (peace be upon him) when he was thrown into the fire, and by Muhammad (peace be upon him) when told that the people had gathered against him.",
   },
@@ -517,7 +518,7 @@ const duas: Dua[] = [
     arabic: "أَذْهِبِ الْبَاسَ رَبَّ النَّاسِ اشْفِ أَنْتَ الشَّافِي لَا شِفَاءَ إِلَّا شِفَاؤُكَ شِفَاءً لَا يُغَادِرُ سَقَمًا",
     transliteration: "Adhhibil-ba's, Rabban-nas, ishfi antash-shafi, la shifa'a illa shifa'uka, shifa'an la yughadiru saqama",
     translation: "Remove the affliction, O Lord of mankind. Heal, for You are the Healer. There is no healing except Your healing — a healing that leaves no illness behind.",
-    source: "Sahih al-Bukhari 5743, Sahih Muslim 2191",
+    source: "Bukhari 76:58, Muslim 39:73",
     when: "When visiting or supplicating for the sick",
   },
   {
@@ -526,7 +527,7 @@ const duas: Dua[] = [
     arabic: "بِسْمِ اللَّهِ (ثَلاثًا) أَعُوذُ بِاللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ",
     transliteration: "Bismillah (3x). A'udhu billahi wa qudratihi min sharri ma ajidu wa uhadhir",
     translation: "In the name of Allah (three times). I seek refuge in Allah and His power from the evil of what I feel and what I fear.",
-    source: "Sahih Muslim 2202",
+    source: "Muslim 39:82",
     when: "Place your hand on the area of pain",
     repeat: "7 times",
   },
@@ -536,7 +537,7 @@ const duas: Dua[] = [
     arabic: "لَا بَأْسَ طَهُورٌ إِنْ شَاءَ اللَّهُ",
     transliteration: "La ba'sa, tahurun in sha'Allah",
     translation: "No worry, it is a purification, if Allah wills.",
-    source: "Sahih al-Bukhari 5656",
+    source: "Bukhari 75:16",
     when: "When visiting someone who is ill",
   },
   {
@@ -545,7 +546,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ عَافِنِي فِي بَدَنِي اللَّهُمَّ عَافِنِي فِي سَمْعِي اللَّهُمَّ عَافِنِي فِي بَصَرِي لَا إِلَٰهَ إِلَّا أَنْتَ",
     transliteration: "Allahumma 'afini fi badani, Allahumma 'afini fi sam'i, Allahumma 'afini fi basari, la ilaha illa anta",
     translation: "O Allah, grant me health in my body. O Allah, grant me health in my hearing. O Allah, grant me health in my sight. There is no god but You.",
-    source: "Abu Dawud 5090",
+    source: "Abu Dawud 43:318",
     when: "Morning and evening",
     repeat: "3 times",
   },
@@ -584,7 +585,7 @@ const duas: Dua[] = [
     arabic: "بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ",
     transliteration: "Barakallahu laka wa baraka 'alayka wa jama'a baynakuma fi khayr",
     translation: "May Allah bless you, and shower His blessings upon you, and join you together in goodness.",
-    source: "Abu Dawud 2130, Tirmidhi 1091",
+    source: "Abu Dawud 12:85, Tirmidhi 11:12",
     when: "When congratulating a newlywed",
   },
 
@@ -613,7 +614,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ انْفَعْنِي بِمَا عَلَّمْتَنِي وَعَلِّمْنِي مَا يَنْفَعُنِي وَزِدْنِي عِلْمًا",
     transliteration: "Allahumman-fa'ni bima 'allamtani, wa 'allimni ma yanfa'uni, wa zidni 'ilma",
     translation: "O Allah, benefit me with what You have taught me, teach me what will benefit me, and increase me in knowledge.",
-    source: "Tirmidhi 3599, Ibn Majah 251",
+    source: "Tirmidhi 48:230, Ibn Majah 0:251",
     when: "After prayer, when studying",
   },
   {
@@ -622,7 +623,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ اهْدِنِي وَسَدِّدْنِي",
     transliteration: "Allahummah-dini wa saddidni",
     translation: "O Allah, guide me and keep me on the right path.",
-    source: "Sahih Muslim 2725",
+    source: "Muslim 48:65",
     when: "Anytime, especially when facing decisions",
   },
 
@@ -633,7 +634,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ صَيِّبًا نَافِعًا",
     transliteration: "Allahumma sayyiban nafi'a",
     translation: "O Allah, let it be a beneficial rain.",
-    source: "Sahih al-Bukhari 1032",
+    source: "Bukhari 15:27",
     when: "When it starts raining",
   },
   {
@@ -642,7 +643,7 @@ const duas: Dua[] = [
     arabic: "مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ",
     transliteration: "Mutirna bi fadlillahi wa rahmatihi",
     translation: "We have been given rain by the grace and mercy of Allah.",
-    source: "Sahih al-Bukhari 846, Sahih Muslim 71",
+    source: "Bukhari 10:238, Muslim 1:137",
     when: "After the rain",
   },
   {
@@ -651,7 +652,7 @@ const duas: Dua[] = [
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَخَيْرَ مَا فِيهَا وَخَيْرَ مَا أُرْسِلَتْ بِهِ وَأَعُوذُ بِكَ مِنْ شَرِّهَا وَشَرِّ مَا فِيهَا وَشَرِّ مَا أُرْسِلَتْ بِهِ",
     transliteration: "Allahumma inni as'aluka khayraha wa khayra ma feeha wa khayra ma ursilat bihi, wa a'udhu bika min sharriha wa sharri ma feeha wa sharri ma ursilat bih",
     translation: "O Allah, I ask You for the good of it, the good within it, and the good it was sent with. And I seek refuge in You from the evil of it, the evil within it, and the evil it was sent with.",
-    source: "Sahih Muslim 899",
+    source: "Muslim 4:128",
     when: "When strong winds blow",
   },
 ];
@@ -836,7 +837,7 @@ function DuasContent() {
                 {/* Source */}
                 <div className="border-t sidebar-border pt-3">
                   <p className="text-xs text-themed-muted">
-                    Source: <strong className="text-themed">{dua.source}</strong>
+                    Source: <strong className="text-themed"><HadithRefText text={dua.source} /></strong>
                   </p>
                 </div>
               </ContentCard>

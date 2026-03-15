@@ -91,9 +91,8 @@ function BookPageContent() {
   const searchParams = useSearchParams();
   const collection = params.collection as string;
   const bookId = Number(params.book);
-  const highlightId = searchParams.get("h")
-    ? Number(searchParams.get("h"))
-    : null;
+  const highlightParam = searchParams.get("h");
+  const highlightId = highlightParam ? Number(highlightParam) : null;
 
   const [metadata, setMetadata] = useState<CollectionMeta | null>(null);
   const [hadiths, setHadiths] = useState<HadithEntry[]>([]);
@@ -126,11 +125,16 @@ function BookPageContent() {
       .catch(() => setLoading(false));
   }, [collection, bookId]);
 
-  // Scroll to highlighted hadith
+  // Scroll to highlighted hadith (supports both global ID and in-book hadith number)
   useEffect(() => {
     if (highlightId && !loading) {
       const timer = setTimeout(() => {
-        const el = document.getElementById(`hadith-${highlightId}`);
+        // Try global ID first (backward compat with bookmarks)
+        let el = document.getElementById(`hadith-${highlightId}`);
+        // Fall back to in-book hadith number via data-ref
+        if (!el) {
+          el = document.querySelector(`[data-ref="${bookId}:${highlightId}"]`);
+        }
         if (el) {
           el.scrollIntoView({ behavior: "smooth", block: "center" });
           el.classList.add("section-highlight");
@@ -139,7 +143,7 @@ function BookPageContent() {
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [highlightId, loading]);
+  }, [highlightId, bookId, loading]);
 
   const toggleArabic = (id: number) => {
     setExpandedArabic((prev) => {
@@ -256,6 +260,7 @@ function BookPageContent() {
               <motion.div
                 key={hadith.id}
                 id={`hadith-${hadith.id}`}
+                data-ref={hadith.reference}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{

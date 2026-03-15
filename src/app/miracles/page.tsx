@@ -6,7 +6,8 @@ import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
-import { BookOpen, Telescope, Clock, MapPin, Hash, CheckCircle, AlertCircle, Search, X } from "lucide-react";
+import { BookOpen, Telescope, Clock, MapPin, Hash, Search, X } from "lucide-react";
+import HadithRefText from "@/components/HadithRefText";
 
 type Strength = "strong" | "moderate" | "debated";
 
@@ -58,93 +59,93 @@ const miracles: Miracle[] = [
   {
     category: "prophecy",
     title: "The Conquest of Constantinople",
-    reference: "Sahih Muslim 2897; Jami' at-Tirmidhi 2239",
+    reference: "Muslim 54:44; Tirmidhi 33:82",
     arabic: "لَتُفْتَحَنَّ الْقُسْطَنْطِينِيَّةُ فَلَنِعْمَ الْأَمِيرُ أَمِيرُهَا وَلَنِعْمَ الْجَيْشُ ذَٰلِكَ الْجَيْشُ",
     translation: "Verily, Constantinople will be conquered. How excellent will be the commander who conquers it, and how excellent will be his army.",
     explanation: "Prophet Muhammad ﷺ prophesied the conquest of Constantinople (modern-day Istanbul). Multiple authentic narrations confirm this prophecy. The specific narration praising the commander and army is from Musnad Ahmad (grading disputed among scholars). This prophecy was fulfilled in 1453 CE — over 800 years later — when the Ottoman Sultan Mehmed II conquered the city.",
     historicalContext: "Constantinople was the capital of the Byzantine Empire and one of the most fortified cities in the world. Multiple Muslim attempts to conquer it had failed over centuries before Mehmed II's successful siege.",
-    sources: ["Sahih Muslim 2897", "Jami' at-Tirmidhi 2239", "Musnad Ahmad 18189 (grading disputed)", "Historical: Fall of Constantinople, 1453 CE"],
+    sources: ["Muslim 54:44", "Tirmidhi 33:82", "Historical: Fall of Constantinople, 1453 CE"],
     strength: "strong",
     strengthNote: "The general prophecy of Constantinople's conquest is in Sahih Muslim and other authentic collections. The specific 'how excellent the commander' wording (Musnad Ahmad) has been weakened by al-Albani and al-Arna'ut, but authenticated by al-Hakim and al-Dhahabi.",
   },
   {
     category: "prophecy",
     title: "The Conquest of Jerusalem",
-    reference: "Sahih al-Bukhari 3176",
+    reference: "Bukhari 64:18",
     explanation: "Prophet Muhammad ﷺ told his companion Awf ibn Malik about six signs before the Day of Judgment, the first being his own death and the second being the conquest of Jerusalem (Bayt al-Maqdis). Jerusalem was conquered by the Muslim army under Caliph Umar ibn al-Khattab in 637 CE, just 5 years after the Prophet's death.",
     historicalContext: "Caliph Umar personally traveled to Jerusalem to accept its surrender from the Patriarch Sophronius. He famously refused to pray inside the Church of the Holy Sepulchre to prevent Muslims from converting it to a mosque.",
-    sources: ["Sahih al-Bukhari 3176", "Historical: Siege of Jerusalem, 637 CE"],
+    sources: ["Bukhari 64:18", "Historical: Siege of Jerusalem, 637 CE"],
     strength: "strong",
   },
   {
     category: "prophecy",
     title: "The Conquest of Persia and Treasures of Kisra",
-    reference: "Sahih al-Bukhari 3120",
+    reference: "Bukhari 57:29",
     arabic: "إِذَا هَلَكَ كِسْرَى فَلَا كِسْرَى بَعْدَهُ",
     translation: "When Kisra (Chosroes) perishes, there will be no Kisra after him.",
     explanation: "Prophet Muhammad ﷺ prophesied the fall of the Persian Empire and that its treasures would be spent in the cause of Allah. The Sasanian Persian Empire — one of the two superpowers of the time — fell to the Muslim army in 651 CE, and its vast treasures were distributed.",
-    sources: ["Sahih al-Bukhari 3120", "Sahih Muslim 2918", "Historical: Fall of Sasanian Empire, 651 CE"],
+    sources: ["Bukhari 57:29", "Muslim 54:92", "Historical: Fall of Sasanian Empire, 651 CE"],
     strength: "strong",
   },
   {
     category: "prophecy",
     title: "Barefoot Shepherds Competing in Tall Buildings",
-    reference: "Sahih Muslim 8",
+    reference: "Muslim 1:1",
     arabic: "أَنْ تَلِدَ الْأَمَةُ رَبَّتَهَا وَأَنْ تَرَى الْحُفَاةَ الْعُرَاةَ الْعَالَةَ رِعَاءَ الشَّاءِ يَتَطَاوَلُونَ فِي الْبُنْيَانِ",
     translation: "...and you will see barefoot, naked, destitute shepherds competing in constructing tall buildings.",
     explanation: "In the famous Hadith of Jibreel, the Prophet ﷺ described one of the signs of the approaching Hour: that barefoot, impoverished Bedouin shepherds would compete in building the tallest structures. Today, the Arabian Peninsula — historically home to nomadic Bedouin tribes — hosts the world's tallest skyscrapers, including the Burj Khalifa (828m) and the upcoming Jeddah Tower.",
-    sources: ["Sahih Muslim 8 (Hadith of Jibreel)", "Sahih al-Bukhari 50"],
+    sources: ["Muslim 1:1 (Hadith of Jibreel)", "Bukhari 2:43"],
     strength: "strong",
   },
   {
     category: "prophecy",
     title: "A Fire from Hijaz Visible from Busra",
-    reference: "Sahih al-Bukhari 7118, Sahih Muslim 2902",
+    reference: "Bukhari 92:65, Muslim 54:55",
     arabic: "لَا تَقُومُ السَّاعَةُ حَتَّى تَخْرُجَ نَارٌ مِنْ أَرْضِ الْحِجَازِ تُضِيءُ أَعْنَاقَ الْإِبِلِ بِبُصْرَى",
     translation: "The Hour will not come until a fire emerges from the land of Hijaz that will illuminate the necks of camels in Busra (Syria).",
     explanation: "In 1256 CE, a massive volcanic eruption occurred east of Medina. The eruption lasted for weeks and the lava flow extended over 23 km. Contemporary historians, including Abu Shama al-Maqdisi, documented that the light of the fire was visible from great distances, with reports reaching as far as Busra in Syria.",
     historicalContext: "Abu Shama al-Maqdisi recorded: 'A great fire appeared in the Harrah near Medina on Friday, 6th Jumada al-Akhirah 654 AH.' The event was documented by multiple historians of the period.",
-    sources: ["Sahih al-Bukhari 7118", "Sahih Muslim 2902", "Abu Shama al-Maqdisi, Dhayl al-Rawdatayn"],
+    sources: ["Bukhari 92:65", "Muslim 54:55", "Abu Shama al-Maqdisi, Dhayl al-Rawdatayn"],
     strength: "strong",
   },
   {
     category: "prophecy",
     title: "The Plague of Amwas",
-    reference: "Sahih al-Bukhari 3176",
+    reference: "Bukhari 64:18",
     explanation: "Prophet Muhammad ﷺ informed his companion Awf ibn Malik of six signs, one of which was a plague that would strike the Muslims like the disease of sheep. The Plague of Amwas struck Palestine in 639 CE (18 AH), devastating the Muslim community in the Levant and killing approximately 25,000 people, including prominent companions such as Abu Ubayda ibn al-Jarrah.",
     historicalContext: "Abu Ubayda ibn al-Jarrah, the overall commander of the Muslim armies in Syria and one of the ten companions promised Paradise, died in this plague along with Mu'adh ibn Jabal and Yazid ibn Abi Sufyan.",
-    sources: ["Sahih al-Bukhari 3176", "Ibn Kathir, Al-Bidayah wan-Nihayah"],
+    sources: ["Bukhari 64:18", "Ibn Kathir, Al-Bidayah wan-Nihayah"],
     strength: "strong",
   },
   {
     category: "prophecy",
     title: "Widespread Senseless Killing",
-    reference: "Sahih al-Bukhari 7061, Sahih Muslim 2908",
+    reference: "Bukhari 92:13, Muslim 15:117",
     arabic: "يَتَقَارَبُ الزَّمَانُ وَيَكْثُرُ الْهَرْجُ ... الْقَتْلُ الْقَتْلُ",
     translation: "Time will pass rapidly and al-harj will increase... killing, killing.",
     explanation: "The Prophet ﷺ prophesied a time when senseless, widespread killing (al-harj) would become commonplace — where the killer would not know why he kills and the victim would not know why he was killed. This describes an era of indiscriminate violence, terrorism, and mass conflict that the modern world has witnessed in unprecedented scale.",
-    sources: ["Sahih al-Bukhari 7061", "Sahih Muslim 2908"],
+    sources: ["Bukhari 92:13", "Muslim 15:117"],
     strength: "strong",
   },
   {
     category: "prophecy",
     title: "Time Passing Rapidly",
-    reference: "Sunan at-Tirmidhi 2332",
+    reference: "Tirmidhi 36:29",
     arabic: "لَا تَقُومُ السَّاعَةُ حَتَّى يَتَقَارَبَ الزَّمَانُ",
     translation: "The Hour will not come until time passes rapidly — a year will be like a month, a month like a week, a week like a day.",
     explanation: "The Prophet ﷺ described a time when time itself would seem to accelerate. Modern life, with its constant connectivity, information overload, and rapid pace, has made this perception of accelerating time a widely shared experience across cultures.",
-    sources: ["Sunan at-Tirmidhi 2332 (graded sahih by al-Albani)", "Musnad Ahmad"],
+    sources: ["Tirmidhi 36:29 (graded sahih by al-Albani)"],
     strength: "strong",
     strengthNote: "The prophecy is authentic; its fulfillment is based on the widely shared perception of modern life's accelerating pace.",
   },
   {
     category: "prophecy",
     title: "Markets Coming Close Together",
-    reference: "Musnad Ahmad 10724",
+    reference: "Ahmad 10724",
     arabic: "تَقَارُبُ الْأَسْوَاقِ",
     translation: "Markets will come close together.",
     explanation: "The Prophet ﷺ prophesied that markets would draw close to one another. This has been interpreted as the proliferation of shopping centers, malls, and the rise of global e-commerce — where virtually any marketplace in the world is accessible from anywhere. International trade and supply chains have made markets across continents effectively 'close together.'",
-    sources: ["Musnad Ahmad 10724"],
+    sources: ["Ahmad 10724"],
     strength: "strong",
     strengthNote: "Authentic hadith; interpretation of 'closeness' as global commerce is a modern reading.",
   },
@@ -152,12 +153,12 @@ const miracles: Miracle[] = [
   {
     category: "prophecy",
     title: "The Mongol Siege and Destruction of Baghdad",
-    reference: "Sahih al-Bukhari 2928; Sahih Muslim 2912",
+    reference: "Bukhari 56:141; Muslim 54:76",
     arabic: "لَا تَقُومُ السَّاعَةُ حَتَّى تُقَاتِلُوا قَوْمًا نِعَالُهُمُ الشَّعَرُ وَلَا تَقُومُ السَّاعَةُ حَتَّى تُقَاتِلُوا قَوْمًا صِغَارَ الْأَعْيُنِ ذُلْفَ الْأُنُوفِ",
     translation: "The Hour will not come until you fight a people whose shoes are made of hair, and the Hour will not come until you fight a people with small eyes and flat noses.",
     explanation: "The Prophet ﷺ warned that Muslims would fight a people 'whose faces are like hammered shields' with small eyes and flat noses, who wear shoes made of hair. In 1258 CE, the Mongol army under Hulagu Khan — matching this description exactly — sacked Baghdad, the capital of the Abbasid Caliphate. An estimated 200,000 to over a million people were killed, the House of Wisdom was destroyed, and the Tigris ran black with ink from the books thrown into it. This was one of the most catastrophic events in human history.",
     historicalContext: "The Mongol invasion ended the Islamic Golden Age. Baghdad, which had been the intellectual and political center of the Muslim world for over 500 years, was utterly devastated. The last Abbasid Caliph, al-Musta'sim, was executed by being wrapped in a carpet and trampled by horses.",
-    sources: ["Sahih al-Bukhari 2928", "Sahih Muslim 2912", "Historical: Siege of Baghdad, 1258 CE"],
+    sources: ["Bukhari 56:141", "Muslim 54:76", "Historical: Siege of Baghdad, 1258 CE"],
     strength: "strong",
   },
 
@@ -386,8 +387,8 @@ const miracles: Miracle[] = [
     category: "numerical",
     title: "\"Mercy\" Mentioned Far More Than \"Punishment\"",
     reference: "Word frequency analysis across the Quran",
-    explanation: "Words related to mercy (rahmah, rahma, and derivatives) appear far more frequently in the Quran than words related to punishment (adhab and derivatives). The root ر-ح-م (r-h-m, mercy) appears in various forms over 300 times, while 'adhab' (punishment/torment) appears approximately 70 times. This overwhelmingly skewed ratio towards mercy reflects the prophetic hadith: 'My mercy prevails over My wrath' (Sahih al-Bukhari 7554).",
-    sources: ["Quran word frequency analysis", "Sahih al-Bukhari 7554", "Sahih Muslim 2751"],
+    explanation: "Words related to mercy (rahmah, rahma, and derivatives) appear far more frequently in the Quran than words related to punishment (adhab and derivatives). The root ر-ح-م (r-h-m, mercy) appears in various forms over 300 times, while 'adhab' (punishment/torment) appears approximately 70 times. This overwhelmingly skewed ratio towards mercy reflects the prophetic hadith: 'My mercy prevails over My wrath' (Bukhari 97:179).",
+    sources: ["Quran word frequency analysis", "Bukhari 97:179", "Muslim 48:1"],
     strength: "strong",
     strengthNote: "The dominance of mercy-related words over punishment-related words is well-established and consistently confirmed across counting methodologies.",
   },
@@ -411,11 +412,6 @@ const miracles: Miracle[] = [
   },
 ];
 
-const strengthConfig = {
-  strong: { label: "Well-established", color: "text-emerald-400", bgColor: "bg-emerald-400/10", borderColor: "border-emerald-400/30", icon: CheckCircle },
-  moderate: { label: "Moderate", color: "text-amber-400", bgColor: "bg-amber-400/10", borderColor: "border-amber-400/30", icon: CheckCircle },
-  debated: { label: "Debated", color: "text-orange-400", bgColor: "bg-orange-400/10", borderColor: "border-orange-400/30", icon: AlertCircle },
-};
 
 function MiraclesContent() {
   useScrollToSection();
@@ -514,24 +510,15 @@ function MiraclesContent() {
           className="space-y-5"
         >
           {filtered.map((miracle, i) => {
-            const cfg = strengthConfig[miracle.strength];
-            const StrengthIcon = cfg.icon;
             const catLabel = categories.find((c) => c.key === miracle.category)?.label ?? miracle.category;
 
             return (
               <ContentCard key={`${miracle.category}-${i}`} delay={Math.min(i * 0.05, 0.4)} id={`section-${miracle.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
                 {/* Header */}
                 <div className="mb-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <span className="text-xs text-gold font-medium">{catLabel}</span>
-                      <h2 className="text-xl font-semibold text-themed mt-1">{miracle.title}</h2>
-                      <p className="text-xs text-themed-muted mt-0.5">{miracle.reference}</p>
-                    </div>
-                    <span className={`flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full border shrink-0 mt-1 ${cfg.bgColor} ${cfg.color} ${cfg.borderColor}`}>
-                      <StrengthIcon size={11} />
-                      {cfg.label}
-                    </span>
+                  <div>
+                    <span className="text-xs text-gold font-medium">{catLabel}</span>
+                    <h2 className="text-xl font-semibold text-themed mt-1">{miracle.title}</h2>
                   </div>
                 </div>
 
@@ -564,24 +551,12 @@ function MiraclesContent() {
                   </div>
                 )}
 
-                {/* Strength note (for debated/moderate) */}
-                {miracle.strengthNote && (
-                  <div className={`rounded-lg p-3 mb-4 border ${cfg.borderColor} ${cfg.bgColor}`}>
-                    <div className="flex items-start gap-2">
-                      <StrengthIcon size={14} className={`${cfg.color} mt-0.5 shrink-0`} />
-                      <p className={`text-xs leading-relaxed ${cfg.color}`}>
-                        {miracle.strengthNote}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
                 {/* Sources */}
                 <div className="border-t sidebar-border pt-3">
                   <p className="text-xs text-themed-muted font-medium mb-1">Sources:</p>
                   <ul className="text-xs text-themed-muted space-y-0.5">
                     {miracle.sources.map((src, j) => (
-                      <li key={j}>• {src}</li>
+                      <li key={j}>• <HadithRefText text={src} /></li>
                     ))}
                   </ul>
                 </div>

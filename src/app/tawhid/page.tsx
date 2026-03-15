@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import PageSearch from "@/components/PageSearch";
 import { textMatch } from "@/lib/search";
+import HadithRefText from "@/components/HadithRefText";
 import ContentCard from "@/components/ContentCard";
 import BookmarkButton from "@/components/BookmarkButton";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
@@ -38,7 +39,7 @@ const whyItMatters = [
     point: "It is the condition for entering Paradise",
     detail:
       "The Prophet (peace be upon him) said: \"Whoever dies knowing that there is no god worthy of worship except Allah shall enter Paradise.\"",
-    reference: "Sahih Muslim 26",
+    reference: "Muslim 1:178",
   },
   {
     point: "Shirk is the only unforgivable sin if one dies upon it",
@@ -50,7 +51,7 @@ const whyItMatters = [
     point: "It is the greatest right of Allah upon His servants",
     detail:
       "The Prophet (peace be upon him) told Mu'adh ibn Jabal: \"The right of Allah upon His servants is that they worship Him alone and do not associate anything with Him.\"",
-    reference: "Sahih al-Bukhari 2856",
+    reference: "Bukhari 56:72",
   },
 ];
 
@@ -99,7 +100,7 @@ const categories: Category[] = [
     ],
     hadith: [
       {
-        ref: "Sahih Muslim 2653",
+        ref: "Muslim 46:11",
         text: "Allah determined the measures of creation fifty thousand years before He created the heavens and the earth.",
       },
     ],
@@ -164,11 +165,11 @@ const categories: Category[] = [
     ],
     hadith: [
       {
-        ref: "Sahih al-Bukhari 2856",
+        ref: "Bukhari 56:72",
         text: "The right of Allah upon His servants is that they worship Him and do not associate anything with Him. And the right of the servants upon Allah is that He does not punish whoever does not associate anything with Him.",
       },
       {
-        ref: "Sahih Muslim 93",
+        ref: "Muslim 1:1",
         text: "Whoever meets Allah without associating anything with Him will enter Paradise, and whoever meets Him associating something with Him will enter the Fire.",
       },
     ],
@@ -238,7 +239,7 @@ const categories: Category[] = [
     ],
     hadith: [
       {
-        ref: "Sahih al-Bukhari 7392",
+        ref: "Bukhari 97:21",
         text: "Allah has ninety-nine names — one hundred minus one. Whoever enumerates them (learns, understands, and acts upon them) will enter Paradise.",
       },
     ],
@@ -384,7 +385,7 @@ function NamesGrid({ search, initialNameIndex }: { search: string; initialNameIn
                     &ldquo;{selected.verse.text}&rdquo;
                   </p>
                   <p className="text-xs text-themed-muted mt-2">
-                    {selected.verse.ref}
+                    <HadithRefText text={selected.verse.ref} />
                   </p>
                 </div>
               )}
@@ -496,7 +497,7 @@ function CategoryCard({ cat, index }: { cat: Category; index: number }) {
             <p className="text-themed text-sm italic">
               &ldquo;{verse.text}&rdquo;
             </p>
-            <p className="text-xs text-themed-muted mt-2">{verse.ref}</p>
+            <p className="text-xs text-themed-muted mt-2"><HadithRefText text={verse.ref} /></p>
           </div>
         ))}
       </div>
@@ -514,7 +515,7 @@ function CategoryCard({ cat, index }: { cat: Category; index: number }) {
               <p className="text-themed text-sm italic">
                 &ldquo;{h.text}&rdquo;
               </p>
-              <p className="text-xs text-themed-muted mt-2">{h.ref}</p>
+              <p className="text-xs text-themed-muted mt-2"><HadithRefText text={h.ref} /></p>
             </div>
           ))}
         </div>
@@ -622,7 +623,7 @@ function TawhidContent() {
                   Tawheed is the single most important concept in Islam. It is the first thing a person declares when entering Islam (<span className="text-themed font-medium">La ilaha illallah</span> — there is no god worthy of worship except Allah), and it should be the last thing on a person&apos;s tongue before death.
                 </p>
                 <p>
-                  The Prophet (peace be upon him) said: <span className="text-themed italic">&ldquo;Whoever&apos;s last words are La ilaha illallah will enter Paradise.&rdquo;</span> <span className="text-xs text-gold/60">(Abu Dawud 3116, graded Sahih)</span>
+                  The Prophet (peace be upon him) said: <span className="text-themed italic">&ldquo;Whoever&apos;s last words are La ilaha illallah will enter Paradise.&rdquo;</span> <span className="text-xs text-gold/60">(Abu Dawud 21:28, graded Sahih)</span>
                 </p>
               </div>
             </ContentCard>
@@ -690,11 +691,11 @@ function TawhidContent() {
                   "Sharh Kitab at-Tawhid, Shaykh Ibn Uthaymeen — Explanation of the opening chapters",
                   "Al-Qawa'id al-Muthla, Ibn Uthaymeen — Introduction defining Tawheed and its categories",
                   "Tafsir Ibn Kathir — Commentary on Surah Al-Ikhlas (112:1-4) and Quran 4:48",
-                  "Sunan Abu Dawud 3116 — Hadith on the virtue of La ilaha illallah as last words",
+                  "Abu Dawud 21:28 — Hadith on the virtue of La ilaha illallah as last words",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -733,7 +734,7 @@ function TawhidContent() {
                   <div>
                     <h3 className="font-semibold text-themed mb-1">{item.point}</h3>
                     <p className="text-themed-muted text-sm leading-relaxed">{item.detail}</p>
-                    <p className="text-xs text-gold/60 mt-2">{item.reference}</p>
+                    <p className="text-xs text-gold/60 mt-2"><HadithRefText text={item.reference} /></p>
                   </div>
                 </div>
               </ContentCard>
@@ -747,13 +748,13 @@ function TawhidContent() {
               <ul className="space-y-1.5">
                 {[
                   "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — Chapters on the purpose of creation and the danger of shirk",
-                  "Sahih Muslim 26 — Hadith on the condition for entering Paradise",
-                  "Sahih al-Bukhari 2856 — Hadith of Mu'adh ibn Jabal on the right of Allah",
+                  "Muslim 1:178 — Hadith on the condition for entering Paradise",
+                  "Bukhari 56:72 — Hadith of Mu'adh ibn Jabal on the right of Allah",
                   "Tafsir Ibn Kathir — Commentary on Quran 51:56, 21:25, 4:48",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -813,7 +814,7 @@ function TawhidContent() {
                               {cat.sources.map((source) => (
                                 <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                                   <span className="text-gold/40 mt-0.5">&#8226;</span>
-                                  {source}
+                                  <HadithRefText text={source} />
                                 </li>
                               ))}
                             </ul>
@@ -851,7 +852,7 @@ function TawhidContent() {
                 <p className="text-themed-muted text-sm leading-relaxed">
                   The Prophet (peace be upon him) said: <span className="text-themed italic">&ldquo;Allah has ninety-nine names — one hundred minus one. Whoever enumerates them (learns them, understands their meanings, and acts upon them) will enter Paradise.&rdquo;</span>
                 </p>
-                <p className="text-xs text-gold/60 mt-2">Sahih al-Bukhari 7392</p>
+                <p className="text-xs text-gold/60 mt-2">Bukhari 97:21</p>
               </div>
             </ContentCard>
 

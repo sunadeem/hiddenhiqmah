@@ -124,7 +124,7 @@ export const familyTree: FamilyNode = {
                             {
                               name: "Hajar (Hagar)",
                               nameAr: "هاجر",
-                              description: "Hajar was the second wife of Prophet Ibrahim and the mother of Prophet Ismail. Ibrahim left her and infant Ismail in the barren valley of Makkah by Allah's command. Her desperate search for water between the hills of Safa and Marwa is commemorated in the Hajj pilgrimage (Sa'i). Allah caused the well of Zamzam to spring forth for her and her son. The Prophet ﷺ said: 'May Allah have mercy on the mother of Ismail' (Sahih al-Bukhari 3364).",
+                              description: "Hajar was the second wife of Prophet Ibrahim and the mother of Prophet Ismail. Ibrahim left her and infant Ismail in the barren valley of Makkah by Allah's command. Her desperate search for water between the hills of Safa and Marwa is commemorated in the Hajj pilgrimage (Sa'i). Allah caused the well of Zamzam to spring forth for her and her son. The Prophet ﷺ said: 'May Allah have mercy on the mother of Ismail' (Bukhari 60:38).",
                             },
                           ],
                           children: [
@@ -205,7 +205,7 @@ export const familyTree: FamilyNode = {
                                                 {
                                                   name: "Khadijah",
                                                   nameAr: "خديجة",
-                                                  description: "Khadijah bint Khuwaylid was the first wife of the Prophet Muhammad ﷺ and the first person to accept Islam. She was a successful businesswoman of Quraysh. She supported the Prophet ﷺ through the early difficult years of revelation and persecution. The Prophet ﷺ said: 'The best of its women is Maryam and the best of its women is Khadijah' (Sahih al-Bukhari 3432). She is the mother of all of the Prophet's children except Ibrahim.",
+                                                  description: "Khadijah bint Khuwaylid was the first wife of the Prophet Muhammad ﷺ and the first person to accept Islam. She was a successful businesswoman of Quraysh. She supported the Prophet ﷺ through the early difficult years of revelation and persecution. The Prophet ﷺ said: 'The best of its women is Maryam and the best of its women is Khadijah' (Bukhari 60:103). She is the mother of all of the Prophet's children except Ibrahim.",
                                                 },
                                                 {
                                                   name: "Aisha",
@@ -288,21 +288,21 @@ export const familyTree: FamilyNode = {
                                                   nameAr: "فاطمة",
                                                   isProphet: false,
                                                   note: "Youngest daughter, from Khadijah. Leader of women in Jannah",
-                                                  description: "Fatimah al-Zahra was the youngest and most beloved daughter of the Prophet Muhammad ﷺ from Khadijah. The Prophet ﷺ said she is 'the leader of the women of Jannah' (Sahih al-Bukhari 3753). She married Ali ibn Abi Talib and was the mother of Hasan and Husayn, through whom the Prophet's lineage continues. She was known for her piety, modesty, and resemblance to her father in speech and mannerisms. She passed away six months after the Prophet ﷺ.",
+                                                  description: "Fatimah al-Zahra was the youngest and most beloved daughter of the Prophet Muhammad ﷺ from Khadijah. The Prophet ﷺ said she is 'the leader of the women of Jannah' (Bukhari 62:98). She married Ali ibn Abi Talib and was the mother of Hasan and Husayn, through whom the Prophet's lineage continues. She was known for her piety, modesty, and resemblance to her father in speech and mannerisms. She passed away six months after the Prophet ﷺ.",
                                                   children: [
                                                     {
                                                       name: "Hasan",
                                                       nameAr: "الحسن",
                                                       isProphet: false,
                                                       note: "Grandson of the Prophet ﷺ. Leader of the youth of Jannah",
-                                                      description: "Hasan ibn Ali was the elder grandson of the Prophet Muhammad ﷺ. The Prophet said: 'Hasan and Husayn are the leaders of the youth of Jannah' (Sunan al-Tirmidhi 3775). He briefly served as Caliph after Ali's assassination but stepped down in favor of Muawiyah to prevent further bloodshed among Muslims, fulfilling the Prophet's prophecy: 'This son of mine is a leader, and perhaps Allah will make peace between two great groups of Muslims through him' (Sahih al-Bukhari 2704).",
+                                                      description: "Hasan ibn Ali was the elder grandson of the Prophet Muhammad ﷺ. The Prophet said: 'Hasan and Husayn are the leaders of the youth of Jannah' (Sunan al-Tirmidhi 49:167). He briefly served as Caliph after Ali's assassination but stepped down in favor of Muawiyah to prevent further bloodshed among Muslims, fulfilling the Prophet's prophecy: 'This son of mine is a leader, and perhaps Allah will make peace between two great groups of Muslims through him' (Bukhari 65:272).",
                                                     },
                                                     {
                                                       name: "Husayn",
                                                       nameAr: "الحسين",
                                                       isProphet: false,
                                                       note: "Grandson of the Prophet ﷺ. Martyred at Karbala",
-                                                      description: "Husayn ibn Ali was the younger grandson of the Prophet Muhammad ﷺ. He is revered for his stand against injustice at the Battle of Karbala in 680 CE, where he and many of his family were martyred by the forces of Yazid ibn Muawiyah. His sacrifice is seen as a powerful example of standing for truth against tyranny. The Prophet ﷺ loved him dearly and said: 'Husayn is from me, and I am from Husayn' (Sunan al-Tirmidhi 3775).",
+                                                      description: "Husayn ibn Ali was the younger grandson of the Prophet Muhammad ﷺ. He is revered for his stand against injustice at the Battle of Karbala in 680 CE, where he and many of his family were martyred by the forces of Yazid ibn Muawiyah. His sacrifice is seen as a powerful example of standing for truth against tyranny. The Prophet ﷺ loved him dearly and said: 'Husayn is from me, and I am from Husayn' (Sunan al-Tirmidhi 49:174).",
                                                     },
                                                   ],
                                                 },
@@ -645,9 +645,10 @@ export const treeReferences = [
   "Quran 27:22-44 — Queen of Sheba and Sulayman",
   "Ibn Kathir, Al-Bidaya wan-Nihaya — Primary source for genealogical connections",
   "Ibn Kathir, Qasas al-Anbiya — Stories and family relationships of the prophets",
-  "Sahih al-Bukhari 3364 — Story of Ibrahim, Hajar, and Ismail",
-  "Sahih al-Bukhari 3432 — Khadijah as best of women",
-  "Sahih al-Bukhari 3753, Sahih Muslim 2449 — Fatimah as leader of women in Jannah",
-  "Sunan al-Tirmidhi 3775 — Hasan and Husayn as leaders of the youth of Jannah",
+  "Bukhari 60:38 — Story of Ibrahim, Hajar, and Ismail",
+  "Bukhari 60:103 — Khadijah as best of women",
+  "Bukhari 62:98, Muslim 44:55 — Fatimah as leader of women in Jannah",
+  "Sunan al-Tirmidhi 49:167 — Hasan and Husayn as leaders of the youth of Jannah",
+  "Sunan al-Tirmidhi 49:174 — 'Husayn is from me, and I am from Husayn'",
   "Ibn Hisham, Al-Sirah al-Nabawiyyah — Family of the Prophet Muhammad ﷺ",
 ];

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import PageSearch from "@/components/PageSearch";
 import { textMatch } from "@/lib/search";
+import HadithRefText from "@/components/HadithRefText";
 import ContentCard from "@/components/ContentCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import {
@@ -26,7 +27,7 @@ const whyItMatters = [
     point: "It is what distinguishes a believer from a disbeliever",
     detail:
       "The Prophet (peace be upon him) was asked about Iman and he listed these six articles. Without believing in all six, a person's faith is incomplete.",
-    reference: "Sahih Muslim 8 (Hadith of Jibril)",
+    reference: "Muslim 1:1 (Hadith of Jibril)",
   },
   {
     point: "It gives life purpose and meaning",
@@ -44,7 +45,7 @@ const whyItMatters = [
     point: "It provides comfort and resilience through trials",
     detail:
       "Belief in divine decree means the believer faces hardship with patience, knowing that nothing happens without Allah's wisdom. The Prophet (peace be upon him) said: \"How wonderful is the affair of the believer — everything is good for him.\"",
-    reference: "Sahih Muslim 2999",
+    reference: "Muslim 55:82",
   },
   {
     point: "Denying any one article nullifies one's faith",
@@ -97,7 +98,7 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Sahih Muslim 8",
+        ref: "Muslim 1:1",
         text: "He (Jibril) said: 'Tell me about Iman.' He (the Prophet) said: 'It is to believe in Allah, His angels, His books, His messengers, the Last Day, and to believe in divine decree — both its good and its evil.'",
       },
     ],
@@ -156,11 +157,11 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Sahih Muslim 2996",
+        ref: "Muslim 53:2",
         text: "The angels were created from light, the jinn were created from smokeless fire, and Adam was created from what has been described to you (clay).",
       },
       {
-        ref: "Sahih Muslim 2842",
+        ref: "Muslim 1:321",
         text: "On the Day of Judgement, Hell will be brought with seventy thousand reins, each rein held by seventy thousand angels.",
       },
     ],
@@ -173,7 +174,7 @@ const articles: Article[] = [
       "Kiraman Katibin — the noble scribes who record every person's deeds (Quran 82:10-12)",
       "The Angel of Death — takes souls at the appointed time",
       "Munkar and Nakir — question the deceased in the grave",
-      "Their number is known only to Allah — the Ka'bah in heaven (al-Bayt al-Ma'mur) is visited by 70,000 angels daily who never return (Sahih al-Bukhari 3207)",
+      "Their number is known only to Allah — the Ka'bah in heaven (al-Bayt al-Ma'mur) is visited by 70,000 angels daily who never return (Bukhari 59:18)",
     ],
     misconceptions: [
       {
@@ -191,7 +192,7 @@ const articles: Article[] = [
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on belief in the angels",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on angels",
       "Tafsir Ibn Kathir — Commentary on Quran 2:285, 35:1, 66:6",
-      "Sahih Muslim 2996, 2842 — On the creation of angels and their immense number",
+      "Muslim 53:2, 15:52 — On the creation of angels and their immense number",
     ],
   },
   {
@@ -222,7 +223,7 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Sahih al-Bukhari 4485",
+        ref: "Bukhari 65:12",
         text: "The Prophet (peace be upon him) said: 'Do not believe the People of the Book, nor disbelieve them. Say: We believe in Allah and what has been revealed to us and what has been revealed to you.'",
       },
     ],
@@ -251,7 +252,7 @@ const articles: Article[] = [
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on belief in the books",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on divine books",
       "Tafsir Ibn Kathir — Commentary on Quran 2:4, 15:9, 5:48",
-      "Sahih al-Bukhari 4485 — On the approach to previous scriptures",
+      "Bukhari 65:12 — On the approach to previous scriptures",
     ],
   },
   {
@@ -282,11 +283,11 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Musnad Ahmad 21546 (from Abu Dharr, graded hasan by some scholars)",
+        ref: "Ahmad 21546 (from Abu Dharr, graded hasan by some scholars)",
         text: "The Prophet (peace be upon him) was asked about the number of prophets and he indicated that there were a great many, and among them were 315 messengers.",
       },
       {
-        ref: "Sahih al-Bukhari 3532",
+        ref: "Bukhari 54:19",
         text: "The Prophet (peace be upon him) said: 'My example and the example of the prophets before me is like that of a man who built a house and made it beautiful except for the place of one brick. People would look at it and say: How excellent — if only that brick were put in its place. I am that brick, and I am the seal of the prophets.'",
       },
     ],
@@ -352,15 +353,15 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Sahih al-Bukhari 1338",
+        ref: "Bukhari 23:93",
         text: "When a person is placed in his grave and his companions leave, he hears their footsteps. Then two angels come to him, sit him up, and ask: 'What did you used to say about this man, Muhammad?'",
       },
       {
-        ref: "Sahih Muslim 2864",
+        ref: "Muslim 53:75",
         text: "The sun will be brought close to the people on the Day of Resurrection, about a mile away. People will be in their own sweat according to their deeds — some to their ankles, some to their knees, some to their waists, and some will be bridled by it.",
       },
       {
-        ref: "Sunan Abu Dawud 4284",
+        ref: "Abu Dawud 38:6",
         text: "The Prophet (peace be upon him) said: 'The Mahdi is from my progeny, from the descendants of Fatimah.' He will fill the earth with justice after it has been filled with oppression.",
       },
     ],
@@ -423,11 +424,11 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Sahih Muslim 2653",
+        ref: "Muslim 46:11",
         text: "Allah determined the measures of creation fifty thousand years before He created the heavens and the earth.",
       },
       {
-        ref: "Sahih al-Bukhari 3208",
+        ref: "Bukhari 59:19",
         text: "The creation of each one of you is brought together in his mother's womb for forty days as a drop, then he becomes a clot for the same period, then a morsel of flesh. Then an angel is sent to him who blows the soul into him and is commanded to write four things: his provision, his lifespan, his deeds, and whether he will be wretched or blessed.",
       },
     ],
@@ -445,7 +446,7 @@ const articles: Article[] = [
       {
         title: "If everything is decreed, why should we try?",
         clarification:
-          "The means (asbab) are also part of the decree. You don't know what's decreed for you — the decree is hidden, and your duty is to strive. The Prophet (peace be upon him) said: 'Strive for what benefits you and seek help from Allah, and do not be helpless.' (Sahih Muslim 2664)",
+          "The means (asbab) are also part of the decree. You don't know what's decreed for you — the decree is hidden, and your duty is to strive. The Prophet (peace be upon him) said: 'Strive for what benefits you and seek help from Allah, and do not be helpless.' (Muslim 46:22)",
       },
       {
         title: "Qadr means humans have no free will",
@@ -458,7 +459,7 @@ const articles: Article[] = [
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on qadr",
       "Shifa al-Alil fi Masa'il al-Qada wal-Qadr, Ibn al-Qayyim",
       "Tafsir Ibn Kathir — Commentary on Quran 54:49, 57:22, 76:30",
-      "Sahih Muslim 2653, Sahih al-Bukhari 3208 — Hadith on writing of decree",
+      "Muslim 46:11, Bukhari 59:19 — Hadith on writing of decree",
     ],
   },
 ];
@@ -525,7 +526,7 @@ function ArticleCard({ article }: { article: Article }) {
             <p className="text-themed text-sm italic">
               &ldquo;{verse.text}&rdquo;
             </p>
-            <p className="text-xs text-themed-muted mt-2">{verse.ref}</p>
+            <p className="text-xs text-themed-muted mt-2"><HadithRefText text={verse.ref} /></p>
           </div>
         ))}
       </div>
@@ -543,7 +544,7 @@ function ArticleCard({ article }: { article: Article }) {
               <p className="text-themed text-sm italic">
                 &ldquo;{h.text}&rdquo;
               </p>
-              <p className="text-xs text-themed-muted mt-2">{h.ref}</p>
+              <p className="text-xs text-themed-muted mt-2"><HadithRefText text={h.ref} /></p>
             </div>
           ))}
         </div>
@@ -654,7 +655,7 @@ function ArticlesOfFaithContent() {
                   &ldquo;Iman is to believe in Allah, His angels, His books, His messengers, the Last Day, and to believe in divine decree — both its good and its evil.&rdquo;
                 </p>
                 <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Sahih Muslim 8
+                  Muslim 1:1
                 </span>
               </div>
             </ContentCard>
@@ -692,7 +693,7 @@ function ArticlesOfFaithContent() {
                   <p className="text-themed text-sm italic text-center">
                     &ldquo;He (Jibril) said: Then tell me about Iman.&rdquo;
                   </p>
-                  <p className="text-xs text-themed-muted mt-2 text-center">Sahih Muslim 8</p>
+                  <p className="text-xs text-themed-muted mt-2 text-center">Muslim 1:1</p>
                 </div>
                 <p>
                   Every mu'min (believer) is a muslim (one who submits), but not every muslim has attained the full level of Iman. The articles of faith are what elevate a person from mere outward compliance to true, heartfelt belief.
@@ -738,14 +739,14 @@ function ArticlesOfFaithContent() {
               </h4>
               <ul className="space-y-1.5">
                 {[
-                  "Sahih Muslim 8 — The Hadith of Jibril, defining Islam, Iman, and Ihsan",
+                  "Muslim 1:1 — The Hadith of Jibril, defining Islam, Iman, and Ihsan",
                   "Sharh Usul al-Iman, Ibn Uthaymeen — Comprehensive explanation of the six articles",
                   "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — On the creed of Ahl as-Sunnah",
                   "Sharh al-Aqidah at-Tahawiyyah, Ibn Abi al-Izz — Classical commentary on creed",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -784,7 +785,7 @@ function ArticlesOfFaithContent() {
                   <div>
                     <h3 className="font-semibold text-themed mb-1">{item.point}</h3>
                     <p className="text-themed-muted text-sm leading-relaxed">{item.detail}</p>
-                    <p className="text-xs text-gold/60 mt-2">{item.reference}</p>
+                    <p className="text-xs text-gold/60 mt-2"><HadithRefText text={item.reference} /></p>
                   </div>
                 </div>
               </ContentCard>
@@ -816,14 +817,14 @@ function ArticlesOfFaithContent() {
               </h4>
               <ul className="space-y-1.5">
                 {[
-                  "Sahih Muslim 8 — The Hadith of Jibril",
-                  "Sahih Muslim 2999 — On the affair of the believer being entirely good",
+                  "Muslim 1:1 — The Hadith of Jibril",
+                  "Muslim 55:82 — On the affair of the believer being entirely good",
                   "Sharh Usul al-Iman, Ibn Uthaymeen — On the importance and implications of Iman",
                   "Tafsir Ibn Kathir — Commentary on Quran 2:285, 4:136, 67:2",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -889,7 +890,7 @@ function ArticlesOfFaithContent() {
                               {article.sources.map((source) => (
                                 <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                                   <span className="text-gold/40 mt-0.5">&#8226;</span>
-                                  {source}
+                                  <HadithRefText text={source} />
                                 </li>
                               ))}
                             </ul>

@@ -8,6 +8,7 @@ import ContentCard from "@/components/ContentCard";
 import { getDhikrCounts, setDhikrCount } from "@/lib/storage";
 import { RotateCcw } from "lucide-react";
 import BookmarkButton from "@/components/BookmarkButton";
+import HadithRefText from "@/components/HadithRefText";
 
 type DhikrItem = {
   id: string;
@@ -25,7 +26,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "SubhanAllah",
     english: "Glory be to Allah",
     target: 33,
-    hadith: "Sahih Muslim 595",
+    hadith: "Muslim 4:147",
   },
   {
     id: "alhamdulillah",
@@ -33,7 +34,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "Alhamdulillah",
     english: "Praise be to Allah",
     target: 33,
-    hadith: "Sahih Muslim 595",
+    hadith: "Muslim 4:147",
   },
   {
     id: "allahu-akbar",
@@ -41,7 +42,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "Allahu Akbar",
     english: "Allah is the Greatest",
     target: 34,
-    hadith: "Sahih Muslim 595",
+    hadith: "Muslim 4:147",
   },
   {
     id: "la-ilaha-illallah",
@@ -49,7 +50,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "La ilaha illallah",
     english: "There is no god but Allah",
     target: 100,
-    hadith: "Sahih al-Bukhari 6403",
+    hadith: "Bukhari 80:98",
   },
   {
     id: "subhanallahi-wa-bihamdihi",
@@ -57,7 +58,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "SubhanAllahi wa bihamdihi",
     english: "Glory and praise be to Allah",
     target: 100,
-    hadith: "Sahih al-Bukhari 6405",
+    hadith: "Bukhari 80:100",
   },
   {
     id: "astaghfirullah",
@@ -65,7 +66,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "Astaghfirullah",
     english: "I seek forgiveness from Allah",
     target: 100,
-    hadith: "Sahih al-Bukhari 6307",
+    hadith: "Bukhari 80:4",
   },
   {
     id: "la-hawla",
@@ -73,7 +74,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "La hawla wa la quwwata illa billah",
     english: "There is no power except with Allah",
     target: null,
-    hadith: "Sahih al-Bukhari 4205",
+    hadith: "Bukhari 64:245",
   },
   {
     id: "salawat",
@@ -81,7 +82,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "Salawat on the Prophet",
     english: "O Allah, send blessings upon Muhammad",
     target: 100,
-    hadith: "Sahih Muslim 408",
+    hadith: "Muslim 4:66",
   },
 ];
 
@@ -208,7 +209,7 @@ function DhikrCard({
             <p className="text-xs text-themed-muted mt-0.5">{dhikr.english}</p>
             {dhikr.hadith && (
               <p className="text-[10px] text-themed-muted/60 mt-1.5 italic">
-                {dhikr.hadith}
+                <HadithRefText text={dhikr.hadith} />
               </p>
             )}
           </div>

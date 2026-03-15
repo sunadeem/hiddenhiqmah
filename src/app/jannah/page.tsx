@@ -9,6 +9,7 @@ import ContentCard from "@/components/ContentCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { textMatch } from "@/lib/search";
 import { BookOpen } from "lucide-react";
+import HadithRefText from "@/components/HadithRefText";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -23,31 +24,31 @@ const whyItMatters = [
     point: "What no eye has seen",
     detail:
       "The Prophet (peace be upon him) said, quoting his Lord: 'I have prepared for My righteous servants what no eye has seen, no ear has heard, and no human heart has ever conceived.' The reality of Jannah is beyond human imagination — the descriptions in the Quran and Sunnah are only glimpses.",
-    reference: "Sahih al-Bukhari 3244; Sahih Muslim 2824; also in Quran 32:17",
+    reference: "Bukhari 59:55; Muslim 53:3; also in Quran 32:17",
   },
   {
     point: "It is near — closer than your shoelace",
     detail:
       "The Prophet (peace be upon him) said: 'Paradise is closer to any of you than the strap of his sandal, and the same applies to the Hellfire.' Every small act of goodness can bring a person closer to Jannah.",
-    reference: "Sahih al-Bukhari 6488",
+    reference: "Bukhari 81:77",
   },
   {
     point: "The mercy of Allah encompasses it",
     detail:
       "No one enters Jannah by their deeds alone — it is by the mercy of Allah. The Prophet (peace be upon him) said: 'None of you will enter Paradise by his deeds alone.' They said: 'Not even you, O Messenger of Allah?' He said: 'Not even me, unless Allah envelops me in His mercy.'",
-    reference: "Sahih al-Bukhari 5673; Sahih Muslim 2816",
+    reference: "Bukhari 75:33; Muslim 52:66",
   },
   {
     point: "Its inhabitants will live forever",
     detail:
       "There is no death in Jannah, no aging, no sickness, no sorrow. Its people will live in eternal bliss. Allah says: 'They will not taste death therein except the first death, and He will have protected them from the punishment of Hellfire.'",
-    reference: "Quran 44:56; Sahih Muslim 2849 (death will be slaughtered between Jannah and the Fire)",
+    reference: "Quran 44:56; Muslim 53:50 (death will be slaughtered between Jannah and the Fire)",
   },
   {
     point: "The greatest reward: seeing the Face of Allah",
     detail:
       "The people of Jannah will be granted the greatest of all blessings — looking upon the Face of their Lord. The Prophet (peace be upon him) said: 'When the people of Paradise enter Paradise, Allah will say: Do you want anything more? They will say: Have You not brightened our faces? Have You not admitted us to Paradise and saved us from the Fire? Then the veil will be lifted, and nothing they were given will be more beloved to them than looking at their Lord.'",
-    reference: "Sahih Muslim 181; Quran 75:22-23",
+    reference: "Muslim 1:88; Quran 75:22-23",
   },
 ];
 
@@ -80,29 +81,29 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "Four types of rivers",
           detail:
             "The rivers of Jannah flow with four substances: pure water that never becomes stale, milk whose taste never changes, wine that is delightful without intoxication or harm, and clear purified honey. In Paradise there is a sea of water, a sea of honey, a sea of milk, and a sea of wine, and the rivers branch off from them.",
-          note: "Quran 47:15; Sunan at-Tirmidhi 2571",
+          note: "Quran 47:15; Tirmidhi 38:49",
         },
         {
           title: "Al-Kawthar",
           detail:
             "Al-Kawthar is a river in Jannah granted exclusively to the Prophet Muhammad (peace be upon him). On its two banks are tents of hollow pearls, and its scent is of sharp musk. Its water is whiter than milk and sweeter than honey, and its drinking vessels are as numerous as the stars.",
-          note: "Sahih al-Bukhari 6581; Sahih Muslim 2300; Sahih Muslim 400; Quran 108:1",
+          note: "Bukhari 81:169; Muslim 36:111; Muslim 36:111; Quran 108:1",
         },
         {
           title: "Trees and shade",
           detail:
             "The trees of Jannah are immense. The Prophet (peace be upon him) said: 'In Paradise there is a tree under whose shade a rider could travel for a hundred years and not cross it.' Their fruits hang low and are always within reach.",
-          note: "Sahih al-Bukhari 3251; Sahih Muslim 2826; Quran 56:28-30",
+          note: "Bukhari 59:62; Muslim 53:7; Quran 56:28-30",
         },
         {
           title: "The soil and fragrance",
           detail:
             "The Prophet (peace be upon him) described the soil of Paradise as fine white musk and its pebbles as pearls and rubies. In another narration, the soil is described as saffron, its mortar as fragrant musk, and its bricks as gold and silver.",
-          note: "Sahih Muslim 2928; Sunan at-Tirmidhi 2526",
+          note: "Muslim 53:19; Tirmidhi 38:4",
         },
       ],
       source:
-        "Quran 47:15; Quran 56:28-34; Sahih al-Bukhari 3251, 6581; Sahih Muslim 400, 2300, 2826, 2928; Sunan at-Tirmidhi 2526, 2571",
+        "Quran 47:15; Quran 56:28-34; Bukhari 59:62, 81:169; Muslim 1:305, 15:137; Tirmidhi 38:4, 38:49",
     },
   },
   {
@@ -116,29 +117,29 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "Palaces of gold and silver",
           detail:
             "The Prophet (peace be upon him) described Paradise: 'Its bricks are of gold and silver, its mortar is fragrant musk, its pebbles are pearls and rubies, and its soil is saffron. Whoever enters it will enjoy bliss and never be miserable, will live forever and never die, their clothes will never wear out, and their youth will never fade.'",
-          note: "Sunan at-Tirmidhi 2526 (graded Sahih li-shawahidihi by al-Albani via Mishkat 5630); also transmitted by Ahmad and ad-Darimi",
+          note: "Tirmidhi 38:4 (graded Sahih li-shawahidihi by al-Albani via Mishkat 5630); also transmitted by Ahmad and ad-Darimi",
         },
         {
           title: "Rooms built upon rooms",
           detail:
             "Allah describes lofty chambers (ghuraf) — rooms built upon rooms, beneath which rivers flow. The Prophet (peace be upon him) said: 'The people of Paradise will see the dwellers of the upper rooms as you see a distant star in the sky, because of the difference in their degrees.'",
-          note: "Quran 39:20; Sahih al-Bukhari 3256; Sahih Muslim 2831",
+          note: "Quran 39:20; Bukhari 59:66; Muslim 53:11",
         },
         {
           title: "Tents of hollow pearls",
           detail:
             "The Prophet (peace be upon him) said: 'The believer in Paradise will have a tent made of a single hollowed-out pearl, sixty miles wide. In each corner of it, there will be a wife whom the others cannot see, and the believer will visit each of them.'",
-          note: "Sahih al-Bukhari 4879; Sahih Muslim 2838",
+          note: "Bukhari 65:400; Muslim 53:27",
         },
         {
           title: "The vastness of each person's kingdom",
           detail:
             "The lowest in rank among the people of Paradise will be given ten times the like of this entire world. They will have whatever their soul desires and their eyes delight in. Some narrations describe the last person to enter Paradise as receiving a kingdom greater than the world and everything in it.",
-          note: "Sahih Muslim 188; Sahih al-Bukhari 6571",
+          note: "Muslim 1:95; Bukhari 81:159",
         },
       ],
       source:
-        "Quran 39:20; Sahih al-Bukhari 3256, 4879, 6571; Sahih Muslim 188, 2831, 2838; Sunan at-Tirmidhi 2526",
+        "Quran 39:20; Bukhari 59:66, 81:159; Muslim 1:95, 15:48; Tirmidhi 38:4",
     },
   },
   {
@@ -194,23 +195,23 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "Spouses of Jannah",
           detail:
             "Believing spouses who enter Jannah together will be reunited in a state of perfect love, beauty, and youth. There will be no jealousy, no arguments, no ill feelings — only pure affection. Allah also describes the Hur al-'Ayn — companions of Paradise with beautiful eyes, created specifically for the people of Jannah.",
-          note: "Quran 44:54, 55:70-74, 56:35-37; Sahih Muslim 2834",
+          note: "Quran 44:54, 55:70-74, 56:35-37; Muslim 53:16",
         },
         {
           title: "No envy, no ill will",
           detail:
             "One of the first things removed from the hearts of the people of Jannah is any rancor or envy. They will be 'brothers, on thrones facing each other.' There is only love, contentment, and peace between them.",
-          note: "Quran 15:47; Sahih al-Bukhari 3245",
+          note: "Quran 15:47; Bukhari 59:56",
         },
         {
           title: "In the company of the prophets",
           detail:
             "Those who obey Allah and His Messenger will be with the prophets, the truthful, the martyrs, and the righteous. The Prophet (peace be upon him) told a companion who asked about being with him in Paradise: 'You will be with those whom you love.'",
-          note: "Quran 4:69; Sahih al-Bukhari 3688; Sahih Muslim 2639",
+          note: "Quran 4:69; Bukhari 4:38; Muslim 13:145",
         },
       ],
       source:
-        "Quran 4:69, 13:23, 15:47, 44:54, 52:21, 55:70-74; Sahih al-Bukhari 3245, 3688; Sahih Muslim 2639, 2834",
+        "Quran 4:69, 13:23, 15:47, 44:54, 52:21, 55:70-74; Bukhari 59:56, 62:38; Muslim 13:145, 15:44",
     },
   },
   {
@@ -229,29 +230,29 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "The lifting of the veil",
           detail:
             "The Prophet (peace be upon him) said: 'When the people of Paradise enter Paradise, Allah will say: Do you want anything more? They will say: Have You not brightened our faces? Have You not admitted us to Paradise and saved us from the Fire? Then the veil will be lifted, and nothing they were given will be more beloved to them than looking at their Lord, the Exalted and Majestic.' Then the Prophet recited: 'For those who have done good is the best reward and even more.' (Quran 10:26)",
-          note: "Sahih Muslim 181",
+          note: "Muslim 1:88",
         },
         {
           title: "The 'extra' (al-Ziyadah)",
           detail:
             "In the verse 'For those who have done good is the best reward and even more (ziyadah)' (Quran 10:26), the Prophet (peace be upon him) explained that 'the best reward' is Paradise, and 'even more' (al-ziyadah) is looking at the Face of Allah. This is the greatest pleasure of Jannah — greater than all its physical blessings combined.",
-          note: "Sahih Muslim 181; Sunan at-Tirmidhi 2552",
+          note: "Muslim 1:88; Tirmidhi 38:30",
         },
         {
           title: "The people of the highest level",
           detail:
             "The believers will see their Lord in Paradise as clearly as they see the full moon — without any difficulty. Those most honoured by Allah will look upon His Face morning and evening. This closeness to Allah is what truly differentiates the levels of Jannah.",
-          note: "Sahih al-Bukhari 7434; Sunan at-Tirmidhi 2553 (regarding morning and evening)",
+          note: "Bukhari 97:61; Tirmidhi 38:31 (regarding morning and evening)",
         },
         {
           title: "Allah's pleasure — the greatest of all",
           detail:
             "Allah will say to the people of Paradise: 'O people of Paradise!' They will say: 'Here we are, our Lord!' He will say: 'Are you pleased?' They will say: 'How could we not be pleased when You have given us what You have not given anyone else?' He will say: 'I will give you something even better.' They will ask: 'What could be better?' He will say: 'I bestow upon you My pleasure (ridwan), and I shall never be angry with you after this.'",
-          note: "Sahih al-Bukhari 6549; Sahih Muslim 2829",
+          note: "Bukhari 23:138; Muslim 53:10",
         },
       ],
       source:
-        "Quran 10:26, 75:22-23; Sahih al-Bukhari 6549, 7434; Sahih Muslim 181, 2829; Sunan at-Tirmidhi 2552, 2553",
+        "Quran 10:26, 75:22-23; Bukhari 23:138, 97:61; Muslim 1:88, 15:39; Tirmidhi 38:30, 38:31",
     },
   },
 ];
@@ -278,7 +279,7 @@ const howToTopics: HowToTopic[] = [
           title: "Tawhid — the key to Jannah",
           detail:
             "The absolute prerequisite for entering Jannah is tawhid — believing in the oneness of Allah and not associating any partners with Him. The Prophet (peace be upon him) said: 'Whoever dies knowing that there is no god but Allah will enter Paradise.' Shirk (associating partners with Allah) is the only sin that Allah will not forgive if a person dies upon it.",
-          note: "Sahih Muslim 26; Quran 4:48",
+          note: "Muslim 1:178; Quran 4:48",
         },
         {
           title: "Faith and righteous deeds together",
@@ -290,17 +291,17 @@ const howToTopics: HowToTopic[] = [
           title: "Sincerity (Ikhlas)",
           detail:
             "All deeds must be done sincerely for the sake of Allah alone. The Prophet (peace be upon him) said: 'Actions are judged by intentions, and every person will be rewarded according to what they intended.' A deed done for showing off or worldly gain has no reward with Allah.",
-          note: "Sahih al-Bukhari 1; Sahih Muslim 1907",
+          note: "Bukhari 1:1; Muslim 6:335",
         },
         {
           title: "The mercy of Allah",
           detail:
             "Ultimately, no one enters Paradise by their deeds alone — it is by Allah's mercy. Deeds are the means, but mercy is the cause. The Prophet (peace be upon him) said: 'Do good deeds properly, sincerely and moderately... and always adopt a middle, moderate course, whereby you will reach your target (Paradise).'",
-          note: "Sahih al-Bukhari 6463; Sahih al-Bukhari 5673",
+          note: "Bukhari 23:52; Bukhari 75:33",
         },
       ],
       source:
-        "Quran 2:82, 4:48, 4:124; Sahih al-Bukhari 1, 5673, 6463; Sahih Muslim 26, 1907",
+        "Quran 2:82, 4:48, 4:124; Bukhari 1:1, 81:52; Muslim 1:178, 0:6:335",
     },
   },
   {
@@ -314,47 +315,47 @@ const howToTopics: HowToTopic[] = [
           title: "The five pillars",
           detail:
             "A man asked the Prophet: 'Tell me of a deed that will admit me to Paradise.' He said: 'Worship Allah and associate nothing with Him, establish the prayer, pay the zakah, and fast Ramadan.' The man asked: 'Is there anything else?' He said: 'Maintain the ties of kinship.'",
-          note: "Sahih al-Bukhari 1397; Sahih Muslim 13",
+          note: "Bukhari 17:3; Muslim 1:14",
         },
         {
           title: "Good character",
           detail:
             "The Prophet (peace be upon him) said: 'The most common thing that will admit people to Paradise is taqwa (God-consciousness) and good character.' In another hadith: 'I guarantee a house in the highest part of Paradise for one who has good manners.'",
-          note: "Sunan at-Tirmidhi 2004; Sunan Abu Dawud 4800",
+          note: "Tirmidhi 27:110; Abu Dawud 43:28",
         },
         {
           title: "Saying SubhanAllah, Alhamdulillah, and La ilaha illallah",
           detail:
             "The Prophet (peace be upon him) said: 'Whoever says SubhanAllahi wa bihamdihi (Glory and praise be to Allah) 100 times a day will have his sins forgiven even if they were like the foam of the sea.' He also said: 'There are two statements that are light on the tongue, heavy on the scale, and beloved to the Most Merciful: SubhanAllahi wa bihamdihi, SubhanAllahil-Azeem.'",
-          note: "Sahih al-Bukhari 6405, 6406; Sahih Muslim 2692",
+          note: "Bukhari 80:100, 80:101; Muslim 5:99",
         },
         {
           title: "Caring for orphans",
           detail:
             "The Prophet (peace be upon him) said: 'I and the one who sponsors an orphan will be like these two in Paradise' — and he held up his index and middle fingers together.",
-          note: "Sahih al-Bukhari 5304",
+          note: "Bukhari 10:53",
         },
         {
           title: "Building a masjid",
           detail:
             "The Prophet (peace be upon him) said: 'Whoever builds a masjid for the sake of Allah, Allah will build for him a house in Paradise.'",
-          note: "Sahih al-Bukhari 450; Sahih Muslim 533",
+          note: "Bukhari 8:99; Muslim 5:29",
         },
         {
           title: "Patience in trials",
           detail:
             "The Prophet (peace be upon him) said: 'No Muslim is afflicted with harm — whether it be a thorn prick or something greater — except that Allah expiates some of his sins because of it, as a tree sheds its leaves.' And: 'Whoever loses two children (who die before puberty), they will be a shield for him from the Fire.'",
-          note: "Sahih al-Bukhari 5648; Sahih Muslim 2632",
+          note: "Bukhari 75:8; Muslim 45:197",
         },
         {
           title: "The 12 sunnah rak'at daily",
           detail:
             "The Prophet (peace be upon him) said: 'Whoever prays 12 rak'at during the day and night (the sunnah prayers), a house will be built for him in Paradise.'",
-          note: "Sahih Muslim 728; Sunan at-Tirmidhi 415",
+          note: "Muslim 3:50; Tirmidhi 2:268",
         },
       ],
       source:
-        "Sahih al-Bukhari 450, 1397, 5304, 5648, 6405; Sahih Muslim 13, 533, 728, 2632, 2692; Sunan at-Tirmidhi 415, 2004",
+        "Bukhari 8:99, 80:100; Muslim 1:14, 0:13:198; Tirmidhi 2:268, 27:110",
     },
   },
   {
@@ -368,7 +369,7 @@ const howToTopics: HowToTopic[] = [
           title: "One hundred degrees",
           detail:
             "The Prophet (peace be upon him) said: 'In Paradise there are one hundred degrees, which Allah has prepared for those who strive in His cause (mujahideen). The distance between each two degrees is like the distance between the heavens and the earth.'",
-          note: "Sahih al-Bukhari 2790",
+          note: "Bukhari 97:51",
         },
         {
           title: "The Quranic names of Paradise",
@@ -380,29 +381,29 @@ const howToTopics: HowToTopic[] = [
           title: "Jannatul Firdaus — the highest level",
           detail:
             "The Prophet (peace be upon him) said: 'When you ask Allah, ask Him for al-Firdaus, for it is the middle and highest part of Paradise. Above it is the Throne of the Most Merciful, and from it spring the rivers of Paradise.'",
-          note: "Sahih al-Bukhari 2790; Sahih al-Bukhari 7423",
+          note: "Bukhari 56:156; Bukhari 97:51",
         },
         {
           title: "Al-Wasilah — the single highest station",
           detail:
             "Al-Wasilah is a unique station in Paradise that belongs to only one person. The Prophet (peace be upon him) said: 'When you hear the mu'adhin, say what he says, then send blessings upon me... then ask Allah to grant me al-Wasilah, for it is a station in Paradise that is only fitting for one of the servants of Allah, and I hope that I will be the one. Whoever asks Allah to grant me al-Wasilah, my intercession will be guaranteed for him.' Muslims are encouraged to make this du'a after every adhan.",
-          note: "Sahih Muslim 384; Sahih al-Bukhari 614",
+          note: "Muslim 43:200; Bukhari 10:9",
         },
         {
           title: "Seeing the people of higher ranks",
           detail:
             "The Prophet (peace be upon him) said: 'The people of Paradise will look at the people of the upper rooms as you look at a brilliant star far away on the eastern or western horizon, because of the superiority of some over others.' The companions asked: 'Are those the abodes of the prophets?' He said: 'By the One in Whose Hand is my soul, they are for those who believed in Allah and believed the messengers.'",
-          note: "Sahih al-Bukhari 3256; Sahih Muslim 2831",
+          note: "Bukhari 59:66; Muslim 53:11",
         },
         {
           title: "Ranks are earned through deeds",
           detail:
             "The level a person attains in Paradise corresponds to their faith and deeds. Among the things that raise one's rank: recitation of the Quran ('Read and ascend, for your rank will be at the last verse you recite'), du'a, extra prayers, charity, and patience. The competition for Jannah is the worthiest competition.",
-          note: "Sunan Abu Dawud 1464; Sunan at-Tirmidhi 2914; Quran 83:26 — 'So for this let the competitors compete.'",
+          note: "Abu Dawud 8:49; Tirmidhi 45:40; Quran 83:26 — 'So for this let the competitors compete.'",
         },
       ],
       source:
-        "Quran 6:127, 9:72, 10:9, 10:25, 13:23, 18:31, 18:107, 23:11, 32:19, 41:28, 53:15, 56:12, 61:12, 68:34, 83:18-21, 83:26, 98:8; Sahih al-Bukhari 614, 2790, 3256, 7423; Sahih Muslim 384, 2831; Sunan Abu Dawud 1464; Sunan at-Tirmidhi 2914",
+        "Quran 6:127, 9:72, 10:9, 10:25, 13:23, 18:31, 18:107, 23:11, 32:19, 41:28, 53:15, 56:12, 61:12, 68:34, 83:18-21, 83:26, 98:8; Bukhari 3:12, 97:51; Muslim 43:200, 15:41; Abu Dawud 8:49; Tirmidhi 45:40",
     },
   },
   {
@@ -416,19 +417,19 @@ const howToTopics: HowToTopic[] = [
           title: "The last person to leave the Fire",
           detail:
             "The Prophet (peace be upon him) described a man who will crawl out of the Hellfire, the last of all people to be saved. He will emerge scorched and exhausted. Then Allah will say to him: 'Go and enter Paradise.' He will go and find it full (or think it is full). He will return and say: 'O Lord, I found it full.'",
-          note: "Sahih al-Bukhari 6571; Sahih Muslim 187",
+          note: "Bukhari 81:159; Muslim 1:356",
         },
         {
           title: "Allah's generosity multiplied",
           detail:
             "Allah will tell him to go again, and again the man will return saying it is full. This will happen multiple times. Then Allah will say: 'Go and enter Paradise, for you shall have the like of the entire world and ten times more.' The man will say: 'Are You mocking me, and You are the King?' The narrator (Ibn Mas'ud) said: 'I saw the Messenger of Allah laugh until his molar teeth were visible.'",
-          note: "Sahih al-Bukhari 6571; Sahih Muslim 186",
+          note: "Bukhari 81:159; Muslim 1:366",
         },
         {
           title: "The minimum — and it exceeds the world",
           detail:
             "This is the lowest rank of the people of Paradise — and even this person receives ten times the entire world. If the last person to enter receives this much, what of those above him? What of the people of Firdaus? The hadith puts into perspective how limitless Allah's generosity truly is.",
-          note: "Sahih Muslim 188",
+          note: "Muslim 1:371",
         },
         {
           title: "A reminder of hope",
@@ -438,7 +439,7 @@ const howToTopics: HowToTopic[] = [
         },
       ],
       source:
-        "Quran 39:53; Sahih al-Bukhari 6571; Sahih Muslim 186, 187, 188",
+        "Quran 39:53; Bukhari 81:159; Muslim 1:93, 1:95",
     },
   },
 ];
@@ -484,7 +485,7 @@ function TopicInfoCard({
             &rdquo;
           </p>
           <p className="text-xs text-themed-muted mt-2">
-            {(topic.content as DescriptionTopic["content"]).verse!.ref}
+            <HadithRefText text={(topic.content as DescriptionTopic["content"]).verse!.ref} />
           </p>
         </div>
       )}
@@ -503,7 +504,7 @@ function TopicInfoCard({
               {point.detail}
             </p>
             {point.note && (
-              <p className="text-xs text-gold/60 mt-2">{point.note}</p>
+              <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
             )}
           </div>
         ))}
@@ -630,7 +631,7 @@ function JannahContent() {
                     has seen, no ear has heard, and no human heart has ever
                     conceived&rdquo;
                   </em>{" "}
-                  (Sahih al-Bukhari 3244).
+                  (Bukhari 59:55).
                 </p>
                 <p>
                   Jannah has levels and degrees — the highest being Jannatul
@@ -667,15 +668,15 @@ function JannahContent() {
                   "Quran 3:185 — Every soul will taste death; true success is entering Paradise",
                   "Quran 32:17 — No soul knows what delight awaits them",
                   "Quran 39:53 — Do not despair of the mercy of Allah",
-                  "Sahih al-Bukhari 3244; Sahih Muslim 2824 — What no eye has seen, no ear has heard",
-                  "Sahih al-Bukhari 2790 — One hundred degrees of Paradise",
+                  "Bukhari 59:55; Muslim 53:3 — What no eye has seen, no ear has heard",
+                  "Bukhari 49:8 — One hundred degrees of Paradise",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -725,7 +726,7 @@ function JannahContent() {
                       {item.detail}
                     </p>
                     <p className="text-xs text-gold/60 mt-2">
-                      {item.reference}
+                      <HadithRefText text={item.reference} />
                     </p>
                   </div>
                 </div>
@@ -762,18 +763,18 @@ function JannahContent() {
                   "Quran 32:17 — What no soul knows has been hidden for them",
                   "Quran 44:56 — No death in Paradise except the first death",
                   "Quran 75:22-23 — Faces looking at their Lord",
-                  "Sahih al-Bukhari 3244; Sahih Muslim 2824 — What no eye has seen",
-                  "Sahih al-Bukhari 5673; Sahih Muslim 2816 — None enters Paradise by deeds alone",
-                  "Sahih al-Bukhari 6488 — Paradise is closer than your sandal strap",
-                  "Sahih Muslim 181 — The lifting of the veil; seeing the Face of Allah",
-                  "Sahih Muslim 2849 — Death slaughtered between Paradise and the Fire",
+                  "Bukhari 59:55; Muslim 53:3 — What no eye has seen",
+                  "Bukhari 75:33; Muslim 52:66 — None enters Paradise by deeds alone",
+                  "Bukhari 81:77 — Paradise is closer than your sandal strap",
+                  "Muslim 1:88 — The lifting of the veil; seeing the Face of Allah",
+                  "Muslim 53:50 — Death slaughtered between Paradise and the Fire",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -842,19 +843,19 @@ function JannahContent() {
                   "Quran 55:52-74 — Fruits, companions, and gardens of Paradise",
                   "Quran 56:17-37 — The food, drink, and companions of the foremost",
                   "Quran 75:22-23; Quran 10:26 — Seeing the Face of Allah",
-                  "Sahih al-Bukhari 3251; Sahih Muslim 2826 — Trees whose shade takes 100 years to cross",
-                  "Sahih al-Bukhari 4879; Sahih Muslim 2838 — Tents of hollow pearls",
-                  "Sahih al-Bukhari 6581; Sahih Muslim 400 — Al-Kawthar river",
-                  "Sahih al-Bukhari 3245 — No envy or rancor in the hearts of Paradise's people",
-                  "Sahih Muslim 181 — The greatest reward: looking at the Face of Allah",
-                  "Sunan at-Tirmidhi 2526 — Bricks of gold and silver, soil of saffron; Sahih Muslim 2928 — Soil of white musk",
+                  "Bukhari 59:62; Muslim 53:7 — Trees whose shade takes 100 years to cross",
+                  "Bukhari 65:400; Muslim 53:27 — Tents of hollow pearls",
+                  "Bukhari 81:169; Muslim 1:305 — Al-Kawthar river",
+                  "Bukhari 59:56 — No envy or rancor in the hearts of Paradise's people",
+                  "Muslim 1:88 — The greatest reward: looking at the Face of Allah",
+                  "Tirmidhi 38:4 — Bricks of gold and silver, soil of saffron; Muslim 53:19 — Soil of white musk",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -924,21 +925,21 @@ function JannahContent() {
                   "Quran 4:69 — Being with the prophets, the truthful, and the righteous",
                   "Quran 39:53 — Do not despair of the mercy of Allah",
                   "Quran 83:26 — For this let the competitors compete",
-                  "Sahih al-Bukhari 1; Sahih Muslim 1907 — Actions are judged by intentions",
-                  "Sahih al-Bukhari 1397; Sahih Muslim 13 — Deeds that admit to Paradise",
-                  "Sahih al-Bukhari 2790 — One hundred degrees of Paradise; al-Firdaus",
-                  "Sahih Muslim 384; Sahih al-Bukhari 614 — Al-Wasilah: the highest station for the Prophet",
-                  "Sahih al-Bukhari 5304 — Sponsoring an orphan: together in Paradise",
-                  "Sahih al-Bukhari 6571; Sahih Muslim 186-188 — The last person to enter Paradise",
-                  "Sahih Muslim 26 — Whoever dies upon tawhid will enter Paradise",
-                  "Sunan at-Tirmidhi 2004 — The most common cause of admission: taqwa and good character",
+                  "Bukhari 1:1; Muslim 6:335 — Actions are judged by intentions",
+                  "Bukhari 17:3; Muslim 1:14 — Deeds that admit to Paradise",
+                  "Bukhari 49:8 — One hundred degrees of Paradise; al-Firdaus",
+                  "Muslim 43:200; Bukhari 3:12 — Al-Wasilah: the highest station for the Prophet",
+                  "Bukhari 10:53 — Sponsoring an orphan: together in Paradise",
+                  "Bukhari 81:159; Muslim 1:93-95 — The last person to enter Paradise",
+                  "Muslim 1:178 — Whoever dies upon tawhid will enter Paradise",
+                  "Tirmidhi 27:110 — The most common cause of admission: taqwa and good character",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>

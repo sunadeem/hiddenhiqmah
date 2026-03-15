@@ -9,6 +9,7 @@ import ContentCard from "@/components/ContentCard";
 import { textMatch } from "@/lib/search";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { BookOpen } from "lucide-react";
+import HadithRefText from "@/components/HadithRefText";
 
 /* ───────────────────────── types ───────────────────────── */
 
@@ -42,7 +43,7 @@ const proofTopics: Topic[] = [
           title: "Oral and written preservation from day one",
           detail:
             "The Quran was memorized by hundreds of companions during the Prophet's lifetime and written on various materials. Abu Bakr compiled it into a single manuscript, and Uthman standardized copies sent across the Muslim world. Today, over 10 million people have memorized the entire Quran — a living chain of preservation unbroken for 14 centuries.",
-          note: "Sahih al-Bukhari 4986-4987",
+          note: "Bukhari 66:8-9",
         },
         {
           title: "Manuscript evidence confirms zero corruption",
@@ -66,7 +67,7 @@ const proofTopics: Topic[] = [
             "The Vedas were transmitted orally for over a millennium before being written down, with multiple recensions. The Pali Canon (Buddhist scriptures) was not written down until approximately 450 years after the Buddha, at the Fourth Council in Sri Lanka (29 BCE). Neither tradition can demonstrate an unbroken chain of preservation to its founder.",
         },
       ],
-      source: "Quran 15:9; Sahih al-Bukhari 4986-4987",
+      source: "Quran 15:9; Bukhari 66:8-9",
     },
   },
   {
@@ -124,61 +125,61 @@ const proofTopics: Topic[] = [
           title: "Barefoot shepherds competing in tall buildings",
           detail:
             "The Prophet ﷺ said: 'You will see the barefoot, naked, destitute shepherds competing in constructing tall buildings.' In the 7th century, Bedouin Arabs lived in tents. Today, the UAE (historically Bedouin territory) has the Burj Khalifa — the world's tallest building — and Gulf states compete to build ever-taller skyscrapers.",
-          note: "Sahih Muslim 8; Sahih al-Bukhari 50 (Hadith of Jibril)",
+          note: "Muslim 1:1; Bukhari 2:43 (Hadith of Jibril)",
         },
         {
           title: "The conquest of Constantinople",
           detail:
             "The Prophet ﷺ specifically named Constantinople as a city the Muslims would conquer. This was fulfilled in 1453 CE — over 800 years later — when Sultan Mehmed II conquered the city, ending the Byzantine Empire. Multiple authentic narrations confirm this prophecy.",
-          note: "Sahih Muslim 2897; Jami' at-Tirmidhi 2239; Musnad Ahmad 18189",
+          note: "Muslim 54:44; Tirmidhi 33:82",
         },
         {
           title: "The conquest of Persia and Rome",
           detail:
             "During the Battle of Al-Khandaq — when the Muslims were besieged, starving, and outnumbered — the Prophet ﷺ prophesied the fall of both the Persian and Roman Empires. He said: 'When Kisra perishes, there will be no Kisra after him. And when Caesar perishes, there will be no Caesar after him.' Within a decade of his passing, both empires had fallen to the Muslim armies.",
-          note: "Sahih al-Bukhari 3120; Sahih Muslim 2918",
+          note: "Bukhari 57:29; Muslim 54:92",
         },
         {
           title: "The Muslim conquest of Jerusalem",
           detail:
             "The Prophet ﷺ foretold the conquest of Jerusalem (Bayt al-Maqdis). This was fulfilled during the caliphate of Umar ibn al-Khattab in 637 CE, when Umar personally traveled to Jerusalem to accept its surrender and guaranteed the safety of its Christian inhabitants in the Pact of Umar.",
-          note: "Sahih al-Bukhari 3176",
+          note: "Bukhari 64:18",
         },
         {
           title: "A fire from Hijaz visible from Busra",
           detail:
             "The Prophet ﷺ said: 'The Hour will not come until a fire emerges from the land of Hijaz that will illuminate the necks of camels in Busra (Syria).' In 654 AH (1256 CE), a massive volcanic eruption occurred east of Medina. Contemporary historians documented that the light was visible from great distances, with reports reaching as far as Syria.",
-          note: "Sahih al-Bukhari 7118; Sahih Muslim 2902",
+          note: "Bukhari 92:65; Muslim 54:55",
         },
         {
           title: "The Mongol siege and destruction of Baghdad",
           detail:
             "The Prophet ﷺ warned that Muslims would fight a people 'whose faces are like hammered shields' with small eyes and flat noses, who wear shoes made of hair. In 1258 CE, the Mongol army under Hulagu Khan — matching this description exactly — sacked Baghdad, the capital of the Abbasid Caliphate, killing an estimated 200,000 to over a million people, destroying the House of Wisdom, and ending the Islamic Golden Age.",
-          note: "Sahih Muslim 2912; Sahih al-Bukhari 2928",
+          note: "Muslim 54:76; Bukhari 56:141",
         },
         {
           title: "The prevalence of interest-based transactions",
           detail:
             "The Prophet ﷺ said: 'There will come a time when there will be no one left who does not consume riba (usury/interest), and whoever does not consume it will nevertheless be affected by its residue.' Today, the entire global financial system is built on interest — mortgages, credit cards, student loans, government bonds. It is virtually impossible to live without encountering interest-based transactions.",
-          note: "Sunan an-Nasa'i 4455 (graded sahih); Sunan Abu Dawud 3331",
+          note: "Nasai 44:7 (graded sahih); Abu Dawud 23:6",
         },
         {
           title: "Time passing quickly",
           detail:
             "The Prophet ﷺ said: 'The Hour will not come until time contracts — a year will be like a month, a month like a week, a week like a day, a day like an hour.' With modern technology, social media, and the pace of life, people universally report that time feels like it is accelerating.",
-          note: "Sunan at-Tirmidhi 2332; Musnad Ahmad",
+          note: "Tirmidhi 36:29; Musnad Ahmad",
         },
         {
           title: "Music and entertainment becoming widespread",
           detail:
             "The Prophet ﷺ said: 'There will be people from my Ummah who will consider illegal sexual intercourse, silk (for men), alcohol, and musical instruments as lawful.' The modern entertainment industry — worth trillions — has made music and these vices a central part of daily life globally.",
-          note: "Sahih al-Bukhari 5590",
+          note: "Bukhari 92:16",
         },
         {
           title: "Muslims will be numerous but weak",
           detail:
             "The Prophet ﷺ said: 'The nations will soon summon one another to attack you, as people invite others to share a dish of food.' Someone asked: 'Will that be because of our small numbers?' He said: 'No, you will be numerous, but you will be like the foam on a flood.' Today, there are nearly 2 billion Muslims, yet the Muslim world remains largely divided and powerless on the global stage.",
-          note: "Sunan Abu Dawud 4297",
+          note: "Abu Dawud 39:7",
         },
         {
           title: "No comparable prophetic track record exists",
@@ -186,7 +187,7 @@ const proofTopics: Topic[] = [
             "Biblical prophecies are often vague, retroactively interpreted, or unfulfilled. Nostradamus's quatrains are deliberately ambiguous. Hindu and Buddhist texts do not contain specific, dated, verifiable predictions. Muhammad's prophecies are specific, recorded in authenticated chains of transmission, and verifiably fulfilled.",
         },
       ],
-      source: "Sahih Muslim 8, 2897, 2912; Sahih al-Bukhari 50, 2928, 3120, 3176, 5590, 7118; Jami' at-Tirmidhi 2239, 2332; Sunan an-Nasa'i 4455; Sunan Abu Dawud 4297",
+      source: "Muslim 1:1, 0:15:121; Bukhari 2:43, 92:65; Tirmidhi 33:82, 36:29; Nasai 44:7; Abu Dawud 39:7",
     },
   },
   {
@@ -327,7 +328,7 @@ const proofTopics: Topic[] = [
           title: "Abolished racism 1,400 years ago",
           detail:
             "In his Farewell Sermon, the Prophet declared: 'An Arab has no superiority over a non-Arab, nor a non-Arab over an Arab; a white has no superiority over a black, nor a black over a white — except by piety and good action.' This was said in 632 CE — over 1,200 years before the American Civil Rights Movement.",
-          note: "Musnad Ahmad 23489",
+          note: "Ahmad 23489",
         },
         {
           title: "Women's rights in the 7th century",
@@ -346,7 +347,7 @@ const proofTopics: Topic[] = [
             "Unlike religions that address only spiritual matters, Islam provides guidance for every aspect of life: personal hygiene, diet, business ethics, criminal justice, international relations, environmental stewardship, and treatment of animals. No other religion offers such a comprehensive and integrated system of life.",
         },
       ],
-      source: "Quran 49:13; Quran 4:7, 4:19; Musnad Ahmad 23489",
+      source: "Quran 49:13; Quran 4:7, 4:19; Ahmad 23489",
     },
   },
   {
@@ -780,7 +781,7 @@ const judaismTopics: Topic[] = [
           title: "Ethnic superiority contradicts divine justice",
           detail:
             "A just God does not favor one ethnic group over all of humanity based on lineage. Islam teaches that the only criterion that elevates a person before God is righteousness (taqwa) — not race, ethnicity, or ancestry. The Farewell Sermon declared: 'An Arab has no superiority over a non-Arab, nor a non-Arab over an Arab; a white has no superiority over a black, nor a black over a white — except by piety.'",
-          note: "Musnad Ahmad 23489",
+          note: "Ahmad 23489",
         },
         {
           title: "The covenant was conditional, not unconditional",
@@ -795,7 +796,7 @@ const judaismTopics: Topic[] = [
           note: "Quran 35:24; Quran 34:28",
         },
       ],
-      source: "Quran 49:13; Quran 35:24; Musnad Ahmad 23489; Exodus 19:5",
+      source: "Quran 49:13; Quran 35:24; Ahmad 23489; Exodus 19:5",
     },
   },
   {
@@ -827,10 +828,10 @@ const judaismTopics: Topic[] = [
           title: "Jewish scholars who accepted Muhammad",
           detail:
             "Abdullah ibn Salam, one of the most learned Jewish scholars in Madinah, accepted Islam immediately upon meeting the Prophet, saying: 'I knew he was a prophet from the moment I saw his face — it was not the face of a liar.' Mukhayriq, a rabbi, fought alongside the Prophet at Uhud and bequeathed his wealth to the Muslim community. These scholars recognized in Muhammad the fulfillment of their own scriptures.",
-          note: "Sunan at-Tirmidhi 3631; Ibn Hisham, Sirah",
+          note: "Tirmidhi 47:196; Ibn Hisham, Sirah",
         },
       ],
-      source: "Deuteronomy 18:18; Isaiah 42:1-4; Song of Solomon 5:16; Sunan at-Tirmidhi 3631",
+      source: "Deuteronomy 18:18; Isaiah 42:1-4; Song of Solomon 5:16; Tirmidhi 47:196",
     },
   },
   {
@@ -922,7 +923,7 @@ const hinduismTopics: Topic[] = [
           title: "Islam abolished birth-based hierarchy",
           detail:
             "1,400 years ago, Islam declared: 'An Arab has no superiority over a non-Arab, nor a non-Arab over an Arab; a white has no superiority over a black, nor a black over a white — except by piety.' Bilal, a freed Ethiopian slave, was chosen as the first muezzin (caller to prayer). Salman al-Farisi, a Persian, was honored as one of the Prophet's closest companions. Islam's egalitarianism is not just theoretical — it was practiced from day one.",
-          note: "Musnad Ahmad 23489; Quran 49:13",
+          note: "Ahmad 23489; Quran 49:13",
         },
         {
           title: "Karma justifies oppression",
@@ -930,7 +931,7 @@ const hinduismTopics: Topic[] = [
             "The caste system is theologically justified by karma: a Dalit's suffering is 'deserved' because of sins in a past life. This creates a moral catastrophe — there is no obligation to help the oppressed because their oppression is 'cosmic justice.' Islam rejects this absolutely: every person is born sinless, suffering is a test not a punishment, and social justice is a religious obligation.",
         },
       ],
-      source: "Quran 49:13; Musnad Ahmad 23489",
+      source: "Quran 49:13; Ahmad 23489",
     },
   },
   {
@@ -1189,7 +1190,7 @@ const atheismTopics: Topic[] = [
           title: "The universal search for meaning",
           detail:
             "Humans universally seek meaning, purpose, and transcendence. This is the fitrah — the innate disposition to seek God. The Prophet said every child is born upon the fitrah. Studies in cognitive science confirm that children naturally attribute design and purpose to the world. Atheism says this is an illusion. Islam says it is our deepest truth.",
-          note: "Sahih al-Bukhari 1358; Sahih Muslim 2658",
+          note: "Bukhari 23:111; Muslim 46:11",
         },
         {
           title: "Atheism leads logically to nihilism",
@@ -1198,7 +1199,7 @@ const atheismTopics: Topic[] = [
           note: "Quran 51:56 — 'I did not create jinn and mankind except to worship Me'",
         },
       ],
-      source: "Quran 17:85; Quran 51:56; Sahih al-Bukhari 1358; Sahih Muslim 2658",
+      source: "Quran 17:85; Quran 51:56; Bukhari 23:111; Muslim 46:11",
     },
   },
 ];
@@ -1228,13 +1229,13 @@ const questionTopics: Topic[] = [
           title: "Suffering purifies and elevates",
           detail:
             "The Prophet said: 'No fatigue, disease, sorrow, sadness, hurt, or distress befalls a Muslim — even the prick of a thorn — but that Allah expiates some of his sins thereby.' Suffering is not meaningless — it removes sins and elevates the believer's rank in the Hereafter.",
-          note: "Sahih al-Bukhari 5641; Sahih Muslim 2573",
+          note: "Bukhari 75:2; Muslim 45:60",
         },
         {
           title: "Patience is rewarded without limit",
           detail:
             "Allah says: 'Indeed, the patient will be given their reward without account' (Quran 39:10). Those who bear suffering with patience are among the most rewarded people in the Hereafter. The Prophets suffered the most — precisely because they were the most beloved to Allah.",
-          note: "Quran 39:10; Sunan at-Tirmidhi 2398",
+          note: "Quran 39:10; Tirmidhi 36:96",
         },
         {
           title: "Justice comes on the Day of Judgement",
@@ -1243,7 +1244,7 @@ const questionTopics: Topic[] = [
           note: "Quran 99:7-8; Quran 4:40",
         },
       ],
-      source: "Quran 2:155-157; Quran 67:2; Sahih al-Bukhari 5641; Sahih Muslim 2573",
+      source: "Quran 2:155-157; Quran 67:2; Bukhari 75:2; Muslim 45:79",
     },
   },
   {
@@ -1268,7 +1269,7 @@ const questionTopics: Topic[] = [
           title: "Islam's rules of engagement",
           detail:
             "The Prophet established rules of war 1,400 years before the Geneva Conventions: no killing of women, children, elderly, or monks; no destroying trees, crops, or animals; no mutilation of bodies; no forced conversion; prisoners of war must be treated well. Abu Bakr's famous ten rules to his army are unparalleled in their era.",
-          note: "Sahih al-Bukhari 3015; Sunan Abu Dawud 2614",
+          note: "Bukhari 56:224; Abu Dawud 15:138",
         },
         {
           title: "Compare: Violence in other scriptures",
@@ -1279,10 +1280,10 @@ const questionTopics: Topic[] = [
           title: "Historical record",
           detail:
             "When the Prophet conquered Makkah — the city that had tortured, killed, and expelled Muslims for 13 years — he declared a general amnesty. He forgave his worst enemies. Compare this to the Crusades, the Inquisition, the conquest of the Americas, or the partition of India. Islam's historical record of tolerance and coexistence far exceeds its critics' claims.",
-          note: "Sahih al-Bukhari 4280-4281",
+          note: "Bukhari 64:314",
         },
       ],
-      source: "Quran 2:190, 256; Quran 9:5-6; Sahih al-Bukhari 3015, 4280-4281; Sunan Abu Dawud 2614",
+      source: "Quran 2:190, 256; Quran 9:5-6; Bukhari 56:224, 64:314-4281; Abu Dawud 15:138",
     },
   },
   {
@@ -1313,16 +1314,16 @@ const questionTopics: Topic[] = [
           title: "Distinguish culture from religion",
           detail:
             "Many practices attributed to Islam are actually cultural: honor killings, forced marriages, denial of education for girls — all of these are explicitly prohibited in Islam. The Taliban's ban on girls' education contradicts the Prophet's statement: 'Seeking knowledge is an obligation upon every Muslim' (male and female). Cultural distortions should not be confused with Islamic teachings.",
-          note: "Sunan Ibn Majah 224",
+          note: "Ibn Majah 0:224",
         },
         {
           title: "The Prophet's example",
           detail:
             "The Prophet (peace be upon him) said: 'The best of you are those who are the best to their wives.' He helped with household chores, mended his own clothes, and consulted his wives on important matters. He never struck a woman. Aisha reported: 'The Messenger of Allah never struck anything with his hand — neither a woman nor a servant.'",
-          note: "Sunan at-Tirmidhi 3895; Sahih Muslim 2328",
+          note: "Tirmidhi 49:295; Muslim 12:65",
         },
       ],
-      source: "Quran 2:228; Quran 4:7; Quran 24:31; Quran 33:59; Sunan at-Tirmidhi 3895; Sahih Muslim 2328; Sunan Ibn Majah 224",
+      source: "Quran 2:228; Quran 4:7; Quran 24:31; Quran 33:59; Tirmidhi 49:295; Muslim 12:65; Ibn Majah 0:224",
     },
   },
   {
@@ -1379,7 +1380,7 @@ const questionTopics: Topic[] = [
           title: "Every nation received guidance",
           detail:
             "The Quran states that every nation throughout history received a warner: 'There was no nation but that a warner had passed among them' (Quran 35:24). The 25 prophets named in the Quran are only a fraction — the Prophet said there were 124,000 prophets sent throughout human history to every corner of the world.",
-          note: "Quran 35:24; Musnad Ahmad 21257",
+          note: "Quran 35:24; Ahmad 21257",
         },
         {
           title: "Those who truly never received the message",
@@ -1393,7 +1394,7 @@ const questionTopics: Topic[] = [
             "The greater accountability falls on those who heard the message clearly and rejected it out of arrogance, not ignorance. In today's world, with the internet and global communication, the excuse of not having access to Islam is increasingly difficult to maintain. The question shifts from 'did you hear about Islam?' to 'did you sincerely investigate it?'",
         },
       ],
-      source: "Quran 17:15; Quran 35:24; Musnad Ahmad 21257",
+      source: "Quran 17:15; Quran 35:24; Ahmad 21257",
     },
   },
   {
@@ -1479,7 +1480,7 @@ function TopicInfoCard({ topic }: { topic: Topic }) {
             &ldquo;{topic.content.verse!.text}&rdquo;
           </p>
           <p className="text-xs text-themed-muted mt-2">
-            {topic.content.verse!.ref}
+            <HadithRefText text={topic.content.verse!.ref} />
           </p>
         </div>
       )}
@@ -1498,7 +1499,7 @@ function TopicInfoCard({ topic }: { topic: Topic }) {
               {point.detail}
             </p>
             {point.note && (
-              <p className="text-xs text-gold/60 mt-2">{point.note}</p>
+              <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
             )}
           </div>
         ))}
@@ -1508,7 +1509,7 @@ function TopicInfoCard({ topic }: { topic: Topic }) {
         <div className="mt-5 pt-4 border-t sidebar-border">
           <p className="text-xs text-themed-muted flex items-center gap-2">
             <BookOpen size={12} className="text-gold/60" />
-            {topic.content.source}
+            <HadithRefText text={topic.content.source} />
           </p>
         </div>
       )}

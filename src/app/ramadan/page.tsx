@@ -9,6 +9,7 @@ import ContentCard from "@/components/ContentCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { textMatch } from "@/lib/search";
 import { BookOpen } from "lucide-react";
+import HadithRefText from "@/components/HadithRefText";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -17,37 +18,37 @@ const whyItMatters = [
     point: "The gates of Paradise are opened",
     detail:
       "The Prophet (peace be upon him) said: 'When Ramadan begins, the gates of Paradise are opened, the gates of Hellfire are closed, and the devils are chained.'",
-    reference: "Sahih al-Bukhari 1899; Sahih Muslim 1079",
+    reference: "Bukhari 23:9; Muslim 13:211",
   },
   {
     point: "Fasting is a shield from the Hellfire",
     detail:
       "The Prophet (peace be upon him) said: 'Fasting is a shield. When any one of you is fasting, let him not speak indecently or act ignorantly. If someone fights him or insults him, let him say: I am fasting.'",
-    reference: "Sahih al-Bukhari 1904; Sahih Muslim 1151",
+    reference: "Bukhari 23:14; Muslim 13:211",
   },
   {
     point: "Previous sins are forgiven",
     detail:
       "The Prophet (peace be upon him) said: 'Whoever fasts Ramadan out of sincere faith and seeking reward, his previous sins will be forgiven.' He also said the same about standing in prayer during Ramadan and during Laylatul Qadr.",
-    reference: "Sahih al-Bukhari 38; Sahih Muslim 760",
+    reference: "Bukhari 2:31; Muslim 3:82",
   },
   {
     point: "The Quran was revealed in this month",
     detail:
       "Allah chose Ramadan as the month in which He sent down the Quran — the final revelation and guidance for all of humanity. Jibreel would review the Quran with the Prophet every Ramadan.",
-    reference: "Quran 2:185; Sahih al-Bukhari 4998",
+    reference: "Quran 2:185; Bukhari 8:20",
   },
   {
     point: "It contains a night better than a thousand months",
     detail:
       "Laylatul Qadr (the Night of Decree) falls within the last ten nights of Ramadan. Worship on this single night is better than worshipping for over 83 years. The angels descend with every decree.",
-    reference: "Quran 97:1-5; Sahih al-Bukhari 2014",
+    reference: "Quran 97:1-5; Bukhari 32:4",
   },
   {
     point: "The reward of fasting is with Allah alone",
     detail:
       "In a hadith qudsi, Allah says: 'Every deed of the son of Adam is for him, except fasting — it is for Me, and I shall reward it.' The reward is so immense that only Allah knows its extent.",
-    reference: "Sahih al-Bukhari 1904; Sahih Muslim 1151",
+    reference: "Bukhari 23:14; Muslim 4:313",
   },
 ];
 
@@ -73,25 +74,25 @@ const fastingTopics: FastingTopic[] = [
           title: "Intention (Niyyah)",
           detail:
             "The intention to fast must be made before Fajr each day. It is made in the heart — no verbal declaration is required. Many scholars hold that a single intention at the start of Ramadan suffices for the entire month, unless the fast is broken and needs to be restarted.",
-          note: "Hadith: 'There is no fast for the one who does not intend to fast from the night before.' — Sunan an-Nasa'i 2331; Sunan Abu Dawud 2454",
+          note: "Hadith: 'There is no fast for the one who does not intend to fast from the night before.' — Nasai 22:242; Abu Dawud 14:142",
         },
         {
           title: "Suhoor (Pre-dawn Meal)",
           detail:
             "Eating suhoor is a blessed sunnah and should be taken as close to Fajr as possible. The Prophet (peace be upon him) said: 'Eat suhoor, for in suhoor there is blessing.'",
-          note: "Sahih al-Bukhari 1923; Sahih Muslim 1095",
+          note: "Bukhari 23:32; Muslim 13:55",
         },
         {
           title: "Iftar (Breaking the Fast)",
           detail:
             "The fast should be broken as soon as Maghrib enters, without delay. The Prophet (peace be upon him) said: 'The people will remain upon goodness as long as they hasten to break the fast.' It is sunnah to break the fast with fresh dates, and if not available, then with water.",
-          note: "Sahih al-Bukhari 1957; Sunan Abu Dawud 2356; Sunan at-Tirmidhi 696",
+          note: "Bukhari 30:64; Abu Dawud 14:44; Tirmidhi 8:15",
         },
         {
           title: "Du'a at Iftar",
           detail:
-            "The Prophet (peace be upon him) would say upon breaking his fast: 'Dhahaba adh-dhama'u wabtallatil-'urooqu wa thabatal-ajru in sha Allah' — The thirst has gone, the veins have been moistened, and the reward is assured, if Allah wills. Another widely recited du'a is: 'Allahumma inni laka sumtu wa bika aamantu wa 'alaika tawakkaltu wa 'ala rizqika aftartu' — O Allah, I fasted for You, believed in You, placed my trust in You, and broke my fast with Your provision. This version is from Abu Dawud 2358 but is graded da'if (weak); the first du'a above is the stronger narration.",
-          note: "Sunan Abu Dawud 2357 (graded hasan); Sunan Abu Dawud 2358 (graded da'if — widely recited but weak chain)",
+            "The Prophet (peace be upon him) would say upon breaking his fast: 'Dhahaba adh-dhama'u wabtallatil-'urooqu wa thabatal-ajru in sha Allah' — The thirst has gone, the veins have been moistened, and the reward is assured, if Allah wills. Another widely recited du'a is: 'Allahumma inni laka sumtu wa bika aamantu wa 'alaika tawakkaltu wa 'ala rizqika aftartu' — O Allah, I fasted for You, believed in You, placed my trust in You, and broke my fast with Your provision. This version is from Abu Dawud 14:46 but is graded da'if (weak); the first du'a above is the stronger narration.",
+          note: "Abu Dawud 14:45 (graded hasan); Abu Dawud 14:46 (graded da'if — widely recited but weak chain)",
         },
         {
           title: "Timing",
@@ -100,7 +101,7 @@ const fastingTopics: FastingTopic[] = [
           note: "Quran 2:187",
         },
       ],
-      source: "Quran 2:183-187; Sahih al-Bukhari 1923, 1957; Sahih Muslim 1095",
+      source: "Quran 2:183-187; Bukhari 23:32, 30:64; Muslim 4:257",
     },
   },
   {
@@ -114,34 +115,34 @@ const fastingTopics: FastingTopic[] = [
           title: "Eating or drinking intentionally",
           detail:
             "Consuming any food, drink, or substance intentionally — including water, medicine, or nutritional injections — breaks the fast. If done out of forgetfulness, the fast is still valid: 'If he forgets and eats or drinks, let him complete his fast, for it was Allah who fed him and gave him drink.'",
-          note: "Sahih al-Bukhari 1933; Sahih Muslim 1155",
+          note: "Bukhari 30:40; Muslim 13:222",
         },
         {
           title: "Sexual intercourse",
           detail:
             "Intimacy during fasting hours invalidates the fast and requires both qada (making up the day) and kaffarah (expiation): freeing a slave, or fasting 60 consecutive days, or feeding 60 poor people.",
-          note: "Sahih al-Bukhari 1936; Sahih Muslim 1111",
+          note: "Bukhari 30:46; Muslim 3:30",
         },
         {
           title: "Deliberate vomiting",
           detail:
             "Inducing vomit intentionally breaks the fast. If vomiting occurs involuntarily (e.g., due to illness), the fast remains valid.",
-          note: "Sunan Abu Dawud 2380; Sunan at-Tirmidhi 720",
+          note: "Abu Dawud 14:68; Tirmidhi 8:39",
         },
         {
           title: "Menstruation or post-natal bleeding",
           detail:
             "The onset of menstruation or post-natal bleeding (nifas) at any point during the day invalidates the fast. The days must be made up after Ramadan. Women are not permitted to fast during these periods.",
-          note: "Sahih al-Bukhari 1951",
+          note: "Bukhari 30:59",
         },
         {
           title: "Cupping / blood extraction (scholarly difference)",
           detail:
             "Some scholars hold that cupping (hijama) breaks the fast based on the hadith: 'The one who cups and the one who is cupped have both broken their fast.' Others, including the Hanafi and Shafi'i schools, consider this hadith abrogated and say cupping does not break the fast. Blood tests and donations that extract a small amount are generally considered permissible.",
-          note: "Sunan Abu Dawud 2367; differed upon — see Fiqh us-Sunnah",
+          note: "Abu Dawud 14:55; differed upon — see Fiqh us-Sunnah",
         },
       ],
-      source: "Sahih al-Bukhari 1933, 1936; Sahih Muslim 1111, 1155; Sunan Abu Dawud 2380",
+      source: "Bukhari 23:40, 30:43; Muslim 4:273, 4:317; Abu Dawud 14:68",
     },
   },
   {
@@ -155,13 +156,13 @@ const fastingTopics: FastingTopic[] = [
           title: "Eating or drinking out of forgetfulness",
           detail:
             "If a fasting person eats or drinks accidentally, forgetting that they are fasting, the fast is not broken. They should stop as soon as they remember and continue fasting.",
-          note: "Sahih al-Bukhari 1933; Sahih Muslim 1155",
+          note: "Bukhari 30:46; Muslim 13:183",
         },
         {
           title: "Rinsing the mouth and nose (without exaggeration)",
           detail:
             "Rinsing the mouth and nose during wudu is permissible, but the fasting person should not exaggerate (i.e., sniff water deep into the nose or gargle excessively).",
-          note: "Sunan Abu Dawud 2366; Sunan an-Nasa'i 87",
+          note: "Abu Dawud 14:54; Nasai 1:87",
         },
         {
           title: "Swallowing saliva",
@@ -172,7 +173,7 @@ const fastingTopics: FastingTopic[] = [
           title: "Using miswak (tooth stick)",
           detail:
             "The Prophet (peace be upon him) used the miswak while fasting. Brushing teeth with a toothbrush (without toothpaste) is also generally considered permissible, though some scholars advise caution with flavored toothpaste.",
-          note: "Sahih al-Bukhari 887 (general miswak encouragement)",
+          note: "Bukhari 4:12 (general miswak encouragement)",
         },
         {
           title: "Eye drops, ear drops, and non-nutritional injections",
@@ -192,7 +193,7 @@ const fastingTopics: FastingTopic[] = [
             "Accidentally inhaling dust, steam, or incidental smoke does not break the fast, as it is not done intentionally.",
         },
       ],
-      source: "Sahih al-Bukhari 1933; Sahih Muslim 1155; Sunan Abu Dawud 2366",
+      source: "Bukhari 23:40; Muslim 4:317; Abu Dawud 14:54",
     },
   },
   {
@@ -206,7 +207,7 @@ const fastingTopics: FastingTopic[] = [
           title: "Travelers",
           detail:
             "A traveler has the option to fast or break the fast. If they break it, the days must be made up after Ramadan. The Quran states: 'Whoever among you is ill or on a journey — then an equal number of other days.' The concession applies to journeys that qualify as travel in Islamic law (typically 80+ km).",
-          note: "Quran 2:184-185; Sahih Muslim 1113",
+          note: "Quran 2:184-185; Muslim 4:275",
         },
         {
           title: "The sick (temporary illness)",
@@ -218,28 +219,28 @@ const fastingTopics: FastingTopic[] = [
           title: "The chronically ill and elderly",
           detail:
             "Those with permanent illnesses or the elderly who cannot fast at all are exempt. Instead of making up the days, they pay fidyah: feeding one poor person for each day missed (approximately the cost of one meal).",
-          note: "Quran 2:184; reported from Ibn Abbas — Sahih al-Bukhari 4505",
+          note: "Quran 2:184; reported from Ibn Abbas — Bukhari 65:32",
         },
         {
           title: "Pregnant and breastfeeding women",
           detail:
             "If a pregnant or breastfeeding woman fears harm to herself or her child, she may break the fast. Scholars differ on whether she must only make up the days (Hanafi view) or also pay fidyah (Shafi'i/Hanbali view, if the fear was only for the child).",
-          note: "Sunan Abu Dawud 2317; Sunan at-Tirmidhi 715; Sunan an-Nasa'i 2274",
+          note: "Abu Dawud 14:5; Tirmidhi 8:34; Nasai 22:185",
         },
         {
           title: "Children (pre-puberty)",
           detail:
             "Fasting is not obligatory on children who have not reached puberty. However, parents are encouraged to gradually introduce them to fasting so they are accustomed to it when it becomes obligatory.",
-          note: "Sahih al-Bukhari 1960 (companions would have their children fast)",
+          note: "Bukhari 30:67 (companions would have their children fast)",
         },
         {
           title: "Menstruating women and post-natal bleeding",
           detail:
             "Women experiencing menstruation or post-natal bleeding (nifas) are prohibited from fasting during those days. They must make up the missed days after Ramadan. Aisha said: 'We were commanded to make up the fasts but not the prayers.'",
-          note: "Sahih al-Bukhari 1951; Sahih Muslim 335",
+          note: "Bukhari 23:58; Muslim 1:242",
         },
       ],
-      source: "Quran 2:184-185; Sahih al-Bukhari 1951, 4505; Sahih Muslim 335, 1113",
+      source: "Quran 2:184-185; Bukhari 23:58, 65:32; Muslim 1:242, 4:275",
     },
   },
   {
@@ -253,19 +254,19 @@ const fastingTopics: FastingTopic[] = [
           title: "Qada (Making Up Missed Days)",
           detail:
             "Any day missed due to a valid reason (illness, travel, menstruation, etc.) must be made up by fasting an equal number of days after Ramadan. These make-up fasts can be done consecutively or separately — there is flexibility. Aisha reported that she would make up her missed Ramadan fasts in Sha'ban (the month before Ramadan).",
-          note: "Quran 2:185; Sahih Muslim 1146 (Aisha making up fasts in Sha'ban)",
+          note: "Quran 2:185; Muslim 13:193 (Aisha making up fasts in Sha'ban)",
         },
         {
           title: "Fidyah (Compensation for Inability)",
           detail:
             "For those permanently unable to fast (chronic illness, extreme old age), fidyah must be paid: feeding one poor person for each day missed. This is typically the cost of one meal per day. It cannot substitute for qada if the person is able to fast later.",
-          note: "Quran 2:184; Ibn Abbas' interpretation — Sahih al-Bukhari 4505",
+          note: "Quran 2:184; Ibn Abbas' interpretation — Bukhari 65:32",
         },
         {
           title: "Kaffarah (Expiation for Intentional Violation)",
           detail:
             "If a person deliberately breaks the fast during Ramadan without a valid excuse (specifically by eating, drinking, or sexual intercourse), kaffarah is required in addition to making up the day. The kaffarah is, in order: freeing a slave (no longer applicable), fasting 60 consecutive days, or feeding 60 poor people.",
-          note: "Sahih al-Bukhari 1936; Sahih Muslim 1111",
+          note: "Bukhari 65:29; Muslim 13:183",
         },
         {
           title: "Delaying Make-Up Past the Next Ramadan",
@@ -273,7 +274,7 @@ const fastingTopics: FastingTopic[] = [
             "Scholars agree that make-up fasts should ideally be completed before the next Ramadan. If delayed without a valid reason, some scholars (Shafi'i, Hanbali, Maliki) say fidyah must also be paid in addition to making up the days. The Hanafi school does not require the additional fidyah but considers the delay sinful if without excuse.",
         },
       ],
-      source: "Quran 2:184-185; Sahih al-Bukhari 1936, 4505; Sahih Muslim 1111, 1146",
+      source: "Quran 2:184-185; Bukhari 23:43, 65:32; Muslim 4:273, 4:308",
     },
   },
 ];
@@ -306,28 +307,28 @@ const lastTenTopics: LastTenTopic[] = [
           title: "When is it?",
           detail:
             "The Prophet (peace be upon him) said: 'Seek Laylatul Qadr in the odd nights of the last ten days of Ramadan.' This means the 21st, 23rd, 25th, 27th, or 29th nights. While many communities focus on the 27th, the Prophet did not specify a single date — it moves each year. The wisdom in this is to encourage worship throughout the last ten nights.",
-          note: "Sahih al-Bukhari 2017; Sahih Muslim 1169",
+          note: "Bukhari 32:4; Muslim 13:272",
         },
         {
           title: "Signs of the night",
           detail:
             "The Prophet (peace be upon him) described it as a calm, serene night — neither too hot nor too cold. Some narrations mention that the sun rises the next morning without strong rays (appearing pale). However, these signs are recognized after the fact — the point is to worship every odd night.",
-          note: "Sahih Muslim 762; reported in Ibn Khuzaymah",
+          note: "Muslim 3:84; reported in Ibn Khuzaymah",
         },
         {
           title: "The best du'a for this night",
           detail:
             "Aisha asked the Prophet: 'If I know which night is Laylatul Qadr, what should I say?' He replied: 'Say: Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni — O Allah, You are the Pardoner, You love to pardon, so pardon me.'",
-          note: "Sunan at-Tirmidhi 3513; Sunan Ibn Majah 3850",
+          note: "Tirmidhi 48:144; Ibn Majah 34:24",
         },
         {
           title: "What to do",
           detail:
             "Spend the night in prayer (qiyam al-layl), recitation of the Quran, dhikr, du'a, and seeking forgiveness. The Prophet (peace be upon him) said: 'Whoever stands in prayer on Laylatul Qadr out of faith and seeking reward, his previous sins will be forgiven.'",
-          note: "Sahih al-Bukhari 1901; Sahih Muslim 760",
+          note: "Bukhari 23:11; Muslim 3:82",
         },
       ],
-      source: "Quran 97:1-5; Sahih al-Bukhari 1901, 2017; Sahih Muslim 760, 762, 1169; Sunan at-Tirmidhi 3513",
+      source: "Quran 97:1-5; Bukhari 23:11, 32:4; Muslim 3:82, 5:9; Tirmidhi 48:144",
     },
   },
   {
@@ -346,22 +347,22 @@ const lastTenTopics: LastTenTopic[] = [
           title: "Duration and timing",
           detail:
             "The sunnah is to begin i'tikaf from Fajr on the 20th of Ramadan (entering the masjid the night before) and remain until the announcement of Eid. Some scholars permit shorter i'tikaf (even a few hours) with the right intention, though the 10-day sunnah is most virtuous.",
-          note: "Sahih al-Bukhari 2025; Sahih Muslim 1172",
+          note: "Bukhari 33:1; Muslim 14:3",
         },
         {
           title: "Rules during i'tikaf",
           detail:
             "The person should remain in the masjid and only leave for necessities (bathroom, wudu, eating if food cannot be brought in). They should not leave without a valid reason. They may speak to visitors and attend to basic needs, but the focus should remain on worship.",
-          note: "Sahih al-Bukhari 2029; Sahih Muslim 297 (Aisha would comb the Prophet's hair while he was in i'tikaf)",
+          note: "Bukhari 6:2; Muslim 36:244 (Aisha would comb the Prophet's hair while he was in i'tikaf)",
         },
         {
           title: "Who can do it?",
           detail:
             "I'tikaf is for both men and women. Women may perform i'tikaf in the masjid or, according to some scholars (Hanafi), in a designated prayer area at home. The key conditions are: being Muslim, sane, and having the intention of i'tikaf.",
-          note: "Sahih al-Bukhari 2033 (the Prophet's wives performed i'tikaf)",
+          note: "Bukhari 33:8 (the Prophet's wives performed i'tikaf)",
         },
       ],
-      source: "Sahih al-Bukhari 2025, 2029, 2033; Sahih Muslim 297, 1172",
+      source: "Bukhari 33:1, 33:8; Muslim 1:203, 5:12",
     },
   },
   {
@@ -375,28 +376,28 @@ const lastTenTopics: LastTenTopic[] = [
           title: "Who must pay it?",
           detail:
             "Every Muslim who has food in excess of their needs for themselves and their dependents on the day of Eid must pay Zakat al-Fitr. It is paid on behalf of every member of the household — including children and dependents.",
-          note: "Sahih al-Bukhari 1503; Sahih Muslim 984",
+          note: "Bukhari 24:103; Muslim 12:26",
         },
         {
           title: "How much?",
           detail:
             "The amount is one sa' (approximately 2.5-3 kg) of the staple food of the land — dates, barley, wheat, rice, or similar. In monetary terms, many scholars permit paying the equivalent cash value, which varies by region (commonly $10-15 per person in Western countries). The Hanafi school specifically permits cash payment.",
-          note: "Sahih al-Bukhari 1506, 1507; Sahih Muslim 985",
+          note: "Bukhari 24:106, 24:107; Muslim 12:19",
         },
         {
           title: "When to pay it?",
           detail:
             "It should be paid before the Eid prayer. The Prophet (peace be upon him) commanded that it be given before people go out to the Eid prayer. It can be given a day or two before Eid. If paid after the Eid prayer, it counts as regular charity, not Zakat al-Fitr.",
-          note: "Sahih al-Bukhari 1509; Sunan Abu Dawud 1609",
+          note: "Bukhari 24:109; Abu Dawud 9:54",
         },
         {
           title: "Its purpose",
           detail:
             "Ibn Abbas said: 'The Messenger of Allah prescribed Zakat al-Fitr as a purification for the fasting person from idle talk and obscenity, and as food for the poor.' It ensures that every Muslim — rich or poor — can celebrate Eid with dignity.",
-          note: "Sunan Abu Dawud 1609; Sunan Ibn Majah 1827",
+          note: "Abu Dawud 9:54; Ibn Majah 8:45",
         },
       ],
-      source: "Sahih al-Bukhari 1503, 1506, 1509; Sahih Muslim 984, 985; Sunan Abu Dawud 1609",
+      source: "Bukhari 24:103, 24:109; Muslim 4:146, 4:147; Abu Dawud 9:54",
     },
   },
   {
@@ -410,28 +411,28 @@ const lastTenTopics: LastTenTopic[] = [
           title: "Eid prayer",
           detail:
             "The Eid prayer is 2 rak'at with additional takbirat, prayed in congregation after sunrise. There is no adhan or iqamah. It is followed by a khutbah. The Prophet (peace be upon him) would pray in an open area (musalla) and take one route going and a different route returning.",
-          note: "Sahih al-Bukhari 956, 986",
+          note: "Bukhari 64:331, 13:35",
         },
         {
           title: "Sunnahs of Eid al-Fitr",
           detail:
             "Eat something (preferably dates) before going to the Eid prayer. Perform ghusl and wear your best clothes. Say the takbirat of Eid from Maghrib on the last night of Ramadan until the Eid prayer: 'Allahu Akbar, Allahu Akbar, la ilaha illallah, Allahu Akbar, Allahu Akbar, wa lillahil-hamd.'",
-          note: "Sahih al-Bukhari 953; Quran 2:185 (basis for takbir)",
+          note: "Bukhari 6:5; Quran 2:185 (basis for takbir)",
         },
         {
           title: "It is forbidden to fast on Eid",
           detail:
             "Fasting on the day of Eid al-Fitr is strictly prohibited. It is a day of celebration and gratitude, not a day of fasting. The Prophet (peace be upon him) explicitly forbade fasting on the two Eid days.",
-          note: "Sahih al-Bukhari 1991; Sahih Muslim 1137",
+          note: "Bukhari 23:39; Muslim 13:178",
         },
         {
           title: "Celebrate and connect",
           detail:
             "Eid is a time to visit family, exchange gifts, feed others, and spread joy. The Prophet (peace be upon him) said: 'Every nation has its celebration, and this is our celebration.' It is a communal celebration that strengthens the bonds of the ummah.",
-          note: "Sahih al-Bukhari 952",
+          note: "Bukhari 6:4",
         },
       ],
-      source: "Sahih al-Bukhari 952, 953, 956, 1991; Sahih Muslim 1137",
+      source: "Bukhari 6:4, 1991; Muslim 4:299",
     },
   },
 ];
@@ -473,7 +474,7 @@ function FastingInfoCard({ topic }: { topic: FastingTopic }) {
                 {point.detail}
               </p>
               {point.note && (
-                <p className="text-xs text-gold/60 mt-2">{point.note}</p>
+                <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
               )}
             </div>
           ))}
@@ -503,7 +504,7 @@ function LastTenInfoCard({ topic }: { topic: LastTenTopic }) {
             <p className="text-themed text-sm italic">
               &ldquo;{topic.content.verse.text}&rdquo;
             </p>
-            <p className="text-xs text-themed-muted mt-2">{topic.content.verse.ref}</p>
+            <p className="text-xs text-themed-muted mt-2"><HadithRefText text={topic.content.verse.ref} /></p>
           </div>
         )}
 
@@ -521,7 +522,7 @@ function LastTenInfoCard({ topic }: { topic: LastTenTopic }) {
                 {point.detail}
               </p>
               {point.note && (
-                <p className="text-xs text-gold/60 mt-2">{point.note}</p>
+                <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
               )}
             </div>
           ))}
@@ -620,7 +621,7 @@ function RamadanContent() {
                   Fasting during Ramadan is the fourth pillar of Islam. Allah says: <em>&ldquo;O you who have believed, decreed upon you is fasting as it was decreed upon those before you, that you may become righteous&rdquo;</em> (Quran 2:183). From dawn to sunset each day, Muslims abstain from food, drink, and marital relations — training the soul in patience, self-discipline, and God-consciousness (taqwa).
                 </p>
                 <p>
-                  But Ramadan is far more than abstaining from food. It is a month of intensified worship — extra prayers (Tarawih), recitation of the Quran (many Muslims complete the entire Quran during this month), charity, and supplication. The Prophet (peace be upon him) was described as being &ldquo;more generous than the blowing wind&rdquo; during Ramadan (Sahih al-Bukhari 6, Sahih Muslim 2308).
+                  But Ramadan is far more than abstaining from food. It is a month of intensified worship — extra prayers (Tarawih), recitation of the Quran (many Muslims complete the entire Quran during this month), charity, and supplication. The Prophet (peace be upon him) was described as being &ldquo;more generous than the blowing wind&rdquo; during Ramadan (Bukhari 1:6, Muslim 12:45).
                 </p>
                 <p>
                   The month begins and ends with the sighting of the crescent moon (hilal). Because the Islamic calendar is lunar, Ramadan shifts approximately 10-11 days earlier each solar year, meaning it cycles through all seasons over a 33-year period. This ensures that the experience of fasting — whether in long summer days or short winter ones — is shared equally across generations and geographies.
@@ -642,8 +643,8 @@ function RamadanContent() {
                   "Quran 2:183-187 — The verses prescribing fasting and its rules",
                   "Quran 2:185 — The month of Ramadan and the revelation of the Quran",
                   "Quran 97:1-5 — Surah Al-Qadr: the Night of Decree",
-                  "Sahih al-Bukhari 6 — The Prophet's generosity in Ramadan",
-                  "Sahih al-Bukhari 4998 — Jibreel reviewing the Quran with the Prophet every Ramadan",
+                  "Bukhari 1:6 — The Prophet's generosity in Ramadan",
+                  "Bukhari 8:20 — Jibreel reviewing the Quran with the Prophet every Ramadan",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
@@ -688,7 +689,7 @@ function RamadanContent() {
                   <div>
                     <h3 className="font-semibold text-themed mb-1">{item.point}</h3>
                     <p className="text-themed-muted text-sm leading-relaxed">{item.detail}</p>
-                    <p className="text-xs text-gold/60 mt-2">{item.reference}</p>
+                    <p className="text-xs text-gold/60 mt-2"><HadithRefText text={item.reference} /></p>
                   </div>
                 </div>
               </ContentCard>
@@ -715,11 +716,11 @@ function RamadanContent() {
               </h4>
               <ul className="space-y-1.5">
                 {[
-                  "Sahih al-Bukhari 1899; Sahih Muslim 1079 — Gates of Paradise opened, Hellfire closed, devils chained",
-                  "Sahih al-Bukhari 1904; Sahih Muslim 1151 — Fasting as a shield; hadith qudsi on fasting's reward",
-                  "Sahih al-Bukhari 38; Sahih Muslim 760 — Previous sins forgiven for fasting and praying in Ramadan",
-                  "Sahih al-Bukhari 2014 — Seeking Laylatul Qadr in the last ten nights",
-                  "Sahih al-Bukhari 4998 — Jibreel reviewing the Quran with the Prophet",
+                  "Bukhari 30:8; Muslim 4:241 — Gates of Paradise opened, Hellfire closed, devils chained",
+                  "Bukhari 23:14; Muslim 4:313 — Fasting as a shield; hadith qudsi on fasting's reward",
+                  "Bukhari 2:31; Muslim 3:82 — Previous sins forgiven for fasting and praying in Ramadan",
+                  "Bukhari 25:1 — Seeking Laylatul Qadr in the last ten nights",
+                  "Bukhari 8:20 — Jibreel reviewing the Quran with the Prophet",
                   "Quran 2:183-185 — The obligation of fasting and its virtues",
                   "Quran 97:1-5 — Laylatul Qadr is better than a thousand months",
                 ].map((source) => (
@@ -791,15 +792,15 @@ function RamadanContent() {
               <ul className="space-y-1.5">
                 {[
                   "Quran 2:183-187 — The obligation of fasting, its timing, and exemptions",
-                  "Sahih al-Bukhari 1904; Sahih Muslim 1151 — Fasting as a shield; conduct while fasting",
-                  "Sahih al-Bukhari 1923; Sahih Muslim 1095 — Blessing of suhoor",
-                  "Sahih al-Bukhari 1933; Sahih Muslim 1155 — Eating out of forgetfulness does not break the fast",
-                  "Sahih al-Bukhari 1936; Sahih Muslim 1111 — Kaffarah for intentionally breaking the fast",
-                  "Sahih al-Bukhari 1951; Sahih Muslim 335 — Women making up missed fasts",
-                  "Sahih al-Bukhari 1957 — Hastening to break the fast",
-                  "Sahih al-Bukhari 4505 — Ibn Abbas on fidyah for the elderly",
-                  "Sunan Abu Dawud 2380; Sunan at-Tirmidhi 720 — Ruling on deliberate vomiting",
-                  "Sunan an-Nasa'i 2331; Sunan Abu Dawud 2454 — Intention for fasting",
+                  "Bukhari 30:46; Muslim 13:211 — Fasting as a shield; conduct while fasting",
+                  "Bukhari 23:32; Muslim 4:257 — Blessing of suhoor",
+                  "Bukhari 23:40; Muslim 4:317 — Eating out of forgetfulness does not break the fast",
+                  "Bukhari 23:43; Muslim 4:273 — Kaffarah for intentionally breaking the fast",
+                  "Bukhari 23:58; Muslim 1:242 — Women making up missed fasts",
+                  "Bukhari 23:64 — Hastening to break the fast",
+                  "Bukhari 65:32 — Ibn Abbas on fidyah for the elderly",
+                  "Abu Dawud 14:68; Tirmidhi 8:39 — Ruling on deliberate vomiting",
+                  "Nasai 22:242; Abu Dawud 14:142 — Intention for fasting",
                   "Fiqh us-Sunnah by Sayyid Sabiq — General fasting rulings and scholarly differences",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
@@ -871,14 +872,14 @@ function RamadanContent() {
                 {[
                   "Quran 97:1-5 — Surah Al-Qadr: Laylatul Qadr is better than a thousand months",
                   "Quran 2:185 — Basis for the takbirat of Eid",
-                  "Sahih al-Bukhari 1901; Sahih Muslim 760 — Sins forgiven for standing in prayer on Laylatul Qadr",
-                  "Sahih al-Bukhari 2017; Sahih Muslim 1169 — Seek Laylatul Qadr in the odd nights of the last ten",
-                  "Sahih al-Bukhari 2025; Sahih Muslim 1172 — The Prophet's i'tikaf in the last ten days",
-                  "Sahih al-Bukhari 1503, 1506; Sahih Muslim 984, 985 — Zakat al-Fitr obligation and amount",
-                  "Sahih al-Bukhari 953, 956 — Sunnahs of the Eid prayer",
-                  "Sahih al-Bukhari 1991; Sahih Muslim 1137 — Prohibition of fasting on the day of Eid",
-                  "Sunan at-Tirmidhi 3513; Sunan Ibn Majah 3850 — The du'a for Laylatul Qadr",
-                  "Sunan Abu Dawud 1609; Sunan Ibn Majah 1827 — Purpose and timing of Zakat al-Fitr",
+                  "Bukhari 23:11; Muslim 3:82 — Sins forgiven for standing in prayer on Laylatul Qadr",
+                  "Bukhari 32:4; Muslim 5:9 — Seek Laylatul Qadr in the odd nights of the last ten",
+                  "Bukhari 33:1; Muslim 5:12 — The Prophet's i'tikaf in the last ten days",
+                  "Bukhari 24:103, 24:106; Muslim 4:146, 4:147 — Zakat al-Fitr obligation and amount",
+                  "Bukhari 6:5, 13:8 — Sunnahs of the Eid prayer",
+                  "Bukhari 23:98; Muslim 4:299 — Prohibition of fasting on the day of Eid",
+                  "Tirmidhi 48:144; Ibn Majah 34:24 — The du'a for Laylatul Qadr",
+                  "Abu Dawud 9:54; Ibn Majah 8:45 — Purpose and timing of Zakat al-Fitr",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                     <span className="text-gold/40 mt-0.5">&#8226;</span>

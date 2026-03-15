@@ -8,6 +8,7 @@ import PageSearch from "@/components/PageSearch";
 import ContentCard from "@/components/ContentCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { textMatch } from "@/lib/search";
+import HadithRefText from "@/components/HadithRefText";
 import {
   BookOpen,
   AlertTriangle,
@@ -41,13 +42,13 @@ const whyItMatters = [
     point: "They are the foundation upon which Islam is built",
     detail:
       "The Prophet (peace be upon him) described Islam as being built upon five things, like a structure resting on its pillars. Without them, the structure of one's Islam collapses.",
-    reference: "Sahih al-Bukhari 8, Sahih Muslim 16",
+    reference: "Bukhari 2:1, Muslim 1:21",
   },
   {
     point: "They combine belief with action",
     detail:
       "Islam is not merely an internal belief — it demands outward action. The pillars translate inner faith into tangible worship, creating a complete way of life that connects the heart, tongue, and body.",
-    reference: "Sahih Muslim 8 (Hadith of Jibril)",
+    reference: "Muslim 1:1 (Hadith of Jibril)",
   },
   {
     point: "They establish discipline and God-consciousness",
@@ -65,7 +66,7 @@ const whyItMatters = [
     point: "They are a means of forgiveness and elevation",
     detail:
       "The Prophet (peace be upon him) said: 'The five daily prayers, and Friday to Friday, and Ramadan to Ramadan are expiation for what is between them, so long as major sins are avoided.'",
-    reference: "Sahih Muslim 233",
+    reference: "Muslim 1:139",
   },
 ];
 
@@ -100,11 +101,11 @@ const pillars: Pillar[] = [
     ],
     hadith: [
       {
-        ref: "Sahih al-Bukhari 1395, Sahih Muslim 19",
+        ref: "Bukhari 65:1, Muslim 1:29",
         text: "I have been ordered to fight the people until they testify that there is no god but Allah and that Muhammad is the Messenger of Allah, and establish prayer and give zakat. If they do that, their blood and wealth are protected from me, except by the right of Islam, and their account is with Allah.",
       },
       {
-        ref: "Sahih Muslim 26",
+        ref: "Muslim 15:159",
         text: "Whoever says 'La ilaha illa Allah' and disbelieves in everything worshipped besides Allah, his property and blood become inviolable, and his reckoning is with Allah.",
       },
     ],
@@ -114,7 +115,7 @@ const pillars: Pillar[] = [
       "The second testimony (Muhammadur Rasulullah) means following the Prophet's Sunnah in worship",
       "Seven conditions: knowledge, certainty, acceptance, submission, truthfulness, sincerity, and love",
       "It must be said with understanding and conviction, not merely as words on the tongue",
-      "It is the last thing the Prophet (peace be upon him) encouraged people to say before death (Sunan Abu Dawud 3116)",
+      "It is the last thing the Prophet (peace be upon him) encouraged people to say before death (Abu Dawud 21:28)",
       "A person who says it sincerely, even once in their lifetime, will eventually enter Paradise",
     ],
     misconceptions: [
@@ -133,7 +134,7 @@ const pillars: Pillar[] = [
       "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — On the meaning and conditions of La ilaha illa Allah",
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on the shahada and its conditions",
       "Al-Qawa'id al-Muthla, Ibn Uthaymeen — On the testimony of faith",
-      "Sahih al-Bukhari 1395, Sahih Muslim 19, 26 — Hadith on the shahada",
+      "Bukhari 65:1, Muslim 1:29, 0:26 — Hadith on the shahada",
     ],
   },
   {
@@ -167,45 +168,45 @@ const pillars: Pillar[] = [
     ],
     hadith: [
       {
-        ref: "Sunan an-Nasa'i 463, Sunan at-Tirmidhi 413",
+        ref: "Nasai 5:16, Tirmidhi 2:266",
         text: "The first thing a person will be held accountable for on the Day of Judgement is the prayer. If it is sound, then the rest of his deeds will be sound. And if it is deficient, then the rest of his deeds will be deficient.",
       },
       {
-        ref: "Sahih al-Bukhari 527, Sahih Muslim 85",
+        ref: "Bukhari 10:6, Muslim 1:5",
         text: "The Prophet (peace be upon him) was asked: 'Which deed is most beloved to Allah?' He said: 'Prayer at its proper time.'",
       },
       {
-        ref: "Sahih Muslim 233",
+        ref: "Muslim 1:139",
         text: "The five daily prayers, and Friday to Friday, and Ramadan to Ramadan are expiation for whatever sins come between them, so long as major sins are avoided.",
       },
     ],
     points: [
       "It is the second pillar and the most important act of worship after the shahada",
-      "Prescribed during al-Isra wal-Mi'raj — originally 50, reduced to 5 but rewarded as 50 (Sahih al-Bukhari 3207, Sahih Muslim 162)",
+      "Prescribed during al-Isra wal-Mi'raj — originally 50, reduced to 5 but rewarded as 50 (Bukhari 59:18, Muslim 1:321)",
       "Five obligatory prayers: Fajr, Dhuhr, Asr, Maghrib, Isha",
       "Requires ritual purity (wudu), facing the qiblah, covering the awrah, and praying at the appointed time",
-      "Sujud (prostration) is the closest a servant is to Allah (Sahih Muslim 482)",
-      "Abandoning prayer entirely is a matter of major sin — some scholars consider it an act of disbelief based on Sahih Muslim 82",
-      "Congregation (jama'ah) prayer is 27 times more rewarding than praying alone (Sahih al-Bukhari 645)",
+      "Sujud (prostration) is the closest a servant is to Allah (Muslim 1:388)",
+      "Abandoning prayer entirely is a matter of major sin — some scholars consider it an act of disbelief based on Muslim 1:12",
+      "Congregation (jama'ah) prayer is 27 times more rewarding than praying alone (Bukhari 8:1)",
       "Friday (Jumu'ah) prayer is obligatory for men and replaces Dhuhr on Friday",
     ],
     misconceptions: [
       {
         title: "Prayer is just a ritual with no real benefit",
         clarification:
-          "Allah Himself states that prayer prevents immorality and wrongdoing (Quran 29:45). It is a direct conversation with Allah — when you recite al-Fatihah, Allah responds to each verse (Sahih Muslim 395). It is both spiritual nourishment and practical protection.",
+          "Allah Himself states that prayer prevents immorality and wrongdoing (Quran 29:45). It is a direct conversation with Allah — when you recite al-Fatihah, Allah responds to each verse (Muslim 4:300). It is both spiritual nourishment and practical protection.",
       },
       {
         title: "You can make up for missed prayers whenever you want",
         clarification:
-          "The scholars agree that deliberately delaying prayer beyond its time without a valid excuse is a major sin. Allah specified times for prayer (Quran 4:103). However, if one misses a prayer due to sleep or forgetfulness, it must be made up immediately upon remembering (Sahih al-Bukhari 597).",
+          "The scholars agree that deliberately delaying prayer beyond its time without a valid excuse is a major sin. Allah specified times for prayer (Quran 4:103). However, if one misses a prayer due to sleep or forgetfulness, it must be made up immediately upon remembering (Bukhari 9:72).",
       },
     ],
     sources: [
       "Sifat Salat an-Nabi, al-Albani — Detailed description of the Prophet's prayer",
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Rulings on prayer",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — On the obligation of salah",
-      "Sahih al-Bukhari 527, 597, 645; Sahih Muslim 85, 162, 233, 482 — Hadith on prayer",
+      "Bukhari 10:6, 10:42; Muslim 1:5, 0:1:388 — Hadith on prayer",
       "Tafsir Ibn Kathir — Commentary on Quran 4:103, 29:45, 2:238",
     ],
   },
@@ -239,11 +240,11 @@ const pillars: Pillar[] = [
     ],
     hadith: [
       {
-        ref: "Sahih al-Bukhari 1395",
+        ref: "Bukhari 65:1",
         text: "The Prophet (peace be upon him) sent Mu'adh to Yemen and said: 'Inform them that Allah has made obligatory upon them sadaqah (zakat) from their wealth, to be taken from the rich among them and given to the poor among them.'",
       },
       {
-        ref: "Sahih Muslim 987",
+        ref: "Muslim 12:28",
         text: "There is no owner of gold or silver who does not pay what is due on it except that on the Day of Resurrection, plates of fire will be heated for him in the Hellfire, and his side, forehead, and back will be branded with them.",
       },
     ],
@@ -253,15 +254,15 @@ const pillars: Pillar[] = [
       "The standard rate is 2.5% on cash, gold, silver, and trade goods",
       "Eight eligible categories of recipients are specified in Quran 9:60",
       "Zakat cannot be given to one's own parents, children, or spouse — the majority of scholars hold this by consensus, as their maintenance is already an obligation",
-      "Abu Bakr (may Allah be pleased with him) fought those who refused to pay zakat after the Prophet's death, declaring it inseparable from salah (Sahih al-Bukhari 1400)",
-      "Zakat al-Fitr is a separate obligation at the end of Ramadan — one sa' (approximately 3 kg) of food per person (Sahih al-Bukhari 1503)",
+      "Abu Bakr (may Allah be pleased with him) fought those who refused to pay zakat after the Prophet's death, declaring it inseparable from salah (Bukhari 24:5)",
+      "Zakat al-Fitr is a separate obligation at the end of Ramadan — one sa' (approximately 3 kg) of food per person (Bukhari 24:103)",
       "Zakat is mentioned alongside salah numerous times in the Quran, showing their inseparable connection",
     ],
     misconceptions: [
       {
         title: "Zakat is the same as voluntary charity (sadaqah)",
         clarification:
-          "Zakat is an obligation with specific rules on amounts, thresholds, and recipients. Sadaqah is voluntary and can be given in any amount to anyone. Withholding zakat is a major sin with severe punishment described in the Quran (3:180) and Sunnah (Sahih Muslim 987).",
+          "Zakat is an obligation with specific rules on amounts, thresholds, and recipients. Sadaqah is voluntary and can be given in any amount to anyone. Withholding zakat is a major sin with severe punishment described in the Quran (3:180) and Sunnah (Muslim 12:40).",
       },
       {
         title: "Zakat is just a tax",
@@ -273,7 +274,7 @@ const pillars: Pillar[] = [
       "Fiqh az-Zakat, Yusuf al-Qaradawi — Comprehensive jurisprudence of zakat",
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on zakat",
       "Al-Mughni, Ibn Qudamah — Section on zakat rulings",
-      "Sahih al-Bukhari 1395, 1400, 1503; Sahih Muslim 987 — Hadith on zakat",
+      "Bukhari 65:1, 24:103; Muslim 4:149 — Hadith on zakat",
       "Tafsir Ibn Kathir — Commentary on Quran 9:60, 9:103",
     ],
   },
@@ -285,7 +286,7 @@ const pillars: Pillar[] = [
     description:
       "Fasting during the month of Ramadan — abstaining from food, drink, and marital relations from dawn (Fajr) until sunset (Maghrib). Fasting cultivates taqwa, self-discipline, empathy for the less fortunate, and gratitude to Allah.",
     detailedExplanation:
-      "Fasting in Ramadan was prescribed in the second year after the Hijrah. It involves abstaining from all food, drink, and marital intimacy from the true dawn (Fajr) until sunset (Maghrib). Beyond the physical fast, the believer must also guard the tongue from lying, backbiting, and foul speech, and guard the eyes and ears from the impermissible. The Prophet (peace be upon him) said: 'Whoever does not give up false speech and acting upon it, Allah has no need of his giving up food and drink' (Sahih al-Bukhari 1903). The fast is broken each evening with iftar, and a pre-dawn meal (suhoor) is recommended. Exemptions exist for the traveler, the sick, pregnant and nursing women, the elderly who cannot fast, and menstruating women — who make up the missed days later. The month of Ramadan is also the month in which the Quran was first revealed, and it contains Laylatul Qadr (the Night of Decree), which is better than a thousand months (Quran 97:3).",
+      "Fasting in Ramadan was prescribed in the second year after the Hijrah. It involves abstaining from all food, drink, and marital intimacy from the true dawn (Fajr) until sunset (Maghrib). Beyond the physical fast, the believer must also guard the tongue from lying, backbiting, and foul speech, and guard the eyes and ears from the impermissible. The Prophet (peace be upon him) said: 'Whoever does not give up false speech and acting upon it, Allah has no need of his giving up food and drink' (Bukhari 30:13). The fast is broken each evening with iftar, and a pre-dawn meal (suhoor) is recommended. Exemptions exist for the traveler, the sick, pregnant and nursing women, the elderly who cannot fast, and menstruating women — who make up the missed days later. The month of Ramadan is also the month in which the Quran was first revealed, and it contains Laylatul Qadr (the Night of Decree), which is better than a thousand months (Quran 97:3).",
     keyVerses: [
       {
         ref: "Quran 2:183",
@@ -307,15 +308,15 @@ const pillars: Pillar[] = [
     ],
     hadith: [
       {
-        ref: "Sahih al-Bukhari 1904",
+        ref: "Bukhari 30:14",
         text: "Whoever fasts the month of Ramadan out of faith and seeking reward, his previous sins will be forgiven.",
       },
       {
-        ref: "Sahih al-Bukhari 1903",
+        ref: "Bukhari 30:13",
         text: "Whoever does not give up false speech and acting upon it and ignorance, Allah has no need of his giving up his food and drink.",
       },
       {
-        ref: "Sahih al-Bukhari 1894",
+        ref: "Bukhari 30:4",
         text: "Allah said: 'Every deed of the son of Adam is for him except fasting — it is for Me, and I shall reward it.' Fasting is a shield. When one of you is fasting, let him not speak obscenely or act ignorantly. If someone fights him or insults him, let him say: 'I am fasting, I am fasting.'",
       },
     ],
@@ -323,29 +324,29 @@ const pillars: Pillar[] = [
       "Obligatory for every sane, adult Muslim during Ramadan",
       "Abstain from food, drink, and marital relations from true dawn (Fajr) to sunset (Maghrib)",
       "The purpose is to achieve taqwa (God-consciousness) — Quran 2:183",
-      "Suhoor (pre-dawn meal) is a blessed sunnah — the Prophet encouraged it (Sahih al-Bukhari 1923)",
+      "Suhoor (pre-dawn meal) is a blessed sunnah — the Prophet encouraged it (Bukhari 30:32)",
       "Exemptions: the traveler, the sick, pregnant/nursing women, the elderly, and menstruating women",
       "Those exempt due to temporary reasons must make up the days; those permanently unable give fidyah (feeding a poor person per day)",
-      "Laylatul Qadr falls in the last ten nights of Ramadan — the Prophet would increase his worship during these nights (Sahih al-Bukhari 2024)",
+      "Laylatul Qadr falls in the last ten nights of Ramadan — the Prophet would increase his worship during these nights (Bukhari 25:11)",
       "Voluntary fasting outside Ramadan is highly encouraged — Mondays and Thursdays, the white days (13th-15th), and the day of Arafah",
     ],
     misconceptions: [
       {
         title: "Fasting is just about not eating",
         clarification:
-          "The Prophet (peace be upon him) made clear that fasting includes guarding the tongue, eyes, and behavior. A person who fasts but lies, backbites, or acts immorally has not truly fasted in the spiritual sense (Sahih al-Bukhari 1903).",
+          "The Prophet (peace be upon him) made clear that fasting includes guarding the tongue, eyes, and behavior. A person who fasts but lies, backbites, or acts immorally has not truly fasted in the spiritual sense (Bukhari 30:13).",
       },
       {
         title: "Swallowing saliva or accidentally eating breaks the fast",
         clarification:
-          "Swallowing one's own saliva does not break the fast. If a person eats or drinks out of forgetfulness, their fast is still valid — the Prophet (peace be upon him) said: 'If he forgets and eats or drinks, let him complete his fast, for it was Allah who fed him and gave him drink' (Sahih al-Bukhari 1933).",
+          "Swallowing one's own saliva does not break the fast. If a person eats or drinks out of forgetfulness, their fast is still valid — the Prophet (peace be upon him) said: 'If he forgets and eats or drinks, let him complete his fast, for it was Allah who fed him and gave him drink' (Bukhari 30:40).",
       },
     ],
     sources: [
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on fasting",
       "Al-Mughni, Ibn Qudamah — Section on the rulings of sawm",
       "Majalis Shahr Ramadan, Ibn Uthaymeen — Lessons on fasting and Ramadan",
-      "Sahih al-Bukhari 1894, 1903, 1904, 1923, 1933, 2024 — Hadith on fasting",
+      "Bukhari 30:4, 32:11 — Hadith on fasting",
       "Tafsir Ibn Kathir — Commentary on Quran 2:183-185, Surah al-Qadr (97)",
     ],
   },
@@ -357,7 +358,7 @@ const pillars: Pillar[] = [
     description:
       "The annual pilgrimage to Makkah — obligatory once in a lifetime for every Muslim who is physically and financially able. Hajj commemorates the legacy of Ibrahim, Hajar, and Ismail, and symbolizes the unity and equality of all believers before Allah.",
     detailedExplanation:
-      "Hajj takes place during the 8th-12th of Dhul Hijjah, the last month of the Islamic calendar. The rites begin with entering the state of ihram — a state of consecration marked by wearing simple white garments (for men) and making the intention. The pilgrim performs Tawaf (circling the Ka'bah seven times), Sa'i (walking between Safa and Marwah seven times, commemorating Hajar's search for water), standing at Arafah on the 9th of Dhul Hijjah (the greatest pillar of Hajj), staying overnight at Muzdalifah, stoning the Jamarat (pillars representing where Ibrahim resisted Shaytan), sacrificing an animal (commemorating Ibrahim's willingness to sacrifice Ismail), and shaving or trimming the hair. The Prophet (peace be upon him) performed Hajj only once — the Farewell Pilgrimage in the 10th year after Hijrah — during which he delivered his famous Farewell Sermon and said: 'Take from me your rites of Hajj' (Sahih Muslim 1297).",
+      "Hajj takes place during the 8th-12th of Dhul Hijjah, the last month of the Islamic calendar. The rites begin with entering the state of ihram — a state of consecration marked by wearing simple white garments (for men) and making the intention. The pilgrim performs Tawaf (circling the Ka'bah seven times), Sa'i (walking between Safa and Marwah seven times, commemorating Hajar's search for water), standing at Arafah on the 9th of Dhul Hijjah (the greatest pillar of Hajj), staying overnight at Muzdalifah, stoning the Jamarat (pillars representing where Ibrahim resisted Shaytan), sacrificing an animal (commemorating Ibrahim's willingness to sacrifice Ismail), and shaving or trimming the hair. The Prophet (peace be upon him) performed Hajj only once — the Farewell Pilgrimage in the 10th year after Hijrah — during which he delivered his famous Farewell Sermon and said: 'Take from me your rites of Hajj' (Muslim 15:135).",
     keyVerses: [
       {
         ref: "Quran 3:97",
@@ -380,27 +381,27 @@ const pillars: Pillar[] = [
     ],
     hadith: [
       {
-        ref: "Sahih al-Bukhari 1521, Sahih Muslim 1350",
+        ref: "Bukhari 25:9, Muslim 15:495",
         text: "Whoever performs Hajj and does not engage in obscenity or wickedness will return [free of sin] as the day his mother bore him.",
       },
       {
-        ref: "Sahih al-Bukhari 1773",
+        ref: "Bukhari 26:1",
         text: "An accepted Hajj (Hajj Mabrur) has no reward except Paradise.",
       },
       {
-        ref: "Sahih Muslim 1297",
+        ref: "Muslim 15:135",
         text: "Take from me your rites of Hajj, for I do not know — perhaps I will not perform Hajj after this year of mine.",
       },
     ],
     points: [
       "Obligatory once in a lifetime for those who are physically and financially able (istitaa'ah)",
       "Takes place on 8th-12th Dhul Hijjah — the last month of the Islamic calendar",
-      "Standing at Arafah on the 9th of Dhul Hijjah is the greatest pillar — 'Hajj is Arafah' (Sunan at-Tirmidhi 889)",
+      "Standing at Arafah on the 9th of Dhul Hijjah is the greatest pillar — 'Hajj is Arafah' (Tirmidhi 9:82)",
       "The rites include: ihram, tawaf, sa'i, standing at Arafah, Muzdalifah, stoning the Jamarat, sacrifice, and shaving",
       "All pilgrims wear simple garments (ihram), removing all signs of social status and wealth",
       "The Ka'bah was originally built by Ibrahim and Ismail (Quran 2:127)",
       "The sacrifice commemorates Ibrahim's willingness to sacrifice his son in obedience to Allah",
-      "The Day of Arafah (for non-pilgrims) — fasting it expiates the sins of the previous and coming year (Sahih Muslim 1162)",
+      "The Day of Arafah (for non-pilgrims) — fasting it expiates the sins of the previous and coming year (Muslim 15:2)",
     ],
     misconceptions: [
       {
@@ -418,7 +419,7 @@ const pillars: Pillar[] = [
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on Hajj",
       "Al-Mughni, Ibn Qudamah — Section on the rites and rulings of Hajj",
       "Sifat Hajjat an-Nabi, Ibn al-Qayyim (from Zad al-Ma'ad) — Description of the Prophet's Hajj",
-      "Sahih al-Bukhari 1521, 1773; Sahih Muslim 1297, 1350 — Hadith on Hajj",
+      "Bukhari 28:9, 26:1; Muslim 15:135, 1350 — Hadith on Hajj",
       "Tafsir Ibn Kathir — Commentary on Quran 2:127, 2:197, 3:97, 22:27",
     ],
   },
@@ -486,7 +487,7 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
             <p className="text-themed text-sm italic">
               &ldquo;{verse.text}&rdquo;
             </p>
-            <p className="text-xs text-themed-muted mt-2">{verse.ref}</p>
+            <p className="text-xs text-themed-muted mt-2"><HadithRefText text={verse.ref} /></p>
           </div>
         ))}
       </div>
@@ -504,7 +505,7 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
               <p className="text-themed text-sm italic">
                 &ldquo;{h.text}&rdquo;
               </p>
-              <p className="text-xs text-themed-muted mt-2">{h.ref}</p>
+              <p className="text-xs text-themed-muted mt-2"><HadithRefText text={h.ref} /></p>
             </div>
           ))}
         </div>
@@ -612,7 +613,7 @@ function PillarsContent() {
                   &ldquo;Islam is built upon five: the testimony that there is no god but Allah and that Muhammad is the Messenger of Allah, establishing the prayer, giving the zakat, fasting Ramadan, and performing pilgrimage to the House.&rdquo;
                 </p>
                 <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Sahih al-Bukhari 8, Sahih Muslim 16
+                  Bukhari 2:1, Muslim 1:21
                 </span>
               </div>
             </ContentCard>
@@ -622,7 +623,7 @@ function PillarsContent() {
               <h2 className="text-xl font-semibold text-themed mb-4">What are the Pillars of Islam?</h2>
               <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
                 <p>
-                  The <span className="text-themed font-medium">Pillars of Islam</span> (أركان الإسلام) are the five obligatory acts of worship that form the foundation of a Muslim&apos;s practice. They were defined by the Prophet Muhammad (peace be upon him) in the famous hadith narrated by Ibn Umar, and also referenced in the Hadith of Jibril (Sahih Muslim 8) when the angel asked about Islam.
+                  The <span className="text-themed font-medium">Pillars of Islam</span> (أركان الإسلام) are the five obligatory acts of worship that form the foundation of a Muslim&apos;s practice. They were defined by the Prophet Muhammad (peace be upon him) in the famous hadith narrated by Ibn Umar, and also referenced in the Hadith of Jibril (Muslim 1:1) when the angel asked about Islam.
                 </p>
                 <p>
                   While the <span className="text-themed font-medium">Articles of Faith</span> (Arkan al-Iman) are the six inner beliefs of the heart, the <span className="text-themed font-medium">Pillars of Islam</span> are the outward actions that demonstrate and strengthen those beliefs. The two are inseparable — faith without action is incomplete, and action without faith is hollow.
@@ -647,10 +648,10 @@ function PillarsContent() {
                   <p className="text-themed text-sm italic text-center">
                     &ldquo;He (Jibril) said: Then tell me about Islam.&rdquo;
                   </p>
-                  <p className="text-xs text-themed-muted mt-2 text-center">Sahih Muslim 8</p>
+                  <p className="text-xs text-themed-muted mt-2 text-center">Muslim 1:1</p>
                 </div>
                 <p>
-                  The pillars are the minimum requirements for a person&apos;s Islam to be valid. Beyond them, there are countless voluntary acts (nawafil) that bring the servant closer to Allah. But the obligatory acts always take priority — the Prophet (peace be upon him) said that Allah said: &ldquo;My servant does not draw near to Me with anything more beloved to Me than the religious duties I have obligated upon him.&rdquo; (Sahih al-Bukhari 6502)
+                  The pillars are the minimum requirements for a person&apos;s Islam to be valid. Beyond them, there are countless voluntary acts (nawafil) that bring the servant closer to Allah. But the obligatory acts always take priority — the Prophet (peace be upon him) said that Allah said: &ldquo;My servant does not draw near to Me with anything more beloved to Me than the religious duties I have obligated upon him.&rdquo; (Bukhari 2:37)
                 </p>
               </div>
             </ContentCard>
@@ -690,14 +691,14 @@ function PillarsContent() {
               </h4>
               <ul className="space-y-1.5">
                 {[
-                  "Sahih al-Bukhari 8, Sahih Muslim 16 — Hadith of Ibn Umar on the five pillars",
-                  "Sahih Muslim 8 — The Hadith of Jibril, defining Islam, Iman, and Ihsan",
+                  "Bukhari 2:1, Muslim 1:21 — Hadith of Ibn Umar on the five pillars",
+                  "Muslim 1:1 — The Hadith of Jibril, defining Islam, Iman, and Ihsan",
                   "Sharh Usul al-Iman, Ibn Uthaymeen — On the pillars of Islam",
                   "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — On the foundations of the religion",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -736,7 +737,7 @@ function PillarsContent() {
                   <div>
                     <h3 className="font-semibold text-themed mb-1">{item.point}</h3>
                     <p className="text-themed-muted text-sm leading-relaxed">{item.detail}</p>
-                    <p className="text-xs text-gold/60 mt-2">{item.reference}</p>
+                    <p className="text-xs text-gold/60 mt-2"><HadithRefText text={item.reference} /></p>
                   </div>
                 </div>
               </ContentCard>
@@ -763,14 +764,14 @@ function PillarsContent() {
               </h4>
               <ul className="space-y-1.5">
                 {[
-                  "Sahih al-Bukhari 8, Sahih Muslim 16 — The five pillars hadith",
-                  "Sahih Muslim 233 — On the five prayers as expiation for sins",
+                  "Bukhari 2:1, Muslim 1:21 — The five pillars hadith",
+                  "Muslim 1:139 — On the five prayers as expiation for sins",
                   "Sharh Usul al-Iman, Ibn Uthaymeen — On the importance of the pillars",
                   "Tafsir Ibn Kathir — Commentary on Quran 2:177, 3:103, 98:5",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -830,7 +831,7 @@ function PillarsContent() {
                               {pillar.sources.map((source) => (
                                 <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                                   <span className="text-gold/40 mt-0.5">&#8226;</span>
-                                  {source}
+                                  <HadithRefText text={source} />
                                 </li>
                               ))}
                             </ul>

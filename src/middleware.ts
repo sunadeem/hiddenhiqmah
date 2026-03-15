@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const SITE_PASSWORD = process.env.SITE_PASSWORD || "hiqmah2026";
+const IS_PASSWORD_ACTIVE = process.env.IS_PASSWORD_ACTIVE === "true";
 
 export function middleware(request: NextRequest) {
+  // If password protection is disabled, allow all requests through
+  if (!IS_PASSWORD_ACTIVE) {
+    return NextResponse.next();
+  }
+
   const isAuthenticated = request.cookies.get("site-auth")?.value === "true";
 
   // Allow the password API route through

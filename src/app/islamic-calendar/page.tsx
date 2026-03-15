@@ -9,6 +9,7 @@ import PageSearch from "@/components/PageSearch";
 import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
 import { BookOpen, Calendar } from "lucide-react";
+import HadithRefText from "@/components/HadithRefText";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -36,19 +37,19 @@ const months: Month[] = [
         title: "The best fasting after Ramadan",
         detail:
           "The Prophet (peace be upon him) said: 'The best fasting after the month of Ramadan is fasting in the month of Allah — al-Muharram.'",
-        note: "Sahih Muslim 1163",
+        note: "Muslim 13:261",
       },
       {
         title: "The Day of Ashura (10th Muharram)",
         detail:
           "Fasting on the 10th of Muharram expiates the sins of the previous year. The Prophet (peace be upon him) fasted it and said: 'I hope that Allah will expiate the sins of the year before it.' He also intended to fast the 9th alongside it to differ from the People of the Book.",
-        note: "Sahih Muslim 1162; Sahih Muslim 1134",
+        note: "Muslim 13:259; Muslim 13:137",
       },
       {
         title: "Ashura and Musa (peace be upon him)",
         detail:
           "When the Prophet (peace be upon him) came to Madinah, he found the Jews fasting on Ashura. They said: 'This is the day on which Allah saved Musa and his people, and drowned Pharaoh and his people.' The Prophet said: 'We have more right to Musa than you,' and he fasted it.",
-        note: "Sahih al-Bukhari 2004; Sahih Muslim 1130",
+        note: "Bukhari 30:109; Muslim 13:137",
       },
     ],
   },
@@ -65,13 +66,13 @@ const months: Month[] = [
         title: "No bad omen in Safar",
         detail:
           "The Prophet (peace be upon him) said: 'There is no contagion, no evil omen, no haamah (a pre-Islamic superstition about owls), and no Safar (superstition about the month).' Islam rejects the pre-Islamic belief that Safar brings misfortune.",
-        note: "Sahih al-Bukhari 5707; Sahih Muslim 2220",
+        note: "Bukhari 76:27; Muslim 16:70",
       },
       {
         title: "The Hijrah journey",
         detail:
           "The Prophet (peace be upon him) and Abu Bakr departed from Makkah on the Hijrah during the month of Safar (or late Muharram), arriving in Madinah in Rabi al-Awwal. This journey marks the beginning of the Islamic calendar.",
-        note: "Sahih al-Bukhari 3906",
+        note: "Bukhari 63:131",
       },
     ],
   },
@@ -88,19 +89,19 @@ const months: Month[] = [
         title: "Birth of the Prophet (peace be upon him)",
         detail:
           "The majority of scholars agree that the Prophet (peace be upon him) was born on a Monday in Rabi al-Awwal. When asked about fasting on Monday, he said: 'That is the day on which I was born, the day on which I was sent, and the day on which revelation came to me.'",
-        note: "Sahih Muslim 1162",
+        note: "Muslim 13:259",
       },
       {
         title: "The Prophet's arrival in Madinah",
         detail:
           "The Prophet (peace be upon him) arrived in Madinah during Rabi al-Awwal, completing the Hijrah. Upon arrival, he built Masjid Quba — the first mosque in Islam — and then proceeded to establish Masjid an-Nabawi.",
-        note: "Sahih al-Bukhari 3906",
+        note: "Bukhari 63:131",
       },
       {
         title: "The Prophet's death",
         detail:
           "The Prophet (peace be upon him) also passed away on Monday, 12th Rabi al-Awwal, 11 AH. Anas ibn Malik said: 'The day the Prophet entered Madinah, everything was bright, and the day he died, everything became dark.'",
-        note: "Sunan at-Tirmidhi 3618; graded Sahih",
+        note: "Tirmidhi 49:14; graded Sahih",
       },
     ],
   },
@@ -117,7 +118,7 @@ const months: Month[] = [
         title: "A time for continued worship",
         detail:
           "While no specific acts of worship are designated for this month, the general encouragement of voluntary fasting, prayer, and dhikr applies throughout the year. The Prophet (peace be upon him) said: 'The most beloved deeds to Allah are the most consistent, even if small.'",
-        note: "Sahih al-Bukhari 6464",
+        note: "Bukhari 30:46",
       },
     ],
   },
@@ -134,7 +135,7 @@ const months: Month[] = [
         title: "Birth of Fatimah (may Allah be pleased with her)",
         detail:
           "Some historians place the birth of Fatimah, the daughter of the Prophet (peace be upon him), in this month, approximately five years before prophethood. She is the mother of al-Hasan and al-Husayn, and the Prophet said: 'Fatimah is the leader of the women of Paradise.'",
-        note: "Sahih al-Bukhari 3624",
+        note: "Bukhari 61:129",
       },
     ],
   },
@@ -151,7 +152,7 @@ const months: Month[] = [
         title: "Death of Abu Talib",
         detail:
           "Abu Talib, the uncle of the Prophet (peace be upon him) who protected him for decades, is reported by some historians to have died in this month (though others say Shawwal) in the 10th year of prophethood — the 'Year of Sorrow' (Am al-Huzn).",
-        note: "Sahih al-Bukhari 1360; Sahih Muslim 24",
+        note: "Bukhari 23:113; Muslim 1:39",
       },
     ],
   },
@@ -168,19 +169,19 @@ const months: Month[] = [
         title: "One of the four sacred months",
         detail:
           "Rajab is singled out as a sacred month. It is called 'Rajab al-Fard' (the solitary Rajab) because it stands alone, separated from the other three sacred months (Dhul Qi'dah, Dhul Hijjah, and Muharram) which are consecutive.",
-        note: "Sahih al-Bukhari 4662; Sahih Muslim 1679",
+        note: "Bukhari 65:184; Muslim 13:261",
       },
       {
         title: "Al-Isra wal-Mi'raj",
         detail:
           "The Night Journey and Ascension — when the Prophet (peace be upon him) was taken from Masjid al-Haram to Masjid al-Aqsa, and then ascended through the heavens — is traditionally placed on the 27th of Rajab, though the exact date is not confirmed in the Sunnah. During this journey, the five daily prayers were prescribed.",
-        note: "Sahih al-Bukhari 3887; Sahih Muslim 162",
+        note: "Bukhari 63:112; Muslim 1:321",
       },
       {
         title: "No specific fasting authenticated",
         detail:
           "There is no authentic hadith that singles out Rajab for special fasting. Ibn Hajar said: 'There is no authentic hadith that is fit to be used as evidence that speaks of the virtue of fasting in Rajab specifically.' The general virtues of fasting in the sacred months apply.",
-        note: "Tabyin al-Ajab, Ibn Hajar; Sunan Abu Dawud 2428",
+        note: "Tabyin al-Ajab, Ibn Hajar; Abu Dawud 14:116",
       },
     ],
   },
@@ -197,19 +198,19 @@ const months: Month[] = [
         title: "The Prophet fasted most of Sha'ban",
         detail:
           "A'ishah (may Allah be pleased with her) said: 'I never saw the Prophet fast a complete month except Ramadan, and I never saw him fast more in any month than he did in Sha'ban.' He fasted most of Sha'ban.",
-        note: "Sahih al-Bukhari 1969; Sahih Muslim 1156",
+        note: "Bukhari 30:76; Muslim 13:229",
       },
       {
         title: "Deeds are raised to Allah",
         detail:
           "The Prophet (peace be upon him) said: 'That is a month to which people do not pay attention, between Rajab and Ramadan. It is a month in which deeds are raised to the Lord of the worlds, and I like for my deeds to be raised while I am fasting.'",
-        note: "Sunan an-Nasa'i 2357; graded Hasan",
+        note: "Nasai 22:268; graded Hasan",
       },
       {
         title: "Do not fast in the second half to prepare for Ramadan",
         detail:
           "The Prophet (peace be upon him) said: 'When the first half of Sha'ban is over, do not fast.' This is to preserve strength for Ramadan. However, one who has a regular fasting habit (like Monday/Thursday) may continue it.",
-        note: "Sunan Abu Dawud 2337; Sunan at-Tirmidhi 738",
+        note: "Abu Dawud 14:25; Tirmidhi 8:57",
       },
     ],
   },
@@ -232,19 +233,19 @@ const months: Month[] = [
         title: "The month the Quran was revealed",
         detail:
           "Allah says: 'The month of Ramadan in which the Quran was revealed — a guidance for the people and clear proofs of guidance and criterion.' The Prophet (peace be upon him) and Jibreel would review the Quran together every Ramadan.",
-        note: "Quran 2:185; Sahih al-Bukhari 4998",
+        note: "Quran 2:185; Bukhari 91:10",
       },
       {
         title: "Laylatul Qadr — better than a thousand months",
         detail:
           "The Night of Decree falls in the odd nights of the last ten days. Allah says: 'The Night of Decree is better than a thousand months. The angels and the Spirit descend therein by permission of their Lord for every matter. Peace it is until the emergence of dawn.'",
-        note: "Quran 97:1-5; Sahih al-Bukhari 2014",
+        note: "Quran 97:1-5; Bukhari 32:1",
       },
       {
         title: "The gates of Paradise are opened",
         detail:
           "The Prophet (peace be upon him) said: 'When Ramadan begins, the gates of Paradise are opened, the gates of Hellfire are closed, and the devils are chained.'",
-        note: "Sahih al-Bukhari 1899; Sahih Muslim 1079",
+        note: "Bukhari 30:9; Muslim 13:173",
       },
     ],
   },
@@ -261,19 +262,19 @@ const months: Month[] = [
         title: "Eid al-Fitr (1st Shawwal)",
         detail:
           "The first day of Shawwal is Eid al-Fitr, the day of celebration after Ramadan. It is forbidden to fast on this day. The Prophet (peace be upon him) would eat an odd number of dates before going to the Eid prayer.",
-        note: "Sahih al-Bukhari 953",
+        note: "Bukhari 30:5",
       },
       {
         title: "Fasting six days equals fasting the whole year",
         detail:
           "The Prophet (peace be upon him) said: 'Whoever fasts Ramadan and then follows it with six days of Shawwal, it will be as if he fasted the entire year.' (Ramadan = 10 months reward, 6 days = 2 months reward = 12 months total.)",
-        note: "Sahih Muslim 1164",
+        note: "Muslim 6:168",
       },
       {
         title: "The Battle of Uhud",
         detail:
           "The Battle of Uhud took place on the 7th of Shawwal, 3 AH. Seventy companions were martyred, including Hamzah ibn Abdil-Muttalib, the uncle of the Prophet (peace be upon him).",
-        note: "Sahih al-Bukhari 4043",
+        note: "Bukhari 64:90",
       },
     ],
   },
@@ -290,13 +291,13 @@ const months: Month[] = [
         title: "One of the four sacred months",
         detail:
           "Dhul Qi'dah is the first of the three consecutive sacred months (Dhul Qi'dah, Dhul Hijjah, and Muharram). Fighting was prohibited during these months, and the Arabs would observe a truce to allow safe travel for pilgrimage.",
-        note: "Quran 9:36; Sahih al-Bukhari 4662",
+        note: "Quran 9:36; Bukhari 65:184",
       },
       {
         title: "The Prophet's Umrahs",
         detail:
           "The Prophet (peace be upon him) performed all four of his Umrahs in Dhul Qi'dah. Ibn Abbas said: 'He performed Umrah four times, all of them in Dhul Qi'dah except the one he performed with his Hajj.'",
-        note: "Sahih al-Bukhari 1778; Sahih Muslim 1253",
+        note: "Bukhari 27:5; Muslim 15:90",
       },
     ],
   },
@@ -313,31 +314,31 @@ const months: Month[] = [
         title: "The first ten days are the best days of the year",
         detail:
           "The Prophet (peace be upon him) said: 'There are no days on which righteous deeds are more beloved to Allah than these ten days.' The companions asked: 'Not even jihad for the sake of Allah?' He said: 'Not even jihad, except for a man who goes out with his self and his wealth and returns with neither.'",
-        note: "Sahih al-Bukhari 969",
+        note: "Bukhari 30:18",
       },
       {
         title: "The Day of Arafah (9th Dhul Hijjah)",
         detail:
           "The Prophet (peace be upon him) said: 'Fasting the Day of Arafah, I hope from Allah that it will expiate the sins of the year before it and the year after it.' For those not performing Hajj, it is the most recommended day to fast in the entire year.",
-        note: "Sahih Muslim 1162",
+        note: "Muslim 13:259",
       },
       {
         title: "Eid al-Adha (10th Dhul Hijjah)",
         detail:
           "The Day of Sacrifice, the greatest day in the Islamic calendar. The Prophet (peace be upon him) said: 'The greatest day in the sight of Allah is the Day of Sacrifice.' Muslims offer an animal sacrifice (udhiyah) commemorating Ibrahim's willingness to sacrifice his son.",
-        note: "Sunan Abu Dawud 1765; Sahih al-Bukhari 5553",
+        note: "Abu Dawud 11:45; Bukhari 73:9",
       },
       {
         title: "The days of Tashriq (11th-13th)",
         detail:
           "The Prophet (peace be upon him) said: 'The days of Tashriq are days of eating, drinking, and remembering Allah.' Fasting is forbidden on these days. The takbirat (Allahu Akbar) continue to be recited after every prayer.",
-        note: "Sahih Muslim 1141",
+        note: "Muslim 13:147",
       },
       {
         title: "Hajj — the fifth pillar of Islam",
         detail:
           "The rites of Hajj take place on the 8th-12th of Dhul Hijjah. The Prophet (peace be upon him) said: 'An accepted Hajj has no reward except Paradise.' Over two million Muslims gather at Makkah annually to fulfill this pillar.",
-        note: "Sahih al-Bukhari 1773; Sahih Muslim 1349",
+        note: "Bukhari 19:1; Muslim 15:186",
       },
     ],
   },
@@ -345,17 +346,17 @@ const months: Month[] = [
 
 const keyDates = [
   { date: "1 Muharram", event: "Islamic New Year", note: "Beginning of the Hijri calendar year" },
-  { date: "10 Muharram", event: "Day of Ashura", note: "Recommended fast — expiates previous year's sins (Sahih Muslim 1162)" },
+  { date: "10 Muharram", event: "Day of Ashura", note: "Recommended fast — expiates previous year's sins (Muslim 13:259)" },
   { date: "12 Rabi al-Awwal", event: "Birth of the Prophet (peace be upon him)", note: "Widely accepted date; he was born on a Monday" },
   { date: "27 Rajab", event: "Al-Isra wal-Mi'raj", note: "Traditional date of the Night Journey (exact date not confirmed in Sunnah)" },
   { date: "15 Sha'ban", event: "Mid-Sha'ban", note: "Some scholars note its virtue; no specific authenticated acts of worship for this night" },
   { date: "1 Ramadan", event: "Beginning of Ramadan", note: "Start of the obligatory fast" },
-  { date: "Last 10 nights", event: "Laylatul Qadr", note: "Sought in the odd nights of the last ten days of Ramadan (Sahih al-Bukhari 2014)" },
+  { date: "Last 10 nights", event: "Laylatul Qadr", note: "Sought in the odd nights of the last ten days of Ramadan (Bukhari 32:1)" },
   { date: "1 Shawwal", event: "Eid al-Fitr", note: "Celebration after Ramadan — fasting is prohibited" },
-  { date: "1-10 Dhul Hijjah", event: "Best days of the year", note: "Good deeds are most beloved to Allah in these days (Sahih al-Bukhari 969)" },
-  { date: "9 Dhul Hijjah", event: "Day of Arafah", note: "Fasting expiates sins of two years (Sahih Muslim 1162)" },
+  { date: "1-10 Dhul Hijjah", event: "Best days of the year", note: "Good deeds are most beloved to Allah in these days (Bukhari 32:4)" },
+  { date: "9 Dhul Hijjah", event: "Day of Arafah", note: "Fasting expiates sins of two years (Muslim 13:259)" },
   { date: "10 Dhul Hijjah", event: "Eid al-Adha", note: "The Day of Sacrifice — the greatest day of the year" },
-  { date: "11-13 Dhul Hijjah", event: "Days of Tashriq", note: "Days of eating, drinking, and dhikr — fasting prohibited (Sahih Muslim 1141)" },
+  { date: "11-13 Dhul Hijjah", event: "Days of Tashriq", note: "Days of eating, drinking, and dhikr — fasting prohibited (Muslim 13:147)" },
 ];
 
 const sections = [
@@ -571,8 +572,8 @@ function IslamicCalendarContent() {
                 {[
                   "Quran 9:36 — Twelve months ordained by Allah, four sacred",
                   "Quran 2:185, 2:189 — Ramadan and the crescent moons",
-                  "Sahih al-Bukhari 4662; Sahih Muslim 1679 — The four sacred months named by the Prophet",
-                  "Sahih al-Bukhari 3906 — The Hijrah and the establishment of the calendar",
+                  "Bukhari 65:184; Muslim 13:261 — The four sacred months named by the Prophet",
+                  "Bukhari 63:131 — The Hijrah and the establishment of the calendar",
                 ].map((source) => (
                   <li
                     key={source}
@@ -702,7 +703,7 @@ function IslamicCalendarContent() {
                             </p>
                             {point.note && (
                               <p className="text-xs text-gold/60 mt-2">
-                                {point.note}
+                                <HadithRefText text={point.note} />
                               </p>
                             )}
                           </div>
@@ -809,7 +810,7 @@ function IslamicCalendarContent() {
                     title: "Good deeds are more rewarding",
                     detail:
                       "Just as sins are graver, righteous deeds carry greater reward during these months. The Prophet (peace be upon him) encouraged fasting in the sacred months: 'Fast some days of the sacred months, and leave some days.'",
-                    note: "Sunan Abu Dawud 2428",
+                    note: "Abu Dawud 14:116",
                   },
                   {
                     title: "Fighting was prohibited",
@@ -829,7 +830,7 @@ function IslamicCalendarContent() {
                     <p className="text-themed-muted text-sm leading-relaxed">
                       {point.detail}
                     </p>
-                    <p className="text-xs text-gold/60 mt-2">{point.note}</p>
+                    <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
                   </div>
                 ))}
               </div>
@@ -845,8 +846,8 @@ function IslamicCalendarContent() {
                 {[
                   "Quran 2:217 — Fighting in the sacred month is a great sin",
                   "Quran 9:36 — Four sacred months ordained by Allah",
-                  "Sahih al-Bukhari 4662; Sahih Muslim 1679 — The Prophet named the four sacred months",
-                  "Sunan Abu Dawud 2428 — Fasting in the sacred months",
+                  "Bukhari 65:184; Muslim 13:261 — The Prophet named the four sacred months",
+                  "Abu Dawud 14:116 — Fasting in the sacred months",
                   "Tafsir Ibn Kathir — Sins are graver during sacred months",
                 ].map((source) => (
                   <li
@@ -895,7 +896,7 @@ function IslamicCalendarContent() {
                         {item.event}
                       </h3>
                       <p className="text-themed-muted text-xs mt-0.5 leading-relaxed">
-                        {item.note}
+                        <HadithRefText text={item.note} />
                       </p>
                     </div>
                   </div>
@@ -913,9 +914,9 @@ function IslamicCalendarContent() {
                 {[
                   "Quran 2:183, 2:185 — Fasting prescribed in Ramadan",
                   "Quran 97:1-5 — Laylatul Qadr better than a thousand months",
-                  "Sahih al-Bukhari 953, 969, 1899, 2004, 2014 — Eid, best ten days, Ashura, Laylatul Qadr",
-                  "Sahih Muslim 1079, 1130, 1141, 1162, 1164 — Ramadan, Ashura, Arafah, six days of Shawwal, Tashriq",
-                  "Sunan Abu Dawud 1765 — The Day of Sacrifice is the greatest day",
+                  "Bukhari 30:5, 32:1 — Eid, best ten days, Ashura, Laylatul Qadr",
+                  "Muslim 13:173, 5:4 — Ramadan, Ashura, Arafah, six days of Shawwal, Tashriq",
+                  "Abu Dawud 11:45 — The Day of Sacrifice is the greatest day",
                 ].map((source) => (
                   <li
                     key={source}

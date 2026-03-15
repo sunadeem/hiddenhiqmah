@@ -9,6 +9,7 @@ import ContentCard from "@/components/ContentCard";
 import { textMatch } from "@/lib/search";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { BookOpen } from "lucide-react";
+import HadithRefText from "@/components/HadithRefText";
 
 /* ───────────────────────── types ───────────────────────── */
 
@@ -30,7 +31,7 @@ const whyItMatters = [
     point: "The Prophet ﷺ foretold the splitting of the Ummah",
     detail:
       "The Prophet (peace be upon him) said: 'My Ummah will split into seventy-three sects, all of which will be in the Fire except one.' They asked: 'Which one is it, O Messenger of Allah?' He said: 'The one that follows what I and my Companions are upon today.'",
-    reference: "Sunan at-Tirmidhi 2641 (graded Hasan)",
+    reference: "Tirmidhi 40:36 (graded Hasan)",
   },
   {
     point: "Unity upon truth, not blind unity",
@@ -42,7 +43,7 @@ const whyItMatters = [
     point: "The saved group is identified by its methodology",
     detail:
       "The saved sect is not identified by a label or organization, but by its adherence to the Quran, the authentic Sunnah, and the way of the Companions. Scholars call this approach 'Ahl al-Sunnah wal-Jama\'ah' — the people of the Prophetic tradition and the united body.",
-    reference: "Sunan Abu Dawud 4597",
+    reference: "Abu Dawud 42:2",
   },
   {
     point: "Knowledge protects from deviation",
@@ -75,7 +76,7 @@ const sunniTopics: SectTopic[] = [
           title: "The Quran is the uncreated speech of Allah",
           detail:
             "Ahl al-Sunnah affirm that the Quran is the actual speech of Allah, not created. This was the position defended by Imam Ahmad ibn Hanbal during the famous Mihnah (inquisition) trial, when he was imprisoned and tortured for refusing to say the Quran was created.",
-          note: "Sahih al-Bukhari 7457; Usul al-Sunnah, Imam Ahmad",
+          note: "Bukhari 97:83; Usul al-Sunnah, Imam Ahmad",
         },
         {
           title: "Allah's attributes are affirmed literally",
@@ -87,7 +88,7 @@ const sunniTopics: SectTopic[] = [
           title: "Faith is belief, speech, and action",
           detail:
             "Iman consists of belief in the heart, affirmation on the tongue, and actions of the limbs. It increases with obedience and decreases with sin. This distinguishes Ahl al-Sunnah from the Murji'ah (who exclude actions from faith) and the Khawarij (who make major sin equivalent to disbelief).",
-          note: "Sahih al-Bukhari 9; Sharh Usul al-Sunnah, Imam Ahmad",
+          note: "Bukhari 2:2; Sharh Usul al-Sunnah, Imam Ahmad",
         },
       ],
       source: "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah; Usul al-Sunnah, Imam Ahmad; Lum'at al-I'tiqad, Ibn Qudamah",
@@ -128,7 +129,7 @@ const sunniTopics: SectTopic[] = [
           title: "Differences are a mercy, not a division",
           detail:
             "The four schools agree on the vast majority of issues. Their differences lie in secondary matters — how to place hands in prayer, the wording of qunut, specific inheritance scenarios, etc. None of these differences involve the fundamentals of the religion. The Prophet ﷺ said: 'If a judge makes a ruling, striving to reach the correct verdict, and he is right, he has two rewards. If he is wrong, he has one reward.'",
-          note: "Sahih al-Bukhari 7352; Sahih Muslim 1716",
+          note: "Bukhari 96:79; Muslim 47:11",
         },
       ],
       source: "Al-Madhahib al-Arba'ah, Abdur-Rahman al-Jaziri; Siyar A'lam an-Nubala, adh-Dhahabi",
@@ -185,13 +186,13 @@ const sunniTopics: SectTopic[] = [
           title: "All Companions are trustworthy ('udul)",
           detail:
             "The Quran and Sunnah testify to the righteousness of the Companions as a whole. The Prophet ﷺ said: 'The best of people is my generation, then those who follow them, then those who follow them.' Their testimony is accepted, and we do not impugn any of them.",
-          note: "Sahih al-Bukhari 2652; Sahih Muslim 2533",
+          note: "Bukhari 52:16; Muslim 44:55",
         },
         {
           title: "The Rightly Guided Caliphs",
           detail:
             "The best of the Companions are Abu Bakr, then Umar, then Uthman, then Ali (may Allah be pleased with them all) — in this order of merit. This is the position of the majority of Ahl al-Sunnah. All four were righteous leaders who served Islam with sincerity.",
-          note: "Sahih al-Bukhari 3655-3671; Al-Aqidah at-Tahawiyyah",
+          note: "Bukhari 62:7-21; Al-Aqidah at-Tahawiyyah",
         },
         {
           title: "Silence about their disputes",
@@ -203,10 +204,10 @@ const sunniTopics: SectTopic[] = [
           title: "The Ahl al-Bayt are honored",
           detail:
             "Ahl al-Sunnah love and honor the Prophet's family (Ahl al-Bayt), including Ali, Fatimah, Hasan, and Husayn. Loving them is part of loving the Prophet ﷺ. However, this love does not lead to elevating them above their station or using them as a basis for sectarianism.",
-          note: "Quran 42:23; Sahih Muslim 2408",
+          note: "Quran 42:23; Muslim 44:55",
         },
       ],
-      source: "Al-Aqidah at-Tahawiyyah; Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah; Sahih al-Bukhari 2652, 3655-3671",
+      source: "Al-Aqidah at-Tahawiyyah; Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah; Bukhari 52:16, 62:7-3671",
     },
   },
 ];
@@ -223,7 +224,7 @@ const shiaTopics: SectTopic[] = [
           title: "The succession dispute",
           detail:
             "When the Prophet ﷺ passed away, the Ansar and Muhajirun gathered at Saqifah Bani Sa'idah. After discussion, Abu Bakr was chosen as caliph, and Ali himself pledged allegiance to him. The historical record shows the early community resolved this through consultation, though later Shia scholarship reinterpreted events to argue that Ali was divinely appointed.",
-          note: "Sahih al-Bukhari 6830; Tarikh at-Tabari",
+          note: "Bukhari 86:56; Tarikh at-Tabari",
         },
         {
           title: "From political to theological",
@@ -235,7 +236,7 @@ const shiaTopics: SectTopic[] = [
           title: "The tragedy of Karbala (61 AH)",
           detail:
             "The killing of Husayn ibn Ali at Karbala by the forces of Yazid ibn Mu'awiyah was a tragedy that all Muslims grieve. Ahl al-Sunnah condemn this act and honor Husayn as a grandson of the Prophet ﷺ and a righteous martyr. However, this event is used by Shia Islam as a foundational narrative that shapes much of their practice and theology.",
-          note: "Sahih al-Bukhari 3753; Tarikh at-Tabari",
+          note: "Bukhari 62:98; Tarikh at-Tabari",
         },
         {
           title: "Major sub-sects developed over time",
@@ -244,7 +245,7 @@ const shiaTopics: SectTopic[] = [
           note: "Al-Milal wan-Nihal, ash-Shahrastani",
         },
       ],
-      source: "Sahih al-Bukhari 6830; Tarikh at-Tabari; Al-Milal wan-Nihal, ash-Shahrastani",
+      source: "Bukhari 86:56; Tarikh at-Tabari; Al-Milal wan-Nihal, ash-Shahrastani",
     },
   },
   {
@@ -270,13 +271,13 @@ const shiaTopics: SectTopic[] = [
           title: "The concept of the Hidden Imam",
           detail:
             "Twelver Shia believe their twelfth Imam, Muhammad al-Mahdi, went into occultation (ghaybah) in 874 CE and is still alive, guiding the community from hiding. He will return as the Mahdi. Ahl al-Sunnah believe in the Mahdi as a future leader but do not believe he has been born yet or is currently in hiding.",
-          note: "Al-Ghaybah, at-Tusi; contrast with Sunan Abu Dawud 4284",
+          note: "Al-Ghaybah, at-Tusi; contrast with Abu Dawud 38:6",
         },
         {
           title: "Position on the Companions",
           detail:
             "Many Shia scholars and texts criticize, curse, or declare disbelief in prominent Companions, especially Abu Bakr, Umar, Uthman, A'ishah, and others — claiming they usurped Ali's right and altered the religion. This directly contradicts Quran 9:100 where Allah declares His pleasure with the foremost among the Muhajirun and Ansar.",
-          note: "Quran 9:100; Quran 48:18; Sahih Muslim 2541",
+          note: "Quran 9:100; Quran 48:18; Muslim 44:55",
         },
         {
           title: "Different hadith corpus",
@@ -299,7 +300,7 @@ const shiaTopics: SectTopic[] = [
           title: "Mut'ah (temporary marriage)",
           detail:
             "Shia permit mut'ah — a marriage with a predetermined end date. Ahl al-Sunnah hold that the Prophet ﷺ definitively prohibited this practice. Ali ibn Abi Talib himself narrated that the Prophet ﷺ forbade mut'ah at the Battle of Khaybar.",
-          note: "Sahih al-Bukhari 5115; Sahih Muslim 1407",
+          note: "Bukhari 67:52; Muslim 16:29",
         },
         {
           title: "Tatbir and self-flagellation",
@@ -311,7 +312,7 @@ const shiaTopics: SectTopic[] = [
           title: "Combining prayers and different adhan",
           detail:
             "Shia regularly combine Dhuhr with Asr and Maghrib with Isha, praying three times daily instead of five. They also add 'Hayya 'ala khayr al-'amal' (Come to the best of deeds) and 'Ash-hadu anna Aliyyan waliyu-llah' (I testify that Ali is the ally of Allah) to the adhan — additions not taught by the Prophet ﷺ.",
-          note: "Sahih al-Bukhari 529 — the five prayer times; no authentic hadith supports the additions to the adhan",
+          note: "Bukhari 10:8 — the five prayer times; no authentic hadith supports the additions to the adhan",
         },
         {
           title: "Taqiyyah (religious dissimulation)",
@@ -326,7 +327,7 @@ const shiaTopics: SectTopic[] = [
           note: "Quran 39:3; Quran 72:18",
         },
       ],
-      source: "Sahih al-Bukhari 5115; Sahih Muslim 1407; Al-Kafi, al-Kulayni; Quran 4:29, 39:3",
+      source: "Bukhari 67:52; Muslim 16:29; Al-Kafi, al-Kulayni; Quran 4:29, 39:3",
     },
   },
   {
@@ -374,20 +375,20 @@ const otherSects: SectTopic[] = [
       verse: {
         arabic: "يَخْرُجُ مِنْ ضِئْضِئِ هَذَا قَوْمٌ يَتْلُونَ كِتَابَ اللَّهِ رَطْبًا لاَ يُجَاوِزُ حَنَاجِرَهُمْ",
         text: "There will emerge from the progeny of this man a people who will recite the Quran, but it will not go beyond their throats (i.e., they won't understand it).",
-        ref: "Sahih al-Bukhari 3610",
+        ref: "Bukhari 61:117",
       },
       points: [
         {
           title: "Declaring Muslims as disbelievers (Takfir)",
           detail:
             "The defining characteristic of the Khawarij is declaring major sin as kufr (disbelief). They believe that any Muslim who commits a major sin leaves Islam entirely. This led them to view most Muslims — including Companions — as apostates deserving death.",
-          note: "Sahih Muslim 1066; Maqalat al-Islamiyyin, al-Ash'ari",
+          note: "Muslim 12:196; Maqalat al-Islamiyyin, al-Ash'ari",
         },
         {
           title: "The Prophet ﷺ warned about them extensively",
           detail:
             "The Prophet ﷺ described them in multiple hadith: they are young in age, foolish in mind, they speak the best of words but leave Islam like an arrow passes through its target. He ﷺ said: 'If I were to encounter them, I would kill them as the people of 'Ad were killed.'",
-          note: "Sahih al-Bukhari 3611; Sahih Muslim 1066",
+          note: "Bukhari 61:118; Muslim 12:196",
         },
         {
           title: "They assassinated Ali ibn Abi Talib",
@@ -399,10 +400,10 @@ const otherSects: SectTopic[] = [
           title: "Modern-day manifestations",
           detail:
             "The Kharijite methodology — declaring Muslims as disbelievers and justifying violence against them — has resurfaced throughout history, including in modern extremist groups. The scholars of Ahl al-Sunnah have consistently identified and refuted this ideology, which the Prophet ﷺ himself condemned.",
-          note: "Sahih al-Bukhari 6930; fatawa of contemporary scholars",
+          note: "Bukhari 61:12; fatawa of contemporary scholars",
         },
       ],
-      source: "Sahih al-Bukhari 3610-3611, 6930; Sahih Muslim 1063-1066; Maqalat al-Islamiyyin, al-Ash'ari",
+      source: "Bukhari 61:117; Muslim 12:196-228; Maqalat al-Islamiyyin, al-Ash'ari",
     },
   },
   {
@@ -434,7 +435,7 @@ const otherSects: SectTopic[] = [
           title: "They denied that Allah will be seen in the Hereafter",
           detail:
             "Despite authentic hadith and Quranic verses affirming that the believers will see Allah on the Day of Judgement, the Mu'tazilah denied this. The Quran says: 'Faces that Day will be radiant, looking at their Lord' (Quran 75:22-23). The Prophet ﷺ said: 'You will see your Lord as you see the moon on a clear night.'",
-          note: "Quran 75:22-23; Sahih al-Bukhari 554; Sahih Muslim 633",
+          note: "Quran 75:22-23; Bukhari 10:31; Muslim 1:356",
         },
       ],
       source: "Al-Milal wan-Nihal, ash-Shahrastani; Maqalat al-Islamiyyin, al-Ash'ari; Dar' Ta'arud al-Aql wan-Naql, Ibn Taymiyyah",
@@ -525,13 +526,13 @@ const otherSects: SectTopic[] = [
           title: "Claim to prophethood",
           detail:
             "Mirza Ghulam Ahmad claimed to receive divine revelation and be a prophet, directly violating the Quranic verse that Muhammad ﷺ is the seal of the prophets (khatam an-nabiyyin). The Prophet ﷺ said: 'There is no prophet after me.' The Muslim Ummah has reached unanimous consensus (ijma') that anyone claiming prophethood after Muhammad ﷺ is a liar.",
-          note: "Quran 33:40; Sahih al-Bukhari 3455; Sahih Muslim 2286",
+          note: "Quran 33:40; Bukhari 60:122; Muslim 24:33",
         },
         {
           title: "Reinterpretation of 'Seal of the Prophets'",
           detail:
             "Ahmadis argue that 'khatam an-nabiyyin' means 'best of the prophets' rather than 'last.' This interpretation contradicts the Arabic language, the understanding of the Companions, the consensus of scholars for 1400 years, and the explicit hadith: 'The chain of messengers and prophets has come to an end. There shall be no messenger or prophet after me.'",
-          note: "Sunan at-Tirmidhi 2272; Musnad Ahmad 12409",
+          note: "Tirmidhi 34:3",
         },
         {
           title: "Collaboration with colonial powers",
@@ -546,7 +547,7 @@ const otherSects: SectTopic[] = [
           note: "Resolution of Muslim World League, 1974; Constitution of Pakistan, Second Amendment",
         },
       ],
-      source: "Quran 33:40; Sahih al-Bukhari 3455; Sunan at-Tirmidhi 2272; Resolution of Muslim World League, 1974",
+      source: "Quran 33:40; Bukhari 60:122; Tirmidhi 34:3; Resolution of Muslim World League, 1974",
     },
   },
   {
@@ -560,7 +561,7 @@ const otherSects: SectTopic[] = [
           title: "Racial theology contradicts Tawhid",
           detail:
             "The NOI taught that Black people are divine, that Fard Muhammad was 'God in person,' and that white people were 'devils' created by an evil scientist named Yakub. Islam categorically rejects all forms of racism and teaches that no human being is divine. The Prophet ﷺ said: 'No Arab has superiority over a non-Arab, nor does a non-Arab have superiority over an Arab — except by piety.'",
-          note: "Quran 49:13; Musnad Ahmad 23489 (Farewell Sermon)",
+          note: "Quran 49:13; Ahmad 23489 (Farewell Sermon)",
         },
         {
           title: "Denial of the Hereafter as taught in Islam",
@@ -581,7 +582,7 @@ const otherSects: SectTopic[] = [
           note: "The Autobiography of Malcolm X, Chapter 18 — El-Hajj Malik El-Shabazz",
         },
       ],
-      source: "Quran 33:40, 49:13; Musnad Ahmad 23489; The Autobiography of Malcolm X",
+      source: "Quran 33:40, 49:13; Ahmad 23489; The Autobiography of Malcolm X",
     },
   },
 ];
@@ -622,7 +623,7 @@ function TopicInfoCard({ topic }: { topic: SectTopic }) {
             &ldquo;{topic.content.verse!.text}&rdquo;
           </p>
           <p className="text-xs text-themed-muted mt-2">
-            {topic.content.verse!.ref}
+            <HadithRefText text={topic.content.verse!.ref} />
           </p>
         </div>
       )}
@@ -641,7 +642,7 @@ function TopicInfoCard({ topic }: { topic: SectTopic }) {
               {point.detail}
             </p>
             {point.note && (
-              <p className="text-xs text-gold/60 mt-2">{point.note}</p>
+              <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
             )}
           </div>
         ))}
@@ -651,7 +652,7 @@ function TopicInfoCard({ topic }: { topic: SectTopic }) {
         <div className="mt-4 pt-3 border-t sidebar-border">
           <p className="text-xs text-themed-muted">
             <span className="text-gold/60 font-medium">Sources:</span>{" "}
-            {topic.content.source}
+            <HadithRefText text={topic.content.source} />
           </p>
         </div>
       )}
@@ -826,7 +827,7 @@ function SectsContent() {
                   today.&rdquo;
                 </p>
                 <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Sunan at-Tirmidhi 2641
+                  Tirmidhi 40:36
                 </span>
               </div>
             </ContentCard>
@@ -860,8 +861,8 @@ function SectsContent() {
               </h4>
               <ul className="space-y-1.5">
                 {[
-                  "Sunan at-Tirmidhi 2641 — The Ummah will split into 73 sects",
-                  "Sunan Abu Dawud 4597 — The saved group follows the Jama'ah",
+                  "Tirmidhi 40:36 — The Ummah will split into 73 sects",
+                  "Abu Dawud 42:2 — The saved group follows the Jama'ah",
                   "Quran 3:103 — Hold firmly to the rope of Allah and do not divide",
                   "Quran 6:159 — Those who divided their religion into sects",
                   "Al-Milal wan-Nihal, ash-Shahrastani — Comprehensive survey of sects",
@@ -912,7 +913,7 @@ function SectsContent() {
                 <p className="text-themed-muted text-sm leading-relaxed">
                   {item.detail}
                 </p>
-                <p className="text-xs text-gold/60 mt-2">{item.reference}</p>
+                <p className="text-xs text-gold/60 mt-2"><HadithRefText text={item.reference} /></p>
               </ContentCard>
             ))}
           </motion.div>

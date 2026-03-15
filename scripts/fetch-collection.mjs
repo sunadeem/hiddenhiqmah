@@ -2,6 +2,15 @@ import fs from "fs";
 import path from "path";
 
 const COLLECTIONS = {
+  bukhari: {
+    slug: "bukhari",
+    engEdition: "eng-bukhari",
+    araEdition: "ara-bukhari",
+    name: "Sahih al-Bukhari",
+    nameAr: "صحيح البخاري",
+    author: "Imam al-Bukhari",
+    description: "Sahih al-Bukhari is the most authentic collection of hadith, compiled by Imam Muhammad ibn Ismail al-Bukhari. It contains hadiths covering all aspects of Islamic life and is universally regarded as the most reliable source after the Quran.",
+  },
   muslim: {
     slug: "muslim",
     engEdition: "eng-muslim",
@@ -47,6 +56,15 @@ const COLLECTIONS = {
     author: "Imam Ibn Majah",
     description: "Sunan Ibn Majah is one of the six major hadith collections, compiled by Imam Ibn Majah. It contains hadiths on a wide range of Islamic jurisprudence topics.",
   },
+  ahmad: {
+    slug: "ahmad",
+    engEdition: "eng-ahmad",
+    araEdition: "ara-ahmad",
+    name: "Musnad Ahmad",
+    nameAr: "مسند أحمد",
+    author: "Imam Ahmad ibn Hanbal",
+    description: "Musnad Ahmad is one of the largest hadith collections, compiled by Imam Ahmad ibn Hanbal. It is organized by narrator rather than topic and contains over 28,000 hadiths.",
+  },
 };
 
 const collectionKey = process.argv[2];
@@ -77,76 +95,77 @@ async function main() {
   console.log(`Arabic hadiths: ${araData.hadiths.length}`);
 
   const sections = engData.metadata?.sections || {};
-  console.log(`Sections: ${Object.keys(sections).length}\n`);
+  console.log(`Sections: ${Object.keys(sections).length}`);
 
-  // Build Arabic lookup
+  // Build Arabic lookup by global hadith number
   const araMap = {};
   for (const h of araData.hadiths) {
     araMap[h.hadithnumber] = h.text;
   }
 
+  // Determine Book 0 handling per collection
+  // Muslim & Ibn Majah have clean sequential intros (IDs before Book 1's start)
+  // Bukhari & Nasai Book 0 entries have IDs scattered/overlapping with other books — skip those
+  const book0Hadiths = engData.hadiths.filter((h) => h.reference.book === 0);
+  const nonBook0Hadiths = engData.hadiths.filter((h) => h.reference.book !== 0);
+
+  // Find the first non-zero book's starting ID to detect clean intros
+  const firstNonZeroId = nonBook0Hadiths.length > 0
+    ? Math.min(...nonBook0Hadiths.map((h) => h.hadithnumber))
+    : Infinity;
+
+  // Book 0 entries with IDs below the first real book are clean intro hadiths
+  const cleanIntroEntries = book0Hadiths.filter((h) => h.hadithnumber < firstNonZeroId);
+  const overlappingEntries = book0Hadiths.filter((h) => h.hadithnumber >= firstNonZeroId);
+
+  if (book0Hadiths.length > 0) {
+    console.log(`\nBook 0: ${book0Hadiths.length} total entries`);
+    if (cleanIntroEntries.length > 0) {
+      console.log(`  Including ${cleanIntroEntries.length} intro entries (IDs 1-${firstNonZeroId - 1})`);
+    }
+    if (overlappingEntries.length > 0) {
+      console.log(`  Skipping ${overlappingEntries.length} overlapping entries (IDs overlap with other books)`);
+    }
+  }
+
   // Group hadiths by book
+  // id = global hadith number (what people cite: "Bukhari 3818")
+  // reference = book:hadith (for display and book navigation)
   const books = {};
-  for (const h of engData.hadiths) {
+
+  // Add clean Book 0 intro entries
+  if (cleanIntroEntries.length > 0) {
+    books[0] = cleanIntroEntries.map((h) => ({
+      id: h.hadithnumber,
+      arabic: araMap[h.hadithnumber] || "",
+      english: h.text,
+      reference: `0:${h.reference.hadith}`,
+    }));
+  }
+
+  // Add all non-Book-0 entries
+  for (const h of nonBook0Hadiths) {
     const bookNum = h.reference.book;
     if (!books[bookNum]) books[bookNum] = [];
     books[bookNum].push({
       id: h.hadithnumber,
       arabic: araMap[h.hadithnumber] || "",
       english: h.text,
-      reference: `${h.reference.book}:${h.reference.hadith}`,
+      reference: `${bookNum}:${h.reference.hadith}`,
     });
   }
 
+  // Clean output directory
+  if (fs.existsSync(OUT_DIR)) {
+    const oldFiles = fs.readdirSync(OUT_DIR).filter((f) => f.endsWith(".json"));
+    for (const f of oldFiles) {
+      fs.unlinkSync(path.join(OUT_DIR, f));
+    }
+    console.log(`Cleaned ${oldFiles.length} old files from ${OUT_DIR}`);
+  }
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
-  // Handle Book 0: reassign to correct books by hadith number range
-  if (books[0] && books[0].length > 0) {
-    console.log(`Book 0 has ${books[0].length} hadiths — reassigning to correct books...`);
-
-    // Build ranges from real books
-    const ranges = Object.entries(books)
-      .filter(([k]) => k !== "0")
-      .map(([k, v]) => ({
-        id: parseInt(k),
-        start: Math.min(...v.map((h) => h.id)),
-        end: Math.max(...v.map((h) => h.id)),
-      }))
-      .sort((a, b) => a.start - b.start);
-
-    let assigned = 0;
-    for (const h of books[0]) {
-      let bestBook = null;
-      let bestDist = Infinity;
-      // Try exact range match first
-      for (const r of ranges) {
-        if (h.id >= r.start && h.id <= r.end) {
-          bestBook = r.id;
-          break;
-        }
-      }
-      // Fallback to nearest
-      if (!bestBook) {
-        for (const r of ranges) {
-          const dist = Math.min(Math.abs(h.id - r.start), Math.abs(h.id - r.end));
-          if (dist < bestDist) {
-            bestDist = dist;
-            bestBook = r.id;
-          }
-        }
-      }
-      if (bestBook) {
-        h.reference = `${bestBook}:${h.id}`;
-        if (!books[bestBook]) books[bestBook] = [];
-        books[bestBook].push(h);
-        assigned++;
-      }
-    }
-    delete books[0];
-    console.log(`  Reassigned ${assigned} hadiths from Book 0\n`);
-  }
-
-  // Sort hadiths within each book
+  // Sort hadiths within each book by their per-book ID
   for (const bookNum of Object.keys(books)) {
     books[bookNum].sort((a, b) => a.id - b.id);
   }
@@ -155,7 +174,7 @@ async function main() {
   const bookList = Object.entries(books)
     .map(([num, hadiths]) => ({
       id: parseInt(num),
-      name: sections[num] || `Book ${num}`,
+      name: parseInt(num) === 0 ? "Introduction" : (sections[num] || `Book ${num}`),
       count: hadiths.length,
       startHadith: hadiths[0].id,
       endHadith: hadiths[hadiths.length - 1].id,
@@ -175,7 +194,7 @@ async function main() {
   };
 
   fs.writeFileSync(path.join(OUT_DIR, "metadata.json"), JSON.stringify(metadata));
-  console.log(`Saved metadata: ${bookList.length} books, ${totalHadiths} hadiths`);
+  console.log(`\nSaved metadata: ${bookList.length} books, ${totalHadiths} hadiths`);
 
   // Save per-book files
   for (const [bookNum, hadiths] of Object.entries(books)) {
@@ -193,15 +212,27 @@ async function main() {
   // Sanity check
   let missingArabic = 0;
   let emptyEnglish = 0;
-  for (const hadiths of Object.values(books)) {
+  let duplicateIds = 0;
+  for (const [bookNum, hadiths] of Object.entries(books)) {
+    const ids = new Set();
     for (const h of hadiths) {
       if (!h.arabic || h.arabic.trim() === "") missingArabic++;
       if (!h.english || h.english.trim() === "") emptyEnglish++;
+      if (ids.has(h.id)) duplicateIds++;
+      ids.add(h.id);
     }
   }
   console.log(`\nSanity check:`);
   console.log(`  Missing Arabic: ${missingArabic}`);
   console.log(`  Empty English: ${emptyEnglish}`);
+  console.log(`  Duplicate IDs within books: ${duplicateIds}`);
+
+  if (duplicateIds > 0) {
+    console.log(`\n⚠ WARNING: Found duplicate hadith IDs within books. Review the data.`);
+  }
+  if (missingArabic === 0 && emptyEnglish === 0 && duplicateIds === 0) {
+    console.log(`\n✓ All clean — no issues found.`);
+  }
 }
 
 main().catch(console.error);

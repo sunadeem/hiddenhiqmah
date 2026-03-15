@@ -9,6 +9,7 @@ import PageSearch from "@/components/PageSearch";
 import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
 import { BookOpen } from "lucide-react";
+import HadithRefText from "@/components/HadithRefText";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -17,7 +18,7 @@ const whyItMatters = [
     point: "Belief in the Last Day is a pillar of faith",
     detail:
       "Belief in the Day of Judgement is one of the six articles of Islamic faith. The angel Jibril asked the Prophet (peace be upon him): 'Tell me about iman.' He replied: 'It is to believe in Allah, His angels, His books, His messengers, the Last Day, and to believe in destiny — its good and its evil.'",
-    reference: "Sahih Muslim 8",
+    reference: "Muslim 1:1",
   },
   {
     point: "It is mentioned over 1,000 times in the Quran",
@@ -41,13 +42,13 @@ const whyItMatters = [
     point: "It motivates preparation and repentance",
     detail:
       "The Prophet (peace be upon him) said: 'The wise person is the one who holds himself accountable and works for what comes after death. And the helpless one is the one who follows his desires and then places his hope in Allah.' Awareness of the Day keeps the believer conscious of their deeds.",
-    reference: "Sunan at-Tirmidhi 2459",
+    reference: "Tirmidhi 37:45",
   },
   {
     point: "The Prophet described it in vivid detail",
     detail:
       "The Prophet (peace be upon him) described the events of that Day with such detail — the sun being brought close, people drowning in sweat according to their deeds, the scales, the bridge — that the companions would weep hearing it. These descriptions are meant to awaken the heart.",
-    reference: "Sahih Muslim 2864; Sahih al-Bukhari 4712",
+    reference: "Muslim 53:75; Bukhari 65:234",
   },
 ];
 
@@ -74,53 +75,53 @@ const signsTopics: Topic[] = [
           title: "The sending of the Prophet Muhammad (peace be upon him)",
           detail:
             "The Prophet (peace be upon him) said: 'I and the Hour have been sent like these two,' and he joined his index and middle fingers together — indicating the closeness of his mission to the final Hour.",
-          note: "Sahih al-Bukhari 6503; Sahih Muslim 2951",
+          note: "Bukhari 81:92; Muslim 7:55",
         },
         {
           title: "The slave woman gives birth to her mistress",
           detail:
             "In the hadith of Jibril, the Prophet (peace be upon him) mentioned among the signs of the Hour: 'When the slave woman gives birth to her mistress.' Scholars have interpreted this as the spread of disobedience to parents, or the reversal of social order.",
-          note: "Sahih Muslim 8",
+          note: "Muslim 1:1",
         },
         {
           title: "Barefoot, naked shepherds compete in constructing tall buildings",
           detail:
             "The Prophet (peace be upon him) said the Hour would not come until 'you see barefoot, naked, destitute shepherds competing in constructing tall buildings.' This has been widely noted as fulfilled in modern times.",
-          note: "Sahih Muslim 8",
+          note: "Muslim 1:1",
         },
         {
           title: "Knowledge will be taken away and ignorance will prevail",
           detail:
             "The Prophet (peace be upon him) said: 'Among the signs of the Hour: knowledge will be taken away, ignorance will prevail, drinking of wine will be widespread, and adultery will be prevalent.'",
-          note: "Sahih al-Bukhari 80; Sahih Muslim 2671",
+          note: "Bukhari 3:22; Muslim 47:11",
         },
         {
           title: "Widespread killing and bloodshed (al-harj)",
           detail:
             "The Prophet (peace be upon him) said: 'The Hour will not come until al-harj (killing) increases.' The companions asked: 'What is al-harj?' He said: 'Killing, killing' — indicating widespread, senseless violence.",
-          note: "Sahih Muslim 2672",
+          note: "Muslim 54:23",
         },
         {
           title: "Time will pass quickly",
           detail:
             "The Prophet (peace be upon him) said: 'The Hour will not come until time passes quickly, so that a year will be like a month, a month like a week, a week like a day, a day like an hour, and an hour like the burning of a braid of palm leaves.'",
-          note: "Sunan at-Tirmidhi 2332; graded Sahih by al-Albani",
+          note: "Tirmidhi 36:29; graded Sahih by al-Albani",
         },
         {
           title: "Widespread dishonesty and betrayal of trust",
           detail:
             "The Prophet (peace be upon him) said: 'When trust is lost, then wait for the Hour.' He was asked: 'How will trust be lost?' He said: 'When authority is given to those who do not deserve it, then wait for the Hour.'",
-          note: "Sahih al-Bukhari 6496",
+          note: "Bukhari 81:85",
         },
         {
           title: "A fire emerges from the land of Hijaz",
           detail:
             "The Prophet (peace be upon him) said: 'The Hour will not be established until a fire comes out of the land of Hijaz, and it will throw light on the necks of the camels at Busra.' Many scholars consider this fulfilled by the great volcanic eruption near Madinah in 654 AH (1256 CE), which was visible from great distances.",
-          note: "Sahih al-Bukhari 7118",
+          note: "Bukhari 92:65",
         },
       ],
       source:
-        "Sahih al-Bukhari 80, 6496, 6503, 7118; Sahih Muslim 8, 157, 2671, 2951; Sunan at-Tirmidhi 2332",
+        "Bukhari 3:22, 92:65; Muslim 1:1, 0:15:159; Tirmidhi 36:29",
     },
   },
   {
@@ -134,59 +135,59 @@ const signsTopics: Topic[] = [
           title: "The appearance of al-Mahdi",
           detail:
             "The Prophet (peace be upon him) said: 'The Mahdi is from my progeny, from the descendants of Fatimah.' He will fill the earth with justice and fairness after it has been filled with oppression and tyranny. He will lead the Muslims and rule for seven or nine years.",
-          note: "Sunan Abu Dawud 4284; Sunan Ibn Majah 4086",
+          note: "Abu Dawud 38:6; Ibn Majah 36:161",
         },
         {
           title: "The emergence of al-Masih al-Dajjal (the False Messiah)",
           detail:
             "The greatest trial to face humanity. The Prophet (peace be upon him) said: 'Between the creation of Adam and the Hour, there is no greater trial than the Dajjal.' He will claim to be God, perform extraordinary feats, and lead many astray. He is one-eyed, and between his eyes is written 'kafir' (disbeliever), which every believer will be able to read.",
-          note: "Sahih Muslim 2937, 2933",
+          note: "Muslim 54:134, 15:142",
         },
         {
           title: "The descent of 'Isa ibn Maryam (Jesus, peace be upon him)",
           detail:
             "Jesus (peace be upon him) will descend at the white minaret east of Damascus, wearing two garments lightly dyed with saffron, placing his hands on the wings of two angels. He will kill the Dajjal, break the cross, abolish the jizyah, and rule with justice. He will live on earth and then die, and the Muslims will pray over him.",
-          note: "Sahih Muslim 2937; Sahih al-Bukhari 3448",
+          note: "Muslim 54:134; Bukhari 60:118",
         },
         {
           title: "Ya'juj and Ma'juj (Gog and Magog)",
           detail:
             "After the Dajjal is killed, Allah will reveal to 'Isa: 'I have brought forth from among My servants people whom no one will be able to fight. Take My servants to Mount Tur.' Ya'juj and Ma'juj will spread corruption until Allah destroys them by sending worms into their necks.",
-          note: "Sahih Muslim 2937; Quran 18:94-99; Quran 21:96",
+          note: "Muslim 54:134; Quran 18:94-99; Quran 21:96",
         },
         {
           title: "Three great landslides (khusuf)",
           detail:
             "Three major landslides (sinkings of the earth) will occur — one in the east, one in the west, and one in the Arabian Peninsula. These are among the ten major signs mentioned together by the Prophet (peace be upon him).",
-          note: "Sahih Muslim 2901",
+          note: "Muslim 54:51",
         },
         {
           title: "A smoke (al-Dukhan) will cover the earth",
           detail:
             "A great smoke will envelop the earth. Allah says: 'Then watch for the Day when the sky will bring a visible smoke, covering the people. This is a painful torment.' The believers will experience it as a mild cold, while the disbelievers will be severely affected.",
-          note: "Quran 44:10-11; Sahih Muslim 2901",
+          note: "Quran 44:10-11; Muslim 54:51",
         },
         {
           title: "The sun will rise from the west",
           detail:
             "The Prophet (peace be upon him) said: 'The Hour will not come until the sun rises from the west. When it rises from the west, all people will believe, but that will be when belief will no longer benefit a person who did not believe before.' After this, the door of repentance is closed.",
-          note: "Sahih al-Bukhari 4635; Sahih Muslim 157; Quran 6:158",
+          note: "Bukhari 65:157; Muslim 33:253; Quran 6:158",
         },
         {
           title: "The Beast (al-Dabbah) will emerge",
           detail:
             "A beast will emerge from the earth and speak to people, marking the believers and the disbelievers. Allah says: 'And when the Word is fulfilled against them, We will produce for them a creature from the earth speaking to them — that the people were not certain of Our signs.'",
-          note: "Quran 27:82; Sahih Muslim 2901",
+          note: "Quran 27:82; Muslim 54:51",
         },
         {
           title: "A fire will drive people to their gathering place",
           detail:
             "The last of the major signs — a fire will emerge from the direction of Yemen (from the bottom of Aden) and will drive the people to their place of gathering (the land of al-Sham).",
-          note: "Sahih Muslim 2901",
+          note: "Muslim 54:51",
         },
       ],
       source:
-        "Sahih al-Bukhari 3448, 4635; Sahih Muslim 2672, 2901, 2933, 2937; Sunan Abu Dawud 4284; Quran 6:158, 18:94-99, 21:96, 27:82, 44:10-11",
+        "Bukhari 60:118, 65:157; Muslim 54:23, 15:146; Abu Dawud 38:6; Quran 6:158, 18:94-99, 21:96, 27:82, 44:10-11",
     },
   },
 ];
@@ -209,23 +210,23 @@ const eventsTopics: Topic[] = [
           title: "The first blast — everything perishes",
           detail:
             "The first blowing causes all living creation to die. The Prophet (peace be upon him) said: 'The Trumpet will be blown, and no one who hears it will remain alive except that he will tilt his neck (and die).' Between the two blasts is a period of forty.",
-          note: "Sahih al-Bukhari 4935; Sahih Muslim 2955",
+          note: "Bukhari 65:456; Muslim 54:175",
         },
         {
           title: "The second blast — all are resurrected",
           detail:
             "Then Allah will send rain from the sky, and the bodies will grow from the tailbone (the coccyx) like seeds grow from the earth. Then the Trumpet will be blown a second time, and every soul will rise from their graves, standing and looking.",
-          note: "Sahih al-Bukhari 4935; Sahih Muslim 2955",
+          note: "Bukhari 65:456; Muslim 54:175",
         },
         {
           title: "The earth will be changed",
           detail:
             "Allah says: 'On the Day the earth will be replaced by another earth, and the heavens as well, and they will come forth before Allah, the One, the Prevailing.' The earth will be flattened like a loaf of white bread — no landmarks, no shelter, nothing to hide behind.",
-          note: "Quran 14:48; Sahih Muslim 2790",
+          note: "Quran 14:48; Muslim 14:11",
         },
       ],
       source:
-        "Quran 14:48, 39:68; Sahih al-Bukhari 4935; Sahih Muslim 2790, 2955",
+        "Quran 14:48, 39:68; Bukhari 65:456; Muslim 14:11, 15:164",
     },
   },
   {
@@ -245,23 +246,23 @@ const eventsTopics: Topic[] = [
           title: "Raised barefoot, naked, and uncircumcised",
           detail:
             "The Prophet (peace be upon him) said: 'You will be gathered barefoot, naked, and uncircumcised.' A'ishah asked: 'O Messenger of Allah, will men and women be looking at each other?' He said: 'The matter will be too serious for them to be concerned with that.'",
-          note: "Sahih al-Bukhari 6527; Sahih Muslim 2859",
+          note: "Bukhari 81:116; Muslim 53:67",
         },
         {
           title: "The first to be clothed will be Ibrahim",
           detail:
             "The Prophet (peace be upon him) said: 'The first of creation to be clothed on the Day of Resurrection will be Ibrahim (peace be upon him).'",
-          note: "Sahih al-Bukhari 3349",
+          note: "Bukhari 2:24",
         },
         {
           title: "People will be raised upon their deeds",
           detail:
             "The Prophet (peace be upon him) said: 'Every person will be raised in the state in which they died.' Those who died doing good will be raised upon goodness; those who died in sin will be raised upon that sin.",
-          note: "Sahih Muslim 2878",
+          note: "Muslim 53:75",
         },
       ],
       source:
-        "Quran 70:43; Sahih al-Bukhari 3349, 6527; Sahih Muslim 2859, 2878",
+        "Quran 70:43; Bukhari 2:24, 81:116; Muslim 53:67, 15:88",
     },
   },
   {
@@ -287,17 +288,17 @@ const eventsTopics: Topic[] = [
           title: "The sun is brought close — a mile away",
           detail:
             "The Prophet (peace be upon him) said: 'The sun will be brought close to the people on the Day of Resurrection until it is about a mile away.' People will be drowning in their own sweat according to their deeds — some to their ankles, some to their knees, some to their waists, and some will be bridled by it.",
-          note: "Sahih Muslim 2864",
+          note: "Muslim 53:75",
         },
         {
           title: "Seven under the shade of Allah",
           detail:
             "The Prophet (peace be upon him) said: 'Seven will be shaded by Allah under His shade on the Day when there is no shade except His shade: a just leader, a youth who grew up in the worship of Allah, a man whose heart is attached to the mosques, two people who love each other for the sake of Allah, a man who is called by a woman of beauty and position but refuses, a man who gives charity so secretly that his left hand does not know what his right hand has given, and a man who remembers Allah in seclusion and his eyes overflow with tears.'",
-          note: "Sahih al-Bukhari 1423; Sahih Muslim 1031",
+          note: "Bukhari 24:27; Muslim 4:193",
         },
       ],
       source:
-        "Quran 70:4, 83:6; Sahih al-Bukhari 1423; Sahih Muslim 1031, 2864",
+        "Quran 70:4, 83:6; Bukhari 24:27; Muslim 4:193, 15:74",
     },
   },
   {
@@ -317,7 +318,7 @@ const eventsTopics: Topic[] = [
           title: "Five questions everyone will be asked",
           detail:
             "The Prophet (peace be upon him) said: 'The feet of the son of Adam shall not move on the Day of Judgement until he is asked about five things: about his life and how he spent it, about his body and how he wore it out, about his wealth — how he earned it and how he spent it, and about his knowledge and what he did with it.'",
-          note: "Sunan at-Tirmidhi 2417 (graded Hasan Sahih by at-Tirmidhi; graded Da'if by Darussalam)",
+          note: "Tirmidhi 37:3 (graded Hasan Sahih by at-Tirmidhi; graded Da'if by Darussalam)",
         },
         {
           title: "The record of deeds (right or left hand)",
@@ -329,17 +330,17 @@ const eventsTopics: Topic[] = [
           title: "The private reckoning of the believer",
           detail:
             "The Prophet (peace be upon him) said: 'Allah will bring the believer close and place His veil over him, concealing him from the people, and will make him acknowledge his sins one by one. When the believer thinks he is doomed, Allah will say: I concealed them for you in the world, and I forgive them for you today.'",
-          note: "Sahih al-Bukhari 2441; Sahih Muslim 2768",
+          note: "Bukhari 46:2; Muslim 50:61",
         },
         {
           title: "The body will testify",
           detail:
             "If a person denies their sins, Allah will seal their mouth and their limbs will speak. Allah says: 'On the Day when their tongues, their hands, and their feet will bear witness against them as to what they used to do.'",
-          note: "Quran 24:24; Sahih Muslim 2969",
+          note: "Quran 24:24; Muslim 55:23",
         },
       ],
       source:
-        "Quran 17:13, 24:24, 69:19-26, 84:7-9; Sahih al-Bukhari 2441; Sahih Muslim 2768, 2969; Sunan at-Tirmidhi 2417",
+        "Quran 17:13, 24:24, 69:19-26, 84:7-9; Bukhari 39:2; Muslim 13:274, 15:178; Tirmidhi 37:3",
     },
   },
   {
@@ -359,29 +360,29 @@ const eventsTopics: Topic[] = [
           title: "Two words heavy on the Scale",
           detail:
             "The Prophet (peace be upon him) said: 'Two words are light on the tongue, heavy on the Scale, and beloved to the Most Merciful: SubhanAllahi wa bihamdihi, SubhanAllahil-Azeem (Glory be to Allah and His praise, Glory be to Allah the Almighty).'",
-          note: "Sahih al-Bukhari 6406; Sahih Muslim 2694",
+          note: "Bukhari 80:101; Muslim 48:41",
         },
         {
           title: "The card (al-Bitaqah) hadith",
           detail:
             "A man will be brought on the Day of Judgement with 99 scrolls of sins, each scroll stretching as far as the eye can see. Then a small card will be brought with La ilaha illallah on it. The scrolls will be placed on one side and the card on the other — and the card will outweigh all the scrolls.",
-          note: "Sunan at-Tirmidhi 2639; graded Sahih by al-Albani",
+          note: "Tirmidhi 40:34; graded Sahih by al-Albani",
         },
         {
           title: "Good character is heavy on the Scale",
           detail:
             "The Prophet (peace be upon him) said: 'Nothing is heavier on the believer's Scale on the Day of Resurrection than good character. Allah hates the one who is obscene and foul-mouthed.'",
-          note: "Sunan at-Tirmidhi 2002; graded Sahih by al-Albani",
+          note: "Tirmidhi 27:108; graded Sahih by al-Albani",
         },
         {
           title: "Al-Hamd fills the Scale",
           detail:
             "The Prophet (peace be upon him) said: 'Purity is half of faith. Al-hamdulillah fills the Scale. SubhanAllah and al-hamdulillah fill what is between the heavens and the earth.'",
-          note: "Sahih Muslim 223",
+          note: "Muslim 1:129",
         },
       ],
       source:
-        "Quran 21:47; Sahih al-Bukhari 6406; Sahih Muslim 223, 2694; Sunan at-Tirmidhi 2002, 2639",
+        "Quran 21:47; Bukhari 80:101; Muslim 1:129, 13:200; Tirmidhi 27:108, 40:34",
     },
   },
   {
@@ -395,19 +396,19 @@ const eventsTopics: Topic[] = [
           title: "It is set up over the Hellfire",
           detail:
             "The Prophet (peace be upon him) described the bridge as being set over the middle of Hellfire. It has hooks and thorns like the thorns of the sa'dan plant. People will cross it, and the hooks will snatch them according to their deeds.",
-          note: "Sahih al-Bukhari 7439; Sahih Muslim 195",
+          note: "Bukhari 97:65; Muslim 1:356",
         },
         {
           title: "Crossing speed depends on deeds",
           detail:
             "The Prophet (peace be upon him) said: 'Some will cross in the blink of an eye, some like lightning, some like wind, some like a fast horse, some like a camel rider, some will run, some will walk, some will crawl, and some will be snatched and thrown into the Hellfire.'",
-          note: "Sahih Muslim 195",
+          note: "Muslim 1:102",
         },
         {
           title: "The supplication on the Sirat",
           detail:
             "The Prophet (peace be upon him) said: 'The call of the messengers on that Day will be: Allahumma sallim, sallim (O Allah, save! Save!)' — imploring Allah to grant safety to those crossing.",
-          note: "Sahih al-Bukhari 7439; Sahih Muslim 195",
+          note: "Bukhari 97:65; Muslim 1:102",
         },
         {
           title: "Light will guide the believers",
@@ -417,7 +418,7 @@ const eventsTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 57:12-13; Sahih al-Bukhari 7439; Sahih Muslim 195",
+        "Quran 57:12-13; Bukhari 97:65; Muslim 1:102",
     },
   },
 ];
@@ -434,29 +435,29 @@ const salvationTopics: Topic[] = [
           title: "People go from prophet to prophet",
           detail:
             "The people will go to Adam, then Nuh, then Ibrahim, then Musa, then 'Isa — each will say: 'I am not fit for this, go to someone else.' Each will mention a personal concern. Finally they will come to Muhammad (peace be upon him), who will say: 'I am the one for this.'",
-          note: "Sahih al-Bukhari 4712; Sahih Muslim 194",
+          note: "Bukhari 65:234; Muslim 1:195",
         },
         {
           title: "The Prophet prostrates before Allah",
           detail:
             "The Prophet (peace be upon him) said: 'I will prostrate before my Lord and praise Him with praises that He will teach me. Then it will be said: O Muhammad, raise your head. Ask and you shall be given. Intercede and your intercession will be accepted.'",
-          note: "Sahih al-Bukhari 4712; Sahih Muslim 194",
+          note: "Bukhari 65:234; Muslim 1:381",
         },
         {
           title: "Other forms of intercession",
           detail:
             "The Prophet (peace be upon him) will intercede for his ummah, and Allah will also permit the angels, the prophets, the righteous, and even the believers to intercede for one another. But no one intercedes except by Allah's permission.",
-          note: "Sahih Muslim 183; Quran 2:255",
+          note: "Muslim 1:90; Quran 2:255",
         },
         {
           title: "The al-Maqam al-Mahmud (Praised Station)",
           detail:
             "This is the station of intercession promised to the Prophet (peace be upon him). Allah says: 'And from the night, pray with it as additional worship for you; it is expected that your Lord will raise you to a praised station.' This is the greatest honor given to any created being.",
-          note: "Quran 17:79; Sahih al-Bukhari 4712",
+          note: "Quran 17:79; Bukhari 65:234",
         },
       ],
       source:
-        "Quran 2:255, 17:79; Sahih al-Bukhari 4712; Sahih Muslim 183, 194",
+        "Quran 2:255, 17:79; Bukhari 65:234; Muslim 1:90, 1:101",
     },
   },
   {
@@ -470,23 +471,23 @@ const salvationTopics: Topic[] = [
           title: "Its vastness",
           detail:
             "The Prophet (peace be upon him) said: 'My pool is so large that it takes a month to cross it. Its water is whiter than milk, its smell is more pleasant than musk, and its drinking cups are as numerous as the stars of the sky. Whoever drinks from it will never be thirsty again.'",
-          note: "Sahih al-Bukhari 6579",
+          note: "Bukhari 81:167",
         },
         {
           title: "The cups are as numerous as the stars",
           detail:
             "The Prophet (peace be upon him) described the hawd as having cups placed around it, as numerous as the stars in the sky. Two channels from Paradise (from the river al-Kawthar) pour into it.",
-          note: "Sahih Muslim 2301",
+          note: "Muslim 1:362",
         },
         {
           title: "Some will be turned away",
           detail:
             "The Prophet (peace be upon him) said: 'I will precede you to the Pool. Some people will be brought to me, and when I try to give them drink, they will be pulled away from me. I will say: My Lord, these are my companions! It will be said: You do not know what they innovated after you.'",
-          note: "Sahih al-Bukhari 6584",
+          note: "Bukhari 81:172",
         },
       ],
       source:
-        "Sahih al-Bukhari 6579, 6584; Sahih Muslim 2301",
+        "Bukhari 81:167, 81:172; Muslim 12:38",
     },
   },
   {
@@ -505,17 +506,17 @@ const salvationTopics: Topic[] = [
           title: "A river in Paradise",
           detail:
             "The Prophet (peace be upon him) said: 'Al-Kawthar is a river in Paradise. Its banks are of gold, and it flows over pearls and precious gems. Its soil is more fragrant than musk, its water is sweeter than honey and whiter than snow.'",
-          note: "Sunan at-Tirmidhi 3361; Sunan Ibn Majah 4334",
+          note: "Tirmidhi 47:413; Ibn Majah 37:235",
         },
         {
           title: "The Prophet saw it during the Night Journey",
           detail:
             "The Prophet (peace be upon him) said: 'While I was walking in Paradise, I came upon a river whose banks were domes of hollow pearls. I asked: What is this, O Jibril? He said: This is al-Kawthar which your Lord has given you.' The Prophet struck the water and found it to be the finest musk.",
-          note: "Sahih al-Bukhari 6581",
+          note: "Bukhari 81:169",
         },
       ],
       source:
-        "Quran 108:1-3; Sahih al-Bukhari 6581; Sunan at-Tirmidhi 3361; Sunan Ibn Majah 4334",
+        "Quran 108:1-3; Bukhari 81:169; Tirmidhi 47:413; Ibn Majah 37:235",
     },
   },
 ];
@@ -556,7 +557,7 @@ function TopicInfoCard({ topic }: { topic: Topic }) {
             &ldquo;{topic.content.verse!.text}&rdquo;
           </p>
           <p className="text-xs text-themed-muted mt-2">
-            {topic.content.verse!.ref}
+            <HadithRefText text={topic.content.verse!.ref} />
           </p>
         </div>
       )}
@@ -575,7 +576,7 @@ function TopicInfoCard({ topic }: { topic: Topic }) {
               {point.detail}
             </p>
             {point.note && (
-              <p className="text-xs text-gold/60 mt-2">{point.note}</p>
+              <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
             )}
           </div>
         ))}
@@ -733,7 +734,7 @@ function DayOfJudgementContent() {
                     &ldquo;The one who is asked about it knows no more than the
                     one who is asking.&rdquo;
                   </em>{" "}
-                  (Sahih Muslim 8). However, the Prophet described its signs and
+                  (Muslim 1:1). However, the Prophet described its signs and
                   events in great detail, so that the believers would prepare for
                   it as though it could come at any moment.
                 </p>
@@ -758,15 +759,15 @@ function DayOfJudgementContent() {
                   "Quran 1:4 — Master of the Day of Recompense",
                   "Quran 83:6 — The Day when mankind will stand before the Lord of the worlds",
                   "Quran 99:7-8 — Whoever does an atom's weight of good or evil will see it",
-                  "Sahih Muslim 8 — Hadith of Jibril: belief in the Last Day is a pillar of faith",
-                  "Sahih al-Bukhari 4712 — The great intercession of the Prophet (peace be upon him)",
+                  "Muslim 1:1 — Hadith of Jibril: belief in the Last Day is a pillar of faith",
+                  "Bukhari 65:234 — The great intercession of the Prophet (peace be upon him)",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -815,7 +816,7 @@ function DayOfJudgementContent() {
                       {item.detail}
                     </p>
                     <p className="text-xs text-gold/60 mt-2">
-                      {item.reference}
+                      <HadithRefText text={item.reference} />
                     </p>
                   </div>
                 </div>
@@ -832,17 +833,17 @@ function DayOfJudgementContent() {
                 {[
                   "Quran 1:4, 23:115, 69:1, 75:1, 99:7-8, 101:1 — Names and reality of the Day of Judgement",
                   "Quran 21:47 — The scales of justice on the Day of Resurrection",
-                  "Sahih Muslim 8 — Hadith of Jibril on the pillars of faith",
-                  "Sahih Muslim 2864 — The sun being brought close on the Day of Judgement",
-                  "Sahih al-Bukhari 4712 — The great intercession",
-                  "Sunan at-Tirmidhi 2459 — The wise person holds himself accountable",
+                  "Muslim 1:1 — Hadith of Jibril on the pillars of faith",
+                  "Muslim 53:75 — The sun being brought close on the Day of Judgement",
+                  "Bukhari 65:234 — The great intercession",
+                  "Tirmidhi 37:45 — The wise person holds himself accountable",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -907,17 +908,17 @@ function DayOfJudgementContent() {
               </h4>
               <ul className="space-y-1.5">
                 {[
-                  "Sahih al-Bukhari 80; Sahih Muslim 2671 — Knowledge taken away, ignorance prevails",
-                  "Sahih al-Bukhari 6496 — When trust is lost, wait for the Hour",
-                  "Sahih al-Bukhari 6503; Sahih Muslim 2951 — The Prophet and the Hour sent like two fingers",
-                  "Sahih al-Bukhari 7118 — A fire from Hijaz illuminating camels at Busra",
-                  "Sahih Muslim 8 — Hadith of Jibril: slave woman, tall buildings",
-                  "Sahih Muslim 2672 — Widespread killing (al-harj)",
-                  "Sahih Muslim 2901 — Ten major signs mentioned together",
-                  "Sahih Muslim 2933, 2937 — The Dajjal, descent of 'Isa, Ya'juj and Ma'juj",
-                  "Sahih al-Bukhari 3448 — The descent of 'Isa ibn Maryam",
-                  "Sahih al-Bukhari 4635 — The sun rising from the west",
-                  "Sunan Abu Dawud 4284 — The Mahdi from the descendants of Fatimah",
+                  "Bukhari 3:22; Muslim 47:11 — Knowledge taken away, ignorance prevails",
+                  "Bukhari 81:85 — When trust is lost, wait for the Hour",
+                  "Bukhari 81:92; Muslim 7:55 — The Prophet and the Hour sent like two fingers",
+                  "Bukhari 92:65 — A fire from Hijaz illuminating camels at Busra",
+                  "Muslim 1:1 — Hadith of Jibril: slave woman, tall buildings",
+                  "Muslim 54:23 — Widespread killing (al-harj)",
+                  "Muslim 54:51 — Ten major signs mentioned together",
+                  "Muslim 54:134, 15:146 — The Dajjal, descent of 'Isa, Ya'juj and Ma'juj",
+                  "Bukhari 60:118 — The descent of 'Isa ibn Maryam",
+                  "Bukhari 65:157 — The sun rising from the west",
+                  "Abu Dawud 38:6 — The Mahdi from the descendants of Fatimah",
                   "Quran 6:158, 18:94-99, 21:96, 27:82, 44:10-11 — Major signs in the Quran",
                 ].map((source) => (
                   <li
@@ -925,7 +926,7 @@ function DayOfJudgementContent() {
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -991,17 +992,17 @@ function DayOfJudgementContent() {
               <ul className="space-y-1.5">
                 {[
                   "Quran 14:48, 17:13, 21:47, 24:24, 39:68, 57:12-13, 69:19-26, 70:4, 70:43, 83:6, 84:7-9",
-                  "Sahih al-Bukhari 2441, 3349, 4935, 6406, 6527, 7439 — Resurrection, reckoning, scale, bridge",
-                  "Sahih Muslim 195, 223, 2694, 2768, 2790, 2859, 2864, 2878, 2955, 2969 — Events of the Day",
-                  "Sunan at-Tirmidhi 2002, 2417, 2639 — Good character, four questions, the card hadith",
-                  "Sunan at-Tirmidhi 2417 — Five questions on the Day of Judgement",
+                  "Bukhari 46:8, 97:65 — Resurrection, reckoning, scale, bridge",
+                  "Muslim 1:102, 15:178 — Events of the Day",
+                  "Tirmidhi 27:108, 40:34 — Good character, four questions, the card hadith",
+                  "Tirmidhi 37:3 — Five questions on the Day of Judgement",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>
@@ -1069,18 +1070,18 @@ function DayOfJudgementContent() {
                   "Quran 2:255 — No one intercedes except by His permission",
                   "Quran 17:79 — The Praised Station (al-Maqam al-Mahmud)",
                   "Quran 108:1-3 — Surah al-Kawthar",
-                  "Sahih al-Bukhari 4712; Sahih Muslim 194 — The great intercession",
-                  "Sahih al-Bukhari 6579, 6584; Sahih Muslim 2301 — The Hawd (Pool) of the Prophet",
-                  "Sahih al-Bukhari 6581 — The Prophet seeing al-Kawthar during the Night Journey",
-                  "Sahih Muslim 183 — Others permitted to intercede by Allah's leave",
-                  "Sunan at-Tirmidhi 3361; Sunan Ibn Majah 4334 — Description of al-Kawthar",
+                  "Bukhari 65:234; Muslim 1:101 — The great intercession",
+                  "Bukhari 81:167, 81:172; Muslim 12:38 — The Hawd (Pool) of the Prophet",
+                  "Bukhari 81:169 — The Prophet seeing al-Kawthar during the Night Journey",
+                  "Muslim 1:90 — Others permitted to intercede by Allah's leave",
+                  "Tirmidhi 47:413; Ibn Majah 37:235 — Description of al-Kawthar",
                 ].map((source) => (
                   <li
                     key={source}
                     className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
                   >
                     <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
+                    <HadithRefText text={source} />
                   </li>
                 ))}
               </ul>

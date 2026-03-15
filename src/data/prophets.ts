@@ -254,7 +254,7 @@ export const prophets: Prophet[] = [
     order: 17,
     source: "hadith",
     sourceNote:
-      "Identified as the young man in Quran 18:60. Named explicitly in Sahih al-Bukhari 3124 and Sahih Muslim 1842.",
+      "Identified as the young man in Quran 18:60. Referenced in Bukhari 57:33 (sun stopped for a prophet on expedition) and Muslim 43:221.",
   },
   {
     slug: "dhul-kifl",
