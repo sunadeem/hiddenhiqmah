@@ -1,29 +1,66 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <!-- Background -->
-  <rect width="512" height="512" rx="80" fill="#000000"/>
+  <rect width="512" height="512" rx="0" fill="#000000"/>
 
-  <!-- Subtle Islamic arch frame -->
-  <path d="M256 52 C340 52 408 120 408 204 L408 420 C408 434 397 445 383 445 L129 445 C115 445 104 434 104 420 L104 204 C104 120 172 52 256 52Z"
-        fill="none" stroke="#c9a84c" stroke-width="3" opacity="0.25"/>
+  <defs>
+    <!-- Smaller, denser 8-point star pattern for uniform coverage -->
+    <pattern id="stars" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="translate(256 256)">
+      <polygon points="8,1 9.5,6.5 15,8 9.5,9.5 8,15 6.5,9.5 1,8 6.5,6.5" fill="none" stroke="#c9a84c" stroke-width="0.7" opacity="0.5"/>
+      <rect x="-.5" y="-.5" width="1.5" height="1.5" fill="#c9a84c" opacity="0.25" transform="rotate(45 0 0)"/>
+      <rect x="15.5" y="-.5" width="1.5" height="1.5" fill="#c9a84c" opacity="0.25" transform="rotate(45 16 0)"/>
+      <rect x="-.5" y="15.5" width="1.5" height="1.5" fill="#c9a84c" opacity="0.25" transform="rotate(45 0 16)"/>
+      <rect x="15.5" y="15.5" width="1.5" height="1.5" fill="#c9a84c" opacity="0.25" transform="rotate(45 16 16)"/>
+    </pattern>
 
-  <!-- Inner arch glow -->
-  <path d="M256 72 C330 72 388 130 388 204 L388 410 C388 420 380 428 370 428 L142 428 C132 428 124 420 124 410 L124 204 C124 130 182 72 256 72Z"
-        fill="#c9a84c" opacity="0.04"/>
+    <clipPath id="borderBand">
+      <path d="M256 42 C345 42 418 115 418 204 L418 425 C418 439 407 450 393 450 L119 450 C105 450 94 439 94 425 L94 204 C94 115 167 42 256 42Z"/>
+    </clipPath>
+  </defs>
 
-  <!-- HH Monogram - two H's sharing the middle stroke -->
-  <!-- Left H: left vertical -->
-  <rect x="148" y="160" width="28" height="192" rx="6" fill="#c9a84c"/>
-  <!-- Left H: right vertical / shared center -->
-  <rect x="242" y="160" width="28" height="192" rx="6" fill="#c9a84c"/>
-  <!-- Left H: crossbar -->
-  <rect x="148" y="238" width="122" height="24" rx="6" fill="#c9a84c"/>
+  <!-- Star pattern border band -->
+  <g clip-path="url(#borderBand)">
+    <rect x="94" y="42" width="324" height="408" fill="url(#stars)"/>
+  </g>
+  <path d="M256 66 C332 66 394 128 394 204 L394 412 C394 424 384 434 372 434 L140 434 C128 434 118 424 118 412 L118 204 C118 128 180 66 256 66Z"
+        fill="#000000"/>
 
-  <!-- Right H: left vertical is the shared center (242) -->
-  <!-- Right H: right vertical -->
-  <rect x="336" y="160" width="28" height="192" rx="6" fill="#c9a84c"/>
-  <!-- Right H: crossbar -->
-  <rect x="242" y="238" width="122" height="24" rx="6" fill="#c9a84c"/>
+  <!-- Outer arch stroke -->
+  <path d="M256 42 C345 42 418 115 418 204 L418 425 C418 439 407 450 393 450 L119 450 C105 450 94 439 94 425 L94 204 C94 115 167 42 256 42Z"
+        fill="none" stroke="#c9a84c" stroke-width="1.5" opacity="0.5"/>
 
-  <!-- Small diamond ornament at top of arch -->
-  <rect x="248" y="82" width="16" height="16" rx="2" fill="#c9a84c" opacity="0.5" transform="rotate(45 256 90)"/>
+  <!-- Inner arch stroke -->
+  <path d="M256 66 C332 66 394 128 394 204 L394 412 C394 424 384 434 372 434 L140 434 C128 434 118 424 118 412 L118 204 C118 128 180 66 256 66Z"
+        fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.35"/>
+
+  <!-- Inner glow -->
+  <path d="M256 76 C326 76 384 134 384 204 L384 406 C384 416 376 424 366 424 L146 424 C136 424 128 416 128 406 L128 204 C128 134 186 76 256 76Z"
+        fill="#c9a84c" opacity="0.03"/>
+
+  <!-- HH Monogram — elegant serif style with tapered strokes -->
+  <!-- Left H -->
+  <!-- Left vertical: wider at top/bottom, narrower in middle -->
+  <path d="M152 160 L172 160 C174 160 176 162 176 164 L176 232 L176 348 C176 350 174 352 172 352 L152 352 C150 352 148 350 148 348 L148 164 C148 162 150 160 152 160Z" fill="#c9a84c"/>
+  <!-- Serif flares - left H left vertical -->
+  <rect x="140" y="158" width="44" height="6" rx="2" fill="#c9a84c"/>
+  <rect x="140" y="348" width="44" height="6" rx="2" fill="#c9a84c"/>
+
+  <!-- Shared center vertical -->
+  <path d="M246 160 L266 160 C268 160 270 162 270 164 L270 348 C270 350 268 352 266 352 L246 352 C244 352 242 350 242 348 L242 164 C242 162 244 160 246 160Z" fill="#c9a84c"/>
+  <!-- Serif flares - center vertical -->
+  <rect x="234" y="158" width="44" height="6" rx="2" fill="#c9a84c"/>
+  <rect x="234" y="348" width="44" height="6" rx="2" fill="#c9a84c"/>
+
+  <!-- Right H right vertical -->
+  <path d="M340 160 L360 160 C362 160 364 162 364 164 L364 348 C364 350 362 352 360 352 L340 352 C338 352 336 350 336 348 L336 164 C336 162 338 160 340 160Z" fill="#c9a84c"/>
+  <!-- Serif flares - right vertical -->
+  <rect x="328" y="158" width="44" height="6" rx="2" fill="#c9a84c"/>
+  <rect x="328" y="348" width="44" height="6" rx="2" fill="#c9a84c"/>
+
+  <!-- Left H crossbar — slightly curved -->
+  <path d="M176 244 L242 244 L242 260 L176 260 Z" fill="#c9a84c"/>
+  <!-- Right H crossbar — slightly curved -->
+  <path d="M270 244 L336 244 L336 260 L270 260 Z" fill="#c9a84c"/>
+
+  <!-- Diamond ornament at top of arch -->
+  <rect x="248" y="72" width="16" height="16" rx="2" fill="#c9a84c" opacity="0.5" transform="rotate(45 256 80)"/>
 </svg>
