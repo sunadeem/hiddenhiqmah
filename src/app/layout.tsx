@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   title: "Hidden Hiqmah — Hidden Wisdom",
   description:
     "Explore the Quran, Hadith, stories of the Prophets, and more with authentic references.",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
