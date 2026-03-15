@@ -923,6 +923,41 @@ function SurahPageContent() {
 
     audio.play();
 
+    // Update lock screen / notification media info
+    if ("mediaSession" in navigator && chapter) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: `${chapter.name} — Verse ${verse.number}`,
+        artist: "Mishari Rashid al-Afasy",
+        album: `Surah ${chapter.name} (${chapter.nameAr})`,
+        artwork: [
+          { src: "/icon.svg", sizes: "any", type: "image/svg+xml" },
+        ],
+      });
+
+      navigator.mediaSession.setActionHandler("play", () => {
+        audioRef.current?.play();
+        setAudioPaused(false);
+      });
+      navigator.mediaSession.setActionHandler("pause", () => {
+        audioRef.current?.pause();
+        setAudioPaused(true);
+      });
+      navigator.mediaSession.setActionHandler("nexttrack", () => {
+        if (verses) {
+          const idx = verses.findIndex((v) => v.id === verse.id);
+          const next = verses[idx + 1];
+          if (next) playVerse(next);
+        }
+      });
+      navigator.mediaSession.setActionHandler("previoustrack", () => {
+        if (verses) {
+          const idx = verses.findIndex((v) => v.id === verse.id);
+          const prev = verses[idx - 1];
+          if (prev) playVerse(prev);
+        }
+      });
+    }
+
     audio.onloadedmetadata = () => {
       setAudioDuration(audio.duration);
     };
@@ -939,7 +974,6 @@ function SurahPageContent() {
           playVerse(nextVerse);
           document.getElementById(`verse-${nextVerse.number}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
         } else if (autoNextSurahRef.current && id < 114) {
-          // Navigate to next surah and auto-start
           setPlayingVerse(null);
           router.push(`/quran/${id + 1}?autoplay=1`);
         } else {
@@ -954,7 +988,7 @@ function SurahPageContent() {
     audio.onerror = () => {
       setPlayingVerse(null);
     };
-  }, [playingVerse, verses]);
+  }, [playingVerse, verses, chapter]);
 
   const playSurah = useCallback(() => {
     if (!verses || verses.length === 0) return;
