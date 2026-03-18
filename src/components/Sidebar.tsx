@@ -41,8 +41,8 @@ const navSections: NavSection[] = [
     title: "Foundations",
     items: [
       { href: "/tawhid", label: "Tawheed", labelAr: "التوحيد", icon: Shield },
-      { href: "/articles-of-faith", label: "Articles of Faith", labelAr: "أركان الإيمان", icon: Star },
       { href: "/pillars", label: "Pillars", labelAr: "الأركان", icon: Landmark },
+      { href: "/articles-of-faith", label: "Articles of Faith", labelAr: "أركان الإيمان", icon: Star },
     ],
   },
   {
