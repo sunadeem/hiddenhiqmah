@@ -296,6 +296,71 @@ const prayers: Prayer[] = [
   },
 ];
 
+/* ───────────────────────── types of prayer ───────────────────────── */
+
+const prayerTypes = [
+  {
+    id: "fard",
+    name: "Fard (Obligatory)",
+    nameAr: "فرض",
+    detail:
+      "The five daily prayers are fard 'ayn — an individual obligation upon every sane, adult Muslim. Missing them intentionally is a major sin. The Prophet (peace be upon him) said: 'Between a man and shirk (polytheism) and kufr (disbelief) is the abandoning of prayer.'",
+    examples: "Fajr (2), Dhuhr (4), Asr (4), Maghrib (3), Isha (4) — plus Jumu'ah (2) on Fridays for men",
+    ruling: "Obligatory — sinful to miss without valid excuse",
+    ref: "Muslim 1:147; Nasai 5:18",
+  },
+  {
+    id: "sunnah-muakkadah",
+    name: "Sunnah Mu'akkadah (Confirmed Sunnah)",
+    nameAr: "سنة مؤكدة",
+    detail:
+      "These are prayers the Prophet (peace be upon him) prayed consistently and rarely missed. They are strongly recommended — not sinful to miss occasionally, but consistently abandoning them is blameworthy. They are also called the rawatib (regular sunnah prayers).",
+    examples: "2 before Fajr, 4 before Dhuhr, 2 after Dhuhr, 2 after Maghrib, 2 after Isha — 12 total",
+    ruling: "Strongly recommended — the Prophet rarely left them",
+    ref: "Muslim 6:124; Tirmidhi 2:283",
+  },
+  {
+    id: "sunnah-ghair",
+    name: "Sunnah Ghair Mu'akkadah (Non-Confirmed Sunnah)",
+    nameAr: "سنة غير مؤكدة",
+    detail:
+      "Voluntary prayers the Prophet (peace be upon him) prayed sometimes but not consistently. They carry reward but there is no blame for leaving them. These include extra prayers before Asr or Isha, and additional rak'at beyond the rawatib.",
+    examples: "4 before Asr, 2 before Maghrib, 2 before Isha, additional rak'at of Duha",
+    ruling: "Recommended — rewarded for praying, no blame for leaving",
+    ref: "Tirmidhi 2:282; Abu Dawud 5:179",
+  },
+  {
+    id: "witr",
+    name: "Witr",
+    nameAr: "وتر",
+    detail:
+      "The Witr prayer is prayed after Isha and is an odd number of rak'at — most commonly 1 or 3, though up to 11 is narrated. The Prophet (peace be upon him) never left it, even while traveling. According to the Hanafi school, Witr is wajib (necessary); the other schools consider it a confirmed sunnah. It includes the Qunut supplication in the last rak'ah.",
+    examples: "1 rak'ah, or 3 (with 2 + salam + 1, or 3 continuous), up to 11",
+    ruling: "Wajib according to Hanafis; Sunnah Mu'akkadah for others",
+    ref: "Bukhari 14:9; Muslim 6:153",
+  },
+  {
+    id: "nafl",
+    name: "Nafl (Voluntary)",
+    nameAr: "نفل",
+    detail:
+      "Any voluntary prayer beyond the fard and sunnah prayers. These are prayed to draw closer to Allah and earn extra reward. They include Tahajjud, Duha, Tawbah, Istikhara, and any general voluntary rak'at. Allah says in a hadith qudsi: 'My servant continues to draw near to Me with voluntary acts of worship until I love him.'",
+    examples: "Tahajjud, Duha, Salat at-Tawbah, Istikhara, Salat al-Haajah",
+    ruling: "Voluntary — rewarded for praying, no blame for leaving",
+    ref: "Bukhari 81:38",
+  },
+  {
+    id: "fard-kifayah",
+    name: "Fard Kifayah (Communal Obligation)",
+    nameAr: "فرض كفاية",
+    detail:
+      "A communal obligation — if a sufficient number of Muslims perform it, the obligation is lifted from the rest. If no one performs it, all are sinful. The main example is the Janazah (funeral) prayer. It is not an individual duty like the five daily prayers, but a community responsibility.",
+    examples: "Janazah (funeral prayer)",
+    ruling: "Obligatory on the community — if some perform it, others are excused",
+    ref: "Bukhari 23:81; Muslim 11:67",
+  },
+];
+
 /* ───────────────────────── voluntary / special prayers ───────────────────────── */
 
 const voluntaryPrayers: Prayer[] = [
@@ -1227,7 +1292,7 @@ function SalahContent() {
   useScrollToSection();
   const searchParams = useSearchParams();
   const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "times");
-  const [activePrayer, setActivePrayer] = useState("fajr");
+  const [activePrayer, setActivePrayer] = useState("types");
   const [activeVoluntary, setActiveVoluntary] = useState("tahajjud");
   const [activeWudu, setActiveWudu] = useState("overview");
   const [showGuide, setShowGuide] = useState(false);
@@ -1244,14 +1309,18 @@ function SalahContent() {
   const [ptError, setPtError] = useState("");
   const [ptCountdown, setPtCountdown] = useState("");
   const [ptNextPrayerKey, setPtNextPrayerKey] = useState("");
-  const [ptSearchCity, setPtSearchCity] = useState("");
-  const [ptSearchCountry, setPtSearchCountry] = useState("");
+  const [ptSearchQuery, setPtSearchQuery] = useState("");
+  const [ptSuggestions, setPtSuggestions] = useState<Array<{ display: string; lat: number; lon: number }>>([]);
+  const [ptShowSuggestions, setPtShowSuggestions] = useState(false);
+  const [ptSearching, setPtSearching] = useState(false);
   const [ptShowManualInput, setPtShowManualInput] = useState(false);
   const [ptLocating, setPtLocating] = useState(false);
   const ptIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const ptFetched = useRef(false);
+  const ptDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const ptInputRef = useRef<HTMLInputElement>(null);
 
-  const ptFetchTimes = useCallback(
+  const ptFetchTimesByCity = useCallback(
     async (c: string, co: string, m: number) => {
       setPtLoading(true);
       setPtError("");
@@ -1263,9 +1332,32 @@ function SalahContent() {
         const data: AladhanResponse = await res.json();
         setPtTimings(data.data.timings);
         setPtHijri(data.data.date.hijri);
+        setPtCity(c);
+        setPtCountry(co);
         setPtDisplayLocation(`${c}, ${co}`);
       } catch {
         setPtError("Could not load prayer times. Please try a different city.");
+      } finally {
+        setPtLoading(false);
+      }
+    },
+    []
+  );
+
+  const ptFetchTimesByCoords = useCallback(
+    async (lat: number, lng: number, m: number) => {
+      setPtLoading(true);
+      setPtError("");
+      try {
+        const res = await fetch(
+          `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=${m}`
+        );
+        if (!res.ok) throw new Error("Failed to fetch prayer times");
+        const data: AladhanResponse = await res.json();
+        setPtTimings(data.data.timings);
+        setPtHijri(data.data.date.hijri);
+      } catch {
+        setPtError("Could not load prayer times.");
       } finally {
         setPtLoading(false);
       }
@@ -1278,34 +1370,41 @@ function SalahContent() {
     setPtLocating(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        // Fetch prayer times directly by coordinates (most reliable)
+        ptFetchTimesByCoords(latitude, longitude, ptMethod);
+        // Resolve display name in parallel
         try {
           const geoRes = await fetch(
-            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}`
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
           );
           const geo = await geoRes.json();
-          const c = geo.city || geo.locality || "Makkah";
-          const co = geo.countryName || "Saudi Arabia";
-          setPtCity(c);
-          setPtCountry(co);
-          ptFetchTimes(c, co, ptMethod);
+          const city = geo.city || geo.locality || geo.principalSubdivision || "";
+          const country = geo.countryName || "";
+          if (city || country) {
+            setPtCity(city);
+            setPtCountry(country);
+            setPtDisplayLocation(city && country ? `${city}, ${country}` : city || country);
+          } else {
+            setPtDisplayLocation(`${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`);
+          }
         } catch {
-          setPtCity("Makkah");
-          setPtCountry("Saudi Arabia");
-          ptFetchTimes("Makkah", "Saudi Arabia", ptMethod);
+          setPtDisplayLocation(`${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`);
         }
         setPtLocating(false);
       },
       () => {
         setPtCity("Makkah");
         setPtCountry("Saudi Arabia");
+        setPtDisplayLocation("Makkah, Saudi Arabia");
         setPtShowManualInput(true);
-        ptFetchTimes("Makkah", "Saudi Arabia", ptMethod);
+        ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
         setPtLocating(false);
       },
-      { timeout: 5000 }
+      { timeout: 8000 }
     );
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ptFetchTimes]);
+  }, [ptFetchTimesByCoords, ptFetchTimesByCity]);
 
   useEffect(() => {
     if (ptFetched.current) return;
@@ -1313,8 +1412,9 @@ function SalahContent() {
     if (!navigator.geolocation) {
       setPtCity("Makkah");
       setPtCountry("Saudi Arabia");
+      setPtDisplayLocation("Makkah, Saudi Arabia");
       setPtShowManualInput(true);
-      ptFetchTimes("Makkah", "Saudi Arabia", ptMethod);
+      ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
       return;
     }
     ptAutoLocate();
@@ -1341,19 +1441,69 @@ function SalahContent() {
   const ptHandleMethodChange = (newMethod: number) => {
     setPtMethod(newMethod);
     if (ptCity && ptCountry) {
-      ptFetchTimes(ptCity, ptCountry, newMethod);
+      ptFetchTimesByCity(ptCity, ptCountry, newMethod);
     }
+  };
+
+  const ptSearchLocation = useCallback(async (query: string) => {
+    if (query.length < 2) { setPtSuggestions([]); return; }
+    setPtSearching(true);
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=1`,
+        { headers: { "Accept-Language": "en" } }
+      );
+      const data = await res.json();
+      setPtSuggestions(
+        data.map((r: { display_name: string; lat: string; lon: string; address?: { city?: string; town?: string; village?: string; state?: string; country?: string } }) => {
+          const addr = r.address || {};
+          const city = addr.city || addr.town || addr.village || "";
+          const parts = [city, addr.state, addr.country].filter(Boolean);
+          return {
+            display: parts.length > 0 ? parts.join(", ") : r.display_name.split(",").slice(0, 3).join(","),
+            lat: parseFloat(r.lat),
+            lon: parseFloat(r.lon),
+          };
+        })
+      );
+      setPtShowSuggestions(true);
+    } catch {
+      setPtSuggestions([]);
+    } finally {
+      setPtSearching(false);
+    }
+  }, []);
+
+  const ptHandleQueryChange = (value: string) => {
+    setPtSearchQuery(value);
+    if (ptDebounceRef.current) clearTimeout(ptDebounceRef.current);
+    ptDebounceRef.current = setTimeout(() => ptSearchLocation(value), 300);
+  };
+
+  const ptSelectSuggestion = (s: { display: string; lat: number; lon: number }) => {
+    setPtSearchQuery(s.display);
+    setPtShowSuggestions(false);
+    setPtSuggestions([]);
+    setPtDisplayLocation(s.display);
+    const parts = s.display.split(", ");
+    setPtCity(parts[0] || "");
+    setPtCountry(parts[parts.length - 1] || "");
+    ptFetchTimesByCoords(s.lat, s.lon, ptMethod);
+    setPtShowManualInput(false);
   };
 
   const ptHandleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!ptSearchCity.trim()) return;
-    const c = ptSearchCity.trim();
-    const co = ptSearchCountry.trim() || "auto";
-    setPtCity(c);
-    setPtCountry(co);
-    ptFetchTimes(c, co, ptMethod);
-    setPtShowManualInput(false);
+    if (!ptSearchQuery.trim()) return;
+    // If there are suggestions, pick the first one
+    if (ptSuggestions.length > 0) {
+      ptSelectSuggestion(ptSuggestions[0]);
+    } else {
+      // Fallback: try city-based fetch
+      const q = ptSearchQuery.trim();
+      ptFetchTimesByCity(q, "auto", ptMethod);
+      setPtShowManualInput(false);
+    }
   };
 
   /* ── search matchers ── */
@@ -1380,6 +1530,11 @@ function SalahContent() {
 
   const filteredPrayers = prayers.filter(prayerMatches);
   const filteredVoluntary = voluntaryPrayers.filter(prayerMatches);
+  const filteredPrayerTypes = prayerTypes.filter((t) => {
+    if (!search) return true;
+    return textMatch(search, t.name, t.nameAr, t.detail, t.examples, t.ruling, t.ref);
+  });
+  const showTypesTab = !search || filteredPrayerTypes.length > 0;
   const filteredMatters = whyItMatters.filter(mattersMatches);
 
   const wuduTopicMatches = (t: WuduTopic) => {
@@ -1395,7 +1550,7 @@ function SalahContent() {
 
   const currentPrayer = activeSection === "voluntary"
     ? voluntaryPrayers.find((p) => p.id === activeVoluntary)!
-    : prayers.find((p) => p.id === activePrayer)!;
+    : prayers.find((p) => p.id === activePrayer) || prayers[0];
 
   return (
     <div>
@@ -1484,7 +1639,7 @@ function SalahContent() {
               </div>
             </motion.div>
 
-            {/* Manual Input */}
+            {/* Location Search */}
             {ptShowManualInput && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -1492,27 +1647,49 @@ function SalahContent() {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <form onSubmit={ptHandleSearch} className="flex flex-wrap gap-2">
-                  <input
-                    type="text"
-                    placeholder="City (e.g. London)"
-                    value={ptSearchCity}
-                    onChange={(e) => setPtSearchCity(e.target.value)}
-                    className="flex-1 min-w-0 px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Country (optional)"
-                    value={ptSearchCountry}
-                    onChange={(e) => setPtSearchCountry(e.target.value)}
-                    className="flex-1 min-w-0 px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 hover:bg-[var(--color-gold)]/30 transition-colors"
-                  >
-                    Search
-                  </button>
+                <form onSubmit={ptHandleSearch} className="relative">
+                  <div className="flex gap-2">
+                    <div className="relative flex-1 min-w-0">
+                      <input
+                        ref={ptInputRef}
+                        type="text"
+                        placeholder="Search city, state, or country..."
+                        value={ptSearchQuery}
+                        onChange={(e) => ptHandleQueryChange(e.target.value)}
+                        onFocus={() => ptSuggestions.length > 0 && setPtShowSuggestions(true)}
+                        onBlur={() => setTimeout(() => setPtShowSuggestions(false), 200)}
+                        autoComplete="off"
+                        className="w-full px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
+                      />
+                      {ptSearching && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <div className="w-4 h-4 border-2 border-[var(--color-gold)]/30 border-t-[var(--color-gold)] rounded-full animate-spin" />
+                        </div>
+                      )}
+                      {ptShowSuggestions && ptSuggestions.length > 0 && (
+                        <div className="absolute z-50 top-full left-0 right-0 mt-1 rounded-lg border sidebar-border card-bg shadow-lg overflow-hidden">
+                          {ptSuggestions.map((s, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => ptSelectSuggestion(s)}
+                              className="w-full text-left px-3 py-2.5 text-sm text-themed hover:bg-[var(--color-gold)]/10 transition-colors flex items-center gap-2 border-b sidebar-border last:border-b-0"
+                            >
+                              <MapPin size={12} className="text-gold/60 shrink-0" />
+                              <span className="truncate">{s.display}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 hover:bg-[var(--color-gold)]/30 transition-colors shrink-0"
+                    >
+                      Search
+                    </button>
+                  </div>
                 </form>
               </motion.div>
             )}
@@ -1976,6 +2153,24 @@ function SalahContent() {
               <div className="flex flex-col md:flex-row gap-4 items-start">
                 {/* Left side — prayer pills (horizontal scroll on mobile, vertical on md+) */}
                 <div className="flex md:flex-col gap-2 shrink-0 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+                  {showTypesTab && (
+                    <button
+                      onClick={() => {
+                        setActivePrayer("types");
+                        setShowGuide(false);
+                      }}
+                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
+                        activePrayer === "types"
+                          ? "bg-gold/20 text-gold border border-gold/40"
+                          : "text-themed-muted hover:text-themed border sidebar-border"
+                      }`}
+                    >
+                      <span>Types</span>
+                      <span className={`text-[10px] font-arabic ${
+                        activePrayer === "types" ? "text-gold/60" : "text-themed-muted/50"
+                      }`}>أنواع</span>
+                    </button>
+                  )}
                   {filteredPrayers.map((prayer) => (
                     <button
                       key={prayer.id}
@@ -2000,6 +2195,51 @@ function SalahContent() {
                 {/* Right side — prayer content */}
                 <div className="flex-1 min-w-0 w-full">
                   <AnimatePresence mode="wait">
+                    {activePrayer === "types" && (
+                      <motion.div
+                        key="types"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <ContentCard>
+                          <h3 className="text-lg font-semibold text-themed mb-1">Types of Prayer</h3>
+                          <p className="text-sm text-themed-muted mb-5">
+                            Islamic prayers are categorized by their obligation level — from the five
+                            compulsory daily prayers to voluntary acts of devotion.
+                          </p>
+                          <div className="space-y-4">
+                            {filteredPrayerTypes.map((type) => (
+                              <div
+                                key={type.id}
+                                className="rounded-lg p-4 border sidebar-border"
+                                style={{ backgroundColor: "var(--color-bg)" }}
+                              >
+                                <div className="flex items-baseline gap-2 mb-2">
+                                  <h4 className="text-sm font-semibold text-themed">{type.name}</h4>
+                                  <span className="text-xs font-arabic text-gold/60">{type.nameAr}</span>
+                                </div>
+                                <p className="text-sm text-themed-muted leading-relaxed mb-3">{type.detail}</p>
+                                <div className="flex flex-col sm:flex-row gap-3 text-xs">
+                                  <div className="flex-1 rounded-md p-2.5 border sidebar-border" style={{ backgroundColor: "var(--color-bg-secondary)" }}>
+                                    <span className="text-themed-muted uppercase tracking-wider text-[10px]">Examples</span>
+                                    <p className="text-themed mt-1">{type.examples}</p>
+                                  </div>
+                                  <div className="sm:w-48 rounded-md p-2.5 border sidebar-border" style={{ backgroundColor: "var(--color-bg-secondary)" }}>
+                                    <span className="text-themed-muted uppercase tracking-wider text-[10px]">Ruling</span>
+                                    <p className="text-themed mt-1">{type.ruling}</p>
+                                  </div>
+                                </div>
+                                <p className="text-xs text-gold/60 mt-2">
+                                  <HadithRefText text={type.ref} />
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </ContentCard>
+                      </motion.div>
+                    )}
                     {filteredPrayers.map(
                       (prayer) =>
                         activePrayer === prayer.id && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu } from "lucide-react";
@@ -12,7 +12,21 @@ const BARE_ROUTES = ["/ask"];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const saved = localStorage.getItem("sidebar-collapsed");
+    if (saved === "true") setSidebarCollapsed(true);
+  }, []);
+
+  const toggleCollapse = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem("sidebar-collapsed", String(next));
+      return next;
+    });
+  };
 
   // Render without shell chrome for popup routes
   if (BARE_ROUTES.includes(pathname)) {
@@ -21,7 +35,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
       <div className="min-h-screen bg-themed">
-        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+        <Sidebar
+          mobileOpen={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={toggleCollapse}
+        />
 
         {/* Mobile top bar */}
         <header className="lg:hidden fixed top-0 left-0 right-0 z-30 sidebar-bg border-b sidebar-border safe-area-top">
@@ -38,7 +57,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Main content */}
-        <main className="lg:ml-64 pt-14 lg:pt-0 pb-0 min-h-screen">
+        <main
+          className={`pt-14 lg:pt-0 pb-0 min-h-screen transition-all duration-300 ${
+            sidebarCollapsed ? "lg:ml-[68px]" : "lg:ml-64"
+          }`}
+        >
           <div className="p-3 sm:p-5 md:p-6 lg:p-8">
             {children}
           </div>
