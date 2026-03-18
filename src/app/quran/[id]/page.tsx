@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState, useEffect, useCallback, useRef } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -20,23 +20,15 @@ import {
   Plus,
   Check,
   SkipForward,
+  SkipBack,
+  ChevronFirst,
+  ChevronLast,
 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import BookmarkButton from "@/components/BookmarkButton";
 import chapters from "@/data/quran/chapters.json";
-import { getFontSize, setFontSize as saveFontSize, markSurahRead, getAutoPlayNextSurah, setAutoPlayNextSurah } from "@/lib/storage";
-
-interface Verse {
-  id: number;
-  number: number;
-  key: string;
-  textAr: string;
-  textTranslit?: string;
-  textEn: string;
-  juz: number;
-  page: number;
-  hizb: number;
-}
+import { getFontSize, setFontSize as saveFontSize, markSurahRead } from "@/lib/storage";
+import { useQuranAudio, type Verse } from "@/context/QuranAudioContext";
 
 type TafsirData = Record<string, string>;
 type TafsirImportMap = Record<number, () => Promise<{ default: TafsirData }>>;
@@ -651,11 +643,6 @@ const timestampImports: Record<number, () => Promise<{ default: TimestampData }>
   114: () => import("@/data/quran/timestamps/114.json"),
 };
 
-// Audio URL builder for Mishari Rashid al-Afasy
-function getAudioUrl(globalVerseId: number): string {
-  return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalVerseId}.mp3`;
-}
-
 function highlightText(text: string, query: string) {
   if (!query || query.length < 3) return text;
   const lowerText = text.toLowerCase();
@@ -688,7 +675,6 @@ export default function SurahPage() {
 function SurahPageContent() {
   const params = useParams();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const id = Number(params.id);
   const chapter = chapters.find((ch) => ch.id === id);
 
@@ -716,28 +702,34 @@ function SurahPageContent() {
   const [fontSize, setFontSizeState] = useState(2);
   const [shareCopied, setShareCopied] = useState<number | null>(null);
 
-  // Audio state
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [playingVerse, setPlayingVerse] = useState<number | null>(null);
-  const autoPlayRef = useRef(false);
-  const [audioProgress, setAudioProgress] = useState(0);
-  const [audioDuration, setAudioDuration] = useState(0);
-  const [audioPaused, setAudioPaused] = useState(false);
-  const [autoNextSurah, setAutoNextSurah] = useState(false);
-  const autoNextSurahRef = useRef(false);
-
-  // Load auto-play-next preference
-  useEffect(() => {
-    const val = getAutoPlayNextSurah();
-    setAutoNextSurah(val);
-    autoNextSurahRef.current = val;
-  }, []);
+  // Audio from global context
+  const {
+    playingVerse,
+    audioProgress,
+    audioDuration,
+    audioPaused,
+    autoNextSurah,
+    playVerse,
+    playSurah,
+    togglePause,
+    skipNext,
+    skipPrevious,
+    skipNextSurah,
+    skipPreviousSurah,
+    seekTo,
+    stopPlayback,
+    toggleAutoNextSurah,
+    setAutoPlay,
+    registerSurah,
+    surahId: contextSurahId,
+  } = useQuranAudio();
 
   const shouldAutoPlay = searchParams.get("autoplay") === "1";
   const autoPlayTriggered = useRef(false);
 
   useEffect(() => {
     const isAutoPlayTransition = shouldAutoPlay && !autoPlayTriggered.current;
+    const isAlreadyPlayingThisSurah = contextSurahId === id && playingVerse !== null;
     setVerses(null);
     setLoading(true);
     setSearch("");
@@ -747,20 +739,16 @@ function SurahPageContent() {
     setShowAllTafsir(false);
     setWordsData(null);
     setTimestampData(null);
-    // Don't reset audio state during autoplay transitions
-    if (!isAutoPlayTransition) {
-      setPlayingVerse(null);
-      autoPlayRef.current = false;
+    // Don't reset audio state during autoplay transitions or when already playing this surah
+    if (!isAutoPlayTransition && !isAlreadyPlayingThisSurah) {
+      stopPlayback();
       autoPlayTriggered.current = false;
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
     }
     const loader = verseImports[id];
     if (loader) {
       loader().then((mod) => {
         setVerses(mod.default);
+        registerSurah(id, mod.default);
         setLoading(false);
       });
     } else {
@@ -899,147 +887,26 @@ function SurahPageContent() {
     }
   };
 
-  // Audio playback
-  const playVerse = useCallback((verse: Verse) => {
-    // If same verse is playing, pause it
-    if (playingVerse === verse.number) {
-      audioRef.current?.pause();
-      setPlayingVerse(null);
-      autoPlayRef.current = false;
-      return;
-    }
-
-    // Stop any currently playing audio
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-
-    const audio = new Audio(getAudioUrl(verse.id));
-    audioRef.current = audio;
-    setPlayingVerse(verse.number);
-    setAudioProgress(0);
-    setAudioDuration(0);
-    setAudioPaused(false);
-
-    audio.play();
-
-    // Update lock screen / notification media info
-    if ("mediaSession" in navigator && chapter) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: `${chapter.name} — Verse ${verse.number}`,
-        artist: "Mishari Rashid al-Afasy",
-        album: `Surah ${chapter.name} (${chapter.nameAr})`,
-        artwork: [
-          { src: "/icon.svg", sizes: "any", type: "image/svg+xml" },
-        ],
-      });
-
-      navigator.mediaSession.setActionHandler("play", () => {
-        audioRef.current?.play();
-        setAudioPaused(false);
-      });
-      navigator.mediaSession.setActionHandler("pause", () => {
-        audioRef.current?.pause();
-        setAudioPaused(true);
-      });
-      navigator.mediaSession.setActionHandler("nexttrack", () => {
-        if (verses) {
-          const idx = verses.findIndex((v) => v.id === verse.id);
-          const next = verses[idx + 1];
-          if (next) playVerse(next);
-        }
-      });
-      navigator.mediaSession.setActionHandler("previoustrack", () => {
-        if (verses) {
-          const idx = verses.findIndex((v) => v.id === verse.id);
-          const prev = verses[idx - 1];
-          if (prev) playVerse(prev);
-        }
-      });
-    }
-
-    audio.onloadedmetadata = () => {
-      setAudioDuration(audio.duration);
-    };
-
-    audio.ontimeupdate = () => {
-      setAudioProgress(audio.currentTime);
-    };
-
-    audio.onended = () => {
-      if (autoPlayRef.current && verses) {
-        const currentIdx = verses.findIndex((v) => v.id === verse.id);
-        const nextVerse = verses[currentIdx + 1];
-        if (nextVerse) {
-          playVerse(nextVerse);
-          document.getElementById(`verse-${nextVerse.number}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-        } else if (autoNextSurahRef.current && id < 114) {
-          setPlayingVerse(null);
-          router.push(`/quran/${id + 1}?autoplay=1`);
-        } else {
-          setPlayingVerse(null);
-          autoPlayRef.current = false;
-        }
-      } else {
-        setPlayingVerse(null);
-      }
-    };
-
-    audio.onerror = () => {
-      setPlayingVerse(null);
-    };
-  }, [playingVerse, verses, chapter]);
-
-  const playSurah = useCallback(() => {
-    if (!verses || verses.length === 0) return;
-    if (playingVerse !== null) {
-      // Stop playback
-      audioRef.current?.pause();
-      setPlayingVerse(null);
-      autoPlayRef.current = false;
-      return;
-    }
-    autoPlayRef.current = true;
-    playVerse(verses[0]);
-  }, [verses, playingVerse, playVerse]);
-
   // Auto-start playback if navigated with ?autoplay=1
   useEffect(() => {
     if (shouldAutoPlay && verses && verses.length > 0 && !autoPlayTriggered.current) {
       autoPlayTriggered.current = true;
-      autoPlayRef.current = true;
+      setAutoPlay(true);
       playVerse(verses[0]);
     }
-  }, [shouldAutoPlay, verses, playVerse]);
-
-  // Cleanup audio on unmount
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
+  }, [shouldAutoPlay, verses, playVerse, setAutoPlay]);
 
   // Keyboard shortcuts
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      // Don't trigger when typing in search
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
       if (e.code === "Space") {
         e.preventDefault();
-        if (playingVerse !== null && audioRef.current) {
-          if (audioRef.current.paused) {
-            audioRef.current.play();
-            setAudioPaused(false);
-          } else {
-            audioRef.current.pause();
-            setAudioPaused(true);
-          }
+        if (playingVerse !== null) {
+          togglePause();
         } else if (verses && verses.length > 0) {
-          autoPlayRef.current = true;
+          setAutoPlay(true);
           playVerse(verses[0]);
         }
       }
@@ -1047,7 +914,7 @@ function SurahPageContent() {
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [playingVerse, verses, playVerse]);
+  }, [playingVerse, verses, playVerse, togglePause, setAutoPlay]);
 
   return (
     <div>
@@ -1242,7 +1109,7 @@ function SurahPageContent() {
                     </span>
                     {/* Play verse button */}
                     <button
-                      onClick={() => { autoPlayRef.current = autoNextSurahRef.current; playVerse(verse); }}
+                      onClick={() => playVerse(verse)}
                       className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
                         playingVerse === verse.number
                           ? "bg-gold/20 text-gold"
@@ -1461,10 +1328,9 @@ function SurahPageContent() {
             <div
               className="h-1 bg-[var(--color-gold)]/10 cursor-pointer"
               onClick={(e) => {
-                if (!audioRef.current || !audioDuration) return;
                 const rect = e.currentTarget.getBoundingClientRect();
                 const pct = (e.clientX - rect.left) / rect.width;
-                audioRef.current.currentTime = pct * audioDuration;
+                seekTo(pct);
               }}
             >
               <div
@@ -1473,22 +1339,42 @@ function SurahPageContent() {
               />
             </div>
             <div className="flex items-center gap-3 px-4 py-2.5 max-w-4xl mx-auto">
-              <button
-                onClick={() => {
-                  if (audioRef.current) {
-                    if (audioRef.current.paused) {
-                      audioRef.current.play();
-                      setAudioPaused(false);
-                    } else {
-                      audioRef.current.pause();
-                      setAudioPaused(true);
-                    }
-                  }
-                }}
-                className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold shrink-0"
-              >
-                {audioPaused ? <Play size={14} /> : <Pause size={14} />}
-              </button>
+              <div className="flex items-center gap-0.5 shrink-0">
+                <button
+                  onClick={skipPreviousSurah}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-themed-muted hover:text-themed transition-colors"
+                  title="Previous Surah"
+                >
+                  <ChevronFirst size={15} />
+                </button>
+                <button
+                  onClick={skipPrevious}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-themed-muted hover:text-themed transition-colors"
+                  title="Previous Verse"
+                >
+                  <SkipBack size={13} />
+                </button>
+                <button
+                  onClick={togglePause}
+                  className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold"
+                >
+                  {audioPaused ? <Play size={14} /> : <Pause size={14} />}
+                </button>
+                <button
+                  onClick={skipNext}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-themed-muted hover:text-themed transition-colors"
+                  title="Next Verse"
+                >
+                  <SkipForward size={13} />
+                </button>
+                <button
+                  onClick={skipNextSurah}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-themed-muted hover:text-themed transition-colors"
+                  title="Next Surah"
+                >
+                  <ChevronLast size={15} />
+                </button>
+              </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-themed font-medium truncate">{chapter.name} — Verse {playingVerse}</p>
                 <div className="flex items-center gap-2">
@@ -1504,12 +1390,7 @@ function SurahPageContent() {
               </div>
               {/* Auto-play next surah toggle */}
               <button
-                onClick={() => {
-                  const next = !autoNextSurah;
-                  setAutoNextSurah(next);
-                  autoNextSurahRef.current = next;
-                  setAutoPlayNextSurah(next);
-                }}
+                onClick={toggleAutoNextSurah}
                 className={`flex items-center gap-1 text-xs px-2 py-1.5 rounded-lg border transition-colors shrink-0 ${
                   autoNextSurah
                     ? "bg-[var(--color-gold)]/15 border-[var(--color-gold)]/30 text-gold"
@@ -1521,7 +1402,7 @@ function SurahPageContent() {
                 <span className="hidden sm:inline">Auto Play Surahs</span>
               </button>
               <button
-                onClick={() => { audioRef.current?.pause(); setPlayingVerse(null); autoPlayRef.current = false; }}
+                onClick={stopPlayback}
                 className="text-xs text-themed-muted hover:text-themed transition-colors shrink-0"
               >
                 ✕

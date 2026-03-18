@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { QuranAudioProvider } from "@/context/QuranAudioContext";
 import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
@@ -33,7 +34,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <ThemeProvider>
-          <AppShell>{children}</AppShell>
+          <QuranAudioProvider>
+            <AppShell>{children}</AppShell>
+          </QuranAudioProvider>
         </ThemeProvider>
       </body>
     </html>
