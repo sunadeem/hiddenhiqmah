@@ -26,7 +26,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "SubhanAllah",
     english: "Glory be to Allah",
     target: 33,
-    hadith: "Muslim 4:147",
+    hadith: "Muslim 5:184",
   },
   {
     id: "alhamdulillah",
@@ -34,7 +34,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "Alhamdulillah",
     english: "Praise be to Allah",
     target: 33,
-    hadith: "Muslim 4:147",
+    hadith: "Muslim 5:184",
   },
   {
     id: "allahu-akbar",
@@ -42,7 +42,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "Allahu Akbar",
     english: "Allah is the Greatest",
     target: 34,
-    hadith: "Muslim 4:147",
+    hadith: "Muslim 5:184",
   },
   {
     id: "la-ilaha-illallah",
@@ -74,7 +74,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "La hawla wa la quwwata illa billah",
     english: "There is no power except with Allah",
     target: null,
-    hadith: "Bukhari 64:245",
+    hadith: "Bukhari 80:79",
   },
   {
     id: "salawat",
@@ -82,7 +82,7 @@ const dhikrList: DhikrItem[] = [
     transliteration: "Salawat on the Prophet",
     english: "O Allah, send blessings upon Muhammad",
     target: 100,
-    hadith: "Muslim 4:66",
+    hadith: "Muslim 4:74",
   },
 ];
 

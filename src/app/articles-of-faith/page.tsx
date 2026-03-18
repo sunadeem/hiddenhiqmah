@@ -157,11 +157,11 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Muslim 53:2",
+        ref: "Muslim 55:78",
         text: "The angels were created from light, the jinn were created from smokeless fire, and Adam was created from what has been described to you (clay).",
       },
       {
-        ref: "Muslim 1:321",
+        ref: "Muslim 53:33",
         text: "On the Day of Judgement, Hell will be brought with seventy thousand reins, each rein held by seventy thousand angels.",
       },
     ],
@@ -192,7 +192,7 @@ const articles: Article[] = [
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on belief in the angels",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on angels",
       "Tafsir Ibn Kathir — Commentary on Quran 2:285, 35:1, 66:6",
-      "Muslim 53:2, 15:52 — On the creation of angels and their immense number",
+      "Muslim 55:78, 53:33 — On the creation of angels and their immense number",
     ],
   },
   {
@@ -287,7 +287,7 @@ const articles: Article[] = [
         text: "The Prophet (peace be upon him) was asked about the number of prophets and he indicated that there were a great many, and among them were 315 messengers.",
       },
       {
-        ref: "Bukhari 54:19",
+        ref: "Bukhari 61:43",
         text: "The Prophet (peace be upon him) said: 'My example and the example of the prophets before me is like that of a man who built a house and made it beautiful except for the place of one brick. People would look at it and say: How excellent — if only that brick were put in its place. I am that brick, and I am the seal of the prophets.'",
       },
     ],

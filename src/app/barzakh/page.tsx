@@ -301,7 +301,7 @@ const protectionTopics: GraveTopic[] = [
           title: "The Prophet's regular practice",
           detail:
             "A'ishah (may Allah be pleased with her) reported that the Prophet (peace be upon him) used to supplicate in prayer: 'O Allah, I seek refuge with You from the punishment of the grave, and I seek refuge with You from the trial of al-Masih al-Dajjal, and I seek refuge with You from the trials of life and the trials of death.'",
-          note: "Muslim 2:56",
+          note: "Muslim 5:162",
         },
         {
           title: "Supplication after burial",

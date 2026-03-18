@@ -143,7 +143,7 @@ const proofTopics: Topic[] = [
           title: "The Muslim conquest of Jerusalem",
           detail:
             "The Prophet ﷺ foretold the conquest of Jerusalem (Bayt al-Maqdis). This was fulfilled during the caliphate of Umar ibn al-Khattab in 637 CE, when Umar personally traveled to Jerusalem to accept its surrender and guaranteed the safety of its Christian inhabitants in the Pact of Umar.",
-          note: "Bukhari 64:18",
+          note: "Bukhari 58:18",
         },
         {
           title: "A fire from Hijaz visible from Busra",
@@ -173,7 +173,7 @@ const proofTopics: Topic[] = [
           title: "Music and entertainment becoming widespread",
           detail:
             "The Prophet ﷺ said: 'There will be people from my Ummah who will consider illegal sexual intercourse, silk (for men), alcohol, and musical instruments as lawful.' The modern entertainment industry — worth trillions — has made music and these vices a central part of daily life globally.",
-          note: "Bukhari 92:16",
+          note: "Bukhari 74:16",
         },
         {
           title: "Muslims will be numerous but weak",
@@ -1190,7 +1190,7 @@ const atheismTopics: Topic[] = [
           title: "The universal search for meaning",
           detail:
             "Humans universally seek meaning, purpose, and transcendence. This is the fitrah — the innate disposition to seek God. The Prophet said every child is born upon the fitrah. Studies in cognitive science confirm that children naturally attribute design and purpose to the world. Atheism says this is an illusion. Islam says it is our deepest truth.",
-          note: "Bukhari 23:111; Muslim 46:11",
+          note: "Bukhari 23:112; Muslim 46:11",
         },
         {
           title: "Atheism leads logically to nihilism",
@@ -1199,7 +1199,7 @@ const atheismTopics: Topic[] = [
           note: "Quran 51:56 — 'I did not create jinn and mankind except to worship Me'",
         },
       ],
-      source: "Quran 17:85; Quran 51:56; Bukhari 23:111; Muslim 46:11",
+      source: "Quran 17:85; Quran 51:56; Bukhari 23:112; Muslim 46:11",
     },
   },
 ];
@@ -1320,10 +1320,10 @@ const questionTopics: Topic[] = [
           title: "The Prophet's example",
           detail:
             "The Prophet (peace be upon him) said: 'The best of you are those who are the best to their wives.' He helped with household chores, mended his own clothes, and consulted his wives on important matters. He never struck a woman. Aisha reported: 'The Messenger of Allah never struck anything with his hand — neither a woman nor a servant.'",
-          note: "Tirmidhi 49:295; Muslim 12:65",
+          note: "Tirmidhi 49:295; Muslim 43:108",
         },
       ],
-      source: "Quran 2:228; Quran 4:7; Quran 24:31; Quran 33:59; Tirmidhi 49:295; Muslim 12:65; Ibn Majah 0:224",
+      source: "Quran 2:228; Quran 4:7; Quran 24:31; Quran 33:59; Tirmidhi 49:295; Muslim 43:108; Ibn Majah 0:224",
     },
   },
   {

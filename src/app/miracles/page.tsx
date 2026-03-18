@@ -71,10 +71,10 @@ const miracles: Miracle[] = [
   {
     category: "prophecy",
     title: "The Conquest of Jerusalem",
-    reference: "Bukhari 64:18",
+    reference: "Bukhari 58:18",
     explanation: "Prophet Muhammad ﷺ told his companion Awf ibn Malik about six signs before the Day of Judgment, the first being his own death and the second being the conquest of Jerusalem (Bayt al-Maqdis). Jerusalem was conquered by the Muslim army under Caliph Umar ibn al-Khattab in 637 CE, just 5 years after the Prophet's death.",
     historicalContext: "Caliph Umar personally traveled to Jerusalem to accept its surrender from the Patriarch Sophronius. He famously refused to pray inside the Church of the Holy Sepulchre to prevent Muslims from converting it to a mosque.",
-    sources: ["Bukhari 64:18", "Historical: Siege of Jerusalem, 637 CE"],
+    sources: ["Bukhari 58:18", "Historical: Siege of Jerusalem, 637 CE"],
     strength: "strong",
   },
   {
@@ -111,20 +111,20 @@ const miracles: Miracle[] = [
   {
     category: "prophecy",
     title: "The Plague of Amwas",
-    reference: "Bukhari 64:18",
+    reference: "Bukhari 58:18",
     explanation: "Prophet Muhammad ﷺ informed his companion Awf ibn Malik of six signs, one of which was a plague that would strike the Muslims like the disease of sheep. The Plague of Amwas struck Palestine in 639 CE (18 AH), devastating the Muslim community in the Levant and killing approximately 25,000 people, including prominent companions such as Abu Ubayda ibn al-Jarrah.",
     historicalContext: "Abu Ubayda ibn al-Jarrah, the overall commander of the Muslim armies in Syria and one of the ten companions promised Paradise, died in this plague along with Mu'adh ibn Jabal and Yazid ibn Abi Sufyan.",
-    sources: ["Bukhari 64:18", "Ibn Kathir, Al-Bidayah wan-Nihayah"],
+    sources: ["Bukhari 58:18", "Ibn Kathir, Al-Bidayah wan-Nihayah"],
     strength: "strong",
   },
   {
     category: "prophecy",
     title: "Widespread Senseless Killing",
-    reference: "Bukhari 92:13, Muslim 15:117",
+    reference: "Bukhari 92:13, Muslim 54:23",
     arabic: "يَتَقَارَبُ الزَّمَانُ وَيَكْثُرُ الْهَرْجُ ... الْقَتْلُ الْقَتْلُ",
     translation: "Time will pass rapidly and al-harj will increase... killing, killing.",
     explanation: "The Prophet ﷺ prophesied a time when senseless, widespread killing (al-harj) would become commonplace — where the killer would not know why he kills and the victim would not know why he was killed. This describes an era of indiscriminate violence, terrorism, and mass conflict that the modern world has witnessed in unprecedented scale.",
-    sources: ["Bukhari 92:13", "Muslim 15:117"],
+    sources: ["Bukhari 92:13", "Muslim 54:23"],
     strength: "strong",
   },
   {

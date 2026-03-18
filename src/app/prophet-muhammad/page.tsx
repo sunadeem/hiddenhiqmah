@@ -128,7 +128,7 @@ const timeline: TimelineEvent[] = [
     title: "Battle of Badr",
     detail:
       "The first major military confrontation between the Muslims and the Quraysh. The Prophet ﷺ set out with 313 companions — poorly armed, with only 2 horses and 70 camels — to intercept a Qurayshi trade caravan led by Abu Sufyan. The caravan escaped, but Abu Jahl marched from Mecca with an army of over 1,000 well-equipped warriors, determined to crush the Muslims. The night before battle, the Prophet ﷺ spent the night in earnest supplication, raising his hands until his cloak fell off his shoulders, praying: 'O Allah, if this small band of Muslims perishes today, You will not be worshipped on earth again.' Abu Bakr picked up his cloak, placed it back on his shoulders, and said: 'Enough, O Messenger of Allah, your Lord will fulfill His promise to you.' Allah responded by revealing: 'I will reinforce you with a thousand angels, following one another.' The Muslims achieved a decisive victory — 70 Qurayshi leaders were killed including Abu Jahl, and 70 were captured, while only 14 Muslims were martyred. The Prophet ﷺ treated the captives with unprecedented mercy, and those who could read and write were freed by teaching ten Muslim children to read.",
-    reference: "Quran 3:123-125; Quran 8:9; Bukhari 6:5; Muslim 6:192",
+    reference: "Quran 3:123-125; Quran 8:9; Bukhari 64:43; Muslim 32:69",
   },
   {
     year: "624 CE",
@@ -136,7 +136,7 @@ const timeline: TimelineEvent[] = [
     title: "Change of Qiblah",
     detail:
       "For approximately 16 to 17 months after the Hijrah, the Muslims prayed facing Jerusalem (Bayt al-Maqdis), as they had done in Mecca. The Prophet ﷺ longed deeply to face the Ka'bah in prayer, and would often look up toward the sky in anticipation. Allah then revealed: 'We have certainly seen the turning of your face toward the heaven. So We will surely turn you to a qiblah with which you will be pleased. So turn your face toward al-Masjid al-Haram.' The Prophet ﷺ received this revelation while leading the Dhuhr (or Asr) prayer at what is now known as Masjid al-Qiblatayn (the Mosque of Two Qiblahs) in Medina. He turned mid-prayer from facing north (Jerusalem) to facing south (Mecca), and the entire congregation turned with him. This change was a test of faith — the hypocrites and some of the People of the Book objected, but Allah declared: 'We did not make the qiblah which you used to face except that We might make evident who would follow the Messenger from who would turn back on his heels.'",
-    reference: "Quran 2:144; Quran 2:143; Bukhari 7:15; Muslim 1:431",
+    reference: "Quran 2:144; Quran 2:143; Bukhari 65:19; Bukhari 2:33",
   },
   {
     year: "625 CE",
@@ -168,7 +168,7 @@ const timeline: TimelineEvent[] = [
     title: "Treaty of Hudaybiyyah",
     detail:
       "The Prophet ﷺ saw a dream that he was performing Umrah, so he set out for Mecca with about 1,400 companions in the state of ihram, bringing sacrificial animals to show their peaceful intent. The Quraysh, however, refused them entry. At Hudaybiyyah, on the outskirts of Mecca, the Prophet ﷺ sent Uthman ibn Affan as an envoy to negotiate. When a rumor spread that Uthman had been killed, the Prophet ﷺ called his companions to pledge allegiance under a tree — the Bay'ah al-Ridwan (Pledge of Good Pleasure), which Allah praised in the Quran: 'Allah was pleased with the believers when they pledged to you under the tree.' A treaty was then negotiated with terms that appeared unfavorable: the Muslims would return to Medina without performing Umrah that year, any Meccan who fled to Medina must be returned, but any Muslim who fled to Mecca would not be returned, and there would be a ten-year truce. Umar ibn al-Khattab was so distressed that he questioned the terms, but the Prophet ﷺ remained firm: 'I am the Messenger of Allah, and I will not disobey Him.' Despite the apparent setback, Allah called it a 'clear victory' — the peace allowed the Prophet ﷺ to send letters inviting rulers of the world to Islam, and more people entered Islam in the two years of peace that followed than in all the previous years combined.",
-    reference: "Quran 48:1; Quran 48:18; Bukhari 47:19; Bukhari 47:19",
+    reference: "Quran 48:1; Quran 48:18; Bukhari 53:10; Bukhari 56:171",
   },
   {
     year: "628 CE",
@@ -176,7 +176,7 @@ const timeline: TimelineEvent[] = [
     title: "Battle of Khaybar",
     detail:
       "Khaybar was a heavily fortified oasis about 150 km north of Medina, home to the expelled Banu Nadir and other hostile tribes who continued to conspire against the Muslims and had helped organize the coalition at the Battle of the Trench. The Prophet ﷺ marched with 1,400 men to confront this threat. The fortresses of Khaybar were among the strongest in Arabia, and several initial assaults were repelled. After some days, the Prophet ﷺ announced: 'Tomorrow I will give the banner to a man who loves Allah and His Messenger, and whom Allah and His Messenger love. Allah will grant victory at his hands.' Every companion hoped to be chosen. The next morning, the Prophet ﷺ called for Ali ibn Abi Talib, who was suffering from an eye ailment. The Prophet ﷺ applied his saliva to Ali's eyes, and they were immediately healed. Ali then led the decisive assault and Khaybar was conquered fortress by fortress. After the conquest, a Jewish woman named Zaynab bint al-Harith served the Prophet ﷺ a poisoned lamb — he tasted it but spat it out, saying the meat had told him it was poisoned. The effects of this poison would trouble him for the rest of his life, and he considered himself a martyr because of it.",
-    reference: "Bukhari 64:250; Muslim 12:144; Bukhari 64:284",
+    reference: "Bukhari 64:250; Muslim 44:54; Bukhari 64:284",
   },
   {
     year: "629 CE",
@@ -192,7 +192,7 @@ const timeline: TimelineEvent[] = [
     title: "Conquest of Mecca (Fath Makkah)",
     detail:
       "The Quraysh violated the Treaty of Hudaybiyyah by supporting their allies, the Banu Bakr, in an attack on the Khuza'ah tribe, who were allies of the Muslims. The Khuza'ah sent a delegation to Medina pleading for help, and Abu Sufyan himself traveled to Medina attempting to renew the treaty, but was turned away. The Prophet ﷺ prepared in secret and marched on Mecca with an army of 10,000 Muslims — the largest force he had ever assembled. On the night before entering Mecca, he ordered each soldier to light a fire, so that the hills surrounding Mecca were covered with 10,000 fires. Abu Sufyan came out to investigate, met al-Abbas (the Prophet's ﷺ uncle who had recently migrated), and was taken to the Prophet ﷺ. Witnessing the vast Muslim army, Abu Sufyan declared his Islam. The Prophet ﷺ then showed extraordinary magnanimity by declaring: 'Whoever enters the house of Abu Sufyan is safe. Whoever closes his door is safe. Whoever enters the Sacred Mosque is safe.' The city was taken almost entirely without bloodshed. The Prophet ﷺ entered Mecca with his head bowed low on his camel in humility to Allah, reciting Surah al-Fath. He went directly to the Ka'bah, performed tawaf, and then entered it. He destroyed the 360 idols with a stick, reciting: 'Truth has come and falsehood has departed. Indeed, falsehood is bound to depart.' He then stood at the door of the Ka'bah before the gathered people of Mecca — the very people who had tortured, expelled, and fought the Muslims for 21 years — and asked: 'What do you think I will do with you?' They replied: 'You are a noble brother, son of a noble brother.' He declared: 'Go, for you are free.' This general amnesty, known as the greatest act of forgiveness in history, led to the people of Mecca embracing Islam en masse.",
-    reference: "Quran 17:81; Quran 110:1-3; Bukhari 64:320; Muslim 6:208",
+    reference: "Quran 17:81; Quran 110:1-3; Bukhari 64:320; Muslim 32:107",
   },
   {
     year: "630 CE",
@@ -200,7 +200,7 @@ const timeline: TimelineEvent[] = [
     title: "Battle of Hunayn",
     detail:
       "Only two weeks after the conquest of Mecca, the powerful Bedouin tribes of Hawazin and Thaqif, led by Malik ibn Awf, assembled a large army — bringing their families, livestock, and possessions to ensure no one would flee. The Prophet ﷺ marched out with 12,000 men, the largest Muslim force to date, including many newly converted Meccans. Some Muslims felt overconfident in their numbers, which the Quran addressed: 'On the day of Hunayn, when your great number pleased you, but it did not avail you at all.' The enemy had prepared an ambush in the narrow valley of Hunayn. At dawn, as the Muslim army entered the valley, arrows rained down from the hillsides and the vanguard was thrown into chaos. Most of the army fled in disarray. The Prophet ﷺ stood firm on his white mule, riding forward into the arrows, calling out: 'I am the Prophet, it is no lie! I am the son of Abdul Muttalib!' His uncle Abbas, who had a powerful voice, called out to the Ansar and Muhajirun to return. The companions rallied around the Prophet ﷺ, and Allah sent unseen forces. The tide turned dramatically, and the enemy was routed. The spoils from Hunayn were enormous — 6,000 captives, 24,000 camels, and more than 40,000 sheep. The Prophet ﷺ distributed the spoils generously to the new Meccan converts to strengthen their faith, giving nothing to the Ansar. When some Ansar felt hurt, he gathered them and said: 'Are you not pleased that the people take sheep and camels, while you take the Messenger of Allah back with you to your homes?' They wept and said: 'We are pleased with the Messenger of Allah as our share.'",
-    reference: "Quran 9:25-26; Bukhari 64:348; Bukhari 64:359; Muslim 6:204",
+    reference: "Quran 9:25-26; Bukhari 64:348; Bukhari 64:359; Muslim 12:177",
   },
   {
     year: "630 CE",
@@ -224,7 +224,7 @@ const timeline: TimelineEvent[] = [
     title: "The Farewell Pilgrimage (Hajjat al-Wada')",
     detail:
       "In the tenth year after Hijrah, the Prophet ﷺ announced his intention to perform Hajj. Over 100,000 Muslims accompanied him from Medina — the only Hajj he ever performed. He taught the ummah every rite of Hajj by his example, saying: 'Take your rites from me, for I do not know whether I will perform Hajj after this one.' He entered ihram at Dhul Hulayfah, proceeded to Mecca, performed tawaf and sa'i, and on the 8th of Dhul Hijjah led the pilgrims to Mina, then to the plain of Arafat on the 9th. It was here, mounted on his camel al-Qaswa', that he delivered the Farewell Sermon to the vast multitude gathered before him — one of the most significant addresses in human history.",
-    reference: "Muslim 5:58; Bukhari 25:108; Ibn Majah 25:193",
+    reference: "Muslim 15:159; Bukhari 25:108; Ibn Majah 25:193",
   },
   {
     year: "632 CE",
@@ -232,7 +232,7 @@ const timeline: TimelineEvent[] = [
     title: "The Farewell Sermon (Khutbat al-Wada')",
     detail:
       "Standing on the plain of Arafat before over 100,000 people, the Prophet ﷺ delivered his final public address. He began by praising Allah and then declared:\n\n'O People, lend me an attentive ear, for I know not whether after this year I shall ever be amongst you again. Therefore, listen to what I am saying to you very carefully and take these words to those who could not be present here today.'\n\n'O People, just as you regard this month, this day, this city as sacred, so regard the life and property of every Muslim as a sacred trust. Return the goods entrusted to you to their rightful owners. Hurt no one so that no one may hurt you.'\n\n'O People, it is true that you have certain rights with regard to your women, but they also have rights over you. Remember that you have taken them as your wives only under Allah's trust and with His permission. If they abide by your right, then to them belongs the right to be fed and clothed in kindness. Do treat your women well and be kind to them, for they are your partners and committed helpers.'\n\n'All mankind is from Adam and Eve. An Arab has no superiority over a non-Arab, nor a non-Arab over an Arab; a white person has no superiority over a black person, nor a black person over a white person — except by piety and good action. Learn that every Muslim is the brother of every other Muslim, and that the Muslims constitute one brotherhood.'\n\n'Remember, one day you will appear before Allah and answer for your deeds. So beware, do not stray from the path of righteousness after I am gone.'\n\n'O People, no prophet or apostle will come after me, and no new faith will be born. Reason well, therefore, O People, and understand the words which I convey to you. I leave behind me two things — the Quran and my Sunnah — and if you follow these you will never go astray.'\n\n'All those who listen to me shall pass on my words to others, and those to others again; and may the last ones understand my words better than those who listen to me directly. Be my witness, O Allah, that I have conveyed Your message to Your people.'\n\nAfter each declaration, he would point his finger to the sky and then to the people, saying: 'O Allah, bear witness! O Allah, bear witness!' The crowd echoed back in confirmation. It was during these blessed days that the final verse of legislation was revealed: 'Today I have perfected your religion for you, completed My favor upon you, and have chosen for you Islam as your religion' (Quran 5:3). When Umar ibn al-Khattab heard this verse, he wept, understanding that it signaled the approaching end of the Prophet's ﷺ mission on earth.\n\nThis sermon established, 1400 years ago, principles that the world would take centuries to recognize: racial equality, women's rights, the sanctity of life and property, the prohibition of usury, and the brotherhood of all believers regardless of their origin.",
-    reference: "Bukhari 25:108; Bukhari 64:428; Muslim 5:58; Quran 5:3; Bukhari 65:128",
+    reference: "Bukhari 25:108; Bukhari 64:428; Muslim 15:159; Quran 5:3; Bukhari 65:128",
   },
   {
     year: "632 CE",
@@ -240,7 +240,7 @@ const timeline: TimelineEvent[] = [
     title: "The Passing of the Prophet ﷺ",
     detail:
       "About three months after the Farewell Pilgrimage, the Prophet ﷺ fell ill with a severe fever and headache. Despite his illness, he continued to lead prayers in the mosque until he was too weak to stand, at which point he appointed Abu Bakr to lead in his place. During his final days, he freed his slaves, gave away his last possessions — even a few dirhams that remained in his house — and repeatedly asked: 'Have I wronged anyone? Let him come forward.' He addressed the Muslims from the door of Aisha's room, his head wrapped, saying: 'O people, the fire is kindled, and tribulations are coming like segments of a dark night. By Allah, you cannot hold me accountable for anything — I have not made lawful except what the Quran has made lawful, and I have not made unlawful except what the Quran has made unlawful.'\n\nHe called for his daughter Fatimah and whispered something to her. She wept. Then he whispered again, and she smiled. She later revealed: 'He told me he was going to die, so I wept. Then he told me I would be the first of his family to join him, and that I would be the leader of the women of Paradise, so I smiled.'\n\nOn Monday morning, 12th Rabi' al-Awwal, 11 AH (June 8, 632 CE), Abu Bakr had begun leading Fajr prayer. The Prophet ﷺ drew aside the curtain of Aisha's room and looked out at the Muslims praying. Anas said: 'His face was like a page of the Quran (radiant and bright). He smiled.' It was his last gaze upon his ummah at prayer. He returned to Aisha's lap, and his condition worsened. His final words, as his eyes were fixed upward, were: 'Rather, the highest companion... the highest companion (ar-Rafiq al-A'la).' Aisha said: 'He chose the Hereafter over this world.' He was 63 years old.\n\nUmar ibn al-Khattab, overwhelmed with grief, drew his sword and declared that the Prophet ﷺ had not died. Abu Bakr entered, kissed the Prophet ﷺ on the forehead, and went out to the people: 'Whoever worshipped Muhammad, let him know that Muhammad has died. And whoever worshipped Allah, let him know that Allah is Ever-Living and shall never die.' He then recited: 'Muhammad is no more than a messenger; other messengers have passed away before him. If he were to die or be killed, would you turn back on your heels?' (Quran 3:144). Umar said: 'It was as though I had never heard this verse until Abu Bakr recited it.' The Prophet ﷺ was buried where he passed away, in Aisha's room, which is now part of al-Masjid an-Nabawi in Medina.",
-    reference: "Quran 3:144; Bukhari 64:456; Bukhari 64:478; Bukhari 23:141; Muslim 12:181; Bukhari 3:74",
+    reference: "Quran 3:144; Bukhari 64:456; Bukhari 64:478; Bukhari 23:141; Bukhari 23:5; Bukhari 64:472",
   },
 ];
 
@@ -262,7 +262,7 @@ const virtues: Virtue[] = [
       "Allah declared: 'We have not sent you except as a mercy to all the worlds.' His mercy extended to believers and disbelievers, to adults and children, and even to animals. When the people of Ta'if stoned him until his sandals were soaked with blood, and the angel of the mountains offered to crush them between the mountains, he refused and prayed: 'Perhaps Allah will bring from their descendants people who worship Him alone.' He once saw a donkey that had been branded on its face and became angry, forbidding the practice. He told his companions of a woman who entered the Hellfire for starving a cat, and of a sinful man who was forgiven for giving water to a thirsty dog. He would shorten the congregational prayer if he heard a child crying, out of compassion for the child's mother.",
     hadith:
       "The Messenger of Allah ﷺ said: 'The merciful are shown mercy by the Most Merciful. Be merciful to those on earth, and the One in the heavens will be merciful to you.'",
-    reference: "Quran 21:107; Abu Dawud 43:169; Bukhari 59:42; Bukhari 59:124; Bukhari 35:11; Bukhari 10:102",
+    reference: "Quran 21:107; Abu Dawud 43:169; Bukhari 59:42; Bukhari 59:124; Muslim 45:176; Bukhari 10:102",
   },
   {
     name: "Truthfulness",
@@ -271,7 +271,7 @@ const virtues: Virtue[] = [
       "Even before prophethood, he was known among the Quraysh as 'Al-Amin' (The Trustworthy) and 'As-Sadiq' (The Truthful). His reputation was so unshakeable that even his enemies entrusted him with their valuables — on the night of the Hijrah, he instructed Ali to stay behind and return the deposits that the Quraysh had placed with him. When he first called the people of Mecca to Islam from Mount Safa, he asked them: 'If I told you there was an army behind this mountain, would you believe me?' They unanimously replied: 'Yes, we have never known you to lie.' He never lied even in jest, and taught that lying is incompatible with faith.",
     hadith:
       "The Messenger of Allah ﷺ said: 'Truthfulness leads to righteousness, and righteousness leads to Paradise. A man keeps telling the truth until he is recorded with Allah as a truthful person (siddiq). And lying leads to wickedness, and wickedness leads to the Hellfire. A man keeps lying until he is recorded with Allah as a liar.'",
-    reference: "Bukhari 78:121; Muslim 13:113; Bukhari 65:292",
+    reference: "Bukhari 78:121; Muslim 45:134; Bukhari 65:292",
   },
   {
     name: "Humility",
@@ -298,7 +298,7 @@ const virtues: Virtue[] = [
       "He never said 'no' to anyone who asked him for something. He gave away everything he had, and his family would often go days without a fire being lit in their home for cooking — surviving on just dates and water. When a man asked him for something, he gave him an entire valley full of sheep. The man returned to his people and said: 'O my people, accept Islam, for Muhammad gives like a man who does not fear poverty.' He was most generous during Ramadan, when Jibreel would visit him nightly to review the Quran.",
     hadith:
       "Ibn Abbas said: 'The Messenger of Allah ﷺ was the most generous of people, and he was most generous during Ramadan when Jibreel met him. Jibreel used to meet him every night in Ramadan and review the Quran with him. The Messenger of Allah ﷺ was more generous with good than the blowing wind.'",
-    reference: "Bukhari 1:6; Muslim 12:49; Bukhari 44:2",
+    reference: "Bukhari 1:6; Muslim 43:78; Muslim 12:49",
   },
   {
     name: "Bravery",
@@ -307,7 +307,7 @@ const virtues: Virtue[] = [
       "He stood firm at Badr with only 313 poorly-armed men against over 1,000 warriors. At Uhud, when the army scattered and a rumor spread that he had been killed, he stood his ground with a handful of companions. At Hunayn, when 12,000 Muslims fled in panic, he rode forward on his mule toward the enemy calling out: 'I am the Prophet, it is no lie!' Ali ibn Abi Talib said: 'When the fighting was intense and the two sides clashed, we used to seek shelter behind the Messenger of Allah ﷺ, and no one would be closer to the enemy than him.'",
     hadith:
       "Anas said: 'The Prophet ﷺ was the best of people, the most generous of people, and the bravest of people. One night the people of Medina were alarmed by a loud sound. The people went toward it, but the Prophet ﷺ met them coming back, having already investigated the matter ahead of everyone else, riding the horse of Abu Talhah bareback, with a sword around his neck. He said: Do not be afraid, do not be afraid.'",
-    reference: "Bukhari 49:36; Muslim 12:44; Muslim 6:205",
+    reference: "Bukhari 56:36; Bukhari 56:246; Bukhari 56:248",
   },
   {
     name: "Forgiveness",
@@ -316,7 +316,7 @@ const virtues: Virtue[] = [
       "When he conquered Mecca with 10,000 soldiers — having the power to take revenge on those who had persecuted, tortured, and killed his companions for over 20 years — he forgave them all, declaring: 'Go, for you are free.' He forgave Hind bint Utbah, who had ordered the killing of his uncle Hamzah and mutilated his body. He forgave Wahshi, the man who actually killed Hamzah with a spear. He even forgave Ikrimah ibn Abi Jahl, the son of his greatest enemy, who had fought against Islam for decades. He never struck anyone with his hand — not a servant, not a woman, not anyone — except in battle in the cause of Allah.",
     hadith:
       "Aisha said: 'The Messenger of Allah ﷺ never took revenge for himself. But if the sanctity of Allah was violated, he would take action for the sake of Allah.'",
-    reference: "Bukhari 3:69; Muslim 12:177; Muslim 12:65",
+    reference: "Bukhari 86:15; Muslim 43:108; Muslim 12:177",
   },
   {
     name: "Justice",
@@ -325,7 +325,7 @@ const virtues: Virtue[] = [
       "He judged fairly even against his own family and companions. When a noble woman from the Makhzum clan of the Quraysh was caught stealing and people sent Usamah ibn Zayd to intercede — knowing the Prophet ﷺ loved Usamah — his face changed with anger. He stood and addressed the people, explaining that previous nations were destroyed because they applied the law selectively: punishing the weak and sparing the powerful. He established justice as a core principle of the Muslim community, declaring that all people are equal before the law of Allah, regardless of their lineage, wealth, or status.",
     hadith:
       "The Messenger of Allah ﷺ said: 'The people before you were destroyed because when a noble person among them stole, they would leave him, but when a weak person stole, they would apply the punishment. By Allah, if Fatimah the daughter of Muhammad were to steal, I would cut off her hand.'",
-    reference: "Bukhari 60:142; Muslim 6:118",
+    reference: "Bukhari 60:142; Muslim 29:13",
   },
   {
     name: "Modesty",
@@ -334,7 +334,7 @@ const virtues: Virtue[] = [
       "He was the most modest of people, more shy than a young maiden in her chamber. Abu Sa'id al-Khudri said that when something displeased him, it could be seen on his face — but he would rarely confront someone directly out of shyness. He never stared at anyone's face. He would lower his gaze and looked at the ground more than he looked at the sky. He taught that modesty is an integral branch of faith, and that it brings nothing but good.",
     hadith:
       "The Messenger of Allah ﷺ said: 'Modesty (haya') is a branch of faith.' And Abu Sa'id al-Khudri said: 'The Prophet ﷺ was more shy than a maiden in her chamber. If he saw something he disliked, we would recognize it in his face.'",
-    reference: "Bukhari 3:71; Muslim 1:59",
+    reference: "Bukhari 78:129; Muslim 1:59",
   },
   {
     name: "Love for Family",
@@ -343,7 +343,7 @@ const virtues: Virtue[] = [
       "He was deeply affectionate with his family. He would race with his wife Aisha — she won the first time, and he won the second, and he smiled and said: 'This one is for that one.' He would greet his daughter Fatimah by standing up, kissing her forehead, and seating her in his place. He would carry his granddaughter Umamah on his shoulders during prayer, setting her down when he prostrated and picking her up when he stood. He declared that the best of people are those who are best to their families.",
     hadith:
       "The Messenger of Allah ﷺ said: 'The best of you are the best to their families, and I am the best of you to my family.'",
-    reference: "Tirmidhi 49:295; Abu Dawud 15:102; Bukhari 78:25; Bukhari 8:163",
+    reference: "Tirmidhi 49:295; Abu Dawud 15:102; Bukhari 62:92; Bukhari 8:163",
   },
   {
     name: "Gentleness",
@@ -352,7 +352,7 @@ const virtues: Virtue[] = [
       "He chose the easier of two options in every matter, so long as it was not sinful. When a Bedouin urinated in the mosque, the companions rushed to stop him, but the Prophet ﷺ told them to leave him alone and wait until he finished, then had water poured over the spot. He said: 'You were sent to make things easy, not to make them difficult.' He dealt gently with the young, the old, the ignorant, and the hostile. A man once grabbed him so violently by his cloak that it left marks on his neck, demanding money — the Prophet ﷺ simply smiled and ordered that the man be given what he needed.",
     hadith:
       "The Messenger of Allah ﷺ said: 'Allah is gentle and loves gentleness. He gives for gentleness what He does not give for harshness, and what He does not give for anything else.'",
-    reference: "Muslim 13:99; Bukhari 78:56; Bukhari 57:57",
+    reference: "Muslim 2:125; Bukhari 78:56; Bukhari 57:57",
   },
   {
     name: "Asceticism",
@@ -361,7 +361,7 @@ const virtues: Virtue[] = [
       "He lived with extraordinary simplicity despite having the world at his disposal. He slept on a rough straw mat that left marks on his body. Umar ibn al-Khattab once entered his room, saw the marks on his side, and wept. The Prophet ﷺ asked why he was crying, and Umar said: 'The kings of Persia and Rome live in luxury while you, the Messenger of Allah, live like this.' He replied: 'Are you not content that they have the world and we have the Hereafter?' His pillow was stuffed with palm fibers. Aisha reported that he never ate his fill of barley bread for two consecutive days, and that months would pass with no fire lit in their home — they survived on just dates and water.",
     hadith:
       "The Messenger of Allah ﷺ said: 'What have I to do with the world? My example and the example of the world is like that of a traveler who rests under the shade of a tree for a while, then moves on and leaves it behind.'",
-    reference: "Tirmidhi 36:74; Bukhari 23:41; Muslim 14:5; Bukhari 44:2",
+    reference: "Tirmidhi 36:74; Bukhari 70:11; Muslim 55:29",
   },
   {
     name: "Kindness to Children",
@@ -379,7 +379,7 @@ const virtues: Virtue[] = [
       "Anas ibn Malik served him for ten years — from the age of ten until the Prophet's ﷺ passing. In that entire decade, the Prophet ﷺ never once rebuked him, never said 'uff' to him, and never said 'why did you do this?' or 'why didn't you do that?' He commanded people to feed their servants from the same food they ate and clothe them from the same clothes they wore. He said: 'Your servants are your brothers whom Allah has placed under your authority. Whoever has a brother under his authority, let him feed him from what he eats and clothe him from what he wears, and do not burden them with what overwhelms them.'",
     hadith:
       "Anas said: 'I served the Prophet ﷺ for ten years. He never said to me uff, nor did he ever say: why did you do this? or why did you not do that?'",
-    reference: "Bukhari 78:68; Muslim 12:46; Bukhari 2:23",
+    reference: "Bukhari 78:68; Muslim 27:60; Bukhari 2:23",
   },
   {
     name: "Honoring Neighbors & Guests",
@@ -397,7 +397,7 @@ const virtues: Virtue[] = [
       "He forbade branding animals on the face, overloading beasts of burden, and using living creatures as targets for sport. When he saw a donkey branded on its face, he became angry and asked: 'Who did this?' He told his companions of a woman who entered the Hellfire for locking up a cat until it died of starvation, and of a sinful person who was forgiven by Allah for giving water to a thirsty dog by climbing down into a well with his shoe. He once entered a garden and found a camel that was overworked and underfed — it came to him and groaned, and he stroked its head and said: 'Who is the owner of this camel? This camel complains that you starve it and exhaust it.'",
     hadith:
       "The Prophet ﷺ said: 'A woman was punished because of a cat she had locked up until it died. She did not feed it or let it eat from the vermin of the earth.' And he said: 'While a man was walking, he became extremely thirsty. He found a well, went down into it, drank, and came out. He saw a dog panting and eating moist earth from thirst. He said: This dog is suffering the same thirst I suffered. He went back down into the well, filled his shoe with water, and gave it to the dog. Allah thanked him and forgave him.'",
-    reference: "Bukhari 59:124; Bukhari 35:11; Muslim 10:26; Abu Dawud 15:73",
+    reference: "Bukhari 59:124; Bukhari 42:11; Muslim 39:210; Abu Dawud 15:88",
   },
 ];
 
@@ -416,28 +416,28 @@ const physicalDescription: PhysicalTrait[] = [
     trait: "Face",
     description:
       "His face was round with a slight length, not fully round. It was white tinged with redness, luminous as if the sun were flowing across it. When he was pleased, his face would light up as if it were a piece of the moon. Ka'b ibn Malik said: 'When the Messenger of Allah ﷺ was happy, his face would shine like a piece of the moon — we could recognize that from his face.'",
-    reference: "Bukhari 3:61; Muslim 12:81; Bukhari 3:65",
+    reference: "Bukhari 61:65; Bukhari 64:440; Bukhari 61:58",
     group: "face",
   },
   {
     trait: "Eyes",
     description:
       "He had large, dark black eyes with natural kohl-like lining (akhal al-'aynayn), giving them a striking appearance without actually applying kohl. His eyelashes were long and thick. The white of his eyes had a slight reddish tinge. His gaze was more often lowered toward the ground than raised to the sky, and he would look at things with a slight side-glance rather than a full stare.",
-    reference: "Shama'il at-Tirmidhi 1:1; Bukhari 70:71",
+    reference: "Shama'il at-Tirmidhi 1:1; Tirmidhi 49:31",
     group: "face",
   },
   {
     trait: "Teeth",
     description:
       "His front teeth were wide-spaced (aflaj), which was considered a mark of beauty among the Arabs. When he spoke, a light seemed to emanate from between his teeth. His teeth were bright and clean — he was meticulous about using the miswak (tooth-stick), saying: 'Were it not that I would burden my ummah, I would have ordered them to use the miswak before every prayer.'",
-    reference: "Shama'il at-Tirmidhi 1:1; Bukhari 4:12",
+    reference: "Shama'il at-Tirmidhi 1:1; Bukhari 11:12",
     group: "face",
   },
   {
     trait: "Hair",
     description:
       "His hair was neither straight nor tightly curled, but wavy. It reached between his earlobes and shoulders, and at times grew to his shoulders. He sometimes parted it in the middle. He used to oil and comb his hair regularly. He had a few white hairs at his temples — no more than twenty in total — at the time of his passing. Anas ibn Malik said: 'Allah took him when there were not twenty white hairs on his head and beard.'",
-    reference: "Bukhari 3:60; Muslim 12:75; Bukhari 3:56",
+    reference: "Bukhari 77:118; Muslim 43:147; Muslim 43:135",
     group: "face",
   },
   {
@@ -451,7 +451,7 @@ const physicalDescription: PhysicalTrait[] = [
     trait: "Complexion",
     description:
       "His skin was fair, not excessively white, with a light reddish glow. Anas described him as 'neither very white nor very dark, but a shade between the two — a radiant white.' His skin was softer than silk. Anas said: 'I never touched silk or dibaj (brocade) softer than the palm of the Messenger of Allah ﷺ.'",
-    reference: "Bukhari 3:56; Muslim 12:67; Bukhari 3:70",
+    reference: "Muslim 43:147; Bukhari 61:70; Bukhari 3:5",
     group: "face",
   },
   /* ── Body & Build ── */
@@ -466,28 +466,28 @@ const physicalDescription: PhysicalTrait[] = [
     trait: "Build & Physique",
     description:
       "He had broad shoulders and a wide chest. His arms were long and his palms were wide. His joints were large and strong. The line of hair running from his chest to his navel was fine and narrow. Between his shoulder blades was the Seal of Prophethood — a raised mark the size of a pigeon's egg, surrounded by moles. Jabir ibn Samurah said: 'I saw the seal between his shoulders like a pigeon's egg, resembling his body in color.'",
-    reference: "Muslim 12:81; Bukhari 3:50; Muslim 12:83",
+    reference: "Muslim 43:146; Tirmidhi 49:31; Bukhari 61:58",
     group: "body",
   },
   {
     trait: "Hands",
     description:
       "He had large, well-proportioned hands with wide palms. Despite their size, they were remarkably soft. Anas said: 'I never touched silk or dibaj softer than the palm of the Messenger of Allah ﷺ.' His handshake left a lingering fragrance — whoever shook hands with him would smell the scent on their hand for the rest of the day.",
-    reference: "Bukhari 3:70; Muslim 12:66",
+    reference: "Bukhari 61:70; Muslim 43:111",
     group: "body",
   },
   {
     trait: "Fragrance",
     description:
       "He had a naturally beautiful scent even without applying perfume. Anas said: 'I never smelled any amber or musk or anything more fragrant than the scent of the Messenger of Allah ﷺ.' He also loved applying perfume and would never refuse it when offered. His favorite scent was musk. He said: 'The best of perfume is musk.'",
-    reference: "Muslim 43:111; Bukhari 77:144; Muslim 11:128",
+    reference: "Muslim 43:111; Bukhari 77:144; Bukhari 61:70",
     group: "body",
   },
   {
     trait: "Sweat",
     description:
       "His sweat was described as being like pearls, glistening on his skin. It had a fragrance more beautiful than perfume. Umm Sulaym (the mother of Anas) would collect his sweat when he slept at her home, gathering it in a bottle. When the Prophet ﷺ asked her why, she said: 'We hope for its barakah (blessing) for our children — and it is the most fragrant of fragrances.'",
-    reference: "Muslim 43:111; Muslim 12:69",
+    reference: "Muslim 43:111; Muslim 43:115",
     group: "body",
   },
   /* ── Manner & Presence ── */
@@ -495,7 +495,7 @@ const physicalDescription: PhysicalTrait[] = [
     trait: "Walk & Manner",
     description:
       "He walked swiftly with purpose, leaning slightly forward as if descending a slope. His stride was wide and steady. When he turned, he turned his whole body — he did not glance sideways while walking. He spoke with deliberation — anyone could count his words. His speech was clear and concise, and his silence was longer than his speech. He would repeat important words three times to ensure understanding.",
-    reference: "Shama'il at-Tirmidhi 1:118; Muslim 12:67; Bukhari 3:37",
+    reference: "Shama'il at-Tirmidhi 1:118; Bukhari 3:37; Muslim 43:93",
     group: "manner",
   },
   {
@@ -516,7 +516,7 @@ const physicalDescription: PhysicalTrait[] = [
     trait: "Clothing & Grooming",
     description:
       "He preferred white garments, saying: 'Wear white clothes, for they are the purest and best; and shroud your dead in them.' He also wore garments of green and red-striped Yemeni cloth. He regularly applied kohl (ithmid) to his eyes before sleeping, three times in each eye. He used the miswak (tooth-stick) frequently — upon waking, before prayer, and upon entering his home. He oiled his hair, combed it regularly, and forbade neglecting one's appearance.",
-    reference: "Tirmidhi 43:83; Bukhari 77:144; Bukhari 4:12; Abu Dawud 35:1",
+    reference: "Tirmidhi 43:83; Bukhari 77:144; Bukhari 4:111; Abu Dawud 35:1",
     group: "manner",
   },
 ];
@@ -823,7 +823,7 @@ const prophecies: Prophecy[] = [
       "The Prophet ﷺ foretold the conquest of Jerusalem (Bayt al-Maqdis). This was fulfilled during the caliphate of Umar ibn al-Khattab in 637 CE (16 AH), when Umar personally traveled to Jerusalem to accept its surrender and guaranteed the safety of its Christian inhabitants in what became known as the Pact of Umar.",
     hadith:
       "The Prophet ﷺ said to Awf ibn Malik: 'Count six signs before the Hour: my death, then the conquest of Bayt al-Maqdis...'",
-    reference: "Bukhari 51:18",
+    reference: "Bukhari 58:18",
     status: "fulfilled",
   },
   {
@@ -868,7 +868,7 @@ const prophecies: Prophecy[] = [
       "The Prophet ﷺ foretold that wealth would increase so dramatically that a person would be given a hundred dinars and still be dissatisfied. He also prophesied that the impoverished Bedouins of Arabia — who were barefoot and destitute — would compete in constructing tall buildings. Both have been visibly fulfilled in the modern era.",
     hadith:
       "The Prophet ﷺ said, counting six signs before the Hour: '...then wealth will increase so much that a man will be given one hundred dinars and still be dissatisfied...'",
-    reference: "Bukhari 51:18",
+    reference: "Bukhari 58:18",
     status: "fulfilled",
   },
   {
@@ -907,7 +907,7 @@ const worshipAspects: WorshipAspect[] = [
       "He would stand in prayer for so long during the night that his feet would swell. When Aisha asked why he exerted himself so much when Allah had already forgiven all his sins — past and future — he replied with a profound statement about gratitude.",
     hadith:
       "Al-Mughira ibn Shu'ba said: 'The Prophet ﷺ used to pray at night until his feet would swell.' It was said to him: 'Why do you do this when Allah has forgiven your past and future sins?' He said: 'Should I not be a grateful servant?'",
-    reference: "Bukhari 19:10; Muslim 6:207",
+    reference: "Bukhari 19:10; Muslim 52:78",
   },
   {
     title: "Weeping in Prayer",
@@ -915,7 +915,7 @@ const worshipAspects: WorshipAspect[] = [
       "His prayer was not merely physical movements — it was an intimate conversation with his Lord. He would weep during recitation, and Abdullah ibn al-Shikhkhir reported that his chest would produce a sound like a boiling pot from the intensity of his crying (Abu Dawud 2:514). He would ask his companions to recite Quran to him so he could listen and weep.",
     hadith:
       "Abdullah ibn Mas'ud said: 'The Prophet ﷺ said to me: Recite the Quran to me. I said: Shall I recite it to you when it was revealed to you? He said: I like to hear it from someone other than me. So I recited Surah an-Nisa until I reached the verse: How will it be when We bring a witness from every nation, and We bring you as a witness over these people? He said: That is enough. I looked at him, and his eyes were flowing with tears.'",
-    reference: "Bukhari 8:80; Muslim 3:121",
+    reference: "Bukhari 65:104; Abu Dawud 2:514",
   },
   {
     title: "Fasting",
@@ -923,7 +923,7 @@ const worshipAspects: WorshipAspect[] = [
       "He fasted regularly beyond the obligatory fasts of Ramadan. He fasted Mondays and Thursdays, saying it was the day he was born and the day revelation came to him. He fasted the 13th, 14th, and 15th of each lunar month (the 'white days'). He fasted most of the month of Sha'ban. He also observed the fast of Dawud — fasting every other day — which he called the most beloved fast to Allah.",
     hadith:
       "When asked about fasting on Mondays, the Prophet ﷺ said: 'That is the day on which I was born and the day on which I was sent (as a Prophet) or revelation was sent down to me.' He also said: 'The most beloved fasting to Allah is the fasting of Dawud — he used to fast one day and break his fast the next.'",
-    reference: "Muslim 5:2; Bukhari 23:82",
+    reference: "Muslim 13:256; Bukhari 60:92",
   },
   {
     title: "His Lengthy Prostration (Sujud)",
@@ -947,7 +947,7 @@ const worshipAspects: WorshipAspect[] = [
       "He remembered Allah in every situation — standing, sitting, and lying down. Aisha said he would remember Allah at all times without exception. He had specific dhikr for every daily activity: waking, sleeping, eating, drinking, entering and leaving the home, entering the bathroom, traveling, seeing rain, hearing thunder, and more. No moment of his life was devoid of connection with Allah.",
     hadith:
       "Aisha said: 'The Messenger of Allah ﷺ used to remember Allah at all times.' And he ﷺ said: 'Shall I not tell you of the best of your deeds, the purest in the sight of your Lord, which raises your ranks the most, and is better for you than spending gold and silver, and better than meeting your enemy and striking their necks? They said: Yes. He said: The remembrance of Allah.'",
-    reference: "Muslim 1:280; Tirmidhi 48:8",
+    reference: "Tirmidhi 48:8; Tirmidhi 48:6",
   },
   {
     title: "Charity and Giving",
@@ -955,7 +955,7 @@ const worshipAspects: WorshipAspect[] = [
       "He never kept wealth for himself. When money came to him, he would distribute it before the day was over. He never turned away anyone who asked, even if he had nothing — he would borrow to give. He would give preference to others over himself and his family, sometimes tying a stone to his stomach from hunger while ensuring others were fed.",
     hadith:
       "Anas said: 'The Messenger of Allah ﷺ was never asked for anything for the sake of Islam except that he gave it. A man came to him and he gave him a flock of sheep filling the valley between two mountains. The man went back to his people and said: O my people, accept Islam! For Muhammad gives like a man who does not fear poverty.'",
-    reference: "Muslim 12:49",
+    reference: "Muslim 43:78; Bukhari 1:6",
   },
   {
     title: "Recitation of the Quran",
@@ -992,13 +992,13 @@ const dailySunnah: SunnahPractice[] = [
         practice: "Use the miswak upon waking",
         hadith:
           "Hudhayfah said: 'When the Prophet ﷺ got up during the night (for tahajjud), he would clean his mouth with the miswak.' He ﷺ also said: 'Were it not that I would make it difficult for my ummah, I would have commanded them to use the miswak before every prayer.'",
-        reference: "Bukhari 4:111; Bukhari 4:12",
+        reference: "Bukhari 4:111; Bukhari 11:12",
       },
       {
         practice: "Wash the hands three times before using water",
         hadith:
           "The Prophet ﷺ said: 'When one of you wakes up from sleep, let him not dip his hand into the vessel until he washes it three times, for he does not know where his hand spent the night.'",
-        reference: "Bukhari 4:28; Muslim 1:184",
+        reference: "Bukhari 4:28; Muslim 2:109",
       },
     ],
   },
@@ -1015,7 +1015,7 @@ const dailySunnah: SunnahPractice[] = [
         practice: "Eat with the right hand and from what is nearest",
         hadith:
           "The Prophet ﷺ said to the young Umar ibn Abi Salamah: 'O young boy, mention the name of Allah, eat with your right hand, and eat from what is nearest to you.'",
-        reference: "Bukhari 12:4; Muslim 15:159",
+        reference: "Bukhari 70:4; Muslim 36:143",
       },
       {
         practice: "Drink water in three sips",
@@ -1033,13 +1033,13 @@ const dailySunnah: SunnahPractice[] = [
         practice: "Say Alhamdulillah after eating",
         hadith:
           "The Prophet ﷺ said: 'Allah is pleased with a servant who eats something and praises Him for it, or drinks something and praises Him for it.'",
-        reference: "Muslim 21:2",
+        reference: "Muslim 48:123",
       },
       {
         practice: "Lick the fingers and do not waste food",
         hadith:
           "The Prophet ﷺ said: 'When one of you eats, let him not wipe his hand until he has licked it or had it licked.' And he ﷺ said: 'If a morsel of food falls from one of you, let him pick it up, remove any dirt, and eat it — do not leave it for the shaytan.'",
-        reference: "Muslim 7:81; Muslim 7:83",
+        reference: "Muslim 36:175; Muslim 36:180",
       },
     ],
   },
@@ -1056,7 +1056,7 @@ const dailySunnah: SunnahPractice[] = [
         practice: "Say Bismillah when entering the home",
         hadith:
           "The Prophet ﷺ said: 'When a man enters his house and mentions the name of Allah upon entering and upon eating, the shaytan says (to his companions): There is no place for you to spend the night and no dinner. But if he enters without mentioning the name of Allah, the shaytan says: You have found a place to spend the night.'",
-        reference: "Muslim 7:68",
+        reference: "Muslim 36:136",
       },
       {
         practice: "Give salam when entering the home",
@@ -1091,13 +1091,13 @@ const dailySunnah: SunnahPractice[] = [
         practice: "Recite the last two verses of Surah Al-Baqarah",
         hadith:
           "The Prophet ﷺ said: 'Whoever recites the last two verses of Surah Al-Baqarah at night, they will suffice him.'",
-        reference: "Bukhari 8:31; Muslim 32:160",
+        reference: "Bukhari 66:64; Muslim 6:306",
       },
       {
         practice: "Dust the bed before lying down",
         hadith:
           "The Prophet ﷺ said: 'When one of you goes to his bed, let him dust it off with the inside of his lower garment, for he does not know what came onto it after him. Then let him say: Bismika Rabbi wada'tu janbi, wa bika arfa'uhu (In Your name, my Lord, I lay down my side, and in Your name I raise it up).'",
-        reference: "Bukhari 80:17; Muslim 15:159",
+        reference: "Bukhari 80:17",
       },
     ],
   },
@@ -1114,13 +1114,13 @@ const dailySunnah: SunnahPractice[] = [
         practice: "Dhikr after each prayer",
         hadith:
           "The Prophet ﷺ said: 'Whoever glorifies Allah (SubhanAllah) after every prayer thirty-three times, praises Allah (Alhamdulillah) thirty-three times, and declares His greatness (Allahu Akbar) thirty-three times — that is ninety-nine — and then says to complete one hundred: La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa ala kulli shay'in qadir — his sins will be forgiven even if they are like the foam of the sea.'",
-        reference: "Muslim 2:64",
+        reference: "Muslim 5:188",
       },
       {
         practice: "Send salawat upon the Prophet ﷺ",
         hadith:
           "The Prophet ﷺ said: 'Whoever sends salah (blessings) upon me once, Allah will send salah upon him ten times.'",
-        reference: "Muslim 1:313",
+        reference: "Nasai 13:118; Nasai 13:119",
       },
       {
         practice: "Say La ilaha illallah frequently",
@@ -1155,19 +1155,19 @@ const dailySunnah: SunnahPractice[] = [
         practice: "Visit the sick",
         hadith:
           "The Prophet ﷺ said: 'The rights of a Muslim over another Muslim are five: returning the salam, visiting the sick, following the funeral, accepting the invitation, and saying yarhamukallah (may Allah have mercy on you) to one who sneezes.'",
-        reference: "Bukhari 16:4; Muslim 39:5",
+        reference: "Bukhari 23:4; Muslim 39:5",
       },
       {
         practice: "Be good to neighbors",
         hadith:
           "The Prophet ﷺ said: 'Jibreel kept advising me to be good to my neighbor until I thought he would give him a share of my inheritance.'",
-        reference: "Bukhari 78:45; Muslim 44:68",
+        reference: "Bukhari 78:45; Muslim 1:79",
       },
       {
         practice: "Be gentle and avoid harshness",
         hadith:
           "The Prophet ﷺ said: 'Allah is gentle and loves gentleness in all matters. He gives for gentleness what He does not give for harshness, and what He does not give for anything else.'",
-        reference: "Bukhari 64:440; Muslim 1:359",
+        reference: "Bukhari 78:55; Muslim 2:125",
       },
     ],
   },

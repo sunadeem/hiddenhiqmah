@@ -87,7 +87,7 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "Al-Kawthar",
           detail:
             "Al-Kawthar is a river in Jannah granted exclusively to the Prophet Muhammad (peace be upon him). On its two banks are tents of hollow pearls, and its scent is of sharp musk. Its water is whiter than milk and sweeter than honey, and its drinking vessels are as numerous as the stars.",
-          note: "Bukhari 81:169; Muslim 36:111; Muslim 36:111; Quran 108:1",
+          note: "Bukhari 81:169; Muslim 4:56; Quran 108:1",
         },
         {
           title: "Trees and shade",
@@ -103,7 +103,7 @@ const descriptionTopics: DescriptionTopic[] = [
         },
       ],
       source:
-        "Quran 47:15; Quran 56:28-34; Bukhari 59:62, 81:169; Muslim 1:305, 15:137; Tirmidhi 38:4, 38:49",
+        "Quran 47:15; Quran 56:28-34; Bukhari 59:62, 81:169; Muslim 4:56, 53:7; Tirmidhi 38:4, 38:49",
     },
   },
   {
@@ -207,11 +207,11 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "In the company of the prophets",
           detail:
             "Those who obey Allah and His Messenger will be with the prophets, the truthful, the martyrs, and the righteous. The Prophet (peace be upon him) told a companion who asked about being with him in Paradise: 'You will be with those whom you love.'",
-          note: "Quran 4:69; Bukhari 4:38; Muslim 13:145",
+          note: "Quran 4:69; Bukhari 62:38; Muslim 45:208",
         },
       ],
       source:
-        "Quran 4:69, 13:23, 15:47, 44:54, 52:21, 55:70-74; Bukhari 59:56, 62:38; Muslim 13:145, 15:44",
+        "Quran 4:69, 13:23, 15:47, 44:54, 52:21, 55:70-74; Bukhari 59:56, 62:38; Muslim 45:208, 53:50",
     },
   },
   {
@@ -297,7 +297,7 @@ const howToTopics: HowToTopic[] = [
           title: "The mercy of Allah",
           detail:
             "Ultimately, no one enters Paradise by their deeds alone — it is by Allah's mercy. Deeds are the means, but mercy is the cause. The Prophet (peace be upon him) said: 'Do good deeds properly, sincerely and moderately... and always adopt a middle, moderate course, whereby you will reach your target (Paradise).'",
-          note: "Bukhari 23:52; Bukhari 75:33",
+          note: "Bukhari 81:53; Bukhari 75:33",
         },
       ],
       source:
@@ -351,11 +351,11 @@ const howToTopics: HowToTopic[] = [
           title: "The 12 sunnah rak'at daily",
           detail:
             "The Prophet (peace be upon him) said: 'Whoever prays 12 rak'at during the day and night (the sunnah prayers), a house will be built for him in Paradise.'",
-          note: "Muslim 3:50; Tirmidhi 2:268",
+          note: "Muslim 6:124; Tirmidhi 2:268",
         },
       ],
       source:
-        "Bukhari 8:99, 80:100; Muslim 1:14, 0:13:198; Tirmidhi 2:268, 27:110",
+        "Bukhari 8:99, 80:100; Muslim 1:14, 6:124; Tirmidhi 2:268, 27:110",
     },
   },
   {
@@ -387,7 +387,7 @@ const howToTopics: HowToTopic[] = [
           title: "Al-Wasilah — the single highest station",
           detail:
             "Al-Wasilah is a unique station in Paradise that belongs to only one person. The Prophet (peace be upon him) said: 'When you hear the mu'adhin, say what he says, then send blessings upon me... then ask Allah to grant me al-Wasilah, for it is a station in Paradise that is only fitting for one of the servants of Allah, and I hope that I will be the one. Whoever asks Allah to grant me al-Wasilah, my intercession will be guaranteed for him.' Muslims are encouraged to make this du'a after every adhan.",
-          note: "Muslim 43:200; Bukhari 10:9",
+          note: "Bukhari 10:12",
         },
         {
           title: "Seeing the people of higher ranks",
@@ -403,7 +403,7 @@ const howToTopics: HowToTopic[] = [
         },
       ],
       source:
-        "Quran 6:127, 9:72, 10:9, 10:25, 13:23, 18:31, 18:107, 23:11, 32:19, 41:28, 53:15, 56:12, 61:12, 68:34, 83:18-21, 83:26, 98:8; Bukhari 3:12, 97:51; Muslim 43:200, 15:41; Abu Dawud 8:49; Tirmidhi 45:40",
+        "Quran 6:127, 9:72, 10:9, 10:25, 13:23, 18:31, 18:107, 23:11, 32:19, 41:28, 53:15, 56:12, 61:12, 68:34, 83:18-21, 83:26, 98:8; Bukhari 59:66, 97:51; Muslim 53:11; Abu Dawud 8:49; Tirmidhi 45:40",
     },
   },
   {
@@ -669,7 +669,7 @@ function JannahContent() {
                   "Quran 32:17 — No soul knows what delight awaits them",
                   "Quran 39:53 — Do not despair of the mercy of Allah",
                   "Bukhari 59:55; Muslim 53:3 — What no eye has seen, no ear has heard",
-                  "Bukhari 49:8 — One hundred degrees of Paradise",
+                  "Bukhari 56:8 — One hundred degrees of Paradise",
                 ].map((source) => (
                   <li
                     key={source}
@@ -845,7 +845,7 @@ function JannahContent() {
                   "Quran 75:22-23; Quran 10:26 — Seeing the Face of Allah",
                   "Bukhari 59:62; Muslim 53:7 — Trees whose shade takes 100 years to cross",
                   "Bukhari 65:400; Muslim 53:27 — Tents of hollow pearls",
-                  "Bukhari 81:169; Muslim 1:305 — Al-Kawthar river",
+                  "Bukhari 81:169; Muslim 4:56 — Al-Kawthar river",
                   "Bukhari 59:56 — No envy or rancor in the hearts of Paradise's people",
                   "Muslim 1:88 — The greatest reward: looking at the Face of Allah",
                   "Tirmidhi 38:4 — Bricks of gold and silver, soil of saffron; Muslim 53:19 — Soil of white musk",
@@ -927,8 +927,8 @@ function JannahContent() {
                   "Quran 83:26 — For this let the competitors compete",
                   "Bukhari 1:1; Muslim 6:335 — Actions are judged by intentions",
                   "Bukhari 17:3; Muslim 1:14 — Deeds that admit to Paradise",
-                  "Bukhari 49:8 — One hundred degrees of Paradise; al-Firdaus",
-                  "Muslim 43:200; Bukhari 3:12 — Al-Wasilah: the highest station for the Prophet",
+                  "Bukhari 56:8 — One hundred degrees of Paradise; al-Firdaus",
+                  "Bukhari 10:12 — Al-Wasilah: the highest station for the Prophet",
                   "Bukhari 10:53 — Sponsoring an orphan: together in Paradise",
                   "Bukhari 81:159; Muslim 1:93-95 — The last person to enter Paradise",
                   "Muslim 1:178 — Whoever dies upon tawhid will enter Paradise",

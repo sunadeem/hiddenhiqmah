@@ -76,7 +76,7 @@ const sunniTopics: SectTopic[] = [
           title: "The Quran is the uncreated speech of Allah",
           detail:
             "Ahl al-Sunnah affirm that the Quran is the actual speech of Allah, not created. This was the position defended by Imam Ahmad ibn Hanbal during the famous Mihnah (inquisition) trial, when he was imprisoned and tortured for refusing to say the Quran was created.",
-          note: "Bukhari 97:83; Usul al-Sunnah, Imam Ahmad",
+          note: "Usul al-Sunnah, Imam Ahmad; Al-Bidayah wan-Nihayah, Ibn Kathir — Events of 218 AH",
         },
         {
           title: "Allah's attributes are affirmed literally",
@@ -129,7 +129,7 @@ const sunniTopics: SectTopic[] = [
           title: "Differences are a mercy, not a division",
           detail:
             "The four schools agree on the vast majority of issues. Their differences lie in secondary matters — how to place hands in prayer, the wording of qunut, specific inheritance scenarios, etc. None of these differences involve the fundamentals of the religion. The Prophet ﷺ said: 'If a judge makes a ruling, striving to reach the correct verdict, and he is right, he has two rewards. If he is wrong, he has one reward.'",
-          note: "Bukhari 96:79; Muslim 47:11",
+          note: "Bukhari 96:79; Muslim 30:18",
         },
       ],
       source: "Al-Madhahib al-Arba'ah, Abdur-Rahman al-Jaziri; Siyar A'lam an-Nubala, adh-Dhahabi",
@@ -312,7 +312,7 @@ const shiaTopics: SectTopic[] = [
           title: "Combining prayers and different adhan",
           detail:
             "Shia regularly combine Dhuhr with Asr and Maghrib with Isha, praying three times daily instead of five. They also add 'Hayya 'ala khayr al-'amal' (Come to the best of deeds) and 'Ash-hadu anna Aliyyan waliyu-llah' (I testify that Ali is the ally of Allah) to the adhan — additions not taught by the Prophet ﷺ.",
-          note: "Bukhari 10:8 — the five prayer times; no authentic hadith supports the additions to the adhan",
+          note: "Bukhari 10:1 — the established adhan; no authentic hadith supports the additions to the adhan",
         },
         {
           title: "Taqiyyah (religious dissimulation)",
@@ -400,7 +400,7 @@ const otherSects: SectTopic[] = [
           title: "Modern-day manifestations",
           detail:
             "The Kharijite methodology — declaring Muslims as disbelievers and justifying violence against them — has resurfaced throughout history, including in modern extremist groups. The scholars of Ahl al-Sunnah have consistently identified and refuted this ideology, which the Prophet ﷺ himself condemned.",
-          note: "Bukhari 61:12; fatawa of contemporary scholars",
+          note: "Bukhari 61:117; Muslim 12:196; fatawa of contemporary scholars",
         },
       ],
       source: "Bukhari 61:117; Muslim 12:196-228; Maqalat al-Islamiyyin, al-Ash'ari",
@@ -435,7 +435,7 @@ const otherSects: SectTopic[] = [
           title: "They denied that Allah will be seen in the Hereafter",
           detail:
             "Despite authentic hadith and Quranic verses affirming that the believers will see Allah on the Day of Judgement, the Mu'tazilah denied this. The Quran says: 'Faces that Day will be radiant, looking at their Lord' (Quran 75:22-23). The Prophet ﷺ said: 'You will see your Lord as you see the moon on a clear night.'",
-          note: "Quran 75:22-23; Bukhari 10:31; Muslim 1:356",
+          note: "Quran 75:22-23; Bukhari 10:201; Muslim 1:356",
         },
       ],
       source: "Al-Milal wan-Nihal, ash-Shahrastani; Maqalat al-Islamiyyin, al-Ash'ari; Dar' Ta'arud al-Aql wan-Naql, Ibn Taymiyyah",
@@ -526,7 +526,7 @@ const otherSects: SectTopic[] = [
           title: "Claim to prophethood",
           detail:
             "Mirza Ghulam Ahmad claimed to receive divine revelation and be a prophet, directly violating the Quranic verse that Muhammad ﷺ is the seal of the prophets (khatam an-nabiyyin). The Prophet ﷺ said: 'There is no prophet after me.' The Muslim Ummah has reached unanimous consensus (ijma') that anyone claiming prophethood after Muhammad ﷺ is a liar.",
-          note: "Quran 33:40; Bukhari 60:122; Muslim 24:33",
+          note: "Quran 33:40; Bukhari 60:122; Muslim 33:71",
         },
         {
           title: "Reinterpretation of 'Seal of the Prophets'",

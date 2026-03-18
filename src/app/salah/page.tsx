@@ -218,7 +218,7 @@ const prayers: Prayer[] = [
     },
     hadith: {
       text: "Whoever prays the two cool prayers (Fajr and Asr) will enter Paradise.",
-      ref: "Bukhari 2:50",
+      ref: "Bukhari 9:50",
     },
   },
   {
@@ -269,12 +269,12 @@ const prayers: Prayer[] = [
     sunnahBefore: 0,
     sunnahAfter: 2,
     additionalNote:
-      "Maghrib has a narrow window — it should be prayed soon after sunset. The 3 fard rak'at are unique: the first 2 have audible recitation, and the 3rd is silent with only Al-Fatihah. The 2 sunnah rak'at after Maghrib are part of the 12 confirmed rawatib sunnah (Muslim 5:208).",
+      "Maghrib has a narrow window — it should be prayed soon after sunset. The 3 fard rak'at are unique: the first 2 have audible recitation, and the 3rd is silent with only Al-Fatihah. The 2 sunnah rak'at after Maghrib are part of the 12 confirmed rawatib sunnah (Muslim 6:124).",
     description:
       "The sunset prayer — prayed immediately after the sun has fully set below the horizon. Its time ends when the red twilight (shafaq) disappears from the sky.",
     hadith: {
       text: "The time for Maghrib prayer is when the sun sets, as long as the twilight has not disappeared.",
-      ref: "Muslim 2:79",
+      ref: "Muslim 5:223",
     },
   },
   {
@@ -286,12 +286,12 @@ const prayers: Prayer[] = [
     sunnahBefore: 0,
     sunnahAfter: 2,
     additionalNote:
-      "After the 2 sunnah, the Witr prayer is highly recommended — the Prophet (peace be upon him) never left it, even while traveling. Witr is an odd number of rak'at (most commonly 1 or 3). He said: 'Make the last of your night prayer Witr' (Bukhari 7:9). The first 2 rak'at of Isha fard are recited aloud, the last 2 silently.",
+      "After the 2 sunnah, the Witr prayer is highly recommended — the Prophet (peace be upon him) never left it, even while traveling. Witr is an odd number of rak'at (most commonly 1 or 3). He said: 'Make the last of your night prayer Witr' (Bukhari 14:9). The first 2 rak'at of Isha fard are recited aloud, the last 2 silently.",
     description:
       "The night prayer — prayed after the disappearance of the red/white twilight. Its preferred time extends until the middle of the night, though it remains valid until Fajr.",
     hadith: {
       text: "If the people knew what reward is in the Fajr and Isha prayers, they would come to them even if they had to crawl.",
-      ref: "Bukhari 3:13",
+      ref: "Bukhari 10:51",
     },
   },
 ];
@@ -308,7 +308,7 @@ const voluntaryPrayers: Prayer[] = [
     sunnahBefore: 0,
     sunnahAfter: 0,
     additionalNote:
-      "Tahajjud is not obligatory but is the most virtuous voluntary prayer. It is prayed in sets of 2 rak'at, typically 2 to 12 rak'at, followed by Witr. The Prophet (peace be upon him) would regularly pray 11 rak'at at night (Bukhari 9:50). Recitation is done aloud or quietly — both are permissible. The last third of the night is when Allah descends to the lowest heaven and says: 'Who is calling upon Me, that I may answer him?' (Bukhari 9:29, Muslim 6:183).",
+      "Tahajjud is not obligatory but is the most virtuous voluntary prayer. It is prayed in sets of 2 rak'at, typically 2 to 12 rak'at, followed by Witr. The Prophet (peace be upon him) would regularly pray 11 rak'at at night (Bukhari 9:50). Recitation is done aloud or quietly — both are permissible. The last third of the night is when Allah descends to the lowest heaven and says: 'Who is calling upon Me, that I may answer him?' (Bukhari 19:26, Muslim 6:201).",
     description:
       "The voluntary night prayer — prayed after sleeping and waking in the latter part of the night. It is a deeply personal act of devotion, praised extensively in the Quran and Sunnah. Allah described the people of Tahajjud as those whose 'sides forsake their beds' in worship.",
     verse: {
@@ -318,7 +318,7 @@ const voluntaryPrayers: Prayer[] = [
     },
     hadith: {
       text: "The best prayer after the obligatory prayers is the night prayer (Tahajjud).",
-      ref: "Muslim 5:3",
+      ref: "Muslim 13:261",
     },
   },
   {
@@ -330,7 +330,7 @@ const voluntaryPrayers: Prayer[] = [
     sunnahBefore: 0,
     sunnahAfter: 0,
     additionalNote:
-      "Duha can be prayed as few as 2 rak'at and up to 12. The most common is 2–4. When prayed shortly after sunrise, it is also called Ishraq. The Prophet (peace be upon him) said: 'In the morning, charity is due on every joint of the body. Every tasbeeh is charity, every tahmeed is charity, every tahleel is charity... and two rak'at of Duha suffice for all of that' (Muslim 5:120).",
+      "Duha can be prayed as few as 2 rak'at and up to 12. The most common is 2–4. When prayed shortly after sunrise, it is also called Ishraq. The Prophet (peace be upon him) said: 'In the morning, charity is due on every joint of the body. Every tasbeeh is charity, every tahmeed is charity, every tahleel is charity... and two rak'at of Duha suffice for all of that' (Muslim 6:101).",
     description:
       "The forenoon prayer — a highly recommended voluntary prayer prayed in the morning hours. When prayed shortly after sunrise, it is also known as Salat al-Ishraq.",
     verse: {
@@ -369,7 +369,7 @@ const voluntaryPrayers: Prayer[] = [
     sunnahBefore: 0,
     sunnahAfter: 0,
     additionalNote:
-      "Istikhara is 2 rak'at of voluntary prayer, followed by the specific du'a of Istikhara in which you ask Allah to guide you toward what is best. It is not about seeing a dream or a sign — rather, it is entrusting the decision to Allah and proceeding with what feels right. The Prophet (peace be upon him) taught this for all matters, saying: 'If any of you is concerned about a decision, let him pray two rak'at of non-obligatory prayer...' (Bukhari 9:29). The du'a includes: 'O Allah, if You know this matter to be good for me... then decree it for me.'",
+      "Istikhara is 2 rak'at of voluntary prayer, followed by the specific du'a of Istikhara in which you ask Allah to guide you toward what is best. It is not about seeing a dream or a sign — rather, it is entrusting the decision to Allah and proceeding with what feels right. The Prophet (peace be upon him) taught this for all matters, saying: 'If any of you is concerned about a decision, let him pray two rak'at of non-obligatory prayer...' (Bukhari 19:45). The du'a includes: 'O Allah, if You know this matter to be good for me... then decree it for me.'",
     description:
       "The prayer of seeking guidance — prayed before making any important decision. The word 'istikhara' means seeking the best outcome from Allah. It is one of the most practical sunnah prayers, applicable to marriage, career, travel, and any significant choice.",
     hadith: {
@@ -386,12 +386,12 @@ const voluntaryPrayers: Prayer[] = [
     sunnahBefore: 0,
     sunnahAfter: 0,
     additionalNote:
-      "Tarawih is prayed in sets of 2 rak'at. The number varies — 8 rak'at (the practice of Aisha's narration, Bukhari 24:6) or 20 rak'at (the practice established by Umar ibn al-Khattab in congregation). Both are valid. The entire Quran is typically recited over the course of Ramadan in Tarawih at the masjid. It is concluded with Witr prayer.",
+      "Tarawih is prayed in sets of 2 rak'at. The number varies — 8 rak'at (the practice of Aisha's narration, Bukhari 31:6) or 20 rak'at (the practice established by Umar ibn al-Khattab in congregation). Both are valid. The entire Quran is typically recited over the course of Ramadan in Tarawih at the masjid. It is concluded with Witr prayer.",
     description:
       "The Ramadan night prayer — a special congregational prayer prayed every night during the month of Ramadan. The word 'tarawih' means 'rest,' as worshippers would rest between every 4 rak'at due to its length.",
     hadith: {
       text: "Whoever stands in prayer during Ramadan out of sincere faith and seeking reward, his previous sins will be forgiven.",
-      ref: "Bukhari 2:30; Muslim 3:81",
+      ref: "Bukhari 2:30; Muslim 6:207",
     },
   },
   {
@@ -408,7 +408,7 @@ const voluntaryPrayers: Prayer[] = [
       "The prayer of the two Eids — Eid al-Fitr (celebrating the end of Ramadan) and Eid al-Adha (the Festival of Sacrifice during Hajj). It is a joyous communal prayer that unites the Muslim community in gratitude to Allah.",
     hadith: {
       text: "The Prophet (peace be upon him) would go out on the day of Eid al-Fitr and Eid al-Adha to the musalla, and the first thing he would do was pray.",
-      ref: "Bukhari 6:8",
+      ref: "Bukhari 13:8",
     },
   },
   {
@@ -420,12 +420,12 @@ const voluntaryPrayers: Prayer[] = [
     sunnahBefore: 0,
     sunnahAfter: 0,
     additionalNote:
-      "Janazah prayer has a unique structure: 4 takbirat with no ruku' or sujud. After the 1st takbir: recite Al-Fatihah. After the 2nd: recite the Salawat al-Ibrahimiyyah. After the 3rd: make du'a for the deceased. After the 4th: make a brief du'a, then give one taslim to the right. It is a fard kifayah — a communal obligation (if some perform it, the obligation is lifted from the rest). The Prophet (peace be upon him) said: 'Whoever attends the funeral until the prayer is offered will have one qirat of reward' (Bukhari 10:13).",
+      "Janazah prayer has a unique structure: 4 takbirat with no ruku' or sujud. After the 1st takbir: recite Al-Fatihah. After the 2nd: recite the Salawat al-Ibrahimiyyah. After the 3rd: make du'a for the deceased. After the 4th: make a brief du'a, then give one taslim to the right. It is a fard kifayah — a communal obligation (if some perform it, the obligation is lifted from the rest). The Prophet (peace be upon him) said: 'Whoever attends the funeral until the prayer is offered will have one qirat of reward' (Bukhari 23:81).",
     description:
       "The funeral prayer — a unique prayer performed for a deceased Muslim. It is a communal obligation (fard kifayah) and differs from all other prayers in that it has no bowing or prostration, only four standing takbirat with specific recitations between them.",
     hadith: {
       text: "Whoever attends the funeral until the prayer is offered will have one qirat of reward, and whoever stays until the burial will have two qirat. It was asked: 'What are the two qirat?' He said: 'Like two great mountains.'",
-      ref: "Bukhari 19:28; Muslim 4:107",
+      ref: "Bukhari 23:81; Muslim 11:67",
     },
   },
 ];
@@ -441,7 +441,7 @@ const whyItMatters = [
     point: "It is a direct connection to Allah",
     detail:
       "When you recite Al-Fatihah, Allah responds to every verse. The Prophet (peace be upon him) said: 'Allah the Exalted says: I have divided the prayer between Myself and My servant into two halves, and My servant shall have what he asks for.'",
-    reference: "Muslim 1:300",
+    reference: "Muslim 4:40",
   },
   {
     point: "It prevents immorality and wrongdoing",
@@ -453,7 +453,7 @@ const whyItMatters = [
     point: "It erases sins between prayers",
     detail:
       "The Prophet (peace be upon him) compared the five daily prayers to a river at one's door in which he bathes five times a day — would any filth remain? The companions said no. He said: 'That is the likeness of the five prayers — Allah erases sins by them.'",
-    reference: "Bukhari 2:7, Muslim 2:133",
+    reference: "Bukhari 9:7, Muslim 5:356",
   },
   {
     point: "Abandoning it is the line between faith and disbelief",
@@ -585,7 +585,7 @@ const wuduTopics: WuduTopic[] = [
           title: "When is wudu required?",
           detail:
             "Wudu is required before performing salah, making tawaf around the Ka'bah, and touching the mushaf (physical copy of the Quran). The Prophet ﷺ said: 'Allah does not accept the prayer of any one of you if he breaks his wudu, until he performs wudu again.'",
-          note: "Bukhari 32:2",
+          note: "Bukhari 4:1",
         },
         {
           title: "The obligation of wudu",
@@ -597,16 +597,16 @@ const wuduTopics: WuduTopic[] = [
           title: "Spiritual virtues",
           detail:
             "Wudu is not only physical purification. The Prophet ﷺ said: 'When a Muslim servant performs wudu and washes his face, every sin that he committed with his eyes is washed away with the water, or with the last drop of water. When he washes his hands, every sin his hands committed is washed away. When he washes his feet, every sin towards which his feet walked is washed away, until he emerges purified of sin.'",
-          note: "Muslim 1:151",
+          note: "Muslim 2:44",
         },
         {
           title: "The mark of the believers",
           detail:
             "The Prophet ﷺ said that on the Day of Judgement he will recognize his ummah by the traces of wudu — their faces, hands, and feet will shine with light (ghurr and muhajjalin). He encouraged the believers to extend the washing of the face and limbs beyond the minimum to increase this light.",
-          note: "Muslim 1:153",
+          note: "Muslim 2:46",
         },
       ],
-      source: "Quran 5:6; Bukhari 32:2; Muslim 2:1, 1:153",
+      source: "Quran 5:6; Bukhari 4:1; Muslim 2:1, 2:46",
     },
   },
   {
@@ -690,7 +690,7 @@ const wuduTopics: WuduTopic[] = [
         arabic:
           "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ، اللَّهُمَّ اجْعَلْنِي مِنَ التَّوَّابِينَ وَاجْعَلْنِي مِنَ الْمُتَطَهِّرِينَ",
         text: "I bear witness that there is no god but Allah alone, with no partner, and I bear witness that Muhammad is His servant and Messenger. O Allah, make me among those who repent and make me among those who purify themselves.",
-        ref: "Muslim 15:159",
+        ref: "Muslim 2:20; Tirmidhi 1:55",
       },
       points: [
         {
@@ -703,7 +703,7 @@ const wuduTopics: WuduTopic[] = [
           title: "After Wudu: The Shahada",
           detail:
             "The Prophet ﷺ said: 'There is no one among you who performs wudu and does it well, then says: Ash-hadu an la ilaha illallahu wahdahu la sharika lah, wa ash-hadu anna Muhammadan abduhu wa rasuluh — except that the eight gates of Paradise will be opened for him, and he may enter through whichever one he wishes.'",
-          note: "Muslim 53:31",
+          note: "Muslim 2:20",
         },
         {
           title: "The addition of at-Tirmidhi",
@@ -715,10 +715,10 @@ const wuduTopics: WuduTopic[] = [
           title: "Praying two rak'at after wudu",
           detail:
             "The Prophet ﷺ said: 'Whoever performs wudu like this wudu of mine, then prays two rak'at in which he does not let his mind wander, his previous sins will be forgiven.' It is a highly recommended sunnah to pray two voluntary rak'at after making wudu.",
-          note: "Bukhari 4:25; Muslim 1:132",
+          note: "Bukhari 4:25; Muslim 2:20",
         },
       ],
-      source: "Bukhari 4:25; Muslim 1:132, 1:140; Abu Dawud 1:101; Tirmidhi 1:55",
+      source: "Bukhari 4:25; Muslim 2:20; Abu Dawud 1:101; Tirmidhi 1:55",
     },
   },
   {
@@ -738,7 +738,7 @@ const wuduTopics: WuduTopic[] = [
           title: "Using miswak (tooth stick)",
           detail:
             "The Prophet ﷺ said: 'Were it not that I would impose hardship on my ummah, I would have commanded them to use the miswak with every wudu.' Cleaning the teeth before rinsing the mouth is a highly recommended sunnah.",
-          note: "Bukhari 94:15; Muslim 2:59",
+          note: "Bukhari 11:12; Muslim 2:59",
         },
         {
           title: "Washing each part three times",
@@ -777,7 +777,7 @@ const wuduTopics: WuduTopic[] = [
           note: "Quran 5:6",
         },
       ],
-      source: "Bukhari 4:25, 11:12; Muslim 1:158, 1:174; Abu Dawud 1:101, 1:142; Tirmidhi 1:31, 1:38; Ibn Majah 1:133, 1:159",
+      source: "Bukhari 4:25, 4:34, 4:67, 11:12; Muslim 2:59, 2:83; Abu Dawud 1:101, 1:135, 1:142; Tirmidhi 1:31, 1:38; Ibn Majah 1:133, 1:159",
     },
   },
   {
@@ -803,7 +803,7 @@ const wuduTopics: WuduTopic[] = [
           title: "Deep sleep",
           detail:
             "Deep sleep in which one loses awareness of his surroundings nullifies wudu. Light dozing while sitting upright, where one would be aware if something exited, does not. The companion Anas (may Allah be pleased with him) reported that the companions of the Prophet ﷺ would doze off while waiting for Isha prayer, then pray without renewing wudu.",
-          note: "Abu Dawud 1:200; Muslim 1:283",
+          note: "Abu Dawud 1:200",
         },
         {
           title: "Loss of consciousness",
@@ -821,10 +821,10 @@ const wuduTopics: WuduTopic[] = [
           title: "Eating camel meat",
           detail:
             "The Prophet ﷺ was asked: 'Should we perform wudu after eating camel meat?' He said: 'Yes.' He was asked: 'Should we perform wudu after eating mutton?' He said: 'If you wish.' This is the position of the Hanbali school; other schools consider it recommended but not obligatory.",
-          note: "Muslim 1:267",
+          note: "Muslim 3:123",
         },
       ],
-      source: "Bukhari 4:1, 4:3; Muslim 1:267, 1:283; Abu Dawud 1:60, 1:200; Tirmidhi 1:82",
+      source: "Bukhari 4:1, 4:3; Muslim 3:123; Abu Dawud 1:60, 1:200; Tirmidhi 1:82",
     },
   },
 ];
@@ -1101,10 +1101,10 @@ function PrayerGuide({
           <ul className="space-y-1.5">
             {[
               "Sifat Salat an-Nabi, al-Albani — Comprehensive description of the Prophet's prayer",
-              "Bukhari 19:26 — On the obligation of Al-Fatihah in every rak'ah",
-              "Muslim 1:300 — Allah's response to each verse of Al-Fatihah",
-              "Muslim 1:388 — The closest a servant is to Allah is in sujud",
-              "Bukhari 19:45 — Tashahhud and Salawat narrated by Ibn Mas'ud",
+              "Bukhari 10:150 — On the obligation of Al-Fatihah in every rak'ah",
+              "Muslim 4:40 — Allah's response to each verse of Al-Fatihah",
+              "Muslim 4:245 — The closest a servant is to Allah is in sujud",
+              "Bukhari 21:6 — Tashahhud and Salawat narrated by Ibn Mas'ud",
             ].map((source) => (
               <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
                 <span className="text-gold/40 mt-0.5">&#8226;</span>
@@ -1683,13 +1683,13 @@ function SalahContent() {
                   <span className="text-themed font-medium">Salah</span> (الصلاة) is the second pillar of Islam and the most important act of worship after the shahada. It is the direct, personal connection between the servant and Allah — prescribed five times daily at specific times from dawn to night.
                 </p>
                 <p>
-                  Salah was prescribed during the Night Journey (al-Isra wal-Mi&apos;raj), when the Prophet Muhammad (peace be upon him) was taken up through the heavens. Originally fifty prayers were prescribed, then reduced to five in number but fifty in reward (Bukhari 19:45, Muslim 1:321).
+                  Salah was prescribed during the Night Journey (al-Isra wal-Mi&apos;raj), when the Prophet Muhammad (peace be upon him) was taken up through the heavens. Originally fifty prayers were prescribed, then reduced to five in number but fifty in reward (Bukhari 63:112, Muslim 1:321).
                 </p>
                 <p>
                   The prayer involves a sequence of positions — standing, bowing, prostrating, and sitting — each accompanied by specific recitations from the Quran and supplications. It begins with &apos;Allahu Akbar&apos; (takbiratul ihram) and ends with the taslim (saying &apos;As-salamu alaykum wa rahmatullah&apos; to each side).
                 </p>
                 <p>
-                  Salah requires ritual purity (wudu), facing the qiblah (direction of the Ka&apos;bah in Makkah), covering the awrah, and praying within the appointed time. It is not merely a ritual — the Prophet (peace be upon him) said it is a conversation with Allah. When you recite Al-Fatihah, Allah responds to each verse (Muslim 1:300).
+                  Salah requires ritual purity (wudu), facing the qiblah (direction of the Ka&apos;bah in Makkah), covering the awrah, and praying within the appointed time. It is not merely a ritual — the Prophet (peace be upon him) said it is a conversation with Allah. When you recite Al-Fatihah, Allah responds to each verse (Muslim 4:40).
                 </p>
               </div>
             </ContentCard>
@@ -1756,8 +1756,8 @@ function SalahContent() {
               </h4>
               <ul className="space-y-1.5">
                 {[
-                  "Bukhari 31:6, Muslim 1:321 — The prescription of prayer during al-Isra wal-Mi'raj",
-                  "Muslim 1:300 — Allah's response to Al-Fatihah",
+                  "Bukhari 63:112, Muslim 1:321 — The prescription of prayer during al-Isra wal-Mi'raj",
+                  "Muslim 4:40 — Allah's response to Al-Fatihah",
                   "Sifat Salat an-Nabi, al-Albani — The Prophet's prayer described",
                   "Sharh Umdatul Ahkam, Ibn Uthaymeen — Rulings on prayer",
                 ].map((source) => (
@@ -1829,9 +1829,9 @@ function SalahContent() {
               <ul className="space-y-1.5">
                 {[
                   "Nasai 5:18 — Prayer is the first deed judged",
-                  "Muslim 1:300 — Allah responds to Al-Fatihah",
+                  "Muslim 4:40 — Allah responds to Al-Fatihah",
                   "Tirmidhi 40:16 — The covenant between us and them is prayer; Muslim 1:12 — similar meaning",
-                  "Bukhari 2:7, Muslim 2:133 — The likeness of the five prayers",
+                  "Bukhari 9:7, Muslim 5:356 — The likeness of the five prayers",
                   "Tafsir Ibn Kathir — Commentary on Quran 29:45, 20:132",
                 ].map((source) => (
                   <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
@@ -1947,9 +1947,9 @@ function SalahContent() {
               <ul className="space-y-1.5">
                 {[
                   "Quran 5:6 — The verse of wudu, detailing the obligatory acts of purification",
-                  "Bukhari 1:1, 90:2 — Niyyah, nullifiers, the Prophet's ﷺ wudu, right-side preference, miswak",
-                  "Muslim 2:1, 1:283 — Cleanliness, two rak'at after wudu, dua, sins washed away, ghurr and muhajjalin, camel meat",
-                  "Abu Dawud 1:60, 1:200 — Passing wind, Bismillah, ears, washing three times, interlacing fingers, deep sleep",
+                  "Bukhari 1:1, 4:1, 4:25, 11:12 — Niyyah, nullifiers, the Prophet's ﷺ wudu, right-side preference, miswak",
+                  "Muslim 2:1, 2:20, 2:44, 2:46, 3:123 — Cleanliness, two rak'at after wudu, dua, sins washed away, ghurr and muhajjalin, camel meat",
+                  "Abu Dawud 1:60, 1:101, 1:200 — Passing wind, Bismillah, ears, washing three times, interlacing fingers, deep sleep",
                   "Tirmidhi 1:31, 1:82 — Beard, ears are part of head, interlacing toes, dua after wudu, touching private parts",
                   "Ibn Majah 1:133, 1:159 — Bismillah obligation discussion, moderation with water",
                 ].map((source) => (
@@ -2043,14 +2043,14 @@ function SalahContent() {
                 <ul className="space-y-1.5">
                   {[
                     "Bukhari 9:50 — Fajr & Asr: whoever prays the two cool prayers will enter Paradise",
-                    "Muslim 5:271 — Fajr sunnah: better than the world and everything in it",
+                    "Muslim 6:118 — Fajr sunnah: better than the world and everything in it",
                     "Tirmidhi 2:281 — Dhuhr: reward for praying four rak'at before and after",
                     "Nasai 14:6 — Jumu'ah: warning about missing three consecutive Friday prayers",
-                    "Bukhari 2:29 — Asr: missing it is like losing family and property",
-                    "Muslim 2:79 — Maghrib: timing of the sunset prayer",
-                    "Muslim 3:50 — Rawatib sunnah: the 12 confirmed sunnah prayers",
-                    "Bukhari 3:13 — Isha & Fajr: reward for attending them in congregation",
-                    "Bukhari 7:9 — Witr: make the last of your night prayer Witr",
+                    "Bukhari 9:29 — Asr: missing it is like losing family and property",
+                    "Muslim 5:223 — Maghrib: timing of the sunset prayer",
+                    "Muslim 6:124 — Rawatib sunnah: the 12 confirmed sunnah prayers",
+                    "Bukhari 10:51 — Isha & Fajr: reward for attending them in congregation",
+                    "Bukhari 14:9 — Witr: make the last of your night prayer Witr",
                     "Quran 17:78 — Establish prayer from the decline of the sun until the darkness of night",
                     "Quran 2:238 — Guard the prayers, especially the middle prayer (Asr)",
                     "Sifat Salat an-Nabi by Shaykh al-Albani — Description of the Prophet's prayer",
@@ -2145,16 +2145,16 @@ function SalahContent() {
                 </h4>
                 <ul className="space-y-1.5">
                   {[
-                    "Bukhari 13:8, 19:28 — Tahajjud: Allah descends to the lowest heaven; the Prophet's night prayer practice",
-                    "Muslim 6:187, 5:3 — Tahajjud: night prayer is the best prayer after the obligatory ones",
-                    "Muslim 3:42 — Duha: two rak'at of Duha suffice as charity for every joint",
+                    "Bukhari 19:26, 19:28 — Tahajjud: Allah descends to the lowest heaven; the Prophet's night prayer practice",
+                    "Muslim 13:261 — Tahajjud: night prayer is the best prayer after the obligatory ones",
+                    "Muslim 6:101 — Duha: two rak'at of Duha suffice as charity for every joint",
                     "Tirmidhi 6:43 — Duha/Ishraq: reward like Hajj and Umrah for praying after sunrise (graded da'if by some; widely practiced)",
                     "Abu Dawud 8:106; Tirmidhi 2:259 — Tawbah: forgiveness for praying 2 rak'at after sinning",
                     "Bukhari 19:45 — Istikhara: the du'a and method taught by the Prophet (peace be upon him)",
-                    "Bukhari 24:6 — Tarawih: Aisha's narration of the Prophet's night prayer in Ramadan",
-                    "Bukhari 2:30; Muslim 3:81 — Tarawih: forgiveness for standing in prayer during Ramadan",
-                    "Bukhari 6:8 — Eid: the Prophet's practice of praying in the musalla",
-                    "Bukhari 19:45; Muslim 4:107 — Janazah: reward for attending the funeral prayer",
+                    "Bukhari 31:6 — Tarawih: Aisha's narration of the Prophet's night prayer in Ramadan",
+                    "Bukhari 2:30; Muslim 6:207 — Tarawih: forgiveness for standing in prayer during Ramadan",
+                    "Bukhari 13:8 — Eid: the Prophet's practice of praying in the musalla",
+                    "Bukhari 23:81; Muslim 11:67 — Janazah: reward for attending the funeral prayer",
                     "Fiqh us-Sunnah by Sayyid Sabiq — General reference for voluntary prayer rulings",
                     "Sifat Salat an-Nabi by Shaykh al-Albani — Description of the Prophet's prayer",
                   ].map((source) => (

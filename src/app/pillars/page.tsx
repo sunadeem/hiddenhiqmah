@@ -66,7 +66,7 @@ const whyItMatters = [
     point: "They are a means of forgiveness and elevation",
     detail:
       "The Prophet (peace be upon him) said: 'The five daily prayers, and Friday to Friday, and Ramadan to Ramadan are expiation for what is between them, so long as major sins are avoided.'",
-    reference: "Muslim 1:139",
+    reference: "Muslim 2:19",
   },
 ];
 
@@ -101,11 +101,11 @@ const pillars: Pillar[] = [
     ],
     hadith: [
       {
-        ref: "Bukhari 65:1, Muslim 1:29",
+        ref: "Bukhari 2:18, Muslim 1:36",
         text: "I have been ordered to fight the people until they testify that there is no god but Allah and that Muhammad is the Messenger of Allah, and establish prayer and give zakat. If they do that, their blood and wealth are protected from me, except by the right of Islam, and their account is with Allah.",
       },
       {
-        ref: "Muslim 15:159",
+        ref: "Muslim 1:37",
         text: "Whoever says 'La ilaha illa Allah' and disbelieves in everything worshipped besides Allah, his property and blood become inviolable, and his reckoning is with Allah.",
       },
     ],
@@ -134,7 +134,7 @@ const pillars: Pillar[] = [
       "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — On the meaning and conditions of La ilaha illa Allah",
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on the shahada and its conditions",
       "Al-Qawa'id al-Muthla, Ibn Uthaymeen — On the testimony of faith",
-      "Bukhari 65:1, Muslim 1:29, 0:26 — Hadith on the shahada",
+      "Bukhari 2:18, Muslim 1:36 — Hadith on the shahada",
     ],
   },
   {
@@ -168,33 +168,33 @@ const pillars: Pillar[] = [
     ],
     hadith: [
       {
-        ref: "Nasai 5:16, Tirmidhi 2:266",
+        ref: "Nasai 37:26, Tirmidhi 2:266",
         text: "The first thing a person will be held accountable for on the Day of Judgement is the prayer. If it is sound, then the rest of his deeds will be sound. And if it is deficient, then the rest of his deeds will be deficient.",
       },
       {
-        ref: "Bukhari 10:6, Muslim 1:5",
+        ref: "Bukhari 9:6, Muslim 1:159",
         text: "The Prophet (peace be upon him) was asked: 'Which deed is most beloved to Allah?' He said: 'Prayer at its proper time.'",
       },
       {
-        ref: "Muslim 1:139",
+        ref: "Muslim 2:19",
         text: "The five daily prayers, and Friday to Friday, and Ramadan to Ramadan are expiation for whatever sins come between them, so long as major sins are avoided.",
       },
     ],
     points: [
       "It is the second pillar and the most important act of worship after the shahada",
-      "Prescribed during al-Isra wal-Mi'raj — originally 50, reduced to 5 but rewarded as 50 (Bukhari 59:18, Muslim 1:321)",
+      "Prescribed during al-Isra wal-Mi'raj — originally 50, reduced to 5 but rewarded as 50 (Bukhari 59:18, Muslim 1:314)",
       "Five obligatory prayers: Fajr, Dhuhr, Asr, Maghrib, Isha",
       "Requires ritual purity (wudu), facing the qiblah, covering the awrah, and praying at the appointed time",
-      "Sujud (prostration) is the closest a servant is to Allah (Muslim 1:388)",
-      "Abandoning prayer entirely is a matter of major sin — some scholars consider it an act of disbelief based on Muslim 1:12",
-      "Congregation (jama'ah) prayer is 27 times more rewarding than praying alone (Bukhari 8:1)",
+      "Sujud (prostration) is the closest a servant is to Allah (Muslim 4:245)",
+      "Abandoning prayer entirely is a matter of major sin — some scholars consider it an act of disbelief based on Nasai 5:16",
+      "Congregation (jama'ah) prayer is 27 times more rewarding than praying alone (Bukhari 10:42)",
       "Friday (Jumu'ah) prayer is obligatory for men and replaces Dhuhr on Friday",
     ],
     misconceptions: [
       {
         title: "Prayer is just a ritual with no real benefit",
         clarification:
-          "Allah Himself states that prayer prevents immorality and wrongdoing (Quran 29:45). It is a direct conversation with Allah — when you recite al-Fatihah, Allah responds to each verse (Muslim 4:300). It is both spiritual nourishment and practical protection.",
+          "Allah Himself states that prayer prevents immorality and wrongdoing (Quran 29:45). It is a direct conversation with Allah — when you recite al-Fatihah, Allah responds to each verse (Muslim 4:41). It is both spiritual nourishment and practical protection.",
       },
       {
         title: "You can make up for missed prayers whenever you want",
@@ -206,7 +206,7 @@ const pillars: Pillar[] = [
       "Sifat Salat an-Nabi, al-Albani — Detailed description of the Prophet's prayer",
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Rulings on prayer",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — On the obligation of salah",
-      "Bukhari 10:6, 10:42; Muslim 1:5, 0:1:388 — Hadith on prayer",
+      "Bukhari 9:6, 10:42; Muslim 1:159, 4:245 — Hadith on prayer",
       "Tafsir Ibn Kathir — Commentary on Quran 4:103, 29:45, 2:238",
     ],
   },
@@ -240,7 +240,7 @@ const pillars: Pillar[] = [
     ],
     hadith: [
       {
-        ref: "Bukhari 65:1",
+        ref: "Bukhari 24:1",
         text: "The Prophet (peace be upon him) sent Mu'adh to Yemen and said: 'Inform them that Allah has made obligatory upon them sadaqah (zakat) from their wealth, to be taken from the rich among them and given to the poor among them.'",
       },
       {
@@ -262,7 +262,7 @@ const pillars: Pillar[] = [
       {
         title: "Zakat is the same as voluntary charity (sadaqah)",
         clarification:
-          "Zakat is an obligation with specific rules on amounts, thresholds, and recipients. Sadaqah is voluntary and can be given in any amount to anyone. Withholding zakat is a major sin with severe punishment described in the Quran (3:180) and Sunnah (Muslim 12:40).",
+          "Zakat is an obligation with specific rules on amounts, thresholds, and recipients. Sadaqah is voluntary and can be given in any amount to anyone. Withholding zakat is a major sin with severe punishment described in the Quran (3:180) and Sunnah (Muslim 12:28).",
       },
       {
         title: "Zakat is just a tax",
@@ -274,7 +274,7 @@ const pillars: Pillar[] = [
       "Fiqh az-Zakat, Yusuf al-Qaradawi — Comprehensive jurisprudence of zakat",
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on zakat",
       "Al-Mughni, Ibn Qudamah — Section on zakat rulings",
-      "Bukhari 65:1, 24:103; Muslim 4:149 — Hadith on zakat",
+      "Bukhari 24:1, 24:103; Muslim 12:28 — Hadith on zakat",
       "Tafsir Ibn Kathir — Commentary on Quran 9:60, 9:103",
     ],
   },
@@ -327,7 +327,7 @@ const pillars: Pillar[] = [
       "Suhoor (pre-dawn meal) is a blessed sunnah — the Prophet encouraged it (Bukhari 30:32)",
       "Exemptions: the traveler, the sick, pregnant/nursing women, the elderly, and menstruating women",
       "Those exempt due to temporary reasons must make up the days; those permanently unable give fidyah (feeding a poor person per day)",
-      "Laylatul Qadr falls in the last ten nights of Ramadan — the Prophet would increase his worship during these nights (Bukhari 25:11)",
+      "Laylatul Qadr falls in the last ten nights of Ramadan — the Prophet would increase his worship during these nights (Bukhari 32:11)",
       "Voluntary fasting outside Ramadan is highly encouraged — Mondays and Thursdays, the white days (13th-15th), and the day of Arafah",
     ],
     misconceptions: [
@@ -358,7 +358,7 @@ const pillars: Pillar[] = [
     description:
       "The annual pilgrimage to Makkah — obligatory once in a lifetime for every Muslim who is physically and financially able. Hajj commemorates the legacy of Ibrahim, Hajar, and Ismail, and symbolizes the unity and equality of all believers before Allah.",
     detailedExplanation:
-      "Hajj takes place during the 8th-12th of Dhul Hijjah, the last month of the Islamic calendar. The rites begin with entering the state of ihram — a state of consecration marked by wearing simple white garments (for men) and making the intention. The pilgrim performs Tawaf (circling the Ka'bah seven times), Sa'i (walking between Safa and Marwah seven times, commemorating Hajar's search for water), standing at Arafah on the 9th of Dhul Hijjah (the greatest pillar of Hajj), staying overnight at Muzdalifah, stoning the Jamarat (pillars representing where Ibrahim resisted Shaytan), sacrificing an animal (commemorating Ibrahim's willingness to sacrifice Ismail), and shaving or trimming the hair. The Prophet (peace be upon him) performed Hajj only once — the Farewell Pilgrimage in the 10th year after Hijrah — during which he delivered his famous Farewell Sermon and said: 'Take from me your rites of Hajj' (Muslim 15:135).",
+      "Hajj takes place during the 8th-12th of Dhul Hijjah, the last month of the Islamic calendar. The rites begin with entering the state of ihram — a state of consecration marked by wearing simple white garments (for men) and making the intention. The pilgrim performs Tawaf (circling the Ka'bah seven times), Sa'i (walking between Safa and Marwah seven times, commemorating Hajar's search for water), standing at Arafah on the 9th of Dhul Hijjah (the greatest pillar of Hajj), staying overnight at Muzdalifah, stoning the Jamarat (pillars representing where Ibrahim resisted Shaytan), sacrificing an animal (commemorating Ibrahim's willingness to sacrifice Ismail), and shaving or trimming the hair. The Prophet (peace be upon him) performed Hajj only once — the Farewell Pilgrimage in the 10th year after Hijrah — during which he delivered his famous Farewell Sermon and said: 'Take from me your rites of Hajj' (Muslim 15:159).",
     keyVerses: [
       {
         ref: "Quran 3:97",
@@ -389,7 +389,7 @@ const pillars: Pillar[] = [
         text: "An accepted Hajj (Hajj Mabrur) has no reward except Paradise.",
       },
       {
-        ref: "Muslim 15:135",
+        ref: "Muslim 15:159",
         text: "Take from me your rites of Hajj, for I do not know — perhaps I will not perform Hajj after this year of mine.",
       },
     ],
@@ -401,7 +401,7 @@ const pillars: Pillar[] = [
       "All pilgrims wear simple garments (ihram), removing all signs of social status and wealth",
       "The Ka'bah was originally built by Ibrahim and Ismail (Quran 2:127)",
       "The sacrifice commemorates Ibrahim's willingness to sacrifice his son in obedience to Allah",
-      "The Day of Arafah (for non-pilgrims) — fasting it expiates the sins of the previous and coming year (Muslim 15:2)",
+      "The Day of Arafah (for non-pilgrims) — fasting it expiates the sins of the previous and coming year (Muslim 13:253)",
     ],
     misconceptions: [
       {
@@ -419,7 +419,7 @@ const pillars: Pillar[] = [
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on Hajj",
       "Al-Mughni, Ibn Qudamah — Section on the rites and rulings of Hajj",
       "Sifat Hajjat an-Nabi, Ibn al-Qayyim (from Zad al-Ma'ad) — Description of the Prophet's Hajj",
-      "Bukhari 28:9, 26:1; Muslim 15:135, 1350 — Hadith on Hajj",
+      "Bukhari 25:9, 26:1; Muslim 15:159, 15:495 — Hadith on Hajj",
       "Tafsir Ibn Kathir — Commentary on Quran 2:127, 2:197, 3:97, 22:27",
     ],
   },
@@ -765,7 +765,7 @@ function PillarsContent() {
               <ul className="space-y-1.5">
                 {[
                   "Bukhari 2:1, Muslim 1:21 — The five pillars hadith",
-                  "Muslim 1:139 — On the five prayers as expiation for sins",
+                  "Muslim 2:19 — On the five prayers as expiation for sins",
                   "Sharh Usul al-Iman, Ibn Uthaymeen — On the importance of the pillars",
                   "Tafsir Ibn Kathir — Commentary on Quran 2:177, 3:103, 98:5",
                 ].map((source) => (

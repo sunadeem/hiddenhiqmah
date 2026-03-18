@@ -222,11 +222,11 @@ const eventsTopics: Topic[] = [
           title: "The earth will be changed",
           detail:
             "Allah says: 'On the Day the earth will be replaced by another earth, and the heavens as well, and they will come forth before Allah, the One, the Prevailing.' The earth will be flattened like a loaf of white bread — no landmarks, no shelter, nothing to hide behind.",
-          note: "Quran 14:48; Muslim 14:11",
+          note: "Quran 14:48; Muslim 52:13",
         },
       ],
       source:
-        "Quran 14:48, 39:68; Bukhari 65:456; Muslim 14:11, 15:164",
+        "Quran 14:48, 39:68; Bukhari 65:456; Muslim 52:13, 54:175",
     },
   },
   {
@@ -252,7 +252,7 @@ const eventsTopics: Topic[] = [
           title: "The first to be clothed will be Ibrahim",
           detail:
             "The Prophet (peace be upon him) said: 'The first of creation to be clothed on the Day of Resurrection will be Ibrahim (peace be upon him).'",
-          note: "Bukhari 2:24",
+          note: "Bukhari 81:115",
         },
         {
           title: "People will be raised upon their deeds",
@@ -262,7 +262,7 @@ const eventsTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 70:43; Bukhari 2:24, 81:116; Muslim 53:67, 15:88",
+        "Quran 70:43; Bukhari 81:115, 81:116; Muslim 53:67, 53:69",
     },
   },
   {
@@ -340,7 +340,7 @@ const eventsTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 17:13, 24:24, 69:19-26, 84:7-9; Bukhari 39:2; Muslim 13:274, 15:178; Tirmidhi 37:3",
+        "Quran 17:13, 24:24, 69:19-26, 84:7-9; Bukhari 81:125; Muslim 53:94, 55:23; Tirmidhi 37:3",
     },
   },
   {
@@ -378,11 +378,11 @@ const eventsTopics: Topic[] = [
           title: "Al-Hamd fills the Scale",
           detail:
             "The Prophet (peace be upon him) said: 'Purity is half of faith. Al-hamdulillah fills the Scale. SubhanAllah and al-hamdulillah fill what is between the heavens and the earth.'",
-          note: "Muslim 1:129",
+          note: "Muslim 2:1",
         },
       ],
       source:
-        "Quran 21:47; Bukhari 80:101; Muslim 1:129, 13:200; Tirmidhi 27:108, 40:34",
+        "Quran 21:47; Bukhari 80:101; Muslim 2:1, 48:41; Tirmidhi 27:108, 40:34",
     },
   },
   {
@@ -477,7 +477,7 @@ const salvationTopics: Topic[] = [
           title: "The cups are as numerous as the stars",
           detail:
             "The Prophet (peace be upon him) described the hawd as having cups placed around it, as numerous as the stars in the sky. Two channels from Paradise (from the river al-Kawthar) pour into it.",
-          note: "Muslim 1:362",
+          note: "Muslim 43:33",
         },
         {
           title: "Some will be turned away",
@@ -487,7 +487,7 @@ const salvationTopics: Topic[] = [
         },
       ],
       source:
-        "Bukhari 81:167, 81:172; Muslim 12:38",
+        "Bukhari 81:167, 81:172; Muslim 43:33",
     },
   },
   {
@@ -993,7 +993,7 @@ function DayOfJudgementContent() {
                 {[
                   "Quran 14:48, 17:13, 21:47, 24:24, 39:68, 57:12-13, 69:19-26, 70:4, 70:43, 83:6, 84:7-9",
                   "Bukhari 46:8, 97:65 — Resurrection, reckoning, scale, bridge",
-                  "Muslim 1:102, 15:178 — Events of the Day",
+                  "Muslim 1:102, 55:23 — Events of the Day",
                   "Tirmidhi 27:108, 40:34 — Good character, four questions, the card hadith",
                   "Tirmidhi 37:3 — Five questions on the Day of Judgement",
                 ].map((source) => (
@@ -1070,8 +1070,8 @@ function DayOfJudgementContent() {
                   "Quran 2:255 — No one intercedes except by His permission",
                   "Quran 17:79 — The Praised Station (al-Maqam al-Mahmud)",
                   "Quran 108:1-3 — Surah al-Kawthar",
-                  "Bukhari 65:234; Muslim 1:101 — The great intercession",
-                  "Bukhari 81:167, 81:172; Muslim 12:38 — The Hawd (Pool) of the Prophet",
+                  "Bukhari 65:234; Muslim 1:381 — The great intercession",
+                  "Bukhari 81:167, 81:172; Muslim 43:33 — The Hawd (Pool) of the Prophet",
                   "Bukhari 81:169 — The Prophet seeing al-Kawthar during the Night Journey",
                   "Muslim 1:90 — Others permitted to intercede by Allah's leave",
                   "Tirmidhi 47:413; Ibn Majah 37:235 — Description of al-Kawthar",
