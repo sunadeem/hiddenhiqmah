@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   BookOpen,
   ScrollText,
-  Sparkles,
   HandHeart,
   Landmark,
   Users,
@@ -15,13 +14,14 @@ import {
   ArrowRight,
   Clock,
   Moon,
-  Flame,
-  Scale,
   CalendarDays,
   BookMarked,
   Crown,
   WandSparkles,
   Repeat,
+  Infinity,
+  GraduationCap,
+  Trophy,
 } from "lucide-react";
 import ContentCard from "@/components/ContentCard";
 import { AskHiqmahInline } from "@/components/AskHiqmah";
@@ -137,6 +137,18 @@ const navSections: { heading: string; items: NavItem[] }[] = [
     ],
   },
   {
+    heading: "The Big Picture",
+    items: [
+      {
+        href: "/story-of-creation",
+        icon: Infinity,
+        title: "Story of Creation",
+        titleAr: "قصة الخلق",
+        description: "From before anything existed to the eternal life that awaits — the complete chronological journey.",
+      },
+    ],
+  },
+  {
     heading: "The Prophets",
     items: [
       {
@@ -193,31 +205,19 @@ const navSections: { heading: string; items: NavItem[] }[] = [
         titleAr: "رمضان",
         description: "Fasting, Tarawih, Laylatul Qadr, and the spirit of Ramadan.",
       },
-    ],
-  },
-  {
-    heading: "The Hereafter",
-    items: [
       {
-        href: "/barzakh",
-        icon: Flame,
-        title: "Barzakh",
-        titleAr: "البرزخ",
-        description: "The life of the grave — what happens between death and resurrection.",
+        href: "/kids",
+        icon: GraduationCap,
+        title: "Kids Learning",
+        titleAr: "تعليم الأطفال",
+        description: "Interactive lessons, quizzes, and stories for children learning Islam.",
       },
       {
-        href: "/day-of-judgement",
-        icon: Scale,
-        title: "Day of Judgement",
-        titleAr: "يوم القيامة",
-        description: "The major and minor signs, the reckoning, and the scales.",
-      },
-      {
-        href: "/jannah",
-        icon: Sparkles,
-        title: "Jannah",
-        titleAr: "الجنة",
-        description: "The eternal paradise — its descriptions, levels, and how to earn it.",
+        href: "/quiz",
+        icon: Trophy,
+        title: "Quizzes",
+        titleAr: "اختبارات",
+        description: "Test your Islamic knowledge with quizzes on the Quran, Prophets, and more.",
       },
     ],
   },

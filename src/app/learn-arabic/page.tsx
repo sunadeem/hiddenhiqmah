@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
@@ -9,6 +9,44 @@ import ContentCard from "@/components/ContentCard";
 import { textMatch } from "@/lib/search";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { BookOpen, Volume2 } from "lucide-react";
+
+/* ───────────────────────── speak helper ───────────────────────── */
+
+function SpeakButton({ text, className = "" }: { text: string; className?: string }) {
+  const [speaking, setSpeaking] = useState(false);
+
+  const speak = useCallback(() => {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ar-SA";
+    utterance.rate = 0.8;
+
+    // Try to find an Arabic voice
+    const voices = window.speechSynthesis.getVoices();
+    const arabicVoice = voices.find((v) => v.lang.startsWith("ar"));
+    if (arabicVoice) utterance.voice = arabicVoice;
+
+    utterance.onstart = () => setSpeaking(true);
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+  }, [text]);
+
+  return (
+    <button
+      onClick={speak}
+      className={`inline-flex items-center justify-center rounded-full transition-all ${
+        speaking
+          ? "text-gold bg-gold/20"
+          : "text-themed-muted hover:text-gold hover:bg-gold/10"
+      } ${className}`}
+      title="Listen to pronunciation"
+    >
+      <Volume2 size={14} />
+    </button>
+  );
+}
 
 /* ───────────────────────── sections ───────────────────────── */
 
@@ -556,7 +594,10 @@ function LearnArabicContent() {
                   >
                     <div className="flex flex-col sm:flex-row gap-6">
                       <div className="text-center sm:text-left">
-                        <p className="text-4xl sm:text-6xl font-arabic text-gold mb-2">{currentLetter.letter}</p>
+                        <div className="flex items-start justify-center sm:justify-start gap-2">
+                          <p className="text-4xl sm:text-6xl font-arabic text-gold mb-2">{currentLetter.letter}</p>
+                          <SpeakButton text={currentLetter.letter} className="p-2 mt-1" />
+                        </div>
                         <p className="text-lg font-semibold text-themed">{currentLetter.name}</p>
                         <p className="text-sm text-themed-muted">{currentLetter.transliteration}</p>
                       </div>
@@ -578,7 +619,10 @@ function LearnArabicContent() {
                         </div>
                         <div>
                           <p className="text-xs text-themed-muted uppercase tracking-wider mb-1">Example</p>
-                          <p className="text-xl font-arabic text-gold">{currentLetter.example.word}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-xl font-arabic text-gold">{currentLetter.example.word}</p>
+                            <SpeakButton text={currentLetter.example.word} className="p-1.5" />
+                          </div>
                           <p className="text-xs text-themed-muted">{currentLetter.example.meaning}</p>
                         </div>
                       </div>
@@ -647,6 +691,7 @@ function LearnArabicContent() {
                       <p className="text-xs text-themed-muted leading-relaxed mb-2">{v.description}</p>
                       <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
                         <span className="font-arabic text-gold text-sm sm:text-base">{v.example.word}</span>
+                        <SpeakButton text={v.example.word} className="p-1" />
                         <span className="text-themed-muted">—</span>
                         <span className="text-themed italic">{v.example.transliteration}</span>
                         <span className="text-themed-muted">({v.example.meaning})</span>
@@ -702,6 +747,7 @@ function LearnArabicContent() {
                             <p className="text-xs text-themed-muted italic">{w.transliteration}</p>
                             {w.notes && <p className="text-[10px] text-gold/60 mt-0.5">{w.notes}</p>}
                           </div>
+                          <SpeakButton text={w.arabic} className="p-2 shrink-0" />
                         </motion.div>
                       ))}
                     </div>
@@ -754,6 +800,7 @@ function LearnArabicContent() {
                                 <p className="text-xs text-themed-muted italic">{ex.transliteration}</p>
                                 {ex.note && <p className="text-[10px] text-gold/60 mt-0.5">{ex.note}</p>}
                               </div>
+                              <SpeakButton text={ex.arabic} className="p-2 shrink-0" />
                             </div>
                           ))}
                         </div>
@@ -802,7 +849,10 @@ function LearnArabicContent() {
                           className="rounded-lg border sidebar-border p-3 sm:p-4"
                           style={{ backgroundColor: "var(--color-bg)" }}
                         >
-                          <p className="text-xl sm:text-2xl font-arabic text-gold mb-2 text-right leading-loose">{p.arabic}</p>
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <p className="text-xl sm:text-2xl font-arabic text-gold text-right leading-loose flex-1">{p.arabic}</p>
+                            <SpeakButton text={p.arabic} className="p-2 shrink-0 mt-1" />
+                          </div>
                           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
                             <p className="text-sm text-themed font-semibold">{p.transliteration}</p>
                             <p className="text-sm text-themed-muted">{p.meaning}</p>
@@ -841,7 +891,10 @@ function LearnArabicContent() {
                       <span className="text-lg text-themed-muted">=</span>
                       <span className="text-lg text-themed font-mono">{n.numeral}</span>
                     </div>
-                    <p className="text-sm sm:text-base font-arabic text-themed">{n.word}</p>
+                    <div className="flex items-center justify-center gap-1">
+                      <p className="text-sm sm:text-base font-arabic text-themed">{n.word}</p>
+                      <SpeakButton text={n.word} className="p-1" />
+                    </div>
                     <p className="text-[10px] text-themed-muted italic">{n.transliteration}</p>
                   </motion.div>
                 ))}

@@ -93,7 +93,7 @@ export default function TabBar({
 
       {/* Desktop pills (always shown) / Mobile pills (only when few tabs) */}
       <div
-        className={`flex gap-2 flex-wrap ${
+        className={`flex gap-2 overflow-x-auto scrollbar-hide ${
           useDropdown ? "hidden md:flex" : "flex"
         }`}
       >

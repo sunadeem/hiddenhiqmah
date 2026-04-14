@@ -20,8 +20,6 @@ import {
   CalendarDays,
   Bookmark,
   BookMarked,
-  Flame,
-  Scale,
   WandSparkles,
   Crown,
   ChevronDown,
@@ -34,6 +32,9 @@ import {
   Repeat,
   PanelLeftClose,
   PanelLeftOpen,
+  Infinity,
+  GraduationCap,
+  Trophy,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -58,6 +59,12 @@ const navSections: NavSection[] = [
     ],
   },
   {
+    title: "The Big Picture",
+    items: [
+      { href: "/story-of-creation", label: "Story of Creation", labelAr: "قصة الخلق", icon: Infinity},
+    ],
+  },
+  {
     title: "The Prophets",
     items: [
       { href: "/prophets", label: "Prophets", labelAr: "الأنبياء", icon: Users },
@@ -71,14 +78,8 @@ const navSections: NavSection[] = [
       { href: "/duas", label: "Duas", labelAr: "الدعاء", icon: HandHeart },
       { href: "/dhikr", label: "Dhikr", labelAr: "الذكر", icon: Repeat },
       { href: "/ramadan", label: "Ramadan", labelAr: "رمضان", icon: Moon },
-    ],
-  },
-  {
-    title: "The Hereafter",
-    items: [
-      { href: "/barzakh", label: "Barzakh", labelAr: "البرزخ", icon: Flame },
-      { href: "/day-of-judgement", label: "Day of Judgement", labelAr: "يوم القيامة", icon: Scale },
-      { href: "/jannah", label: "Jannah", labelAr: "الجنة", icon: Sparkles },
+      { href: "/kids", label: "Kids Learning", labelAr: "تعليم الأطفال", icon: GraduationCap },
+      { href: "/quiz", label: "Quizzes", labelAr: "اختبارات", icon: Trophy },
     ],
   },
   {
@@ -396,7 +397,7 @@ function SidebarContent({
       </nav>
 
       {/* Bottom actions */}
-      <div className="border-t sidebar-border pt-4 space-y-1">
+      <div className={`border-t sidebar-border pt-3 ${isCollapsed ? "space-y-1" : "flex items-center gap-1 px-2"}`}>
         {(() => {
           const askBtn = (
             <button
@@ -405,15 +406,15 @@ function SidebarContent({
                 if (typeof fn === "function") (fn as () => void)();
                 if (onNavigate) onNavigate();
               }}
-              className={`group flex items-center ${isCollapsed ? "justify-center" : "gap-2"} w-full px-3 py-2.5 rounded-lg bg-[#2563eb]/10 border border-[#2563eb]/25 hover:bg-[#2563eb]/20 hover:border-[#2563eb]/40 transition-all relative overflow-hidden`}
+              className={isCollapsed
+                ? "flex items-center justify-center w-full px-3 py-2.5 rounded-lg bg-[#2563eb]/10 border border-[#2563eb]/25 hover:bg-[#2563eb]/20 hover:border-[#2563eb]/40 transition-all relative overflow-hidden"
+                : "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg bg-[#2563eb]/10 border border-[#2563eb]/25 hover:bg-[#2563eb]/20 hover:border-[#2563eb]/40 transition-all relative overflow-hidden"
+              }
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#2563eb]/10 to-transparent animate-shimmer" />
-              <Sparkles size={16} className="text-[#3b82f6] relative z-10" />
+              <Sparkles size={14} className="text-[#3b82f6] relative z-10 shrink-0" />
               {!isCollapsed && (
-                <>
-                  <span className="text-xs font-semibold text-[#3b82f6] relative z-10">Ask Hiqmah</span>
-                  <span className="ml-auto text-[10px] text-[#3b82f6]/50 relative z-10 font-medium">AI</span>
-                </>
+                <span className="text-[11px] font-semibold text-[#3b82f6] relative z-10">Ask AI</span>
               )}
             </button>
           );
@@ -424,10 +425,14 @@ function SidebarContent({
           const themeBtn = (
             <button
               onClick={toggleDarkMode}
-              className={`flex items-center ${isCollapsed ? "justify-center" : "gap-2"} w-full px-3 py-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors`}
+              className={isCollapsed
+                ? "flex items-center justify-center w-full px-3 py-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors"
+                : "p-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors"
+              }
+              title={themeLabel}
             >
               {isDark ? <Sun size={16} /> : <Moon size={16} />}
-              {!isCollapsed && <span className="text-xs font-medium">{themeLabel}</span>}
+              {isCollapsed ? null : null}
             </button>
           );
           return isCollapsed ? <SidebarTooltip label={themeLabel}>{themeBtn}</SidebarTooltip> : themeBtn;
@@ -437,10 +442,13 @@ function SidebarContent({
           const collapseBtn = (
             <button
               onClick={onToggleCollapse}
-              className={`flex items-center ${isCollapsed ? "justify-center" : "gap-2"} w-full px-3 py-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors`}
+              className={isCollapsed
+                ? "flex items-center justify-center w-full px-3 py-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors"
+                : "p-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors"
+              }
+              title={collapseLabel}
             >
               {isCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
-              {!isCollapsed && <span className="text-xs font-medium">Collapse</span>}
             </button>
           );
           return isCollapsed ? <SidebarTooltip label={collapseLabel}>{collapseBtn}</SidebarTooltip> : collapseBtn;

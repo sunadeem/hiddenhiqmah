@@ -83,19 +83,14 @@ export default function QuranPage() {
   const filtered = chapters.filter((ch) => {
     const q = search.toLowerCase();
 
-    // If we parsed a structured reference, filter to that surah only
-    if (quranRef) {
-      const matchesFilter = filter === "all" || ch.revelationPlace === filter;
-      return ch.id === quranRef.surahId && matchesFilter;
-    }
-
     const matchesSearch =
       !search ||
       ch.name.toLowerCase().includes(q) ||
       ch.meaning.toLowerCase().includes(q) ||
       ch.nameAr.includes(search) ||
       ch.id.toString() === search.trim() ||
-      verseMatches.has(ch.id);
+      verseMatches.has(ch.id) ||
+      (quranRef && ch.id === quranRef.surahId);
     const matchesFilter = filter === "all" || ch.revelationPlace === filter;
     return matchesSearch && matchesFilter;
   });

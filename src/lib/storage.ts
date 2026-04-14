@@ -23,6 +23,7 @@ const KEYS = {
   fontSize: "hiqmah-font-size",
   dhikrCounts: "hiqmah-dhikr",
   autoPlayNextSurah: "hiqmah-autoplay-next",
+  kidsProgress: "hiqmah-kids-progress",
 } as const;
 
 function get<T>(key: string, fallback: T): T {
@@ -121,4 +122,86 @@ export function getAutoPlayNextSurah(): boolean {
 
 export function setAutoPlayNextSurah(enabled: boolean) {
   set(KEYS.autoPlayNextSurah, enabled);
+}
+
+// ─── Kids Learning ───
+
+export type AgeGroup = "little" | "explorer" | "scholar";
+
+export type KidsProgress = {
+  ageGroup: AgeGroup;
+  stars: number;
+  streak: number;
+  lastActiveDate: string; // ISO date YYYY-MM-DD
+  completedLessons: string[];
+  memorizedSurahs: number[];
+  flashcardBuckets: Record<string, number>; // cardId -> bucket (0=new, 1=learning, 2=mastered)
+  flashcardNextReview: Record<string, string>; // cardId -> ISO date
+  dailyChecklist: Record<string, boolean>; // "YYYY-MM-DD:itemId" -> true
+  badges: string[];
+  quizScores: Record<string, number>; // quizId -> best score percentage
+};
+
+const defaultKidsProgress: KidsProgress = {
+  ageGroup: "explorer",
+  stars: 0,
+  streak: 0,
+  lastActiveDate: "",
+  completedLessons: [],
+  memorizedSurahs: [],
+  flashcardBuckets: {},
+  flashcardNextReview: {},
+  dailyChecklist: {},
+  badges: [],
+  quizScores: {},
+};
+
+export function getKidsProgress(): KidsProgress {
+  return { ...defaultKidsProgress, ...get<Partial<KidsProgress>>(KEYS.kidsProgress, {}) };
+}
+
+export function updateKidsProgress(updates: Partial<KidsProgress>) {
+  const current = getKidsProgress();
+  set(KEYS.kidsProgress, { ...current, ...updates });
+}
+
+export function addKidsStars(count: number = 1) {
+  const p = getKidsProgress();
+  updateKidsProgress({ stars: p.stars + count });
+}
+
+export function markKidsLessonComplete(lessonId: string) {
+  const p = getKidsProgress();
+  if (!p.completedLessons.includes(lessonId)) {
+    updateKidsProgress({ completedLessons: [...p.completedLessons, lessonId] });
+  }
+}
+
+export function addKidsBadge(badgeId: string) {
+  const p = getKidsProgress();
+  if (!p.badges.includes(badgeId)) {
+    updateKidsProgress({ badges: [...p.badges, badgeId] });
+  }
+}
+
+export function updateKidsStreak() {
+  const p = getKidsProgress();
+  const today = new Date().toISOString().split("T")[0];
+  if (p.lastActiveDate === today) return; // already updated today
+
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+  const newStreak = p.lastActiveDate === yesterday ? p.streak + 1 : 1;
+  updateKidsProgress({ streak: newStreak, lastActiveDate: today });
+}
+
+export function toggleKidsChecklist(itemId: string, date: string) {
+  const p = getKidsProgress();
+  const key = `${date}:${itemId}`;
+  const updated = { ...p.dailyChecklist };
+  if (updated[key]) {
+    delete updated[key];
+  } else {
+    updated[key] = true;
+  }
+  updateKidsProgress({ dailyChecklist: updated });
 }

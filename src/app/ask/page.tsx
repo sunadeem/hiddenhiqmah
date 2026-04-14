@@ -7,13 +7,12 @@ import {
   STORAGE_KEY,
   loadMessages,
   saveMessages,
+  streamChat,
+  renderMarkdown,
+  CitationCard,
+  CopyButton,
 } from "@/components/AskHiqmah";
-
-type Message = {
-  role: "user" | "assistant";
-  content: string;
-  links?: { label: string; href: string }[];
-};
+import type { Message } from "@/components/AskHiqmah";
 
 const placeholderQuestions = [
   "What is Islam?",
@@ -29,25 +28,23 @@ export default function AskPage() {
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const [statusText, setStatusText] = useState("Thinking...");
   const [hydrated, setHydrated] = useState(false);
   const [placeholderText, setPlaceholderText] = useState("");
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Load from localStorage
   useEffect(() => {
     setMessages(loadMessages());
     setHydrated(true);
     inputRef.current?.focus();
   }, []);
 
-  // Save to localStorage
   useEffect(() => {
     if (hydrated) saveMessages(messages);
   }, [messages, hydrated]);
 
-  // Sync across windows
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY && e.newValue) {
@@ -58,7 +55,6 @@ export default function AskPage() {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  // Animated placeholder
   useEffect(() => {
     if (query) return;
     const question = placeholderQuestions[placeholderIdx];
@@ -90,38 +86,42 @@ export default function AskPage() {
     return () => clearTimeout(timer);
   }, [placeholderIdx, query]);
 
-  // Scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loading]);
 
   const sendMessage = useCallback(async (userMessage: string, prevMessages: Message[]) => {
     const newMessages: Message[] = [...prevMessages, { role: "user", content: userMessage }];
     setMessages(newMessages);
     setLoading(true);
+    setStatusText("Thinking...");
 
     try {
-      const res = await fetch("/api/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
-        }),
-      });
-
-      if (!res.ok) throw new Error("Failed");
-      const data = await res.json();
-      setMessages([...newMessages, {
-        role: "assistant",
-        content: data.content,
-        links: data.links,
-      }]);
+      await streamChat(
+        newMessages.map((m) => ({ role: m.role, content: m.content })),
+        (status) => setStatusText(status),
+        (data) => {
+          setMessages([...newMessages, {
+            role: "assistant",
+            content: data.content,
+            links: data.links,
+            citations: data.citations,
+          }]);
+          setLoading(false);
+        },
+        () => {
+          setMessages([...newMessages, {
+            role: "assistant",
+            content: "I apologize, I was unable to process your question. Please try again.",
+          }]);
+          setLoading(false);
+        },
+      );
     } catch {
       setMessages([...newMessages, {
         role: "assistant",
         content: "I apologize, I was unable to process your question. Please try again.",
       }]);
-    } finally {
       setLoading(false);
     }
   }, []);
@@ -132,6 +132,15 @@ export default function AskPage() {
     const q = query.trim();
     setQuery("");
     sendMessage(q, messages);
+  };
+
+  const handleLinkClick = (href: string) => {
+    if (window.opener && !window.opener.closed) {
+      window.opener.location.href = href;
+      window.opener.focus();
+    } else {
+      window.open(href, "_blank");
+    }
   };
 
   return (
@@ -185,25 +194,38 @@ export default function AskPage() {
                   : "bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20"
               }`}
             >
-              <p className="whitespace-pre-wrap">{msg.content}</p>
+              <div className="whitespace-pre-wrap">{renderMarkdown(msg.content)}</div>
+
+              {/* Citations */}
+              {msg.citations && msg.citations.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {msg.citations.map((c, j) => (
+                    <div key={j} onClick={() => handleLinkClick(c.href)} className="cursor-pointer">
+                      <CitationCard citation={c} />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Links */}
               {msg.links && msg.links.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {msg.links.map((link, j) => (
                     <button
                       key={j}
-                      onClick={() => {
-                        if (window.opener && !window.opener.closed) {
-                          window.opener.location.href = link.href;
-                          window.opener.focus();
-                        } else {
-                          window.open(link.href, "_blank");
-                        }
-                      }}
+                      onClick={() => handleLinkClick(link.href)}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/15 border border-gold/30 text-gold text-xs font-medium hover:bg-gold/25 transition-colors cursor-pointer"
                     >
                       {link.label} →
                     </button>
                   ))}
+                </div>
+              )}
+
+              {/* Copy button */}
+              {msg.role === "assistant" && (
+                <div className="mt-2 flex justify-end">
+                  <CopyButton text={msg.content} />
                 </div>
               )}
             </div>
@@ -217,7 +239,7 @@ export default function AskPage() {
           >
             <div className="bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/20 rounded-xl px-4 py-3 text-sm text-themed-muted flex items-center gap-2">
               <Loader2 size={14} className="animate-spin text-[#3b82f6]" />
-              Thinking...
+              {statusText}
             </div>
           </motion.div>
         )}

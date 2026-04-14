@@ -1,9 +1,203 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Fragment, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Search, Send, Loader2, X, Sparkles, Trash2, ExternalLink } from "lucide-react";
+import { Search, Send, Loader2, X, Sparkles, Trash2, ExternalLink, Copy, Check, BookOpen, BookMarked } from "lucide-react";
+
+// ── Shared types ──────────────────────────────────────────────────────────
+
+export type Citation = {
+  type: "hadith" | "quran";
+  source: string;
+  reference: string;
+  arabic?: string;
+  english: string;
+  href: string;
+};
+
+export type Message = {
+  role: "user" | "assistant";
+  content: string;
+  links?: { label: string; href: string }[];
+  citations?: Citation[];
+};
+
+// ── Persistence ───────────────────────────────────────────────────────────
+
+export const STORAGE_KEY = "hiqmah-chat";
+
+export function loadMessages(): Message[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch { return []; }
+}
+
+export function saveMessages(msgs: Message[]) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs)); } catch {}
+}
+
+// ── Markdown renderer ─────────────────────────────────────────────────────
+
+function renderInline(text: string): ReactNode[] {
+  const parts: ReactNode[] = [];
+  const regex = /(\*\*(.+?)\*\*|\*(.+?)\*)/g;
+  let lastIdx = 0;
+  let match;
+  let key = 0;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIdx) {
+      parts.push(text.slice(lastIdx, match.index));
+    }
+    if (match[2]) {
+      parts.push(<strong key={key++} className="font-semibold">{match[2]}</strong>);
+    } else if (match[3]) {
+      parts.push(<em key={key++}>{match[3]}</em>);
+    }
+    lastIdx = match.index + match[0].length;
+  }
+  if (lastIdx < text.length) {
+    parts.push(text.slice(lastIdx));
+  }
+  return parts;
+}
+
+export function renderMarkdown(text: string): ReactNode {
+  const paragraphs = text.split(/\n\n+/);
+  return paragraphs.map((para, i) => {
+    const lines = para.split("\n");
+    return (
+      <p key={i} className={i > 0 ? "mt-3" : ""}>
+        {lines.map((line, j) => (
+          <Fragment key={j}>
+            {j > 0 && <br />}
+            {renderInline(line)}
+          </Fragment>
+        ))}
+      </p>
+    );
+  });
+}
+
+// ── Citation card ─────────────────────────────────────────────────────────
+
+export function CitationCard({ citation, onNavigate }: { citation: Citation; onNavigate?: () => void }) {
+  const isQuran = citation.type === "quran";
+  return (
+    <Link
+      href={citation.href}
+      onClick={onNavigate}
+      className={`block rounded-lg border p-3 text-xs transition-colors hover:bg-white/5 ${
+        isQuran
+          ? "border-[var(--color-gold)]/30 bg-[var(--color-gold)]/5"
+          : "border-emerald-500/30 bg-emerald-500/5"
+      }`}
+    >
+      <div className="flex items-center gap-1.5 mb-1.5">
+        {isQuran ? (
+          <BookOpen size={11} className="text-[var(--color-gold)] shrink-0" />
+        ) : (
+          <BookMarked size={11} className="text-emerald-400 shrink-0" />
+        )}
+        <span className={`font-semibold ${isQuran ? "text-[var(--color-gold)]" : "text-emerald-400"}`}>
+          {citation.source}
+        </span>
+        <span className="text-themed-muted/60 ml-auto">{citation.reference}</span>
+      </div>
+      {citation.arabic && (
+        <p className="text-right text-sm leading-loose text-themed/80 font-arabic mb-1.5" dir="rtl">
+          {citation.arabic}
+        </p>
+      )}
+      <p className="text-themed-muted leading-relaxed line-clamp-3">{citation.english}</p>
+    </Link>
+  );
+}
+
+// ── Copy button ───────────────────────────────────────────────────────────
+
+export function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="p-1 rounded hover:bg-white/10 text-themed-muted/40 hover:text-themed-muted transition-colors"
+      title="Copy message"
+    >
+      {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+    </button>
+  );
+}
+
+// ── SSE stream consumer ───────────────────────────────────────────────────
+
+export async function streamChat(
+  messages: { role: string; content: string }[],
+  onStatus: (text: string) => void,
+  onAnswer: (data: { content: string; links: { label: string; href: string }[]; citations: Citation[] }) => void,
+  onError: () => void,
+) {
+  const res = await fetch("/api/search", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages }),
+  });
+
+  if (!res.ok || !res.body) {
+    onError();
+    return;
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const parts = buffer.split("\n\n");
+    buffer = parts.pop() || "";
+
+    for (const part of parts) {
+      if (!part.trim()) continue;
+      const eventMatch = part.match(/^event:\s*(.+)$/m);
+      const dataMatch = part.match(/^data:\s*(.+)$/m);
+      if (!eventMatch || !dataMatch) continue;
+
+      const event = eventMatch[1].trim();
+      try {
+        const data = JSON.parse(dataMatch[1]);
+        switch (event) {
+          case "status":
+            onStatus(data.text);
+            break;
+          case "answer":
+            onAnswer(data);
+            break;
+          case "error":
+            onError();
+            break;
+        }
+      } catch {
+        // Skip malformed events
+      }
+    }
+  }
+}
+
+// ── Placeholder questions ─────────────────────────────────────────────────
 
 const placeholderQuestions = [
   "What is Islam?",
@@ -19,12 +213,6 @@ const placeholderQuestions = [
   "How did Prophet Muhammad ﷺ pray at night?",
   "What is the Quran about?",
 ];
-
-type Message = {
-  role: "user" | "assistant";
-  content: string;
-  links?: { label: string; href: string }[];
-};
 
 /* ─── Inline search bar (for home page) ─── */
 
@@ -97,38 +285,23 @@ export function AskHiqmahInline({ onOpen }: { onOpen: (query: string) => void })
 
 /* ─── Floating chat panel (global, in AppShell) ─── */
 
-export const STORAGE_KEY = "hiqmah-chat";
-
-export function loadMessages(): Message[] {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch { return []; }
-}
-
-export function saveMessages(msgs: Message[]) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs)); } catch {}
-}
-
 export default function AskHiqmahFloat() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const [statusText, setStatusText] = useState("Thinking...");
   const [hydrated, setHydrated] = useState(false);
 
-  // Load from sessionStorage on mount
   useEffect(() => {
     setMessages(loadMessages());
     setHydrated(true);
   }, []);
 
-  // Save to localStorage whenever messages change
   useEffect(() => {
     if (hydrated) saveMessages(messages);
   }, [messages, hydrated]);
 
-  // Sync across windows via storage event
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY && e.newValue) {
@@ -144,7 +317,6 @@ export default function AskHiqmahFloat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Animated placeholder
   useEffect(() => {
     if (query || !isOpen) return;
 
@@ -177,12 +349,10 @@ export default function AskHiqmahFloat() {
     return () => clearTimeout(timer);
   }, [placeholderIdx, query, isOpen]);
 
-  // Scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loading]);
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
@@ -191,41 +361,43 @@ export default function AskHiqmahFloat() {
     const newMessages: Message[] = [...prevMessages, { role: "user", content: userMessage }];
     setMessages(newMessages);
     setLoading(true);
+    setStatusText("Thinking...");
 
     try {
-      const res = await fetch("/api/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
-        }),
-      });
-
-      if (!res.ok) throw new Error("Failed to get response");
-
-      const data = await res.json();
-      setMessages([...newMessages, {
-        role: "assistant",
-        content: data.content,
-        links: data.links,
-      }]);
+      await streamChat(
+        newMessages.map((m) => ({ role: m.role, content: m.content })),
+        (status) => setStatusText(status),
+        (data) => {
+          setMessages([...newMessages, {
+            role: "assistant",
+            content: data.content,
+            links: data.links,
+            citations: data.citations,
+          }]);
+          setLoading(false);
+        },
+        () => {
+          setMessages([...newMessages, {
+            role: "assistant",
+            content: "I apologize, I was unable to process your question. Please try again.",
+          }]);
+          setLoading(false);
+        },
+      );
     } catch {
       setMessages([...newMessages, {
         role: "assistant",
         content: "I apologize, I was unable to process your question. Please try again.",
       }]);
-    } finally {
       setLoading(false);
     }
   }, []);
 
-  // Allow opening with a pre-filled query (from home page inline search)
   const openWithQuery = useCallback((q: string) => {
     setIsOpen(true);
     sendMessage(q, messages);
   }, [messages, sendMessage]);
 
-  // Expose functions globally
   const openPanel = useCallback(() => { setIsOpen(true); }, []);
   useEffect(() => {
     const w = window as unknown as Record<string, unknown>;
@@ -242,14 +414,8 @@ export default function AskHiqmahFloat() {
     sendMessage(q, messages);
   };
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const handleClear = () => {
-    setMessages([]);
-    setQuery("");
-  };
+  const handleClose = () => setIsOpen(false);
+  const handleClear = () => { setMessages([]); setQuery(""); };
 
   const handlePopOut = () => {
     window.open("/ask", "hiqmah-chat", "width=440,height=650,menubar=no,toolbar=no,location=no,status=no");
@@ -279,7 +445,6 @@ export default function AskHiqmahFloat() {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop on mobile */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -358,7 +523,18 @@ export default function AskHiqmahFloat() {
                           : "bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20"
                       }`}
                     >
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
+                      <div className="whitespace-pre-wrap">{renderMarkdown(msg.content)}</div>
+
+                      {/* Citations */}
+                      {msg.citations && msg.citations.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                          {msg.citations.map((c, j) => (
+                            <CitationCard key={j} citation={c} onNavigate={handleClose} />
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Links */}
                       {msg.links && msg.links.length > 0 && (
                         <div className="mt-3 flex flex-wrap gap-2">
                           {msg.links.map((link, j) => (
@@ -373,6 +549,13 @@ export default function AskHiqmahFloat() {
                           ))}
                         </div>
                       )}
+
+                      {/* Copy button for assistant messages */}
+                      {msg.role === "assistant" && (
+                        <div className="mt-2 flex justify-end">
+                          <CopyButton text={msg.content} />
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 ))}
@@ -384,7 +567,7 @@ export default function AskHiqmahFloat() {
                   >
                     <div className="bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/20 rounded-xl px-4 py-3 text-sm text-themed-muted flex items-center gap-2">
                       <Loader2 size={14} className="animate-spin text-[#3b82f6]" />
-                      Thinking...
+                      {statusText}
                     </div>
                   </motion.div>
                 )}

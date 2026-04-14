@@ -63,6 +63,8 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
   pathnameRef.current = pathname;
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const preloadRef = useRef<HTMLAudioElement | null>(null);
+  const preloadedVerseId = useRef<number | null>(null);
   const autoPlayRef = useRef(false);
   const autoNextSurahRef = useRef(false);
 
@@ -103,12 +105,53 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     versesRef.current = newVerses;
   }, []);
 
+  // Preload the next verse's audio so transitions are seamless
+  const preloadNext = useCallback((currentVerseId: number) => {
+    const vrs = versesRef.current;
+    if (!vrs) return;
+    const idx = vrs.findIndex((v) => v.id === currentVerseId);
+    const nextVerse = vrs[idx + 1];
+    // Also preload first verse of next surah if at end
+    let preloadId: number | null = null;
+    if (nextVerse) {
+      preloadId = nextVerse.id;
+    } else if (autoNextSurahRef.current && surahIdRef.current && surahIdRef.current < 114) {
+      // Preload first verse of next surah (global verse ID = sum of previous surah verses + 1)
+      // We can compute this from the current verse: last verse id + 1
+      preloadId = currentVerseId + 1;
+    }
+    if (!preloadId || preloadId === preloadedVerseId.current) return;
+    // Create or reuse preload element
+    if (!preloadRef.current) {
+      preloadRef.current = new Audio();
+    }
+    preloadRef.current.src = getAudioUrl(preloadId);
+    preloadRef.current.preload = "auto";
+    preloadRef.current.load();
+    preloadedVerseId.current = preloadId;
+  }, []);
+
   // Core function to start playing an audio file for a verse
   // Reuses a single Audio element so the browser's autoplay activation carries over
   const startAudio = useCallback((verse: Verse) => {
     let audio = audioRef.current;
+    // Check if we have this verse preloaded — swap elements for instant playback
+    const usePreloaded = preloadRef.current && preloadedVerseId.current === verse.id;
 
-    if (audio) {
+    if (usePreloaded) {
+      // Swap: old audio becomes preload, preloaded becomes active
+      if (audio) {
+        audio.pause();
+        audio.onended = null;
+        audio.ontimeupdate = null;
+        audio.onloadedmetadata = null;
+        audio.onerror = null;
+      }
+      audio = preloadRef.current!;
+      audioRef.current = audio;
+      preloadRef.current = null;
+      preloadedVerseId.current = null;
+    } else if (audio) {
       // Reuse existing element — just stop current playback
       audio.pause();
       audio.onended = null;
@@ -121,8 +164,10 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       audioRef.current = audio;
     }
 
-    // Change source and play
-    audio.src = getAudioUrl(verse.id);
+    // Change source and play (preloaded already has correct src)
+    if (!usePreloaded) {
+      audio.src = getAudioUrl(verse.id);
+    }
     setPlayingVerse(verse.number);
     setAudioProgress(0);
     setAudioDuration(0);
@@ -131,6 +176,9 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     audio.play().catch(() => {
       setPlayingVerse(null);
     });
+
+    // Preload next verse immediately for seamless transition
+    preloadNext(verse.id);
 
     // Lock screen / notification media info
     const ch = chapterRef.current;
@@ -331,6 +379,11 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       audioRef.current.pause();
       audioRef.current.onended = null;
       audioRef.current.ontimeupdate = null;
+    }
+    if (preloadRef.current) {
+      preloadRef.current.src = "";
+      preloadRef.current = null;
+      preloadedVerseId.current = null;
     }
     setPlayingVerse(null);
     autoPlayRef.current = false;
