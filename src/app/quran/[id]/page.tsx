@@ -1109,15 +1109,15 @@ function SurahPageContent() {
                     </span>
                     {/* Play verse button */}
                     <button
-                      onClick={() => playVerse(verse)}
+                      onClick={() => playingVerse === verse.number ? togglePause() : playVerse(verse)}
                       className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
                         playingVerse === verse.number
                           ? "bg-gold/20 text-gold"
                           : "text-themed-muted hover:text-gold hover:bg-gold/10"
                       }`}
-                      title={playingVerse === verse.number ? "Pause" : "Play verse"}
+                      title={playingVerse === verse.number ? (audioPaused ? "Resume" : "Pause") : "Play verse"}
                     >
-                      {playingVerse === verse.number ? <Pause size={12} /> : <Play size={12} />}
+                      {playingVerse === verse.number && !audioPaused ? <Pause size={12} /> : <Play size={12} />}
                     </button>
                     <span
                       className="tooltip text-[10px] text-themed-muted cursor-help"
