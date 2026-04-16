@@ -273,7 +273,7 @@ export default function AskPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={placeholderText || "Ask anything about Islam..."}
-            className="flex-1 min-w-0 bg-[var(--color-card)] rounded-lg px-4 py-3 text-themed text-sm outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
+            className="flex-1 min-w-0 bg-[var(--color-card)] rounded-lg px-4 py-3 text-themed text-base outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
           />
           <button
             type="submit"
