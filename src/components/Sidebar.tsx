@@ -9,7 +9,7 @@ import {
   Sun,
   BookOpen,
   ScrollText,
-  Sparkles,
+  MessageCircleQuestion,
   HandHeart,
   Landmark,
   Shield,
@@ -35,6 +35,7 @@ import {
   Infinity,
   GraduationCap,
   Trophy,
+  ListChecks,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -74,10 +75,11 @@ const navSections: NavSection[] = [
   {
     title: "Practice",
     items: [
+      { href: "/muslim-daily", label: "Muslim Daily", labelAr: "يوميات المسلم", icon: ListChecks },
       { href: "/salah", label: "Salah", labelAr: "الصلاة", icon: Clock },
+      { href: "/ramadan", label: "Ramadan", labelAr: "رمضان", icon: Moon },
       { href: "/duas", label: "Duas", labelAr: "الدعاء", icon: HandHeart },
       { href: "/dhikr", label: "Dhikr", labelAr: "الذكر", icon: Repeat },
-      { href: "/ramadan", label: "Ramadan", labelAr: "رمضان", icon: Moon },
       { href: "/kids", label: "Kids Learning", labelAr: "تعليم الأطفال", icon: GraduationCap },
       { href: "/quiz", label: "Quizzes", labelAr: "اختبارات", icon: Trophy },
     ],
@@ -412,9 +414,9 @@ function SidebarContent({
               }
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#2563eb]/10 to-transparent animate-shimmer" />
-              <Sparkles size={14} className="text-[#3b82f6] relative z-10 shrink-0" />
+              <MessageCircleQuestion size={14} className="text-[#3b82f6] relative z-10 shrink-0" />
               {!isCollapsed && (
-                <span className="text-[11px] font-semibold text-[#3b82f6] relative z-10">Ask AI</span>
+                <span className="text-[11px] font-semibold text-[#3b82f6] relative z-10">Ask Hiqmah</span>
               )}
             </button>
           );

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, Fragment, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Search, Send, Loader2, X, Sparkles, Trash2, ExternalLink, Copy, Check, BookOpen, BookMarked } from "lucide-react";
+import { Search, Send, Loader2, X, MessageCircleQuestion, Trash2, ExternalLink, Copy, Check, BookOpen, BookMarked } from "lucide-react";
 
 // ── Shared types ──────────────────────────────────────────────────────────
 
@@ -212,6 +212,19 @@ const placeholderQuestions = [
   "What happens in the grave?",
   "How did Prophet Muhammad ﷺ pray at night?",
   "What is the Quran about?",
+  "What are the 99 Names of Allah?",
+  "How do I make wudu?",
+  "What is the story of Prophet Ibrahim?",
+  "What does the Quran say about patience?",
+  "What is Laylatul Qadr?",
+  "How do I increase my iman?",
+  "What are the rights of parents in Islam?",
+  "What is the punishment of the grave?",
+  "Who are the angels in Islam?",
+  "What is Surah Al-Kahf about?",
+  "What dua do I say before sleeping?",
+  "What are the Sunnahs of eating?",
+  "How do I perform Hajj?",
 ];
 
 /* ─── Inline search bar (for home page) ─── */
@@ -354,7 +367,10 @@ export default function AskHiqmahFloat() {
   }, [messages, loading]);
 
   useEffect(() => {
-    if (isOpen) inputRef.current?.focus();
+    if (isOpen) {
+      inputRef.current?.focus();
+      setTimeout(() => messagesEndRef.current?.scrollIntoView(), 50);
+    }
   }, [isOpen]);
 
   const sendMessage = useCallback(async (userMessage: string, prevMessages: Message[]) => {
@@ -436,7 +452,7 @@ export default function AskHiqmahFloat() {
             className="fixed bottom-6 right-4 z-50 lg:hidden p-3.5 rounded-full bg-[#2563eb]/20 border border-[#2563eb]/40 text-[#3b82f6] hover:bg-[#2563eb]/30 transition-colors shadow-lg shadow-black/20"
             title="Ask Hiqmah"
           >
-            <Sparkles size={20} />
+            <MessageCircleQuestion size={20} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -457,13 +473,13 @@ export default function AskHiqmahFloat() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="fixed bottom-0 left-0 right-0 lg:bottom-6 lg:right-6 lg:left-auto lg:w-[420px] z-50 flex flex-col max-h-[85vh] lg:max-h-[600px] lg:rounded-xl rounded-t-xl overflow-hidden border sidebar-border shadow-2xl shadow-black/30"
+              className="fixed bottom-0 left-0 right-0 lg:bottom-6 lg:right-6 lg:left-auto lg:w-[420px] z-50 flex flex-col max-h-[85vh] lg:max-h-[600px] lg:rounded-xl rounded-t-xl overflow-hidden border sidebar-border shadow-2xl shadow-black/30 max-w-[100vw]"
               style={{ background: "var(--color-sidebar)" }}
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b sidebar-border shrink-0">
                 <div className="flex items-center gap-2">
-                  <Sparkles size={14} className="text-[#3b82f6]" />
+                  <MessageCircleQuestion size={14} className="text-[#3b82f6]" />
                   <span className="text-sm font-semibold text-[#3b82f6] tracking-wide">
                     Ask Hiqmah
                   </span>
@@ -496,10 +512,10 @@ export default function AskHiqmahFloat() {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
+              <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3 min-h-0">
                 {messages.length === 0 && (
                   <div className="text-center py-8">
-                    <Sparkles size={24} className="text-[#3b82f6]/30 mx-auto mb-3" />
+                    <MessageCircleQuestion size={24} className="text-[#3b82f6]/30 mx-auto mb-3" />
                     <p className="text-themed-muted text-sm">
                       Ask any question about Islam
                     </p>
@@ -523,7 +539,7 @@ export default function AskHiqmahFloat() {
                           : "bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20"
                       }`}
                     >
-                      <div className="whitespace-pre-wrap">{renderMarkdown(msg.content)}</div>
+                      <div className="whitespace-pre-wrap break-words overflow-hidden">{renderMarkdown(msg.content)}</div>
 
                       {/* Citations */}
                       {msg.citations && msg.citations.length > 0 && (
@@ -576,14 +592,14 @@ export default function AskHiqmahFloat() {
 
               {/* Input */}
               <form onSubmit={handleSubmit} className="border-t sidebar-border p-3 shrink-0 safe-area-bottom">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <input
                     ref={inputRef}
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={placeholderText || "Ask anything about Islam..."}
-                    className="flex-1 bg-[var(--color-card)] rounded-lg px-3 py-2.5 text-themed text-sm outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
+                    className="flex-1 min-w-0 bg-[var(--color-card)] rounded-lg px-3 py-2.5 text-themed text-sm outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
                   />
                   <button
                     type="submit"

@@ -987,14 +987,14 @@ function generateDynamicQuestions(): Question[] {
    ═══════════════════════════════════════════════════════════════════ */
 
 const categories: { key: Category; label: string; labelAr: string; desc: string; color: string }[] = [
-  { key: "quran", label: "Quran", labelAr: "القرآن", desc: "Surahs, verses, and revelation", color: "from-emerald-500/20 to-emerald-500/5" },
-  { key: "prophets", label: "Prophets", labelAr: "الأنبياء", desc: "Stories and facts about the messengers", color: "from-blue-500/20 to-blue-500/5" },
-  { key: "seerah", label: "Life of the Prophet ﷺ", labelAr: "السيرة النبوية", desc: "The biography and events of Prophet Muhammad's life", color: "from-cyan-500/20 to-cyan-500/5" },
-  { key: "names", label: "Names of Allah", labelAr: "أسماء الله", desc: "The 99 beautiful names and meanings", color: "from-purple-500/20 to-purple-500/5" },
-  { key: "pillars", label: "Pillars & Faith", labelAr: "الأركان", desc: "The foundations of Islam and Iman", color: "from-amber-500/20 to-amber-500/5" },
-  { key: "worship", label: "Worship & Practice", labelAr: "العبادات", desc: "Salah, Wudu, Dhikr, and daily practice", color: "from-teal-500/20 to-teal-500/5" },
-  { key: "afterlife", label: "The Afterlife", labelAr: "الآخرة", desc: "Day of Judgement, Jannah, Jahannam, and the unseen", color: "from-indigo-500/20 to-indigo-500/5" },
-  { key: "general", label: "General", labelAr: "عام", desc: "History, culture, and Islamic knowledge", color: "from-rose-500/20 to-rose-500/5" },
+  { key: "quran", label: "Quran", labelAr: "القرآن", desc: "Surahs, verses, and revelation", color: "bg-black/40" },
+  { key: "prophets", label: "Prophets", labelAr: "الأنبياء", desc: "Stories and facts about the messengers", color: "bg-black/40" },
+  { key: "seerah", label: "Life of the Prophet ﷺ", labelAr: "السيرة النبوية", desc: "The biography and events of Prophet Muhammad's life", color: "bg-black/40" },
+  { key: "names", label: "Names of Allah", labelAr: "أسماء الله", desc: "The 99 beautiful names and meanings", color: "bg-black/40" },
+  { key: "pillars", label: "Pillars & Faith", labelAr: "الأركان", desc: "The foundations of Islam and Iman", color: "bg-black/40" },
+  { key: "worship", label: "Worship & Practice", labelAr: "العبادات", desc: "Salah, Wudu, Dhikr, and daily practice", color: "bg-black/40" },
+  { key: "afterlife", label: "The Afterlife", labelAr: "الآخرة", desc: "Day of Judgement, Jannah, Jahannam, and the unseen", color: "bg-black/40" },
+  { key: "general", label: "General", labelAr: "عام", desc: "History, culture, and Islamic knowledge", color: "bg-black/40" },
 ];
 
 const difficultyLabels: Record<Difficulty, string> = {
@@ -1070,7 +1070,7 @@ function Quiz({
         </p>
 
         {/* Review answers */}
-        <div className="max-w-lg mx-auto text-left mb-6 space-y-3">
+        <div className="max-w-3xl mx-auto text-left mb-6 space-y-3">
           {questions.map((qq, i) => {
             const userAnswer = answers[i];
             const isCorrect = userAnswer === qq.answer;
@@ -1108,7 +1108,7 @@ function Quiz({
               setFinished(false);
               setAnswers([]);
             }}
-            className="px-4 py-2 rounded-lg bg-gold/20 text-gold text-sm font-medium hover:bg-gold/30 transition-colors flex items-center gap-1.5"
+            className="px-4 py-2 rounded-lg bg-black/40 text-gold text-sm font-medium hover:bg-gold/30 transition-colors flex items-center gap-1.5"
           >
             <RotateCcw size={14} /> Try Again
           </button>
@@ -1290,12 +1290,14 @@ export default function QuizPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pb-24">
+    <div className="pb-24">
       <PageHeader
         title="Quizzes & Challenges"
         titleAr="اختبارات وتحديات"
         subtitle="Test your knowledge of Islam"
       />
+
+      <div className="max-w-5xl mx-auto px-4">
 
       {state.phase === "select" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -1354,12 +1356,12 @@ export default function QuizPage() {
                       isExpanded ? "border-gold/30" : "sidebar-border hover:border-gold/20"
                     }`}
                   >
-                    <div className={`p-5 bg-gradient-to-r ${cat.color}`}>
+                    <div className={`p-5 ${cat.color}`}>
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-baseline gap-2">
-                            <h3 className="text-base font-semibold text-themed">{cat.label}</h3>
-                            <span className="text-xs text-themed-muted font-arabic">{cat.labelAr}</span>
+                            <h3 className="text-base font-semibold text-gold">{cat.label}</h3>
+                            <span className="text-xs text-gold/70 font-arabic">{cat.labelAr}</span>
                           </div>
                           <p className="text-xs text-themed-muted mt-0.5">{cat.desc}</p>
                         </div>
@@ -1452,6 +1454,7 @@ export default function QuizPage() {
           onBack={goBack}
         />
       )}
+      </div>
     </div>
   );
 }

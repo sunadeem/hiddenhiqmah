@@ -315,7 +315,7 @@ function DhikrPageInner() {
   if (!mounted) return null;
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div>
       <PageHeader
         title="Dhikr"
         titleAr="الذكر"
@@ -333,6 +333,8 @@ function DhikrPageInner() {
         }
       />
 
+      <div className="max-w-5xl mx-auto">
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {dhikrList.map((dhikr, i) => (
           <DhikrCard
@@ -344,6 +346,7 @@ function DhikrPageInner() {
             delay={0.05 + i * 0.05}
           />
         ))}
+      </div>
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ import {
   Infinity,
   GraduationCap,
   Trophy,
+  ListChecks,
 } from "lucide-react";
 import ContentCard from "@/components/ContentCard";
 import { AskHiqmahInline } from "@/components/AskHiqmah";
@@ -218,6 +219,13 @@ const navSections: { heading: string; items: NavItem[] }[] = [
         title: "Quizzes",
         titleAr: "اختبارات",
         description: "Test your Islamic knowledge with quizzes on the Quran, Prophets, and more.",
+      },
+      {
+        href: "/muslim-daily",
+        icon: ListChecks,
+        title: "Muslim Daily",
+        titleAr: "يوميات المسلم",
+        description: "Your daily guide to living the Sunnah — morning adhkar, evening routines, and daily checklist.",
       },
     ],
   },

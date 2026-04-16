@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Send, Loader2, Sparkles, Trash2 } from "lucide-react";
+import { Send, Loader2, MessageCircleQuestion, Trash2 } from "lucide-react";
 import {
   STORAGE_KEY,
   loadMessages,
@@ -17,11 +17,29 @@ import type { Message } from "@/components/AskHiqmah";
 const placeholderQuestions = [
   "What is Islam?",
   "What dua do I make when breaking my fast?",
+  "When does Ramadan start?",
   "Who was Prophet Musa?",
   "How do I pray Salah?",
   "What are the pillars of Islam?",
   "Tell me about Jannah",
+  "What is Tawheed?",
+  "What are the signs of the Day of Judgement?",
   "What happens in the grave?",
+  "How did Prophet Muhammad ﷺ pray at night?",
+  "What is the Quran about?",
+  "What are the 99 Names of Allah?",
+  "How do I make wudu?",
+  "What is the story of Prophet Ibrahim?",
+  "What does the Quran say about patience?",
+  "What is Laylatul Qadr?",
+  "How do I increase my iman?",
+  "What are the rights of parents in Islam?",
+  "What is the punishment of the grave?",
+  "Who are the angels in Islam?",
+  "What is Surah Al-Kahf about?",
+  "What dua do I say before sleeping?",
+  "What are the Sunnahs of eating?",
+  "How do I perform Hajj?",
 ];
 
 export default function AskPage() {
@@ -148,7 +166,7 @@ export default function AskPage() {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b sidebar-border shrink-0">
         <div className="flex items-center gap-2">
-          <Sparkles size={16} className="text-[#3b82f6]" />
+          <MessageCircleQuestion size={16} className="text-[#3b82f6]" />
           <span className="text-base font-semibold text-[#3b82f6] tracking-wide">
             Ask Hiqmah
           </span>
@@ -167,10 +185,10 @@ export default function AskPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-4 min-h-0">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-5 space-y-4 min-h-0">
         {messages.length === 0 && (
           <div className="text-center py-16">
-            <Sparkles size={32} className="text-[#3b82f6]/20 mx-auto mb-4" />
+            <MessageCircleQuestion size={32} className="text-[#3b82f6]/20 mx-auto mb-4" />
             <p className="text-themed-muted text-sm">
               Ask any question about Islam
             </p>
@@ -194,7 +212,7 @@ export default function AskPage() {
                   : "bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20"
               }`}
             >
-              <div className="whitespace-pre-wrap">{renderMarkdown(msg.content)}</div>
+              <div className="whitespace-pre-wrap break-words overflow-hidden">{renderMarkdown(msg.content)}</div>
 
               {/* Citations */}
               {msg.citations && msg.citations.length > 0 && (
@@ -248,14 +266,14 @@ export default function AskPage() {
 
       {/* Input */}
       <form onSubmit={handleSubmit} className="border-t sidebar-border p-4 shrink-0">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={placeholderText || "Ask anything about Islam..."}
-            className="flex-1 bg-[var(--color-card)] rounded-lg px-4 py-3 text-themed text-sm outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
+            className="flex-1 min-w-0 bg-[var(--color-card)] rounded-lg px-4 py-3 text-themed text-sm outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
           />
           <button
             type="submit"

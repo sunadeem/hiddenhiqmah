@@ -183,7 +183,7 @@ function AgeGroupSelector({
   onChange: (g: AgeGroup) => void;
 }) {
   return (
-    <div className="flex justify-center mb-4">
+    <div className="flex mb-4">
       <div className="relative inline-block">
         <select
           value={value}
@@ -208,7 +208,7 @@ function AgeGroupSelector({
 
 function ProgressDashboard({ progress }: { progress: KidsProgress }) {
   return (
-    <div className="flex items-center justify-center gap-6 mb-6">
+    <div className="flex items-center gap-6 mb-6">
       <div className="flex items-center gap-1.5 text-gold">
         <Star size={18} fill="currentColor" />
         <span className="font-semibold text-sm">{progress.stars}</span>
@@ -302,7 +302,7 @@ function WhoIsAllahTab({
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-2xl mx-auto">
       <p className="text-center text-themed-muted text-sm mb-4">
         Tap the card to flip it and learn about Allah&apos;s beautiful names!
       </p>
@@ -554,7 +554,7 @@ function FivePillarsTab({
 
   if (!selectedPillar) {
     return (
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-3xl mx-auto">
         <p className="text-center text-themed-muted text-sm mb-4">
           Islam is built on five pillars. Learn about each one!
         </p>
@@ -616,7 +616,7 @@ function FivePillarsTab({
   if (quizMode) {
     const q = pillar.quiz[quizIdx];
     return (
-      <div className="max-w-md mx-auto">
+      <div className="max-w-2xl mx-auto">
         <button
           onClick={() => { setQuizMode(false); setSelectedPillar(null); }}
           className="flex items-center gap-1 text-sm text-themed-muted hover:text-themed mb-4"
@@ -675,7 +675,7 @@ function FivePillarsTab({
   }
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-2xl mx-auto">
       <button
         onClick={() => setSelectedPillar(null)}
         className="flex items-center gap-1 text-sm text-themed-muted hover:text-themed mb-4"
@@ -798,7 +798,7 @@ function DailyWordsTab({
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-2xl mx-auto">
       <p className="text-center text-themed-muted text-sm mb-4">
         Learn important Islamic words and phrases! Tap the card to see the meaning.
       </p>
@@ -921,7 +921,7 @@ function ProphetStoriesTab({
 
   if (!selectedSlug || !story) {
     return (
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-3xl mx-auto">
         <p className="text-center text-themed-muted text-sm mb-4">
           Discover the amazing stories of the prophets sent by Allah!
         </p>
@@ -972,7 +972,7 @@ function ProphetStoriesTab({
 
   if (showLessons) {
     return (
-      <div className="max-w-md mx-auto">
+      <div className="max-w-2xl mx-auto">
         <button
           onClick={() => setShowLessons(false)}
           className="flex items-center gap-1 text-sm text-themed-muted hover:text-themed mb-4"
@@ -1009,7 +1009,7 @@ function ProphetStoriesTab({
   }
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-2xl mx-auto">
       <button
         onClick={() => setSelectedSlug(null)}
         className="flex items-center gap-1 text-sm text-themed-muted hover:text-themed mb-4"
@@ -1206,7 +1206,7 @@ function QuranCornerTab({
 
   if (!selectedSurah || !surah) {
     return (
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-3xl mx-auto">
         <p className="text-center text-themed-muted text-sm mb-4">
           Memorize short surahs from the Quran! Start with the ones you hear in prayer.
         </p>
@@ -1257,7 +1257,7 @@ function QuranCornerTab({
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-2xl mx-auto">
       <button
         onClick={() => setSelectedSurah(null)}
         className="flex items-center gap-1 text-sm text-themed-muted hover:text-themed mb-4"
@@ -1375,7 +1375,7 @@ function GoodDeedsTab({
   }, [localChecklist, items]);
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-2xl mx-auto">
       <p className="text-center text-themed-muted text-sm mb-2">
         Check off the good deeds you do each day!
       </p>
@@ -1542,7 +1542,7 @@ function ChallengesTab({
   if (!started || finished) {
     const pct = finished ? Math.round(((score + (answer === shuffled[qIdx]?.answer ? 1 : 0)) / shuffled.length) * 100) : 0;
     return (
-      <div className="max-w-md mx-auto text-center">
+      <div className="max-w-2xl mx-auto text-center">
         {finished ? (
           <ContentCard>
             <Trophy size={48} className="mx-auto text-gold mb-3" />
@@ -1591,7 +1591,7 @@ function ChallengesTab({
   const q = shuffled[qIdx];
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <span className="text-sm text-themed-muted">
           Question {qIdx + 1} of {shuffled.length}
@@ -1724,12 +1724,14 @@ export default function KidsLearningPage() {
   if (!progress) return null;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pb-24">
+    <div className="pb-24">
       <PageHeader
         title="Kids Learning"
         titleAr="تعليم الأطفال"
         subtitle="A fun way for parents and children to learn Islam together"
       />
+
+      <div className="max-w-5xl mx-auto px-4">
 
       <AgeGroupSelector value={progress.ageGroup} onChange={handleAgeChange} />
       <ProgressDashboard progress={progress} />
@@ -1800,6 +1802,7 @@ export default function KidsLearningPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

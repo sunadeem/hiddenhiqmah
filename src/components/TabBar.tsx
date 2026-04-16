@@ -8,6 +8,7 @@ interface Tab {
   label: string;
   icon?: React.ReactNode;
   count?: number;
+  highlight?: boolean;
 }
 
 interface TabBarProps {
@@ -32,6 +33,7 @@ export default function TabBar({
 
   const activeLabel = tabs.find((t) => t.key === activeTab)?.label || "";
 
+
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -43,6 +45,33 @@ export default function TabBar({
       return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [dropdownOpen]);
+
+  const renderButton = (tab: Tab) => {
+    const isActive = activeTab === tab.key;
+    return (
+      <button
+        key={tab.key}
+        onClick={() => onTabChange(tab.key)}
+        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+          isActive
+            ? tab.highlight
+              ? "bg-[#d4a84333] text-gold border border-[#d4a8434d] shadow-[0_0_12px_#d4a84330]"
+              : "bg-[#d4a84333] text-gold border border-[#d4a8434d]"
+            : tab.highlight
+              ? "card-bg border sidebar-border text-gold shadow-[0_0_10px_#d4a84320] hover:shadow-[0_0_16px_#d4a84340]"
+              : "card-bg border sidebar-border text-themed-muted hover:text-themed"
+        }`}
+      >
+        {tab.icon}
+        <span>{tab.label}</span>
+        {tab.count !== undefined && (
+          <span className={`text-xs ${isActive ? "opacity-70" : "opacity-50"}`}>
+            ({tab.count})
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
     <div className={className}>
@@ -97,28 +126,7 @@ export default function TabBar({
           useDropdown ? "hidden md:flex" : "flex"
         }`}
       >
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => onTabChange(tab.key)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                isActive
-                  ? "bg-gold/20 text-gold border border-gold/30"
-                  : "card-bg border sidebar-border text-themed-muted hover:text-themed"
-              }`}
-            >
-              {tab.icon}
-              <span>{tab.label}</span>
-              {tab.count !== undefined && (
-                <span className={`text-xs ${isActive ? "opacity-70" : "opacity-50"}`}>
-                  ({tab.count})
-                </span>
-              )}
-            </button>
-          );
-        })}
+        {tabs.map(renderButton)}
       </div>
     </div>
   );
