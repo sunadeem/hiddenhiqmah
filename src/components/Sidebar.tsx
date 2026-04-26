@@ -37,6 +37,7 @@ import {
   Trophy,
   ListChecks,
   HeartHandshake,
+  Heart,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -74,14 +75,19 @@ const navSections: NavSection[] = [
     ],
   },
   {
-    title: "Practice",
+    title: "Life",
     items: [
       { href: "/muslim-daily", label: "Muslim Daily", labelAr: "يوميات المسلم", icon: ListChecks },
-      { href: "/salah", label: "Salah", labelAr: "الصلاة", icon: Clock },
-      { href: "/ramadan", label: "Ramadan", labelAr: "رمضان", icon: Moon },
       { href: "/duas", label: "Duas", labelAr: "الدعاء", icon: HandHeart },
       { href: "/dhikr", label: "Dhikr", labelAr: "الذكر", icon: Repeat },
       { href: "/marriage", label: "Marriage", labelAr: "الزواج", icon: HeartHandshake },
+    ],
+  },
+  {
+    title: "Practice",
+    items: [
+      { href: "/salah", label: "Salah", labelAr: "الصلاة", icon: Clock },
+      { href: "/ramadan", label: "Ramadan", labelAr: "رمضان", icon: Moon },
       { href: "/kids", label: "Kids Learning", labelAr: "تعليم الأطفال", icon: GraduationCap },
       { href: "/quiz", label: "Quizzes", labelAr: "اختبارات", icon: Trophy },
     ],
