@@ -23,6 +23,7 @@ import {
   GraduationCap,
   Trophy,
   ListChecks,
+  HeartHandshake,
 } from "lucide-react";
 import ContentCard from "@/components/ContentCard";
 import { AskHiqmahInline } from "@/components/AskHiqmah";
@@ -205,6 +206,13 @@ const navSections: { heading: string; items: NavItem[] }[] = [
         title: "Ramadan",
         titleAr: "رمضان",
         description: "Fasting, Tarawih, Laylatul Qadr, and the spirit of Ramadan.",
+      },
+      {
+        href: "/marriage",
+        icon: HeartHandshake,
+        title: "Marriage",
+        titleAr: "الزواج",
+        description: "Finding a spouse, the nikah, rights of husband and wife, and divorce.",
       },
       {
         href: "/kids",

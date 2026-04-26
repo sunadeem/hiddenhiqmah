@@ -528,7 +528,7 @@ function LearnArabicContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"

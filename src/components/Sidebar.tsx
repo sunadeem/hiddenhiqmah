@@ -36,6 +36,7 @@ import {
   GraduationCap,
   Trophy,
   ListChecks,
+  HeartHandshake,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -80,6 +81,7 @@ const navSections: NavSection[] = [
       { href: "/ramadan", label: "Ramadan", labelAr: "رمضان", icon: Moon },
       { href: "/duas", label: "Duas", labelAr: "الدعاء", icon: HandHeart },
       { href: "/dhikr", label: "Dhikr", labelAr: "الذكر", icon: Repeat },
+      { href: "/marriage", label: "Marriage", labelAr: "الزواج", icon: HeartHandshake },
       { href: "/kids", label: "Kids Learning", labelAr: "تعليم الأطفال", icon: GraduationCap },
       { href: "/quiz", label: "Quizzes", labelAr: "اختبارات", icon: Trophy },
     ],

@@ -1731,6 +1731,16 @@ export default function KidsLearningPage() {
         subtitle="A fun way for parents and children to learn Islam together"
       />
 
+      <ContentCard className="mb-6">
+        <div className="text-center py-4">
+          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
+            رَبَّنَا هَبْ لَنَا مِنْ أَزْوَٰجِنَا وَذُرِّيَّـٰتِنَا قُرَّةَ أَعْيُنٍۢ وَٱجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا
+          </p>
+          <p className="text-themed-muted italic">&ldquo;Our Lord, grant us from our spouses and offspring comfort to our eyes, and make us a leader for the righteous.&rdquo;</p>
+          <p className="text-xs text-themed-muted mt-1">Quran 25:74</p>
+        </div>
+      </ContentCard>
+
       <div className="max-w-5xl mx-auto px-4">
 
       <AgeGroupSelector value={progress.ageGroup} onChange={handleAgeChange} />

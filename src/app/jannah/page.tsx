@@ -8,8 +8,8 @@ import PageSearch from "@/components/PageSearch";
 import ContentCard from "@/components/ContentCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { textMatch } from "@/lib/search";
-import { BookOpen } from "lucide-react";
 import HadithRefText from "@/components/HadithRefText";
+import SourcesCard from "@/components/SourcesCard";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -553,7 +553,7 @@ function JannahContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -657,30 +657,14 @@ function JannahContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.3}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 3:133 — A garden as wide as the heavens and earth",
-                  "Quran 3:185 — Every soul will taste death; true success is entering Paradise",
-                  "Quran 32:17 — No soul knows what delight awaits them",
-                  "Quran 39:53 — Do not despair of the mercy of Allah",
-                  "Bukhari 59:55; Muslim 53:3 — What no eye has seen, no ear has heard",
-                  "Bukhari 56:8 — One hundred degrees of Paradise",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard sources={[
+              { ref: "Quran 3:133", desc: "A garden as wide as the heavens and earth" },
+              { ref: "Quran 3:185", desc: "Every soul will taste death; true success is entering Paradise" },
+              { ref: "Quran 32:17", desc: "No soul knows what delight awaits them" },
+              { ref: "Quran 39:53", desc: "Do not despair of the mercy of Allah" },
+              { ref: "Bukhari 59:55; Muslim 53:3", desc: "What no eye has seen, no ear has heard" },
+              { ref: "Bukhari 56:8", desc: "One hundred degrees of Paradise" },
+            ]} />
           </motion.div>
         )}
 
@@ -752,33 +736,17 @@ function JannahContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.4}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 3:185 — True success is being saved from the Fire and admitted to Paradise",
-                  "Quran 32:17 — What no soul knows has been hidden for them",
-                  "Quran 44:56 — No death in Paradise except the first death",
-                  "Quran 75:22-23 — Faces looking at their Lord",
-                  "Bukhari 59:55; Muslim 53:3 — What no eye has seen",
-                  "Bukhari 75:33; Muslim 52:66 — None enters Paradise by deeds alone",
-                  "Bukhari 81:77 — Paradise is closer than your sandal strap",
-                  "Muslim 1:88 — The lifting of the veil; seeing the Face of Allah",
-                  "Muslim 53:50 — Death slaughtered between Paradise and the Fire",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Quran 3:185", desc: "True success is being saved from the Fire and admitted to Paradise" },
+              { ref: "Quran 32:17", desc: "What no soul knows has been hidden for them" },
+              { ref: "Quran 44:56", desc: "No death in Paradise except the first death" },
+              { ref: "Quran 75:22-23", desc: "Faces looking at their Lord" },
+              { ref: "Bukhari 59:55; Muslim 53:3", desc: "What no eye has seen" },
+              { ref: "Bukhari 75:33; Muslim 52:66", desc: "None enters Paradise by deeds alone" },
+              { ref: "Bukhari 81:77", desc: "Paradise is closer than your sandal strap" },
+              { ref: "Muslim 1:88", desc: "The lifting of the veil; seeing the Face of Allah" },
+              { ref: "Muslim 53:50", desc: "Death slaughtered between Paradise and the Fire" },
+            ]} />
           </motion.div>
         )}
 
@@ -798,7 +766,7 @@ function JannahContent() {
                     <button
                       key={topic.id}
                       onClick={() => setActiveDescription(topic.id)}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
                         activeDescription === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -832,34 +800,18 @@ function JannahContent() {
             </div>
 
             {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 47:15 — The four rivers of Paradise",
-                  "Quran 55:52-74 — Fruits, companions, and gardens of Paradise",
-                  "Quran 56:17-37 — The food, drink, and companions of the foremost",
-                  "Quran 75:22-23; Quran 10:26 — Seeing the Face of Allah",
-                  "Bukhari 59:62; Muslim 53:7 — Trees whose shade takes 100 years to cross",
-                  "Bukhari 65:400; Muslim 53:27 — Tents of hollow pearls",
-                  "Bukhari 81:169; Muslim 4:56 — Al-Kawthar river",
-                  "Bukhari 59:56 — No envy or rancor in the hearts of Paradise's people",
-                  "Muslim 1:88 — The greatest reward: looking at the Face of Allah",
-                  "Tirmidhi 38:4 — Bricks of gold and silver, soil of saffron; Muslim 53:19 — Soil of white musk",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 47:15", desc: "The four rivers of Paradise" },
+              { ref: "Quran 55:52-74", desc: "Fruits, companions, and gardens of Paradise" },
+              { ref: "Quran 56:17-37", desc: "The food, drink, and companions of the foremost" },
+              { ref: "Quran 75:22-23; Quran 10:26", desc: "Seeing the Face of Allah" },
+              { ref: "Bukhari 59:62; Muslim 53:7", desc: "Trees whose shade takes 100 years to cross" },
+              { ref: "Bukhari 65:400; Muslim 53:27", desc: "Tents of hollow pearls" },
+              { ref: "Bukhari 81:169; Muslim 4:56", desc: "Al-Kawthar river" },
+              { ref: "Bukhari 59:56", desc: "No envy or rancor in the hearts of Paradise's people" },
+              { ref: "Muslim 1:88", desc: "The greatest reward: looking at the Face of Allah" },
+              { ref: "Tirmidhi 38:4", desc: "Bricks of gold and silver, soil of saffron; Muslim 53:19 — Soil of white musk" },
+            ]} />
           </motion.div>
         )}
 
@@ -879,7 +831,7 @@ function JannahContent() {
                     <button
                       key={topic.id}
                       onClick={() => setActiveHowTo(topic.id)}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
                         activeHowTo === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -913,37 +865,21 @@ function JannahContent() {
             </div>
 
             {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 2:82 — Those who believe and do righteous deeds are the companions of Paradise",
-                  "Quran 4:48 — Allah does not forgive shirk",
-                  "Quran 4:69 — Being with the prophets, the truthful, and the righteous",
-                  "Quran 39:53 — Do not despair of the mercy of Allah",
-                  "Quran 83:26 — For this let the competitors compete",
-                  "Bukhari 1:1; Muslim 6:335 — Actions are judged by intentions",
-                  "Bukhari 17:3; Muslim 1:14 — Deeds that admit to Paradise",
-                  "Bukhari 56:8 — One hundred degrees of Paradise; al-Firdaus",
-                  "Bukhari 10:12 — Al-Wasilah: the highest station for the Prophet",
-                  "Bukhari 10:53 — Sponsoring an orphan: together in Paradise",
-                  "Bukhari 81:159; Muslim 1:93-95 — The last person to enter Paradise",
-                  "Muslim 1:178 — Whoever dies upon tawhid will enter Paradise",
-                  "Tirmidhi 27:110 — The most common cause of admission: taqwa and good character",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 2:82", desc: "Those who believe and do righteous deeds are the companions of Paradise" },
+              { ref: "Quran 4:48", desc: "Allah does not forgive shirk" },
+              { ref: "Quran 4:69", desc: "Being with the prophets, the truthful, and the righteous" },
+              { ref: "Quran 39:53", desc: "Do not despair of the mercy of Allah" },
+              { ref: "Quran 83:26", desc: "For this let the competitors compete" },
+              { ref: "Bukhari 1:1; Muslim 6:335", desc: "Actions are judged by intentions" },
+              { ref: "Bukhari 17:3; Muslim 1:14", desc: "Deeds that admit to Paradise" },
+              { ref: "Bukhari 56:8", desc: "One hundred degrees of Paradise; al-Firdaus" },
+              { ref: "Bukhari 10:12", desc: "Al-Wasilah: the highest station for the Prophet" },
+              { ref: "Bukhari 10:53", desc: "Sponsoring an orphan: together in Paradise" },
+              { ref: "Bukhari 81:159; Muslim 1:93-95", desc: "The last person to enter Paradise" },
+              { ref: "Muslim 1:178", desc: "Whoever dies upon tawhid will enter Paradise" },
+              { ref: "Tirmidhi 27:110", desc: "The most common cause of admission: taqwa and good character" },
+            ]} />
           </motion.div>
         )}
       </AnimatePresence>

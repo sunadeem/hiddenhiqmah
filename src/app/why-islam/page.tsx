@@ -1534,7 +1534,7 @@ function TopicSection({
           <button
             key={topic.id}
             onClick={() => setActiveId(topic.id)}
-            className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
               activeId === topic.id
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1659,7 +1659,7 @@ function WhyIslamContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"

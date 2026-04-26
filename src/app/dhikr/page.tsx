@@ -333,6 +333,16 @@ function DhikrPageInner() {
         }
       />
 
+      <ContentCard className="mb-6">
+        <div className="text-center py-4">
+          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
+            أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ
+          </p>
+          <p className="text-themed-muted italic">&ldquo;Verily, in the remembrance of Allah do hearts find rest.&rdquo;</p>
+          <p className="text-xs text-themed-muted mt-1">Quran 13:28</p>
+        </div>
+      </ContentCard>
+
       <div className="max-w-5xl mx-auto">
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

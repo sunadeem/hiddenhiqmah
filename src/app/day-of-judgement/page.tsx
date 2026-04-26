@@ -8,8 +8,8 @@ import PageHeader from "@/components/PageHeader";
 import PageSearch from "@/components/PageSearch";
 import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
-import { BookOpen } from "lucide-react";
 import HadithRefText from "@/components/HadithRefText";
+import SourcesCard from "@/components/SourcesCard";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -649,7 +649,7 @@ function DayOfJudgementContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -749,29 +749,13 @@ function DayOfJudgementContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.3}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 1:4 — Master of the Day of Recompense",
-                  "Quran 83:6 — The Day when mankind will stand before the Lord of the worlds",
-                  "Quran 99:7-8 — Whoever does an atom's weight of good or evil will see it",
-                  "Muslim 1:1 — Hadith of Jibril: belief in the Last Day is a pillar of faith",
-                  "Bukhari 65:234 — The great intercession of the Prophet (peace be upon him)",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard sources={[
+              { ref: "Quran 1:4", desc: "Master of the Day of Recompense" },
+              { ref: "Quran 83:6", desc: "The Day when mankind will stand before the Lord of the worlds" },
+              { ref: "Quran 99:7-8", desc: "Whoever does an atom's weight of good or evil will see it" },
+              { ref: "Muslim 1:1", desc: "Hadith of Jibril: belief in the Last Day is a pillar of faith" },
+              { ref: "Bukhari 65:234", desc: "The great intercession of the Prophet (peace be upon him)" },
+            ]} />
           </motion.div>
         )}
 
@@ -824,30 +808,14 @@ function DayOfJudgementContent() {
             ))}
 
             {/* Sources */}
-            <ContentCard delay={0.4}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 1:4, 23:115, 69:1, 75:1, 99:7-8, 101:1 — Names and reality of the Day of Judgement",
-                  "Quran 21:47 — The scales of justice on the Day of Resurrection",
-                  "Muslim 1:1 — Hadith of Jibril on the pillars of faith",
-                  "Muslim 53:75 — The sun being brought close on the Day of Judgement",
-                  "Bukhari 65:234 — The great intercession",
-                  "Tirmidhi 37:45 — The wise person holds himself accountable",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Quran 1:4, 23:115, 69:1, 75:1, 99:7-8, 101:1", desc: "Names and reality of the Day of Judgement" },
+              { ref: "Quran 21:47", desc: "The scales of justice on the Day of Resurrection" },
+              { ref: "Muslim 1:1", desc: "Hadith of Jibril on the pillars of faith" },
+              { ref: "Muslim 53:75", desc: "The sun being brought close on the Day of Judgement" },
+              { ref: "Bukhari 65:234", desc: "The great intercession" },
+              { ref: "Tirmidhi 37:45", desc: "The wise person holds himself accountable" },
+            ]} />
           </motion.div>
         )}
 
@@ -867,7 +835,7 @@ function DayOfJudgementContent() {
                   <button
                     key={topic.id}
                     onClick={() => setActiveSigns(topic.id)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeSigns === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -901,36 +869,20 @@ function DayOfJudgementContent() {
             </div>
 
             {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Bukhari 3:22; Muslim 47:11 — Knowledge taken away, ignorance prevails",
-                  "Bukhari 81:85 — When trust is lost, wait for the Hour",
-                  "Bukhari 81:92; Muslim 7:55 — The Prophet and the Hour sent like two fingers",
-                  "Bukhari 92:65 — A fire from Hijaz illuminating camels at Busra",
-                  "Muslim 1:1 — Hadith of Jibril: slave woman, tall buildings",
-                  "Muslim 54:23 — Widespread killing (al-harj)",
-                  "Muslim 54:51 — Ten major signs mentioned together",
-                  "Muslim 54:134, 15:146 — The Dajjal, descent of 'Isa, Ya'juj and Ma'juj",
-                  "Bukhari 60:118 — The descent of 'Isa ibn Maryam",
-                  "Bukhari 65:157 — The sun rising from the west",
-                  "Abu Dawud 38:6 — The Mahdi from the descendants of Fatimah",
-                  "Quran 6:158, 18:94-99, 21:96, 27:82, 44:10-11 — Major signs in the Quran",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Bukhari 3:22; Muslim 47:11", desc: "Knowledge taken away, ignorance prevails" },
+              { ref: "Bukhari 81:85", desc: "When trust is lost, wait for the Hour" },
+              { ref: "Bukhari 81:92; Muslim 7:55", desc: "The Prophet and the Hour sent like two fingers" },
+              { ref: "Bukhari 92:65", desc: "A fire from Hijaz illuminating camels at Busra" },
+              { ref: "Muslim 1:1", desc: "Hadith of Jibril: slave woman, tall buildings" },
+              { ref: "Muslim 54:23", desc: "Widespread killing (al-harj)" },
+              { ref: "Muslim 54:51", desc: "Ten major signs mentioned together" },
+              { ref: "Muslim 54:134, 15:146", desc: "The Dajjal, descent of 'Isa, Ya'juj and Ma'juj" },
+              { ref: "Bukhari 60:118", desc: "The descent of 'Isa ibn Maryam" },
+              { ref: "Bukhari 65:157", desc: "The sun rising from the west" },
+              { ref: "Abu Dawud 38:6", desc: "The Mahdi from the descendants of Fatimah" },
+              { ref: "Quran 6:158, 18:94-99, 21:96, 27:82, 44:10-11", desc: "Major signs in the Quran" },
+            ]} />
           </motion.div>
         )}
 
@@ -950,7 +902,7 @@ function DayOfJudgementContent() {
                   <button
                     key={topic.id}
                     onClick={() => setActiveEvents(topic.id)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeEvents === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -984,29 +936,13 @@ function DayOfJudgementContent() {
             </div>
 
             {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 14:48, 17:13, 21:47, 24:24, 39:68, 57:12-13, 69:19-26, 70:4, 70:43, 83:6, 84:7-9",
-                  "Bukhari 46:8, 97:65 — Resurrection, reckoning, scale, bridge",
-                  "Muslim 1:102, 55:23 — Events of the Day",
-                  "Tirmidhi 27:108, 40:34 — Good character, four questions, the card hadith",
-                  "Tirmidhi 37:3 — Five questions on the Day of Judgement",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 14:48, 17:13, 21:47, 24:24, 39:68, 57:12-13, 69:19-26, 70:4, 70:43, 83:6, 84:7-9", desc: "Quranic verses on the events of the Day" },
+              { ref: "Bukhari 46:8, 97:65", desc: "Resurrection, reckoning, scale, bridge" },
+              { ref: "Muslim 1:102, 55:23", desc: "Events of the Day" },
+              { ref: "Tirmidhi 27:108, 40:34", desc: "Good character, four questions, the card hadith" },
+              { ref: "Tirmidhi 37:3", desc: "Five questions on the Day of Judgement" },
+            ]} />
           </motion.div>
         )}
 
@@ -1026,7 +962,7 @@ function DayOfJudgementContent() {
                   <button
                     key={topic.id}
                     onClick={() => setActiveSalvation(topic.id)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeSalvation === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1060,32 +996,16 @@ function DayOfJudgementContent() {
             </div>
 
             {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 2:255 — No one intercedes except by His permission",
-                  "Quran 17:79 — The Praised Station (al-Maqam al-Mahmud)",
-                  "Quran 108:1-3 — Surah al-Kawthar",
-                  "Bukhari 65:234; Muslim 1:381 — The great intercession",
-                  "Bukhari 81:167, 81:172; Muslim 43:33 — The Hawd (Pool) of the Prophet",
-                  "Bukhari 81:169 — The Prophet seeing al-Kawthar during the Night Journey",
-                  "Muslim 1:90 — Others permitted to intercede by Allah's leave",
-                  "Tirmidhi 47:413; Ibn Majah 37:235 — Description of al-Kawthar",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 2:255", desc: "No one intercedes except by His permission" },
+              { ref: "Quran 17:79", desc: "The Praised Station (al-Maqam al-Mahmud)" },
+              { ref: "Quran 108:1-3", desc: "Surah al-Kawthar" },
+              { ref: "Bukhari 65:234; Muslim 1:381", desc: "The great intercession" },
+              { ref: "Bukhari 81:167, 81:172; Muslim 43:33", desc: "The Hawd (Pool) of the Prophet" },
+              { ref: "Bukhari 81:169", desc: "The Prophet seeing al-Kawthar during the Night Journey" },
+              { ref: "Muslim 1:90", desc: "Others permitted to intercede by Allah's leave" },
+              { ref: "Tirmidhi 47:413; Ibn Majah 37:235", desc: "Description of al-Kawthar" },
+            ]} />
           </motion.div>
         )}
       </AnimatePresence>

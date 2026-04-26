@@ -9,6 +9,7 @@ import { textMatch } from "@/lib/search";
 import HadithRefText from "@/components/HadithRefText";
 import ContentCard from "@/components/ContentCard";
 import BookmarkButton from "@/components/BookmarkButton";
+import SourcesCard, { type SourceRef } from "@/components/SourcesCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import {
   Shield,
@@ -69,6 +70,13 @@ type Category = {
   violations: { title: string; explanation: string }[];
   sources: string[];
 };
+
+function parseSources(sources: string[]): SourceRef[] {
+  return sources.map((s) => {
+    const idx = s.indexOf(" — ");
+    return idx === -1 ? { ref: s, desc: "" } : { ref: s.slice(0, idx), desc: s.slice(idx + 3) };
+  });
+}
 
 const categories: Category[] = [
   {
@@ -572,7 +580,7 @@ function TawhidContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -680,26 +688,13 @@ function TawhidContent() {
             </ContentCard>
 
             {/* Sources for intro */}
-            <ContentCard delay={0.35}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — Chapter 1: On the virtue and necessity of Tawheed",
-                  "Sharh Kitab at-Tawhid, Shaykh Ibn Uthaymeen — Explanation of the opening chapters",
-                  "Al-Qawa'id al-Muthla, Ibn Uthaymeen — Introduction defining Tawheed and its categories",
-                  "Tafsir Ibn Kathir — Commentary on Surah Al-Ikhlas (112:1-4) and Quran 4:48",
-                  "Abu Dawud 21:28 — Hadith on the virtue of La ilaha illallah as last words",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.35} sources={[
+              { ref: "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab", desc: "Chapter 1: On the virtue and necessity of Tawheed" },
+              { ref: "Sharh Kitab at-Tawhid, Shaykh Ibn Uthaymeen", desc: "Explanation of the opening chapters" },
+              { ref: "Al-Qawa'id al-Muthla, Ibn Uthaymeen", desc: "Introduction defining Tawheed and its categories" },
+              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Surah Al-Ikhlas (112:1-4) and Quran 4:48" },
+              { ref: "Abu Dawud 21:28", desc: "Hadith on the virtue of La ilaha illallah as last words" },
+            ]} />
           </motion.div>
         )}
 
@@ -740,25 +735,12 @@ function TawhidContent() {
               </ContentCard>
             ))}
 
-            <ContentCard delay={0.35}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — Chapters on the purpose of creation and the danger of shirk",
-                  "Muslim 1:178 — Hadith on the condition for entering Paradise",
-                  "Bukhari 56:72 — Hadith of Mu'adh ibn Jabal on the right of Allah",
-                  "Tafsir Ibn Kathir — Commentary on Quran 51:56, 21:25, 4:48",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.35} sources={[
+              { ref: "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab", desc: "Chapters on the purpose of creation and the danger of shirk" },
+              { ref: "Muslim 1:178", desc: "Hadith on the condition for entering Paradise" },
+              { ref: "Bukhari 56:72", desc: "Hadith of Mu'adh ibn Jabal on the right of Allah" },
+              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 51:56, 21:25, 4:48" },
+            ]} />
           </motion.div>
         )}
 
@@ -777,7 +759,7 @@ function TawhidContent() {
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat.id)}
-                    className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                       activeCategory === cat.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -805,20 +787,7 @@ function TawhidContent() {
                       {/* Sources */}
                       {cat.sources.length > 0 && (
                         <div className="mt-4">
-                          <ContentCard delay={0.15}>
-                            <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                              <BookOpen size={14} className="text-gold" />
-                              Sources &amp; References
-                            </h4>
-                            <ul className="space-y-1.5">
-                              {cat.sources.map((source) => (
-                                <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                                  <span className="text-gold/40 mt-0.5">&#8226;</span>
-                                  <HadithRefText text={source} />
-                                </li>
-                              ))}
-                            </ul>
-                          </ContentCard>
+                          <SourcesCard delay={0.15} sources={parseSources(cat.sources)} />
                         </div>
                       )}
                     </motion.div>

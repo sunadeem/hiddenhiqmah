@@ -110,7 +110,7 @@ export default function HadithRefText({
             return (
               <Link
                 key={i}
-                href={`/quran/${seg.surah}`}
+                href={`/quran/${seg.surah}${seg.ayah ? `?v=${seg.ayah}` : ""}`}
                 className="text-gold hover:text-gold/80 underline underline-offset-2 decoration-gold/30 hover:decoration-gold/60 transition-colors"
               >
                 {seg.display}

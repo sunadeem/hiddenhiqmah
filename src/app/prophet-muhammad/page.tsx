@@ -57,7 +57,7 @@ const prophetNames = [
     meaning: "The Truthful",
     description:
       "Another pre-Islamic title reflecting his absolute commitment to truth. He never told a lie, neither before nor after prophethood. When he first received revelation and went to Abu Bakr, Abu Bakr believed him immediately without hesitation, earning his own title 'As-Siddiq' (the one who confirms the truthful). When the Prophet ﷺ stood on Mount Safa and asked the Quraysh: 'If I told you an army was behind this mountain about to attack, would you believe me?' They all replied: 'Yes, for we have never known you to lie.' Abu Jahl himself said: 'We do not call you a liar, but we deny what you have brought.'",
-    reference: "Bukhari 65:4770; Quran 6:33",
+    reference: "Bukhari 65:292; Quran 6:33",
   },
   {
     name: "Al-Mustafa",
@@ -65,7 +65,7 @@ const prophetNames = [
     meaning: "The Chosen One",
     description:
       "From the root ṣ-f-w (صفو) meaning purity and selection — he is the one chosen and selected by Allah above all of creation. The Prophet ﷺ said: 'Allah chose Kinanah from the children of Isma'il, and He chose the Quraysh from Kinanah, and He chose Banu Hashim from the Quraysh, and He chose me from Banu Hashim.' He was chosen as the seal of all prophets, given the most comprehensive message, the largest ummah, and granted intercession on the Day of Judgment — a station no other prophet was given.",
-    reference: "Muslim 43:5938; Quran 3:33",
+    reference: "Muslim 43:1; Quran 3:33",
   },
   {
     name: "Ar-Rasul",
@@ -113,7 +113,7 @@ const prophetNames = [
     meaning: "The Seal of the Prophets",
     description:
       "A Quranic title affirming that Muhammad ﷺ is the final prophet sent to mankind. No new prophet — whether independent or subordinate — will come after him. The Prophet ﷺ illustrated this with a parable: 'The example of me and the prophets before me is like a man who built a house, beautified it and perfected it, except for the place of one brick. People would go around it and marvel at its beauty and say: If only this brick were put in its place! I am that brick, and I am the seal of the prophets.' This title carries enormous theological weight — it means the Quran and Sunnah are the final divine guidance until the Day of Judgment.",
-    reference: "Quran 33:40; Bukhari 61:3535; Muslim 43:5959",
+    reference: "Quran 33:40; Bukhari 61:44; Muslim 43:22",
   },
   {
     name: "Rahmatun lil-Alamin",
@@ -121,7 +121,7 @@ const prophetNames = [
     meaning: "Mercy to the Worlds",
     description:
       "Not just a mercy to Muslims or to humans alone, but to all the worlds — humans, jinn, animals, and all of creation. His mercy extended to enemies on the battlefield (forgiving the people of Mecca at the conquest), to animals (forbidding cruelty and overloading beasts), to the environment (prohibiting the unnecessary cutting of trees even in war), and to future generations through his preserved teachings. When asked to curse his enemies, he replied: 'I was not sent as a curser. I was sent as a mercy.' Even his wars were marked by rules of engagement that protected civilians, women, children, and places of worship.",
-    reference: "Quran 21:107; Muslim 45:6613",
+    reference: "Quran 21:107; Muslim 45:111",
   },
   {
     name: "Al-Muqaffi",
@@ -129,7 +129,7 @@ const prophetNames = [
     meaning: "The Successor",
     description:
       "He who follows in the footsteps of the prophets who came before him, completing and perfecting their message. The Prophet ﷺ mentioned this among his names: 'I am Al-Muqaffi — I follow (succeed) the prophets who came before me.' He confirmed the core message of all previous prophets — the worship of One God — while completing the divine law with a final, comprehensive revelation. His Shari'ah abrogated the previous laws where they differed, while affirming the universal truths they shared: monotheism, moral conduct, justice, and accountability before Allah.",
-    reference: "Muslim 43:6108",
+    reference: "Muslim 43:166",
   },
   {
     name: "Nabi ar-Rahmah",
@@ -137,7 +137,7 @@ const prophetNames = [
     meaning: "The Prophet of Mercy",
     description:
       "His prophethood was defined by compassion. He would weep in his night prayers out of concern for his ummah, saying: 'O Allah, my ummah, my ummah!' Allah sent Jibril to ask him why he wept, and though Allah already knew, He told Jibril: 'Go to Muhammad and tell him: We shall please you regarding your ummah and not displease you.' He was gentle with the ignorant, patient with those who wronged him, and merciful even to those who harmed him. When the people of Ta'if pelted him with stones until he bled, the Angel of the Mountains offered to crush them between two mountains, but he refused, hoping their descendants would worship Allah.",
-    reference: "Muslim 1:499; Bukhari 59:3231",
+    reference: "Muslim 1:405; Bukhari 59:42",
   },
   {
     name: "Nabi at-Tawbah",
@@ -145,7 +145,7 @@ const prophetNames = [
     meaning: "The Prophet of Repentance",
     description:
       "He was sent with the message that the door of repentance is always open. No sin is too great for Allah's forgiveness if one turns back sincerely. The Prophet ﷺ himself would seek Allah's forgiveness more than seventy times a day, though all his sins — past and future — had been forgiven. He taught: 'Allah is more pleased with the repentance of His servant than a man who loses his camel in the desert and then finds it again.' His message brought hope to sinners who had despaired of Allah's mercy, and he encouraged repentance at every opportunity.",
-    reference: "Muslim 43:6108; Bukhari 80:6307; Muslim 50:6958",
+    reference: "Muslim 43:166; Bukhari 80:4; Muslim 50:7",
   },
 ];
 
@@ -665,7 +665,7 @@ const wives: FamilyMember[] = [
     relation: "First wife — married ~15 years before prophethood",
     detail:
       "A noble, wealthy businesswoman of the Quraysh who was impressed by his honesty and character when he led her trading caravan to Syria. She proposed marriage through her friend Nafisah, and he married her when he was 25 and she was 40. She was the first person to accept Islam and his greatest supporter during the most difficult years — spending her entire wealth in the cause of Allah. She bore him all his children except Ibrahim. Jibreel himself brought her greetings of peace from Allah, and the Prophet ﷺ said: 'The best of its women is Maryam bint Imran, and the best of its women is Khadijah bint Khuwaylid.' He loved her so deeply that years after her passing, Aisha said: 'I was never jealous of any wife of the Prophet ﷺ as much as I was of Khadijah, even though I never saw her — because of how often he would mention her.'",
-    reference: "Bukhari 60:3432; Bukhari 63:3816; Bukhari 63:3820",
+    reference: "Bukhari 60:103; Bukhari 63:41; Bukhari 63:45",
   },
   {
     name: "Sawdah bint Zam'ah",
@@ -673,7 +673,7 @@ const wives: FamilyMember[] = [
     relation: "Second wife — married after Khadijah's passing",
     detail:
       "An early convert to Islam who migrated to Abyssinia with her first husband Sakran ibn Amr. After he passed away upon their return, the Prophet ﷺ married her shortly after Khadijah's death. She was the first woman he married after Khadijah. She cared for the household and raised the Prophet's ﷺ daughters. She was known for her tall stature, kind nature, and sense of humor that would make the Prophet ﷺ smile and laugh.",
-    reference: "Bukhari 67:5212; Seerah of Ibn Hisham",
+    reference: "Bukhari 67:145; Seerah of Ibn Hisham",
   },
   {
     name: "Aisha bint Abi Bakr",
@@ -681,7 +681,7 @@ const wives: FamilyMember[] = [
     relation: "Daughter of Abu Bakr as-Siddiq",
     detail:
       "The daughter of Abu Bakr, the Prophet's ﷺ closest companion. She was the most knowledgeable of the wives in fiqh, hadith, medicine, poetry, and Arab genealogy. She narrated over 2,200 hadiths — more than any other wife. When asked who was the most beloved person to him, the Prophet ﷺ replied: 'Aisha.' Senior companions like Abu Hurayrah, Ibn Abbas, and Abu Musa would consult her on matters of jurisprudence. She corrected the mistakes of other narrators and was recognized as one of the greatest scholars of her generation. The Prophet ﷺ passed away with his head resting against her, and was buried in her room.",
-    reference: "Bukhari 62:3662; Bukhari 64:4446",
+    reference: "Bukhari 62:14; Bukhari 64:466",
   },
   {
     name: "Hafsah bint Umar",
@@ -689,7 +689,7 @@ const wives: FamilyMember[] = [
     relation: "Daughter of Umar ibn al-Khattab",
     detail:
       "The daughter of the second caliph, Umar ibn al-Khattab. She was previously married to Khunays ibn Hudhafah, who was martyred after the Battle of Badr. After his death, Umar offered her in marriage to Abu Bakr and Uthman, but both declined — knowing that the Prophet ﷺ had expressed interest. She was literate, knowledgeable, and devoted to worship. After the Quran was compiled into a single manuscript during Abu Bakr's caliphate, it was entrusted to her for safekeeping. It remained with her until Uthman used it as the basis for the standardized copies distributed throughout the Muslim lands.",
-    reference: "Bukhari 66:4986; Bukhari 66:4987",
+    reference: "Bukhari 66:8; Bukhari 66:9",
   },
   {
     name: "Zaynab bint Khuzaymah",
@@ -705,7 +705,7 @@ const wives: FamilyMember[] = [
     relation: "Wife of wisdom and counsel",
     detail:
       "She was previously married to Abu Salamah (Abdullah ibn Abdul Asad), one of the earliest converts to Islam. When he died from wounds sustained at Uhud, she was devastated and said the dua the Prophet ﷺ had taught her: 'To Allah we belong and to Him we return. O Allah, reward me in my calamity and replace it with something better.' Allah replaced her loss with the Prophet ﷺ himself. She was known for her wisdom and sound judgment. At Hudaybiyyah, when the companions hesitated to shave their heads and sacrifice their animals after the treaty, the Prophet ﷺ consulted her. She advised him to go out and do it himself without speaking to anyone — once the companions saw him act, they all followed. She narrated nearly 400 hadiths and was the last of the Prophet's ﷺ wives to pass away.",
-    reference: "Muslim 11:2126; Bukhari 54:2732",
+    reference: "Muslim 11:4; Bukhari 54:19",
   },
   {
     name: "Zaynab bint Jahsh",
@@ -713,7 +713,7 @@ const wives: FamilyMember[] = [
     relation: "Cousin of the Prophet ﷺ",
     detail:
       "She was the Prophet's ﷺ cousin — her mother Umaymah was his paternal aunt. She was previously married to Zayd ibn Harithah, the Prophet's ﷺ adopted son. After their marriage ended, Allah commanded the Prophet ﷺ to marry her in the Quran (33:37) to abolish the pre-Islamic taboo that treated the divorced wives of adopted sons as permanently forbidden. She took great pride that her marriage was ordained by Allah from above the seven heavens. She was known for her exceptional generosity and handiwork — she would tan leather and sew, donating all her earnings to the poor. Aisha said: 'I never saw a woman better in her religion, more God-fearing, more truthful, more generous, and more devoted to charity than Zaynab.' She was the first of the Prophet's ﷺ wives to pass away after him.",
-    reference: "Quran 33:37; Bukhari 24:1420; Muslim 44:6316",
+    reference: "Quran 33:37; Bukhari 24:24; Muslim 44:146",
   },
   {
     name: "Juwayriyah bint al-Harith",
@@ -721,7 +721,7 @@ const wives: FamilyMember[] = [
     relation: "Daughter of the chief of Banu Mustaliq",
     detail:
       "She was the daughter of al-Harith ibn Abi Dirar, the chief of the Banu Mustaliq tribe. After the Muslims' encounter with her tribe, she came to the Prophet ﷺ seeking a deal for her freedom. He offered to pay her ransom and marry her, which she accepted. When the companions learned that the Banu Mustaliq were now relatives of the Prophet ﷺ by marriage, they freed all the captives from the tribe — about 100 families. Aisha said: 'I know of no woman who was a greater blessing to her people than Juwayriyah.' She was deeply devoted to worship and dhikr — the Prophet ﷺ once left her in the morning while she was making dhikr and returned hours later to find her still in the same spot.",
-    reference: "Abu Dawud 31:3931; Muslim 48:6913",
+    reference: "Abu Dawud 31:6; Muslim 48:106",
   },
   {
     name: "Umm Habibah (Ramlah bint Abi Sufyan)",
@@ -729,7 +729,7 @@ const wives: FamilyMember[] = [
     relation: "Daughter of Abu Sufyan",
     detail:
       "The daughter of Abu Sufyan, the leader of the Quraysh and one of the Prophet's ﷺ strongest opponents. She embraced Islam early and migrated to Abyssinia with her husband Ubaydullah ibn Jahsh. There, her husband apostatized and converted to Christianity, eventually dying in that state — yet she remained firm in her Islam despite being alone and far from home. The Negus (An-Najashi) of Abyssinia conducted her marriage to the Prophet ﷺ in absentia and paid her mahr on his behalf. When her father Abu Sufyan visited Medina before his own conversion and tried to sit on the Prophet's ﷺ bedding in her room, she pulled it away, saying she would not let an impure polytheist sit on the Messenger of Allah's ﷺ bedding — choosing her faith over her own father.",
-    reference: "Nasai 26:3350; Seerah of Ibn Hisham",
+    reference: "Nasai 26:155; Seerah of Ibn Hisham",
   },
   {
     name: "Safiyyah bint Huyayy",
@@ -737,7 +737,7 @@ const wives: FamilyMember[] = [
     relation: "Noble lineage of prophets",
     detail:
       "She was the daughter of Huyayy ibn Akhtab, the chief of Banu Nadir, and was descended from the lineage of the Prophet Harun (Aaron, peace be upon him). After the Battle of Khaybar, the Prophet ﷺ freed her and proposed marriage, which she accepted, choosing Islam and the Prophet ﷺ over returning to her people. Some of the other wives would occasionally tease her about her Jewish origins. When she came to the Prophet ﷺ in tears about this, he comforted her and said: 'Tell them: My father is Harun, my uncle is Musa, and my husband is Muhammad — so what do you have over me?' She was known for her intelligence, dignity, and forbearance.",
-    reference: "Tirmidhi 49:3892; Tirmidhi 49:3894",
+    reference: "Tirmidhi 49:292; Tirmidhi 49:294",
   },
   {
     name: "Maymunah bint al-Harith",
@@ -745,7 +745,7 @@ const wives: FamilyMember[] = [
     relation: "Last wife of the Prophet ﷺ",
     detail:
       "The last woman the Prophet ﷺ married. She was the maternal aunt of both Khalid ibn al-Walid and Abdullah ibn Abbas. She was known for her deep piety, constant worship, and generosity. Ibn Abbas — one of the greatest scholars among the companions — learned much about the Prophet's ﷺ private worship and night prayers from her accounts. She passed away in Sarif, near Mecca — the same place where her marriage to the Prophet ﷺ had been contracted.",
-    reference: "Bukhari 28:1837; Muslim 17:3633",
+    reference: "Bukhari 28:17; Muslim 17:66",
   },
 ];
 
@@ -755,21 +755,21 @@ const children: FamilyMember[] = [
     nameAr: "القاسم",
     relation: "Son (from Khadijah)",
     detail: "His firstborn son, after whom the Prophet ﷺ was known by his kunya 'Abu al-Qasim.' He passed away in infancy in Mecca before the prophethood. The Prophet ﷺ later said: 'Name yourselves with my name, but do not use my kunya (Abu al-Qasim).'",
-    reference: "Bukhari 61:3539; Muslim 38:5591",
+    reference: "Bukhari 61:48; Muslim 38:6",
   },
   {
     name: "Zaynab",
     nameAr: "زينب",
     relation: "Eldest daughter (from Khadijah)",
     detail: "The eldest daughter. She married her maternal cousin Abu al-As ibn al-Rabi' before Islam. After the Prophet's ﷺ mission began, she accepted Islam but her husband initially did not, creating a painful separation. She remained in Mecca while the Prophet ﷺ migrated. After Abu al-As was captured at Badr, she sent her mother Khadijah's necklace as ransom — when the Prophet ﷺ saw it, he wept. Abu al-As later embraced Islam and they were reunited. She passed away in 8 AH.",
-    reference: "Abu Dawud 15:2692",
+    reference: "Abu Dawud 15:216",
   },
   {
     name: "Ruqayyah",
     nameAr: "رقية",
     relation: "Daughter (from Khadijah)",
     detail: "She was initially married to Utbah, the son of Abu Lahab, but he divorced her under his father's pressure after the Prophet's ﷺ mission began. She then married Uthman ibn Affan and they were among the first to migrate to Abyssinia together. She later migrated to Medina. She fell gravely ill during the Battle of Badr, and Uthman stayed behind to care for her on the Prophet's ﷺ instructions. She passed away the same day the news of victory at Badr reached Medina.",
-    reference: "Bukhari 57:3130",
+    reference: "Bukhari 57:39",
   },
   {
     name: "Umm Kulthum",
@@ -784,7 +784,7 @@ const children: FamilyMember[] = [
     relation: "Youngest daughter (from Khadijah)",
     detail:
       "The most beloved daughter of the Prophet ﷺ, and the one who resembled him the most in her walk and manner. She married Ali ibn Abi Talib and was the mother of Hasan and Husayn — through whom the Prophet's ﷺ lineage continues. The Prophet ﷺ said: 'Fatimah is the leader of the women of the people of Paradise.' Whenever she would visit him, he would stand up, kiss her forehead, and seat her in his place. She was the only one of his children who survived him — she passed away six months after his death. She was known for her patience, devotion, and simple life despite hardship.",
-    reference: "Bukhari 61:3624; Tirmidhi 49:3872; Tirmidhi 49:3781",
+    reference: "Bukhari 61:129; Tirmidhi 49:272; Tirmidhi 49:180",
   },
   {
     name: "Abdullah",
@@ -799,7 +799,7 @@ const children: FamilyMember[] = [
     relation: "Son (from Mariyah al-Qibtiyyah)",
     detail:
       "Born in Medina in 8 AH. He was entrusted to a wet-nurse named Umm Sayf in the outskirts of Medina. He passed away at around 17 or 18 months old. The Prophet ﷺ held him as he took his last breaths, with tears streaming down his face, and said: 'The eyes shed tears, the heart grieves, but we say only what pleases our Lord. O Ibrahim, we are grieved by your departure.' A solar eclipse occurred on the day of his death, and some people attributed it to Ibrahim's passing. The Prophet ﷺ corrected them: 'The sun and the moon are two signs of Allah. They are not eclipsed for the death or birth of anyone.'",
-    reference: "Bukhari 23:1303; Bukhari 16:1043; Muslim 10:2122",
+    reference: "Bukhari 23:61; Bukhari 16:4; Muslim 10:31",
   },
 ];
 
@@ -810,7 +810,7 @@ const companions: FamilyMember[] = [
     relation: "First Caliph",
     detail:
       "The closest companion and first free man to accept Islam. He accompanied the Prophet ﷺ during the Hijrah. The Prophet ﷺ said: 'If I were to take a khalil (intimate friend) other than my Lord, I would have taken Abu Bakr.' He spent his entire wealth for Islam.",
-    reference: "Bukhari 62:3656; Quran 9:40",
+    reference: "Bukhari 62:8; Quran 9:40",
   },
   {
     name: "Umar ibn al-Khattab",
@@ -818,7 +818,7 @@ const companions: FamilyMember[] = [
     relation: "Second Caliph",
     detail:
       "Known as 'Al-Faruq' (the one who distinguishes truth from falsehood). His conversion to Islam was a turning point — the Prophet ﷺ had prayed for it. He was unmatched in justice and administration.",
-    reference: "Tirmidhi 49:3681; Ibn Majah 0:105",
+    reference: "Tirmidhi 49:77; Ibn Majah 0:105",
   },
   {
     name: "Uthman ibn Affan",
@@ -826,7 +826,7 @@ const companions: FamilyMember[] = [
     relation: "Third Caliph",
     detail:
       "Known as 'Dhun-Nurayn.' He was extremely wealthy and spent generously for Islam. He equipped the entire army for Tabuk, bought the well of Rumah for the Muslims, and oversaw the compilation of the Quran into a single standardized manuscript.",
-    reference: "Bukhari 55:2778; Tirmidhi 49:3699",
+    reference: "Bukhari 55:41; Tirmidhi 49:95",
   },
   {
     name: "Ali ibn Abi Talib",
@@ -834,7 +834,7 @@ const companions: FamilyMember[] = [
     relation: "Fourth Caliph",
     detail:
       "The Prophet's ﷺ cousin and son-in-law, the first youth to accept Islam. He slept in the Prophet's ﷺ bed during the Hijrah as a decoy while the Quraysh plotted assassination. Known for his bravery, knowledge, and eloquence. The Prophet ﷺ said to him: 'You are to me as Harun was to Musa, except that there is no prophet after me.' He was the hero of Khaybar and one of the greatest scholars of the Quran and Islamic jurisprudence.",
-    reference: "Muslim 44:6217; Tirmidhi 49:3730; Quran 2:207",
+    reference: "Muslim 44:47; Tirmidhi 49:127; Quran 2:207",
   },
   {
     name: "Bilal ibn Rabah",
@@ -842,7 +842,7 @@ const companions: FamilyMember[] = [
     relation: "First Muezzin",
     detail:
       "An Abyssinian slave who was tortured for accepting Islam — his master would place a boulder on his chest in the scorching heat. Abu Bakr purchased and freed him. He became the first muezzin (caller to prayer) in Islam.",
-    reference: "Bukhari 62:3755; Seerah of Ibn Hisham",
+    reference: "Bukhari 62:100; Seerah of Ibn Hisham",
   },
   {
     name: "Khadijah bint Khuwaylid",
@@ -850,7 +850,7 @@ const companions: FamilyMember[] = [
     relation: "First person to accept Islam",
     detail:
       "His first wife and the first person in history to accept Islam. She supported him emotionally, financially, and spiritually. Jibreel sent her salam (greetings) from Allah, and the Prophet ﷺ said she is one of the best women of all time.",
-    reference: "Bukhari 63:3820; Bukhari 60:3432",
+    reference: "Bukhari 63:45; Bukhari 60:103",
   },
   {
     name: "Hamzah ibn Abdul Muttalib",
@@ -858,7 +858,7 @@ const companions: FamilyMember[] = [
     relation: "Lion of Allah",
     detail:
       "The Prophet's ﷺ uncle, known as Asadullah (Lion of Allah) and Sayyid ash-Shuhada (Master of the Martyrs). He was one of the bravest warriors in Islam. He was martyred at the Battle of Uhud. The Prophet ﷺ wept deeply over his death.",
-    reference: "Bukhari 23:1274; Hakim Mustadrak 3:199",
+    reference: "Bukhari 23:35; Hakim Mustadrak 3:199",
   },
   {
     name: "Khalid ibn al-Walid",
@@ -866,7 +866,7 @@ const companions: FamilyMember[] = [
     relation: "Sword of Allah",
     detail:
       "Initially fought against the Muslims at Uhud, then embraced Islam and became the greatest military commander in Islamic history. The Prophet ﷺ gave him the title 'Sayfullah' (Sword of Allah). He never lost a single battle in his career.",
-    reference: "Bukhari 62:3757; Bukhari 64:4262",
+    reference: "Bukhari 62:103; Bukhari 64:296",
   },
   {
     name: "Abu Hurayrah",
@@ -874,7 +874,7 @@ const companions: FamilyMember[] = [
     relation: "Greatest narrator of hadith",
     detail:
       "He accepted Islam in 7 AH and devoted himself entirely to learning from the Prophet ﷺ, rarely leaving his side. Despite being a companion for only about four years, he narrated over 5,300 hadiths — more than any other companion — due to his extraordinary memory and constant attendance. He was poor and lived in the Suffah (the covered area of the Prophet's ﷺ Mosque) with other destitute companions, prioritizing knowledge over worldly earnings.",
-    reference: "Bukhari 3:118; Bukhari 34:2047",
+    reference: "Bukhari 3:60; Bukhari 34:1",
   },
   {
     name: "Salman al-Farisi",
@@ -882,7 +882,7 @@ const companions: FamilyMember[] = [
     relation: "The Persian seeker of truth",
     detail:
       "Born a Zoroastrian in Persia, he traveled across the lands seeking true religion — moving from master to master, from Christianity to finally Islam in Medina. His journey of seeking truth is one of the most remarkable in Islamic history. He suggested digging the trench at the Battle of Al-Khandaq — a strategy unknown to the Arabs that saved Medina. The Prophet ﷺ helped him gain his freedom by planting date palms and paying his ransom.",
-    reference: "Ahmad 5:441; Seerah of Ibn Hisham",
+    reference: "Seerah of Ibn Hisham",
   },
   {
     name: "Mus'ab ibn Umayr",
@@ -890,7 +890,7 @@ const companions: FamilyMember[] = [
     relation: "First ambassador of Islam",
     detail:
       "A wealthy young man of Quraysh who gave up his luxurious life for Islam. The Prophet ﷺ sent him to Medina as the first ambassador to teach Islam. His efforts led to the conversion of most of Medina before the Hijrah. He was martyred at Uhud, and was so poor by then that his burial shroud could not cover his entire body.",
-    reference: "Bukhari 64:4047; Bukhari 23:1275",
+    reference: "Bukhari 64:93; Bukhari 23:36",
   },
   {
     name: "Abdur-Rahman ibn Awf",
@@ -898,7 +898,7 @@ const companions: FamilyMember[] = [
     relation: "One of the ten promised Paradise",
     detail:
       "One of the earliest converts and among the ten companions promised Paradise (Ashara Mubashara). He was an immensely successful merchant who donated vast amounts of wealth for Islam. When he migrated to Medina with nothing, an Ansari companion offered to share his wealth and one of his wives, but Abdur-Rahman declined and asked only to be shown the marketplace — where he quickly rebuilt his fortune through honest trade and donated generously.",
-    reference: "Bukhari 34:2048; Bukhari 63:3780",
+    reference: "Bukhari 34:2; Bukhari 63:5",
   },
   {
     name: "Sa'd ibn Abi Waqqas",
@@ -906,7 +906,7 @@ const companions: FamilyMember[] = [
     relation: "One of the ten promised Paradise",
     detail:
       "One of the earliest converts to Islam at the age of 17. He was the first person to shoot an arrow in the path of Allah. The Prophet ﷺ said: 'Shoot, Sa'd! May my father and mother be sacrificed for you!' — a phrase he never used for anyone else. He later conquered Persia.",
-    reference: "Bukhari 64:4055; Bukhari 78:6184; Muslim 44:6237",
+    reference: "Bukhari 64:101; Bukhari 78:208; Muslim 44:67",
   },
   {
     name: "Talha ibn Ubaydullah",
@@ -914,7 +914,7 @@ const companions: FamilyMember[] = [
     relation: "The living martyr",
     detail:
       "One of the ten promised Paradise. At the Battle of Uhud, he used his own body as a human shield to protect the Prophet ﷺ, receiving over 70 wounds. The Prophet ﷺ said: 'Whoever wants to see a walking martyr, let him look at Talha.'",
-    reference: "Bukhari 62:3724; Tirmidhi 49:3738; Bukhari 64:4063",
+    reference: "Bukhari 62:71; Tirmidhi 49:135; Bukhari 64:108",
   },
   {
     name: "Zubayr ibn al-Awwam",
@@ -922,7 +922,7 @@ const companions: FamilyMember[] = [
     relation: "Disciple of the Prophet ﷺ",
     detail:
       "The Prophet's ﷺ cousin and one of the ten promised Paradise. He was the first to draw a sword for Islam. The Prophet ﷺ called him his 'hawari' (disciple), the same title given to the disciples of Isa (Jesus, peace be upon him).",
-    reference: "Bukhari 56:2846; Bukhari 56:2997",
+    reference: "Bukhari 56:62; Bukhari 56:206",
   },
   {
     name: "Abu Dharr al-Ghifari",
@@ -930,14 +930,15 @@ const companions: FamilyMember[] = [
     relation: "The truthful ascetic",
     detail:
       "Known for his extreme honesty and asceticism. The Prophet ﷺ said: 'The earth has not carried nor has the sky covered a man more truthful than Abu Dharr.' He lived simply, spoke truth to power, and is remembered as a model of Islamic integrity.",
-    reference: "Tirmidhi 49:3801; Ibn Majah 0:156",
+    reference: "Tirmidhi 49:201; Ibn Majah 0:156",
   },
   {
     name: "Abdullah ibn Mas'ud",
     nameAr: "عبد الله بن مسعود",
     relation: "Scholar of the Quran",
     detail:
-      "One of the earliest converts and among the greatest scholars of the Quran. The Prophet ﷺ said: 'Whoever wants to recite the Quran as fresh as it was revealed, let him recite it in the manner of Ibn Mas'ud.' He was the first person to publicly recite Quran in Mecca.",
+      "One of the earliest converts and among the greatest scholars of the Quran. The Prophet ﷺ said: 'Learn the recitation of the Quran from four persons: from Ibn Mas'ud, Salim, the ally of Abu Hudhaifa, Ubayy ibn Ka'b, and Mu'adh ibn Jabal.' He was the first person to publicly recite Quran in Mecca.",
+    reference: "Muslim 44:168",
   },
 ];
 
@@ -1449,7 +1450,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={i}
                     onClick={() => setActiveTimeline(i)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeTimeline === i
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1520,7 +1521,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={i}
                     onClick={() => setActiveVirtue(i)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeVirtue === i
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1582,7 +1583,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={n.name}
                     onClick={() => setActiveName(i)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeName === i
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1644,7 +1645,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveAppearance(tab.id)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeAppearance === tab.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1705,7 +1706,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={tab.id}
                     onClick={() => setFamilyTab(tab.id)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       familyTab === tab.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1842,7 +1843,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={i}
                     onClick={() => setActiveProphecy(i)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeProphecy === i
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1912,7 +1913,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={i}
                     onClick={() => setActiveWorship(i)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       activeWorship === i
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1968,7 +1969,7 @@ function ProphetMuhammadContent() {
                   <button
                     key={cat.category}
                     onClick={() => setSunnahTab(cat.category)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                       sunnahTab === cat.category
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"

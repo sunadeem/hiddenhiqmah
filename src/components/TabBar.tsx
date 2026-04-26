@@ -17,6 +17,8 @@ interface TabBarProps {
   onTabChange: (key: string) => void;
   /** Number of tabs before switching to dropdown on mobile. Default 6. */
   mobileThreshold?: number;
+  /** Allow pills to wrap into multiple rows instead of scrolling. */
+  wrap?: boolean;
   className?: string;
 }
 
@@ -25,6 +27,7 @@ export default function TabBar({
   activeTab,
   onTabChange,
   mobileThreshold = 6,
+  wrap = false,
   className = "",
 }: TabBarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -122,9 +125,9 @@ export default function TabBar({
 
       {/* Desktop pills (always shown) / Mobile pills (only when few tabs) */}
       <div
-        className={`flex gap-2 overflow-x-auto scrollbar-hide ${
-          useDropdown ? "hidden md:flex" : "flex"
-        }`}
+        className={`flex gap-2 ${
+          wrap ? "flex-wrap" : "overflow-x-auto scrollbar-hide"
+        } ${useDropdown ? "hidden md:flex" : "flex"}`}
       >
         {tabs.map(renderButton)}
       </div>

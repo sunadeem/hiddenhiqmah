@@ -8,8 +8,8 @@ import PageSearch from "@/components/PageSearch";
 import ContentCard from "@/components/ContentCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { textMatch } from "@/lib/search";
-import { BookOpen } from "lucide-react";
 import HadithRefText from "@/components/HadithRefText";
+import SourcesCard from "@/components/SourcesCard";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -572,7 +572,7 @@ function RamadanContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -632,27 +632,12 @@ function RamadanContent() {
               </div>
             </ContentCard>
 
-            {/* Sources */}
-            <ContentCard delay={0.3}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 2:183-187 — The verses prescribing fasting and its rules",
-                  "Quran 2:185 — The month of Ramadan and the revelation of the Quran",
-                  "Quran 97:1-5 — Surah Al-Qadr: the Night of Decree",
-                  "Bukhari 1:6 — The Prophet's generosity in Ramadan",
-                  "Bukhari 8:20 — Jibreel reviewing the Quran with the Prophet every Ramadan",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard sources={[
+              { ref: "Quran 2:183-187", desc: "The verses prescribing fasting and its rules" },
+              { ref: "Quran 2:185", desc: "The month of Ramadan and the revelation of the Quran" },
+              { ref: "Quran 97:1-5", desc: "Surah Al-Qadr: the Night of Decree" },
+              { ref: "Bukhari 1:6", desc: "The Prophet's generosity in Ramadan; Jibreel reviewing the Quran with him every night" },
+            ]} />
           </motion.div>
         )}
 
@@ -708,29 +693,15 @@ function RamadanContent() {
               </div>
             </ContentCard>
 
-            {/* Sources */}
-            <ContentCard delay={0.4}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Bukhari 30:8; Muslim 13:211 — Gates of Paradise opened, Hellfire closed, devils chained",
-                  "Bukhari 30:4; Muslim 13:212 — Fasting as a shield; hadith qudsi on fasting's reward",
-                  "Bukhari 2:31; Muslim 6:209 — Previous sins forgiven for fasting and praying in Ramadan",
-                  "Bukhari 32:4 — Seeking Laylatul Qadr in the last ten nights",
-                  "Bukhari 1:6 — Jibreel reviewing the Quran with the Prophet",
-                  "Quran 2:183-185 — The obligation of fasting and its virtues",
-                  "Quran 97:1-5 — Laylatul Qadr is better than a thousand months",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Bukhari 30:8; Muslim 13:211", desc: "Gates of Paradise opened, Hellfire closed, devils chained" },
+              { ref: "Bukhari 30:4; Muslim 13:212", desc: "Fasting as a shield; hadith qudsi on fasting's reward" },
+              { ref: "Bukhari 2:31; Muslim 6:209", desc: "Previous sins forgiven for fasting and praying in Ramadan" },
+              { ref: "Bukhari 32:4", desc: "Seeking Laylatul Qadr in the last ten nights" },
+              { ref: "Bukhari 1:6", desc: "Jibreel reviewing the Quran with the Prophet" },
+              { ref: "Quran 2:183-185", desc: "The obligation of fasting and its virtues" },
+              { ref: "Quran 97:1-5", desc: "Laylatul Qadr is better than a thousand months" },
+            ]} />
           </motion.div>
         )}
 
@@ -750,7 +721,7 @@ function RamadanContent() {
                     <button
                       key={topic.id}
                       onClick={() => setActiveFasting(topic.id)}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeFasting === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -783,33 +754,19 @@ function RamadanContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 2:183-187 — The obligation of fasting, its timing, and exemptions",
-                  "Bukhari 30:4; Muslim 13:211 — Fasting as a shield; conduct while fasting",
-                  "Bukhari 30:32; Muslim 13:55 — Blessing of suhoor",
-                  "Bukhari 30:40; Muslim 13:222 — Eating out of forgetfulness does not break the fast",
-                  "Bukhari 30:44; Muslim 13:101 — Kaffarah for intentionally breaking the fast",
-                  "Bukhari 6:9; Muslim 3:85 — Women making up missed fasts",
-                  "Bukhari 30:64 — Hastening to break the fast",
-                  "Bukhari 65:32 — Ibn Abbas on fidyah for the elderly",
-                  "Abu Dawud 14:68; Tirmidhi 8:39 — Ruling on deliberate vomiting",
-                  "Nasai 22:242; Abu Dawud 14:142 — Intention for fasting",
-                  "Fiqh us-Sunnah by Sayyid Sabiq — General fasting rulings and scholarly differences",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 2:183-187", desc: "The obligation of fasting, its timing, and exemptions" },
+              { ref: "Bukhari 30:4; Muslim 13:211", desc: "Fasting as a shield; conduct while fasting" },
+              { ref: "Bukhari 30:32; Muslim 13:55", desc: "Blessing of suhoor" },
+              { ref: "Bukhari 30:40; Muslim 13:222", desc: "Eating out of forgetfulness does not break the fast" },
+              { ref: "Bukhari 30:44; Muslim 13:101", desc: "Kaffarah for intentionally breaking the fast" },
+              { ref: "Bukhari 6:9; Muslim 3:85", desc: "Women making up missed fasts" },
+              { ref: "Bukhari 30:64", desc: "Hastening to break the fast" },
+              { ref: "Bukhari 65:32", desc: "Ibn Abbas on fidyah for the elderly" },
+              { ref: "Abu Dawud 14:68; Tirmidhi 8:39", desc: "Ruling on deliberate vomiting" },
+              { ref: "Nasai 22:242; Abu Dawud 14:142", desc: "Intention for fasting" },
+              { ref: "Fiqh us-Sunnah", desc: "General fasting rulings and scholarly differences (Sayyid Sabiq)" },
+            ]} />
           </motion.div>
         )}
 
@@ -829,7 +786,7 @@ function RamadanContent() {
                     <button
                       key={topic.id}
                       onClick={() => setActiveLastTen(topic.id)}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeLastTen === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -862,32 +819,18 @@ function RamadanContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 97:1-5 — Surah Al-Qadr: Laylatul Qadr is better than a thousand months",
-                  "Quran 2:185 — Basis for the takbirat of Eid",
-                  "Bukhari 2:28; Muslim 6:209 — Sins forgiven for standing in prayer on Laylatul Qadr",
-                  "Bukhari 32:4; Muslim 13:272 — Seek Laylatul Qadr in the odd nights of the last ten",
-                  "Bukhari 33:1; Muslim 14:3 — The Prophet's i'tikaf in the last ten days",
-                  "Bukhari 24:103, 24:106; Muslim 12:16, 12:17 — Zakat al-Fitr obligation and amount",
-                  "Bukhari 13:5, 13:8 — Sunnahs of the Eid prayer",
-                  "Bukhari 30:98; Muslim 13:178 — Prohibition of fasting on the day of Eid",
-                  "Tirmidhi 48:144; Ibn Majah 34:24 — The du'a for Laylatul Qadr",
-                  "Abu Dawud 9:54; Ibn Majah 8:45 — Purpose and timing of Zakat al-Fitr",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 97:1-5", desc: "Surah Al-Qadr: Laylatul Qadr is better than a thousand months" },
+              { ref: "Quran 2:185", desc: "Basis for the takbirat of Eid" },
+              { ref: "Bukhari 2:28; Muslim 6:209", desc: "Sins forgiven for standing in prayer on Laylatul Qadr" },
+              { ref: "Bukhari 32:4; Muslim 13:272", desc: "Seek Laylatul Qadr in the odd nights of the last ten" },
+              { ref: "Bukhari 33:1; Muslim 14:3", desc: "The Prophet's i'tikaf in the last ten days" },
+              { ref: "Bukhari 24:103, 24:106; Muslim 12:16, 12:17", desc: "Zakat al-Fitr obligation and amount" },
+              { ref: "Bukhari 13:5, 13:8", desc: "Sunnahs of the Eid prayer" },
+              { ref: "Bukhari 30:98; Muslim 13:178", desc: "Prohibition of fasting on the day of Eid" },
+              { ref: "Tirmidhi 48:144; Ibn Majah 34:24", desc: "The du'a for Laylatul Qadr" },
+              { ref: "Abu Dawud 9:54; Ibn Majah 8:45", desc: "Purpose and timing of Zakat al-Fitr" },
+            ]} />
           </motion.div>
         )}
       </AnimatePresence>

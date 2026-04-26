@@ -483,7 +483,7 @@ function MiraclesContent() {
             <button
               key={cat.key}
               onClick={() => setActiveCategory(cat.key)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 isActive
                   ? "bg-[var(--color-gold)] text-[#1a1a2e] shadow-lg shadow-[var(--color-gold)]/20"
                   : "card-bg border sidebar-border text-themed-muted hover:text-themed hover:border-[var(--color-gold)]/30"

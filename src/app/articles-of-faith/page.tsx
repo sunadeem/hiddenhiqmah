@@ -8,6 +8,7 @@ import PageSearch from "@/components/PageSearch";
 import { textMatch } from "@/lib/search";
 import HadithRefText from "@/components/HadithRefText";
 import ContentCard from "@/components/ContentCard";
+import SourcesCard, { type SourceRef } from "@/components/SourcesCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import {
   BookOpen,
@@ -68,6 +69,13 @@ type Article = {
   misconceptions: { title: string; clarification: string }[];
   sources: string[];
 };
+
+function parseSources(sources: string[]): SourceRef[] {
+  return sources.map((s) => {
+    const idx = s.indexOf(" — ");
+    return idx === -1 ? { ref: s, desc: "" } : { ref: s.slice(0, idx), desc: s.slice(idx + 3) };
+  });
+}
 
 const articles: Article[] = [
   {
@@ -620,7 +628,7 @@ function ArticlesOfFaithContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -732,25 +740,12 @@ function ArticlesOfFaithContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.35}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Muslim 1:1 — The Hadith of Jibril, defining Islam, Iman, and Ihsan",
-                  "Sharh Usul al-Iman, Ibn Uthaymeen — Comprehensive explanation of the six articles",
-                  "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — On the creed of Ahl as-Sunnah",
-                  "Sharh al-Aqidah at-Tahawiyyah, Ibn Abi al-Izz — Classical commentary on creed",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.35} sources={[
+              { ref: "Muslim 1:1", desc: "The Hadith of Jibril, defining Islam, Iman, and Ihsan" },
+              { ref: "Sharh Usul al-Iman, Ibn Uthaymeen", desc: "Comprehensive explanation of the six articles" },
+              { ref: "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah", desc: "On the creed of Ahl as-Sunnah" },
+              { ref: "Sharh al-Aqidah at-Tahawiyyah, Ibn Abi al-Izz", desc: "Classical commentary on creed" },
+            ]} />
           </motion.div>
         )}
 
@@ -810,25 +805,12 @@ function ArticlesOfFaithContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.4}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Muslim 1:1 — The Hadith of Jibril",
-                  "Muslim 55:82 — On the affair of the believer being entirely good",
-                  "Sharh Usul al-Iman, Ibn Uthaymeen — On the importance and implications of Iman",
-                  "Tafsir Ibn Kathir — Commentary on Quran 2:285, 4:136, 67:2",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Muslim 1:1", desc: "The Hadith of Jibril" },
+              { ref: "Muslim 55:82", desc: "On the affair of the believer being entirely good" },
+              { ref: "Sharh Usul al-Iman, Ibn Uthaymeen", desc: "On the importance and implications of Iman" },
+              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 2:285, 4:136, 67:2" },
+            ]} />
           </motion.div>
         )}
 
@@ -847,7 +829,7 @@ function ArticlesOfFaithContent() {
                 <button
                   key={article.id}
                   onClick={() => setActiveArticle(article.id)}
-                  className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                     activeArticle === article.id
                       ? "bg-gold/20 text-gold border border-gold/40"
                       : "text-themed-muted hover:text-themed border sidebar-border"
@@ -881,20 +863,7 @@ function ArticlesOfFaithContent() {
                       {/* Sources */}
                       {article.sources.length > 0 && (
                         <div className="mt-4">
-                          <ContentCard delay={0.15}>
-                            <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                              <BookOpen size={14} className="text-gold" />
-                              Sources &amp; References
-                            </h4>
-                            <ul className="space-y-1.5">
-                              {article.sources.map((source) => (
-                                <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                                  <span className="text-gold/40 mt-0.5">&#8226;</span>
-                                  <HadithRefText text={source} />
-                                </li>
-                              ))}
-                            </ul>
-                          </ContentCard>
+                          <SourcesCard delay={0.15} sources={parseSources(article.sources)} />
                         </div>
                       )}
                     </motion.div>

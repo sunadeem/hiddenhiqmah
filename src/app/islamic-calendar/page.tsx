@@ -8,8 +8,9 @@ import PageHeader from "@/components/PageHeader";
 import PageSearch from "@/components/PageSearch";
 import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
-import { BookOpen, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import HadithRefText from "@/components/HadithRefText";
+import SourcesCard from "@/components/SourcesCard";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -503,7 +504,7 @@ function IslamicCalendarContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -563,28 +564,12 @@ function IslamicCalendarContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.3}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 9:36 — Twelve months ordained by Allah, four sacred",
-                  "Quran 2:185, 2:189 — Ramadan and the crescent moons",
-                  "Bukhari 65:184; Muslim 13:261 — The four sacred months named by the Prophet",
-                  "Bukhari 63:131 — The Hijrah and the establishment of the calendar",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard sources={[
+              { ref: "Quran 9:36", desc: "Twelve months ordained by Allah, four sacred" },
+              { ref: "Quran 2:185, 2:189", desc: "Ramadan and the crescent moons" },
+              { ref: "Bukhari 65:184; Muslim 13:261", desc: "The four sacred months named by the Prophet" },
+              { ref: "Bukhari 63:131", desc: "The Hijrah and the establishment of the calendar" },
+            ]} />
           </motion.div>
         )}
 
@@ -837,29 +822,13 @@ function IslamicCalendarContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.5}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 2:217 — Fighting in the sacred month is a great sin",
-                  "Quran 9:36 — Four sacred months ordained by Allah",
-                  "Bukhari 65:184; Muslim 13:261 — The Prophet named the four sacred months",
-                  "Abu Dawud 14:116 — Fasting in the sacred months",
-                  "Tafsir Ibn Kathir — Sins are graver during sacred months",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.5} sources={[
+              { ref: "Quran 2:217", desc: "Fighting in the sacred month is a great sin" },
+              { ref: "Quran 9:36", desc: "Four sacred months ordained by Allah" },
+              { ref: "Bukhari 65:184; Muslim 13:261", desc: "The Prophet named the four sacred months" },
+              { ref: "Abu Dawud 14:116", desc: "Fasting in the sacred months" },
+              { ref: "Tafsir Ibn Kathir", desc: "Sins are graver during sacred months" },
+            ]} />
           </motion.div>
         )}
 
@@ -905,29 +874,13 @@ function IslamicCalendarContent() {
             </div>
 
             {/* Sources */}
-            <ContentCard delay={0.4}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 2:183, 2:185 — Fasting prescribed in Ramadan",
-                  "Quran 97:1-5 — Laylatul Qadr better than a thousand months",
-                  "Bukhari 13:5, 13:18, 32:1 — Eid, best ten days, Laylatul Qadr",
-                  "Muslim 13:173, 13:253, 13:264, 13:183 — Ashura, Arafah, six days of Shawwal, Tashriq",
-                  "Abu Dawud 11:45 — The Day of Sacrifice is the greatest day",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Quran 2:183, 2:185", desc: "Fasting prescribed in Ramadan" },
+              { ref: "Quran 97:1-5", desc: "Laylatul Qadr better than a thousand months" },
+              { ref: "Bukhari 13:5, 13:18, 32:1", desc: "Eid, best ten days, Laylatul Qadr" },
+              { ref: "Muslim 13:173, 13:253, 13:264, 13:183", desc: "Ashura, Arafah, six days of Shawwal, Tashriq" },
+              { ref: "Abu Dawud 11:45", desc: "The Day of Sacrifice is the greatest day" },
+            ]} />
           </motion.div>
         )}
         {/* ─── Date Converter ─── */}

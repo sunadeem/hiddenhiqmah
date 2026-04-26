@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
+import ContentCard from "@/components/ContentCard";
 import chapters from "@/data/quran/chapters.json";
 import namesOfAllah from "@/data/names-of-allah";
 import {
@@ -1296,6 +1297,16 @@ export default function QuizPage() {
         titleAr="اختبارات وتحديات"
         subtitle="Test your knowledge of Islam"
       />
+
+      <ContentCard className="mb-6">
+        <div className="text-center py-4">
+          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
+            مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ
+          </p>
+          <p className="text-themed-muted italic">&ldquo;Whoever takes a path in search of knowledge, Allah will make easy for him a path to Paradise.&rdquo;</p>
+          <p className="text-xs text-themed-muted mt-1">Muslim 48:48</p>
+        </div>
+      </ContentCard>
 
       <div className="max-w-5xl mx-auto px-4">
 

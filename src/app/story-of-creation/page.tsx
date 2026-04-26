@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
-import { BookOpen } from "lucide-react";
+import SourcesCard from "@/components/SourcesCard";
 import HadithRefText from "@/components/HadithRefText";
 
 /* ───────────────────────── types ───────────────────────── */
@@ -1013,159 +1013,159 @@ const jannahJahannamTopics: Topic[] = [
 
 /* ───────────────────────── Tab → Data mapping ───────────────────────── */
 
-const tabDataMap: Record<TabKey, { topics: Topic[]; sources: string[] }> = {
+const tabDataMap: Record<TabKey, { topics: Topic[]; sources: { ref: string; desc: string }[] }> = {
   "before-creation": {
     topics: beforeCreationTopics,
     sources: [
-      "Quran 22:70 — Allah knows what is in the heaven and the earth",
-      "Quran 35:15 — You are those in need of Allah",
-      "Quran 36:82 — His command is only 'Be' and it is",
-      "Quran 57:3 — He is the First and the Last",
-      "Quran 59:24 — He is the Creator, the Originator, the Fashioner",
-      "Tirmidhi 48:31 — You are the First, there was nothing before You",
+      { ref: "Quran 22:70", desc: "Allah knows what is in the heaven and the earth" },
+      { ref: "Quran 35:15", desc: "You are those in need of Allah" },
+      { ref: "Quran 36:82", desc: "His command is only 'Be' and it is" },
+      { ref: "Quran 57:3", desc: "He is the First and the Last" },
+      { ref: "Quran 59:24", desc: "He is the Creator, the Originator, the Fashioner" },
+      { ref: "Tirmidhi 48:31", desc: "You are the First, there was nothing before You" },
     ],
   },
   "pen-tablet": {
     topics: penTabletTopics,
     sources: [
-      "Quran 6:38 — We have not neglected in the Register a thing",
-      "Quran 68:1 — Nun. By the Pen and what they inscribe",
-      "Quran 85:21-22 — A glorious Quran in a Preserved Tablet",
-      "Tirmidhi 32:23 — The first thing Allah created was the Pen",
-      "Muslim 46:27 — Allah wrote the decrees 50,000 years before creation",
-      "Tirmidhi 32:23 — Write the decree of everything until the Hour",
-      "Tirmidhi 37:102 — The pens have been lifted and the pages have dried",
+      { ref: "Quran 6:38", desc: "We have not neglected in the Register a thing" },
+      { ref: "Quran 68:1", desc: "Nun. By the Pen and what they inscribe" },
+      { ref: "Quran 85:21-22", desc: "A glorious Quran in a Preserved Tablet" },
+      { ref: "Tirmidhi 32:23", desc: "The first thing Allah created was the Pen" },
+      { ref: "Muslim 46:27", desc: "Allah wrote the decrees 50,000 years before creation" },
+      { ref: "Tirmidhi 32:23", desc: "Write the decree of everything until the Hour" },
+      { ref: "Tirmidhi 37:102", desc: "The pens have been lifted and the pages have dried" },
     ],
   },
   "throne-water": {
     topics: throneWaterTopics,
     sources: [
-      "Quran 2:255 — Ayat al-Kursi",
-      "Quran 7:54 — He rose over the Throne",
-      "Quran 11:7 — His Throne was upon the water",
-      "Quran 21:30 — We made from water every living thing",
-      "Quran 40:7 — Those who carry the Throne glorify Allah",
-      "Bukhari 59:2 — Allah existed and nothing else existed before Him",
-      "Abu Dawud 42:132 — The immensity of the Throne-bearing angels",
+      { ref: "Quran 2:255", desc: "Ayat al-Kursi" },
+      { ref: "Quran 7:54", desc: "He rose over the Throne" },
+      { ref: "Quran 11:7", desc: "His Throne was upon the water" },
+      { ref: "Quran 21:30", desc: "We made from water every living thing" },
+      { ref: "Quran 40:7", desc: "Those who carry the Throne glorify Allah" },
+      { ref: "Bukhari 59:2", desc: "Allah existed and nothing else existed before Him" },
+      { ref: "Abu Dawud 42:132", desc: "The immensity of the Throne-bearing angels" },
     ],
   },
   "heavens-earth": {
     topics: heavensEarthTopics,
     sources: [
-      "Quran 7:54 — Created the heavens and the earth in six days",
-      "Quran 37:6-10 — Stars as missiles against eavesdropping devils",
-      "Quran 41:9-12 — Detailed breakdown of the six days of creation",
-      "Quran 50:38 — No weariness touched Us",
-      "Quran 67:5 — Adorned the nearest heaven with lamps",
-      "Quran 71:15-16 — Seven heavens in layers",
-      "Bukhari 59:10; Muslim 1:309 — The Prophet's journey through the heavens",
+      { ref: "Quran 7:54", desc: "Created the heavens and the earth in six days" },
+      { ref: "Quran 37:6-10", desc: "Stars as missiles against eavesdropping devils" },
+      { ref: "Quran 41:9-12", desc: "Detailed breakdown of the six days of creation" },
+      { ref: "Quran 50:38", desc: "No weariness touched Us" },
+      { ref: "Quran 67:5", desc: "Adorned the nearest heaven with lamps" },
+      { ref: "Quran 71:15-16", desc: "Seven heavens in layers" },
+      { ref: "Bukhari 59:10; Muslim 1:309", desc: "The Prophet's journey through the heavens" },
     ],
   },
   angels: {
     topics: angelsTopics,
     sources: [
-      "Quran 2:97-98 — Jibril and Mika'il",
-      "Quran 32:11 — The Angel of Death",
-      "Quran 35:1 — Angels with wings, two or three or four",
-      "Quran 50:17-18 — The two recording angels",
-      "Quran 66:6 — They do not disobey Allah",
-      "Muslim 55:78 — Angels were created from light",
-      "Bukhari 59:10, 59:17 — Angels in the heavens; Jibril's six hundred wings",
-      "Ibn Majah 37:91 — The heavens are creaking with angels",
+      { ref: "Quran 2:97-98", desc: "Jibril and Mika'il" },
+      { ref: "Quran 32:11", desc: "The Angel of Death" },
+      { ref: "Quran 35:1", desc: "Angels with wings, two or three or four" },
+      { ref: "Quran 50:17-18", desc: "The two recording angels" },
+      { ref: "Quran 66:6", desc: "They do not disobey Allah" },
+      { ref: "Muslim 55:78", desc: "Angels were created from light" },
+      { ref: "Bukhari 59:10, 59:17", desc: "Angels in the heavens; Jibril's six hundred wings" },
+      { ref: "Ibn Majah 37:91", desc: "The heavens are creaking with angels" },
     ],
   },
   jinn: {
     topics: jinnTopics,
     sources: [
-      "Quran 7:12-17 — Iblis's arrogance and vow",
-      "Quran 14:22 — Satan will disown his followers",
-      "Quran 15:27-42 — Creation of jinn; Iblis's refusal and expulsion",
-      "Quran 18:50 — Iblis was of the jinn",
-      "Quran 51:56 — Created jinn and mankind to worship",
-      "Quran 55:15 — Created from a smokeless flame of fire",
-      "Quran 72:11-14 — Among the jinn are Muslims and deviators",
+      { ref: "Quran 7:12-17", desc: "Iblis's arrogance and vow" },
+      { ref: "Quran 14:22", desc: "Satan will disown his followers" },
+      { ref: "Quran 15:27-42", desc: "Creation of jinn; Iblis's refusal and expulsion" },
+      { ref: "Quran 18:50", desc: "Iblis was of the jinn" },
+      { ref: "Quran 51:56", desc: "Created jinn and mankind to worship" },
+      { ref: "Quran 55:15", desc: "Created from a smokeless flame of fire" },
+      { ref: "Quran 72:11-14", desc: "Among the jinn are Muslims and deviators" },
     ],
   },
   "adam-hawa": {
     topics: adamHawaTopics,
     sources: [
-      "Quran 2:30-38 — Adam as khalifah; the fall and descent",
-      "Quran 4:1 — Created you from one soul and its mate",
-      "Quran 7:19-25 — The tree, the fall, and the repentance",
-      "Quran 15:28-31 — Created from clay; the angels prostrated",
-      "Quran 38:71-76 — Created with Allah's hands",
-      "Quran 95:4 — Created man in the best of forms",
-      "Bukhari 79:1 — Adam was created sixty cubits tall",
+      { ref: "Quran 2:30-38", desc: "Adam as khalifah; the fall and descent" },
+      { ref: "Quran 4:1", desc: "Created you from one soul and its mate" },
+      { ref: "Quran 7:19-25", desc: "The tree, the fall, and the repentance" },
+      { ref: "Quran 15:28-31", desc: "Created from clay; the angels prostrated" },
+      { ref: "Quran 38:71-76", desc: "Created with Allah's hands" },
+      { ref: "Quran 95:4", desc: "Created man in the best of forms" },
+      { ref: "Bukhari 79:1", desc: "Adam was created sixty cubits tall" },
     ],
   },
   "life-on-earth": {
     topics: lifeOnEarthTopics,
     sources: [
-      "Quran 2:286 — No soul is burdened beyond its capacity",
-      "Quran 16:36 — A messenger sent to every nation",
-      "Quran 29:2-3 — Do people think they will not be tested?",
-      "Quran 33:40 — Muhammad is the seal of the prophets",
-      "Quran 51:56 — Created to worship",
-      "Quran 67:2 — Created death and life to test you",
-      "Quran 99:7-8 — An atom's weight of good or evil",
-      "Bukhari 75:1 — No fatigue or harm befalls a Muslim except...",
-      "Muslim 53:55 — This world compared to the Hereafter",
+      { ref: "Quran 2:286", desc: "No soul is burdened beyond its capacity" },
+      { ref: "Quran 16:36", desc: "A messenger sent to every nation" },
+      { ref: "Quran 29:2-3", desc: "Do people think they will not be tested?" },
+      { ref: "Quran 33:40", desc: "Muhammad is the seal of the prophets" },
+      { ref: "Quran 51:56", desc: "Created to worship" },
+      { ref: "Quran 67:2", desc: "Created death and life to test you" },
+      { ref: "Quran 99:7-8", desc: "An atom's weight of good or evil" },
+      { ref: "Bukhari 75:1", desc: "No fatigue or harm befalls a Muslim except..." },
+      { ref: "Muslim 53:55", desc: "This world compared to the Hereafter" },
     ],
   },
   "death-grave": {
     topics: deathGraveTopics,
     sources: [
-      "Quran 23:100 — Behind them is a Barzakh",
-      "Quran 29:57 — Every soul will taste death",
-      "Quran 32:11 — The angel of death will take your souls",
-      "Quran 40:46 — Pharaoh's people exposed to Fire morning and evening",
-      "Bukhari 23:93 — The questioning in the grave",
-      "Muslim 10:9 — Seeking refuge from the punishment of the grave",
-      "Tirmidhi 36:4-5 — Remember death often; the grave is the first stage",
-      "Tirmidhi 45:17 — Surah al-Mulk intercedes",
+      { ref: "Quran 23:100", desc: "Behind them is a Barzakh" },
+      { ref: "Quran 29:57", desc: "Every soul will taste death" },
+      { ref: "Quran 32:11", desc: "The angel of death will take your souls" },
+      { ref: "Quran 40:46", desc: "Pharaoh's people exposed to Fire morning and evening" },
+      { ref: "Bukhari 23:93", desc: "The questioning in the grave" },
+      { ref: "Muslim 10:9", desc: "Seeking refuge from the punishment of the grave" },
+      { ref: "Tirmidhi 36:4-5", desc: "Remember death often; the grave is the first stage" },
+      { ref: "Tirmidhi 45:17", desc: "Surah al-Mulk intercedes" },
     ],
   },
   "end-times": {
     topics: endTimesTopics,
     sources: [
-      "Quran 18:94-98 — Ya'juj and Ma'juj",
-      "Quran 39:68 — The two blowings of the Trumpet",
-      "Bukhari 3:22 — Knowledge taken away, ignorance spreads",
-      "Bukhari 60:118 — The descent of Isa",
-      "Bukhari 65:234 — The sun rises from the west",
-      "Bukhari 81:92 — I and the Hour have been sent like these two",
-      "Muslim 1:1 — Hadith of Jibril: signs of the Hour",
-      "Muslim 54:134 — The Dajjal; the descent of Isa",
+      { ref: "Quran 18:94-98", desc: "Ya'juj and Ma'juj" },
+      { ref: "Quran 39:68", desc: "The two blowings of the Trumpet" },
+      { ref: "Bukhari 3:22", desc: "Knowledge taken away, ignorance spreads" },
+      { ref: "Bukhari 60:118", desc: "The descent of Isa" },
+      { ref: "Bukhari 65:234", desc: "The sun rises from the west" },
+      { ref: "Bukhari 81:92", desc: "I and the Hour have been sent like these two" },
+      { ref: "Muslim 1:1", desc: "Hadith of Jibril: signs of the Hour" },
+      { ref: "Muslim 54:134", desc: "The Dajjal; the descent of Isa" },
     ],
   },
   "day-of-judgement": {
     topics: dayOfJudgementTopics,
     sources: [
-      "Quran 17:14 — Read your record",
-      "Quran 21:47 — The scales of justice",
-      "Quran 69:19-29 — The record in the right or left hand",
-      "Quran 70:4 — A day the measure of fifty thousand years",
-      "Quran 83:6 — The Day mankind stands before the Lord",
-      "Bukhari 60:103 — Resurrected barefoot, naked, uncircumcised",
-      "Bukhari 65:349 — The great intercession",
-      "Muslim 1:378, 1:382 — Intercession; the Sirat",
-      "Tirmidhi 40:22 — The card of La ilaha illallah",
+      { ref: "Quran 17:14", desc: "Read your record" },
+      { ref: "Quran 21:47", desc: "The scales of justice" },
+      { ref: "Quran 69:19-29", desc: "The record in the right or left hand" },
+      { ref: "Quran 70:4", desc: "A day the measure of fifty thousand years" },
+      { ref: "Quran 83:6", desc: "The Day mankind stands before the Lord" },
+      { ref: "Bukhari 60:103", desc: "Resurrected barefoot, naked, uncircumcised" },
+      { ref: "Bukhari 65:349", desc: "The great intercession" },
+      { ref: "Muslim 1:378, 1:382", desc: "Intercession; the Sirat" },
+      { ref: "Tirmidhi 40:22", desc: "The card of La ilaha illallah" },
     ],
   },
   "jannah-jahannam": {
     topics: jannahJahannamTopics,
     sources: [
-      "Quran 3:185 — Whoever is admitted to Paradise has truly succeeded",
-      "Quran 4:145 — The hypocrites in the lowest depths of the Fire",
-      "Quran 36:81 — Is He not able to create the likes of them?",
-      "Quran 43:77 — O Malik, let your Lord put an end to us",
-      "Quran 47:15 — Rivers of water, milk, wine, and honey",
-      "Quran 75:22-23 — Faces that Day will be radiant, looking at their Lord",
-      "Bukhari 2:30 — Whoever has a mustard seed of faith",
-      "Bukhari 56:20 — Paradise has one hundred levels",
-      "Bukhari 65:373; Muslim 53:50 — Death will be slaughtered",
-      "Muslim 1:88 — The greatest reward: seeing Allah",
-      "Muslim 53:36 — The depth and heat of the Hellfire",
+      { ref: "Quran 3:185", desc: "Whoever is admitted to Paradise has truly succeeded" },
+      { ref: "Quran 4:145", desc: "The hypocrites in the lowest depths of the Fire" },
+      { ref: "Quran 36:81", desc: "Is He not able to create the likes of them?" },
+      { ref: "Quran 43:77", desc: "O Malik, let your Lord put an end to us" },
+      { ref: "Quran 47:15", desc: "Rivers of water, milk, wine, and honey" },
+      { ref: "Quran 75:22-23", desc: "Faces that Day will be radiant, looking at their Lord" },
+      { ref: "Bukhari 2:30", desc: "Whoever has a mustard seed of faith" },
+      { ref: "Bukhari 56:20", desc: "Paradise has one hundred levels" },
+      { ref: "Bukhari 65:373; Muslim 53:50", desc: "Death will be slaughtered" },
+      { ref: "Muslim 1:88", desc: "The greatest reward: seeing Allah" },
+      { ref: "Muslim 53:36", desc: "The depth and heat of the Hellfire" },
     ],
   },
 };
@@ -1333,7 +1333,7 @@ function StoryOfCreationContent() {
                   <button
                     key={topic.id}
                     onClick={() => setActiveTopic(topic.id)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium md:whitespace-normal whitespace-nowrap transition-all text-left ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium md:whitespace-normal whitespace-nowrap transition-all text-left ${
                       activeTopic === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1370,23 +1370,7 @@ function StoryOfCreationContent() {
           )}
 
           {/* Sources */}
-          <ContentCard delay={0.3} className="mt-8">
-            <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-              <BookOpen size={14} className="text-gold" />
-              Sources &amp; References
-            </h4>
-            <ul className="space-y-1.5">
-              {currentData.sources.map((source) => (
-                <li
-                  key={source}
-                  className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                >
-                  <span className="text-gold/40 mt-0.5">&#8226;</span>
-                  <HadithRefText text={source} />
-                </li>
-              ))}
-            </ul>
-          </ContentCard>
+          <SourcesCard sources={currentData.sources} className="mt-8" />
 
         </motion.div>
       </AnimatePresence>

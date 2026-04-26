@@ -165,7 +165,7 @@ function MorningTab() {
               <p className="text-themed-muted text-sm mt-3 leading-relaxed">
                 Wipe face and eyes, use miswak / brush teeth, make wudu.
               </p>
-              <Ref text="Bukhari 80:6312" />
+              <Ref text="Bukhari 80:9" />
             </div>
             <BookmarkButton
               type="hadith"
@@ -189,7 +189,7 @@ function MorningTab() {
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 <span className="text-gold font-medium">Sunnah:</span> 2 rak&apos;ahs before the fard prayer.
               </p>
-              <Ref text="Muslim 6:1688" />
+              <Ref text="Muslim 6:118" />
               <Link
                 href="/salah"
                 className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2"
@@ -221,7 +221,7 @@ function MorningTab() {
           </AdhkarItem>
           <AdhkarItem
             english="Recite Surah Al-Ikhlas, Al-Falaq, and An-Nas three times each — &quot;Recite them three times in the morning and evening and they will suffice you against everything.&quot;"
-            reference="Abu Dawud 43:5082"
+            reference="Abu Dawud 43:310"
             delay={0}
           >
             <div className="flex gap-3 flex-wrap mt-2">
@@ -234,7 +234,7 @@ function MorningTab() {
             arabic="سبحان الله (٣٣) · الحمد لله (٣٣) · الله أكبر (٣٣) · لا إله إلا الله..."
             transliteration="SubhanAllah 33x, Alhamdulillah 33x, Allahu Akbar 33x, then say: La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa ala kulli shay'in qadir"
             english="Whoever says this after every prayer — his sins will be forgiven even if they are like the foam of the sea."
-            reference="Muslim 5:597"
+            reference="Muslim 5:188"
             delay={0}
           >
             <Link href="/dhikr" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Open Dhikr counter →</Link>
@@ -243,7 +243,7 @@ function MorningTab() {
             arabic="سبحان الله وبحمده"
             transliteration="SubhanAllahi wa bihamdihi — 100 times"
             english="His sins will be forgiven even if they are like the foam of the sea."
-            reference="Bukhari 80:6405"
+            reference="Bukhari 80:100"
             delay={0}
           >
             <Link href="/dhikr" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Open Dhikr counter →</Link>
@@ -252,14 +252,14 @@ function MorningTab() {
             arabic="لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير"
             transliteration="La ilaha illallah, wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa ala kulli shay'in qadir — 10 times"
             english="He will have the reward of freeing four slaves from the children of Isma'il."
-            reference="Bukhari 80:6403"
+            reference="Bukhari 80:98"
             delay={0}
           />
           <AdhkarItem
             arabic="اللّهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور"
             transliteration="Allahumma bika asbahna wa bika amsayna, wa bika nahya wa bika namutu, wa ilaykan-nushur"
             english="O Allah, by You we enter the morning, by You we enter the evening, by You we live, by You we die, and to You is the resurrection."
-            reference="Tirmidhi 48:3391"
+            reference="Tirmidhi 48:22"
             delay={0}
           />
         </div>
@@ -308,7 +308,7 @@ function MorningTab() {
                 charity, every Alhamdulillah is charity... and two rak&apos;ahs of Duha suffice for all
                 of that.&quot;
               </p>
-              <Ref text="Muslim 6:1671" />
+              <Ref text="Muslim 6:101" />
             </div>
             <BookmarkButton
               type="hadith"
@@ -341,7 +341,7 @@ function AfternoonTab() {
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 <span className="text-gold font-medium">Sunnah:</span> 4 rak&apos;ahs before Dhuhr, 2 after.
               </p>
-              <Ref text="Tirmidhi 2:428" />
+              <Ref text="Tirmidhi 2:281" />
               <Link href="/salah" className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2">View Salah guide →</Link>
             </div>
             <BookmarkButton type="hadith" id="daily-dhuhr-asr" title="Dhuhr & Asr Prayers" subtitle="Muslim Daily" href="/muslim-daily?tab=worship&sub=afternoon" />
@@ -356,7 +356,7 @@ function AfternoonTab() {
               <p className="text-themed-muted text-sm leading-relaxed">
                 &quot;The best of dhikr is La ilaha illallah.&quot;
               </p>
-              <Ref text="Tirmidhi 48:3383" />
+              <Ref text="Tirmidhi 48:14" />
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 Short dhikr sessions between prayers — even a few minutes.
               </p>
@@ -382,7 +382,7 @@ function AfternoonTab() {
               <p className="text-themed-muted text-sm leading-relaxed">
                 O Allah, I ask You for beneficial knowledge, good provision, and accepted deeds.
               </p>
-              <Ref text="Ibn Majah 5:925" />
+              <Ref text="Ibn Majah 5:123" />
               <Link href="/duas" className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Browse Duas →</Link>
             </div>
             <BookmarkButton type="hadith" id="daily-dua-knowledge" title="Dua for Knowledge & Work" subtitle="Muslim Daily" href="/muslim-daily?tab=worship&sub=afternoon" />
@@ -407,11 +407,11 @@ function AfternoonTab() {
               <p className="text-themed-muted text-sm leading-relaxed">
                 &quot;Every act of kindness is charity.&quot; Even a smile, removing harm from the path, or a kind word.
               </p>
-              <Ref text="Bukhari 78:6021" />
+              <Ref text="Bukhari 78:52" />
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 &quot;Charity does not decrease wealth.&quot;
               </p>
-              <Ref text="Muslim 45:6592" />
+              <Ref text="Muslim 45:90" />
             </div>
             <BookmarkButton type="hadith" id="daily-charity" title="Good Deeds & Charity" subtitle="Muslim Daily" href="/muslim-daily?tab=worship&sub=afternoon" />
           </div>
@@ -433,7 +433,7 @@ function AfternoonTab() {
                 </li>
                 <li>
                   <span className="text-gold font-medium">Salawat:</span> Increase salawat on the Prophet &#xFDFA; — &quot;The best of your days is Friday, so increase your salawat upon me on that day.&quot;
-                  <Ref text="Abu Dawud 8:1531" />
+                  <Ref text="Abu Dawud 8:116" />
                 </li>
               </ul>
             </div>
@@ -462,7 +462,7 @@ function EveningTab() {
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 <span className="text-gold font-medium">Sunnah:</span> 2 rak&apos;ahs after Maghrib.
               </p>
-              <Ref text="Bukhari 9:574" />
+              <Ref text="Bukhari 9:50" />
               <Link href="/salah" className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2">View Salah guide →</Link>
             </div>
             <BookmarkButton type="hadith" id="daily-maghrib" title="Maghrib Prayer" subtitle="Muslim Daily" href="/muslim-daily?tab=worship&sub=evening" />
@@ -482,7 +482,7 @@ function EveningTab() {
           </AdhkarItem>
           <AdhkarItem
             english="Recite Surah Al-Ikhlas, Al-Falaq, and An-Nas three times each — &quot;Recite them three times in the morning and evening and they will suffice you against everything.&quot;"
-            reference="Abu Dawud 43:5082"
+            reference="Abu Dawud 43:310"
             delay={0}
           >
             <div className="flex gap-3 flex-wrap mt-2">
@@ -495,21 +495,21 @@ function EveningTab() {
             arabic="اللّهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير"
             transliteration="Allahumma bika amsayna wa bika asbahna, wa bika nahya wa bika namutu, wa ilaykal-masir"
             english="O Allah, by You we enter the evening, by You we enter the morning, by You we live, by You we die, and to You is the return."
-            reference="Tirmidhi 48:3391"
+            reference="Tirmidhi 48:22"
             delay={0}
           />
           <AdhkarItem
             arabic="اللّهم إنّي أسألك العافية في الدنيا والآخرة"
             transliteration="Allahumma inni as'alukal-afiyah fid-dunya wal-akhirah"
             english="O Allah, I ask You for well-being in this world and the Hereafter."
-            reference="Abu Dawud 43:5074"
+            reference="Abu Dawud 43:302"
             delay={0}
           />
           <AdhkarItem
             arabic="اللّهم أنت ربّي لا إله إلا أنت خلقتني وأنا عبدك..."
             transliteration="Sayyid al-Istighfar: Allahumma Anta Rabbi, la ilaha illa Anta, khalaqtani wa ana abduka..."
             english="Whoever says it in the evening and dies that night enters Paradise."
-            reference="Bukhari 80:6306"
+            reference="Bukhari 80:3"
             delay={0}
           />
         </div>
@@ -525,7 +525,7 @@ function EveningTab() {
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 <span className="text-gold font-medium">Sunnah:</span> 2 rak&apos;ahs after Isha, then Witr (1 or 3 rak&apos;ahs).
               </p>
-              <Ref text="Bukhari 14:998" />
+              <Ref text="Bukhari 14:9" />
               <Link href="/salah" className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2">View Salah guide →</Link>
             </div>
             <BookmarkButton type="hadith" id="daily-isha-witr" title="Isha & Witr" subtitle="Muslim Daily" href="/muslim-daily?tab=worship&sub=evening" />
@@ -540,7 +540,7 @@ function EveningTab() {
               <p className="text-themed-muted text-sm leading-relaxed">
                 The Prophet &#xFDFA; would help with household chores — when asked what he did at home, Aisha said: &quot;He would be in the service of his family.&quot;
               </p>
-              <Ref text="Bukhari 78:6039" />
+              <Ref text="Bukhari 78:69" />
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 Teach children, play with them, check on family members.
               </p>
@@ -578,8 +578,8 @@ function SleepTab() {
                   <span className="text-gold">•</span> Place right hand under right cheek
                 </li>
               </ul>
-              <Ref text="Bukhari 80:6311" />
-              <Ref text="Muslim 48:6882" />
+              <Ref text="Bukhari 80:8" />
+              <Ref text="Muslim 48:75" />
             </div>
             <BookmarkButton type="hadith" id="daily-sleep-sunnahs" title="Sleep Sunnahs" subtitle="Muslim Daily" href="/muslim-daily?tab=worship&sub=sleep" />
           </div>
@@ -590,7 +590,7 @@ function SleepTab() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <AdhkarItem
             english="Blow into palms and recite Al-Ikhlas, Al-Falaq, An-Nas, then wipe over body — do this 3 times."
-            reference="Bukhari 66:5017"
+            reference="Bukhari 66:39"
             delay={0}
           >
             <div className="flex gap-3 flex-wrap mt-2">
@@ -602,7 +602,7 @@ function SleepTab() {
           <AdhkarItem
             transliteration="Ayat al-Kursi"
             english="If you recite it when going to bed, a guardian from Allah will protect you, and no devil will come near you until morning."
-            reference="Bukhari 40:2311"
+            reference="Bukhari 40:11"
             note="Hadith of Abu Hurayrah with the shaytan"
             delay={0}
           >
@@ -611,7 +611,7 @@ function SleepTab() {
           <AdhkarItem
             transliteration="Last 2 verses of Surah Al-Baqarah (2:285-286)"
             english="Whoever recites them at night, they will suffice him."
-            reference="Bukhari 66:5009"
+            reference="Bukhari 66:31"
             delay={0}
           >
             <Link href="/quran/2" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Read Surah Al-Baqarah →</Link>
@@ -620,14 +620,14 @@ function SleepTab() {
             arabic="بسمك اللّهم أموت وأحيا"
             transliteration="Bismika Allahumma amutu wa ahya"
             english="In Your name, O Allah, I die and I live."
-            reference="Bukhari 80:6312"
+            reference="Bukhari 80:9"
             delay={0}
           />
           <AdhkarItem
             arabic="اللّهم قني عذابك يوم تبعث عبادك"
             transliteration="Allahumma qini adhabaka yawma tab'athu ibadak"
             english="O Allah, protect me from Your punishment on the Day You resurrect Your servants."
-            reference="Abu Dawud 43:5045"
+            reference="Abu Dawud 43:273"
             delay={0}
           />
         </div>
@@ -660,7 +660,7 @@ function SleepTab() {
                 أستغفر الله وأتوب إليه
               </p>
               <p className="text-themed font-medium text-sm italic">Astaghfirullah wa atubu ilayh</p>
-              <Ref text="Bukhari 80:6307" />
+              <Ref text="Bukhari 80:4" />
               <Link href="/dhikr" className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Open Dhikr counter →</Link>
             </div>
             <BookmarkButton type="hadith" id="daily-istighfar-sleep" title="Istighfar Before Sleep" subtitle="Muslim Daily" href="/muslim-daily?tab=worship&sub=sleep" />
@@ -890,7 +890,7 @@ function MidnightTab() {
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 <span className="text-gold font-medium">How to pray:</span> Pray in sets of 2 rak&apos;ahs. The Prophet &#xFDFA; would typically pray 8 rak&apos;ahs + 3 Witr.
               </p>
-              <Ref text="Muslim 13:1163" />
+              <Ref text="Muslim 6:147" />
               <Link
                 href="/salah"
                 className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2"
@@ -915,7 +915,7 @@ function MidnightTab() {
           <p className="text-themed-muted text-sm leading-relaxed">
             &quot;Our Lord descends every night to the lowest heaven in the last third of the night and says: &apos;Who is calling upon Me that I may answer him? Who is asking of Me that I may give him? Who is seeking My forgiveness that I may forgive him?&apos;&quot;
           </p>
-          <Ref text="Bukhari 19:1145" />
+          <Ref text="Bukhari 19:26" />
         </ContentCard>
       </TimelineStep>
 
@@ -926,7 +926,7 @@ function MidnightTab() {
             arabic="اللّهم لك الحمد أنت نور السماوات والأرض ومن فيهن"
             transliteration="Allahumma lakal-hamd, Anta nurus-samawati wal-ard wa man fihinn"
             english="O Allah, to You belongs all praise. You are the Light of the heavens and the earth and all within them."
-            reference="Bukhari 19:1120"
+            reference="Bukhari 19:1"
             delay={0}
           />
           <ContentCard delay={0}>
@@ -950,7 +950,7 @@ function MidnightTab() {
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 <span className="text-gold font-medium">How:</span> Minimum 1 rak&apos;ah, best is 3. Include Qunut dua in the last rak&apos;ah.
               </p>
-              <Ref text="Bukhari 14:998" />
+              <Ref text="Bukhari 14:9" />
               <div className="flex gap-3 flex-wrap mt-3">
                 <Link href="/salah" className="text-xs text-gold hover:text-gold/80 underline underline-offset-2">View Salah guide →</Link>
                 <Link href="/duas" className="text-xs text-gold hover:text-gold/80 underline underline-offset-2">Browse Duas →</Link>
@@ -976,7 +976,7 @@ function MidnightTab() {
           <p className="text-themed-muted text-sm mt-2 leading-relaxed">
             Even if fasting is not obligatory that day, the Prophet &#xFDFA; encouraged eating before Fajr when fasting voluntarily.
           </p>
-          <Ref text="Bukhari 30:1923" />
+          <Ref text="Bukhari 30:32" />
         </ContentCard>
       </TimelineStep>
     </div>
@@ -999,38 +999,38 @@ function SunnahTab() {
               Say <span className="text-gold font-medium">&quot;Bismillah&quot;</span> before
               eating; if you forget, say &quot;Bismillahi fi awwalihi wa akhirih.&quot;
             </p>
-            <Ref text="Abu Dawud 28:3767" />
+            <Ref text="Abu Dawud 28:32" />
           </ContentCard>
           <ContentCard delay={0.08}>
             <p className="text-themed-muted text-sm leading-relaxed">
               Eat with the right hand.
             </p>
-            <Ref text="Muslim 36:5265" />
+            <Ref text="Muslim 36:139" />
           </ContentCard>
           <ContentCard delay={0.11}>
             <p className="text-themed-muted text-sm leading-relaxed">
               Eat from what is nearest to you.
             </p>
-            <Ref text="Bukhari 70:5376" />
+            <Ref text="Bukhari 70:4" />
           </ContentCard>
           <ContentCard delay={0.14}>
             <p className="text-themed-muted text-sm leading-relaxed">
               Do not blow on food or drink.
             </p>
-            <Ref text="Abu Dawud 27:3722" />
+            <Ref text="Abu Dawud 27:54" />
           </ContentCard>
           <ContentCard delay={0.17}>
             <p className="text-themed-muted text-sm leading-relaxed">
               Sit while drinking.
             </p>
-            <Ref text="Muslim 36:5274" />
+            <Ref text="Muslim 36:148" />
           </ContentCard>
           <ContentCard delay={0.2}>
             <p className="text-themed-muted text-sm leading-relaxed">
               Say <span className="text-gold font-medium">&quot;Alhamdulillah&quot;</span> after
               finishing.
             </p>
-            <Ref text="Muslim 48:6932" />
+            <Ref text="Muslim 48:123" />
           </ContentCard>
         </div>
       </div>
@@ -1044,7 +1044,7 @@ function SunnahTab() {
               Initiate the Salam — &quot;The one who is riding should greet the one walking, the one
               walking should greet the one sitting.&quot;
             </p>
-            <Ref text="Bukhari 79:6231" />
+            <Ref text="Bukhari 79:5" />
           </ContentCard>
           <ContentCard delay={0.08}>
             <p className="text-themed-muted text-sm leading-relaxed">
@@ -1072,7 +1072,7 @@ function SunnahTab() {
             <p className="text-themed-muted text-sm leading-relaxed">
               Enter with right foot, leave with left foot (for the mosque).
             </p>
-            <Ref text="Bukhari 4:168" />
+            <Ref text="Bukhari 4:34" />
           </ContentCard>
           <ContentCard delay={0.08}>
             <p className="text-themed-muted text-sm leading-relaxed">
@@ -1082,7 +1082,7 @@ function SunnahTab() {
                 walajna wa Bismillahi kharajna, wa alallahi Rabbina tawakkalna.&quot;
               </span>
             </p>
-            <Ref text="Abu Dawud 43:5096" />
+            <Ref text="Abu Dawud 43:324" />
           </ContentCard>
           <ContentCard delay={0.11}>
             <p className="text-themed-muted text-sm leading-relaxed">
@@ -1092,14 +1092,14 @@ function SunnahTab() {
               </span>{" "}
               (O Allah, open for me the doors of Your mercy).
             </p>
-            <Ref text="Muslim 6:1652" />
+            <Ref text="Muslim 6:82" />
           </ContentCard>
           <ContentCard delay={0.14}>
             <p className="text-themed-muted text-sm leading-relaxed">
               Say Bismillah when entering and the shaytan says to his companions &quot;You have no
               lodging tonight.&quot;
             </p>
-            <Ref text="Muslim 36:5262" />
+            <Ref text="Muslim 36:136" />
           </ContentCard>
         </div>
       </div>
@@ -1112,7 +1112,7 @@ function SunnahTab() {
             <p className="text-themed-muted text-sm leading-relaxed">
               Start with the right side when dressing.
             </p>
-            <Ref text="Bukhari 70:5380" />
+            <Ref text="Bukhari 70:8" />
           </ContentCard>
           <ContentCard delay={0.08}>
             <p className="text-themed-muted text-sm leading-relaxed">
@@ -1120,13 +1120,13 @@ function SunnahTab() {
               difficulty on my ummah, I would have ordered them to use the miswak before every
               prayer.&quot;
             </p>
-            <Ref text="Bukhari 11:887" />
+            <Ref text="Bukhari 11:12" />
           </ContentCard>
           <ContentCard delay={0.11}>
             <p className="text-themed-muted text-sm leading-relaxed">
               Keep nails trimmed, maintain cleanliness.
             </p>
-            <Ref text="Muslim 2:597" />
+            <Ref text="Muslim 2:64" />
           </ContentCard>
         </div>
       </div>
@@ -1140,7 +1140,7 @@ function SunnahTab() {
               &quot;Whoever believes in Allah and the Last Day, let him speak good or remain
               silent.&quot;
             </p>
-            <Ref text="Bukhari 78:6018" />
+            <Ref text="Bukhari 78:49" />
           </ContentCard>
           <ContentCard delay={0.08}>
             <p className="text-themed-muted text-sm leading-relaxed">
@@ -1154,7 +1154,7 @@ function SunnahTab() {
               Be truthful — &quot;Truthfulness leads to righteousness, and righteousness leads to
               Paradise.&quot;
             </p>
-            <Ref text="Bukhari 78:6094" />
+            <Ref text="Bukhari 78:121" />
           </ContentCard>
         </div>
       </div>
@@ -1167,19 +1167,19 @@ function SunnahTab() {
             <p className="text-themed-muted text-sm leading-relaxed">
               Sleep on the right side.
             </p>
-            <Ref text="Bukhari 80:6311" />
+            <Ref text="Bukhari 80:8" />
           </ContentCard>
           <ContentCard delay={0.08}>
             <p className="text-themed-muted text-sm leading-relaxed">
               Make wudu before bed.
             </p>
-            <Ref text="Bukhari 4:247" />
+            <Ref text="Bukhari 4:113" />
           </ContentCard>
           <ContentCard delay={0.11}>
             <p className="text-themed-muted text-sm leading-relaxed">
               Last words before sleep should be dhikr of Allah.
             </p>
-            <Ref text="Bukhari 80:6311" />
+            <Ref text="Bukhari 80:8" />
           </ContentCard>
         </div>
       </div>
@@ -1200,7 +1200,7 @@ function WorshipContent({ activeSub, setActiveSub }: { activeSub: WorshipSub; se
           <button
             key={sub.key}
             onClick={() => setActiveSub(sub.key)}
-            className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
               activeSub === sub.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"

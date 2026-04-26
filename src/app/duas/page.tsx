@@ -741,6 +741,7 @@ function DuasContent() {
         }))}
         activeTab={activeCategory}
         onTabChange={setActiveCategory}
+        wrap
         className="mb-6"
       />
 

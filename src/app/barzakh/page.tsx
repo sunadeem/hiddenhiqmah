@@ -8,8 +8,8 @@ import PageSearch from "@/components/PageSearch";
 import ContentCard from "@/components/ContentCard";
 import { textMatch } from "@/lib/search";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
-import { BookOpen } from "lucide-react";
 import HadithRefText from "@/components/HadithRefText";
+import SourcesCard from "@/components/SourcesCard";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -454,7 +454,7 @@ function TheGraveContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -554,29 +554,13 @@ function TheGraveContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.3}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 2:3 — Those who believe in the unseen",
-                  "Quran 23:100 — Behind them is a Barzakh until the Day they are resurrected",
-                  "Quran 40:46 — Pharaoh's people exposed to Fire morning and evening",
-                  "Tirmidhi 36:5 — The grave is the first stage of the Hereafter",
-                  "Muslim 10:9 — Seeking refuge from the punishment of the grave in prayer",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard sources={[
+              { ref: "Quran 2:3", desc: "Those who believe in the unseen" },
+              { ref: "Quran 23:100", desc: "Behind them is a Barzakh until the Day they are resurrected" },
+              { ref: "Quran 40:46", desc: "Pharaoh's people exposed to Fire morning and evening" },
+              { ref: "Tirmidhi 36:5", desc: "The grave is the first stage of the Hereafter" },
+              { ref: "Muslim 10:9", desc: "Seeking refuge from the punishment of the grave in prayer" },
+            ]} />
           </motion.div>
         )}
 
@@ -630,33 +614,17 @@ function TheGraveContent() {
             ))}
 
             {/* Sources */}
-            <ContentCard delay={0.4}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 3:185 — Every soul will taste death",
-                  "Quran 23:100 — Behind them is a Barzakh",
-                  "Quran 40:46 — Pharaoh's people exposed to the Fire morning and evening",
-                  "Muslim 10:9 — Seeking refuge from the punishment of the grave",
-                  "Tirmidhi 36:4 — Remember often the destroyer of pleasures",
-                  "Tirmidhi 36:5; Ibn Majah 37:168 — The grave is the first stage of the Hereafter",
-                  "Abu Dawud 42:158 — The believer's grave is expanded; the disbeliever's is constricted",
-                  "Bukhari 23:131 — The deceased is shown their place morning and evening",
-                  "Nasai 21:7 — Remember death often",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Quran 3:185", desc: "Every soul will taste death" },
+              { ref: "Quran 23:100", desc: "Behind them is a Barzakh" },
+              { ref: "Quran 40:46", desc: "Pharaoh's people exposed to the Fire morning and evening" },
+              { ref: "Muslim 10:9", desc: "Seeking refuge from the punishment of the grave" },
+              { ref: "Tirmidhi 36:4", desc: "Remember often the destroyer of pleasures" },
+              { ref: "Tirmidhi 36:5; Ibn Majah 37:168", desc: "The grave is the first stage of the Hereafter" },
+              { ref: "Abu Dawud 42:158", desc: "The believer's grave is expanded; the disbeliever's is constricted" },
+              { ref: "Bukhari 23:131", desc: "The deceased is shown their place morning and evening" },
+              { ref: "Nasai 21:7", desc: "Remember death often" },
+            ]} />
           </motion.div>
         )}
 
@@ -676,7 +644,7 @@ function TheGraveContent() {
                     <button
                       key={topic.id}
                       onClick={() => setActiveWhatHappens(topic.id)}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeWhatHappens === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -710,33 +678,17 @@ function TheGraveContent() {
             </div>
 
             {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 14:27 — Allah keeps firm those who believe with the firm word",
-                  "Quran 32:11 — The angel of death will take your souls",
-                  "Quran 40:46 — Pharaoh's people exposed to Fire morning and evening",
-                  "Bukhari 23:72; Muslim 4:106 — Hasten the funeral",
-                  "Bukhari 23:93; Muslim 53:85 — The questioning in the grave; hearing footsteps",
-                  "Bukhari 23:114; Muslim 1:198a — Punishment for not avoiding urine and gossip",
-                  "Mishkat al-Masabih 1630 (from Musnad Ahmad) — Full hadith of al-Bara' ibn 'Azib on the soul's journey",
-                  "Nasai 21:238 — Sa'd ibn Mu'adh and the squeezing of the grave",
-                  "Tirmidhi 10:107 — The righteous sleeps like a bride",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 14:27", desc: "Allah keeps firm those who believe with the firm word" },
+              { ref: "Quran 32:11", desc: "The angel of death will take your souls" },
+              { ref: "Quran 40:46", desc: "Pharaoh's people exposed to Fire morning and evening" },
+              { ref: "Bukhari 23:72; Muslim 4:106", desc: "Hasten the funeral" },
+              { ref: "Bukhari 23:93; Muslim 53:85", desc: "The questioning in the grave; hearing footsteps" },
+              { ref: "Bukhari 23:114; Muslim 1:198a", desc: "Punishment for not avoiding urine and gossip" },
+              { ref: "Mishkat al-Masabih 1630 (from Musnad Ahmad)", desc: "Full hadith of al-Bara' ibn 'Azib on the soul's journey" },
+              { ref: "Nasai 21:238", desc: "Sa'd ibn Mu'adh and the squeezing of the grave" },
+              { ref: "Tirmidhi 10:107", desc: "The righteous sleeps like a bride" },
+            ]} />
           </motion.div>
         )}
 
@@ -756,7 +708,7 @@ function TheGraveContent() {
                     <button
                       key={topic.id}
                       onClick={() => setActiveProtection(topic.id)}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeProtection === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -790,34 +742,18 @@ function TheGraveContent() {
             </div>
 
             {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Bukhari 23:129; Muslim 10:9, 2:56 — Seeking refuge from the punishment of the grave in prayer",
-                  "Abu Dawud 21:28 — Dying with La ilaha illallah on one's lips",
-                  "Abu Dawud 21:133 — Supplication after burial for firmness",
-                  "Tirmidhi 10:18; Nasai 21:11 — Sweat on the forehead at death",
-                  "Tirmidhi 10:100 — Dying from a stomach ailment",
-                  "Tirmidhi 10:110 — Dying on Friday (graded Hasan)",
-                  "Tirmidhi 22:46; Ibn Majah 24:47 — The shaheed is protected",
-                  "Tirmidhi 22:48 — Guarding the frontier (ribat)",
-                  "Tirmidhi 32:10 — Allah guides to a righteous deed before death (graded Sahih)",
-                  "Tirmidhi 45:17; Abu Dawud 6:30 — Surah al-Mulk intercedes",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Bukhari 23:129; Muslim 10:9, 2:56", desc: "Seeking refuge from the punishment of the grave in prayer" },
+              { ref: "Abu Dawud 21:28", desc: "Dying with La ilaha illallah on one's lips" },
+              { ref: "Abu Dawud 21:133", desc: "Supplication after burial for firmness" },
+              { ref: "Tirmidhi 10:18; Nasai 21:11", desc: "Sweat on the forehead at death" },
+              { ref: "Tirmidhi 10:100", desc: "Dying from a stomach ailment" },
+              { ref: "Tirmidhi 10:110", desc: "Dying on Friday (graded Hasan)" },
+              { ref: "Tirmidhi 22:46; Ibn Majah 24:47", desc: "The shaheed is protected" },
+              { ref: "Tirmidhi 22:48", desc: "Guarding the frontier (ribat)" },
+              { ref: "Tirmidhi 32:10", desc: "Allah guides to a righteous deed before death (graded Sahih)" },
+              { ref: "Tirmidhi 45:17; Abu Dawud 6:30", desc: "Surah al-Mulk intercedes" },
+            ]} />
           </motion.div>
         )}
       </AnimatePresence>

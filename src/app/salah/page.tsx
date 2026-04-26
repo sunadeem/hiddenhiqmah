@@ -10,8 +10,8 @@ import { textMatch } from "@/lib/search";
 import ContentCard from "@/components/ContentCard";
 import HadithRefText from "@/components/HadithRefText";
 import PrayerFigure, { type Position } from "@/components/PrayerFigure";
+import SourcesCard from "@/components/SourcesCard";
 import {
-  BookOpen,
   AlertTriangle,
   Clock,
   ChevronLeft,
@@ -327,7 +327,7 @@ const prayerTypes = [
       "Voluntary prayers the Prophet (peace be upon him) prayed sometimes but not consistently. They carry reward but there is no blame for leaving them. These include extra prayers before Asr or Isha, and additional rak'at beyond the rawatib.",
     examples: "4 before Asr, 2 before Maghrib, 2 before Isha, additional rak'at of Duha",
     ruling: "Recommended — rewarded for praying, no blame for leaving",
-    ref: "Tirmidhi 2:282; Abu Dawud 5:179",
+    ref: "Tirmidhi 2:282; Abu Dawud 5:2",
   },
   {
     id: "witr",
@@ -506,7 +506,7 @@ const whyItMatters = [
     point: "It is a direct connection to Allah",
     detail:
       "When you recite Al-Fatihah, Allah responds to every verse. The Prophet (peace be upon him) said: 'Allah the Exalted says: I have divided the prayer between Myself and My servant into two halves, and My servant shall have what he asks for.'",
-    reference: "Muslim 4:40",
+    reference: "Muslim 4:41",
   },
   {
     point: "It prevents immorality and wrongdoing",
@@ -1158,26 +1158,13 @@ function PrayerGuide({
 
       {/* Sources */}
       <div className="mt-4">
-        <ContentCard delay={0.15}>
-          <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-            <BookOpen size={14} className="text-gold" />
-            Sources &amp; References
-          </h4>
-          <ul className="space-y-1.5">
-            {[
-              "Sifat Salat an-Nabi, al-Albani — Comprehensive description of the Prophet's prayer",
-              "Bukhari 10:150 — On the obligation of Al-Fatihah in every rak'ah",
-              "Muslim 4:40 — Allah's response to each verse of Al-Fatihah",
-              "Muslim 4:245 — The closest a servant is to Allah is in sujud",
-              "Bukhari 21:6 — Tashahhud and Salawat narrated by Ibn Mas'ud",
-            ].map((source) => (
-              <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                <span className="text-gold/40 mt-0.5">&#8226;</span>
-                {source}
-              </li>
-            ))}
-          </ul>
-        </ContentCard>
+        <SourcesCard delay={0.15} sources={[
+          { ref: "Sifat Salat an-Nabi, al-Albani", desc: "Comprehensive description of the Prophet's prayer" },
+          { ref: "Bukhari 10:150", desc: "On the obligation of Al-Fatihah in every rak'ah" },
+          { ref: "Muslim 4:41", desc: "Allah's response to each verse of Al-Fatihah" },
+          { ref: "Muslim 4:245", desc: "The closest a servant is to Allah is in sujud" },
+          { ref: "Bukhari 21:6", desc: "Tashahhud and Salawat narrated by Ibn Mas'ud" },
+        ]} />
       </div>
     </motion.div>
   );
@@ -1560,6 +1547,16 @@ function SalahContent() {
         subtitle="The five daily prayers — the direct connection between the servant and Allah"
       />
 
+      <ContentCard className="mb-6">
+        <div className="text-center py-4">
+          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
+            إِنَّ ٱلصَّلَوٰةَ تَنْهَىٰ عَنِ ٱلْفَحْشَآءِ وَٱلْمُنكَرِ ۗ وَلَذِكْرُ ٱللَّهِ أَكْبَرُ
+          </p>
+          <p className="text-themed-muted italic">&ldquo;Indeed, prayer prohibits immorality and wrongdoing, and the remembrance of Allah is greater.&rdquo;</p>
+          <p className="text-xs text-themed-muted mt-1">Quran 29:45</p>
+        </div>
+      </ContentCard>
+
       <PageSearch value={search} onChange={setSearch} placeholder="Search prayers, steps, duas..." className="mb-6" />
 
       {/* Section navigation */}
@@ -1571,7 +1568,7 @@ function SalahContent() {
               setActiveSection(section.key);
               setShowGuide(false);
             }}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1866,7 +1863,7 @@ function SalahContent() {
                   The prayer involves a sequence of positions — standing, bowing, prostrating, and sitting — each accompanied by specific recitations from the Quran and supplications. It begins with &apos;Allahu Akbar&apos; (takbiratul ihram) and ends with the taslim (saying &apos;As-salamu alaykum wa rahmatullah&apos; to each side).
                 </p>
                 <p>
-                  Salah requires ritual purity (wudu), facing the qiblah (direction of the Ka&apos;bah in Makkah), covering the awrah, and praying within the appointed time. It is not merely a ritual — the Prophet (peace be upon him) said it is a conversation with Allah. When you recite Al-Fatihah, Allah responds to each verse (Muslim 4:40).
+                  Salah requires ritual purity (wudu), facing the qiblah (direction of the Ka&apos;bah in Makkah), covering the awrah, and praying within the appointed time. It is not merely a ritual — the Prophet (peace be upon him) said it is a conversation with Allah. When you recite Al-Fatihah, Allah responds to each verse (Muslim 4:41).
                 </p>
               </div>
             </ContentCard>
@@ -1926,25 +1923,12 @@ function SalahContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.35}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Bukhari 63:112, Muslim 1:321 — The prescription of prayer during al-Isra wal-Mi'raj",
-                  "Muslim 4:40 — Allah's response to Al-Fatihah",
-                  "Sifat Salat an-Nabi, al-Albani — The Prophet's prayer described",
-                  "Sharh Umdatul Ahkam, Ibn Uthaymeen — Rulings on prayer",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.35} sources={[
+              { ref: "Bukhari 63:112, Muslim 1:321", desc: "The prescription of prayer during al-Isra wal-Mi'raj" },
+              { ref: "Muslim 4:41", desc: "Allah's response to Al-Fatihah" },
+              { ref: "Sifat Salat an-Nabi, al-Albani", desc: "The Prophet's prayer described" },
+              { ref: "Sharh Umdatul Ahkam, Ibn Uthaymeen", desc: "Rulings on prayer" },
+            ]} />
           </motion.div>
         )}
 
@@ -1998,26 +1982,13 @@ function SalahContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.4}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Nasai 5:18 — Prayer is the first deed judged",
-                  "Muslim 4:40 — Allah responds to Al-Fatihah",
-                  "Tirmidhi 40:16 — The covenant between us and them is prayer; Muslim 1:12 — similar meaning",
-                  "Bukhari 9:7, Muslim 5:356 — The likeness of the five prayers",
-                  "Tafsir Ibn Kathir — Commentary on Quran 29:45, 20:132",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Nasai 5:18", desc: "Prayer is the first deed judged" },
+              { ref: "Muslim 4:41", desc: "Allah responds to Al-Fatihah" },
+              { ref: "Tirmidhi 40:16; Muslim 1:12", desc: "The covenant between us and them is prayer" },
+              { ref: "Bukhari 9:7, Muslim 5:356", desc: "The likeness of the five prayers" },
+              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 29:45, 20:132" },
+            ]} />
           </motion.div>
         )}
 
@@ -2037,7 +2008,7 @@ function SalahContent() {
                   <button
                     key={topic.id}
                     onClick={() => setActiveWudu(topic.id)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
                       activeWudu === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -2116,27 +2087,14 @@ function SalahContent() {
             </div>
 
             {/* Sources */}
-            <ContentCard delay={0.3} className="mt-8">
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Quran 5:6 — The verse of wudu, detailing the obligatory acts of purification",
-                  "Bukhari 1:1, 4:1, 4:25, 11:12 — Niyyah, nullifiers, the Prophet's ﷺ wudu, right-side preference, miswak",
-                  "Muslim 2:1, 2:20, 2:44, 2:46, 3:123 — Cleanliness, two rak'at after wudu, dua, sins washed away, ghurr and muhajjalin, camel meat",
-                  "Abu Dawud 1:60, 1:101, 1:200 — Passing wind, Bismillah, ears, washing three times, interlacing fingers, deep sleep",
-                  "Tirmidhi 1:31, 1:82 — Beard, ears are part of head, interlacing toes, dua after wudu, touching private parts",
-                  "Ibn Majah 1:133, 1:159 — Bismillah obligation discussion, moderation with water",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.3} className="mt-8" sources={[
+              { ref: "Quran 5:6", desc: "The verse of wudu, detailing the obligatory acts of purification" },
+              { ref: "Bukhari 1:1, 4:1, 4:25, 11:12", desc: "Niyyah, nullifiers, the Prophet's ﷺ wudu, right-side preference, miswak" },
+              { ref: "Muslim 2:1, 2:20, 2:44, 2:46, 3:123", desc: "Cleanliness, two rak'at after wudu, dua, sins washed away, ghurr and muhajjalin, camel meat" },
+              { ref: "Abu Dawud 1:60, 1:101, 1:200", desc: "Passing wind, Bismillah, ears, washing three times, interlacing fingers, deep sleep" },
+              { ref: "Tirmidhi 1:31, 1:82", desc: "Beard, ears are part of head, interlacing toes, dua after wudu, touching private parts" },
+              { ref: "Ibn Majah 1:133, 1:159", desc: "Bismillah obligation discussion, moderation with water" },
+            ]} />
           </motion.div>
         )}
 
@@ -2159,7 +2117,7 @@ function SalahContent() {
                         setActivePrayer("types");
                         setShowGuide(false);
                       }}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
                         activePrayer === "types"
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -2178,7 +2136,7 @@ function SalahContent() {
                         setActivePrayer(prayer.id);
                         setShowGuide(false);
                       }}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
                         activePrayer === prayer.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -2275,33 +2233,20 @@ function SalahContent() {
 
             {/* Sources & References for Five Prayers */}
             {!showGuide && (
-              <ContentCard delay={0.3} className="mt-8">
-                <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                  <BookOpen size={14} className="text-gold" />
-                  Sources &amp; References
-                </h4>
-                <ul className="space-y-1.5">
-                  {[
-                    "Bukhari 9:50 — Fajr & Asr: whoever prays the two cool prayers will enter Paradise",
-                    "Muslim 6:118 — Fajr sunnah: better than the world and everything in it",
-                    "Tirmidhi 2:281 — Dhuhr: reward for praying four rak'at before and after",
-                    "Nasai 14:6 — Jumu'ah: warning about missing three consecutive Friday prayers",
-                    "Bukhari 9:29 — Asr: missing it is like losing family and property",
-                    "Muslim 5:223 — Maghrib: timing of the sunset prayer",
-                    "Muslim 6:124 — Rawatib sunnah: the 12 confirmed sunnah prayers",
-                    "Bukhari 10:51 — Isha & Fajr: reward for attending them in congregation",
-                    "Bukhari 14:9 — Witr: make the last of your night prayer Witr",
-                    "Quran 17:78 — Establish prayer from the decline of the sun until the darkness of night",
-                    "Quran 2:238 — Guard the prayers, especially the middle prayer (Asr)",
-                    "Sifat Salat an-Nabi by Shaykh al-Albani — Description of the Prophet's prayer",
-                  ].map((source) => (
-                    <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                      <span className="text-gold/40 mt-0.5">&#8226;</span>
-                      {source}
-                    </li>
-                  ))}
-                </ul>
-              </ContentCard>
+              <SourcesCard delay={0.3} className="mt-8" sources={[
+                { ref: "Bukhari 9:50", desc: "Fajr & Asr: whoever prays the two cool prayers will enter Paradise" },
+                { ref: "Muslim 6:118", desc: "Fajr sunnah: better than the world and everything in it" },
+                { ref: "Tirmidhi 2:281", desc: "Dhuhr: reward for praying four rak'at before and after" },
+                { ref: "Nasai 14:6", desc: "Jumu'ah: warning about missing three consecutive Friday prayers" },
+                { ref: "Bukhari 9:29", desc: "Asr: missing it is like losing family and property" },
+                { ref: "Muslim 5:223", desc: "Maghrib: timing of the sunset prayer" },
+                { ref: "Muslim 6:124", desc: "Rawatib sunnah: the 12 confirmed sunnah prayers" },
+                { ref: "Bukhari 10:51", desc: "Isha & Fajr: reward for attending them in congregation" },
+                { ref: "Bukhari 14:9", desc: "Witr: make the last of your night prayer Witr" },
+                { ref: "Quran 17:78", desc: "Establish prayer from the decline of the sun until the darkness of night" },
+                { ref: "Quran 2:238", desc: "Guard the prayers, especially the middle prayer (Asr)" },
+                { ref: "Sifat Salat an-Nabi by Shaykh al-Albani", desc: "Description of the Prophet's prayer" },
+              ]} />
             )}
           </motion.div>
         )}
@@ -2326,7 +2271,7 @@ function SalahContent() {
                         setActiveVoluntary(prayer.id);
                         setShowGuide(false);
                       }}
-                      className={`px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
                         activeVoluntary === prayer.id
                           ? "bg-sky-500/20 text-sky-400 border border-sky-400/40"
                           : "text-sky-400/60 hover:text-sky-400 border border-sky-400/20"
@@ -2378,33 +2323,20 @@ function SalahContent() {
 
             {/* Sources & References for Voluntary Prayers */}
             {!showGuide && (
-              <ContentCard delay={0.3} className="mt-8">
-                <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                  <BookOpen size={14} className="text-sky-400" />
-                  Sources &amp; References
-                </h4>
-                <ul className="space-y-1.5">
-                  {[
-                    "Bukhari 19:26, 19:28 — Tahajjud: Allah descends to the lowest heaven; the Prophet's night prayer practice",
-                    "Muslim 13:261 — Tahajjud: night prayer is the best prayer after the obligatory ones",
-                    "Muslim 6:101 — Duha: two rak'at of Duha suffice as charity for every joint",
-                    "Tirmidhi 6:43 — Duha/Ishraq: reward like Hajj and Umrah for praying after sunrise (graded da'if by some; widely practiced)",
-                    "Abu Dawud 8:106; Tirmidhi 2:259 — Tawbah: forgiveness for praying 2 rak'at after sinning",
-                    "Bukhari 19:45 — Istikhara: the du'a and method taught by the Prophet (peace be upon him)",
-                    "Bukhari 31:6 — Tarawih: Aisha's narration of the Prophet's night prayer in Ramadan",
-                    "Bukhari 2:30; Muslim 6:207 — Tarawih: forgiveness for standing in prayer during Ramadan",
-                    "Bukhari 13:8 — Eid: the Prophet's practice of praying in the musalla",
-                    "Bukhari 23:81; Muslim 11:67 — Janazah: reward for attending the funeral prayer",
-                    "Fiqh us-Sunnah by Sayyid Sabiq — General reference for voluntary prayer rulings",
-                    "Sifat Salat an-Nabi by Shaykh al-Albani — Description of the Prophet's prayer",
-                  ].map((source) => (
-                    <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                      <span className="text-sky-400/40 mt-0.5">&#8226;</span>
-                      {source}
-                    </li>
-                  ))}
-                </ul>
-              </ContentCard>
+              <SourcesCard delay={0.3} className="mt-8" sources={[
+                { ref: "Bukhari 19:26, 19:28", desc: "Tahajjud: Allah descends to the lowest heaven; the Prophet's night prayer practice" },
+                { ref: "Muslim 13:261", desc: "Tahajjud: night prayer is the best prayer after the obligatory ones" },
+                { ref: "Muslim 6:101", desc: "Duha: two rak'at of Duha suffice as charity for every joint" },
+                { ref: "Tirmidhi 6:43", desc: "Duha/Ishraq: reward like Hajj and Umrah for praying after sunrise (graded da'if by some; widely practiced)" },
+                { ref: "Abu Dawud 8:106; Tirmidhi 2:259", desc: "Tawbah: forgiveness for praying 2 rak'at after sinning" },
+                { ref: "Bukhari 19:45", desc: "Istikhara: the du'a and method taught by the Prophet (peace be upon him)" },
+                { ref: "Bukhari 31:6", desc: "Tarawih: Aisha's narration of the Prophet's night prayer in Ramadan" },
+                { ref: "Bukhari 2:30; Muslim 6:207", desc: "Tarawih: forgiveness for standing in prayer during Ramadan" },
+                { ref: "Bukhari 13:8", desc: "Eid: the Prophet's practice of praying in the musalla" },
+                { ref: "Bukhari 23:81; Muslim 11:67", desc: "Janazah: reward for attending the funeral prayer" },
+                { ref: "Fiqh us-Sunnah by Sayyid Sabiq", desc: "General reference for voluntary prayer rulings" },
+                { ref: "Sifat Salat an-Nabi by Shaykh al-Albani", desc: "Description of the Prophet's prayer" },
+              ]} />
             )}
           </motion.div>
         )}

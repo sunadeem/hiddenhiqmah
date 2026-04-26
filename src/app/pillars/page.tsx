@@ -9,6 +9,7 @@ import ContentCard from "@/components/ContentCard";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { textMatch } from "@/lib/search";
 import HadithRefText from "@/components/HadithRefText";
+import SourcesCard, { type SourceRef } from "@/components/SourcesCard";
 import {
   BookOpen,
   AlertTriangle,
@@ -34,6 +35,13 @@ type Pillar = {
   misconceptions: { title: string; clarification: string }[];
   sources: string[];
 };
+
+function parseSources(sources: string[]): SourceRef[] {
+  return sources.map((s) => {
+    const idx = s.indexOf(" — ");
+    return idx === -1 ? { ref: s, desc: "" } : { ref: s.slice(0, idx), desc: s.slice(idx + 3) };
+  });
+}
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -578,7 +586,7 @@ function PillarsContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -684,25 +692,12 @@ function PillarsContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.35}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Bukhari 2:1, Muslim 1:21 — Hadith of Ibn Umar on the five pillars",
-                  "Muslim 1:1 — The Hadith of Jibril, defining Islam, Iman, and Ihsan",
-                  "Sharh Usul al-Iman, Ibn Uthaymeen — On the pillars of Islam",
-                  "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — On the foundations of the religion",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.35} sources={[
+              { ref: "Bukhari 2:1, Muslim 1:21", desc: "Hadith of Ibn Umar on the five pillars" },
+              { ref: "Muslim 1:1", desc: "The Hadith of Jibril, defining Islam, Iman, and Ihsan" },
+              { ref: "Sharh Usul al-Iman, Ibn Uthaymeen", desc: "On the pillars of Islam" },
+              { ref: "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah", desc: "On the foundations of the religion" },
+            ]} />
           </motion.div>
         )}
 
@@ -757,25 +752,12 @@ function PillarsContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.4}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Bukhari 2:1, Muslim 1:21 — The five pillars hadith",
-                  "Muslim 2:19 — On the five prayers as expiation for sins",
-                  "Sharh Usul al-Iman, Ibn Uthaymeen — On the importance of the pillars",
-                  "Tafsir Ibn Kathir — Commentary on Quran 2:177, 3:103, 98:5",
-                ].map((source) => (
-                  <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    <HadithRefText text={source} />
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Bukhari 2:1, Muslim 1:21", desc: "The five pillars hadith" },
+              { ref: "Muslim 2:19", desc: "On the five prayers as expiation for sins" },
+              { ref: "Sharh Usul al-Iman, Ibn Uthaymeen", desc: "On the importance of the pillars" },
+              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 2:177, 3:103, 98:5" },
+            ]} />
           </motion.div>
         )}
 
@@ -794,7 +776,7 @@ function PillarsContent() {
                 <button
                   key={pillar.id}
                   onClick={() => setActivePillar(pillar.id)}
-                  className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                     activePillar === pillar.id
                       ? "bg-gold/20 text-gold border border-gold/40"
                       : "text-themed-muted hover:text-themed border sidebar-border"
@@ -822,20 +804,7 @@ function PillarsContent() {
                       {/* Sources */}
                       {pillar.sources.length > 0 && (
                         <div className="mt-4">
-                          <ContentCard delay={0.15}>
-                            <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                              <BookOpen size={14} className="text-gold" />
-                              Sources &amp; References
-                            </h4>
-                            <ul className="space-y-1.5">
-                              {pillar.sources.map((source) => (
-                                <li key={source} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
-                                  <span className="text-gold/40 mt-0.5">&#8226;</span>
-                                  <HadithRefText text={source} />
-                                </li>
-                              ))}
-                            </ul>
-                          </ContentCard>
+                          <SourcesCard delay={0.15} sources={parseSources(pillar.sources)} />
                         </div>
                       )}
                     </motion.div>

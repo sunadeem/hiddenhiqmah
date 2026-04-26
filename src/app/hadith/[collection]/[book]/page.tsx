@@ -125,15 +125,15 @@ function BookPageContent() {
       .catch(() => setLoading(false));
   }, [collection, bookId]);
 
-  // Scroll to highlighted hadith (supports both global ID and in-book hadith number)
+  // Scroll to highlighted hadith (supports both ref number and global ID)
   useEffect(() => {
     if (highlightId && !loading) {
       const timer = setTimeout(() => {
-        // Try global ID first (backward compat with bookmarks)
-        let el = document.getElementById(`hadith-${highlightId}`);
-        // Fall back to in-book hadith number via data-ref
+        // Try in-book hadith number via data-ref first (matches sunnah.com numbering)
+        let el = document.querySelector(`[data-ref="${bookId}:${highlightId}"]`);
+        // Fall back to global ID (backward compat with bookmarks)
         if (!el) {
-          el = document.querySelector(`[data-ref="${bookId}:${highlightId}"]`);
+          el = document.getElementById(`hadith-${highlightId}`);
         }
         if (el) {
           el.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -253,7 +253,7 @@ function BookPageContent() {
       ) : (
         <div className="space-y-4">
           {filtered.map((hadith, i) => {
-            const isHighlighted = hadith.id === highlightId;
+            const isHighlighted = hadith.reference === `${bookId}:${highlightId}` || hadith.id === highlightId;
             const showArabic = expandedArabic.has(hadith.id);
 
             return (

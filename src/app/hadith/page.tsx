@@ -457,7 +457,7 @@ export default function HadithPage() {
         {/* Featured pill */}
         <button
           onClick={() => setSelected("featured")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 ${
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
             selected === "featured"
               ? "bg-amber-500 text-[#1a1a2e] shadow-lg shadow-amber-500/20"
               : "border border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
@@ -476,7 +476,7 @@ export default function HadithPage() {
             <button
               key={col.slug}
               onClick={() => setSelected(col.slug)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 isActive
                   ? "bg-[var(--color-gold)] text-[#1a1a2e] shadow-lg shadow-[var(--color-gold)]/20"
                   : "card-bg border sidebar-border text-themed-muted hover:text-themed hover:border-[var(--color-gold)]/30"

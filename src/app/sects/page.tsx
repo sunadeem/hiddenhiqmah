@@ -8,8 +8,8 @@ import PageSearch from "@/components/PageSearch";
 import ContentCard from "@/components/ContentCard";
 import { textMatch } from "@/lib/search";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
-import { BookOpen } from "lucide-react";
 import HadithRefText from "@/components/HadithRefText";
+import SourcesCard from "@/components/SourcesCard";
 
 /* ───────────────────────── types ───────────────────────── */
 
@@ -792,7 +792,7 @@ function SectsContent() {
           <button
             key={section.key}
             onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeSection === section.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"
@@ -854,31 +854,15 @@ function SectsContent() {
             </ContentCard>
 
             {/* Sources */}
-            <ContentCard delay={0.3}>
-              <h4 className="text-sm font-semibold text-themed flex items-center gap-2 mb-3">
-                <BookOpen size={14} className="text-gold" />
-                Sources &amp; References
-              </h4>
-              <ul className="space-y-1.5">
-                {[
-                  "Tirmidhi 40:36 — The Ummah will split into 73 sects",
-                  "Abu Dawud 42:2 — The saved group follows the Jama'ah",
-                  "Quran 3:103 — Hold firmly to the rope of Allah and do not divide",
-                  "Quran 6:159 — Those who divided their religion into sects",
-                  "Al-Milal wan-Nihal, ash-Shahrastani — Comprehensive survey of sects",
-                  "Al-Farq bayn al-Firaq, al-Baghdadi — Differences between the sects",
-                  "Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah — Response to sectarian claims",
-                ].map((source) => (
-                  <li
-                    key={source}
-                    className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"
-                  >
-                    <span className="text-gold/40 mt-0.5">&#8226;</span>
-                    {source}
-                  </li>
-                ))}
-              </ul>
-            </ContentCard>
+            <SourcesCard sources={[
+              { ref: "Tirmidhi 40:36", desc: "The Ummah will split into 73 sects" },
+              { ref: "Abu Dawud 42:2", desc: "The saved group follows the Jama'ah" },
+              { ref: "Quran 3:103", desc: "Hold firmly to the rope of Allah and do not divide" },
+              { ref: "Quran 6:159", desc: "Those who divided their religion into sects" },
+              { ref: "Al-Milal wan-Nihal, ash-Shahrastani", desc: "Comprehensive survey of sects" },
+              { ref: "Al-Farq bayn al-Firaq, al-Baghdadi", desc: "Differences between the sects" },
+              { ref: "Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah", desc: "Response to sectarian claims" },
+            ]} />
           </motion.div>
         )}
 
