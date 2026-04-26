@@ -37,7 +37,6 @@ import {
   Trophy,
   ListChecks,
   HeartHandshake,
-  Heart,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
