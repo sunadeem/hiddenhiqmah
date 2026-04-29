@@ -220,6 +220,11 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     audio.ontimeupdate = () => setAudioProgress(audio.currentTime);
     audio.onerror = () => setPlayingVerse(null);
 
+    // If metadata already loaded (e.g. preloaded audio), set duration immediately
+    if (audio.duration && !isNaN(audio.duration)) {
+      setAudioDuration(audio.duration);
+    }
+
     // When verse ends, use state to trigger next verse (avoids stale ref issues)
     audio.onended = () => {
       const vrs = versesRef.current;

@@ -1167,7 +1167,7 @@ function SurahPageContent() {
 
                 {/* Arabic text — word-by-word with hover tooltips */}
                 <div
-                  className={`${fontSizeClasses[fontSize]} font-arabic text-themed leading-[2.2] md:leading-[2.4] text-right mb-5 flex flex-wrap-reverse justify-end gap-x-2`}
+                  className={`${fontSizeClasses[fontSize]} font-arabic text-themed leading-[2.2] md:leading-[2.4] text-right mb-5 flex flex-wrap justify-start gap-x-2`}
                   dir="rtl"
                 >
                   {wordsData?.[String(verse.number)]

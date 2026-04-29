@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRef } from "react";
 import { Play, Pause, SkipForward, SkipBack, ChevronFirst, ChevronLast, X } from "lucide-react";
 import { useQuranAudio } from "@/context/QuranAudioContext";
 
@@ -28,6 +29,8 @@ export default function MiniPlayer() {
     stopPlayback,
   } = useQuranAudio();
 
+  const constraintsRef = useRef<HTMLDivElement>(null);
+
   // Don't show mini player if on the surah page that's currently playing
   const isOnPlayingSurah = surahId !== null && pathname === `/quran/${surahId}`;
 
@@ -36,13 +39,20 @@ export default function MiniPlayer() {
 
   return (
     <AnimatePresence>
+      {/* Invisible full-screen constraint boundary for dragging */}
+      <div ref={constraintsRef} className="fixed inset-0 z-50 pointer-events-none">
       <motion.div
         key="mini-player"
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: -80, opacity: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="fixed top-0 right-0 lg:right-4 lg:top-4 z-50 lg:rounded-xl overflow-hidden shadow-2xl"
+        drag
+        dragConstraints={constraintsRef}
+        dragMomentum={false}
+        dragElastic={0.1}
+        whileDrag={{ scale: 1.02, cursor: "grabbing" }}
+        className="fixed top-0 right-0 lg:right-4 lg:top-4 z-50 lg:rounded-xl overflow-hidden shadow-2xl cursor-grab pointer-events-auto"
         style={{ width: "min(100vw, 400px)" }}
       >
         <div className="card-bg border sidebar-border lg:rounded-xl">
@@ -126,6 +136,7 @@ export default function MiniPlayer() {
           </div>
         </div>
       </motion.div>
+      </div>
     </AnimatePresence>
   );
 }

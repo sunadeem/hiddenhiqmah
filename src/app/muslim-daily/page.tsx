@@ -77,6 +77,7 @@ function Ref({ text }: { text: string }) {
 function AdhkarItem({
   arabic,
   transliteration,
+  translation,
   english,
   reference,
   note,
@@ -85,6 +86,7 @@ function AdhkarItem({
 }: {
   arabic?: string;
   transliteration?: string;
+  translation?: string;
   english: string;
   reference: string;
   note?: string;
@@ -96,6 +98,9 @@ function AdhkarItem({
       {arabic && <p className="font-arabic text-gold text-xl leading-loose mb-2">{arabic}</p>}
       {transliteration && (
         <p className="text-themed font-medium text-sm mb-1 italic">{transliteration}</p>
+      )}
+      {translation && (
+        <p className="text-themed-muted text-sm leading-relaxed mb-1">&ldquo;{translation}&rdquo;</p>
       )}
       <p className="text-themed-muted text-sm leading-relaxed">{english}</p>
       {note && <p className="text-themed-muted/70 text-xs mt-2 italic">{note}</p>}
@@ -233,6 +238,7 @@ function MorningTab() {
           <AdhkarItem
             arabic="سبحان الله (٣٣) · الحمد لله (٣٣) · الله أكبر (٣٣) · لا إله إلا الله..."
             transliteration="SubhanAllah 33x, Alhamdulillah 33x, Allahu Akbar 33x, then say: La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa ala kulli shay'in qadir"
+            translation="Glory be to Allah (33x), All praise is due to Allah (33x), Allah is the Greatest (33x), then: There is no god but Allah alone, with no partner. His is the dominion and His is the praise, and He is over all things capable."
             english="Whoever says this after every prayer — his sins will be forgiven even if they are like the foam of the sea."
             reference="Muslim 5:188"
             delay={0}
@@ -242,6 +248,7 @@ function MorningTab() {
           <AdhkarItem
             arabic="سبحان الله وبحمده"
             transliteration="SubhanAllahi wa bihamdihi — 100 times"
+            translation="Glory be to Allah and all praise is due to Him."
             english="His sins will be forgiven even if they are like the foam of the sea."
             reference="Bukhari 80:100"
             delay={0}
@@ -251,6 +258,7 @@ function MorningTab() {
           <AdhkarItem
             arabic="لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير"
             transliteration="La ilaha illallah, wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa ala kulli shay'in qadir — 10 times"
+            translation="There is no god but Allah alone, with no partner. His is the dominion and His is the praise, and He is over all things capable."
             english="He will have the reward of freeing four slaves from the children of Isma'il."
             reference="Bukhari 80:98"
             delay={0}
@@ -508,6 +516,7 @@ function EveningTab() {
           <AdhkarItem
             arabic="اللّهم أنت ربّي لا إله إلا أنت خلقتني وأنا عبدك..."
             transliteration="Sayyid al-Istighfar: Allahumma Anta Rabbi, la ilaha illa Anta, khalaqtani wa ana abduka..."
+            translation="O Allah, You are my Lord. There is no god but You. You created me and I am Your servant, and I hold to Your covenant and promise as best I can. I seek refuge in You from the evil I have done. I acknowledge Your blessings upon me and I acknowledge my sins, so forgive me — for none forgives sins but You."
             english="Whoever says it in the evening and dies that night enters Paradise."
             reference="Bukhari 80:3"
             delay={0}
@@ -1254,6 +1263,16 @@ function MuslimDailyContent() {
         titleAr="يوميات المسلم"
         subtitle="Your daily guide to living the Sunnah — organized by time of day"
       />
+
+      <ContentCard className="mb-6">
+        <div className="text-center py-4">
+          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
+            فَوَاللَّهِ لَلدُّنْيَا أَهْوَنُ عَلَى اللَّهِ مِنْ هَذَا عَلَيْكُمْ
+          </p>
+          <p className="text-themed-muted italic">&ldquo;By Allah, this world is more insignificant in the eye of Allah than this dead lamb is in your eyes.&rdquo;</p>
+          <p className="text-xs text-themed-muted mt-1">Muslim 55:2</p>
+        </div>
+      </ContentCard>
 
       <div>
 
