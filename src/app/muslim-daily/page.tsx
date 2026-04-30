@@ -19,18 +19,33 @@ import {
   Heart,
   Flame,
   Star,
+  UtensilsCrossed,
+  HandHeart,
+  DoorOpen,
+  Shirt,
+  MessageCircle,
+  Bed,
+  Hourglass,
+  Skull,
+  Landmark,
+  Scale,
+  Sparkles,
+  HeartHandshake,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
    TYPES & DATA
    ═══════════════════════════════════════════════════════════════════ */
 
-type MainTab = "worship" | "sunnah" | "checklist";
+type MainTab = "worship" | "sunnah" | "checklist" | "remember";
 type WorshipSub = "morning" | "afternoon" | "evening" | "sleep" | "midnight";
+type SunnahSub = "eating" | "greeting" | "entering" | "dress" | "speech" | "sleeping";
+type RememberSub = "dunya" | "death" | "grave" | "judgement" | "paradise" | "mercy";
 
 const mainTabs: { key: MainTab; label: string; icon: React.ReactNode; highlight?: boolean }[] = [
   { key: "worship", label: "Worship", icon: <BookOpen size={16} /> },
   { key: "sunnah", label: "Sunnah Acts", icon: <Heart size={16} /> },
+  { key: "remember", label: "Reminders", icon: <Flame size={16} /> },
   { key: "checklist", label: "Daily Checklist", icon: <CheckSquare size={16} />, highlight: true },
 ];
 
@@ -40,6 +55,24 @@ const worshipSubs: { key: WorshipSub; label: string; icon: React.ReactNode }[] =
   { key: "evening", label: "Evening", icon: <Moon size={16} /> },
   { key: "sleep", label: "Before Sleep", icon: <BedDouble size={16} /> },
   { key: "midnight", label: "Midnight", icon: <Star size={16} /> },
+];
+
+const sunnahSubs: { key: SunnahSub; label: string; icon: React.ReactNode }[] = [
+  { key: "eating", label: "Eating & Drinking", icon: <UtensilsCrossed size={16} /> },
+  { key: "greeting", label: "Greeting", icon: <HandHeart size={16} /> },
+  { key: "entering", label: "Entering & Leaving", icon: <DoorOpen size={16} /> },
+  { key: "dress", label: "Dress & Appearance", icon: <Shirt size={16} /> },
+  { key: "speech", label: "Speech & Conduct", icon: <MessageCircle size={16} /> },
+  { key: "sleeping", label: "Sleeping", icon: <Bed size={16} /> },
+];
+
+const rememberSubs: { key: RememberSub; label: string; icon: React.ReactNode }[] = [
+  { key: "dunya", label: "Dunya is Temporary", icon: <Hourglass size={16} /> },
+  { key: "death", label: "Death is Near", icon: <Skull size={16} /> },
+  { key: "grave", label: "The Grave", icon: <Landmark size={16} /> },
+  { key: "judgement", label: "Day of Judgement", icon: <Scale size={16} /> },
+  { key: "paradise", label: "Paradise Awaits", icon: <Sparkles size={16} /> },
+  { key: "mercy", label: "Hope & Mercy", icon: <HeartHandshake size={16} /> },
 ];
 
 const checklistItems = [
@@ -996,201 +1029,462 @@ function MidnightTab() {
    TAB: Sunnah Acts
    ═══════════════════════════════════════════════════════════════════ */
 
-function SunnahTab() {
+function SunnahContent({ activeSub, setActiveSub }: { activeSub: SunnahSub; setActiveSub: (s: SunnahSub) => void }) {
   return (
-    <div className="space-y-6">
-      {/* Eating & Drinking */}
-      <div>
-        <h3 className="text-lg font-semibold text-themed mb-3 px-1">Eating &amp; Drinking</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <ContentCard delay={0.05}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Say <span className="text-gold font-medium">&quot;Bismillah&quot;</span> before
-              eating; if you forget, say &quot;Bismillahi fi awwalihi wa akhirih.&quot;
-            </p>
-            <Ref text="Abu Dawud 28:32" />
-          </ContentCard>
-          <ContentCard delay={0.08}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Eat with the right hand.
-            </p>
-            <Ref text="Muslim 36:139" />
-          </ContentCard>
-          <ContentCard delay={0.11}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Eat from what is nearest to you.
-            </p>
-            <Ref text="Bukhari 70:4" />
-          </ContentCard>
-          <ContentCard delay={0.14}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Do not blow on food or drink.
-            </p>
-            <Ref text="Abu Dawud 27:54" />
-          </ContentCard>
-          <ContentCard delay={0.17}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Sit while drinking.
-            </p>
-            <Ref text="Muslim 36:148" />
-          </ContentCard>
-          <ContentCard delay={0.2}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Say <span className="text-gold font-medium">&quot;Alhamdulillah&quot;</span> after
-              finishing.
-            </p>
-            <Ref text="Muslim 48:123" />
-          </ContentCard>
-        </div>
+    <div className="flex flex-col md:flex-row gap-4 items-start">
+      <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
+        {sunnahSubs.map((sub) => (
+          <button
+            key={sub.key}
+            onClick={() => setActiveSub(sub.key)}
+            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+              activeSub === sub.key
+                ? "bg-gold/20 text-gold border border-gold/40"
+                : "text-themed-muted hover:text-themed border sidebar-border"
+            }`}
+          >
+            {sub.icon}
+            {sub.label}
+          </button>
+        ))}
       </div>
-
-      {/* Greeting Others */}
-      <div>
-        <h3 className="text-lg font-semibold text-themed mb-3 px-1">Greeting Others</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <ContentCard delay={0.05}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Initiate the Salam — &quot;The one who is riding should greet the one walking, the one
-              walking should greet the one sitting.&quot;
-            </p>
-            <Ref text="Bukhari 79:5" />
-          </ContentCard>
-          <ContentCard delay={0.08}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Respond with a better greeting:{" "}
-              <span className="text-gold font-medium italic">
-                &quot;Wa alaikum assalam wa rahmatullahi wa barakatuh.&quot;
-              </span>
-            </p>
-            <Ref text="Quran 4:86" />
-          </ContentCard>
-          <ContentCard delay={0.11}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Spread Salam to those you know and those you do not know.
-            </p>
-            <Ref text="Bukhari 2:12" />
-          </ContentCard>
-        </div>
+      <div className="flex-1 min-w-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeSub}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+          >
+            {activeSub === "eating" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ContentCard delay={0.05}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِذَا أَكَلَ أَحَدُكُمْ فَلْيَذْكُرِ اسْمَ اللَّهِ تَعَالَى فَإِنْ نَسِيَ أَنْ يَذْكُرَ اسْمَ اللَّهِ تَعَالَى فِي أَوَّلِهِ فَلْيَقُلْ بِسْمِ اللَّهِ أَوَّلَهُ وَآخِرَهُ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Say <span className="text-gold font-medium">&quot;Bismillah&quot;</span> before
+                    eating; if you forget, say &quot;Bismillahi fi awwalihi wa akhirih.&quot;
+                  </p>
+                  <Ref text="Abu Dawud 28:32" />
+                </ContentCard>
+                <ContentCard delay={0.08}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِذَا أَكَلَ أَحَدُكُمْ فَلْيَأْكُلْ بِيَمِينِهِ وَإِذَا شَرِبَ فَلْيَشْرَبْ بِيَمِينِهِ فَإِنَّ الشَّيْطَانَ يَأْكُلُ بِشِمَالِهِ وَيَشْرَبُ بِشِمَالِهِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Eat with the right hand, for the Shaytan eats and drinks with his left.
+                  </p>
+                  <Ref text="Muslim 36:139" />
+                </ContentCard>
+                <ContentCard delay={0.11}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">يَا غُلاَمُ سَمِّ اللَّهَ، وَكُلْ بِيَمِينِكَ وَكُلْ مِمَّا يَلِيكَ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;O boy, mention the name of Allah, eat with your right hand, and eat from what is nearest to you.&quot;
+                  </p>
+                  <Ref text="Bukhari 70:4" />
+                </ContentCard>
+                <ContentCard delay={0.14}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">نَهَى رَسُولُ اللَّهِ ﷺ عَنِ الشُّرْبِ مِنْ ثُلْمَةِ الْقَدَحِ وَأَنْ يُنْفَخَ فِي الشَّرَابِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    The Prophet ﷺ forbade drinking from a chipped cup and blowing into drinks.
+                  </p>
+                  <Ref text="Abu Dawud 27:54" />
+                </ContentCard>
+                <ContentCard delay={0.17}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">زَجَرَ عَنِ الشُّرْبِ قَائِمًا</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    He ﷺ forbade drinking while standing.
+                  </p>
+                  <Ref text="Muslim 36:148" />
+                </ContentCard>
+                <ContentCard delay={0.2}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِنَّ اللَّهَ لَيَرْضَى عَنِ الْعَبْدِ أَنْ يَأْكُلَ الأَكْلَةَ فَيَحْمَدَهُ عَلَيْهَا أَوْ يَشْرَبَ الشَّرْبَةَ فَيَحْمَدَهُ عَلَيْهَا</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Allah is pleased with His servant who praises Him after eating and praises Him after drinking.
+                  </p>
+                  <Ref text="Muslim 48:123" />
+                </ContentCard>
+              </div>
+            )}
+            {activeSub === "greeting" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ContentCard delay={0.05}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">يُسَلِّمُ الصَّغِيرُ عَلَى الْكَبِيرِ، وَالْمَارُّ عَلَى الْقَاعِدِ، وَالْقَلِيلُ عَلَى الْكَثِيرِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    The young should greet the old, the passer-by should greet the one sitting, and the few should greet the many.
+                  </p>
+                  <Ref text="Bukhari 79:5" />
+                </ContentCard>
+                <ContentCard delay={0.08}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">وَإِذَا حُيِّيتُمْ بِتَحِيَّةٍ فَحَيُّوا بِأَحْسَنَ مِنْهَا أَوْ رُدُّوهَا</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    When you are greeted with a greeting, greet with one better than it or return it.
+                  </p>
+                  <Ref text="Quran 4:86" />
+                </ContentCard>
+                <ContentCard delay={0.11}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">تُطْعِمُ الطَّعَامَ، وَتَقْرَأُ السَّلاَمَ عَلَى مَنْ عَرَفْتَ وَمَنْ لَمْ تَعْرِفْ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Feed the poor and spread Salam to those you know and those you do not know.
+                  </p>
+                  <Ref text="Bukhari 2:5" />
+                </ContentCard>
+              </div>
+            )}
+            {activeSub === "entering" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ContentCard delay={0.05}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">يُعْجِبُهُ التَّيَمُّنُ فِي تَنَعُّلِهِ وَتَرَجُّلِهِ وَطُهُورِهِ وَفِي شَأْنِهِ كُلِّهِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    The Prophet ﷺ loved to start with the right in all his affairs — putting on shoes, combing his hair, and purification.
+                  </p>
+                  <Ref text="Bukhari 4:34" />
+                </ContentCard>
+                <ContentCard delay={0.08}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلِجِ وَخَيْرَ الْمَخْرَجِ بِسْمِ اللَّهِ وَلَجْنَا وَبِسْمِ اللَّهِ خَرَجْنَا وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <span className="text-gold font-medium">Dua entering home:</span> &quot;O Allah, I ask You for the best entrance and the best exit. In the name of Allah we enter, in the name of Allah we leave, and upon Allah our Lord we rely.&quot;
+                  </p>
+                  <Ref text="Abu Dawud 43:324" />
+                </ContentCard>
+                <ContentCard delay={0.11}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <span className="text-gold font-medium">Dua entering mosque:</span> &quot;O Allah, open for me the doors of Your mercy.&quot;
+                  </p>
+                  <Ref text="Muslim 6:82" />
+                </ContentCard>
+                <ContentCard delay={0.14}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِذَا دَخَلَ الرَّجُلُ بَيْتَهُ فَذَكَرَ اللَّهَ عِنْدَ دُخُولِهِ وَعِنْدَ طَعَامِهِ قَالَ الشَّيْطَانُ لاَ مَبِيتَ لَكُمْ وَلاَ عَشَاءَ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    When a man enters his home mentioning Allah, the Shaytan says to his companions: &quot;You have no lodging and no dinner tonight.&quot;
+                  </p>
+                  <Ref text="Muslim 36:136" />
+                </ContentCard>
+              </div>
+            )}
+            {activeSub === "dress" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ContentCard delay={0.05}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">كَانَ النَّبِيُّ ﷺ يُحِبُّ التَّيَمُّنَ مَا اسْتَطَاعَ فِي طُهُورِهِ وَتَنَعُّلِهِ وَتَرَجُّلِهِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    The Prophet ﷺ loved to start with the right side as much as possible — in purification, putting on shoes, and combing.
+                  </p>
+                  <Ref text="Bukhari 70:8" />
+                </ContentCard>
+                <ContentCard delay={0.08}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">لَوْلاَ أَنْ أَشُقَّ عَلَى أُمَّتِي لأَمَرْتُهُمْ بِالسِّوَاكِ مَعَ كُلِّ صَلاَةٍ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;Were it not for the difficulty on my ummah, I would have ordered them to use the miswak before every prayer.&quot;
+                  </p>
+                  <Ref text="Bukhari 11:12" />
+                </ContentCard>
+                <ContentCard delay={0.11}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">الْفِطْرَةُ خَمْسٌ الْخِتَانُ وَالاِسْتِحْدَادُ وَتَقْلِيمُ الأَظْفَارِ وَنَتْفُ الإِبْطِ وَقَصُّ الشَّارِبِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Five acts of fitrah: circumcision, shaving the pubic hair, trimming the nails, plucking the armpit hair, and trimming the moustache.
+                  </p>
+                  <Ref text="Muslim 2:64" />
+                </ContentCard>
+              </div>
+            )}
+            {activeSub === "speech" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ContentCard delay={0.05}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;Whoever believes in Allah and the Last Day, let him speak good or remain silent.&quot;
+                  </p>
+                  <Ref text="Bukhari 78:49" />
+                </ContentCard>
+                <ContentCard delay={0.08}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">وَلَا يَغْتَبْ بَعْضُكُمْ بَعْضًا ۚ أَيُحِبُّ أَحَدُكُمْ أَنْ يَأْكُلَ لَحْمَ أَخِيهِ مَيْتًا فَكَرِهْتُمُوهُ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;Do not backbite one another. Would any of you like to eat the flesh of his dead brother? You would detest it.&quot;
+                  </p>
+                  <Ref text="Quran 49:12" />
+                </ContentCard>
+                <ContentCard delay={0.11}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ وَإِنَّ الْبِرَّ يَهْدِي إِلَى الْجَنَّةِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;Truthfulness leads to righteousness, and righteousness leads to Paradise.&quot;
+                  </p>
+                  <Ref text="Bukhari 78:121" />
+                </ContentCard>
+              </div>
+            )}
+            {activeSub === "sleeping" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ContentCard delay={0.05}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">اضْطَجِعْ عَلَى شِقِّكَ الأَيْمَنِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;Lie down on your right side.&quot;
+                  </p>
+                  <Ref text="Bukhari 80:8" />
+                </ContentCard>
+                <ContentCard delay={0.08}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِذَا أَتَيْتَ مَضْجَعَكَ فَتَوَضَّأْ وُضُوءَكَ لِلصَّلاَةِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;When you go to bed, perform wudu as you would for prayer.&quot;
+                  </p>
+                  <Ref text="Bukhari 4:113" />
+                </ContentCard>
+                <ContentCard delay={0.11}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">اللَّهُمَّ أَسْلَمْتُ وَجْهِي إِلَيْكَ وَفَوَّضْتُ أَمْرِي إِلَيْكَ وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;O Allah, I submit my face to You, entrust my affairs to You, and lean my back on You&quot; — let your last words before sleep be remembrance of Allah.
+                  </p>
+                  <Ref text="Bukhari 80:8" />
+                </ContentCard>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
+    </div>
+  );
+}
 
-      {/* Entering & Leaving */}
-      <div>
-        <h3 className="text-lg font-semibold text-themed mb-3 px-1">Entering &amp; Leaving</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <ContentCard delay={0.05}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Enter with right foot, leave with left foot (for the mosque).
-            </p>
-            <Ref text="Bukhari 4:34" />
-          </ContentCard>
-          <ContentCard delay={0.08}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              <span className="text-gold font-medium">Dua entering home:</span>{" "}
-              <span className="italic">
-                &quot;Allahumma inni as&apos;aluka khairal-mawlij wa khairal-makhraj, Bismillahi
-                walajna wa Bismillahi kharajna, wa alallahi Rabbina tawakkalna.&quot;
-              </span>
-            </p>
-            <Ref text="Abu Dawud 43:324" />
-          </ContentCard>
-          <ContentCard delay={0.11}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              <span className="text-gold font-medium">Dua entering mosque:</span>{" "}
-              <span className="italic">
-                &quot;Allahummaf-tah li abwaba rahmatik&quot;
-              </span>{" "}
-              (O Allah, open for me the doors of Your mercy).
-            </p>
-            <Ref text="Muslim 6:82" />
-          </ContentCard>
-          <ContentCard delay={0.14}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Say Bismillah when entering and the shaytan says to his companions &quot;You have no
-              lodging tonight.&quot;
-            </p>
-            <Ref text="Muslim 36:136" />
-          </ContentCard>
-        </div>
+/* ═══════════════════════════════════════════════════════════════════
+   TAB: Always Remember
+   ═══════════════════════════════════════════════════════════════════ */
+
+function ReminderCard({
+  arabic,
+  english,
+  source,
+  delay = 0,
+}: {
+  arabic: string;
+  english: string;
+  source: string;
+  delay?: number;
+}) {
+  return (
+    <ContentCard delay={delay}>
+      <div className="flex items-start justify-between gap-2">
+        <p className="font-arabic text-gold text-xl leading-loose mb-3 flex-1">{arabic}</p>
+        <BookmarkButton
+          type="hadith"
+          id={`remember-${source.replace(/\s+/g, "-").toLowerCase()}`}
+          title={english.slice(0, 60) + "..."}
+          href="/muslim-daily?tab=remember"
+        />
       </div>
+      <p className="text-themed-muted text-sm leading-relaxed italic mb-2">&ldquo;{english}&rdquo;</p>
+      <Ref text={source} />
+    </ContentCard>
+  );
+}
 
-      {/* Dress & Appearance */}
-      <div>
-        <h3 className="text-lg font-semibold text-themed mb-3 px-1">Dress &amp; Appearance</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <ContentCard delay={0.05}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Start with the right side when dressing.
-            </p>
-            <Ref text="Bukhari 70:8" />
-          </ContentCard>
-          <ContentCard delay={0.08}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              <span className="text-gold font-medium">Miswak:</span> &quot;Were it not for the
-              difficulty on my ummah, I would have ordered them to use the miswak before every
-              prayer.&quot;
-            </p>
-            <Ref text="Bukhari 11:12" />
-          </ContentCard>
-          <ContentCard delay={0.11}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Keep nails trimmed, maintain cleanliness.
-            </p>
-            <Ref text="Muslim 2:64" />
-          </ContentCard>
-        </div>
+function RememberContent({ activeSub, setActiveSub }: { activeSub: RememberSub; setActiveSub: (s: RememberSub) => void }) {
+  return (
+    <div className="flex flex-col md:flex-row gap-4 items-start">
+      <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
+        {rememberSubs.map((sub) => (
+          <button
+            key={sub.key}
+            onClick={() => setActiveSub(sub.key)}
+            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+              activeSub === sub.key
+                ? "bg-gold/20 text-gold border border-gold/40"
+                : "text-themed-muted hover:text-themed border sidebar-border"
+            }`}
+          >
+            {sub.icon}
+            {sub.label}
+          </button>
+        ))}
       </div>
-
-      {/* Speech & Conduct */}
-      <div>
-        <h3 className="text-lg font-semibold text-themed mb-3 px-1">Speech &amp; Conduct</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <ContentCard delay={0.05}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              &quot;Whoever believes in Allah and the Last Day, let him speak good or remain
-              silent.&quot;
-            </p>
-            <Ref text="Bukhari 78:49" />
-          </ContentCard>
-          <ContentCard delay={0.08}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Avoid backbiting — &quot;Would any of you like to eat the flesh of his dead
-              brother?&quot;
-            </p>
-            <Ref text="Quran 49:12" />
-          </ContentCard>
-          <ContentCard delay={0.11}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Be truthful — &quot;Truthfulness leads to righteousness, and righteousness leads to
-              Paradise.&quot;
-            </p>
-            <Ref text="Bukhari 78:121" />
-          </ContentCard>
-        </div>
-      </div>
-
-      {/* Sleeping */}
-      <div>
-        <h3 className="text-lg font-semibold text-themed mb-3 px-1">Sleeping</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <ContentCard delay={0.05}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Sleep on the right side.
-            </p>
-            <Ref text="Bukhari 80:8" />
-          </ContentCard>
-          <ContentCard delay={0.08}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Make wudu before bed.
-            </p>
-            <Ref text="Bukhari 4:113" />
-          </ContentCard>
-          <ContentCard delay={0.11}>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              Last words before sleep should be dhikr of Allah.
-            </p>
-            <Ref text="Bukhari 80:8" />
-          </ContentCard>
-        </div>
+      <div className="flex-1 min-w-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeSub}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+          >
+            {activeSub === "dunya" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ReminderCard
+                  arabic="كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ ۗ وَإِنَّمَا تُوَفَّوْنَ أُجُورَكُمْ يَوْمَ الْقِيَامَةِ"
+                  english="Every soul will taste death, and you will only be given your full compensation on the Day of Resurrection."
+                  source="Quran 3:185"
+                  delay={0.05}
+                />
+                <ReminderCard
+                  arabic="اعْلَمُوا أَنَّمَا الْحَيَاةُ الدُّنْيَا لَعِبٌ وَلَهْوٌ وَزِينَةٌ وَتَفَاخُرٌ بَيْنَكُمْ وَتَكَاثُرٌ فِي الْأَمْوَالِ وَالْأَوْلَادِ"
+                  english="Know that the life of this world is but amusement and diversion and adornment and boasting to one another and competition in increase of wealth and children."
+                  source="Quran 57:20"
+                  delay={0.1}
+                />
+                <ReminderCard
+                  arabic="مَا الدُّنْيَا فِي الْآخِرَةِ إِلَّا مِثْلُ مَا يَجْعَلُ أَحَدُكُمْ إِصْبَعَهُ فِي الْيَمِّ فَلْيَنْظُرْ بِمَ يَرْجِعُ"
+                  english="What is the dunya compared to the akhirah except like one of you dipping his finger in the sea — let him see what it returns with."
+                  source="Muslim 53:66"
+                  delay={0.15}
+                />
+                <ReminderCard
+                  arabic="لَوْ كَانَتِ الدُّنْيَا تَعْدِلُ عِنْدَ اللَّهِ جَنَاحَ بَعُوضَةٍ مَا سَقَى كَافِرًا مِنْهَا شَرْبَةَ مَاءٍ"
+                  english="If this world were worth the wing of a mosquito to Allah, He would not have given a disbeliever a single sip of water from it."
+                  source="Tirmidhi 36:17"
+                  delay={0.2}
+                />
+                <ReminderCard
+                  arabic="كُنْ فِي الدُّنْيَا كَأَنَّكَ غَرِيبٌ أَوْ عَابِرُ سَبِيلٍ"
+                  english="Be in this world as if you were a stranger or a traveler."
+                  source="Bukhari 81:5"
+                  delay={0.25}
+                />
+                <ReminderCard
+                  arabic="وَمَا الْحَيَاةُ الدُّنْيَا إِلَّا مَتَاعُ الْغُرُورِ"
+                  english="And the life of this world is nothing but the enjoyment of deception."
+                  source="Quran 3:185"
+                  delay={0.3}
+                />
+              </div>
+            )}
+            {activeSub === "death" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ReminderCard
+                  arabic="أَكْثِرُوا ذِكْرَ هَاذِمِ اللَّذَّاتِ"
+                  english="Remember often the destroyer of pleasures — death."
+                  source="Tirmidhi 36:4"
+                  delay={0.05}
+                />
+                <ReminderCard
+                  arabic="وَمَا تَدْرِي نَفْسٌ مَاذَا تَكْسِبُ غَدًا ۖ وَمَا تَدْرِي نَفْسٌ بِأَيِّ أَرْضٍ تَمُوتُ"
+                  english="No soul knows what it will earn tomorrow, and no soul knows in what land it will die."
+                  source="Quran 31:34"
+                  delay={0.1}
+                />
+                <ReminderCard
+                  arabic="أَيْنَمَا تَكُونُوا يُدْرِكْكُمُ الْمَوْتُ وَلَوْ كُنْتُمْ فِي بُرُوجٍ مُشَيَّدَةٍ"
+                  english="Wherever you may be, death will overtake you, even if you are in fortified towers."
+                  source="Quran 4:78"
+                  delay={0.15}
+                />
+                <ReminderCard
+                  arabic="اغْتَنِمْ خَمْسًا قَبْلَ خَمْسٍ: شَبَابَكَ قَبْلَ هَرَمِكَ وَصِحَّتَكَ قَبْلَ سَقَمِكَ وَغِنَاكَ قَبْلَ فَقْرِكَ وَفَرَاغَكَ قَبْلَ شُغْلِكَ وَحَيَاتَكَ قَبْلَ مَوْتِكَ"
+                  english="Take advantage of five before five: your youth before your old age, your health before your sickness, your wealth before your poverty, your free time before your busyness, and your life before your death."
+                  source="Shu'ab al-Iman 10248"
+                  delay={0.2}
+                />
+              </div>
+            )}
+            {activeSub === "grave" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ReminderCard
+                  arabic="إِنَّ الْقَبْرَ أَوَّلُ مَنَازِلِ الْآخِرَةِ فَإِنْ نَجَا مِنْهُ فَمَا بَعْدَهُ أَيْسَرُ مِنْهُ وَإِنْ لَمْ يَنْجُ مِنْهُ فَمَا بَعْدَهُ أَشَدُّ مِنْهُ"
+                  english="The grave is the first stage of the hereafter. If one is saved from it, then what comes after is easier. And if one is not saved from it, then what comes after is worse."
+                  source="Tirmidhi 36:5"
+                  delay={0.05}
+                />
+                <ReminderCard
+                  arabic="يَتْبَعُ الْمَيِّتَ ثَلاَثَةٌ فَيَرْجِعُ اثْنَانِ وَيَبْقَى مَعَهُ وَاحِدٌ يَتْبَعُهُ أَهْلُهُ وَمَالُهُ وَعَمَلُهُ فَيَرْجِعُ أَهْلُهُ وَمَالُهُ وَيَبْقَى عَمَلُهُ"
+                  english="Three follow the deceased: his family, his wealth, and his deeds. Two return and one remains — his family and wealth return, but his deeds remain with him."
+                  source="Bukhari 81:103"
+                  delay={0.1}
+                />
+              </div>
+            )}
+            {activeSub === "judgement" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ReminderCard
+                  arabic="فَمَنْ يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُ ۞ وَمَنْ يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُ"
+                  english="Whoever does an atom&apos;s weight of good will see it, and whoever does an atom&apos;s weight of evil will see it."
+                  source="Quran 99:7-8"
+                  delay={0.05}
+                />
+                <ReminderCard
+                  arabic="يَوْمَ تَجِدُ كُلُّ نَفْسٍ مَا عَمِلَتْ مِنْ خَيْرٍ مُحْضَرًا وَمَا عَمِلَتْ مِنْ سُوءٍ تَوَدُّ لَوْ أَنَّ بَيْنَهَا وَبَيْنَهُ أَمَدًا بَعِيدًا"
+                  english="The Day every soul will find what it has done of good presented before it, and what it has done of evil — it will wish there was a great distance between itself and that evil."
+                  source="Quran 3:30"
+                  delay={0.1}
+                />
+                <ReminderCard
+                  arabic="لَا تَزُولُ قَدَمَا عَبْدٍ يَوْمَ الْقِيَامَةِ حَتَّى يُسْأَلَ عَنْ عُمُرِهِ فِيمَا أَفْنَاهُ وَعَنْ عِلْمِهِ فِيمَا فَعَلَ وَعَنْ مَالِهِ مِنْ أَيْنَ اكْتَسَبَهُ وَفِيمَا أَنْفَقَهُ وَعَنْ جِسْمِهِ فِيمَا أَبْلَاهُ"
+                  english="The feet of a servant will not move on the Day of Judgement until he is asked about his life and how he spent it, his knowledge and what he did with it, his wealth and how he earned and spent it, and his body and how he used it."
+                  source="Tirmidhi 37:3"
+                  delay={0.15}
+                />
+                <ReminderCard
+                  arabic="يَوْمَ يَفِرُّ الْمَرْءُ مِنْ أَخِيهِ ۞ وَأُمِّهِ وَأَبِيهِ ۞ وَصَاحِبَتِهِ وَبَنِيهِ ۞ لِكُلِّ امْرِئٍ مِنْهُمْ يَوْمَئِذٍ شَأْنٌ يُغْنِيهِ"
+                  english="On the Day a man will flee from his brother, his mother, his father, his wife, and his children. For every person that Day will be a matter to occupy him."
+                  source="Quran 80:34-37"
+                  delay={0.2}
+                />
+              </div>
+            )}
+            {activeSub === "paradise" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ReminderCard
+                  arabic="فَلَا تَعْلَمُ نَفْسٌ مَا أُخْفِيَ لَهُمْ مِنْ قُرَّةِ أَعْيُنٍ جَزَاءً بِمَا كَانُوا يَعْمَلُونَ"
+                  english="No soul knows what has been hidden for them of comfort for the eyes as reward for what they used to do."
+                  source="Quran 32:17"
+                  delay={0.05}
+                />
+                <ReminderCard
+                  arabic="أَعْدَدْتُ لِعِبَادِيَ الصَّالِحِينَ مَا لاَ عَيْنٌ رَأَتْ وَلاَ أُذُنٌ سَمِعَتْ وَلاَ خَطَرَ عَلَى قَلْبِ بَشَرٍ"
+                  english="I have prepared for My righteous servants what no eye has seen, no ear has heard, and no human heart has ever imagined."
+                  source="Bukhari 59:55"
+                  delay={0.1}
+                />
+                <ReminderCard
+                  arabic="وَالْآخِرَةُ خَيْرٌ وَأَبْقَىٰ"
+                  english="And the Hereafter is better and more lasting."
+                  source="Quran 87:17"
+                  delay={0.15}
+                />
+                <ReminderCard
+                  arabic="مَوْضِعُ سَوْطِ أَحَدِكُمْ مِنَ الْجَنَّةِ خَيْرٌ مِنَ الدُّنْيَا وَمَا عَلَيْهَا"
+                  english="A space in Paradise the size of a whip is better than the entire world and everything in it."
+                  source="Bukhari 56:107"
+                  delay={0.2}
+                />
+                <ReminderCard
+                  arabic="وَسَارِعُوا إِلَىٰ مَغْفِرَةٍ مِنْ رَبِّكُمْ وَجَنَّةٍ عَرْضُهَا السَّمَاوَاتُ وَالْأَرْضُ أُعِدَّتْ لِلْمُتَّقِينَ"
+                  english="And hasten to forgiveness from your Lord and a Garden as wide as the heavens and earth, prepared for the righteous."
+                  source="Quran 3:133"
+                  delay={0.25}
+                />
+                <ReminderCard
+                  arabic="وُجُوهٌ يَوْمَئِذٍ نَاضِرَةٌ ۞ إِلَىٰ رَبِّهَا نَاظِرَةٌ"
+                  english="Some faces that Day will be radiant, looking at their Lord."
+                  source="Quran 75:22-23"
+                  delay={0.3}
+                />
+              </div>
+            )}
+            {activeSub === "mercy" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ReminderCard
+                  arabic="قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنْفُسِهِمْ لَا تَقْنَطُوا مِنْ رَحْمَةِ اللَّهِ ۚ إِنَّ اللَّهَ يَغْفِرُ الذُّنُوبَ جَمِيعًا"
+                  english="Say: O My servants who have transgressed against themselves, do not despair of the mercy of Allah. Indeed, Allah forgives all sins."
+                  source="Quran 39:53"
+                  delay={0.05}
+                />
+                <ReminderCard
+                  arabic="جَعَلَ اللَّهُ الرَّحْمَةَ مِائَةَ جُزْءٍ فَأَمْسَكَ عِنْدَهُ تِسْعَةً وَتِسْعِينَ جُزْءًا وَأَنْزَلَ فِي الْأَرْضِ جُزْءًا وَاحِدًا"
+                  english="Allah divided mercy into one hundred parts. He kept ninety-nine parts with Himself and sent down one part to the earth — and from that one part comes all the compassion the creatures show to one another."
+                  source="Bukhari 78:31"
+                  delay={0.1}
+                />
+                <ReminderCard
+                  arabic="إِنَّ مَعَ الْعُسْرِ يُسْرًا"
+                  english="Indeed, with hardship comes ease."
+                  source="Quran 94:6"
+                  delay={0.15}
+                />
+                <ReminderCard
+                  arabic="أَنَا عِنْدَ ظَنِّ عَبْدِي بِي"
+                  english="I am as My servant thinks of Me."
+                  source="Bukhari 97:34"
+                  delay={0.2}
+                />
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -1247,7 +1541,7 @@ function MuslimDailyContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<MainTab>(() => {
     const tab = searchParams.get("tab");
-    if (tab === "worship" || tab === "sunnah" || tab === "checklist") return tab;
+    if (tab === "worship" || tab === "sunnah" || tab === "checklist" || tab === "remember") return tab;
     return "worship";
   });
   const [worshipSub, setWorshipSub] = useState<WorshipSub>(() => {
@@ -1255,6 +1549,8 @@ function MuslimDailyContent() {
     if (sub === "morning" || sub === "afternoon" || sub === "evening" || sub === "sleep" || sub === "midnight") return sub;
     return "morning";
   });
+  const [sunnahSub, setSunnahSub] = useState<SunnahSub>("eating");
+  const [rememberSub, setRememberSub] = useState<RememberSub>("dunya");
 
   return (
     <div>
@@ -1293,8 +1589,9 @@ function MuslimDailyContent() {
               transition={{ duration: 0.25 }}
             >
               {activeTab === "worship" && <WorshipContent activeSub={worshipSub} setActiveSub={setWorshipSub} />}
-              {activeTab === "sunnah" && <SunnahTab />}
+              {activeTab === "sunnah" && <SunnahContent activeSub={sunnahSub} setActiveSub={setSunnahSub} />}
               {activeTab === "checklist" && <ChecklistTab />}
+              {activeTab === "remember" && <RememberContent activeSub={rememberSub} setActiveSub={setRememberSub} />}
             </motion.div>
           </AnimatePresence>
         </div>
