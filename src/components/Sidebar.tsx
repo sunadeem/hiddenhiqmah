@@ -79,6 +79,7 @@ const navSections: NavSection[] = [
       { href: "/muslim-daily", label: "Muslim Daily", labelAr: "يوميات المسلم", icon: ListChecks },
       { href: "/duas", label: "Duas", labelAr: "الدعاء", icon: HandHeart },
       { href: "/dhikr", label: "Dhikr", labelAr: "الذكر", icon: Repeat },
+      { href: "/family", label: "Family", labelAr: "الأسرة", icon: Users },
       { href: "/marriage", label: "Marriage", labelAr: "الزواج", icon: HeartHandshake },
     ],
   },
