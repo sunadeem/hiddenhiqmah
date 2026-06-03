@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:mobile": "BUILD_TARGET=mobile next build",
     "start": "next start",
     "lint": "eslint"
   },
