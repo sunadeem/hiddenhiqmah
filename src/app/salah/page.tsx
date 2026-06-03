@@ -2364,14 +2364,16 @@ function SalahContent() {
                     <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-gold/[0.04] blur-3xl pointer-events-none" />
 
                     <div className="relative">
-                      <p className="text-[11px] text-themed-muted uppercase tracking-[0.2em] mb-3">Up Next</p>
-                      <div className="flex items-baseline gap-3 mb-1">
-                        <p className="text-gold text-3xl sm:text-4xl font-semibold">{ptNextPrayerKey}</p>
-                        <p className="text-themed-muted text-sm">at {win ? win.nextTime : ""}</p>
+                      <div className="text-center">
+                        <p className="text-[11px] text-themed-muted uppercase tracking-[0.2em] mb-3">Up Next</p>
+                        <div className="flex items-baseline justify-center gap-3 mb-1">
+                          <p className="text-gold text-3xl sm:text-4xl font-semibold">{ptNextPrayerKey}</p>
+                          <p className="text-themed-muted text-sm">at {win ? win.nextTime : ""}</p>
+                        </div>
+                        <p className="font-mono text-4xl sm:text-5xl md:text-6xl text-themed tracking-wider mt-4 mb-6 sm:mb-8 tabular-nums">
+                          {ptCountdown}
+                        </p>
                       </div>
-                      <p className="font-mono text-4xl sm:text-5xl md:text-6xl text-themed tracking-wider mt-4 mb-6 sm:mb-8 tabular-nums">
-                        {ptCountdown}
-                      </p>
 
                       {win && (
                         <div>
