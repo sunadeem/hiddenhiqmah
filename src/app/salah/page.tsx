@@ -1672,15 +1672,14 @@ function QiblahSection() {
               </div>
 
               {/* Fixed user-facing arrow — only shown when a device compass is available.
-                  Arrow always points straight up from the top of the dial; when the Ka'bah
-                  marker rotates under it, the user is facing the qiblah. */}
+                  Centered inside the dial, always points straight up. When the Ka'bah marker
+                  rotates so it sits at the top, the user is facing the qiblah. */}
               {heading !== null && (
-                <div className="absolute inset-0 flex items-start justify-center pointer-events-none">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <svg
-                    width="44"
-                    height="44"
+                    width="56"
+                    height="56"
                     viewBox="0 0 24 24"
-                    style={{ marginTop: "10px" }}
                     className={
                       Math.abs(((heading - qiblahBearing + 540) % 360) - 180) < 5
                         ? "text-gold drop-shadow-[0_0_12px_rgba(212,168,67,0.9)]"
