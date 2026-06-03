@@ -26,7 +26,15 @@ import {
   Search,
   MapPin,
   LocateFixed,
+  Volume2,
+  Play,
+  StopCircle,
+  Compass,
+  Navigation,
+  Settings2,
 } from "lucide-react";
+import { useAdhanAudio } from "@/context/AdhanAudioContext";
+import { formatLocation, reverseGeocode } from "@/lib/location";
 
 /* ───────────────────────── prayer step data ───────────────────────── */
 
@@ -552,6 +560,9 @@ interface AladhanResponse {
     date: {
       hijri: HijriDate;
     };
+    meta?: {
+      timezone?: string;
+    };
   };
 }
 
@@ -591,24 +602,67 @@ function formatCountdown(ms: number): string {
   return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
-function getNextPrayerInfo(timings: PrayerTimings): { key: string; timeUntil: number } | null {
-  const now = new Date();
+// Get the current time (hours/minutes/seconds + total seconds since midnight) in a specific timezone.
+// If timezone is undefined, uses the browser's local timezone.
+function getNowParts(timezone?: string): {
+  hours: number;
+  minutes: number;
+  seconds: number;
+  totalSeconds: number;
+} {
+  const date = new Date();
+  if (!timezone) {
+    const h = date.getHours();
+    const m = date.getMinutes();
+    const s = date.getSeconds();
+    return { hours: h, minutes: m, seconds: s, totalSeconds: h * 3600 + m * 60 + s };
+  }
+  try {
+    const fmt = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+    });
+    const parts = fmt.formatToParts(date);
+    let h = 0;
+    let m = 0;
+    let s = 0;
+    for (const p of parts) {
+      if (p.type === "hour") h = parseInt(p.value, 10) % 24;
+      else if (p.type === "minute") m = parseInt(p.value, 10);
+      else if (p.type === "second") s = parseInt(p.value, 10);
+    }
+    return { hours: h, minutes: m, seconds: s, totalSeconds: h * 3600 + m * 60 + s };
+  } catch {
+    const h = date.getHours();
+    const m = date.getMinutes();
+    const s = date.getSeconds();
+    return { hours: h, minutes: m, seconds: s, totalSeconds: h * 3600 + m * 60 + s };
+  }
+}
+
+function getNextPrayerInfo(timings: PrayerTimings, timezone?: string): { key: string; timeUntil: number } | null {
+  const nowSec = getNowParts(timezone).totalSeconds;
   const prayerKeys = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"] as const;
   for (const key of prayerKeys) {
     const raw = timings[key];
     if (!raw) continue;
     const clean = raw.replace(/\s*\(.*\)/, "");
-    const prayerTime = parseTime(clean);
-    if (prayerTime > now) {
-      return { key, timeUntil: prayerTime.getTime() - now.getTime() };
+    const [h, m] = clean.split(":").map(Number);
+    const prayerSec = h * 3600 + m * 60;
+    if (prayerSec > nowSec) {
+      return { key, timeUntil: (prayerSec - nowSec) * 1000 };
     }
   }
+  // Wrap to next day's Fajr
   const fajrRaw = timings.Fajr;
   if (!fajrRaw) return null;
   const clean = fajrRaw.replace(/\s*\(.*\)/, "");
-  const tomorrow = parseTime(clean);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return { key: "Fajr", timeUntil: tomorrow.getTime() - now.getTime() };
+  const [h, m] = clean.split(":").map(Number);
+  const fajrSec = h * 3600 + m * 60;
+  return { key: "Fajr", timeUntil: ((24 * 3600 - nowSec) + fajrSec) * 1000 };
 }
 
 function formatDisplayTime(raw: string) {
@@ -617,6 +671,69 @@ function formatDisplayTime(raw: string) {
   const ampm = h >= 12 ? "PM" : "AM";
   const h12 = h % 12 || 12;
   return `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
+}
+
+// Minutes since midnight for a "HH:MM" or "HH:MM (TZ)" string
+function timeStringToMinutes(raw: string): number {
+  const clean = raw.replace(/\s*\(.*\)/, "");
+  const [h, m] = clean.split(":").map(Number);
+  return h * 60 + m;
+}
+
+interface WindowProgress {
+  prevKey: string;
+  prevTime: string;
+  nextKey: string;
+  nextTime: string;
+  progress: number; // 0..1, current position within the [prev, next] window
+}
+
+// Determine the current "window" — the prayer just past and the prayer coming up —
+// and what fraction of that window has elapsed. Timezone-aware.
+function getWindowProgress(timings: PrayerTimings, nextKey: string, timezone?: string): WindowProgress | null {
+  const order: (keyof PrayerTimings)[] = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+  const idx = order.indexOf(nextKey as keyof PrayerTimings);
+  if (idx === -1) return null;
+
+  const nowParts = getNowParts(timezone);
+  const nowMin = nowParts.hours * 60 + nowParts.minutes + nowParts.seconds / 60;
+
+  let prevKey: string;
+  let prevMin: number;
+
+  if (idx === 0) {
+    // Before Fajr — previous "window start" is yesterday's Isha (approximated as Isha - 24h)
+    const ishaRaw = timings.Isha;
+    if (!ishaRaw) return null;
+    prevKey = "Isha";
+    prevMin = timeStringToMinutes(ishaRaw) - 24 * 60;
+  } else {
+    const prevKeyTyped = order[idx - 1];
+    const prevRaw = timings[prevKeyTyped];
+    if (!prevRaw) return null;
+    prevKey = prevKeyTyped;
+    prevMin = timeStringToMinutes(prevRaw);
+  }
+
+  const nextRaw = timings[nextKey as keyof PrayerTimings];
+  if (!nextRaw) return null;
+  let nextMin = timeStringToMinutes(nextRaw);
+
+  // If next prayer time has already passed today (only happens for Fajr-next-day),
+  // shift it forward by 24h
+  if (nextMin < nowMin && idx === 0) nextMin += 24 * 60;
+
+  const total = nextMin - prevMin;
+  const elapsed = nowMin - prevMin;
+  const progress = total > 0 ? Math.max(0, Math.min(1, elapsed / total)) : 0;
+
+  return {
+    prevKey,
+    prevTime: formatDisplayTime(timings[prevKey as keyof PrayerTimings] || ""),
+    nextKey,
+    nextTime: formatDisplayTime(nextRaw),
+    progress,
+  };
 }
 
 /* ───────────────────────── wudu data ───────────────────────── */
@@ -898,9 +1015,11 @@ const wuduTopics: WuduTopic[] = [
 
 const sections = [
   { key: "times", label: "Prayer Times" },
-  { key: "intro", label: "What is Salah?" },
+  { key: "qiblah", label: "Qiblah" },
+  { key: "intro", label: "Salah" },
   { key: "importance", label: "Why It Matters" },
   { key: "wudu", label: "Wudu" },
+  { key: "adhan", label: "Adhan & Iqamah" },
   { key: "prayers", label: "The Five Prayers" },
   { key: "voluntary", label: "Voluntary & Special" },
 ] as const;
@@ -1273,6 +1392,497 @@ function PrayerInfoCard({
   );
 }
 
+/* ───────────────────────── Qiblah section ───────────────────────── */
+
+const KAABA_LAT = 21.4225;
+const KAABA_LNG = 39.8262;
+
+function calcQiblahBearing(lat: number, lng: number): number {
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const toDeg = (r: number) => (r * 180) / Math.PI;
+  const lat1 = toRad(lat);
+  const lng1 = toRad(lng);
+  const lat2 = toRad(KAABA_LAT);
+  const lng2 = toRad(KAABA_LNG);
+  const y = Math.sin(lng2 - lng1) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1);
+  const bearing = (toDeg(Math.atan2(y, x)) + 360) % 360;
+  return bearing;
+}
+
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+function compassDirection(degrees: number): string {
+  const dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+  return dirs[Math.round(degrees / 22.5) % 16];
+}
+
+type QiblahState = {
+  lat: number;
+  lng: number;
+  city: string;
+};
+
+interface DeviceOrientationEventWithPermission {
+  requestPermission?: () => Promise<"granted" | "denied">;
+}
+
+function QiblahSection() {
+  const [loc, setLoc] = useState<QiblahState | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [heading, setHeading] = useState<number | null>(null);
+  const [needsPermission, setNeedsPermission] = useState(false);
+
+  const fetchLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setError("Your browser does not support geolocation.");
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        let city = "Your location";
+        const geo = await reverseGeocode(latitude, longitude);
+        if (geo) city = formatLocation(geo) || "Unknown";
+        setLoc({ lat: latitude, lng: longitude, city });
+        setLoading(false);
+        setError(null);
+      },
+      () => {
+        setError("Couldn't get your location. Allow location access and try again.");
+        setLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  }, []);
+
+  useEffect(() => {
+    fetchLocation();
+  }, [fetchLocation]);
+
+  // Device orientation (compass) — sets up listener and handles iOS permission
+  useEffect(() => {
+    const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
+      .DeviceOrientationEvent;
+    if (!DeviceOrientationEventCls) return;
+    if (typeof DeviceOrientationEventCls.requestPermission === "function") {
+      // iOS: needs explicit permission
+      setNeedsPermission(true);
+      return;
+    }
+    // Other platforms: just attach listener
+    const handler = (e: DeviceOrientationEvent) => {
+      const webkitHeading = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
+      if (typeof webkitHeading === "number") {
+        setHeading(webkitHeading);
+      } else if (typeof e.alpha === "number") {
+        // alpha = rotation around z; 0 = north for absolute, but most browsers give relative
+        setHeading((360 - e.alpha) % 360);
+      }
+    };
+    window.addEventListener("deviceorientationabsolute", handler as EventListener);
+    window.addEventListener("deviceorientation", handler);
+    return () => {
+      window.removeEventListener("deviceorientationabsolute", handler as EventListener);
+      window.removeEventListener("deviceorientation", handler);
+    };
+  }, []);
+
+  const requestCompassPermission = async () => {
+    const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
+      .DeviceOrientationEvent;
+    if (!DeviceOrientationEventCls?.requestPermission) return;
+    const res = await DeviceOrientationEventCls.requestPermission();
+    if (res === "granted") {
+      setNeedsPermission(false);
+      const handler = (e: DeviceOrientationEvent) => {
+        const webkitHeading = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
+        if (typeof webkitHeading === "number") {
+          setHeading(webkitHeading);
+        } else if (typeof e.alpha === "number") {
+          setHeading((360 - e.alpha) % 360);
+        }
+      };
+      window.addEventListener("deviceorientation", handler);
+    }
+  };
+
+  const qiblahBearing = loc ? calcQiblahBearing(loc.lat, loc.lng) : null;
+  const distanceKm = loc ? haversineKm(loc.lat, loc.lng, KAABA_LAT, KAABA_LNG) : null;
+  // If we have a live device heading, the arrow rotates relative to it
+  const arrowRotation = qiblahBearing !== null && heading !== null ? qiblahBearing - heading : qiblahBearing ?? 0;
+
+  return (
+    <div className="space-y-6">
+      {/* Intro */}
+      <ContentCard delay={0.05}>
+        <h3 className="text-gold font-semibold text-lg mb-3">What is the Qiblah?</h3>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          The <span className="text-gold">qiblah</span> is the direction Muslims face during salah — toward the <span className="text-gold">Ka&apos;bah</span> in Makkah. It unites the entire ummah: at any moment of day or night, somewhere on earth a Muslim is praying, and they are all facing the same point.
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          For the first 16-17 months in Madinah, the Prophet ﷺ and the believers faced <span className="text-gold">Jerusalem</span> during prayer. Then Allah revealed:
+        </p>
+        <div className="my-3">
+          <p className="font-arabic text-gold text-lg leading-loose mb-1">
+            فَوَلِّ وَجْهَكَ شَطْرَ الْمَسْجِدِ الْحَرَامِ ۚ وَحَيْثُ مَا كُنتُمْ فَوَلُّوا وُجُوهَكُمْ شَطْرَهُ
+          </p>
+          <p className="text-themed text-sm leading-relaxed mb-1">Fawalli wajhaka shatra al-masjidi al-haram, wa haythu ma kuntum fawallu wujuhakum shatrah</p>
+          <p className="text-themed-muted text-sm leading-relaxed italic">&ldquo;Turn your face toward al-Masjid al-Haram. And wherever you are, turn your faces toward it.&rdquo;</p>
+          <p className="text-xs text-gold/80 mt-1">Quran 2:144</p>
+        </div>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          From that moment, every Muslim has faced Makkah in prayer.
+        </p>
+      </ContentCard>
+
+      {/* Compass */}
+      <ContentCard delay={0.08}>
+        <h3 className="text-gold font-semibold text-lg mb-3 flex items-center gap-2">
+          <Compass size={18} /> Qiblah Direction From Your Location
+        </h3>
+
+        {loading && <p className="text-themed-muted text-sm">Detecting your location…</p>}
+
+        {error && (
+          <div>
+            <p className="text-themed-muted text-sm mb-3">{error}</p>
+            <button
+              onClick={fetchLocation}
+              className="px-4 py-2 rounded-lg card-bg border sidebar-border text-themed hover:border-gold/40 hover:text-gold transition-colors text-sm font-medium"
+            >
+              Try again
+            </button>
+          </div>
+        )}
+
+        {loc && qiblahBearing !== null && (
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            {/* Compass visual */}
+            <div className="relative w-56 h-56 shrink-0">
+              <div
+                className="absolute inset-0 rounded-full border-2 border-gold/30 bg-gold/[0.03] transition-transform duration-200"
+                style={{ transform: heading !== null ? `rotate(${-heading}deg)` : "none" }}
+              >
+                {/* Cardinal markers */}
+                {[
+                  { label: "N", deg: 0, color: "text-gold" },
+                  { label: "E", deg: 90 },
+                  { label: "S", deg: 180 },
+                  { label: "W", deg: 270 },
+                ].map(({ label, deg, color }) => (
+                  <div
+                    key={label}
+                    className="absolute inset-0 flex items-start justify-center"
+                    style={{ transform: `rotate(${deg}deg)` }}
+                  >
+                    <span className={`text-xs font-semibold mt-1 ${color ?? "text-themed-muted"}`} style={{ transform: `rotate(${-deg}deg)` }}>
+                      {label}
+                    </span>
+                  </div>
+                ))}
+                {/* Tick marks */}
+                {Array.from({ length: 24 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute left-1/2 top-0 h-2 w-px bg-themed-muted/30"
+                    style={{ transform: `translateX(-50%) rotate(${i * 15}deg)`, transformOrigin: "bottom center", top: 6 }}
+                  />
+                ))}
+                {/* Qiblah arrow */}
+                <div
+                  className="absolute inset-0 flex items-start justify-center transition-transform duration-200"
+                  style={{ transform: `rotate(${arrowRotation}deg)` }}
+                >
+                  <div className="flex flex-col items-center mt-2">
+                    <Navigation size={30} className="text-gold drop-shadow-[0_0_8px_rgba(212,168,67,0.6)]" fill="currentColor" />
+                  </div>
+                </div>
+              </div>
+              {/* Center label */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="text-center">
+                  <p className="text-2xl font-semibold text-gold font-mono">{Math.round(qiblahBearing)}°</p>
+                  <p className="text-[10px] uppercase tracking-wider text-themed-muted">{compassDirection(qiblahBearing)}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Details */}
+            <div className="flex-1 space-y-2 text-sm">
+              <p className="text-themed-muted">From <span className="text-themed">{loc.city}</span></p>
+              <p className="text-themed-muted">
+                Bearing: <span className="text-gold font-mono">{qiblahBearing.toFixed(1)}°</span> from true North ({compassDirection(qiblahBearing)})
+              </p>
+              {distanceKm && (
+                <p className="text-themed-muted">
+                  Distance to Ka&apos;bah: <span className="text-themed font-mono">{Math.round(distanceKm).toLocaleString()} km</span> <span className="text-themed-muted">/</span> <span className="text-themed font-mono">{Math.round(distanceKm * 0.621371).toLocaleString()} mi</span>
+                </p>
+              )}
+              {needsPermission && (
+                <button
+                  onClick={requestCompassPermission}
+                  className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg bg-gold/20 text-gold border border-gold/40 hover:bg-gold/30 transition-colors text-sm font-medium"
+                >
+                  <Compass size={16} /> Enable live compass
+                </button>
+              )}
+              {heading === null && !needsPermission && (
+                <>
+                  <p className="text-xs text-themed-muted mt-3">
+                    Hold a compass (or use a compass app) and align it so the needle points to <span className="text-gold font-mono">{Math.round(qiblahBearing)}°</span>. That direction is the qiblah from where you are standing.
+                  </p>
+                  <p className="text-xs text-gold/80 mt-2">
+                    Tip: Visit this page on your phone for a live qiblah direction using its built-in compass.
+                  </p>
+                </>
+              )}
+              {heading !== null && (
+                <p className="text-xs text-themed-muted mt-3">
+                  The arrow points to the qiblah based on which way your device is facing. Hold your phone flat for the most accurate reading.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+      </ContentCard>
+
+      {/* If you're not sure */}
+      <ContentCard delay={0.11}>
+        <h3 className="text-gold font-semibold text-lg mb-3">What if I&apos;m not sure which way to face?</h3>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          Do your best. If you genuinely tried to determine the qiblah and prayed in good faith, your prayer is valid even if you later discover you were facing the wrong direction. The Prophet ﷺ said:
+        </p>
+        <div className="my-3">
+          <p className="text-themed-muted text-sm leading-relaxed italic">
+            &ldquo;What is between the east and the west is qiblah.&rdquo;
+          </p>
+          <p className="text-xs text-gold/80 mt-1">
+            <HadithRefText text="Tirmidhi 2:194" className="inline" />
+          </p>
+        </div>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          This was the Prophet&apos;s ﷺ guidance for the people of Madinah (north of Makkah), meaning the entire southern arc was acceptable when precise direction was unknown. The principle generalizes: when in doubt, face the most likely direction with sincerity. If you can use a compass or compass app, do so. If not, ask a Muslim local or use the sun.
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          For travelers on planes, trains, or in cars where exact direction is impossible, face whatever direction you can and pray — Allah does not burden a soul beyond its capacity (Quran 2:286).
+        </p>
+      </ContentCard>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Quran 2:142-145", desc: "The change of qiblah from Jerusalem to the Ka'bah" },
+        { ref: "Quran 2:144", desc: "Turn your face toward al-Masjid al-Haram" },
+        { ref: "Tirmidhi 2:194", desc: "What is between east and west is qiblah" },
+        { ref: "Quran 2:286", desc: "Allah does not burden a soul beyond its capacity" },
+      ]} />
+    </div>
+  );
+}
+
+/* ───────────────────────── Adhan & Iqamah section ───────────────────────── */
+
+function AdhanSection() {
+  const { settings, updateSettings, playing, startManual, stop } = useAdhanAudio();
+
+  return (
+    <div className="space-y-6">
+      {/* Intro */}
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The <span className="text-gold">adhan</span> is the call to prayer that announces the time has come. The <span className="text-gold">iqamah</span> is a second, shorter call made by someone in the congregation just before the prayer begins, signaling everyone to stand and align in rows. Below you can read both, and optionally turn on automatic adhan playback at prayer times.
+        </p>
+        <p className="text-themed-muted text-xs leading-relaxed mt-2">
+          <span className="text-gold/80 font-medium">Note:</span> Automatic adhan playback only works while this site is open in a browser tab. Phones and laptops cannot run background audio when the site is closed.
+        </p>
+      </ContentCard>
+
+      {/* Adhan settings panel */}
+      <ContentCard delay={0.08}>
+        <h3 className="text-gold font-semibold text-lg mb-4 flex items-center gap-2">
+          <Volume2 size={18} />
+          Auto-Play Adhan
+        </h3>
+
+        <label className="flex items-center justify-between gap-3 cursor-pointer">
+          <div>
+            <p className="text-themed text-sm font-medium">Play Adhan at prayer times</p>
+            <p className="text-themed-muted text-xs">Plays automatically at each calculated prayer time while this tab is open</p>
+          </div>
+          <input
+            type="checkbox"
+            checked={settings.adhanEnabled}
+            onChange={(e) => updateSettings({ adhanEnabled: e.target.checked })}
+            className="w-5 h-5 accent-gold cursor-pointer"
+          />
+        </label>
+
+        <div className="mt-5 pt-5 border-t sidebar-border flex flex-wrap gap-2">
+          {playing ? (
+            <button
+              onClick={stop}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gold/20 text-gold border border-gold/40 hover:bg-gold/30 transition-colors text-sm font-medium"
+            >
+              <StopCircle size={16} /> Stop Adhan
+            </button>
+          ) : (
+            <button
+              onClick={startManual}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg card-bg border sidebar-border text-themed hover:border-gold/40 hover:text-gold transition-colors text-sm font-medium"
+            >
+              <Play size={16} /> Play Adhan
+            </button>
+          )}
+        </div>
+        <p className="text-xs text-themed-muted mt-3">
+          Adhan recitation by Omar Hisham Al Arabi.
+        </p>
+      </ContentCard>
+
+      {/* Adhan text */}
+      <ContentCard delay={0.11}>
+        <h3 className="text-gold font-semibold text-lg mb-3">The Adhan</h3>
+        <div className="space-y-3 text-sm">
+          <AdhanLine
+            arabic="اللَّهُ أَكْبَر، اللَّهُ أَكْبَر، اللَّهُ أَكْبَر، اللَّهُ أَكْبَر"
+            transliteration="Allahu Akbar, Allahu Akbar, Allahu Akbar, Allahu Akbar"
+            english="Allah is the Greatest (×4)"
+          />
+          <AdhanLine
+            arabic="أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّه، أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّه"
+            transliteration="Ash-hadu an la ilaha illa Allah (×2)"
+            english="I bear witness that there is no god but Allah (×2)"
+          />
+          <AdhanLine
+            arabic="أَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّه، أَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّه"
+            transliteration="Ash-hadu anna Muhammadan Rasulullah (×2)"
+            english="I bear witness that Muhammad is the Messenger of Allah (×2)"
+          />
+          <AdhanLine
+            arabic="حَيَّ عَلَى الصَّلَاة، حَيَّ عَلَى الصَّلَاة"
+            transliteration="Hayya 'ala-s-Salah (×2)"
+            english="Come to prayer (×2)"
+          />
+          <AdhanLine
+            arabic="حَيَّ عَلَى الْفَلَاح، حَيَّ عَلَى الْفَلَاح"
+            transliteration="Hayya 'ala-l-Falah (×2)"
+            english="Come to success (×2)"
+          />
+          <AdhanLine
+            arabic="اللَّهُ أَكْبَر، اللَّهُ أَكْبَر"
+            transliteration="Allahu Akbar, Allahu Akbar"
+            english="Allah is the Greatest (×2)"
+          />
+          <AdhanLine
+            arabic="لَا إِلَٰهَ إِلَّا اللَّه"
+            transliteration="La ilaha illa Allah"
+            english="There is no god but Allah"
+          />
+        </div>
+        <div className="mt-4 pt-4 border-t sidebar-border">
+          <p className="text-themed text-sm font-medium mb-2">For Fajr only, after &ldquo;Hayya &apos;ala-l-Falah&rdquo;:</p>
+          <AdhanLine
+            arabic="الصَّلَاةُ خَيْرٌ مِنَ النَّوْم، الصَّلَاةُ خَيْرٌ مِنَ النَّوْم"
+            transliteration="As-salatu khayrun min an-nawm (×2)"
+            english="Prayer is better than sleep (×2)"
+          />
+        </div>
+        <p className="text-xs text-themed-muted mt-4">
+          The adhan was given to the Muslims through a dream of &apos;Abdullah ibn Zayd, confirmed by &apos;Umar ibn al-Khattab&apos;s dream, and approved by the Prophet ﷺ — narrated in <HadithRefText text="Abu Dawud 2:109" className="inline text-gold/80" />.
+        </p>
+      </ContentCard>
+
+      {/* Iqamah text */}
+      <ContentCard delay={0.14}>
+        <h3 className="text-gold font-semibold text-lg mb-3">The Iqamah</h3>
+        <p className="text-themed-muted text-sm leading-relaxed mb-2">
+          The iqamah is the second call to prayer. It is given <span className="text-gold">just before</span> the congregational prayer starts, after people have already gathered. It signals everyone to stand and align in rows behind the imam.
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          Its wording is almost identical to the adhan but <span className="text-gold">shorter</span> — most phrases are said only once instead of twice, and it adds the line <span className="font-arabic text-gold">قَدْ قَامَتِ الصَّلَاة</span> (&ldquo;the prayer has begun&rdquo;). The iqamah is typically called by a member of the congregation when the imam is ready. The timing depends on local masjid practice — usually 10-25 minutes after the adhan to give people time to arrive.
+        </p>
+        <div className="space-y-3 text-sm">
+          <AdhanLine
+            arabic="اللَّهُ أَكْبَر، اللَّهُ أَكْبَر"
+            transliteration="Allahu Akbar, Allahu Akbar"
+            english="Allah is the Greatest (×2)"
+          />
+          <AdhanLine
+            arabic="أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّه"
+            transliteration="Ash-hadu an la ilaha illa Allah"
+            english="I bear witness that there is no god but Allah"
+          />
+          <AdhanLine
+            arabic="أَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّه"
+            transliteration="Ash-hadu anna Muhammadan Rasulullah"
+            english="I bear witness that Muhammad is the Messenger of Allah"
+          />
+          <AdhanLine
+            arabic="حَيَّ عَلَى الصَّلَاة"
+            transliteration="Hayya 'ala-s-Salah"
+            english="Come to prayer"
+          />
+          <AdhanLine
+            arabic="حَيَّ عَلَى الْفَلَاح"
+            transliteration="Hayya 'ala-l-Falah"
+            english="Come to success"
+          />
+          <AdhanLine
+            arabic="قَدْ قَامَتِ الصَّلَاة، قَدْ قَامَتِ الصَّلَاة"
+            transliteration="Qad qamati-s-Salah (×2)"
+            english="The prayer has begun (×2)"
+          />
+          <AdhanLine
+            arabic="اللَّهُ أَكْبَر، اللَّهُ أَكْبَر"
+            transliteration="Allahu Akbar, Allahu Akbar"
+            english="Allah is the Greatest (×2)"
+          />
+          <AdhanLine
+            arabic="لَا إِلَٰهَ إِلَّا اللَّه"
+            transliteration="La ilaha illa Allah"
+            english="There is no god but Allah"
+          />
+        </div>
+      </ContentCard>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Abu Dawud 2:109", desc: "Origin of the adhan — the dream of 'Abdullah ibn Zayd" },
+        { ref: "Bukhari 10:2", desc: "The origin of the adhan as a public call to congregational prayer" },
+        { ref: "Bukhari 10:3", desc: "The iqamah — phrases said once except takbir and 'qad qamati-s-salah'" },
+      ]} />
+    </div>
+  );
+}
+
+function AdhanLine({
+  arabic,
+  transliteration,
+  english,
+}: {
+  arabic: string;
+  transliteration: string;
+  english: string;
+}) {
+  return (
+    <div className="space-y-1">
+      <p className="font-arabic text-gold text-lg leading-loose">{arabic}</p>
+      <p className="text-themed text-sm leading-relaxed">{transliteration}</p>
+      <p className="text-themed-muted text-sm leading-relaxed italic">{english}</p>
+    </div>
+  );
+}
+
 /* ───────────────────────── page ───────────────────────── */
 
 function SalahContent() {
@@ -1285,8 +1895,12 @@ function SalahContent() {
   const [showGuide, setShowGuide] = useState(false);
   const [search, setSearch] = useState("");
 
+  /* ── Adhan audio context ── */
+  const adhan = useAdhanAudio();
+
   /* ── Prayer Times state ── */
   const [ptTimings, setPtTimings] = useState<PrayerTimings | null>(null);
+  const [ptTimezone, setPtTimezone] = useState<string | undefined>(undefined);
   const [ptHijri, setPtHijri] = useState<HijriDate | null>(null);
   const [ptCity, setPtCity] = useState("");
   const [ptCountry, setPtCountry] = useState("");
@@ -1301,6 +1915,7 @@ function SalahContent() {
   const [ptShowSuggestions, setPtShowSuggestions] = useState(false);
   const [ptSearching, setPtSearching] = useState(false);
   const [ptShowManualInput, setPtShowManualInput] = useState(false);
+  const [ptShowMethodMenu, setPtShowMethodMenu] = useState(false);
   const [ptLocating, setPtLocating] = useState(false);
   const ptIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const ptFetched = useRef(false);
@@ -1319,6 +1934,7 @@ function SalahContent() {
         const data: AladhanResponse = await res.json();
         setPtTimings(data.data.timings);
         setPtHijri(data.data.date.hijri);
+        setPtTimezone(data.data.meta?.timezone);
         setPtCity(c);
         setPtCountry(co);
         setPtDisplayLocation(`${c}, ${co}`);
@@ -1343,6 +1959,7 @@ function SalahContent() {
         const data: AladhanResponse = await res.json();
         setPtTimings(data.data.timings);
         setPtHijri(data.data.date.hijri);
+        setPtTimezone(data.data.meta?.timezone);
       } catch {
         setPtError("Could not load prayer times.");
       } finally {
@@ -1361,21 +1978,19 @@ function SalahContent() {
         // Fetch prayer times directly by coordinates (most reliable)
         ptFetchTimesByCoords(latitude, longitude, ptMethod);
         // Resolve display name in parallel
-        try {
-          const geoRes = await fetch(
-            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-          );
-          const geo = await geoRes.json();
-          const city = geo.city || geo.locality || geo.principalSubdivision || "";
+        const geo = await reverseGeocode(latitude, longitude);
+        if (geo) {
+          const city = geo.city || geo.principalSubdivision || "";
           const country = geo.countryName || "";
-          if (city || country) {
+          const display = formatLocation(geo);
+          if (display) {
             setPtCity(city);
             setPtCountry(country);
-            setPtDisplayLocation(city && country ? `${city}, ${country}` : city || country);
+            setPtDisplayLocation(display);
           } else {
             setPtDisplayLocation(`${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`);
           }
-        } catch {
+        } else {
           setPtDisplayLocation(`${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`);
         }
         setPtLocating(false);
@@ -1388,7 +2003,7 @@ function SalahContent() {
         ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
         setPtLocating(false);
       },
-      { timeout: 8000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ptFetchTimesByCoords, ptFetchTimesByCity]);
@@ -1412,7 +2027,7 @@ function SalahContent() {
     if (!ptTimings) return;
     function tick() {
       if (!ptTimings) return;
-      const next = getNextPrayerInfo(ptTimings);
+      const next = getNextPrayerInfo(ptTimings, ptTimezone);
       if (next) {
         setPtNextPrayerKey(next.key);
         setPtCountdown(formatCountdown(next.timeUntil));
@@ -1423,7 +2038,12 @@ function SalahContent() {
     return () => {
       if (ptIntervalRef.current) clearInterval(ptIntervalRef.current);
     };
-  }, [ptTimings]);
+  }, [ptTimings, ptTimezone]);
+
+  // Push prayer timings into the adhan audio context (which handles scheduling globally)
+  useEffect(() => {
+    if (ptTimings) adhan.setTimings(ptTimings);
+  }, [ptTimings, adhan]);
 
   const ptHandleMethodChange = (newMethod: number) => {
     setPtMethod(newMethod);
@@ -1633,6 +2253,44 @@ function SalahContent() {
                   <Search size={14} />
                   Change Location
                 </button>
+                <div className="relative">
+                  <button
+                    onClick={() => setPtShowMethodMenu((v) => !v)}
+                    className="flex items-center gap-1.5 text-xs text-themed-muted hover:text-gold transition-colors"
+                    title="Calculation method"
+                  >
+                    <Settings2 size={14} />
+                    <span className="hidden sm:inline">{CALCULATION_METHODS.find((m) => m.value === ptMethod)?.label}</span>
+                  </button>
+                  {ptShowMethodMenu && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setPtShowMethodMenu(false)}
+                      />
+                      <div className="absolute right-0 top-full mt-2 z-50 rounded-lg border sidebar-border card-bg shadow-lg overflow-hidden min-w-[200px]">
+                        <p className="text-[10px] text-themed-muted uppercase tracking-wider px-3 pt-2.5 pb-1">Calculation method</p>
+                        {CALCULATION_METHODS.map((m) => (
+                          <button
+                            key={m.value}
+                            onClick={() => {
+                              ptHandleMethodChange(m.value);
+                              setPtShowMethodMenu(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center justify-between ${
+                              ptMethod === m.value
+                                ? "text-gold bg-gold/10"
+                                : "text-themed hover:bg-gold/5"
+                            }`}
+                          >
+                            <span>{m.label}</span>
+                            {ptMethod === m.value && <span className="text-gold text-xs">✓</span>}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </motion.div>
 
@@ -1691,46 +2349,160 @@ function SalahContent() {
               </motion.div>
             )}
 
-            {/* Calculation Method */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15 }}
-            >
-              <label className="text-xs text-themed-muted block mb-1.5">
-                Calculation Method
-              </label>
-              <select
-                value={ptMethod}
-                onChange={(e) => ptHandleMethodChange(Number(e.target.value))}
-                className="px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed focus:outline-none focus:border-[var(--color-gold)]/50 cursor-pointer"
-              >
-                {CALCULATION_METHODS.map((m) => (
-                  <option key={m.value} value={m.value}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </motion.div>
+            {/* Next Prayer — Hero Countdown */}
+            {ptTimings && ptNextPrayerKey && !ptLoading && (() => {
+              const win = getWindowProgress(ptTimings, ptNextPrayerKey, ptTimezone);
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.15 }}
+                >
+                  <div className="card-bg rounded-2xl border sidebar-border p-6 sm:p-8 relative overflow-hidden">
+                    {/* Atmospheric gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-gold/[0.08] via-gold/[0.02] to-transparent pointer-events-none" />
+                    <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-gold/[0.04] blur-3xl pointer-events-none" />
 
-            {/* Next Prayer Countdown */}
-            {ptNextPrayerKey && !ptLoading && (
+                    <div className="relative">
+                      <p className="text-[11px] text-themed-muted uppercase tracking-[0.2em] mb-3">Up Next</p>
+                      <div className="flex items-baseline gap-3 mb-1">
+                        <p className="text-gold text-3xl sm:text-4xl font-semibold">{ptNextPrayerKey}</p>
+                        <p className="text-themed-muted text-sm">at {win ? win.nextTime : ""}</p>
+                      </div>
+                      <p className="font-mono text-4xl sm:text-5xl md:text-6xl text-themed tracking-wider mt-4 mb-6 sm:mb-8 tabular-nums">
+                        {ptCountdown}
+                      </p>
+
+                      {win && (
+                        <div>
+                          <div className="h-1.5 rounded-full bg-gold/10 overflow-hidden">
+                            <motion.div
+                              className="h-full bg-gradient-to-r from-gold/50 to-gold rounded-full"
+                              initial={{ width: 0 }}
+                              animate={{ width: `${win.progress * 100}%` }}
+                              transition={{ duration: 0.8, ease: "easeOut" }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-[10px] text-themed-muted mt-2 uppercase tracking-wider">
+                            <span>{win.prevKey} <span className="font-mono normal-case tracking-normal text-themed-muted/70">{win.prevTime}</span></span>
+                            <span>{win.nextKey} <span className="font-mono normal-case tracking-normal text-themed-muted/70">{win.nextTime}</span></span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })()}
+
+            {/* Day Timeline Strip */}
+            {ptTimings && !ptLoading && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
               >
-                <div className="card-bg rounded-xl border sidebar-border p-4 sm:p-5 text-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/5 to-transparent pointer-events-none" />
-                  <div className="relative">
-                    <p className="text-xs text-themed-muted uppercase tracking-widest mb-1">
-                      Next Prayer
-                    </p>
-                    <p className="text-gold text-lg font-semibold">{ptNextPrayerKey}</p>
-                    <p className="text-2xl md:text-3xl font-mono text-themed mt-2 tracking-wider">
-                      {ptCountdown}
-                    </p>
+                <div className="card-bg rounded-xl border sidebar-border p-4 sm:p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-[11px] text-themed-muted uppercase tracking-[0.2em]">Today</p>
                   </div>
+                  {(() => {
+                    const nowParts = getNowParts(ptTimezone);
+                    const nowMin = nowParts.hours * 60 + nowParts.minutes + nowParts.seconds / 60;
+                    const nowPos = nowMin / (24 * 60);
+                    // Only the 5 daily prayers on the timeline (Sunrise stays in the detail grid below)
+                    const stops = PRAYER_TIME_LIST.filter((p) => p.isPrayer)
+                      .map((p) => {
+                        const raw = ptTimings[p.key as keyof PrayerTimings];
+                        if (!raw) return null;
+                        const min = timeStringToMinutes(raw);
+                        return { ...p, pos: min / (24 * 60), time: formatDisplayTime(raw) };
+                      })
+                      .filter((v): v is NonNullable<typeof v> => v !== null);
+                    const nowTimeStr = ptTimezone
+                      ? new Intl.DateTimeFormat("en-US", {
+                          timeZone: ptTimezone,
+                          hour: "numeric",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: true,
+                        }).format(new Date())
+                      : new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+
+                    // Vertical layout reference (px from container top):
+                    //   0–18  : time pill at the current position
+                    //   22–44 : prayer name labels
+                    //   54    : horizontal day line
+                    //   48–60 : tick marks at each prayer's position (cross the line)
+                    //   66+   : 12 AM end labels
+                    return (
+                      <div className="relative h-24 mx-2">
+                        {/* Prayer name labels */}
+                        {stops.map((s) => {
+                          const isNext = s.key === ptNextPrayerKey;
+                          return (
+                            <div
+                              key={s.key}
+                              className="absolute -translate-x-1/2 top-[26px] text-center whitespace-nowrap"
+                              style={{ left: `${s.pos * 100}%` }}
+                            >
+                              <p
+                                className={`text-[10px] uppercase tracking-wider ${
+                                  isNext ? "text-gold font-semibold" : "text-themed-muted"
+                                }`}
+                              >
+                                {s.english}
+                              </p>
+                            </div>
+                          );
+                        })}
+
+                        {/* Horizontal day line (below names) */}
+                        <div
+                          className="absolute left-0 right-0 top-[54px] rounded-full"
+                          style={{ height: "2px", background: "rgba(212, 168, 67, 0.55)" }}
+                        />
+                        {/* End caps */}
+                        <div
+                          className="absolute left-0 top-[48px] rounded-full"
+                          style={{ width: "2px", height: "14px", background: "rgba(212, 168, 67, 0.7)" }}
+                        />
+                        <div
+                          className="absolute right-0 top-[48px] rounded-full"
+                          style={{ width: "2px", height: "14px", background: "rgba(212, 168, 67, 0.7)" }}
+                        />
+                        {/* Tick marks at each prayer's position */}
+                        {stops.map((s) => (
+                          <div
+                            key={`tick-${s.key}`}
+                            className="absolute top-[49px]"
+                            style={{
+                              left: `${s.pos * 100}%`,
+                              transform: "translateX(-50%)",
+                              width: "2px",
+                              height: "12px",
+                              background: "rgba(212, 168, 67, 0.7)",
+                            }}
+                          />
+                        ))}
+                        {/* 12 AM end labels */}
+                        <p className="absolute left-0 top-[66px] text-[9px] font-mono text-themed-muted/40">12 AM</p>
+                        <p className="absolute right-0 top-[66px] text-[9px] font-mono text-themed-muted/40 text-right">12 AM</p>
+
+                        {/* Now marker — time pill at top, vertical line, dot sitting on the day line */}
+                        <div
+                          className="absolute top-0 bottom-0 pointer-events-none"
+                          style={{ left: `${nowPos * 100}%` }}
+                        >
+                          <div className="absolute -translate-x-1/2 top-0 px-2 py-0.5 rounded-md bg-gold/15 border border-gold/30 whitespace-nowrap">
+                            <p className="text-[10px] font-mono text-gold tabular-nums">{nowTimeStr}</p>
+                          </div>
+                          <div className="absolute top-[20px] w-px bg-gold" style={{ height: "35px" }} />
+                          <div className="absolute top-[55px] -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-gold animate-pulse shadow-[0_0_8px_rgba(212,168,67,0.7)]" />
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </motion.div>
             )}
@@ -1834,23 +2606,6 @@ function SalahContent() {
             className="space-y-6"
           >
             <ContentCard>
-              <div className="text-center py-4 sm:py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  The Quran
-                </p>
-                <p className="text-xl sm:text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  إِنَّ ٱلصَّلَوٰةَ كَانَتْ عَلَى ٱلْمُؤْمِنِينَ كِتَـٰبًۭا مَّوْقُوتًۭا
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;Indeed, prayer has been decreed upon the believers at specified times.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 4:103
-                </span>
-              </div>
-            </ContentCard>
-
-            <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">What is Salah?</h2>
               <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
                 <p>
@@ -1942,18 +2697,6 @@ function SalahContent() {
             transition={{ duration: 0.3 }}
             className="space-y-4"
           >
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-lg font-arabic text-gold leading-loose mb-3">
-                  إِنَّ ٱلصَّلَوٰةَ تَنْهَىٰ عَنِ ٱلْفَحْشَآءِ وَٱلْمُنكَرِ ۗ وَلَذِكْرُ ٱللَّهِ أَكْبَرُ
-                </p>
-                <p className="text-themed-muted italic">
-                  &ldquo;Indeed, prayer prohibits immorality and wrongdoing, and the remembrance of Allah is greater.&rdquo;
-                </p>
-                <p className="text-xs text-themed-muted mt-2">Quran 29:45</p>
-              </div>
-            </ContentCard>
-
             {filteredMatters.map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
@@ -2095,6 +2838,34 @@ function SalahContent() {
               { ref: "Tirmidhi 1:31, 1:82", desc: "Beard, ears are part of head, interlacing toes, dua after wudu, touching private parts" },
               { ref: "Ibn Majah 1:133, 1:159", desc: "Bismillah obligation discussion, moderation with water" },
             ]} />
+          </motion.div>
+        )}
+
+        {/* ─── Qiblah ─── */}
+        {activeSection === "qiblah" && (
+          <motion.div
+            key="qiblah"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            <QiblahSection />
+          </motion.div>
+        )}
+
+        {/* ─── Adhan & Iqamah ─── */}
+        {activeSection === "adhan" && (
+          <motion.div
+            key="adhan"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6 max-w-4xl mx-auto"
+          >
+            <AdhanSection />
           </motion.div>
         )}
 

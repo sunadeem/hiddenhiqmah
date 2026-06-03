@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Sunrise, Sun, CloudSun, Sunset, Moon, MapPin, Search, LocateFixed } from "lucide-react";
+import { useAdhanAudio } from "@/context/AdhanAudioContext";
+import { formatLocation, reverseGeocode } from "@/lib/location";
 
 interface PrayerTimings {
   Fajr: string;
@@ -54,7 +56,7 @@ export default function PrayerTimesWidget() {
   const [locating, setLocating] = useState(false);
   const fetched = useRef(false);
 
-  const fetchTimes = useCallback(async (city: string, country: string) => {
+  const fetchTimes = useCallback(async (city: string, country: string, displayOverride?: string) => {
     try {
       const res = await fetch(
         `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=2`
@@ -62,7 +64,7 @@ export default function PrayerTimesWidget() {
       if (!res.ok) return;
       const data = await res.json();
       setTimings(data.data.timings);
-      setLocation(`${city}, ${country}`);
+      setLocation(displayOverride || `${city}, ${country}`);
     } catch {
       // silently fail
     }
@@ -73,15 +75,12 @@ export default function PrayerTimesWidget() {
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        try {
-          const geoRes = await fetch(
-            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}`
-          );
-          const geo = await geoRes.json();
-          const city = geo.city || geo.locality || "Makkah";
+        const geo = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+        if (geo) {
+          const city = geo.city || "Makkah";
           const country = geo.countryName || "Saudi Arabia";
-          fetchTimes(city, country);
-        } catch {
+          fetchTimes(city, country, formatLocation(geo));
+        } else {
           fetchTimes("Makkah", "Saudi Arabia");
         }
         setLocating(false);
@@ -90,7 +89,7 @@ export default function PrayerTimesWidget() {
         fetchTimes("Makkah", "Saudi Arabia");
         setLocating(false);
       },
-      { timeout: 5000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   }, [fetchTimes]);
 
@@ -114,6 +113,12 @@ export default function PrayerTimesWidget() {
     const interval = setInterval(update, 60000);
     return () => clearInterval(interval);
   }, [timings]);
+
+  // Push timings into the adhan audio context (global scheduler handles playback)
+  const adhan = useAdhanAudio();
+  useEffect(() => {
+    if (timings) adhan.setTimings(timings);
+  }, [timings, adhan]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

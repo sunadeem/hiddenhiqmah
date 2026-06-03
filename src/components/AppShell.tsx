@@ -7,6 +7,7 @@ import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
 import AskHiqmahFloat from "./AskHiqmah";
 import MiniPlayer from "./MiniPlayer";
+import AdhanMiniPlayer from "./AdhanMiniPlayer";
 
 const BARE_ROUTES = ["/ask"];
 
@@ -68,6 +69,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </main>
 
         <MiniPlayer />
+        <AdhanMiniPlayer />
         <AskHiqmahFloat />
       </div>
   );
