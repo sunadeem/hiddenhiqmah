@@ -1441,7 +1441,28 @@ function QiblahSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [heading, setHeading] = useState<number | null>(null);
+  // Continuous rotation value that never wraps (e.g. can be 720°), so CSS rotation
+  // always takes the shortest path and doesn't spin backwards when 359° → 1°.
+  const [displayHeading, setDisplayHeading] = useState<number | null>(null);
+  const continuousHeadingRef = useRef<number | null>(null);
   const [needsPermission, setNeedsPermission] = useState(false);
+
+  const applyHeading = useCallback((newHeading: number) => {
+    setHeading(newHeading);
+    if (continuousHeadingRef.current === null) {
+      continuousHeadingRef.current = newHeading;
+      setDisplayHeading(newHeading);
+      return;
+    }
+    const current = continuousHeadingRef.current;
+    const wrappedCurrent = ((current % 360) + 360) % 360;
+    let delta = newHeading - wrappedCurrent;
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+    const next = current + delta;
+    continuousHeadingRef.current = next;
+    setDisplayHeading(next);
+  }, []);
 
   const fetchLocation = useCallback(() => {
     if (!navigator.geolocation) {
@@ -1486,10 +1507,10 @@ function QiblahSection() {
     const handler = (e: DeviceOrientationEvent) => {
       const webkitHeading = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
       if (typeof webkitHeading === "number") {
-        setHeading(webkitHeading);
+        applyHeading(webkitHeading);
       } else if (typeof e.alpha === "number") {
         // alpha = rotation around z; 0 = north for absolute, but most browsers give relative
-        setHeading((360 - e.alpha) % 360);
+        applyHeading((360 - e.alpha) % 360);
       }
     };
     window.addEventListener("deviceorientationabsolute", handler as EventListener);
@@ -1498,7 +1519,7 @@ function QiblahSection() {
       window.removeEventListener("deviceorientationabsolute", handler as EventListener);
       window.removeEventListener("deviceorientation", handler);
     };
-  }, []);
+  }, [applyHeading]);
 
   const requestCompassPermission = async () => {
     const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
@@ -1510,9 +1531,9 @@ function QiblahSection() {
       const handler = (e: DeviceOrientationEvent) => {
         const webkitHeading = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
         if (typeof webkitHeading === "number") {
-          setHeading(webkitHeading);
+          applyHeading(webkitHeading);
         } else if (typeof e.alpha === "number") {
-          setHeading((360 - e.alpha) % 360);
+          applyHeading((360 - e.alpha) % 360);
         }
       };
       window.addEventListener("deviceorientation", handler);
@@ -1622,22 +1643,33 @@ function QiblahSection() {
                 </div>
 
                 {/* User-facing arrow — only shown when a device compass is available.
-                    Rotates from the dial center with device heading; lines up with the
-                    Ka'bah marker when the user is facing the qiblah. */}
-                {heading !== null && (
+                    Rotates from the dial center based on the device heading. Uses a continuous
+                    (non-wrapping) display value so rotation always takes the shortest path. */}
+                {heading !== null && displayHeading !== null && (
                   <div
-                    className="absolute inset-0 flex items-center justify-center transition-transform duration-200 pointer-events-none"
-                    style={{ transform: `rotate(${heading}deg)` }}
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                    style={{
+                      transform: `rotate(${displayHeading}deg)`,
+                      transition: "transform 80ms linear",
+                    }}
                   >
-                    <Navigation
-                      size={36}
+                    <svg
+                      width="44"
+                      height="44"
+                      viewBox="0 0 24 24"
                       className={
                         Math.abs(((heading - qiblahBearing + 540) % 360) - 180) < 5
-                          ? "text-gold drop-shadow-[0_0_10px_rgba(212,168,67,0.9)]"
+                          ? "text-gold drop-shadow-[0_0_12px_rgba(212,168,67,0.9)]"
                           : "text-themed drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]"
                       }
                       fill="currentColor"
-                    />
+                      stroke="currentColor"
+                      strokeLinejoin="round"
+                      strokeWidth="1"
+                    >
+                      {/* Dart/arrow pointing straight up: tip at top-center, notch at bottom-center */}
+                      <path d="M12 2 L20 21 L12 17 L4 21 Z" />
+                    </svg>
                   </div>
                 )}
               </div>
