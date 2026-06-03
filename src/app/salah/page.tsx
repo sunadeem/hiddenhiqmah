@@ -1593,86 +1593,109 @@ function QiblahSection() {
             {/* Compass visual — dial is fixed (N stays at top, Ka'bah stays at qibla bearing);
                 only the "you are facing" arrow rotates with device heading. */}
             <div className="relative w-56 h-56 shrink-0">
-              {/* Fixed dial */}
+              {/* Rotating dial — the arrow stays fixed pointing up; N/E/S/W cardinals and the
+                  Ka'bah marker rotate to match the real-world bearing relative to where you're
+                  facing. When the Ka'bah marker arrives at the top, you're facing the qiblah. */}
               <div className="absolute inset-0 rounded-full border-2 border-gold/30 bg-gold/[0.03]">
-                {/* Cardinal markers — FIXED */}
+                {/* Cardinal markers — positioned at (cardinal - displayHeading) */}
                 {[
                   { label: "N", deg: 0, color: "text-gold" },
                   { label: "E", deg: 90 },
                   { label: "S", deg: 180 },
                   { label: "W", deg: 270 },
-                ].map(({ label, deg, color }) => (
-                  <div
-                    key={label}
-                    className="absolute inset-0 flex items-start justify-center"
-                    style={{ transform: `rotate(${deg}deg)` }}
-                  >
-                    <span
-                      className={`text-xs font-semibold mt-1 ${color ?? "text-themed-muted"}`}
-                      style={{ transform: `rotate(${-deg}deg)` }}
+                ].map(({ label, deg, color }) => {
+                  const screenAngle = deg - (displayHeading ?? 0);
+                  return (
+                    <div
+                      key={label}
+                      className="absolute inset-0 flex items-start justify-center"
+                      style={{
+                        transform: `rotate(${screenAngle}deg)`,
+                        transition: "transform 80ms linear",
+                      }}
                     >
-                      {label}
-                    </span>
-                  </div>
-                ))}
-                {/* Tick marks — FIXED */}
-                {Array.from({ length: 24 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute left-1/2 top-0 h-2 w-px bg-themed-muted/30"
-                    style={{
-                      transform: `translateX(-50%) rotate(${i * 15}deg)`,
-                      transformOrigin: "bottom center",
-                      top: 6,
-                    }}
-                  />
-                ))}
+                      <span
+                        className={`text-xs font-semibold mt-1 ${color ?? "text-themed-muted"}`}
+                        style={{
+                          transform: `rotate(${-screenAngle}deg)`,
+                          transition: "transform 80ms linear",
+                        }}
+                      >
+                        {label}
+                      </span>
+                    </div>
+                  );
+                })}
 
-                {/* Ka'bah marker — FIXED at qibla bearing from North */}
-                <div
-                  className="absolute inset-0 flex items-start justify-center"
-                  style={{ transform: `rotate(${qiblahBearing}deg)` }}
-                >
-                  <div
-                    className="flex flex-col items-center"
-                    style={{ marginTop: "12px", transform: `rotate(${-qiblahBearing}deg)` }}
-                  >
-                    <div className="w-5 h-5 rounded-sm bg-gold border border-gold/60 shadow-[0_0_10px_rgba(212,168,67,0.6)]" />
-                    <span className="text-[9px] font-semibold uppercase tracking-wider text-gold mt-1">Ka&apos;bah</span>
-                  </div>
-                </div>
+                {/* Tick marks — rotate with the dial */}
+                {Array.from({ length: 24 }).map((_, i) => {
+                  const screenAngle = i * 15 - (displayHeading ?? 0);
+                  return (
+                    <div
+                      key={i}
+                      className="absolute left-1/2 top-0 h-2 w-px bg-themed-muted/30"
+                      style={{
+                        transform: `translateX(-50%) rotate(${screenAngle}deg)`,
+                        transformOrigin: "bottom center",
+                        top: 6,
+                        transition: "transform 80ms linear",
+                      }}
+                    />
+                  );
+                })}
 
-                {/* User-facing arrow — only shown when a device compass is available.
-                    Rotates from the dial center based on the device heading. Uses a continuous
-                    (non-wrapping) display value so rotation always takes the shortest path. */}
-                {heading !== null && displayHeading !== null && (
-                  <div
-                    className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                    style={{
-                      transform: `rotate(${displayHeading}deg)`,
-                      transition: "transform 80ms linear",
-                    }}
-                  >
-                    <svg
-                      width="44"
-                      height="44"
-                      viewBox="0 0 24 24"
-                      className={
-                        Math.abs(((heading - qiblahBearing + 540) % 360) - 180) < 5
-                          ? "text-gold drop-shadow-[0_0_12px_rgba(212,168,67,0.9)]"
-                          : "text-themed drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]"
-                      }
-                      fill="currentColor"
-                      stroke="currentColor"
-                      strokeLinejoin="round"
-                      strokeWidth="1"
+                {/* Ka'bah marker — positioned at (qiblahBearing - displayHeading) */}
+                {(() => {
+                  const screenAngle = qiblahBearing - (displayHeading ?? 0);
+                  return (
+                    <div
+                      className="absolute inset-0 flex items-start justify-center"
+                      style={{
+                        transform: `rotate(${screenAngle}deg)`,
+                        transition: "transform 80ms linear",
+                      }}
                     >
-                      {/* Dart/arrow pointing straight up: tip at top-center, notch at bottom-center */}
-                      <path d="M12 2 L20 21 L12 17 L4 21 Z" />
-                    </svg>
-                  </div>
-                )}
+                      <div
+                        className="flex flex-col items-center"
+                        style={{
+                          marginTop: "12px",
+                          transform: `rotate(${-screenAngle}deg)`,
+                          transition: "transform 80ms linear",
+                        }}
+                      >
+                        <div className="w-5 h-5 rounded-sm bg-gold border border-gold/60 shadow-[0_0_10px_rgba(212,168,67,0.6)]" />
+                        <span className="text-[9px] font-semibold uppercase tracking-wider text-gold mt-1">Ka&apos;bah</span>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
+
+              {/* Fixed user-facing arrow — only shown when a device compass is available.
+                  Arrow always points straight up from the top of the dial; when the Ka'bah
+                  marker rotates under it, the user is facing the qiblah. */}
+              {heading !== null && (
+                <div className="absolute inset-0 flex items-start justify-center pointer-events-none">
+                  <svg
+                    width="44"
+                    height="44"
+                    viewBox="0 0 24 24"
+                    style={{ marginTop: "10px" }}
+                    className={
+                      Math.abs(((heading - qiblahBearing + 540) % 360) - 180) < 5
+                        ? "text-gold drop-shadow-[0_0_12px_rgba(212,168,67,0.9)]"
+                        : "text-themed drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]"
+                    }
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeLinejoin="round"
+                    strokeWidth="1"
+                  >
+                    {/* Dart/arrow pointing straight up: tip at top-center, notch at bottom-center */}
+                    <path d="M12 2 L20 21 L12 17 L4 21 Z" />
+                  </svg>
+                </div>
+              )}
 
               {/* Center bearing label — only shown when the arrow isn't (desktop / no sensor) */}
               {heading === null && (
@@ -1718,7 +1741,7 @@ function QiblahSection() {
               )}
               {heading !== null && (
                 <p className="text-xs text-themed-muted mt-3">
-                  The arrow shows which way your phone is facing. Turn yourself until the arrow points at the Ka&apos;bah marker — that&apos;s the qiblah. Hold your phone flat for the most accurate reading.
+                  The dial rotates as you turn — keep turning until the Ka&apos;bah marker arrives at the top, right under the arrow. That direction is the qiblah. Hold your phone flat for the most accurate reading.
                 </p>
               )}
             </div>
