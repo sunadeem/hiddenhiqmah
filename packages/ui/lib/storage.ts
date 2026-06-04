@@ -24,7 +24,46 @@ const KEYS = {
   dhikrCounts: "hiqmah-dhikr",
   autoPlayNextSurah: "hiqmah-autoplay-next",
   kidsProgress: "hiqmah-kids-progress",
+  visits: "hiqmah-visits",
 } as const;
+
+export type VisitStats = {
+  lastVisit?: string;
+  currentStreak: number;
+  longestStreak: number;
+};
+
+function todayKey(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function dayBefore(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  d.setDate(d.getDate() - 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+export function getVisitStats(): VisitStats {
+  return get<VisitStats>(KEYS.visits, { currentStreak: 0, longestStreak: 0 });
+}
+
+export function recordVisit(): VisitStats {
+  const today = todayKey();
+  const stats = getVisitStats();
+  if (stats.lastVisit === today) return stats;
+  let newStreak = 1;
+  if (stats.lastVisit && stats.lastVisit === dayBefore(today)) {
+    newStreak = stats.currentStreak + 1;
+  }
+  const next: VisitStats = {
+    lastVisit: today,
+    currentStreak: newStreak,
+    longestStreak: Math.max(newStreak, stats.longestStreak),
+  };
+  set(KEYS.visits, next);
+  return next;
+}
 
 function get<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;

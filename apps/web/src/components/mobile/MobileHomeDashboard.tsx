@@ -10,8 +10,9 @@ import {
   Moon,
   BookOpen,
   Bookmark,
-  HandHeart,
-  MessageCircleQuestion,
+  ScrollText,
+  Compass,
+  Repeat,
   ArrowRight,
 } from "lucide-react";
 import { Geolocation } from "@capacitor/geolocation";
@@ -91,12 +92,12 @@ export default function MobileHomeDashboard() {
     <div className="mb-6 space-y-3">
       <NextPrayerCard />
       <ContinueReadingCard />
-      <QuickChips />
+      <QuickActions />
     </div>
   );
 }
 
-function NextPrayerCard() {
+export function NextPrayerCard() {
   const [timings, setTimings] = useState<PrayerTimings | null>(null);
   const [location, setLocation] = useState("");
   const [nextPrayer, setNextPrayerState] = useState<NextPrayer | null>(null);
@@ -177,33 +178,99 @@ function NextPrayerCard() {
   }
 
   const Icon = nextPrayer.icon;
+  const hijri = formatHijriDate();
+  const gregorian = formatGregorianDate();
+  const allPrayers: { key: keyof PrayerTimings; label: string }[] = [
+    { key: "Fajr", label: "Fajr" },
+    { key: "Sunrise", label: "Sunrise" },
+    { key: "Dhuhr", label: "Dhuhr" },
+    { key: "Asr", label: "Asr" },
+    { key: "Maghrib", label: "Maghrib" },
+    { key: "Isha", label: "Isha" },
+  ];
+
   return (
     <Link
       href="/salah?tab=times"
-      className="block card-bg rounded-2xl border sidebar-border p-4 touch-manipulation"
+      className="block card-bg rounded-2xl border sidebar-border p-5 touch-manipulation relative overflow-hidden"
     >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center shrink-0">
-          <Icon size={18} className="text-gold" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-themed-muted truncate">{location || "Next Prayer"}</p>
-          <p className="text-base font-semibold text-themed">
-            {nextPrayer.label} <span className="text-gold">in {countdown}</span>
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
+      <div className="relative">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted truncate">
+            {hijri}
+          </p>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted">
+            {gregorian}
           </p>
         </div>
-        <div className="text-right shrink-0">
-          <p className="text-xs text-themed-muted">at</p>
-          <p className="text-sm font-medium text-themed">
-            {formatClockTime(nextPrayer.time)}
-          </p>
+        <p className="text-xs text-themed-muted mb-4 truncate">
+          {location || "Next prayer"}
+        </p>
+
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--color-gold)]/15 flex items-center justify-center shrink-0">
+            <Icon size={26} className="text-gold" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-3xl font-bold text-themed leading-none">
+              {nextPrayer.label.split(" ")[0]}
+            </p>
+            <p className="text-sm text-gold mt-1">
+              in {countdown} · at {formatClockTime(nextPrayer.time)}
+            </p>
+          </div>
+        </div>
+
+        <div className="h-px bg-white/10 my-4" />
+
+        <div className="space-y-1.5">
+          {allPrayers.map(({ key, label }) => {
+            const isNext = nextPrayer.key === key;
+            return (
+              <div
+                key={key}
+                className={`flex items-center justify-between text-sm ${
+                  isNext ? "text-gold font-semibold" : "text-themed-muted"
+                }`}
+              >
+                <span>{label}</span>
+                <span className="font-mono tabular-nums">
+                  {formatClockTime(timings[key])}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </Link>
   );
 }
 
-function ContinueReadingCard() {
+function formatHijriDate(): string {
+  try {
+    const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).formatToParts(new Date());
+    const day = parts.find((p) => p.type === "day")?.value ?? "";
+    const month = parts.find((p) => p.type === "month")?.value ?? "";
+    const year = parts.find((p) => p.type === "year")?.value ?? "";
+    return `${day} ${month} ${year} AH`;
+  } catch {
+    return "";
+  }
+}
+
+function formatGregorianDate(): string {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  }).format(new Date());
+}
+
+export function ContinueReadingCard() {
   const [progress, setProgress] = useState<ReturnType<typeof getProgress> | null>(null);
 
   useEffect(() => {
@@ -227,29 +294,26 @@ function ContinueReadingCard() {
       href={href}
       className="block card-bg rounded-2xl border sidebar-border p-4 touch-manipulation"
     >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center shrink-0">
-          <BookOpen size={18} className="text-gold" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-themed-muted">Continue reading</p>
-          <p className="text-base font-semibold text-themed truncate">{chapter.name}</p>
-          <p className="text-xs text-themed-muted truncate">{subtitle}</p>
-        </div>
-        <ArrowRight size={16} className="text-themed-muted shrink-0" />
+      <div className="flex items-center gap-2 text-themed-muted text-xs uppercase tracking-wider mb-1">
+        <BookOpen size={14} className="text-gold" />
+        <span>Continue</span>
       </div>
+      <p className="text-lg font-bold text-themed leading-tight truncate">
+        {chapter.name}
+      </p>
+      <p className="text-xs text-themed-muted mt-1 truncate">{subtitle}</p>
     </Link>
   );
 }
 
 const QUICK_LINKS = [
-  { href: "/salah?tab=qiblah", icon: HandHeart, label: "Qiblah" },
+  { href: "/salah?tab=qiblah", icon: Compass, label: "Qiblah" },
+  { href: "/hadith", icon: ScrollText, label: "Hadith" },
+  { href: "/dhikr", icon: Repeat, label: "Dhikr" },
   { href: "/bookmarks", icon: Bookmark, label: "Bookmarks" },
-  { href: "/dhikr", icon: HandHeart, label: "Dhikr" },
-  { href: "/ask", icon: MessageCircleQuestion, label: "Ask" },
 ];
 
-function QuickChips() {
+export function QuickActions() {
   return (
     <div className="grid grid-cols-4 gap-2">
       {QUICK_LINKS.map((link) => {

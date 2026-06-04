@@ -1,22 +1,15 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { getSectionTitle } from "./routes";
-
+/**
+ * MobileTopBar — just safe-area padding under the iOS status bar.
+ * No title text: every page has its own h1, so a redundant
+ * top-bar title would just waste space.
+ */
 export default function MobileTopBar() {
-  const pathname = usePathname();
-  const title = getSectionTitle(pathname);
-
   return (
     <header
-      className="shrink-0 sidebar-bg border-b sidebar-border"
-      style={{ paddingTop: "env(safe-area-inset-top)" }}
-    >
-      <div className="h-11 flex items-center justify-center px-3">
-        <h1 className="text-base font-semibold text-themed truncate max-w-[70%]">
-          {title}
-        </h1>
-      </div>
-    </header>
+      className="shrink-0 bg-themed"
+      style={{ paddingTop: "calc(env(safe-area-inset-top) + 51px)" }}
+    />
   );
 }

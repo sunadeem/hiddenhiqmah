@@ -2,20 +2,44 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BookOpen, ScrollText, HandHeart, Sparkles } from "lucide-react";
-import { getActiveTab } from "./routes";
+import {
+  Home,
+  BookOpen,
+  ListChecks,
+  MessageCircleQuestion,
+  Menu,
+} from "lucide-react";
 
 const TABS = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/quran", label: "Quran", icon: BookOpen },
-  { href: "/hadith", label: "Hadith", icon: ScrollText },
-  { href: "/salah", label: "Salah", icon: HandHeart },
-  { href: "/muslim-daily", label: "Daily", icon: Sparkles },
+  { href: "/", label: "Home", icon: Home, matcher: (p: string) => p === "/" },
+  {
+    href: "/muslim-daily",
+    label: "Daily",
+    icon: ListChecks,
+    matcher: (p: string) => p.startsWith("/muslim-daily"),
+  },
+  {
+    href: "/quran",
+    label: "Quran",
+    icon: BookOpen,
+    matcher: (p: string) => p.startsWith("/quran"),
+  },
+  {
+    href: "/ask",
+    label: "Ask",
+    icon: MessageCircleQuestion,
+    matcher: (p: string) => p.startsWith("/ask"),
+  },
+  {
+    href: "/more",
+    label: "More",
+    icon: Menu,
+    matcher: (p: string) => p.startsWith("/more"),
+  },
 ];
 
 export default function MobileTabBar() {
   const pathname = usePathname();
-  const activeTab = getActiveTab(pathname);
 
   return (
     <nav
@@ -25,7 +49,7 @@ export default function MobileTabBar() {
       <div className="flex items-stretch">
         {TABS.map((tab) => {
           const Icon = tab.icon;
-          const isActive = activeTab === tab.href;
+          const isActive = tab.matcher(pathname);
           return (
             <Link
               key={tab.href}
