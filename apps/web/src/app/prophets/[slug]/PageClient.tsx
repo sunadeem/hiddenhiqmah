@@ -4,11 +4,11 @@ import { use } from "react";
 import { notFound } from "next/navigation";
 import { motion } from "framer-motion";
 import { BookOpen, Quote } from "lucide-react";
-import { getProphetBySlug } from "@/data/prophets";
-import { getStoryBySlug } from "@/data/prophet-stories";
+import { getProphetBySlug } from "@hidden-hiqmah/content/prophets";
+import { getStoryBySlug } from "@hidden-hiqmah/content/prophet-stories";
 import ContentCard from "@/components/ContentCard";
 import Link from "next/link";
-import { prophets } from "@/data/prophets";
+import { prophets } from "@hidden-hiqmah/content/prophets";
 import HadithRefText from "@/components/HadithRefText";
 
 export default function ProphetDetailPage({

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useRef, useState, useCallback, useEffect, ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import chapters from "@/data/quran/chapters.json";
+import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { getAutoPlayNextSurah, setAutoPlayNextSurah } from "@/lib/storage";
 
 export interface Verse {
@@ -238,7 +238,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
           const nextSurahId = surahIdRef.current + 1;
           const isOnPlayingSurah = pathnameRef.current === `/quran/${surahIdRef.current}`;
           // Load next surah's verses into context so playback continues
-          import(`@/data/quran/verses/${nextSurahId}.json`).then((mod) => {
+          import(`@hidden-hiqmah/content/quran/verses/${nextSurahId}.json`).then((mod) => {
             const nextVerses = mod.default as Verse[];
             // Register the new surah
             surahIdRef.current = nextSurahId;
@@ -336,7 +336,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     const sid = surahIdRef.current;
     if (!sid || sid >= 114) return;
     const nextId = sid + 1;
-    import(`@/data/quran/verses/${nextId}.json`).then((mod) => {
+    import(`@hidden-hiqmah/content/quran/verses/${nextId}.json`).then((mod) => {
       const nextVerses = mod.default as Verse[];
       surahIdRef.current = nextId;
       setSurahId(nextId);
@@ -360,7 +360,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     const sid = surahIdRef.current;
     if (!sid || sid <= 1) return;
     const prevId = sid - 1;
-    import(`@/data/quran/verses/${prevId}.json`).then((mod) => {
+    import(`@hidden-hiqmah/content/quran/verses/${prevId}.json`).then((mod) => {
       const prevVerses = mod.default as Verse[];
       surahIdRef.current = prevId;
       setSurahId(prevId);

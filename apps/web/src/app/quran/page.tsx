@@ -5,7 +5,7 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import { Search, ArrowRight, BookOpen, Check } from "lucide-react";
-import chapters from "@/data/quran/chapters.json";
+import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { parseQuranRef } from "@/lib/search";
 import { getProgress } from "@/lib/storage";
 
@@ -48,7 +48,7 @@ export default function QuranPage() {
     setSearchingVerses(true);
 
     if (!searchIndexRef.current) {
-      const mod = await import("@/data/quran/search-index.json");
+      const mod = await import("@hidden-hiqmah/content/quran/search-index.json");
       searchIndexRef.current = mod.default as SearchIndex;
     }
 

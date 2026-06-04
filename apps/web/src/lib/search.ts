@@ -1,4 +1,4 @@
-import chapters from "@/data/quran/chapters.json";
+import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 
 /* ------------------------------------------------------------------ */
 /*  Normalisation helpers                                              */

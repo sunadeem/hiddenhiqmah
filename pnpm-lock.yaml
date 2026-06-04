@@ -17,6 +17,9 @@ importers:
       '@anthropic-ai/sdk':
         specifier: ^0.78.0
         version: 0.78.0(zod@4.4.3)
+      '@hidden-hiqmah/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@radix-ui/react-slot':
         specifier: ^1.2.4
         version: 1.2.4(@types/react@19.2.16)(react@19.2.3)
@@ -72,6 +75,8 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.3
+
+  packages/content: {}
 
 packages:
 

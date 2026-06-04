@@ -7,7 +7,7 @@ import ContentCard from "@/components/ContentCard";
 import PageSearch from "@/components/PageSearch";
 import { textMatch } from "@/lib/search";
 import { ArrowRight, GitBranch } from "lucide-react";
-import { prophets } from "@/data/prophets";
+import { prophets } from "@hidden-hiqmah/content/prophets";
 
 function getYearsAgo(date: string): string | null {
   // Extract the first year from the date string (handles ~2000–1800 BCE, ~9th century BCE, 570–632 CE, etc.)

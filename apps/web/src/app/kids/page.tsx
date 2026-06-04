@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import TabBar from "@/components/TabBar";
 import ContentCard from "@/components/ContentCard";
-import namesOfAllah from "@/data/names-of-allah";
-import { prophetStories } from "@/data/prophet-stories";
+import namesOfAllah from "@hidden-hiqmah/content/names-of-allah";
+import { prophetStories } from "@hidden-hiqmah/content/prophet-stories";
 import {
   type AgeGroup,
   type KidsProgress,

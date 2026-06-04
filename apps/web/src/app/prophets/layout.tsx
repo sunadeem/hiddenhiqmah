@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
-import { prophets } from "@/data/prophets";
+import { prophets } from "@hidden-hiqmah/content/prophets";
 
 export default function ProphetsLayout({
   children,

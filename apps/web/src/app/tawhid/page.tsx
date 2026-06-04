@@ -19,7 +19,7 @@ import {
   BookOpen,
   X,
 } from "lucide-react";
-import namesOfAllahData from "@/data/names-of-allah";
+import namesOfAllahData from "@hidden-hiqmah/content/names-of-allah";
 
 /* ───────────────────────── data ───────────────────────── */
 

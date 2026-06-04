@@ -5,13 +5,13 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
-import { getProphetBySlug } from "@/data/prophets";
+import { getProphetBySlug } from "@hidden-hiqmah/content/prophets";
 import {
   familyTree,
   treeReferences,
   type FamilyNode,
   type WifeNode,
-} from "@/data/prophet-family-tree";
+} from "@hidden-hiqmah/content/prophet-family-tree";
 import HadithRefText from "@/components/HadithRefText";
 
 // Layout constants

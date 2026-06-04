@@ -177,31 +177,31 @@ const featuredHadiths = [
 ];
 
 const metadataImports: Record<string, () => Promise<{ default: CollectionMeta }>> = {
-  bukhari: () => import("@/data/hadith/bukhari/metadata.json"),
-  muslim: () => import("@/data/hadith/muslim/metadata.json"),
-  abudawud: () => import("@/data/hadith/abudawud/metadata.json"),
-  tirmidhi: () => import("@/data/hadith/tirmidhi/metadata.json"),
-  nasai: () => import("@/data/hadith/nasai/metadata.json"),
-  ibnmajah: () => import("@/data/hadith/ibnmajah/metadata.json"),
-  ahmad: () => import("@/data/hadith/ahmad/metadata.json"),
+  bukhari: () => import("@hidden-hiqmah/content/hadith/bukhari/metadata.json"),
+  muslim: () => import("@hidden-hiqmah/content/hadith/muslim/metadata.json"),
+  abudawud: () => import("@hidden-hiqmah/content/hadith/abudawud/metadata.json"),
+  tirmidhi: () => import("@hidden-hiqmah/content/hadith/tirmidhi/metadata.json"),
+  nasai: () => import("@hidden-hiqmah/content/hadith/nasai/metadata.json"),
+  ibnmajah: () => import("@hidden-hiqmah/content/hadith/ibnmajah/metadata.json"),
+  ahmad: () => import("@hidden-hiqmah/content/hadith/ahmad/metadata.json"),
 };
 
 function loadBookData(collection: string, bookId: number): Promise<HadithEntry[]> {
   switch (collection) {
     case "bukhari":
-      return import(`@/data/hadith/bukhari/${bookId}.json`).then((m) => m.default);
+      return import(`@hidden-hiqmah/content/hadith/bukhari/${bookId}.json`).then((m) => m.default);
     case "muslim":
-      return import(`@/data/hadith/muslim/${bookId}.json`).then((m) => m.default);
+      return import(`@hidden-hiqmah/content/hadith/muslim/${bookId}.json`).then((m) => m.default);
     case "abudawud":
-      return import(`@/data/hadith/abudawud/${bookId}.json`).then((m) => m.default);
+      return import(`@hidden-hiqmah/content/hadith/abudawud/${bookId}.json`).then((m) => m.default);
     case "tirmidhi":
-      return import(`@/data/hadith/tirmidhi/${bookId}.json`).then((m) => m.default);
+      return import(`@hidden-hiqmah/content/hadith/tirmidhi/${bookId}.json`).then((m) => m.default);
     case "nasai":
-      return import(`@/data/hadith/nasai/${bookId}.json`).then((m) => m.default);
+      return import(`@hidden-hiqmah/content/hadith/nasai/${bookId}.json`).then((m) => m.default);
     case "ibnmajah":
-      return import(`@/data/hadith/ibnmajah/${bookId}.json`).then((m) => m.default);
+      return import(`@hidden-hiqmah/content/hadith/ibnmajah/${bookId}.json`).then((m) => m.default);
     case "ahmad":
-      return import(`@/data/hadith/ahmad/${bookId}.json`).then((m) => m.default);
+      return import(`@hidden-hiqmah/content/hadith/ahmad/${bookId}.json`).then((m) => m.default);
     default:
       return Promise.resolve([]);
   }

@@ -4,8 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
-import chapters from "@/data/quran/chapters.json";
-import namesOfAllah from "@/data/names-of-allah";
+import chapters from "@hidden-hiqmah/content/quran/chapters.json";
+import namesOfAllah from "@hidden-hiqmah/content/names-of-allah";
 import {
   Trophy,
   RotateCcw,

@@ -1,4 +1,4 @@
-import { prophets } from "@/data/prophets";
+import { prophets } from "@hidden-hiqmah/content/prophets";
 import ProphetDetailClient from "./PageClient";
 
 export function generateStaticParams() {
