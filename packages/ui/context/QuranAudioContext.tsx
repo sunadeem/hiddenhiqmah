@@ -67,6 +67,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
   const preloadedVerseId = useRef<number | null>(null);
   const autoPlayRef = useRef(false);
   const autoNextSurahRef = useRef(false);
+  const playTokenRef = useRef(0);
 
   const [playingVerse, setPlayingVerse] = useState<number | null>(null);
   const [audioProgress, setAudioProgress] = useState(0);
@@ -134,6 +135,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
   // Core function to start playing an audio file for a verse
   // Reuses a single Audio element so the browser's autoplay activation carries over
   const startAudio = useCallback((verse: Verse) => {
+    const token = ++playTokenRef.current;
     let audio = audioRef.current;
     // Check if we have this verse preloaded — swap elements for instant playback
     const usePreloaded = preloadRef.current && preloadedVerseId.current === verse.id;
@@ -174,7 +176,10 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     setAudioPaused(false);
 
     audio.play().catch(() => {
-      setPlayingVerse(null);
+      // Only reset if this play call wasn't superseded by a newer startAudio()
+      if (playTokenRef.current === token) {
+        setPlayingVerse(null);
+      }
     });
 
     // Preload next verse immediately for seamless transition

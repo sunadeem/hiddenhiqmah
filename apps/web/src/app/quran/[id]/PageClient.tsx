@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useIsNative } from "@/lib/mobile/platform";
 import {
   ArrowLeft,
   ArrowRight,
@@ -677,6 +678,7 @@ function SurahPageContent() {
   const searchParams = useSearchParams();
   const id = Number(params.id);
   const chapter = chapters.find((ch) => ch.id === id);
+  const isNativeApp = useIsNative();
 
   const highlightQuery = searchParams.get("q") || "";
   const highlightVerse = Number(searchParams.get("v")) || 0;
@@ -1283,7 +1285,7 @@ function SurahPageContent() {
       )}
 
       {/* Navigation between surahs */}
-      <div className={`flex items-center justify-between mt-10 pt-6 border-t sidebar-border ${playingVerse !== null ? "pb-20" : ""}`}>
+      <div className={`flex items-center justify-between mt-10 pt-6 border-t sidebar-border ${playingVerse !== null && !isNativeApp ? "pb-20" : ""}`}>
         {prevChapter ? (
           <Link
             href={`/quran/${prevChapter.id}`}
@@ -1314,9 +1316,9 @@ function SurahPageContent() {
         )}
       </div>
 
-      {/* Sticky audio player */}
+      {/* Sticky audio player (hidden on native — MobilePlayer handles it) */}
       <AnimatePresence>
-        {playingVerse !== null && (
+        {playingVerse !== null && !isNativeApp && (
           <motion.div
             initial={{ y: 80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
