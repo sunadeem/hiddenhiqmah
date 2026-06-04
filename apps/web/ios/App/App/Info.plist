@@ -47,5 +47,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Hidden Hiqmah uses your location to compute accurate prayer times and the Qiblah direction. Your location is only used on-device and never shared.</string>
 </dict>
 </plist>
