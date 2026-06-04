@@ -2,15 +2,15 @@
 
 import { useState, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useScrollToSection } from "@/hooks/useScrollToSection";
+import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { AnimatePresence, motion } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import PageSearch from "@/components/PageSearch";
-import { textMatch } from "@/lib/search";
-import ContentCard from "@/components/ContentCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { Calendar } from "lucide-react";
-import HadithRefText from "@/components/HadithRefText";
-import SourcesCard from "@/components/SourcesCard";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 
 /* ───────────────────────── data ───────────────────────── */
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Bookmark } from "lucide-react";
-import { addBookmark, removeBookmark, isBookmarked, type BookmarkType } from "@/lib/storage";
+import { addBookmark, removeBookmark, isBookmarked, type BookmarkType } from "../lib/storage";
 
 interface BookmarkButtonProps {
   type: BookmarkType;

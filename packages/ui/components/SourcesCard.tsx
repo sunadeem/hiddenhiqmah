@@ -1,8 +1,8 @@
 "use client";
 
 import { BookOpen } from "lucide-react";
-import ContentCard from "@/components/ContentCard";
-import HadithRefText from "@/components/HadithRefText";
+import ContentCard from "./ContentCard";
+import HadithRefText from "./HadithRefText";
 
 export type SourceRef = {
   ref: string;

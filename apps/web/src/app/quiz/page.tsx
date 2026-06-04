@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import namesOfAllah from "@hidden-hiqmah/content/names-of-allah";
 import {

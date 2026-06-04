@@ -2,14 +2,14 @@
 
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useScrollToSection } from "@/hooks/useScrollToSection";
+import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import PageSearch from "@/components/PageSearch";
-import ContentCard from "@/components/ContentCard";
-import { textMatch } from "@/lib/search";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { BookOpen } from "lucide-react";
-import HadithRefText from "@/components/HadithRefText";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
 /* ───────────────────────── sections nav ───────────────────────── */
 

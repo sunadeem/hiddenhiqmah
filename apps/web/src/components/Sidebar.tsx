@@ -38,7 +38,7 @@ import {
   ListChecks,
   HeartHandshake,
 } from "lucide-react";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme } from "@hidden-hiqmah/ui/context/ThemeContext";
 
 type NavItem = { href: string; label: string; labelAr: string; icon: typeof Users };
 type NavSection = { title: string; items: NavItem[] };

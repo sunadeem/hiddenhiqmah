@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import TabBar from "@/components/TabBar";
-import ContentCard from "@/components/ContentCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import namesOfAllah from "@hidden-hiqmah/content/names-of-allah";
 import { prophetStories } from "@hidden-hiqmah/content/prophet-stories";
 import {
@@ -17,7 +17,7 @@ import {
   addKidsBadge,
   updateKidsStreak,
   toggleKidsChecklist,
-} from "@/lib/storage";
+} from "@hidden-hiqmah/ui/lib/storage";
 import {
   Star,
   Flame,

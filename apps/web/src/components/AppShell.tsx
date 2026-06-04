@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
-import AskHiqmahFloat from "./AskHiqmah";
-import MiniPlayer from "./MiniPlayer";
-import AdhanMiniPlayer from "./AdhanMiniPlayer";
+import AskHiqmahFloat from "@hidden-hiqmah/ui/components/AskHiqmah";
+import MiniPlayer from "@hidden-hiqmah/ui/components/MiniPlayer";
+import AdhanMiniPlayer from "@hidden-hiqmah/ui/components/AdhanMiniPlayer";
 
 const BARE_ROUTES = ["/ask"];
 

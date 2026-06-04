@@ -3,14 +3,14 @@
 import { useState, useRef, useCallback, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import PageSearch from "@/components/PageSearch";
-import { textMatch } from "@/lib/search";
-import HadithRefText from "@/components/HadithRefText";
-import ContentCard from "@/components/ContentCard";
-import BookmarkButton from "@/components/BookmarkButton";
-import SourcesCard, { type SourceRef } from "@/components/SourcesCard";
-import { useScrollToSection } from "@/hooks/useScrollToSection";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
+import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
+import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import {
   Shield,
   Heart,

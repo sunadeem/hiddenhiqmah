@@ -11,8 +11,8 @@ import {
   renderMarkdown,
   CitationCard,
   CopyButton,
-} from "@/components/AskHiqmah";
-import type { Message } from "@/components/AskHiqmah";
+} from "@hidden-hiqmah/ui/components/AskHiqmah";
+import type { Message } from "@hidden-hiqmah/ui/components/AskHiqmah";
 
 const placeholderQuestions = [
   "What is Islam?",

@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bookmark, Trash2, X, BookOpen, ScrollText, FileText, HandHeart, Repeat, Star, Lightbulb } from "lucide-react";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import { getBookmarks, removeBookmark, type Bookmark as BookmarkData } from "@/lib/storage";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import { getBookmarks, removeBookmark, type Bookmark as BookmarkData } from "@hidden-hiqmah/ui/lib/storage";
 
 function formatRelativeTime(timestamp: number): string {
   const now = Date.now();

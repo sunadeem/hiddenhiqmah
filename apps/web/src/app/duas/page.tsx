@@ -2,14 +2,14 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useScrollToSection } from "@/hooks/useScrollToSection";
+import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import BookmarkButton from "@/components/BookmarkButton";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import { Search, X, Sun, Moon as MoonIcon, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles } from "lucide-react";
-import TabBar from "@/components/TabBar";
-import HadithRefText from "@/components/HadithRefText";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
 type Dua = {
   tags: string[];

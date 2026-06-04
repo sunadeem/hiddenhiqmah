@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { Search, ArrowRight, BookOpen, Check } from "lucide-react";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
-import { parseQuranRef } from "@/lib/search";
-import { getProgress } from "@/lib/storage";
+import { parseQuranRef } from "@hidden-hiqmah/ui/lib/search";
+import { getProgress } from "@hidden-hiqmah/ui/lib/storage";
 
 type VerseEntry = { n: number; t: string };
 type SearchIndex = { id: number; v: VerseEntry[] }[];

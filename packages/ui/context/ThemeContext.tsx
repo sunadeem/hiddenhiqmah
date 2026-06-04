@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { getThemeCSSVariables } from "@/lib/themes";
+import { getThemeCSSVariables } from "../lib/themes";
 
 interface ThemeContextType {
   isDark: boolean;

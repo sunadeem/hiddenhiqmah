@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import TabBar from "@/components/TabBar";
-import BookmarkButton from "@/components/BookmarkButton";
-import HadithRefText from "@/components/HadithRefText";
-import SourcesCard from "@/components/SourcesCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
+import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import {
   BookOpen,
   Heart,

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "@/context/ThemeContext";
-import { QuranAudioProvider } from "@/context/QuranAudioContext";
-import { AdhanAudioProvider } from "@/context/AdhanAudioContext";
+import { ThemeProvider } from "@hidden-hiqmah/ui/context/ThemeContext";
+import { QuranAudioProvider } from "@hidden-hiqmah/ui/context/QuranAudioContext";
+import { AdhanAudioProvider } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {

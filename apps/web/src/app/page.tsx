@@ -25,8 +25,8 @@ import {
   ListChecks,
   HeartHandshake,
 } from "lucide-react";
-import ContentCard from "@/components/ContentCard";
-import { AskHiqmahInline } from "@/components/AskHiqmah";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import { AskHiqmahInline } from "@hidden-hiqmah/ui/components/AskHiqmah";
 
 /* ─── Daily inspiration pool ─── */
 

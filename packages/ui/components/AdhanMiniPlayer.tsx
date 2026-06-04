@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, X, Volume2 } from "lucide-react";
-import { useAdhanAudio } from "@/context/AdhanAudioContext";
+import { useAdhanAudio } from "../context/AdhanAudioContext";
 
 function formatTime(seconds: number): string {
   return `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;

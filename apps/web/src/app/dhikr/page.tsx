@@ -3,12 +3,12 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import { getDhikrCounts, setDhikrCount } from "@/lib/storage";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import { getDhikrCounts, setDhikrCount } from "@hidden-hiqmah/ui/lib/storage";
 import { RotateCcw } from "lucide-react";
-import BookmarkButton from "@/components/BookmarkButton";
-import HadithRefText from "@/components/HadithRefText";
+import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
 type DhikrItem = {
   id: string;

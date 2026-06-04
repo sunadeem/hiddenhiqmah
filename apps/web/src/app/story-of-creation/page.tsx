@@ -3,11 +3,11 @@
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import { useScrollToSection } from "@/hooks/useScrollToSection";
-import SourcesCard from "@/components/SourcesCard";
-import HadithRefText from "@/components/HadithRefText";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
 /* ───────────────────────── types ───────────────────────── */
 

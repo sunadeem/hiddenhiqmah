@@ -3,7 +3,7 @@
 import { createContext, useContext, useRef, useState, useCallback, useEffect, ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
-import { getAutoPlayNextSurah, setAutoPlayNextSurah } from "@/lib/storage";
+import { getAutoPlayNextSurah, setAutoPlayNextSurah } from "../lib/storage";
 
 export interface Verse {
   id: number;

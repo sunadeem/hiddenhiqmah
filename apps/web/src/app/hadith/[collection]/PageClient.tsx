@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { Search, ArrowRight, ArrowLeft, ScrollText } from "lucide-react";
 
 type BookMeta = {

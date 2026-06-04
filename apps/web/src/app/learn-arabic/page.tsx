@@ -3,11 +3,11 @@
 import { useState, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import PageSearch from "@/components/PageSearch";
-import ContentCard from "@/components/ContentCard";
-import { textMatch } from "@/lib/search";
-import { useScrollToSection } from "@/hooks/useScrollToSection";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
+import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { BookOpen, Volume2 } from "lucide-react";
 
 /* ───────────────────────── speak helper ───────────────────────── */

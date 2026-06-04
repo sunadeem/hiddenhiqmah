@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { getProphetBySlug } from "@hidden-hiqmah/content/prophets";
 import {
   familyTree,
@@ -12,7 +12,7 @@ import {
   type FamilyNode,
   type WifeNode,
 } from "@hidden-hiqmah/content/prophet-family-tree";
-import HadithRefText from "@/components/HadithRefText";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
 // Layout constants
 const LEVEL_H = 80;

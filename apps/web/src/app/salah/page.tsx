@@ -2,15 +2,15 @@
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useScrollToSection } from "@/hooks/useScrollToSection";
+import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import PageSearch from "@/components/PageSearch";
-import { textMatch } from "@/lib/search";
-import ContentCard from "@/components/ContentCard";
-import HadithRefText from "@/components/HadithRefText";
-import PrayerFigure, { type Position } from "@/components/PrayerFigure";
-import SourcesCard from "@/components/SourcesCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import PrayerFigure, { type Position } from "@hidden-hiqmah/ui/components/PrayerFigure";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import {
   AlertTriangle,
   Clock,
@@ -33,8 +33,8 @@ import {
   Navigation,
   Settings2,
 } from "lucide-react";
-import { useAdhanAudio } from "@/context/AdhanAudioContext";
-import { formatLocation, reverseGeocode } from "@/lib/location";
+import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
+import { formatLocation, reverseGeocode } from "@hidden-hiqmah/ui/lib/location";
 
 /* ───────────────────────── prayer step data ───────────────────────── */
 

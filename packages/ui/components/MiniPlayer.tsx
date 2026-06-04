@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRef } from "react";
 import { Play, Pause, SkipForward, SkipBack, ChevronFirst, ChevronLast, X } from "lucide-react";
-import { useQuranAudio } from "@/context/QuranAudioContext";
+import { useQuranAudio } from "../context/QuranAudioContext";
 
 function formatTime(seconds: number): string {
   return `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;

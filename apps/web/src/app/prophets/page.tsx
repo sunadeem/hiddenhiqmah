@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import PageSearch from "@/components/PageSearch";
-import { textMatch } from "@/lib/search";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { ArrowRight, GitBranch } from "lucide-react";
 import { prophets } from "@hidden-hiqmah/content/prophets";
 

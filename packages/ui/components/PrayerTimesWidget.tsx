@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Sunrise, Sun, CloudSun, Sunset, Moon, MapPin, Search, LocateFixed } from "lucide-react";
-import { useAdhanAudio } from "@/context/AdhanAudioContext";
-import { formatLocation, reverseGeocode } from "@/lib/location";
+import { useAdhanAudio } from "../context/AdhanAudioContext";
+import { formatLocation, reverseGeocode } from "../lib/location";
 
 interface PrayerTimings {
   Fajr: string;

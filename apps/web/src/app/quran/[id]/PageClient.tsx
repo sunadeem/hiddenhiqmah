@@ -24,11 +24,11 @@ import {
   ChevronFirst,
   ChevronLast,
 } from "lucide-react";
-import PageHeader from "@/components/PageHeader";
-import BookmarkButton from "@/components/BookmarkButton";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
-import { getFontSize, setFontSize as saveFontSize, markSurahRead } from "@/lib/storage";
-import { useQuranAudio, type Verse } from "@/context/QuranAudioContext";
+import { getFontSize, setFontSize as saveFontSize, markSurahRead } from "@hidden-hiqmah/ui/lib/storage";
+import { useQuranAudio, type Verse } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 
 type TafsirData = Record<string, string>;
 type TafsirImportMap = Record<number, () => Promise<{ default: TafsirData }>>;

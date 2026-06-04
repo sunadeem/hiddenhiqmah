@@ -4,8 +4,8 @@ import { useState, useEffect, useMemo, Suspense } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import BookmarkButton from "@/components/BookmarkButton";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import { ArrowLeft, ChevronDown, ChevronUp, Search } from "lucide-react";
 
 type HadithEntry = {

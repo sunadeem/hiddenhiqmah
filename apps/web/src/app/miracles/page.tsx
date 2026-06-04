@@ -2,12 +2,12 @@
 
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useScrollToSection } from "@/hooks/useScrollToSection";
+import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { BookOpen, Telescope, Clock, MapPin, Hash, Search, X } from "lucide-react";
-import HadithRefText from "@/components/HadithRefText";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
 type Strength = "strong" | "moderate" | "debated";
 

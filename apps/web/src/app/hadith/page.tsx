@@ -3,10 +3,10 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
+import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { ArrowRight, ScrollText, Search, Star, X } from "lucide-react";
-import { parseHadithRef } from "@/lib/search";
+import { parseHadithRef } from "@hidden-hiqmah/ui/lib/search";
 import {
   SincerityIllustration,
   SafeFromHarmIllustration,
@@ -18,7 +18,7 @@ import {
   MercyIllustration,
   FamilyIllustration,
   BestCharacterIllustration,
-} from "@/components/FeaturedIllustrations";
+} from "@hidden-hiqmah/ui/components/FeaturedIllustrations";
 
 type BookMeta = {
   id: number;
