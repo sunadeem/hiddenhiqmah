@@ -29,7 +29,7 @@ export default function AdhanMiniPlayer() {
           dragMomentum={false}
           dragElastic={0.1}
           whileDrag={{ scale: 1.02, cursor: "grabbing" }}
-          className="fixed top-0 right-0 lg:right-4 lg:top-4 z-50 lg:rounded-xl overflow-hidden shadow-2xl cursor-grab pointer-events-auto"
+          className="fixed mini-player-pos z-50 lg:rounded-xl overflow-hidden shadow-2xl cursor-grab pointer-events-auto"
           style={{ width: "min(100vw, 400px)" }}
         >
           <div className="card-bg border sidebar-border lg:rounded-xl">

@@ -3,7 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { QuranAudioProvider } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { AdhanAudioProvider } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
-import AppShell from "@/components/AppShell";
+import AppShellGate from "@/components/AppShellGate";
 
 export const metadata: Metadata = {
   title: "Hidden Hiqmah — Hidden Wisdom",
@@ -37,7 +37,7 @@ export default function RootLayout({
         <ThemeProvider>
           <QuranAudioProvider>
             <AdhanAudioProvider>
-              <AppShell>{children}</AppShell>
+              <AppShellGate>{children}</AppShellGate>
             </AdhanAudioProvider>
           </QuranAudioProvider>
         </ThemeProvider>

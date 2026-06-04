@@ -106,7 +106,19 @@ body {
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 .safe-area-top {
-  padding-top: env(safe-area-inset-top);
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+
+/* Mini-player position: below mobile header, top-right on desktop */
+.mini-player-pos {
+  top: calc(env(safe-area-inset-top) + 3.5rem);
+  right: 0;
+}
+@media (min-width: 1024px) {
+  .mini-player-pos {
+    top: 1rem;
+    right: 1rem;
+  }
 }
 
 /* Scrollbar */
