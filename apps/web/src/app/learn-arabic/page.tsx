@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
@@ -522,22 +523,13 @@ function LearnArabicContent() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search letters, words, phrases..." className="mb-6" />
 
-      {/* Section navigation */}
-      <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide -mx-1 px-1">
-        {sections.map((section) => (
-          <button
-            key={section.key}
-            onClick={() => setActiveSection(section.key)}
-            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
-              activeSection === section.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
+      {/* Section navigation (shared TabBar) */}
+      <TabBar
+        tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
+        activeTab={activeSection}
+        onTabChange={(k) => setActiveSection(k as SectionKey)}
+        className="mb-6"
+      />
 
       <AnimatePresence mode="wait">
         {/* ═══════════════ ALPHABET ═══════════════ */}

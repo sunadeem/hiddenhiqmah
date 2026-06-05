@@ -6,6 +6,7 @@ import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
@@ -1436,7 +1437,7 @@ interface DeviceOrientationEventWithPermission {
   requestPermission?: () => Promise<"granted" | "denied">;
 }
 
-function QiblahSection() {
+export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   const [loc, setLoc] = useState<QiblahState | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -1547,7 +1548,7 @@ function QiblahSection() {
   return (
     <div className="space-y-6">
       {/* Intro */}
-      <ContentCard delay={0.05}>
+      {!compact && <ContentCard delay={0.05}>
         <h3 className="text-gold font-semibold text-lg mb-3">What is the Qiblah?</h3>
         <p className="text-themed-muted text-sm leading-relaxed mb-3">
           The <span className="text-gold">qiblah</span> is the direction Muslims face during salah — toward the <span className="text-gold">Ka&apos;bah</span> in Makkah. It unites the entire ummah: at any moment of day or night, somewhere on earth a Muslim is praying, and they are all facing the same point.
@@ -1566,7 +1567,7 @@ function QiblahSection() {
         <p className="text-themed-muted text-sm leading-relaxed">
           From that moment, every Muslim has faced Makkah in prayer.
         </p>
-      </ContentCard>
+      </ContentCard>}
 
       {/* Compass */}
       <ContentCard delay={0.08}>
@@ -1749,7 +1750,7 @@ function QiblahSection() {
       </ContentCard>
 
       {/* If you're not sure */}
-      <ContentCard delay={0.11}>
+      {!compact && <ContentCard delay={0.11}>
         <h3 className="text-gold font-semibold text-lg mb-3">What if I&apos;m not sure which way to face?</h3>
         <p className="text-themed-muted text-sm leading-relaxed mb-3">
           Do your best. If you genuinely tried to determine the qiblah and prayed in good faith, your prayer is valid even if you later discover you were facing the wrong direction. The Prophet ﷺ said:
@@ -1768,14 +1769,14 @@ function QiblahSection() {
         <p className="text-themed-muted text-sm leading-relaxed">
           For travelers on planes, trains, or in cars where exact direction is impossible, face whatever direction you can and pray — Allah does not burden a soul beyond its capacity (Quran 2:286).
         </p>
-      </ContentCard>
+      </ContentCard>}
 
-      <SourcesCard className="mt-6" sources={[
+      {!compact && <SourcesCard className="mt-6" sources={[
         { ref: "Quran 2:142-145", desc: "The change of qiblah from Jerusalem to the Ka'bah" },
         { ref: "Quran 2:144", desc: "Turn your face toward al-Masjid al-Haram" },
         { ref: "Tirmidhi 2:194", desc: "What is between east and west is qiblah" },
         { ref: "Quran 2:286", desc: "Allah does not burden a soul beyond its capacity" },
-      ]} />
+      ]} />}
     </div>
   );
 }
@@ -2268,25 +2269,16 @@ function SalahContent() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search prayers, steps, duas..." className="mb-6" />
 
-      {/* Section navigation */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {sections.map((section) => (
-          <button
-            key={section.key}
-            onClick={() => {
-              setActiveSection(section.key);
-              setShowGuide(false);
-            }}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-              activeSection === section.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
+      {/* Section navigation (shared TabBar — picker on mobile when >6 tabs) */}
+      <TabBar
+        tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
+        activeTab={activeSection}
+        onTabChange={(k) => {
+          setActiveSection(k as SectionKey);
+          setShowGuide(false);
+        }}
+        className="mb-6"
+      />
 
       <AnimatePresence mode="wait">
         {/* ─── Prayer Times ─── */}

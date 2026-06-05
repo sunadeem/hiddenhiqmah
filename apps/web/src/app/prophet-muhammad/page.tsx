@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { BookOpen } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
@@ -1413,25 +1414,13 @@ function ProphetMuhammadContent() {
         </div>
       </ContentCard>
 
-      {/* Section navigation */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {sections.map((s) => {
-          const isActive = activeSection === s.id;
-          return (
-            <button
-              key={s.id}
-              onClick={() => setActiveSection(s.id)}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium border transition-all cursor-pointer ${
-                isActive
-                  ? "border-gold/40 bg-gold/20 text-gold"
-                  : "sidebar-border text-themed-muted hover:text-gold hover:border-gold/30"
-              }`}
-            >
-              {s.label}
-            </button>
-          );
-        })}
-      </div>
+      {/* Section navigation (shared TabBar — picker on mobile, pills on desktop) */}
+      <TabBar
+        tabs={sections.map((s) => ({ key: s.id, label: s.label }))}
+        activeTab={activeSection}
+        onTabChange={setActiveSection}
+        className="mb-6"
+      />
 
       <AnimatePresence mode="wait">
         {/* ─── TIMELINE ─── */}

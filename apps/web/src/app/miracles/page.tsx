@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { BookOpen, Telescope, Clock, MapPin, Hash, Search, X } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
@@ -474,30 +475,21 @@ function MiraclesContent() {
         )}
       </div>
 
-      {/* Category pills */}
-      <div className="flex gap-2 flex-wrap mb-6">
-        {categories.map((cat) => {
-          const isActive = activeCategory === cat.key;
+      {/* Category pills (shared TabBar) */}
+      <TabBar
+        tabs={categories.map((cat) => {
           const Icon = cat.icon;
-          return (
-            <button
-              key={cat.key}
-              onClick={() => setActiveCategory(cat.key)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                isActive
-                  ? "bg-[var(--color-gold)] text-[#1a1a2e] shadow-lg shadow-[var(--color-gold)]/20"
-                  : "card-bg border sidebar-border text-themed-muted hover:text-themed hover:border-[var(--color-gold)]/30"
-              }`}
-            >
-              {Icon && <Icon size={15} />}
-              <span>{cat.label}</span>
-              <span className={`text-xs ${isActive ? "opacity-70" : "opacity-50"}`}>
-                ({counts[cat.key as keyof typeof counts]})
-              </span>
-            </button>
-          );
+          return {
+            key: cat.key,
+            label: cat.label,
+            icon: Icon ? <Icon size={14} /> : undefined,
+            count: counts[cat.key as keyof typeof counts],
+          };
         })}
-      </div>
+        activeTab={activeCategory}
+        onTabChange={setActiveCategory}
+        className="mb-6"
+      />
 
       {/* Miracles list */}
       <AnimatePresence mode="wait">

@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
@@ -1255,51 +1256,16 @@ function StoryOfCreationContent() {
         subtitle="The complete journey — from before anything existed, to the eternal life that awaits."
       />
 
-      {/* Tab navigation — brick/masonry stagger layout */}
-      <div className="mb-2 overflow-x-auto scrollbar-hide flex justify-center">
-        <div className="inline-flex flex-col gap-2 min-w-max">
-          {/* Top row: items 1, 3, 5, 7, 9, 11 */}
-          <div className="flex gap-3">
-            {tabs.filter((_, i) => i % 2 === 0).map((tab) => {
-              const idx = tabs.indexOf(tab);
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                    activeTab === tab.key
-                      ? "bg-gold/20 text-gold border border-gold/40"
-                      : "text-themed-muted hover:text-themed border sidebar-border"
-                  }`}
-                >
-                  <span className="opacity-50">{idx + 1}</span>
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-          {/* Bottom row: items 2, 4, 6, 8, 10, 12 — offset right by half a pill */}
-          <div className="flex gap-3 ml-[4.5rem]">
-            {tabs.filter((_, i) => i % 2 === 1).map((tab) => {
-              const idx = tabs.indexOf(tab);
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                    activeTab === tab.key
-                      ? "bg-gold/20 text-gold border border-gold/40"
-                      : "text-themed-muted hover:text-themed border sidebar-border"
-                  }`}
-                >
-                  <span className="opacity-50">{idx + 1}</span>
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      {/* Tab navigation (shared TabBar — dropdown picker on mobile for 12 stages) */}
+      <TabBar
+        tabs={tabs.map((tab, i) => ({
+          key: tab.key,
+          label: `${i + 1}. ${tab.label}`,
+        }))}
+        activeTab={activeTab}
+        onTabChange={(k) => setActiveTab(k as typeof activeTab)}
+        className="mb-2"
+      />
 
       {/* Progress bar — below pills */}
       <div className="mb-6">

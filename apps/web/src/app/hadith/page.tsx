@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { ArrowRight, ScrollText, Search, Star, X } from "lucide-react";
 import { parseHadithRef } from "@hidden-hiqmah/ui/lib/search";
@@ -452,46 +453,26 @@ export default function HadithPage() {
         )}
       </AnimatePresence>
 
-      {/* Collection pills */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {/* Featured pill */}
-        <button
-          onClick={() => setSelected("featured")}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
-            selected === "featured"
-              ? "bg-amber-500 text-[#1a1a2e] shadow-lg shadow-amber-500/20"
-              : "border border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
-          }`}
-        >
-          <Star size={14} />
-          Featured
-        </button>
+      {/* Collection pills (shared TabBar) */}
+      <TabBar
+        tabs={[
+          {
+            key: "featured",
+            label: "Featured",
+            icon: <Star size={14} />,
+            highlight: true,
+          },
+          ...collections.map((col) => ({
+            key: col.slug,
+            label: col.shortName,
+            count: metadataMap[col.slug]?.books.length,
+          })),
+        ]}
+        activeTab={selected}
+        onTabChange={setSelected}
+        className="mb-6"
+      />
 
-        {/* Separator */}
-        <div className="w-px h-8 bg-[var(--color-gold)]/20 self-center mx-1" />
-
-        {collections.map((col) => {
-          const isActive = col.slug === selected;
-          return (
-            <button
-              key={col.slug}
-              onClick={() => setSelected(col.slug)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                isActive
-                  ? "bg-[var(--color-gold)] text-[#1a1a2e] shadow-lg shadow-[var(--color-gold)]/20"
-                  : "card-bg border sidebar-border text-themed-muted hover:text-themed hover:border-[var(--color-gold)]/30"
-              }`}
-            >
-              {col.shortName}
-              {isActive && metadataMap[col.slug] && (
-                <span className="ml-1.5 opacity-70">
-                  · {metadataMap[col.slug].books.length} books
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
 
       {/* Content area */}
       <AnimatePresence mode="wait">

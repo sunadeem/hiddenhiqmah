@@ -1,4 +1,4 @@
-export const TAB_ROOTS = ["/", "/muslim-daily", "/quran", "/ask", "/more"];
+export const TAB_ROOTS = ["/", "/muslim-daily", "/quran", "/more"];
 
 const SECTION_TITLES: Record<string, string> = {
   "/": "Hidden Hiqmah",

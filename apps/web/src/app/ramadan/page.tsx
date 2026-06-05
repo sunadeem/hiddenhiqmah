@@ -714,9 +714,9 @@ function RamadanContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
-              {/* Left side — vertical pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
+              {/* Left side — vertical pills (horizontal scroll on mobile) */}
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 w-full md:w-auto overflow-x-auto md:overflow-visible pb-2 md:pb-0 scrollbar-hide">
                 {fastingTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
@@ -779,9 +779,9 @@ function RamadanContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex gap-4 items-start">
-              {/* Left side — vertical pills */}
-              <div className="flex flex-col gap-2 shrink-0">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
+              {/* Left side — vertical pills (horizontal scroll on mobile) */}
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 w-full md:w-auto overflow-x-auto md:overflow-visible pb-2 md:pb-0 scrollbar-hide">
                 {lastTenTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}

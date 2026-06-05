@@ -109,6 +109,32 @@ body {
   padding-top: max(0.5rem, env(safe-area-inset-top));
 }
 
+/*
+ * Mobile tab strip: horizontal-scroll pills, no wrap, hidden scrollbar.
+ * Used by mobile page-internal tabs (Salah subtabs, Prophet Muhammad tabs, etc.)
+ * to keep the row compact instead of wrapping to 3+ rows on phones.
+ *
+ * Apply to the existing flex-wrap pill containers. On larger screens
+ * (>= md) tabs wrap as before so desktop UX isn't affected.
+ */
+@media (max-width: 767px) {
+  .mobile-tab-strip {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding-bottom: 2px;
+  }
+  .mobile-tab-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .mobile-tab-strip > * {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+}
+
 /* Mini-player position: below mobile header, top-right on desktop */
 .mini-player-pos {
   top: calc(env(safe-area-inset-top) + 3.5rem);

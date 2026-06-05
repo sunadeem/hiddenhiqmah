@@ -313,11 +313,29 @@ const QUICK_LINKS = [
   { href: "/bookmarks", icon: Bookmark, label: "Bookmarks" },
 ];
 
-export function QuickActions() {
+export function QuickActions({
+  onQiblahClick,
+}: {
+  onQiblahClick?: () => void;
+} = {}) {
   return (
     <div className="grid grid-cols-4 gap-2">
       {QUICK_LINKS.map((link) => {
         const Icon = link.icon;
+        const isQiblah = link.label === "Qiblah";
+        if (isQiblah && onQiblahClick) {
+          return (
+            <button
+              key={link.href}
+              type="button"
+              onClick={onQiblahClick}
+              className="card-bg rounded-2xl border sidebar-border py-3 flex flex-col items-center gap-1 touch-manipulation"
+            >
+              <Icon size={20} className="text-gold" />
+              <span className="text-[11px] font-medium text-themed">{link.label}</span>
+            </button>
+          );
+        }
         return (
           <Link
             key={link.href}

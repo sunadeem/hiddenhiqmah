@@ -7,6 +7,7 @@ import {
   ContinueReadingCard,
   QuickActions,
 } from "../MobileHomeDashboard";
+import QiblahSheet from "../QiblahSheet";
 import { pickTodaysInspiration } from "@/data/home-content";
 import {
   getVisitStats,
@@ -17,24 +18,28 @@ import {
 export default function HomeScreen() {
   const [stats, setStats] = useState<VisitStats | null>(null);
   const [inspiration] = useState(() => pickTodaysInspiration());
+  const [qiblahOpen, setQiblahOpen] = useState(false);
 
   useEffect(() => {
     setStats(recordVisit());
   }, []);
 
   return (
-    <div className="space-y-3 pb-4">
-      <TodaysVerseCard inspiration={inspiration} />
+    <>
+      <div className="space-y-3 pb-4">
+        <TodaysVerseCard inspiration={inspiration} />
 
-      <NextPrayerCard />
+        <NextPrayerCard />
 
-      <div className="grid grid-cols-2 gap-3">
-        <StreakCard stats={stats} />
-        <ContinueReadingCard />
+        <div className="grid grid-cols-2 gap-3">
+          <StreakCard stats={stats} />
+          <ContinueReadingCard />
+        </div>
+
+        <QuickActions onQiblahClick={() => setQiblahOpen(true)} />
       </div>
-
-      <QuickActions />
-    </div>
+      <QiblahSheet open={qiblahOpen} onClose={() => setQiblahOpen(false)} />
+    </>
   );
 }
 
