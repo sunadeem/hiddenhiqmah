@@ -157,7 +157,7 @@ export type QuotaInfo = {
 
 export type StreamChatErrorReason =
   | { type: "quota_exceeded"; quota: QuotaInfo }
-  | { type: "generic" };
+  | { type: "generic"; detail?: string };
 
 function formatQuotaReset(resetAt: string | null): string {
   if (!resetAt) return "soon";
@@ -176,7 +176,10 @@ function getApiBaseUrl(): string {
     typeof window !== "undefined" &&
     !!window.Capacitor?.isNativePlatform?.();
   if (isNative) {
-    return process.env.NEXT_PUBLIC_API_BASE_URL || "https://hiddenhiqmah.com";
+    // MUST be the canonical www host. The apex (hiddenhiqmah.com) 307-redirects
+    // to www, and a CORS-preflighted POST can't follow a cross-origin redirect
+    // → WKWebView throws "Load failed". Hit www directly to avoid the redirect.
+    return process.env.NEXT_PUBLIC_API_BASE_URL || "https://www.hiddenhiqmah.com";
   }
   return ""; // relative on web
 }
@@ -198,15 +201,19 @@ export async function streamChat(
     headers["x-anon-id"] = getOrCreateAnonId();
   }
 
+  const url = `${getApiBaseUrl()}/api/search`;
   let res: Response;
   try {
-    res = await fetch(`${getApiBaseUrl()}/api/search`, {
+    res = await fetch(url, {
       method: "POST",
       headers,
       body: JSON.stringify({ messages }),
     });
-  } catch {
-    onError({ type: "generic" });
+  } catch (e) {
+    onError({
+      type: "generic",
+      detail: `fetch threw → ${url} :: ${e instanceof Error ? e.message : String(e)}`,
+    });
     return;
   }
 
@@ -220,12 +227,12 @@ export async function streamChat(
     } catch {
       // fall through to generic
     }
-    onError({ type: "generic" });
+    onError({ type: "generic", detail: "HTTP 429 (rate/quota)" });
     return;
   }
 
   if (!res.ok) {
-    onError({ type: "generic" });
+    onError({ type: "generic", detail: `HTTP ${res.status} from ${url}` });
     return;
   }
 
@@ -255,11 +262,27 @@ export async function streamChat(
   // at once. The server closes the stream after the final event, so res.text()
   // resolves with the complete payload.
   if (isNative || !res.body) {
+    let text = "";
     try {
-      const text = await res.text();
-      for (const part of text.split("\n\n")) handlePart(part);
-    } catch {
-      onError({ type: "generic" });
+      text = await res.text();
+    } catch (e) {
+      onError({
+        type: "generic",
+        detail: `res.text() threw :: ${e instanceof Error ? e.message : String(e)}`,
+      });
+      return;
+    }
+    let answered = false;
+    for (const part of text.split("\n\n")) {
+      const evt = part.match(/^event:\s*(.+)$/m)?.[1]?.trim();
+      if (evt === "answer") answered = true;
+      handlePart(part);
+    }
+    if (!answered) {
+      onError({
+        type: "generic",
+        detail: `no answer event. bodyLen=${text.length} body="${text.slice(0, 220)}"`,
+      });
     }
     return;
   }

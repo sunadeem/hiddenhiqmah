@@ -19,6 +19,12 @@ export default function MobileShell({ children }: { children: React.ReactNode })
     applyNativeSetup();
   }, []);
 
+  // Close the Ask sheet whenever the route changes (e.g. tapping a citation
+  // or link inside Ask navigates the app — the sheet should dismiss).
+  useEffect(() => {
+    setAskOpen(false);
+  }, [pathname]);
+
   const hideBottomChrome = FULLSCREEN_ROUTES.has(pathname);
 
   return (

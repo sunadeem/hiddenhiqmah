@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Send, Loader2, MessageCircleQuestion, Trash2 } from "lucide-react";
 import {
@@ -43,6 +44,7 @@ const placeholderQuestions = [
 ];
 
 export default function AskPage() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -153,11 +155,20 @@ export default function AskPage() {
   };
 
   const handleLinkClick = (href: string) => {
+    const isNative =
+      typeof window !== "undefined" && !!window.Capacitor?.isNativePlatform?.();
+    if (isNative) {
+      // In the mobile app, navigate the in-app router. MobileShell closes the
+      // Ask sheet automatically on route change.
+      router.push(href);
+      return;
+    }
+    // Web popup (/ask opened as a window): drive the opener if present.
     if (window.opener && !window.opener.closed) {
       window.opener.location.href = href;
       window.opener.focus();
     } else {
-      window.open(href, "_blank");
+      router.push(href);
     }
   };
 
