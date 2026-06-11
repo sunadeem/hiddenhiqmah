@@ -11,7 +11,7 @@ export default function AskSheet({
   onClose: () => void;
 }) {
   return (
-    <BottomSheet open={open} onClose={onClose} title="Ask Hiqmah">
+    <BottomSheet open={open} onClose={onClose}>
       <AskPage />
     </BottomSheet>
   );

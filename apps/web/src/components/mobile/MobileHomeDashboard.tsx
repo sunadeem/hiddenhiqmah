@@ -349,16 +349,37 @@ export function ContinueReadingCard() {
     setProgress(getProgress());
   }, []);
 
-  if (!progress || !progress.lastSurah) return null;
+  const chapter =
+    progress && progress.lastSurah
+      ? chapters.find((c) => c.id === progress.lastSurah)
+      : null;
 
-  const chapter = chapters.find((c) => c.id === progress.lastSurah);
-  if (!chapter) return null;
+  // No reading progress yet → a "Start reading" card instead of hiding it.
+  if (!chapter) {
+    return (
+      <Link
+        href="/quran"
+        className="block card-bg rounded-2xl border sidebar-border p-4 touch-manipulation"
+      >
+        <div className="flex items-center gap-2 text-themed-muted text-xs uppercase tracking-wider mb-1">
+          <BookOpen size={14} className="text-gold" />
+          <span>Quran</span>
+        </div>
+        <p className="text-lg font-bold text-themed leading-tight truncate">
+          Start reading
+        </p>
+        <p className="text-xs text-themed-muted mt-1 truncate">
+          Begin with Al-Fātiḥah
+        </p>
+      </Link>
+    );
+  }
 
-  const href = progress.lastVerse
-    ? `/quran/${chapter.id}?v=${progress.lastVerse}`
+  const href = progress!.lastVerse
+    ? `/quran/${chapter.id}?v=${progress!.lastVerse}`
     : `/quran/${chapter.id}`;
-  const subtitle = progress.lastVerse
-    ? `Verse ${progress.lastVerse} · ${chapter.verses} total`
+  const subtitle = progress!.lastVerse
+    ? `Verse ${progress!.lastVerse} · ${chapter.verses} total`
     : `${chapter.verses} verses`;
 
   return (

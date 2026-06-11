@@ -11,28 +11,34 @@ import {
 } from "lucide-react";
 import { hapticSelection, hapticLight } from "@/lib/mobile/haptics";
 
-const LINK_TABS = [
-  { href: "/", label: "Home", icon: Home, matcher: (p: string) => p === "/" },
+type Tab = {
+  label: string;
+  icon: typeof Home;
+  href?: string;
+  matcher?: (p: string) => boolean;
+  ask?: boolean;
+};
+
+const TABS: Tab[] = [
+  { href: "/", label: "Home", icon: Home, matcher: (p) => p === "/" },
   {
     href: "/muslim-daily",
     label: "Daily",
     icon: ListChecks,
-    matcher: (p: string) => p.startsWith("/muslim-daily"),
+    matcher: (p) => p.startsWith("/muslim-daily"),
   },
   {
     href: "/quran",
     label: "Quran",
     icon: BookOpen,
-    matcher: (p: string) => p.startsWith("/quran"),
+    matcher: (p) => p.startsWith("/quran"),
   },
-];
-
-const TRAILING_TABS = [
+  { label: "Ask", icon: MessageCircleQuestion, ask: true },
   {
     href: "/more",
     label: "More",
     icon: Menu,
-    matcher: (p: string) => p.startsWith("/more"),
+    matcher: (p) => p.startsWith("/more"),
   },
 ];
 
@@ -41,57 +47,55 @@ export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
 
   return (
     <nav
-      className="shrink-0 sidebar-bg border-t sidebar-border"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="shrink-0 px-3 pt-1"
+      style={{ paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
     >
-      <div className="flex items-stretch">
-        {LINK_TABS.map((tab) => {
+      {/* Floating rounded pill bar */}
+      <div className="flex items-stretch gap-0.5 rounded-[22px] bg-[var(--color-sidebar)]/92 backdrop-blur-xl border sidebar-border shadow-lg shadow-black/40 px-1.5 py-1.5">
+        {TABS.map((tab) => {
           const Icon = tab.icon;
-          const isActive = tab.matcher(pathname);
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              onClick={() => hapticSelection()}
-              className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 touch-manipulation transition-colors ${
-                isActive ? "text-gold" : "text-themed-muted"
+          const isActive = tab.matcher ? tab.matcher(pathname) : false;
+
+          const inner = (
+            <span
+              className={`flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl transition-colors ${
+                isActive
+                  ? "text-gold bg-[var(--color-gold)]/10"
+                  : "text-themed-muted"
               }`}
             >
-              <Icon size={22} strokeWidth={isActive ? 2.4 : 1.8} />
-              <span className="text-[10px] font-medium tracking-wide">
+              <Icon size={22} strokeWidth={isActive ? 2.4 : 1.9} />
+              <span className="text-[9px] font-medium tracking-wide">
                 {tab.label}
               </span>
-            </Link>
+            </span>
           );
-        })}
-        <button
-          type="button"
-          onClick={() => {
-            hapticLight();
-            onAsk();
-          }}
-          aria-label="Ask Hiqmah"
-          className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2 touch-manipulation text-themed-muted"
-        >
-          <MessageCircleQuestion size={22} strokeWidth={1.8} />
-          <span className="text-[10px] font-medium tracking-wide">Ask</span>
-        </button>
-        {TRAILING_TABS.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = tab.matcher(pathname);
+
+          if (tab.ask) {
+            return (
+              <button
+                key="ask"
+                type="button"
+                onClick={() => {
+                  hapticLight();
+                  onAsk();
+                }}
+                aria-label="Ask Hiqmah"
+                className="flex-1 touch-manipulation"
+              >
+                {inner}
+              </button>
+            );
+          }
+
           return (
             <Link
               key={tab.href}
-              href={tab.href}
+              href={tab.href!}
               onClick={() => hapticSelection()}
-              className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 touch-manipulation transition-colors ${
-                isActive ? "text-gold" : "text-themed-muted"
-              }`}
+              className="flex-1 touch-manipulation"
             >
-              <Icon size={22} strokeWidth={isActive ? 2.4 : 1.8} />
-              <span className="text-[10px] font-medium tracking-wide">
-                {tab.label}
-              </span>
+              {inner}
             </Link>
           );
         })}
