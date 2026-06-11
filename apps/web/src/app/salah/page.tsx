@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
+import { Capacitor } from "@capacitor/core";
+import { Motion } from "@capacitor/motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
@@ -1527,26 +1529,66 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
 
   // Device orientation (compass) — sets up listener and handles iOS permission
   useEffect(() => {
+    const isNative = Capacitor.isNativePlatform();
     const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
       .DeviceOrientationEvent;
-    if (!DeviceOrientationEventCls) return;
-    if (typeof DeviceOrientationEventCls.requestPermission === "function") {
-      // iOS: needs explicit permission
-      setNeedsPermission(true);
-      return;
-    }
-    // Other platforms: just attach listener
+
     const handler = (e: DeviceOrientationEvent) => {
       const webkitHeading = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
       if (typeof webkitHeading === "number") {
         applyHeading(webkitHeading);
       } else if (typeof e.alpha === "number") {
-        // alpha = rotation around z; 0 = north for absolute, but most browsers give relative
         applyHeading((360 - e.alpha) % 360);
       }
     };
-    window.addEventListener("deviceorientationabsolute", handler as EventListener);
-    window.addEventListener("deviceorientation", handler);
+
+    const attach = () => {
+      window.addEventListener("deviceorientationabsolute", handler as EventListener);
+      window.addEventListener("deviceorientation", handler);
+    };
+
+    // ── Native app: auto-start the compass, no permission button ──
+    if (isNative) {
+      let motionRemove: (() => void) | undefined;
+      (async () => {
+        // In the WKWebView the Safari-style requestPermission gesture isn't
+        // required; attach the orientation listener directly (delivers
+        // webkitCompassHeading on iOS). Also start @capacitor/motion as a
+        // native fallback source.
+        try {
+          if (typeof DeviceOrientationEventCls?.requestPermission === "function") {
+            await DeviceOrientationEventCls.requestPermission().catch(() => {});
+          }
+        } catch {
+          /* ignore */
+        }
+        attach();
+        try {
+          const l = await Motion.addListener("orientation", (e) => {
+            const wk = (e as { webkitCompassHeading?: number }).webkitCompassHeading;
+            if (typeof wk === "number") applyHeading(wk);
+            else if (typeof e.alpha === "number") applyHeading((360 - e.alpha) % 360);
+          });
+          motionRemove = () => l.remove();
+        } catch {
+          /* motion unavailable */
+        }
+      })();
+      return () => {
+        window.removeEventListener("deviceorientationabsolute", handler as EventListener);
+        window.removeEventListener("deviceorientation", handler);
+        motionRemove?.();
+      };
+    }
+
+    // ── Web ──
+    if (!DeviceOrientationEventCls) return;
+    if (typeof DeviceOrientationEventCls.requestPermission === "function") {
+      // iOS Safari requires a user gesture → show the enable button.
+      setNeedsPermission(true);
+      return;
+    }
+    attach();
     return () => {
       window.removeEventListener("deviceorientationabsolute", handler as EventListener);
       window.removeEventListener("deviceorientation", handler);

@@ -49,5 +49,7 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Hidden Hiqmah uses your location to show accurate prayer times and the Qiblah direction for where you are. You can also enter a city manually instead.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Hidden Hiqmah uses the compass to point you toward the Qiblah.</string>
 </dict>
 </plist>
