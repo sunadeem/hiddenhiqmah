@@ -5,7 +5,17 @@ import * as path from "path";
 import { createHash } from "crypto";
 import { tryGetSupabaseServer } from "@/lib/supabase-server";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_SECRET });
+// maxRetries bumped from the SDK default of 2 → 4 so brief Anthropic 529
+// (overloaded) spikes are absorbed with exponential backoff instead of
+// surfacing as a user-facing failure.
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_SECRET,
+  maxRetries: 4,
+});
+
+// Current Sonnet model. Was claude-sonnet-4-20250514 (Sonnet 4.0), which is
+// deprecated and retires 2026-06-15 — would 404 after that date.
+const CHAT_MODEL = "claude-sonnet-4-6";
 
 // Find the @hidden-hiqmah/content workspace package at runtime. Layouts:
 //   - dev (pnpm dev from apps/web)    → cwd = apps/web → ../../packages/content
@@ -595,7 +605,7 @@ export async function POST(req: NextRequest) {
 
         // Step 1: First API call WITH tools — let Claude decide what to search
         let response = await client.messages.create({
-          model: "claude-sonnet-4-20250514",
+          model: CHAT_MODEL,
           max_tokens: 1024,
           system: SYSTEM_PROMPT,
           tools: TOOLS,
@@ -632,7 +642,7 @@ export async function POST(req: NextRequest) {
           messageChain.push({ role: "user" as const, content: toolResults });
 
           response = await client.messages.create({
-            model: "claude-sonnet-4-20250514",
+            model: CHAT_MODEL,
             max_tokens: 1024,
             system: SYSTEM_PROMPT,
             tools: TOOLS,
@@ -666,7 +676,7 @@ export async function POST(req: NextRequest) {
             : "No search results were found in the website's database. Answer from your own knowledge.";
 
           response = await client.messages.create({
-            model: "claude-sonnet-4-20250514",
+            model: CHAT_MODEL,
             max_tokens: 1024,
             system: SYSTEM_PROMPT,
             messages: [
@@ -758,7 +768,19 @@ export async function POST(req: NextRequest) {
         send("done", {});
       } catch (error) {
         console.error("Search API error:", error);
-        send("error", { message: "Failed to process your question" });
+        // Distinguish transient Anthropic overload (529) / rate limit (429)
+        // from real failures so the client can show a "try again" message.
+        const status =
+          error instanceof Anthropic.APIError ? error.status : undefined;
+        if (status === 529 || status === 429) {
+          send("error", {
+            message:
+              "Ask Hiqmah is experiencing high demand right now. Please try again in a moment.",
+            retryable: true,
+          });
+        } else {
+          send("error", { message: "Failed to process your question" });
+        }
       }
 
       controller.close();
