@@ -35,6 +35,7 @@ import {
 import { useTheme } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
+import { hapticLight } from "@/lib/mobile/haptics";
 import {
   getFontSize,
   setFontSize,
@@ -719,7 +720,11 @@ function Toggle({
   return (
     <button
       type="button"
-      onClick={() => !disabled && onChange(!value)}
+      onClick={() => {
+        if (disabled) return;
+        hapticLight();
+        onChange(!value);
+      }}
       disabled={disabled}
       role="switch"
       aria-checked={value}

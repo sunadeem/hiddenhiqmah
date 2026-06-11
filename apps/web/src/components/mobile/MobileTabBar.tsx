@@ -9,6 +9,7 @@ import {
   MessageCircleQuestion,
   Menu,
 } from "lucide-react";
+import { hapticSelection, hapticLight } from "@/lib/mobile/haptics";
 
 const LINK_TABS = [
   { href: "/", label: "Home", icon: Home, matcher: (p: string) => p === "/" },
@@ -51,6 +52,7 @@ export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
             <Link
               key={tab.href}
               href={tab.href}
+              onClick={() => hapticSelection()}
               className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 touch-manipulation transition-colors ${
                 isActive ? "text-gold" : "text-themed-muted"
               }`}
@@ -64,7 +66,10 @@ export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
         })}
         <button
           type="button"
-          onClick={onAsk}
+          onClick={() => {
+            hapticLight();
+            onAsk();
+          }}
           aria-label="Ask Hiqmah"
           className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2 touch-manipulation text-themed-muted"
         >
@@ -78,6 +83,7 @@ export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
             <Link
               key={tab.href}
               href={tab.href}
+              onClick={() => hapticSelection()}
               className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 touch-manipulation transition-colors ${
                 isActive ? "text-gold" : "text-themed-muted"
               }`}

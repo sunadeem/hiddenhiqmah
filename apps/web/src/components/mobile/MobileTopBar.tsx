@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { isTabRoot } from "./routes";
 import { navSections } from "@/data/home-content";
+import { hapticLight } from "@/lib/mobile/haptics";
 
 function resolveBackTarget(pathname: string): string {
   // Settings sub-pages
@@ -23,26 +24,37 @@ export default function MobileTopBar() {
   const showBack = !isTabRoot(pathname);
   const target = resolveBackTarget(pathname);
 
+  // Tab roots (Home/Daily/Quran/More) have no back button — render a slim
+  // header that just clears the status bar so content sits higher and the
+  // bottom cards aren't pushed off-screen.
+  if (!showBack) {
+    return (
+      <header
+        className="shrink-0 bg-themed"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      />
+    );
+  }
+
   return (
     <header
       className="shrink-0 bg-themed"
       style={{
-        // Larger safe-area buffer pushes the row well clear of the iOS
+        // Larger safe-area buffer pushes the back button well clear of the iOS
         // status bar / Dynamic Island scroll-to-top zone
         paddingTop: "calc(env(safe-area-inset-top) + 30px)",
       }}
     >
       <div className="h-12 flex items-center px-2">
-        {showBack && (
-          <Link
-            href={target}
-            aria-label="Back"
-            className="flex items-center justify-center w-12 h-12 rounded-full text-themed bg-white/5 active:bg-white/15 touch-manipulation"
-            style={{ touchAction: "manipulation" }}
-          >
-            <ChevronLeft size={28} strokeWidth={2.5} />
-          </Link>
-        )}
+        <Link
+          href={target}
+          onClick={() => hapticLight()}
+          aria-label="Back"
+          className="flex items-center justify-center w-12 h-12 rounded-full text-themed bg-white/5 active:bg-white/15 touch-manipulation"
+          style={{ touchAction: "manipulation" }}
+        >
+          <ChevronLeft size={28} strokeWidth={2.5} />
+        </Link>
       </div>
     </header>
   );
