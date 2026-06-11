@@ -27,13 +27,13 @@ const TABS: Tab[] = [
     icon: ListChecks,
     matcher: (p) => p.startsWith("/muslim-daily"),
   },
+  { label: "Ask", icon: MessageCircleQuestion, ask: true },
   {
     href: "/quran",
     label: "Quran",
     icon: BookOpen,
     matcher: (p) => p.startsWith("/quran"),
   },
-  { label: "Ask", icon: MessageCircleQuestion, ask: true },
   {
     href: "/more",
     label: "More",

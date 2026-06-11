@@ -1,33 +1,35 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { isTabRoot } from "./routes";
-import { navSections } from "@/data/home-content";
 import { hapticLight } from "@/lib/mobile/haptics";
 
-function resolveBackTarget(pathname: string): string {
-  // Settings sub-pages
-  if (pathname === "/privacy") return "/settings";
+// How many in-app navigations have happened since app load. >1 means there's
+// real history to go back through (router.back() will land where you came from).
+let navCount = 0;
 
-  // Items reachable from /more → back to More
-  const allMoreHrefs = navSections.flatMap((s) => s.items.map((i) => i.href));
-  const match = allMoreHrefs.find(
-    (href) => pathname === href || pathname.startsWith(href + "/")
-  );
-  return match ? "/more" : "/";
+/** Fallback parent when there's no in-app history (cold launch / deep link). */
+function parentPath(pathname: string): string {
+  if (pathname === "/privacy") return "/settings";
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts.length > 1) return "/" + parts.slice(0, -1).join("/");
+  return "/";
 }
 
 export default function MobileTopBar() {
   const pathname = usePathname();
+  const router = useRouter();
   const showBack = !isTabRoot(pathname);
-  const target = resolveBackTarget(pathname);
 
-  // Tab roots (Home/Daily/Quran/More) have no back button — render a slim
-  // header. Use max(env, 60px): env(safe-area-inset-top) is unreliable in this
-  // Capacitor WebView (often ~0), so the 60px floor GUARANTEES content clears
-  // the status bar / Dynamic Island. Content must never sit under it.
+  useEffect(() => {
+    navCount += 1;
+  }, [pathname]);
+
+  // Tab roots (Home/Daily/Quran/More/Ask area) have no back button — render a
+  // slim header. max(env, 60px) guarantees content clears the status bar /
+  // Dynamic Island (env(safe-area-inset-top) is unreliable in this WebView).
   if (!showBack) {
     return (
       <header
@@ -37,25 +39,31 @@ export default function MobileTopBar() {
     );
   }
 
+  const handleBack = () => {
+    hapticLight();
+    // Prefer real history so back always returns where you came from.
+    if (navCount > 1) {
+      router.back();
+    } else {
+      router.push(parentPath(pathname));
+    }
+  };
+
   return (
     <header
       className="shrink-0 bg-themed"
-      style={{
-        // Larger safe-area buffer pushes the back button well clear of the iOS
-        // status bar / Dynamic Island scroll-to-top zone
-        paddingTop: "calc(env(safe-area-inset-top) + 30px)",
-      }}
+      style={{ paddingTop: "max(env(safe-area-inset-top), 60px)" }}
     >
       <div className="h-12 flex items-center px-2">
-        <Link
-          href={target}
-          onClick={() => hapticLight()}
+        <button
+          type="button"
+          onClick={handleBack}
           aria-label="Back"
           className="flex items-center justify-center w-12 h-12 rounded-full text-themed bg-white/5 active:bg-white/15 touch-manipulation"
           style={{ touchAction: "manipulation" }}
         >
           <ChevronLeft size={28} strokeWidth={2.5} />
-        </Link>
+        </button>
       </div>
     </header>
   );
