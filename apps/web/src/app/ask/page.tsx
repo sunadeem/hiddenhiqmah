@@ -162,7 +162,7 @@ export default function AskPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col" style={{ background: "var(--color-bg)" }}>
+    <div className="h-full flex flex-col" style={{ background: "var(--color-bg)" }}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b sidebar-border shrink-0">
         <div className="flex items-center gap-2">

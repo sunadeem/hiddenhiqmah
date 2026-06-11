@@ -29,9 +29,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     });
   };
 
-  // Render without shell chrome for popup routes
+  // Render without shell chrome for popup routes. Wrap in a full-height box so
+  // AskPage's `h-full` fills the viewport here (it fills the sheet on mobile).
   if (BARE_ROUTES.includes(pathname)) {
-    return <>{children}</>;
+    return <div className="h-dvh">{children}</div>;
   }
 
   return (

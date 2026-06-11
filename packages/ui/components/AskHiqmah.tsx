@@ -224,8 +224,43 @@ export async function streamChat(
     return;
   }
 
-  if (!res.ok || !res.body) {
+  if (!res.ok) {
     onError({ type: "generic" });
+    return;
+  }
+
+  // Parse one SSE "event:/data:" block and fire the matching callback.
+  const handlePart = (part: string) => {
+    if (!part.trim()) return;
+    const eventMatch = part.match(/^event:\s*(.+)$/m);
+    const dataMatch = part.match(/^data:\s*(.+)$/m);
+    if (!eventMatch || !dataMatch) return;
+    const event = eventMatch[1].trim();
+    try {
+      const data = JSON.parse(dataMatch[1]);
+      if (event === "status") onStatus(data.text);
+      else if (event === "answer") onAnswer(data);
+      else if (event === "error") onError({ type: "generic" });
+    } catch {
+      // Skip malformed events
+    }
+  };
+
+  const isNative =
+    typeof window !== "undefined" && !!window.Capacitor?.isNativePlatform?.();
+
+  // iOS/Android WKWebView can't reliably read a streaming fetch body for SSE
+  // (res.body is often null or never delivers incrementally). On native, and
+  // whenever res.body is unavailable, buffer the whole response and parse it
+  // at once. The server closes the stream after the final event, so res.text()
+  // resolves with the complete payload.
+  if (isNative || !res.body) {
+    try {
+      const text = await res.text();
+      for (const part of text.split("\n\n")) handlePart(part);
+    } catch {
+      onError({ type: "generic" });
+    }
     return;
   }
 
@@ -236,36 +271,13 @@ export async function streamChat(
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
-
     buffer += decoder.decode(value, { stream: true });
     const parts = buffer.split("\n\n");
     buffer = parts.pop() || "";
-
-    for (const part of parts) {
-      if (!part.trim()) continue;
-      const eventMatch = part.match(/^event:\s*(.+)$/m);
-      const dataMatch = part.match(/^data:\s*(.+)$/m);
-      if (!eventMatch || !dataMatch) continue;
-
-      const event = eventMatch[1].trim();
-      try {
-        const data = JSON.parse(dataMatch[1]);
-        switch (event) {
-          case "status":
-            onStatus(data.text);
-            break;
-          case "answer":
-            onAnswer(data);
-            break;
-          case "error":
-            onError({ type: "generic" });
-            break;
-        }
-      } catch {
-        // Skip malformed events
-      }
-    }
+    for (const part of parts) handlePart(part);
   }
+  // Flush any trailing buffered event
+  if (buffer.trim()) handlePart(buffer);
 }
 
 // ── Placeholder questions ─────────────────────────────────────────────────
