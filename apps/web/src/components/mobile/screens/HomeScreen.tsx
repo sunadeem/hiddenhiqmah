@@ -8,6 +8,7 @@ import {
   QuickActions,
 } from "../MobileHomeDashboard";
 import QiblahSheet from "../QiblahSheet";
+import PullToRefresh from "../PullToRefresh";
 import { pickTodaysInspiration } from "@/data/home-content";
 import {
   getVisitStats,
@@ -17,27 +18,39 @@ import {
 
 export default function HomeScreen() {
   const [stats, setStats] = useState<VisitStats | null>(null);
-  const [inspiration] = useState(() => pickTodaysInspiration());
+  const [inspiration, setInspiration] = useState(() => pickTodaysInspiration());
   const [qiblahOpen, setQiblahOpen] = useState(false);
+  const [prayerKey, setPrayerKey] = useState(0);
 
   useEffect(() => {
     setStats(recordVisit());
   }, []);
 
+  const handleRefresh = async () => {
+    // Refresh everything on the dashboard:
+    setStats(getVisitStats()); // streak
+    setInspiration(pickTodaysInspiration()); // today's verse/hadith
+    setPrayerKey((k) => k + 1); // remount NextPrayerCard → re-fetch prayer times + location
+    // Give the prayer-time fetch a beat so the spinner reflects real work.
+    await new Promise((r) => setTimeout(r, 900));
+  };
+
   return (
     <>
-      <div className="space-y-3 pb-4">
-        <TodaysVerseCard inspiration={inspiration} />
+      <PullToRefresh onRefresh={handleRefresh}>
+        <div className="space-y-3 pb-4">
+          <TodaysVerseCard inspiration={inspiration} />
 
-        <NextPrayerCard />
+          <NextPrayerCard key={prayerKey} />
 
-        <div className="grid grid-cols-2 gap-3">
-          <StreakCard stats={stats} />
-          <ContinueReadingCard />
+          <div className="grid grid-cols-2 gap-3">
+            <StreakCard stats={stats} />
+            <ContinueReadingCard />
+          </div>
+
+          <QuickActions onQiblahClick={() => setQiblahOpen(true)} />
         </div>
-
-        <QuickActions onQiblahClick={() => setQiblahOpen(true)} />
-      </div>
+      </PullToRefresh>
       <QiblahSheet open={qiblahOpen} onClose={() => setQiblahOpen(false)} />
     </>
   );

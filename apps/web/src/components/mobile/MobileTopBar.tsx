@@ -25,13 +25,14 @@ export default function MobileTopBar() {
   const target = resolveBackTarget(pathname);
 
   // Tab roots (Home/Daily/Quran/More) have no back button — render a slim
-  // header that just clears the status bar so content sits higher and the
-  // bottom cards aren't pushed off-screen.
+  // header. Use max(env, 60px): env(safe-area-inset-top) is unreliable in this
+  // Capacitor WebView (often ~0), so the 60px floor GUARANTEES content clears
+  // the status bar / Dynamic Island. Content must never sit under it.
   if (!showBack) {
     return (
       <header
         className="shrink-0 bg-themed"
-        style={{ paddingTop: "env(safe-area-inset-top)" }}
+        style={{ paddingTop: "max(env(safe-area-inset-top), 60px)" }}
       />
     );
   }
