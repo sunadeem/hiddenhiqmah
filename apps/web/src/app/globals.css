@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Scan the shared workspace package so Tailwind generates the utility classes
+   used only inside packages/ui components (TabBar, AskHiqmah, etc.). Without
+   this, responsive/arbitrary classes like `md:hidden` and `lg:w-[420px]` that
+   never appear in apps/web get purged — breaking those components' layout. */
+@source "../../../../packages/ui";
+
 @font-face {
   font-family: "Amiri";
   font-style: normal;
