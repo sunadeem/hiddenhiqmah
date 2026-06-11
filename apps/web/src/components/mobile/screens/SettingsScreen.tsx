@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
+import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
 import {
   getFontSize,
   setFontSize,
@@ -92,6 +93,9 @@ export default function SettingsScreen() {
   const updateNotif = (patch: Partial<NotificationPrefs>) => {
     setNotificationPrefs(patch);
     setNotif((n) => (n ? { ...n, ...patch } : n));
+    // Re-schedule local notifications. Prompts for OS permission the first
+    // time (undetermined) since the user is actively enabling notifications.
+    rescheduleNotificationsDebounced(true);
   };
 
   const updatePrayer = (patch: Partial<PrayerSettings>) => {
