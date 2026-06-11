@@ -9,6 +9,7 @@ import {
 } from "../MobileHomeDashboard";
 import QiblahSheet from "../QiblahSheet";
 import PullToRefresh from "../PullToRefresh";
+import LongPressActions, { type LongPressItem } from "../LongPressActions";
 import { pickTodaysInspiration } from "@/data/home-content";
 import {
   getVisitStats,
@@ -79,23 +80,41 @@ function StreakCard({ stats }: { stats: VisitStats | null }) {
 type Inspiration = ReturnType<typeof pickTodaysInspiration>;
 
 function TodaysVerseCard({ inspiration }: { inspiration: Inspiration }) {
+  const isVerse = inspiration.type === "Quran";
+  let href: string | undefined;
+  if (isVerse) {
+    const m = inspiration.reference.match(/(\d+):(\d+)/);
+    if (m) href = `/quran/${m[1]}?v=${m[2]}`;
+  }
+  const item: LongPressItem = {
+    bookmarkType: isVerse ? "verse" : "hadith",
+    bookmarkId: inspiration.reference,
+    title: `Today's ${inspiration.type}`,
+    arabic: inspiration.arabic,
+    english: inspiration.english,
+    reference: inspiration.reference,
+    href,
+  };
+
   return (
-    <div className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
-      <div className="relative">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-gold/70 mb-2">
-          Today's {inspiration.type}
-        </p>
-        <p className="text-2xl font-arabic text-gold leading-loose text-center mb-3">
-          {inspiration.arabic}
-        </p>
-        <p className="text-themed text-sm italic text-center leading-relaxed">
-          &ldquo;{inspiration.english}&rdquo;
-        </p>
-        <p className="text-themed-muted text-[11px] mt-3 text-center">
-          — {inspiration.reference}
-        </p>
+    <LongPressActions item={item}>
+      <div className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
+        <div className="relative">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-gold/70 mb-2">
+            Today's {inspiration.type}
+          </p>
+          <p className="text-2xl font-arabic text-gold leading-loose text-center mb-3">
+            {inspiration.arabic}
+          </p>
+          <p className="text-themed text-sm italic text-center leading-relaxed">
+            &ldquo;{inspiration.english}&rdquo;
+          </p>
+          <p className="text-themed-muted text-[11px] mt-3 text-center">
+            — {inspiration.reference}
+          </p>
+        </div>
       </div>
-    </div>
+    </LongPressActions>
   );
 }
