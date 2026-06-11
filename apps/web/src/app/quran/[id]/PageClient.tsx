@@ -825,6 +825,8 @@ function SurahPageContent() {
       const el = document.getElementById(`verse-${highlightVerse}`);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add("section-highlight");
+        setTimeout(() => el.classList.remove("section-highlight"), 2000);
       }
     }, 400);
   }, [verses, highlightVerse]);

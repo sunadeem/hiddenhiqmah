@@ -438,7 +438,7 @@ function executeTool(block: Anthropic.Messages.ToolUseBlock, counter: { value: n
           source: h.collectionName,
           reference: h.reference,
           english: h.english,
-          href: `/hadith/${col}/${bookId}?highlight=${hadithId}`,
+          href: `/hadith/${col}/${bookId}?h=${hadithId}`,
         });
         return `[Result ${counter.value}] ${h.reference}\n${h.english}`;
       });
@@ -465,7 +465,7 @@ function executeTool(block: Anthropic.Messages.ToolUseBlock, counter: { value: n
           reference: v.key,
           arabic: v.arabic,
           english: v.english,
-          href: `/quran/${v.surahId}`,
+          href: `/quran/${v.surahId}?v=${v.verse}`,
         });
         return `[Result ${counter.value}] ${v.key}\n${v.english}`;
       });
@@ -491,7 +491,7 @@ function executeTool(block: Anthropic.Messages.ToolUseBlock, counter: { value: n
         reference: result.key,
         arabic: result.arabic,
         english: result.english,
-        href: `/quran/${result.surahId}`,
+        href: `/quran/${result.surahId}?v=${result.verse}`,
       });
       return {
         result: `[Result ${counter.value}] ${result.key}\nArabic: ${result.arabic}\nEnglish: ${result.english}\nTransliteration: ${result.transliteration || "N/A"}`,
