@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState, useEffect, useCallback, useRef } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useIsNative } from "@/lib/mobile/platform";
@@ -676,7 +676,27 @@ export default function SurahPage() {
 function SurahPageContent() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const id = Number(params.id);
+  const swipeRef = useRef<{ x: number; y: number } | null>(null);
+
+  // Swipe left/right (away from the left edge, which is the back gesture) to
+  // move between surahs.
+  const onSurahTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    swipeRef.current = t.clientX > 40 ? { x: t.clientX, y: t.clientY } : null;
+  };
+  const onSurahTouchEnd = (e: React.TouchEvent) => {
+    if (!swipeRef.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - swipeRef.current.x;
+    const dy = t.clientY - swipeRef.current.y;
+    swipeRef.current = null;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const sid = Number(params.id);
+    if (dx < 0 && sid < 114) router.push(`/quran/${sid + 1}`);
+    else if (dx > 0 && sid > 1) router.push(`/quran/${sid - 1}`);
+  };
   const chapter = chapters.find((ch) => ch.id === id);
   const isNativeApp = useIsNative();
 
@@ -921,7 +941,7 @@ function SurahPageContent() {
   }, [playingVerse, verses, playVerse, togglePause, setAutoPlay]);
 
   return (
-    <div>
+    <div onTouchStart={onSurahTouchStart} onTouchEnd={onSurahTouchEnd}>
       {/* Back link */}
       <Link
         href="/quran"

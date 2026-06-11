@@ -23,6 +23,7 @@ import {
   setLocationState,
 } from "@hidden-hiqmah/ui/lib/location-cache";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
+import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
 import { getProgress } from "@hidden-hiqmah/ui/lib/storage";
 import { reverseGeocode, formatLocation } from "@hidden-hiqmah/ui/lib/location";
 
@@ -230,22 +231,29 @@ export function NextPrayerCard() {
   }, [timings]);
 
   if (!timings || !nextPrayer) {
+    // Skeleton shaped like the loaded prayer card → no layout shift on load.
     return (
-      <Link
-        href="/salah?tab=times"
-        className="block card-bg rounded-2xl border sidebar-border p-4 touch-manipulation"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[var(--color-gold)]/10 flex items-center justify-center shrink-0">
-            <Sunrise size={18} className="text-gold/70" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-themed-muted">Prayer Times</p>
-            <p className="text-sm text-themed-muted">Loading…</p>
-          </div>
-          <ArrowRight size={16} className="text-themed-muted" />
+      <div className="card-bg rounded-2xl border sidebar-border p-5">
+        <div className="flex justify-between mb-4">
+          <Skeleton className="h-3 w-40" />
+          <Skeleton className="h-3 w-12" />
         </div>
-      </Link>
+        <div className="flex items-center gap-3 mb-4">
+          <Skeleton className="h-12 w-12 rounded-xl" />
+          <div className="flex-1">
+            <Skeleton className="h-6 w-24 mb-2" />
+            <Skeleton className="h-3 w-32" />
+          </div>
+        </div>
+        <div className="space-y-3 pt-4 border-t sidebar-border">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex justify-between">
+              <Skeleton className="h-3 w-16" />
+              <Skeleton className="h-3 w-14" />
+            </div>
+          ))}
+        </div>
+      </div>
     );
   }
 
