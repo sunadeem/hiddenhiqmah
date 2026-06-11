@@ -22,6 +22,7 @@ import {
   Languages,
   GitBranch,
   Bookmark,
+  Settings as SettingsIcon,
 } from "lucide-react";
 
 export const dailyInspirations = [
@@ -153,6 +154,7 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
     heading: "My Path in Islam",
     items: [
       { href: "/bookmarks", icon: Bookmark, title: "Bookmarks", titleAr: "المحفوظات", description: "Saved verses, hadiths, and sections" },
+      { href: "/settings", icon: SettingsIcon, title: "Settings", titleAr: "الإعدادات", description: "Account, notifications, audio, prayer" },
     ],
   },
 ];

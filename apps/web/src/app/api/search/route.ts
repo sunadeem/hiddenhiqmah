@@ -2,12 +2,69 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import * as fs from "fs";
 import * as path from "path";
+import { createHash } from "crypto";
+import { tryGetSupabaseServer } from "@/lib/supabase-server";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_SECRET });
 
+// Find the @hidden-hiqmah/content workspace package at runtime. Layouts:
+//   - dev (pnpm dev from apps/web)    → cwd = apps/web → ../../packages/content
+//   - Vercel (Root Directory=apps/web,
+//     outputFileTracingRoot=monorepo) → cwd = /var/task → packages/content
+//
+// Probe both; use whichever has the hadith/ subdirectory we need.
+const CONTENT_ROOT: string = (() => {
+  const candidates = [
+    path.join(process.cwd(), "packages/content"),       // Vercel
+    path.join(process.cwd(), "../../packages/content"), // dev
+    path.join(process.cwd(), "../packages/content"),    // safety net
+  ];
+  for (const candidate of candidates) {
+    try {
+      if (fs.existsSync(path.join(candidate, "hadith"))) {
+        return candidate;
+      }
+    } catch {
+      // ignore
+    }
+  }
+  // Fallback — let the per-file fs.readFileSync calls surface the real error
+  console.error("[Ask Hiqmah] Could not locate @hidden-hiqmah/content. Tried:", candidates);
+  return candidates[0];
+})();
+
+// ── CORS helpers (mobile app at hiqmah://, capacitor:// hits this from a
+// different origin) ──────────────────────────────────────────────────────
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Anon-Id",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS_HEADERS });
+}
+
+type QuotaState = {
+  used: number;
+  limit: number;
+  resetAt: string | null;
+  hasBonus: boolean;
+};
+
+function getRequestIp(req: NextRequest): string {
+  const fwd = req.headers.get("x-forwarded-for");
+  if (fwd) return fwd.split(",")[0].trim();
+  return req.headers.get("x-real-ip") || "0.0.0.0";
+}
+
+function sha256(input: string): string {
+  return createHash("sha256").update(input).digest("hex");
+}
+
 // ── Hadith search infrastructure ──────────────────────────────────────────
 
-const HADITH_DIR = path.join(process.cwd(), "src/data/hadith");
+const HADITH_DIR = path.join(CONTENT_ROOT, "hadith");
 const COLLECTIONS = ["bukhari", "muslim", "abudawud", "tirmidhi", "nasai", "ibnmajah", "ahmad"];
 
 interface HadithEntry {
@@ -109,7 +166,7 @@ function searchHadiths(
 
 // ── Quran search infrastructure ───────────────────────────────────────────
 
-const QURAN_DIR = path.join(process.cwd(), "src/data/quran");
+const QURAN_DIR = path.join(CONTENT_ROOT, "quran");
 
 interface QuranVerse {
   id: number;
@@ -448,11 +505,72 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     parsedMessages = body.messages;
   } catch {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid request" },
+      { status: 400, headers: CORS_HEADERS }
+    );
   }
 
   if (!parsedMessages || !Array.isArray(parsedMessages) || parsedMessages.length === 0) {
-    return NextResponse.json({ error: "Messages required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Messages required" },
+      { status: 400, headers: CORS_HEADERS }
+    );
+  }
+
+  // ── Identify caller + enforce quota ──────────────────────────────────
+  // Either authenticated (Bearer JWT) or anonymous (x-anon-id header).
+  // If Supabase env vars aren't set, we silently skip the quota system
+  // (graceful local-dev mode).
+  const supabaseSrv = tryGetSupabaseServer();
+  const authHeader = req.headers.get("authorization");
+  const anonIdHeader = req.headers.get("x-anon-id");
+  const ipHash = sha256(getRequestIp(req));
+
+  let userId: string | null = null;
+  let anonId: string | null = null;
+
+  if (supabaseSrv) {
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.slice(7);
+      const { data, error } = await supabaseSrv.auth.getUser(token);
+      if (!error && data.user) {
+        userId = data.user.id;
+        // First sign-in-day bonus grant (idempotent — PK on user_id)
+        try {
+          await supabaseSrv
+            .from("sign_in_bonuses")
+            .insert({ user_id: userId })
+            .select()
+            .maybeSingle();
+        } catch {
+          // Likely duplicate (user has already received bonus before today's
+          // window) — safe to ignore. The quota function checks granted_at.
+        }
+      }
+    }
+
+    if (!userId && anonIdHeader) {
+      anonId = anonIdHeader.slice(0, 64); // sanity cap on length
+    }
+
+    // Enforce quota
+    try {
+      const { data: quotaData } = await supabaseSrv.rpc("get_quota_for_today", {
+        p_user_id: userId,
+        p_anon_id: anonId,
+      });
+      const quota = quotaData as QuotaState | null;
+      if (quota && quota.used >= quota.limit) {
+        return NextResponse.json(
+          { error: "quota_exceeded", quota },
+          { status: 429, headers: CORS_HEADERS }
+        );
+      }
+    } catch (e) {
+      // Quota check failures shouldn't break the chat — log and proceed.
+      console.error("[Ask Hiqmah] Quota check failed:", e);
+    }
   }
 
   const apiMessages = parsedMessages.map((m) => ({
@@ -623,6 +741,20 @@ export async function POST(req: NextRequest) {
 
         console.log("[Ask Hiqmah] Content length:", text.length, "links:", links.length, "citations:", filteredCitations.length);
         send("answer", { content: text, links, citations: filteredCitations });
+
+        // Log usage against quota (after successful answer)
+        if (supabaseSrv && (userId || anonId)) {
+          try {
+            await supabaseSrv.from("chat_usage").insert({
+              user_id: userId,
+              anon_id: userId ? null : anonId,
+              ip_hash: ipHash,
+            });
+          } catch (e) {
+            console.error("[Ask Hiqmah] Failed to log chat_usage:", e);
+          }
+        }
+
         send("done", {});
       } catch (error) {
         console.error("Search API error:", error);
@@ -638,6 +770,7 @@ export async function POST(req: NextRequest) {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
       Connection: "keep-alive",
+      ...CORS_HEADERS,
     },
   });
 }

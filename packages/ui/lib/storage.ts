@@ -25,6 +25,8 @@ const KEYS = {
   autoPlayNextSurah: "hiqmah-autoplay-next",
   kidsProgress: "hiqmah-kids-progress",
   visits: "hiqmah-visits",
+  notifications: "hiqmah-notifications",
+  prayerSettings: "hiqmah-prayer-settings",
 } as const;
 
 export type VisitStats = {
@@ -46,6 +48,143 @@ function dayBefore(dateStr: string): string {
 
 export function getVisitStats(): VisitStats {
   return get<VisitStats>(KEYS.visits, { currentStreak: 0, longestStreak: 0 });
+}
+
+// ─── Notifications ─────────────────────────────────────────────
+
+export type NotificationPrefs = {
+  adhanEnabled: boolean;
+  adhanPerPrayer: { fajr: boolean; dhuhr: boolean; asr: boolean; maghrib: boolean; isha: boolean };
+  prePrayer: boolean;
+  iqamah: boolean;
+  todaysVerse: boolean;
+  todaysHadith: boolean;
+  morningAdhkar: boolean;
+  eveningAdhkar: boolean;
+  streak: boolean;
+  dhikrReminders: boolean;
+  dhikrIntervalHours: number;
+  jumuah: boolean;
+  ramadan: boolean;
+  laylatulQadr: boolean;
+  aiChatResponses: boolean;
+  continueReading: boolean;
+};
+
+const defaultNotificationPrefs: NotificationPrefs = {
+  adhanEnabled: true,
+  adhanPerPrayer: { fajr: true, dhuhr: true, asr: true, maghrib: true, isha: true },
+  prePrayer: false,
+  iqamah: false,
+  todaysVerse: true,
+  todaysHadith: false,
+  morningAdhkar: false,
+  eveningAdhkar: false,
+  streak: true,
+  dhikrReminders: false,
+  dhikrIntervalHours: 4,
+  jumuah: true,
+  ramadan: false,
+  laylatulQadr: false,
+  aiChatResponses: true,
+  continueReading: false,
+};
+
+export function getNotificationPrefs(): NotificationPrefs {
+  const stored = get<Partial<NotificationPrefs>>(KEYS.notifications, {});
+  return { ...defaultNotificationPrefs, ...stored };
+}
+
+export function setNotificationPrefs(prefs: Partial<NotificationPrefs>) {
+  const current = getNotificationPrefs();
+  set(KEYS.notifications, { ...current, ...prefs });
+}
+
+// ─── Hijri date helpers (auto-detect Ramadan / Laylatul Qadr) ──
+
+export function getCurrentHijriMonthDay(): { month: number; day: number } {
+  try {
+    const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
+      day: "numeric",
+      month: "numeric",
+    }).formatToParts(new Date());
+    const month = Number(parts.find((p) => p.type === "month")?.value ?? 0);
+    const day = Number(parts.find((p) => p.type === "day")?.value ?? 0);
+    return { month, day };
+  } catch {
+    return { month: 0, day: 0 };
+  }
+}
+
+/** True when current Hijri date is in the month of Ramadan (9th month). */
+export function isRamadanActive(): boolean {
+  return getCurrentHijriMonthDay().month === 9;
+}
+
+/** True when in the last 10 nights of Ramadan (day >= 20). */
+export function isLaylatulQadrSeason(): boolean {
+  const { month, day } = getCurrentHijriMonthDay();
+  return month === 9 && day >= 20;
+}
+
+// ─── Prayer settings ───────────────────────────────────────────
+
+export type PrayerCalcMethod =
+  | 1 // University of Islamic Sciences, Karachi
+  | 2 // Islamic Society of North America (ISNA)
+  | 3 // Muslim World League (MWL)
+  | 4 // Umm Al-Qura, Makkah
+  | 5 // Egyptian General Authority
+  | 7 // Institute of Geophysics, Tehran
+  | 8 // Gulf Region
+  | 9 // Kuwait
+  | 10 // Qatar
+  | 11 // Majlis Ugama Islam Singapura
+  | 12 // Union Organization Islamic de France
+  | 13 // Diyanet (Turkey)
+  | 14 // Spiritual Administration of Muslims (Russia)
+  | 15; // Moonsighting Committee Worldwide
+
+export type AsrMethod = "standard" | "hanafi"; // standard = shafi/maliki/hanbali, hanafi = later
+
+export type PrayerSettings = {
+  calcMethod: PrayerCalcMethod;
+  asrMethod: AsrMethod;
+  locationMode: "auto" | "manual";
+  manualCity?: string;
+  manualCountry?: string;
+};
+
+const defaultPrayerSettings: PrayerSettings = {
+  calcMethod: 2,
+  asrMethod: "standard",
+  locationMode: "auto",
+};
+
+export function getPrayerSettings(): PrayerSettings {
+  const stored = get<Partial<PrayerSettings>>(KEYS.prayerSettings, {});
+  return { ...defaultPrayerSettings, ...stored };
+}
+
+export function setPrayerSettings(s: Partial<PrayerSettings>) {
+  const current = getPrayerSettings();
+  set(KEYS.prayerSettings, { ...current, ...s });
+}
+
+export function clearAllLocalData() {
+  if (typeof window === "undefined") return;
+  for (const k of Object.values(KEYS)) {
+    try {
+      localStorage.removeItem(k);
+    } catch {
+      // ignore
+    }
+  }
+}
+
+export function exportBookmarksJSON(): string {
+  const bookmarks = getBookmarks();
+  return JSON.stringify(bookmarks, null, 2);
 }
 
 export function recordVisit(): VisitStats {

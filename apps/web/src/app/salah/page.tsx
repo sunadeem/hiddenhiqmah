@@ -36,6 +36,12 @@ import {
 } from "lucide-react";
 import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { formatLocation, reverseGeocode } from "@hidden-hiqmah/ui/lib/location";
+import {
+  getFreshCachedLocation,
+  setCachedLocation,
+  getLocationState,
+  setLocationState,
+} from "@hidden-hiqmah/ui/lib/location-cache";
 
 /* ───────────────────────── prayer step data ───────────────────────── */
 
@@ -1466,6 +1472,22 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   }, []);
 
   const fetchLocation = useCallback(() => {
+    // Prefer a recently-cached location set by NextPrayerCard or a prior visit.
+    const fresh = getFreshCachedLocation();
+    if (fresh) {
+      setLoc({ lat: fresh.lat, lng: fresh.lng, city: fresh.display });
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
+    // Honor a previous "denied" — don't auto-trigger another prompt.
+    if (getLocationState() === "denied") {
+      setError("Location access is off. Enable it in Settings to use the compass.");
+      setLoading(false);
+      return;
+    }
+
     if (!navigator.geolocation) {
       setError("Your browser does not support geolocation.");
       setLoading(false);
@@ -1481,10 +1503,19 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
         setLoc({ lat: latitude, lng: longitude, city });
         setLoading(false);
         setError(null);
+        setLocationState("granted");
+        setCachedLocation({
+          lat: latitude,
+          lng: longitude,
+          city: geo?.city || "Your location",
+          country: geo?.countryName || "",
+          display: city,
+        });
       },
       () => {
         setError("Couldn't get your location. Allow location access and try again.");
         setLoading(false);
+        setLocationState("denied");
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
@@ -2060,6 +2091,26 @@ function SalahContent() {
   );
 
   const ptAutoLocate = useCallback(async () => {
+    // Prefer cached location — no prompt, instant
+    const fresh = getFreshCachedLocation();
+    if (fresh) {
+      setPtCity(fresh.city);
+      setPtCountry(fresh.country);
+      setPtDisplayLocation(fresh.display);
+      ptFetchTimesByCoords(fresh.lat, fresh.lng, ptMethod);
+      return;
+    }
+
+    // Honor prior denial — fall back to Makkah without prompting
+    if (getLocationState() === "denied") {
+      setPtCity("Makkah");
+      setPtCountry("Saudi Arabia");
+      setPtDisplayLocation("Makkah, Saudi Arabia");
+      setPtShowManualInput(true);
+      ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
+      return;
+    }
+
     if (!navigator.geolocation) return;
     setPtLocating(true);
     navigator.geolocation.getCurrentPosition(
@@ -2067,6 +2118,7 @@ function SalahContent() {
         const { latitude, longitude } = pos.coords;
         // Fetch prayer times directly by coordinates (most reliable)
         ptFetchTimesByCoords(latitude, longitude, ptMethod);
+        setLocationState("granted");
         // Resolve display name in parallel
         const geo = await reverseGeocode(latitude, longitude);
         if (geo) {
@@ -2077,6 +2129,7 @@ function SalahContent() {
             setPtCity(city);
             setPtCountry(country);
             setPtDisplayLocation(display);
+            setCachedLocation({ lat: latitude, lng: longitude, city, country, display });
           } else {
             setPtDisplayLocation(`${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`);
           }
@@ -2092,6 +2145,7 @@ function SalahContent() {
         setPtShowManualInput(true);
         ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
         setPtLocating(false);
+        setLocationState("denied");
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );

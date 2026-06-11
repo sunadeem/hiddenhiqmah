@@ -40,6 +40,13 @@
   box-sizing: border-box;
 }
 
+/* Black at the root level so the WebView never shows its white default
+   between the LaunchScreen splash and the first React paint. The body
+   layer below paints the deep-blue app theme on top of this. */
+html {
+  background-color: #000;
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-text);

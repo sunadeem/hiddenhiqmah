@@ -16,6 +16,12 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Geolocation } from "@capacitor/geolocation";
+import {
+  getFreshCachedLocation,
+  setCachedLocation,
+  getLocationState,
+  setLocationState,
+} from "@hidden-hiqmah/ui/lib/location-cache";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { getProgress } from "@hidden-hiqmah/ui/lib/storage";
 import { reverseGeocode, formatLocation } from "@hidden-hiqmah/ui/lib/location";
@@ -120,29 +126,95 @@ export function NextPrayerCard() {
 
   useEffect(() => {
     if (fetched.current) return;
-    fetched.current = true;
-    (async () => {
+
+    // Render with Makkah fallback IMMEDIATELY so the card has content the
+    // moment the home screen paints.
+    fetchTimes("Makkah", "Saudi Arabia");
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const startLocationFlow = async () => {
+      if (cancelled || fetched.current) return;
+      fetched.current = true;
+
+      // Re-use a cached location if it's recent — no prompt, no network spin
+      const fresh = getFreshCachedLocation();
+      if (fresh) {
+        fetchTimes(fresh.city, fresh.country, fresh.display);
+        return;
+      }
+
+      // Honor a previous "denied" — don't badger the user
+      if (getLocationState() === "denied") {
+        return;
+      }
+
       try {
         const perm = await Geolocation.requestPermissions({ permissions: ["location"] });
+        if (cancelled) return;
         if (perm.location !== "granted") {
-          fetchTimes("Makkah", "Saudi Arabia");
+          setLocationState("denied");
           return;
         }
+        setLocationState("granted");
         const pos = await Geolocation.getCurrentPosition({
           enableHighAccuracy: false,
           timeout: 10000,
           maximumAge: 60_000,
         });
+        if (cancelled) return;
         const geo = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+        if (cancelled) return;
         if (geo) {
-          fetchTimes(geo.city || "Makkah", geo.countryName || "Saudi Arabia", formatLocation(geo));
-        } else {
-          fetchTimes("Makkah", "Saudi Arabia");
+          const city = geo.city || "Makkah";
+          const country = geo.countryName || "Saudi Arabia";
+          const display = formatLocation(geo) || `${city}, ${country}`;
+          fetchTimes(city, country, display);
+          setCachedLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            city,
+            country,
+            display,
+          });
         }
       } catch {
-        fetchTimes("Makkah", "Saudi Arabia");
+        // keep showing Makkah
+      }
+    };
+
+    const seenWelcome = (() => {
+      try {
+        return !!localStorage.getItem("hiqmah-seen-welcome");
+      } catch {
+        return true;
       }
     })();
+
+    // If Welcome has already been dismissed (returning user, or running on
+    // web), schedule a normal post-splash prompt. If Welcome is still showing,
+    // wait for the dismissed event so the OS permission alert doesn't pop on
+    // top of the onboarding / sign-in screens.
+    if (seenWelcome) {
+      timer = setTimeout(startLocationFlow, 2500);
+    } else {
+      const handler = () => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(startLocationFlow, 1500);
+      };
+      window.addEventListener("hiqmah:welcome-dismissed", handler);
+      return () => {
+        cancelled = true;
+        if (timer) clearTimeout(timer);
+        window.removeEventListener("hiqmah:welcome-dismissed", handler);
+      };
+    }
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
   }, [fetchTimes]);
 
   useEffect(() => {

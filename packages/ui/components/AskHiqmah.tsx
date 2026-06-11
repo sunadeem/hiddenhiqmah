@@ -4,6 +4,13 @@ import { useState, useEffect, useRef, useCallback, Fragment, ReactNode } from "r
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Search, Send, Loader2, X, MessageCircleQuestion, Trash2, ExternalLink, Copy, Check, BookOpen, BookMarked } from "lucide-react";
+import { getOrCreateAnonId, getStoredAuthToken } from "../lib/anon-id";
+
+declare global {
+  interface Window {
+    Capacitor?: { isNativePlatform?: () => boolean };
+  }
+}
 
 // ── Shared types ──────────────────────────────────────────────────────────
 
@@ -141,20 +148,84 @@ export function CopyButton({ text }: { text: string }) {
 
 // ── SSE stream consumer ───────────────────────────────────────────────────
 
+export type QuotaInfo = {
+  used: number;
+  limit: number;
+  resetAt: string | null;
+  hasBonus: boolean;
+};
+
+export type StreamChatErrorReason =
+  | { type: "quota_exceeded"; quota: QuotaInfo }
+  | { type: "generic" };
+
+function formatQuotaReset(resetAt: string | null): string {
+  if (!resetAt) return "soon";
+  const diff = new Date(resetAt).getTime() - Date.now();
+  if (diff <= 0) return "soon";
+  const totalMin = Math.ceil(diff / 60_000);
+  const hours = Math.floor(totalMin / 60);
+  const minutes = totalMin % 60;
+  if (hours === 0) return `${minutes}m`;
+  if (minutes === 0) return `${hours}h`;
+  return `${hours}h ${minutes}m`;
+}
+
+function getApiBaseUrl(): string {
+  const isNative =
+    typeof window !== "undefined" &&
+    !!window.Capacitor?.isNativePlatform?.();
+  if (isNative) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL || "https://hiddenhiqmah.com";
+  }
+  return ""; // relative on web
+}
+
 export async function streamChat(
   messages: { role: string; content: string }[],
   onStatus: (text: string) => void,
   onAnswer: (data: { content: string; links: { label: string; href: string }[]; citations: Citation[] }) => void,
-  onError: () => void,
+  onError: (reason?: StreamChatErrorReason) => void,
 ) {
-  const res = await fetch("/api/search", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages }),
-  });
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  const authToken = getStoredAuthToken();
+  if (authToken) {
+    headers["Authorization"] = `Bearer ${authToken}`;
+  } else if (typeof window !== "undefined") {
+    headers["x-anon-id"] = getOrCreateAnonId();
+  }
+
+  let res: Response;
+  try {
+    res = await fetch(`${getApiBaseUrl()}/api/search`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ messages }),
+    });
+  } catch {
+    onError({ type: "generic" });
+    return;
+  }
+
+  if (res.status === 429) {
+    try {
+      const body = await res.json();
+      if (body?.error === "quota_exceeded" && body?.quota) {
+        onError({ type: "quota_exceeded", quota: body.quota });
+        return;
+      }
+    } catch {
+      // fall through to generic
+    }
+    onError({ type: "generic" });
+    return;
+  }
 
   if (!res.ok || !res.body) {
-    onError();
+    onError({ type: "generic" });
     return;
   }
 
@@ -187,7 +258,7 @@ export async function streamChat(
             onAnswer(data);
             break;
           case "error":
-            onError();
+            onError({ type: "generic" });
             break;
         }
       } catch {
@@ -392,11 +463,18 @@ export default function AskHiqmahFloat() {
           }]);
           setLoading(false);
         },
-        () => {
-          setMessages([...newMessages, {
-            role: "assistant",
-            content: "I apologize, I was unable to process your question. Please try again.",
-          }]);
+        (reason) => {
+          let content = "I apologize, I was unable to process your question. Please try again.";
+          if (reason?.type === "quota_exceeded") {
+            const q = reason.quota;
+            const resetTxt = formatQuotaReset(q.resetAt);
+            const signedIn = !!getStoredAuthToken();
+            const upgradeNote = signedIn
+              ? "Upgrade to Hiqmah Plus for unlimited (coming soon)."
+              : "[Sign in](/signin) for +5 bonus questions today.";
+            content = `You've used your ${q.limit} free questions for the day. Next slot opens in ${resetTxt}.\n\n${upgradeNote}`;
+          }
+          setMessages([...newMessages, { role: "assistant", content }]);
           setLoading(false);
         },
       );
