@@ -15,6 +15,7 @@
  */
 
 import { Capacitor } from "@capacitor/core";
+import { LocalNotifications } from "@capacitor/local-notifications";
 import {
   getNotificationPrefs,
   getPrayerSettings,
@@ -48,11 +49,6 @@ const DAYS_AHEAD = 10;
 const MAX_NOTIFICATIONS = 60; // stay under iOS's 64 pending cap
 
 type Timings = Record<string, string>;
-
-async function ln() {
-  const mod = await import("@capacitor/local-notifications");
-  return mod.LocalNotifications;
-}
 
 function cleanTime(raw: string): string {
   return raw.replace(/\s*\(.*\)/, "").trim();
@@ -113,7 +109,7 @@ async function fetchPrayerTimes(
 
 async function isGranted(): Promise<boolean> {
   try {
-    const perm = await (await ln()).checkPermissions();
+    const perm = await LocalNotifications.checkPermissions();
     return perm.display === "granted";
   } catch {
     return false;
@@ -124,7 +120,7 @@ async function isGranted(): Promise<boolean> {
 export async function ensureNotificationPermission(): Promise<boolean> {
   if (!Capacitor.isNativePlatform()) return false;
   try {
-    const L = await ln();
+    const L = LocalNotifications;
     let perm = await L.checkPermissions();
     if (
       perm.display === "prompt" ||
@@ -148,7 +144,7 @@ export async function scheduleAllNotifications(
 ): Promise<void> {
   if (!Capacitor.isNativePlatform()) return;
 
-  const L = await ln();
+  const L = LocalNotifications;
 
   // Always clear our previously-scheduled notifications first.
   try {
