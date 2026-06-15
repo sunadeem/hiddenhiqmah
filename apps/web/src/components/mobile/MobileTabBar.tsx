@@ -51,14 +51,14 @@ export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
       style={{ paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
     >
       {/* Floating rounded pill bar */}
-      <div className="flex items-stretch gap-0.5 rounded-[22px] bg-[var(--color-sidebar)]/92 backdrop-blur-xl border sidebar-border shadow-lg shadow-black/40 px-1.5 py-1.5">
+      <div className="flex items-stretch gap-0.5 rounded-full bg-[var(--color-sidebar)]/90 backdrop-blur-xl border sidebar-border shadow-xl shadow-black/30 px-2 py-1.5">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const isActive = tab.matcher ? tab.matcher(pathname) : false;
 
           const inner = (
             <span
-              className={`flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl transition-colors ${
+              className={`flex flex-col items-center justify-center gap-0.5 py-2 rounded-full transition-colors ${
                 isActive
                   ? "text-gold bg-[var(--color-gold)]/10"
                   : "text-themed-muted"

@@ -55,28 +55,43 @@ export default function MobileShell({ children }: { children: React.ReactNode })
 
   return (
     <div
-      className="flex flex-col h-[100dvh] bg-themed overflow-hidden"
+      className="relative flex flex-col h-[100dvh] bg-themed overflow-hidden"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
       <MobileTopBar />
       <main className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
-        {/* Smooth fade/slide-in on every route change (keyed on pathname). */}
+        {/* Smooth fade/slide-in on every route change (keyed on pathname).
+            Extra bottom padding clears the floating tab bar so the last
+            content can scroll above it. */}
         <motion.div
           key={pathname}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className="px-3 py-4"
+          className="px-3 pt-4"
+          style={{
+            paddingBottom: hideBottomChrome
+              ? 16
+              : "calc(env(safe-area-inset-bottom) + 96px)",
+          }}
         >
           {children}
         </motion.div>
       </main>
       {!hideBottomChrome && (
-        <>
-          <MobilePlayer />
-          <MobileTabBar onAsk={() => setAskOpen(true)} />
-        </>
+        // Floating bottom chrome: overlaid on top of the scrolling content so
+        // the page shows through around the pill (truly floating, no shelf).
+        // pointer-events-none lets taps fall through the transparent gaps;
+        // the player + tab bar re-enable pointer events on themselves.
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30">
+          <div className="pointer-events-auto">
+            <MobilePlayer />
+          </div>
+          <div className="pointer-events-auto">
+            <MobileTabBar onAsk={() => setAskOpen(true)} />
+          </div>
+        </div>
       )}
       <AskSheet open={askOpen} onClose={() => setAskOpen(false)} />
       <WelcomeSheet />
