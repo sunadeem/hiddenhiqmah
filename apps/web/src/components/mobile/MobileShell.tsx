@@ -61,13 +61,15 @@ export default function MobileShell({ children }: { children: React.ReactNode })
     >
       <MobileTopBar />
       <main className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
-        {/* Smooth fade/slide-in on every route change (keyed on pathname).
-            Extra bottom padding clears the floating tab bar so the last
-            content can scroll above it. */}
+        {/* Smooth fade-in on every route change (keyed on pathname).
+            Opacity-only on purpose: any transform here becomes an ancestor
+            transform that un-pins `position: sticky` descendants in the iOS
+            WKWebView (sticky headers on Daily/Quran). Extra bottom padding
+            clears the floating tab bar so the last content can scroll above it. */}
         <motion.div
           key={pathname}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
           className="px-3 pt-4"
           style={{

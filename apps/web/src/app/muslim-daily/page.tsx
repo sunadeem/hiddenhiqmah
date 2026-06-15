@@ -1575,7 +1575,7 @@ function MuslimDailyContent() {
       <div
         className={
           isNative
-            ? "sticky top-0 z-30 -mx-3 px-3 py-2 bg-[var(--color-bg)]/85 backdrop-blur-xl"
+            ? "sticky top-0 z-20 -mx-3 px-3 py-2 bg-[var(--color-bg)]/85 backdrop-blur-xl"
             : ""
         }
       >
