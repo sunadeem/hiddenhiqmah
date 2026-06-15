@@ -188,6 +188,39 @@ body {
   box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
+/* ============================================================
+   Native app (Capacitor) overrides — scoped under .native, which
+   is added to <html> ONLY inside the native WebView (setup.ts).
+   The website's <html> never has this class, so these rules are
+   inert on the web build. Native and web are the same static export,
+   so this class is the gate that keeps the website untouched.
+   ============================================================ */
+
+/* Kill the hover-lift on touch — without this, tapping a card leaves it
+   in a "stuck lifted" state in the WebView (no real pointer to un-hover). */
+.native .card-hover:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Daily sub-tab rail: wrap to rows instead of a horizontal scroll strip,
+   and give each pill a 44px iOS touch target. Desktop sidebar (md:) is
+   untouched because these only apply inside .native. */
+.native .daily-subrail {
+  flex-wrap: wrap;
+  overflow-x: visible;
+}
+.native .daily-subrail > button {
+  min-height: 44px;
+}
+
+/* Quran filter pills: 44px touch targets in-app (web keeps py-2). */
+.native .quran-filterpills > button {
+  min-height: 44px;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+
 /* Fast tooltip */
 .tooltip {
   position: relative;

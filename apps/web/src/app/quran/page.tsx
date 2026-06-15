@@ -8,6 +8,7 @@ import { Search, ArrowRight, BookOpen, Check } from "lucide-react";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { parseQuranRef } from "@hidden-hiqmah/ui/lib/search";
 import { getProgress } from "@hidden-hiqmah/ui/lib/storage";
+import { useIsNative } from "@/lib/mobile/platform";
 
 type VerseEntry = { n: number; t: string };
 type SearchIndex = { id: number; v: VerseEntry[] }[];
@@ -25,6 +26,7 @@ function buildSnippet(text: string, query: string): string {
 }
 
 export default function QuranPage() {
+  const isNative = useIsNative();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "makkah" | "madinah">("all");
   const [verseMatches, setVerseMatches] = useState<Map<number, VerseMatch>>(new Map());
@@ -134,18 +136,28 @@ export default function QuranPage() {
       />
 
       {/* Search & Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      <div
+        className={`flex flex-col sm:flex-row gap-3 mb-6 ${
+          isNative
+            ? "sticky top-0 z-20 -mx-3 px-3 pt-2 pb-3 bg-[var(--color-bg)]/90 backdrop-blur-xl border-b sidebar-border"
+            : ""
+        }`}
+      >
         <div className="relative flex-1 sm:max-w-md">
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-themed-muted" />
           <input
             type="text"
-            placeholder="Search surahs, verses, or references (e.g. 3:14, al imran)..."
+            placeholder={
+              isNative
+                ? "Search surahs or verses..."
+                : "Search surahs, verses, or references (e.g. 3:14, al imran)..."
+            }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-3 rounded-xl card-bg border sidebar-border text-themed placeholder:text-themed-muted focus:outline-none focus:border-[var(--color-gold)] transition-colors"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="quran-filterpills flex gap-2">
           {(["all", "makkah", "madinah"] as const).map((f) => (
             <button
               key={f}
@@ -163,7 +175,7 @@ export default function QuranPage() {
       </div>
 
       {/* Stats bar + reading progress */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+      <div className={`flex flex-col sm:flex-row sm:items-center gap-3 ${isNative ? "mb-3" : "mb-6"}`}>
         <span className="text-sm text-themed-muted">
           {quranRef ? (
             <>
@@ -199,7 +211,11 @@ export default function QuranPage() {
         {filtered.map((ch, i) => {
           const match = getVerseMatch(ch.id);
           return (
-            <Link key={ch.id} href={buildHref(ch.id)} className="flex">
+            <Link
+              key={ch.id}
+              href={buildHref(ch.id)}
+              className={`flex ${isNative ? "active:scale-[0.98] transition-transform" : ""}`}
+            >
               <ContentCard delay={Math.min(i * 0.03, 0.5)} className="flex-1 flex flex-col">
                 <div className="flex items-start gap-4 flex-1">
                   <div className="relative w-10 h-10 rounded-lg flex items-center justify-center shrink-0 bg-[var(--color-gold)]/15">
@@ -231,7 +247,7 @@ export default function QuranPage() {
                         {(ch as Record<string, unknown>).overview as string}
                       </p>
                     )}
-                    <div className="flex items-center gap-1 text-accent text-xs font-medium mt-2 group-hover:gap-2 transition-all">
+                    <div className="flex items-center gap-1.5 text-accent text-xs font-medium mt-2">
                       <BookOpen size={12} />
                       <span>Read Surah</span>
                       <ArrowRight size={12} />

@@ -9,6 +9,7 @@ import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import { useIsNative } from "@/lib/mobile/platform";
 import {
   BookOpen,
   Sun,
@@ -1032,7 +1033,7 @@ function MidnightTab() {
 function SunnahContent({ activeSub, setActiveSub }: { activeSub: SunnahSub; setActiveSub: (s: SunnahSub) => void }) {
   return (
     <div className="flex flex-col md:flex-row gap-4 items-start">
-      <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
+      <div className="daily-subrail flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
         {sunnahSubs.map((sub) => (
           <button
             key={sub.key}
@@ -1278,7 +1279,7 @@ function ReminderCard({
 function RememberContent({ activeSub, setActiveSub }: { activeSub: RememberSub; setActiveSub: (s: RememberSub) => void }) {
   return (
     <div className="flex flex-col md:flex-row gap-4 items-start">
-      <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
+      <div className="daily-subrail flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
         {rememberSubs.map((sub) => (
           <button
             key={sub.key}
@@ -1498,7 +1499,7 @@ function WorshipContent({ activeSub, setActiveSub }: { activeSub: WorshipSub; se
   return (
     <div className="flex flex-col md:flex-row gap-4 items-start">
       {/* Left sub-tabs */}
-      <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
+      <div className="daily-subrail flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
         {worshipSubs.map((sub) => (
           <button
             key={sub.key}
@@ -1538,6 +1539,7 @@ function WorshipContent({ activeSub, setActiveSub }: { activeSub: WorshipSub; se
 }
 
 function MuslimDailyContent() {
+  const isNative = useIsNative();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<MainTab>(() => {
     const tab = searchParams.get("tab");
@@ -1560,7 +1562,7 @@ function MuslimDailyContent() {
         subtitle="Your daily guide to living the Sunnah — organized by time of day"
       />
 
-      <ContentCard className="mb-6">
+      <ContentCard className={isNative ? "mb-4" : "mb-6"}>
         <div className="text-center py-4">
           <p className="text-2xl font-arabic text-gold leading-loose mb-3">
             فَوَاللَّهِ لَلدُّنْيَا أَهْوَنُ عَلَى اللَّهِ مِنْ هَذَا عَلَيْكُمْ
@@ -1570,16 +1572,23 @@ function MuslimDailyContent() {
         </div>
       </ContentCard>
 
-      <div>
+      <div
+        className={
+          isNative
+            ? "sticky top-0 z-30 -mx-3 px-3 py-2 bg-[var(--color-bg)]/85 backdrop-blur-xl"
+            : ""
+        }
+      >
 
         <TabBar
           tabs={mainTabs.map((t) => ({ key: t.key, label: t.label, icon: t.icon, highlight: t.highlight }))}
           activeTab={activeTab}
           onTabChange={(key) => setActiveTab(key as MainTab)}
           mobileThreshold={4}
+          wrap={isNative}
         />
 
-        <div className="mt-6">
+        <div className={isNative ? "mt-4" : "mt-6"}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
