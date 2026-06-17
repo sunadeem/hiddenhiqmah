@@ -12,6 +12,7 @@ import { isTabRoot } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 import { applyNativeSetup } from "@/lib/mobile/setup";
 import { registerNotificationTapHandler } from "@/lib/mobile/notifications";
+import { useLegacyImport } from "@/lib/daily/useLegacyImport";
 
 const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback"]);
 
@@ -29,6 +30,9 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   useEffect(() => {
     return registerNotificationTapHandler((url) => router.push(url));
   }, [router]);
+
+  // On sign-in, migrate signed-out local Daily data into Supabase (once).
+  useLegacyImport();
 
   // Close the Ask sheet whenever the route changes (e.g. tapping a citation
   // or link inside Ask navigates the app — the sheet should dismiss).
