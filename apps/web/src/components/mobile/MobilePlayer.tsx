@@ -110,6 +110,7 @@ function MiniBar({
 
   return (
     <div
+      data-mini-player
       className="shrink-0 sidebar-bg border-t sidebar-border touch-manipulation"
       onClick={onExpand}
       role="button"

@@ -47,6 +47,7 @@ export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
 
   return (
     <nav
+      data-mobile-tabbar
       className="shrink-0 px-3 pt-1"
       style={{ paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
     >

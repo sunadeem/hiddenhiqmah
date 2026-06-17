@@ -221,6 +221,17 @@ body {
   padding-bottom: 0.625rem;
 }
 
+/* Quran Focus mode = immersive: hide the bottom tab bar so the floating
+   player is the only bottom chrome. The class is toggled on <body> only by
+   the native reader, so the website is never affected. The mini player then
+   carries the home-indicator safe-area inset itself (the tab bar normally would). */
+body.reader-immersive [data-mobile-tabbar] {
+  display: none;
+}
+body.reader-immersive [data-mini-player] {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+}
+
 /* Fast tooltip */
 .tooltip {
   position: relative;

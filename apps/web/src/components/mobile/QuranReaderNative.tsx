@@ -17,6 +17,7 @@ import {
   Repeat,
 } from "lucide-react";
 import { useQuranAudio, type Verse } from "@hidden-hiqmah/ui/context/QuranAudioContext";
+import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import {
   getQuranView,
   setQuranView,
@@ -124,6 +125,21 @@ export default function QuranReaderNative({
       if (i >= 0) setFocusIdx(i);
     }
   }, [audio.playingVerse, view, verses]);
+
+  // In Mushaf mode, keep the playing verse scrolled into view as playback advances.
+  useEffect(() => {
+    if (view !== "mushaf" || audio.playingVerse == null) return;
+    const el = document.querySelector(`[data-vnum="${audio.playingVerse}"]`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [audio.playingVerse, view]);
+
+  // Focus mode is immersive: hide the bottom tab bar (the floating player becomes
+  // the only bottom chrome). Toggled via a body class so MobileShell stays untouched.
+  useEffect(() => {
+    if (view !== "focus") return;
+    document.body.classList.add("reader-immersive");
+    return () => document.body.classList.remove("reader-immersive");
+  }, [view]);
 
   // ── Long-press (Mushaf) → action sheet, delegated over the verse list ──
   const lpTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -392,6 +408,7 @@ function FocusView({
   onPlayPause: (v: Verse) => void;
 }) {
   const swipe = useRef<{ x: number; y: number } | null>(null);
+  const adhan = useAdhanAudio();
   const clamp = (n: number) => Math.max(0, Math.min(verses.length - 1, n));
   const verse = verses[clamp(idx)];
   if (!verse) return null;
@@ -407,80 +424,115 @@ function FocusView({
     words?.length ?? 0
   );
   const playing = audio.playingVerse === verse.number;
+  // The mini-player is mounted whenever a Quran verse is loaded (paused included)
+  // OR the adhan is playing — that's what we must clear with the controls' offset.
+  const playerMounted = audio.playingVerse != null || adhan.playing;
+  // Show the in-view center play button unless a verse is actively playing — so it's
+  // never redundant with the player, yet always available to start the on-screen verse
+  // (incl. after pausing then navigating to a different āyah).
+  const showCenterPlay = audio.playingVerse == null || audio.audioPaused;
 
   const go = (d: number) => {
+    const next = clamp(idx + d);
+    if (next === idx) return; // at the first/last verse — don't restart the current āyah
     hapticSelection();
-    setIdx(clamp(idx + d));
+    setIdx(next);
+    // If audio is actively playing, switch playback to the verse we moved to.
+    if (audio.playingVerse != null && !audio.audioPaused) audio.playVerse(verses[next]);
   };
 
   return (
-    <div
-      className="px-5 flex flex-col"
-      style={{ minHeight: "70vh" }}
-      onTouchStart={(e) => {
-        swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      }}
-      onTouchEnd={(e) => {
-        if (!swipe.current) return;
-        const dx = e.changedTouches[0].clientX - swipe.current.x;
-        const dy = Math.abs(e.changedTouches[0].clientY - swipe.current.y);
-        swipe.current = null;
-        if (Math.abs(dx) > 60 && dy < 50) go(dx < 0 ? 1 : -1);
-      }}
-    >
-      <div className="text-center text-[10px] uppercase tracking-[0.2em] text-themed-muted py-3">
-        Verse {verse.number} · {idx + 1} / {verses.length}
+    <>
+      <div
+        className="px-5 flex flex-col"
+        style={{
+          minHeight: "calc(100dvh - 150px)",
+          paddingBottom: playerMounted
+            ? "calc(env(safe-area-inset-bottom) + 160px)"
+            : "calc(env(safe-area-inset-bottom) + 96px)",
+        }}
+        onTouchStart={(e) => {
+          swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }}
+        onTouchEnd={(e) => {
+          if (!swipe.current) return;
+          const dx = e.changedTouches[0].clientX - swipe.current.x;
+          const dy = Math.abs(e.changedTouches[0].clientY - swipe.current.y);
+          swipe.current = null;
+          if (Math.abs(dx) > 60 && dy < 50) go(dx < 0 ? 1 : -1);
+        }}
+      >
+        <div className="text-center text-[10px] uppercase tracking-[0.2em] text-themed-muted py-3">
+          Verse {verse.number} · {idx + 1} / {verses.length}
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={verse.id}
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -24 }}
+            transition={{ duration: 0.2 }}
+            className="flex-1 flex flex-col justify-center gap-6"
+          >
+            {display.arabic && (
+              <p dir="rtl" className={`font-arabic text-themed text-center leading-[2.3] ${AR_SIZES[Math.min(fontSize + 1, 3)]} flex flex-wrap justify-center gap-x-2`}>
+                {words
+                  ? words.map((w, wi) => (
+                      <span key={wi} className={wi === active ? "text-gold" : playing && active >= 0 && wi < active ? "text-gold/60" : ""}>
+                        {w.t}
+                      </span>
+                    ))
+                  : verse.textAr}
+              </p>
+            )}
+            {display.translit && (
+              <p className="text-gold/80 text-center text-sm italic leading-relaxed flex flex-wrap justify-center gap-x-1.5">
+                {words
+                  ? words.map((w, wi) => (
+                      <span key={wi} className={wi === active ? "text-gold not-italic font-medium" : ""}>
+                        {w.tr}
+                      </span>
+                    ))
+                  : verse.textTranslit}
+              </p>
+            )}
+            {display.translation && (
+              <p className="text-themed-muted text-center text-[15px] leading-relaxed max-w-prose mx-auto">
+                {verse.textEn}
+              </p>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={verse.id}
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -24 }}
-          transition={{ duration: 0.2 }}
-          className="flex-1 flex flex-col justify-center gap-6"
-        >
-          {display.arabic && (
-            <p dir="rtl" className={`font-arabic text-themed text-center leading-[2.3] ${AR_SIZES[Math.min(fontSize + 1, 3)]} flex flex-wrap justify-center gap-x-2`}>
-              {words
-                ? words.map((w, wi) => (
-                    <span key={wi} className={wi === active ? "text-gold" : playing && active >= 0 && wi < active ? "text-gold/60" : ""}>
-                      {w.t}
-                    </span>
-                  ))
-                : verse.textAr}
-            </p>
-          )}
-          {display.translit && (
-            <p className="text-gold/80 text-center text-sm italic leading-relaxed">
-              {verse.textTranslit}
-            </p>
-          )}
-          {display.translation && (
-            <p className="text-themed-muted text-center text-[15px] leading-relaxed max-w-prose mx-auto">
-              {verse.textEn}
-            </p>
-          )}
-        </motion.div>
-      </AnimatePresence>
 
-      <div className="flex items-center justify-between py-4">
-        <button type="button" onClick={() => go(-1)} disabled={idx <= 0} className={`p-3 rounded-full touch-manipulation ${idx <= 0 ? "text-themed-muted opacity-30" : "text-themed"}`} aria-label="Previous verse">
+      {/* Fixed controls — sit above the floating player; play/pause is omitted
+          while the player is up (it owns play/pause) to avoid a redundant control. */}
+      <div
+        className="fixed left-0 right-0 z-20 flex items-center justify-center gap-12 px-8"
+        style={{
+          bottom: playerMounted
+            ? "calc(env(safe-area-inset-bottom) + 88px)"
+            : "calc(env(safe-area-inset-bottom) + 18px)",
+        }}
+      >
+        <button type="button" onClick={() => go(-1)} disabled={idx <= 0} className={`p-3 rounded-full bg-themed/70 backdrop-blur-md border sidebar-border touch-manipulation ${idx <= 0 ? "text-themed-muted opacity-30" : "text-themed"}`} aria-label="Previous verse">
           <ChevronLeft size={22} />
         </button>
-        <button
-          type="button"
-          onClick={() => onPlayPause(verse)}
-          className="w-14 h-14 rounded-full bg-[var(--color-gold)] text-[var(--color-bg)] flex items-center justify-center touch-manipulation active:scale-95 transition-transform"
-          aria-label={playing && !audio.audioPaused ? "Pause" : "Play"}
-        >
-          {playing && !audio.audioPaused ? <Pause size={24} /> : <Play size={24} className="ml-0.5" />}
-        </button>
-        <button type="button" onClick={() => go(1)} disabled={idx >= verses.length - 1} className={`p-3 rounded-full touch-manipulation ${idx >= verses.length - 1 ? "text-themed-muted opacity-30" : "text-themed"}`} aria-label="Next verse">
+        {showCenterPlay && (
+          <button
+            type="button"
+            onClick={() => onPlayPause(verse)}
+            className="w-14 h-14 rounded-full bg-[var(--color-gold)] text-[var(--color-bg)] flex items-center justify-center touch-manipulation active:scale-95 transition-transform shadow-lg shadow-black/30"
+            aria-label="Play"
+          >
+            <Play size={24} className="ml-0.5" />
+          </button>
+        )}
+        <button type="button" onClick={() => go(1)} disabled={idx >= verses.length - 1} className={`p-3 rounded-full bg-themed/70 backdrop-blur-md border sidebar-border touch-manipulation ${idx >= verses.length - 1 ? "text-themed-muted opacity-30" : "text-themed"}`} aria-label="Next verse">
           <ChevronRight size={22} />
         </button>
       </div>
-    </div>
+    </>
   );
 }
 
