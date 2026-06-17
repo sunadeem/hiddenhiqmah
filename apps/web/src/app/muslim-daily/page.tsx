@@ -41,7 +41,7 @@ import {
 
 type MainTab = "worship" | "sunnah" | "checklist" | "remember";
 type WorshipSub = "morning" | "afternoon" | "evening" | "sleep" | "midnight";
-type SunnahSub = "eating" | "greeting" | "entering" | "dress" | "speech" | "sleeping";
+export type SunnahSub = "eating" | "greeting" | "entering" | "dress" | "speech" | "sleeping";
 type RememberSub = "dunya" | "death" | "grave" | "judgement" | "paradise" | "mercy";
 
 const mainTabs: { key: MainTab; label: string; icon: React.ReactNode; highlight?: boolean }[] = [
@@ -59,7 +59,7 @@ const worshipSubs: { key: WorshipSub; label: string; icon: React.ReactNode }[] =
   { key: "midnight", label: "Midnight", icon: <Star size={16} /> },
 ];
 
-const sunnahSubs: { key: SunnahSub; label: string; icon: React.ReactNode }[] = [
+export const sunnahSubs: { key: SunnahSub; label: string; icon: React.ReactNode }[] = [
   { key: "eating", label: "Eating & Drinking", icon: <UtensilsCrossed size={16} /> },
   { key: "greeting", label: "Greeting", icon: <HandHeart size={16} /> },
   { key: "entering", label: "Entering & Leaving", icon: <DoorOpen size={16} /> },
@@ -1031,25 +1031,35 @@ export function MidnightTab() {
    TAB: Sunnah Acts
    ═══════════════════════════════════════════════════════════════════ */
 
-function SunnahContent({ activeSub, setActiveSub }: { activeSub: SunnahSub; setActiveSub: (s: SunnahSub) => void }) {
+export function SunnahContent({
+  activeSub,
+  setActiveSub,
+  hideRail = false,
+}: {
+  activeSub: SunnahSub;
+  setActiveSub: (s: SunnahSub) => void;
+  hideRail?: boolean;
+}) {
   return (
     <div className="flex flex-col md:flex-row gap-4 items-start">
-      <div className="daily-subrail flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
-        {sunnahSubs.map((sub) => (
-          <button
-            key={sub.key}
-            onClick={() => setActiveSub(sub.key)}
-            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
-              activeSub === sub.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {sub.icon}
-            {sub.label}
-          </button>
-        ))}
-      </div>
+      {!hideRail && (
+        <div className="daily-subrail flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
+          {sunnahSubs.map((sub) => (
+            <button
+              key={sub.key}
+              onClick={() => setActiveSub(sub.key)}
+              className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                activeSub === sub.key
+                  ? "bg-gold/20 text-gold border border-gold/40"
+                  : "text-themed-muted hover:text-themed border sidebar-border"
+              }`}
+            >
+              {sub.icon}
+              {sub.label}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="flex-1 min-w-0">
         <AnimatePresence mode="wait">
           <motion.div

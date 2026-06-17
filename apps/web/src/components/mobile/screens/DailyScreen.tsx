@@ -25,6 +25,9 @@ import {
   EveningTab,
   SleepTab,
   MidnightTab,
+  SunnahContent,
+  sunnahSubs,
+  type SunnahSub,
 } from "@/app/muslim-daily/page";
 
 type TabKey = "checklist" | "worship" | "sunnah" | "reminders";
@@ -63,7 +66,7 @@ export default function DailyScreen() {
 
       {tab === "checklist" && <ChecklistTab />}
       {tab === "worship" && <WorshipTab />}
-      {tab === "sunnah" && <ComingSoon label="Sunnah" />}
+      {tab === "sunnah" && <SunnahTab />}
       {tab === "reminders" && <ComingSoon label="Reminders" />}
     </div>
   );
@@ -244,6 +247,35 @@ function WorshipTab() {
       <div className="pt-1">
         <Comp />
       </div>
+    </div>
+  );
+}
+
+function SunnahTab() {
+  const [sub, setSub] = useState<SunnahSub>("eating");
+  return (
+    <div className="space-y-4">
+      {/* Category chips */}
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {sunnahSubs.map((s) => (
+          <button
+            key={s.key}
+            type="button"
+            onClick={() => {
+              hapticSelection();
+              setSub(s.key);
+            }}
+            className={`shrink-0 whitespace-nowrap text-[13px] font-semibold px-4 py-2 rounded-full touch-manipulation transition-colors ${
+              sub === s.key
+                ? "bg-[var(--color-gold)] text-[var(--color-bg)]"
+                : "card-bg border sidebar-border text-themed-muted"
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+      <SunnahContent activeSub={sub} setActiveSub={setSub} hideRail />
     </div>
   );
 }
