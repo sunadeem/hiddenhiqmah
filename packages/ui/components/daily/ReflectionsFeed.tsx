@@ -84,9 +84,9 @@ export function ReflectionsFeed({
   const label =
     selected.size === 0
       ? "All themes"
-      : selected.size === 1
-      ? themeLabel([...selected][0])
-      : `${selected.size} themes`;
+      : REMINDER_THEMES.filter((t) => selected.has(t.key))
+          .map((t) => t.label)
+          .join(", ");
 
   if (reminders.length === 0) {
     return (
@@ -112,8 +112,8 @@ export function ReflectionsFeed({
           }}
           className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl card-bg border sidebar-border text-sm font-medium text-themed touch-manipulation"
         >
-          <span>{label}</span>
-          <ChevronDown size={16} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+          <span className="flex-1 min-w-0 truncate text-left mr-2">{label}</span>
+          <ChevronDown size={16} className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
         </button>
 
         {open && (
