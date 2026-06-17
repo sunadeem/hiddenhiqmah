@@ -119,34 +119,39 @@ export function ReflectionsFeed({
         {open && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden />
-            <div className="absolute z-50 mt-1 w-full rounded-xl card-bg border sidebar-border shadow-xl max-h-80 overflow-y-auto overscroll-contain">
+            <div className="absolute z-50 mt-1 w-full rounded-xl card-bg border sidebar-border shadow-xl p-2">
               <button
                 type="button"
                 onClick={() => {
                   onHaptic?.();
                   setSelected(new Set());
                 }}
-                className="w-full flex items-center justify-between px-4 py-3 text-sm text-left touch-manipulation border-b sidebar-border"
+                className={`w-full flex items-center justify-between px-3 py-2.5 mb-1 rounded-lg text-sm text-left touch-manipulation ${
+                  selected.size === 0 ? "bg-[var(--color-gold)]/10 text-gold font-medium" : "text-themed"
+                }`}
               >
-                <span className={selected.size === 0 ? "text-gold font-medium" : "text-themed"}>
-                  All themes
-                </span>
-                {selected.size === 0 && <Check size={16} className="text-gold" />}
+                All themes
+                {selected.size === 0 && <Check size={15} className="text-gold" />}
               </button>
-              {themes.map((t) => {
-                const on = selected.has(t.key);
-                return (
-                  <button
-                    key={t.key}
-                    type="button"
-                    onClick={() => toggleTheme(t.key)}
-                    className="w-full flex items-center justify-between px-4 py-3 text-sm text-left touch-manipulation"
-                  >
-                    <span className={on ? "text-gold font-medium" : "text-themed"}>{t.label}</span>
-                    {on && <Check size={16} className="text-gold" />}
-                  </button>
-                );
-              })}
+              {/* 2-column grid so every theme is visible at once (no hidden scroll) */}
+              <div className="grid grid-cols-2 gap-1">
+                {themes.map((t) => {
+                  const on = selected.has(t.key);
+                  return (
+                    <button
+                      key={t.key}
+                      type="button"
+                      onClick={() => toggleTheme(t.key)}
+                      className={`flex items-center justify-between gap-1.5 px-3 py-2.5 rounded-lg text-sm text-left touch-manipulation ${
+                        on ? "bg-[var(--color-gold)]/10 text-gold font-medium" : "text-themed"
+                      }`}
+                    >
+                      <span className="truncate">{t.label}</span>
+                      {on && <Check size={14} className="text-gold shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </>
         )}
