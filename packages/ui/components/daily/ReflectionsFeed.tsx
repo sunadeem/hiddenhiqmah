@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Heart, Share2, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, Share2, Sparkles, ChevronLeft, ChevronRight, ChevronDown, Check } from "lucide-react";
 import { REMINDER_THEMES, dailyIndex, themeLabel, type Reminder } from "../../lib/reminders";
 
 /**
  * Reflections deck — one card at a time, swipe left/right (horizontal scroll-snap,
- * which is robust in the WKWebView). Opens on the day's reflection and advances
- * one card per day; the user can browse back/forward freely. Theme chips filter
- * the deck. Save + share per card.
+ * robust in the WKWebView). Opens on the day's reflection and advances one card
+ * per day; the user can browse back/forward. A multiselect theme dropdown filters
+ * the deck (union of chosen themes; "All themes" when none selected).
  */
 export function ReflectionsFeed({
   reminders,
@@ -25,25 +25,27 @@ export function ReflectionsFeed({
   onShare?: (r: Reminder) => void;
   onHaptic?: () => void;
 }) {
-  const [theme, setTheme] = useState<string>("all");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
 
-  const chips = useMemo(() => {
+  const themes = useMemo(() => {
     const present = new Set(reminders.map((r) => r.theme));
-    return [{ key: "all", label: "All" }, ...REMINDER_THEMES.filter((t) => present.has(t.key))];
+    return REMINDER_THEMES.filter((t) => present.has(t.key));
   }, [reminders]);
 
   const list = useMemo(
-    () => (theme === "all" ? reminders : reminders.filter((r) => r.theme === theme)),
-    [reminders, theme]
+    () => (selected.size === 0 ? reminders : reminders.filter((r) => selected.has(r.theme))),
+    [reminders, selected]
   );
 
-  // The day's starting card (advances daily) on "All"; first card on a theme.
+  const isAll = selected.size === 0;
   const startIndex = useMemo(
-    () => (theme === "all" ? dailyIndex(today, list.length) : 0),
-    [theme, today, list.length]
+    () => (isAll ? dailyIndex(today, list.length) : 0),
+    [isAll, today, list.length]
   );
+  const selectionKey = useMemo(() => [...selected].sort().join("|"), [selected]);
 
   const scrollToIndex = (i: number, smooth: boolean) => {
     const el = trackRef.current;
@@ -51,11 +53,10 @@ export function ReflectionsFeed({
     el.scrollTo({ left: i * el.clientWidth, behavior: smooth ? "smooth" : "auto" });
   };
 
-  // Jump to the start card whenever the deck (theme) changes.
   useEffect(() => {
     setIndex(startIndex);
     requestAnimationFrame(() => scrollToIndex(startIndex, false));
-  }, [theme, startIndex]);
+  }, [selectionKey, startIndex]);
 
   const onScroll = () => {
     const el = trackRef.current;
@@ -70,6 +71,23 @@ export function ReflectionsFeed({
     setIndex(next);
   };
 
+  const toggleTheme = (key: string) => {
+    onHaptic?.();
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const label =
+    selected.size === 0
+      ? "All themes"
+      : selected.size === 1
+      ? themeLabel([...selected][0])
+      : `${selected.size} themes`;
+
   if (reminders.length === 0) {
     return (
       <div className="card-bg rounded-2xl border sidebar-border p-8 text-center">
@@ -80,29 +98,58 @@ export function ReflectionsFeed({
     );
   }
 
-  const onDailyCard = theme === "all" && index === startIndex;
+  const onDailyCard = isAll && index === startIndex;
 
   return (
     <div className="space-y-3">
-      {/* Theme chips */}
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {chips.map((c) => (
-          <button
-            key={c.key}
-            type="button"
-            onClick={() => {
-              onHaptic?.();
-              setTheme(c.key);
-            }}
-            className={`shrink-0 whitespace-nowrap text-[13px] font-semibold px-4 py-2 rounded-full touch-manipulation transition-colors ${
-              theme === c.key
-                ? "bg-[var(--color-gold)] text-[var(--color-bg)]"
-                : "card-bg border sidebar-border text-themed-muted"
-            }`}
-          >
-            {c.label}
-          </button>
-        ))}
+      {/* Theme filter — multiselect dropdown */}
+      <div className="relative z-50">
+        <button
+          type="button"
+          onClick={() => {
+            onHaptic?.();
+            setOpen((o) => !o);
+          }}
+          className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl card-bg border sidebar-border text-sm font-medium text-themed touch-manipulation"
+        >
+          <span>{label}</span>
+          <ChevronDown size={16} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+        </button>
+
+        {open && (
+          <>
+            <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden />
+            <div className="absolute z-50 mt-1 w-full rounded-xl card-bg border sidebar-border shadow-xl max-h-80 overflow-y-auto overscroll-contain">
+              <button
+                type="button"
+                onClick={() => {
+                  onHaptic?.();
+                  setSelected(new Set());
+                }}
+                className="w-full flex items-center justify-between px-4 py-3 text-sm text-left touch-manipulation border-b sidebar-border"
+              >
+                <span className={selected.size === 0 ? "text-gold font-medium" : "text-themed"}>
+                  All themes
+                </span>
+                {selected.size === 0 && <Check size={16} className="text-gold" />}
+              </button>
+              {themes.map((t) => {
+                const on = selected.has(t.key);
+                return (
+                  <button
+                    key={t.key}
+                    type="button"
+                    onClick={() => toggleTheme(t.key)}
+                    className="w-full flex items-center justify-between px-4 py-3 text-sm text-left touch-manipulation"
+                  >
+                    <span className={on ? "text-gold font-medium" : "text-themed"}>{t.label}</span>
+                    {on && <Check size={16} className="text-gold" />}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Swipe deck */}
@@ -116,7 +163,7 @@ export function ReflectionsFeed({
           <div key={r.id} className="snap-center shrink-0 w-full px-1">
             <ReflectionCard
               r={r}
-              isToday={theme === "all" && i === startIndex}
+              isToday={isAll && i === startIndex}
               saved={savedIds.has(r.id)}
               onToggleSave={onToggleSave}
               onShare={onShare}
@@ -139,7 +186,7 @@ export function ReflectionsFeed({
         </button>
         <span className="text-xs text-themed-muted tabular-nums">
           {onDailyCard ? "Today · " : ""}
-          {index + 1} / {list.length}
+          {Math.min(index + 1, list.length)} / {list.length}
         </span>
         <button
           type="button"
