@@ -34,10 +34,12 @@ export default function QuranPage() {
   const searchIndexRef = useRef<SearchIndex | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [surahsRead, setSurahsRead] = useState<Set<number>>(new Set());
+  const [lastPos, setLastPos] = useState<{ surah: number; verse?: number } | null>(null);
 
   useEffect(() => {
     const progress = getProgress();
     setSurahsRead(new Set(progress.surahsRead));
+    if (progress.lastSurah) setLastPos({ surah: progress.lastSurah, verse: progress.lastVerse });
   }, []);
 
   const searchVerses = useCallback(async (query: string) => {
@@ -124,6 +126,103 @@ export default function QuranPage() {
         <span className="text-gold font-medium">{snippet.slice(idx, idx + q.length)}</span>
         {snippet.slice(idx + q.length)}
       </>
+    );
+  }
+
+  // Native app: compact list — sticky search, continue-reading hero, native rows (no Meccan/Medinan filters).
+  if (isNative) {
+    const lastCh = lastPos ? chapters.find((c) => c.id === lastPos.surah) : null;
+    return (
+      <div className="pb-2">
+        <div className="flex items-baseline justify-between px-1 mb-3">
+          <h1 className="text-2xl font-extrabold text-themed">Quran</h1>
+          <span className="text-lg font-arabic text-gold">القرآن الكريم</span>
+        </div>
+
+        {/* Sticky search */}
+        <div className="sticky top-0 z-20 -mx-3 px-3 py-2 bg-[var(--color-bg)]/85 backdrop-blur-xl">
+          <div className="relative">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-themed-muted" />
+            <input
+              type="text"
+              inputMode="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search surahs or verses…"
+              className="w-full pl-9 pr-3 h-11 rounded-xl card-bg border sidebar-border text-themed placeholder:text-themed-muted text-[15px] outline-none focus:border-[var(--color-gold)]/50"
+            />
+          </div>
+        </div>
+
+        {/* Continue reading */}
+        {lastCh && !search && (
+          <Link
+            href={lastPos?.verse ? `/quran/${lastCh.id}?v=${lastPos.verse}` : `/quran/${lastCh.id}`}
+            className="relative block mt-3 mb-4 rounded-2xl overflow-hidden border sidebar-border p-4 active:scale-[0.99] transition-transform"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/20 to-transparent" />
+            <div className="relative">
+              <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-gold mb-1">
+                <BookOpen size={12} /> Continue reading
+              </div>
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="text-lg font-bold text-themed truncate">
+                  {lastCh.name}
+                  {lastPos?.verse ? <span className="text-themed-muted font-normal text-sm"> · Verse {lastPos.verse}</span> : null}
+                </span>
+                <span className="font-arabic text-gold text-lg shrink-0">{lastCh.nameAr}</span>
+              </div>
+              <div className="text-xs text-themed-muted mt-0.5">
+                {lastCh.meaning} · {surahsRead.size} of 114 read
+              </div>
+            </div>
+          </Link>
+        )}
+
+        {/* Native rows */}
+        <div className={`rounded-2xl border sidebar-border overflow-hidden ${lastCh && !search ? "" : "mt-3"}`}>
+          {filtered.map((ch, i) => {
+            const match = getVerseMatch(ch.id);
+            return (
+              <Link
+                key={ch.id}
+                href={buildHref(ch.id)}
+                className={`flex items-center gap-3 px-4 py-3 active:bg-[var(--color-gold)]/5 ${i > 0 ? "border-t sidebar-border" : ""}`}
+              >
+                <div className="relative w-9 h-9 rounded-lg flex items-center justify-center shrink-0 bg-[var(--color-gold)]/15">
+                  <span className="text-gold font-semibold text-xs">{ch.id}</span>
+                  {surahsRead.has(ch.id) && (
+                    <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-green-500 flex items-center justify-center">
+                      <Check size={9} className="text-white" />
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h3 className="font-semibold text-themed truncate text-[15px]">{ch.name}</h3>
+                    <span className="font-arabic text-gold text-base shrink-0">{ch.nameAr}</span>
+                  </div>
+                  {match ? (
+                    <div className="text-xs leading-snug truncate">
+                      <span className="text-gold font-medium">Verse {match.verseNum}</span>
+                      <span className="text-themed-muted italic"> — {highlightSnippet(match.snippet, search)}</span>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-themed-muted truncate">
+                      {ch.meaning} · {ch.verses} verses · {ch.revelationPlace === "makkah" ? "Meccan" : "Medinan"}
+                    </p>
+                  )}
+                </div>
+                <ArrowRight size={15} className="text-themed-muted shrink-0" />
+              </Link>
+            );
+          })}
+        </div>
+
+        {filtered.length === 0 && (
+          <div className="text-center py-16 text-themed-muted text-sm">No surahs found for “{search}”.</div>
+        )}
+      </div>
     );
   }
 
