@@ -17,7 +17,13 @@ import { StreakCalendar } from "@hidden-hiqmah/ui/components/daily/StreakCalenda
 import { Checklist } from "@hidden-hiqmah/ui/components/daily/Checklist";
 import { ChecklistEditor } from "@hidden-hiqmah/ui/components/daily/ChecklistEditor";
 import { DhikrCounter } from "@hidden-hiqmah/ui/components/daily/DhikrCounter";
+import { ReflectionsFeed } from "@hidden-hiqmah/ui/components/daily/ReflectionsFeed";
+import { reminderShareText, type Reminder } from "@hidden-hiqmah/ui/lib/reminders";
+import remindersData from "@hidden-hiqmah/content/reminders.json";
 import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
+import { Capacitor } from "@capacitor/core";
+import { Share } from "@capacitor/share";
+import { useReminderSaves } from "@/lib/daily/useReminderSaves";
 import { hapticSelection, hapticLight } from "@/lib/mobile/haptics";
 import {
   MorningTab,
@@ -67,7 +73,7 @@ export default function DailyScreen() {
       {tab === "checklist" && <ChecklistTab />}
       {tab === "worship" && <WorshipTab />}
       {tab === "sunnah" && <SunnahTab />}
-      {tab === "reminders" && <ComingSoon label="Reminders" />}
+      {tab === "reminders" && <RemindersTab />}
     </div>
   );
 }
@@ -277,6 +283,38 @@ function SunnahTab() {
       </div>
       <SunnahContent activeSub={sub} setActiveSub={setSub} hideRail />
     </div>
+  );
+}
+
+const ALL_REMINDERS = remindersData as unknown as Reminder[];
+
+async function shareReminder(r: Reminder) {
+  const text = reminderShareText(r);
+  try {
+    if (Capacitor.isNativePlatform()) {
+      await Share.share({ text });
+    } else if (typeof navigator !== "undefined" && navigator.share) {
+      await navigator.share({ text });
+    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+      await navigator.clipboard.writeText(text);
+    }
+  } catch {
+    /* user cancelled or unsupported */
+  }
+}
+
+function RemindersTab() {
+  const today = useMemo(() => todayLocalDate(), []);
+  const { saved, toggle } = useReminderSaves();
+  return (
+    <ReflectionsFeed
+      reminders={ALL_REMINDERS}
+      today={today}
+      savedIds={saved}
+      onToggleSave={toggle}
+      onShare={shareReminder}
+      onHaptic={hapticSelection}
+    />
   );
 }
 
