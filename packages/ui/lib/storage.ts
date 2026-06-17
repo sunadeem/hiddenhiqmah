@@ -23,6 +23,8 @@ const KEYS = {
   fontSize: "hiqmah-font-size",
   dhikrCounts: "hiqmah-dhikr",
   autoPlayNextSurah: "hiqmah-autoplay-next",
+  quranView: "hiqmah-quran-view",
+  quranDisplay: "hiqmah-quran-display",
   kidsProgress: "hiqmah-kids-progress",
   visits: "hiqmah-visits",
   notifications: "hiqmah-notifications",
@@ -302,6 +304,24 @@ export function getAutoPlayNextSurah(): boolean {
 
 export function setAutoPlayNextSurah(enabled: boolean) {
   set(KEYS.autoPlayNextSurah, enabled);
+}
+
+// ─── Quran reader (native) view + display prefs ───
+
+export type QuranView = "mushaf" | "focus";
+export type QuranDisplay = { arabic: boolean; translation: boolean; translit: boolean };
+
+export function getQuranView(): QuranView {
+  return get<QuranView>(KEYS.quranView, "mushaf");
+}
+export function setQuranView(v: QuranView) {
+  set(KEYS.quranView, v);
+}
+export function getQuranDisplay(): QuranDisplay {
+  return get<QuranDisplay>(KEYS.quranDisplay, { arabic: true, translation: true, translit: false });
+}
+export function setQuranDisplay(d: QuranDisplay) {
+  set(KEYS.quranDisplay, d);
 }
 
 // ─── Kids Learning ───

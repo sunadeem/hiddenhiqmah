@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useIsNative } from "@/lib/mobile/platform";
 import { ActionSheet } from "@/components/mobile/LongPressActions";
 import { hapticMedium } from "@/lib/mobile/haptics";
+import QuranReaderNative from "@/components/mobile/QuranReaderNative";
 import {
   ArrowLeft,
   ArrowRight,
@@ -974,6 +975,18 @@ function SurahPageContent() {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [playingVerse, verses, playVerse, togglePause, setAutoPlay]);
+
+  // Native app gets the redesigned Mushaf/Focus reader; web keeps this page.
+  if (isNativeApp) {
+    return (
+      <QuranReaderNative
+        chapter={chapter}
+        verses={verses}
+        wordsData={wordsData}
+        timestampData={timestampData}
+      />
+    );
+  }
 
   return (
     <div onTouchStart={onSurahTouchStart} onTouchEnd={onSurahTouchEnd}>
