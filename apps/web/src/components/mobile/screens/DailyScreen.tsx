@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, type ComponentType } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Pencil } from "lucide-react";
 import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
@@ -46,7 +47,17 @@ const TABS: { key: TabKey; label: string }[] = [
 ];
 
 export default function DailyScreen() {
-  const [tab, setTab] = useState<TabKey>("checklist");
+  const searchParams = useSearchParams();
+  const paramTab = searchParams.get("tab");
+  const [tab, setTab] = useState<TabKey>(
+    TABS.some((t) => t.key === paramTab) ? (paramTab as TabKey) : "checklist"
+  );
+
+  // Re-sync when a deep-link changes ?tab while Daily is already mounted
+  // (e.g. tapping the Today's Reminder notification with the app open on Daily).
+  useEffect(() => {
+    if (paramTab && TABS.some((t) => t.key === paramTab)) setTab(paramTab as TabKey);
+  }, [paramTab]);
 
   return (
     <div className="space-y-4">

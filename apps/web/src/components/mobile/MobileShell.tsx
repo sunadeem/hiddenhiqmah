@@ -11,6 +11,7 @@ import WelcomeSheet from "./WelcomeSheet";
 import { isTabRoot } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 import { applyNativeSetup } from "@/lib/mobile/setup";
+import { registerNotificationTapHandler } from "@/lib/mobile/notifications";
 
 const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback"]);
 
@@ -23,6 +24,11 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   useEffect(() => {
     applyNativeSetup();
   }, []);
+
+  // Route notification taps to their relevant screen.
+  useEffect(() => {
+    return registerNotificationTapHandler((url) => router.push(url));
+  }, [router]);
 
   // Close the Ask sheet whenever the route changes (e.g. tapping a citation
   // or link inside Ask navigates the app — the sheet should dismiss).

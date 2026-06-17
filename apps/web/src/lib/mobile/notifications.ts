@@ -201,6 +201,7 @@ export async function scheduleAllNotifications(
     body: string;
     schedule: { at: Date };
     sound?: string;
+    url?: string; // deep-link target on tap
   };
   const notifs: Notif[] = [];
   let id = 1000;
@@ -236,6 +237,7 @@ export async function scheduleAllNotifications(
             body: `It's time for ${PRAYER_LABEL[pk]} prayer.`,
             schedule: { at },
             sound: ADHAN_SOUND,
+            url: "/salah",
           });
         }
         if (prefs.prePrayer) {
@@ -246,6 +248,7 @@ export async function scheduleAllNotifications(
               title: `${PRAYER_LABEL[pk]} in ${PRE_PRAYER_MINUTES} min`,
               body: `Get ready for ${PRAYER_LABEL[pk]} prayer.`,
               schedule: { at: pre },
+              url: "/salah",
             });
           }
         }
@@ -274,6 +277,7 @@ export async function scheduleAllNotifications(
         title: insp.type === "Quran" ? "Today's Verse" : "Today's Hadith",
         body: `${insp.english} — ${insp.reference}`,
         schedule: { at },
+        url: "/",
       });
     }
   }
@@ -294,6 +298,7 @@ export async function scheduleAllNotifications(
         title: "Today's Reminder",
         body: `${r.textEn} — ${ref}`,
         schedule: { at },
+        url: "/muslim-daily?tab=reminders",
       });
     }
   }
@@ -312,6 +317,7 @@ export async function scheduleAllNotifications(
         title: "Jumu'ah Mubarak",
         body: "Read Surah Al-Kahf and prepare for Jumu'ah prayer.",
         schedule: { at },
+        url: "/quran/18",
       });
     }
   }
@@ -335,10 +341,39 @@ export async function scheduleAllNotifications(
   if (!toSchedule.length) return;
 
   try {
-    await L.schedule({ notifications: toSchedule });
+    await L.schedule({
+      notifications: toSchedule.map((n) => ({
+        id: n.id,
+        title: n.title,
+        body: n.body,
+        schedule: n.schedule,
+        ...(n.sound ? { sound: n.sound } : {}),
+        ...(n.url ? { extra: { url: n.url } } : {}),
+      })),
+    });
   } catch (e) {
     console.error("[notifications] schedule failed", e);
   }
+}
+
+/**
+ * Route taps on notifications to their relevant screen. Call once on app start
+ * with the app's navigate function (router.push). Returns a cleanup fn.
+ */
+export function registerNotificationTapHandler(
+  navigate: (url: string) => void
+): () => void {
+  if (!Capacitor.isNativePlatform()) return () => {};
+  const handle = LocalNotifications.addListener(
+    "localNotificationActionPerformed",
+    (action) => {
+      const url = (action?.notification?.extra as { url?: string } | undefined)?.url;
+      if (url) navigate(url);
+    }
+  );
+  return () => {
+    void handle.then((h) => h.remove()).catch(() => {});
+  };
 }
 
 /** Debounced reschedule — for rapid Settings toggles. */
