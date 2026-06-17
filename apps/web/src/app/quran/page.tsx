@@ -136,26 +136,29 @@ export default function QuranPage() {
       />
 
       {/* Search & Filters */}
-      <div
-        className={`flex flex-col sm:flex-row gap-3 mb-6 ${
-          isNative
-            ? "sticky top-0 z-20 -mx-3 px-3 pt-2 pb-3 bg-[var(--color-bg)]/90 backdrop-blur-xl border-b sidebar-border"
-            : ""
-        }`}
-      >
-        <div className="relative flex-1 sm:max-w-md">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-themed-muted" />
-          <input
-            type="text"
-            placeholder={
-              isNative
-                ? "Search surahs or verses..."
-                : "Search surahs, verses, or references (e.g. 3:14, al imran)..."
-            }
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl card-bg border sidebar-border text-themed placeholder:text-themed-muted focus:outline-none focus:border-[var(--color-gold)] transition-colors"
-          />
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        {/* Only the search bar sticks on native; the filter pills scroll away. */}
+        <div
+          className={`flex-1 sm:max-w-md ${
+            isNative
+              ? "sticky top-0 z-20 -mx-3 px-3 py-2 bg-[var(--color-bg)]/90 backdrop-blur-xl"
+              : ""
+          }`}
+        >
+          <div className="relative">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-themed-muted" />
+            <input
+              type="text"
+              placeholder={
+                isNative
+                  ? "Search surahs or verses..."
+                  : "Search surahs, verses, or references (e.g. 3:14, al imran)..."
+              }
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-xl card-bg border sidebar-border text-themed placeholder:text-themed-muted focus:outline-none focus:border-[var(--color-gold)] transition-colors"
+            />
+          </div>
         </div>
         <div className="quran-filterpills flex gap-2">
           {(["all", "makkah", "madinah"] as const).map((f) => (

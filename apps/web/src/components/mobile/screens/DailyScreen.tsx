@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type ComponentType } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Pencil } from "lucide-react";
 import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
@@ -332,6 +332,13 @@ async function shareReminder(r: Reminder) {
 function RemindersTab() {
   const today = useMemo(() => todayLocalDate(), []);
   const { saved, toggle } = useReminderSaves();
+  const router = useRouter();
+  const openReminder = (r: Reminder) => {
+    if (r.sourceKind === "quran") {
+      const [s, v] = r.sourceRef.split(":");
+      if (s && v) router.push(`/quran/${s}?v=${v}`);
+    }
+  };
   return (
     <ReflectionsFeed
       reminders={ALL_REMINDERS}
@@ -339,6 +346,7 @@ function RemindersTab() {
       savedIds={saved}
       onToggleSave={toggle}
       onShare={shareReminder}
+      onOpen={openReminder}
       onHaptic={hapticSelection}
     />
   );

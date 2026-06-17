@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Heart, Share2, Sparkles, ChevronLeft, ChevronRight, ChevronDown, Check } from "lucide-react";
+import { Heart, Share2, Sparkles, ChevronLeft, ChevronRight, ChevronDown, Check, ArrowRight } from "lucide-react";
 import { REMINDER_THEMES, dailyIndex, themeLabel, type Reminder } from "../../lib/reminders";
 
 /**
@@ -16,6 +16,7 @@ export function ReflectionsFeed({
   savedIds,
   onToggleSave,
   onShare,
+  onOpen,
   onHaptic,
 }: {
   reminders: Reminder[];
@@ -23,6 +24,7 @@ export function ReflectionsFeed({
   savedIds: Set<string>;
   onToggleSave: (id: string) => void;
   onShare?: (r: Reminder) => void;
+  onOpen?: (r: Reminder) => void;
   onHaptic?: () => void;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -172,6 +174,7 @@ export function ReflectionsFeed({
               saved={savedIds.has(r.id)}
               onToggleSave={onToggleSave}
               onShare={onShare}
+              onOpen={onOpen}
               onHaptic={onHaptic}
             />
           </div>
@@ -213,6 +216,7 @@ function ReflectionCard({
   saved,
   onToggleSave,
   onShare,
+  onOpen,
   onHaptic,
 }: {
   r: Reminder;
@@ -220,6 +224,7 @@ function ReflectionCard({
   saved: boolean;
   onToggleSave: (id: string) => void;
   onShare?: (r: Reminder) => void;
+  onOpen?: (r: Reminder) => void;
   onHaptic?: () => void;
 }) {
   return (
@@ -251,9 +256,21 @@ function ReflectionCard({
       </div>
 
       <div className="relative flex items-center justify-between mt-4 pt-3 border-t sidebar-border">
-        <span className="text-xs text-themed-muted">
-          {r.sourceKind === "quran" ? `Qur'an ${r.sourceRef}` : r.sourceRef}
-        </span>
+        {r.sourceKind === "quran" && onOpen ? (
+          <button
+            type="button"
+            onClick={() => onOpen(r)}
+            className="inline-flex items-center gap-1 text-xs text-gold touch-manipulation"
+            aria-label={`Open Qur'an ${r.sourceRef}`}
+          >
+            Qur'an {r.sourceRef}
+            <ArrowRight size={12} />
+          </button>
+        ) : (
+          <span className="text-xs text-themed-muted">
+            {r.sourceKind === "quran" ? `Qur'an ${r.sourceRef}` : r.sourceRef}
+          </span>
+        )}
         <div className="flex items-center gap-1">
           {onShare && (
             <button
