@@ -33,7 +33,7 @@ export type LongPressItem = {
 };
 
 /** Detects a long-press (without movement) on its children. */
-function useLongPress(onLongPress: () => void, ms = 480) {
+export function useLongPress(onLongPress: () => void, ms = 480) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const start = useRef<{ x: number; y: number } | null>(null);
 
@@ -82,7 +82,7 @@ export default function LongPressActions({
   );
 }
 
-function ActionSheet({
+export function ActionSheet({
   item,
   open,
   onClose,

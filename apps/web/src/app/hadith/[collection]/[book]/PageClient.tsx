@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useEffect, useMemo, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef, Suspense } from "react";
+import { useIsNative } from "@/lib/mobile/platform";
+import { ActionSheet } from "@/components/mobile/LongPressActions";
+import { hapticMedium } from "@/lib/mobile/haptics";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -173,6 +176,39 @@ function BookPageContent() {
     );
   }, [hadiths, search]);
 
+  // Long-press a hadith → action sheet (one delegated detector + shared sheet).
+  const isNative = useIsNative();
+  const [lpHadith, setLpHadith] = useState<HadithEntry | null>(null);
+  const lpTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lpStart = useRef<{ x: number; y: number } | null>(null);
+  const lpStartTouch = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    lpStart.current = { x: t.clientX, y: t.clientY };
+    if (lpTimer.current) clearTimeout(lpTimer.current);
+    lpTimer.current = setTimeout(() => {
+      if (!lpStart.current) return;
+      const el = document.elementFromPoint(lpStart.current.x, lpStart.current.y) as HTMLElement | null;
+      const card = el?.closest('[id^="hadith-"]');
+      const idStr = card?.id.replace("hadith-", "");
+      const h = filtered.find((x) => String(x.id) === idStr);
+      if (h) {
+        hapticMedium();
+        setLpHadith(h);
+      }
+    }, 480);
+  };
+  const lpMoveTouch = (e: React.TouchEvent) => {
+    if (!lpStart.current) return;
+    const t = e.touches[0];
+    if (Math.abs(t.clientX - lpStart.current.x) > 10 || Math.abs(t.clientY - lpStart.current.y) > 10) {
+      if (lpTimer.current) clearTimeout(lpTimer.current);
+      lpStart.current = null;
+    }
+  };
+  const lpEndTouch = () => {
+    if (lpTimer.current) clearTimeout(lpTimer.current);
+  };
+
   const bookMeta = metadata?.books.find((b) => b.id === bookId);
   const allBooks = metadata?.books || [];
   const currentIdx = allBooks.findIndex((b) => b.id === bookId);
@@ -246,12 +282,39 @@ function BookPageContent() {
         </p>
       )}
 
+      {lpHadith && (
+        <ActionSheet
+          item={{
+            bookmarkType: "hadith",
+            bookmarkId: `${collection}-${lpHadith.id}`,
+            title: lpHadith.english?.slice(0, 80) || lpHadith.reference || "Hadith",
+            arabic: lpHadith.arabic,
+            english: lpHadith.english,
+            reference: lpHadith.reference,
+            href: `/hadith/${collection}/${bookId}?h=${lpHadith.id}`,
+          }}
+          open
+          onClose={() => setLpHadith(null)}
+        />
+      )}
+
       {loading ? (
         <div className="text-center py-12 text-themed-muted">
           Loading hadiths...
         </div>
       ) : (
-        <div className="space-y-4">
+        <div
+          className="space-y-4"
+          {...(isNative
+            ? {
+                onTouchStart: lpStartTouch,
+                onTouchMove: lpMoveTouch,
+                onTouchEnd: lpEndTouch,
+                onTouchCancel: lpEndTouch,
+                style: { WebkitTouchCallout: "none" as const },
+              }
+            : {})}
+        >
           {filtered.map((hadith, i) => {
             const isHighlighted = hadith.reference === `${bookId}:${highlightId}` || hadith.id === highlightId;
             const showArabic = expandedArabic.has(hadith.id);

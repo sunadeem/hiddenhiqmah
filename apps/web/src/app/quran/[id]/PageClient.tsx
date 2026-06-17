@@ -5,6 +5,8 @@ import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useIsNative } from "@/lib/mobile/platform";
+import { ActionSheet } from "@/components/mobile/LongPressActions";
+import { hapticMedium } from "@/lib/mobile/haptics";
 import {
   ArrowLeft,
   ArrowRight,
@@ -887,6 +889,39 @@ function SurahPageContent() {
 
   const isTafsirOpen = (verseNum: number) => showAllTafsir || openTafsirs.has(verseNum);
 
+  // Long-press a verse → action sheet (bookmark / copy / share / play). One
+  // delegated detector + one shared sheet, so the (up to 286) verses stay light.
+  const [lpVerse, setLpVerse] = useState<Verse | null>(null);
+  const lpTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lpStart = useRef<{ x: number; y: number } | null>(null);
+  const lpStartTouch = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    lpStart.current = { x: t.clientX, y: t.clientY };
+    if (lpTimer.current) clearTimeout(lpTimer.current);
+    lpTimer.current = setTimeout(() => {
+      if (!lpStart.current) return;
+      const el = document.elementFromPoint(lpStart.current.x, lpStart.current.y) as HTMLElement | null;
+      const verseEl = el?.closest('[id^="verse-"]');
+      const n = verseEl?.id.replace("verse-", "");
+      const v = filtered?.find((x) => String(x.number) === n);
+      if (v) {
+        hapticMedium();
+        setLpVerse(v);
+      }
+    }, 480);
+  };
+  const lpMoveTouch = (e: React.TouchEvent) => {
+    if (!lpStart.current) return;
+    const t = e.touches[0];
+    if (Math.abs(t.clientX - lpStart.current.x) > 10 || Math.abs(t.clientY - lpStart.current.y) > 10) {
+      if (lpTimer.current) clearTimeout(lpTimer.current);
+      lpStart.current = null;
+    }
+  };
+  const lpEndTouch = () => {
+    if (lpTimer.current) clearTimeout(lpTimer.current);
+  };
+
   const fontSizeClasses = [
     "text-lg md:text-xl",     // 0 = small
     "text-xl md:text-2xl",     // 1 = medium
@@ -1098,9 +1133,37 @@ function SurahPageContent() {
         </div>
       )}
 
+      {/* Long-press action sheet (shared across all verses) */}
+      {lpVerse && (
+        <ActionSheet
+          item={{
+            bookmarkType: "verse",
+            bookmarkId: lpVerse.key,
+            title: `Quran ${lpVerse.key}`,
+            arabic: lpVerse.textAr,
+            english: lpVerse.textEn,
+            reference: `Quran ${lpVerse.key}`,
+            onPlay: () => playVerse(lpVerse),
+          }}
+          open
+          onClose={() => setLpVerse(null)}
+        />
+      )}
+
       {/* Verses */}
       {filtered && (
-        <div className="space-y-1">
+        <div
+          className="space-y-1"
+          {...(isNativeApp
+            ? {
+                onTouchStart: lpStartTouch,
+                onTouchMove: lpMoveTouch,
+                onTouchEnd: lpEndTouch,
+                onTouchCancel: lpEndTouch,
+                style: { WebkitTouchCallout: "none" as const },
+              }
+            : {})}
+        >
           {filtered.map((verse, i) => {
             const isHighlighted = highlightVerse === verse.number && !!highlightQuery;
             const tafsirOpen = isTafsirOpen(verse.number);
