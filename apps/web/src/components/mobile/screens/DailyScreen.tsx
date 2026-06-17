@@ -25,6 +25,7 @@ import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
 import { Capacitor } from "@capacitor/core";
 import { Share } from "@capacitor/share";
 import { useReminderSaves } from "@/lib/daily/useReminderSaves";
+import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
 import { hapticSelection, hapticLight } from "@/lib/mobile/haptics";
 import {
   MorningTab,
@@ -106,6 +107,20 @@ function ChecklistTab() {
     if (list.rollup) map.set(today, list.rollup);
     return [...map.values()];
   }, [week, list.rollup, today]);
+
+  // Once today has any completion, mark activity (for the streak nudge) and
+  // reschedule so today's "keep your streak" notification is cancelled.
+  const doneToday = list.rollup?.doneItems ?? 0;
+  useEffect(() => {
+    if (doneToday >= 1) {
+      try {
+        localStorage.setItem("hiqmah-daily-last-active", today);
+      } catch {
+        /* ignore */
+      }
+      rescheduleNotificationsDebounced(false);
+    }
+  }, [doneToday, today]);
 
   if (authLoading || list.loading) return <ChecklistSkeleton />;
 

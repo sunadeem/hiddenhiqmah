@@ -49,7 +49,9 @@ const ADHAN_SOUND = "adhan.caf";
 const PRE_PRAYER_MINUTES = 15;
 const DAILY_HOUR = 8; // 8:00 AM local — daily verse/hadith
 const REMINDER_HOUR = 20; // 8:00 PM local — today's reflection (evening wind-down)
+const STREAK_HOUR = 21; // 9:00 PM local — streak-protection nudge
 const JUMUAH_HOUR = 10; // 10:00 AM Friday
+const LAST_ACTIVE_KEY = "hiqmah-daily-last-active"; // YYYY-MM-DD of last checklist activity
 const DAYS_AHEAD = 10;
 const MAX_NOTIFICATIONS = 60; // stay under iOS's 64 pending cap
 
@@ -192,7 +194,15 @@ export async function scheduleAllNotifications(
     prefs.adhanEnabled && PRAYER_KEYS.some((k) => prefs.adhanPerPrayer[k]);
   const wantDaily = prefs.todaysVerse || prefs.todaysHadith;
   const wantReminder = prefs.todaysReminder && REMINDERS.length > 0;
-  if (!anyAdhan && !prefs.prePrayer && !wantDaily && !wantReminder && !prefs.jumuah) return;
+  if (
+    !anyAdhan &&
+    !prefs.prePrayer &&
+    !wantDaily &&
+    !wantReminder &&
+    !prefs.jumuah &&
+    !prefs.streak
+  )
+    return;
 
   const now = new Date();
   type Notif = {
@@ -318,6 +328,31 @@ export async function scheduleAllNotifications(
         body: "Read Surah Al-Kahf and prepare for Jumu'ah prayer.",
         schedule: { at },
         url: "/quran/18",
+      });
+    }
+  }
+
+  // ── Streak-protection nudge (evening; today only if not yet started) ──
+  if (prefs.streak) {
+    let doneToday = false;
+    try {
+      doneToday = localStorage.getItem(LAST_ACTIVE_KEY) === dayKey(now);
+    } catch {
+      // ignore
+    }
+    for (let i = 0; i <= DAYS_AHEAD; i++) {
+      const day = new Date(now);
+      day.setDate(day.getDate() + i);
+      const at = new Date(day);
+      at.setHours(STREAK_HOUR, 0, 0, 0);
+      if (at <= now) continue;
+      if (i === 0 && doneToday) continue; // already kept the streak today
+      notifs.push({
+        id: id++,
+        title: "Keep your streak going",
+        body: "You haven't completed today's checklist yet — a little before the day ends keeps your streak alive.",
+        schedule: { at },
+        url: "/muslim-daily",
       });
     }
   }
