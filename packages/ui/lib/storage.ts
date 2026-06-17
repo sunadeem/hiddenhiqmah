@@ -59,6 +59,7 @@ export type NotificationPrefs = {
   iqamah: boolean;
   todaysVerse: boolean;
   todaysHadith: boolean;
+  todaysReminder: boolean;
   morningAdhkar: boolean;
   eveningAdhkar: boolean;
   streak: boolean;
@@ -78,6 +79,7 @@ const defaultNotificationPrefs: NotificationPrefs = {
   iqamah: false,
   todaysVerse: true,
   todaysHadith: false,
+  todaysReminder: true,
   morningAdhkar: false,
   eveningAdhkar: false,
   streak: true,

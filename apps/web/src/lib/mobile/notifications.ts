@@ -22,6 +22,10 @@ import {
 } from "@hidden-hiqmah/ui/lib/storage";
 import { getCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
 import { dailyInspirations } from "@/data/home-content";
+import { dailyIndex, type Reminder } from "@hidden-hiqmah/ui/lib/reminders";
+import remindersData from "@hidden-hiqmah/content/reminders.json";
+
+const REMINDERS = remindersData as unknown as Reminder[];
 
 const PRAYER_KEYS = ["fajr", "dhuhr", "asr", "maghrib", "isha"] as const;
 type PrayerKey = (typeof PRAYER_KEYS)[number];
@@ -44,6 +48,7 @@ const PRAYER_LABEL: Record<PrayerKey, string> = {
 const ADHAN_SOUND = "adhan.caf";
 const PRE_PRAYER_MINUTES = 15;
 const DAILY_HOUR = 8; // 8:00 AM local — daily verse/hadith
+const REMINDER_HOUR = 20; // 8:00 PM local — today's reflection (evening wind-down)
 const JUMUAH_HOUR = 10; // 10:00 AM Friday
 const DAYS_AHEAD = 10;
 const MAX_NOTIFICATIONS = 60; // stay under iOS's 64 pending cap
@@ -186,7 +191,8 @@ export async function scheduleAllNotifications(
   const anyAdhan =
     prefs.adhanEnabled && PRAYER_KEYS.some((k) => prefs.adhanPerPrayer[k]);
   const wantDaily = prefs.todaysVerse || prefs.todaysHadith;
-  if (!anyAdhan && !prefs.prePrayer && !wantDaily && !prefs.jumuah) return;
+  const wantReminder = prefs.todaysReminder && REMINDERS.length > 0;
+  if (!anyAdhan && !prefs.prePrayer && !wantDaily && !wantReminder && !prefs.jumuah) return;
 
   const now = new Date();
   type Notif = {
@@ -267,6 +273,26 @@ export async function scheduleAllNotifications(
         id: id++,
         title: insp.type === "Quran" ? "Today's Verse" : "Today's Hadith",
         body: `${insp.english} — ${insp.reference}`,
+        schedule: { at },
+      });
+    }
+  }
+
+  // ── Today's Reminder (the day's reflection — matches the Reminders tab) ──
+  if (wantReminder) {
+    for (let i = 0; i <= DAYS_AHEAD; i++) {
+      const day = new Date(now);
+      day.setDate(day.getDate() + i);
+      const at = new Date(day);
+      at.setHours(REMINDER_HOUR, 0, 0, 0);
+      if (at <= now) continue;
+      const r = REMINDERS[dailyIndex(dayKey(day), REMINDERS.length)];
+      if (!r) continue;
+      const ref = r.sourceKind === "quran" ? `Qur'an ${r.sourceRef}` : r.sourceRef;
+      notifs.push({
+        id: id++,
+        title: "Today's Reminder",
+        body: `${r.textEn} — ${ref}`,
         schedule: { at },
       });
     }

@@ -233,6 +233,13 @@ export default function SettingsScreen() {
           onToggle={(v) => updateNotif({ todaysHadith: v })}
         />
         <SettingsRow
+          icon={Sparkles}
+          title="Today's reminder"
+          subtitle="A daily reflection, 8 PM"
+          toggle={notif.todaysReminder}
+          onToggle={(v) => updateNotif({ todaysReminder: v })}
+        />
+        <SettingsRow
           icon={Sun}
           title="Morning adhkar"
           subtitle="After Fajr"
