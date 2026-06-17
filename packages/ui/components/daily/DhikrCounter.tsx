@@ -1,24 +1,26 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { Plus, Check, RotateCcw } from "lucide-react";
 import type { DailyAdapter } from "../../lib/daily/types";
 
 /**
- * Tap-to-count dhikr control (Worship). Shows the daily count (primary) and the
- * lifetime total (smaller). Increments are debounced into a single RPC. Shares
- * state with the checklist via dhikrKey.
+ * Compact tap-to-count dhikr card (Worship). The pill is an obvious button
+ * (+ icon, border, press feedback; turns to a check at the goal). Counts are
+ * debounced into one RPC and share state with the checklist via dhikrKey.
  */
 export function DhikrCounter({
   adapter,
   dhikrKey,
   today,
+  label,
   goal,
   onHaptic,
 }: {
   adapter: DailyAdapter;
   dhikrKey: string;
   today: string;
+  label: string;
   goal?: number | null;
   onHaptic?: () => void;
 }) {
@@ -51,7 +53,7 @@ export function DhikrCounter({
         setLifetime(s.lifetime);
       })
       .catch(() => {
-        /* keep optimistic value; will reconcile on next open */
+        /* keep optimistic value; reconciles on next open */
       });
   }, [adapter, dhikrKey, today]);
 
@@ -82,33 +84,47 @@ export function DhikrCounter({
   const reached = goal != null && daily >= goal;
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <button
-        type="button"
-        onClick={tap}
-        className={[
-          "w-36 h-36 rounded-full flex flex-col items-center justify-center gap-1 touch-manipulation transition-transform active:scale-95 border-[3px]",
-          reached
-            ? "border-[var(--color-gold)] bg-[var(--color-gold)]/15"
-            : "border-[var(--color-gold)]/40 bg-[var(--color-gold)]/[0.06]",
-        ].join(" ")}
-        aria-label="Count dhikr"
-      >
-        <span className="text-[10px] uppercase tracking-[0.2em] text-themed-muted">Tap</span>
-        <span className="text-4xl font-bold text-gold leading-none">{daily}</span>
-        {goal != null && <span className="text-xs text-themed-muted">of {goal}</span>}
-      </button>
-      <div className="flex items-center gap-3 text-xs text-themed-muted">
-        <span>Lifetime {lifetime.toLocaleString()}</span>
+    <div className="card-bg rounded-2xl border sidebar-border px-4 py-2.5 flex items-center gap-2.5 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
+      <div className="relative flex-1 min-w-0">
+        <div className="text-[15px] font-medium text-themed truncate leading-tight">{label}</div>
+        <div className="text-[11px] text-themed-muted leading-tight mt-0.5">
+          Lifetime {lifetime.toLocaleString()}
+          {goal != null ? ` · ${goal}×` : ""}
+        </div>
+      </div>
+
+      {daily > 0 && (
         <button
           type="button"
           onClick={reset}
-          className="inline-flex items-center gap-1 text-themed-muted hover:text-themed touch-manipulation"
+          className="relative p-1.5 text-themed-muted touch-manipulation"
           aria-label="Reset today's count"
         >
-          <RotateCcw size={12} /> Reset
+          <RotateCcw size={13} />
         </button>
-      </div>
+      )}
+
+      <button
+        type="button"
+        onClick={tap}
+        aria-label={`Count ${label}`}
+        className={[
+          "relative shrink-0 h-9 pl-2.5 pr-3 rounded-full flex items-center gap-1.5 font-bold tabular-nums",
+          "touch-manipulation active:scale-95 transition-transform border shadow-sm",
+          reached
+            ? "bg-[var(--color-gold)] text-[var(--color-bg)] border-[var(--color-gold)]"
+            : "bg-[var(--color-gold)]/15 text-gold border-[var(--color-gold)]/40",
+        ].join(" ")}
+      >
+        {reached ? <Check size={15} strokeWidth={3} /> : <Plus size={15} strokeWidth={2.5} />}
+        <span className="text-sm">
+          {daily}
+          {goal != null && (
+            <span className={reached ? "opacity-70" : "text-gold/60"}>/{goal}</span>
+          )}
+        </span>
+      </button>
     </div>
   );
 }

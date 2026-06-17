@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ComponentType } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Pencil } from "lucide-react";
@@ -16,8 +16,16 @@ import { StreakWeekStrip } from "@hidden-hiqmah/ui/components/daily/StreakWeekSt
 import { StreakCalendar } from "@hidden-hiqmah/ui/components/daily/StreakCalendar";
 import { Checklist } from "@hidden-hiqmah/ui/components/daily/Checklist";
 import { ChecklistEditor } from "@hidden-hiqmah/ui/components/daily/ChecklistEditor";
+import { DhikrCounter } from "@hidden-hiqmah/ui/components/daily/DhikrCounter";
 import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
 import { hapticSelection, hapticLight } from "@/lib/mobile/haptics";
+import {
+  MorningTab,
+  AfternoonTab,
+  EveningTab,
+  SleepTab,
+  MidnightTab,
+} from "@/app/muslim-daily/page";
 
 type TabKey = "checklist" | "worship" | "sunnah" | "reminders";
 
@@ -54,7 +62,7 @@ export default function DailyScreen() {
       </div>
 
       {tab === "checklist" && <ChecklistTab />}
-      {tab === "worship" && <ComingSoon label="Worship" />}
+      {tab === "worship" && <WorshipTab />}
       {tab === "sunnah" && <ComingSoon label="Sunnah" />}
       {tab === "reminders" && <ComingSoon label="Reminders" />}
     </div>
@@ -168,6 +176,74 @@ function ChecklistTab() {
           </div>
         </motion.div>
       )}
+    </div>
+  );
+}
+
+type PeriodKey = "morning" | "afternoon" | "evening" | "sleep" | "midnight";
+
+const PERIODS: { key: PeriodKey; label: string; Comp: ComponentType }[] = [
+  { key: "morning", label: "Morning", Comp: MorningTab },
+  { key: "afternoon", label: "Midday", Comp: AfternoonTab },
+  { key: "evening", label: "Evening", Comp: EveningTab },
+  { key: "sleep", label: "Night", Comp: SleepTab },
+  { key: "midnight", label: "Late night", Comp: MidnightTab },
+];
+
+function currentPeriod(): PeriodKey {
+  const h = new Date().getHours();
+  if (h < 4) return "midnight";
+  if (h < 11) return "morning";
+  if (h < 16) return "afternoon";
+  if (h < 19) return "evening";
+  return "sleep";
+}
+
+function WorshipTab() {
+  const { adapter, authLoading } = useDailyAdapter();
+  const today = useMemo(() => todayLocalDate(), []);
+  const [period, setPeriod] = useState<PeriodKey>(() => currentPeriod());
+  const Comp = PERIODS.find((p) => p.key === period)?.Comp ?? MorningTab;
+
+  return (
+    <div className="space-y-4">
+      {/* Time-of-day chips (auto-selected to now) */}
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {PERIODS.map((p) => (
+          <button
+            key={p.key}
+            type="button"
+            onClick={() => {
+              hapticSelection();
+              setPeriod(p.key);
+            }}
+            className={`shrink-0 whitespace-nowrap text-[13px] font-semibold px-4 py-2 rounded-full touch-manipulation transition-colors ${
+              period === p.key
+                ? "bg-[var(--color-gold)] text-[var(--color-bg)]"
+                : "card-bg border sidebar-border text-themed-muted"
+            }`}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Synced dhikr counters (write through dhikr_key → also tick the checklist) */}
+      {!authLoading && (
+        <div className="space-y-2">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-themed-muted px-1">Dhikr</div>
+          <DhikrCounter adapter={adapter} today={today} dhikrKey="takbir" label="Allahu Akbar" goal={33} onHaptic={hapticSelection} />
+          <DhikrCounter adapter={adapter} today={today} dhikrKey="subhanallah" label="SubhanAllah" goal={33} onHaptic={hapticSelection} />
+          <DhikrCounter adapter={adapter} today={today} dhikrKey="alhamdulillah" label="Alhamdulillah" goal={33} onHaptic={hapticSelection} />
+          <DhikrCounter adapter={adapter} today={today} dhikrKey="istighfar" label="Astaghfirullah" goal={100} onHaptic={hapticSelection} />
+          <DhikrCounter adapter={adapter} today={today} dhikrKey="salawat" label="Salawat on the Prophet ﷺ" goal={10} onHaptic={hapticSelection} />
+        </div>
+      )}
+
+      {/* The verified adhkar guide for the selected period (reused) */}
+      <div className="pt-1">
+        <Comp />
+      </div>
     </div>
   );
 }

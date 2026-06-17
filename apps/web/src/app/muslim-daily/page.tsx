@@ -185,7 +185,7 @@ function TimelineStep({
   );
 }
 
-function MorningTab() {
+export function MorningTab() {
   return (
     <div>
       {/* Step 1: Upon Waking */}
@@ -371,7 +371,7 @@ function MorningTab() {
    TAB: Afternoon
    ═══════════════════════════════════════════════════════════════════ */
 
-function AfternoonTab() {
+export function AfternoonTab() {
   return (
     <div>
       <TimelineStep time="Midday" title="Dhuhr Prayer" delay={0.05}>
@@ -492,7 +492,7 @@ function AfternoonTab() {
    TAB: Evening
    ═══════════════════════════════════════════════════════════════════ */
 
-function EveningTab() {
+export function EveningTab() {
   return (
     <div>
       <TimelineStep time="Sunset" title="Maghrib Prayer" delay={0.05}>
@@ -601,7 +601,7 @@ function EveningTab() {
    TAB: Before Sleep
    ═══════════════════════════════════════════════════════════════════ */
 
-function SleepTab() {
+export function SleepTab() {
   return (
     <div>
       <TimelineStep time="Before lying down" title="Sleep Sunnahs" delay={0.05}>
@@ -920,7 +920,7 @@ function ChecklistTab() {
    TAB: Midnight (Last Third of the Night)
    ═══════════════════════════════════════════════════════════════════ */
 
-function MidnightTab() {
+export function MidnightTab() {
   return (
     <div className="space-y-5">
       {/* Tahajjud */}
