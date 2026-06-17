@@ -49,6 +49,18 @@ export function reflectionOfTheDay(list: Reminder[], dateStr: string): Reminder 
   return list[hashStr(dateStr) % list.length];
 }
 
+/**
+ * Index of the day's reflection within a deck — advances by one each day
+ * (sequential "next up"), wrapping around. Stable for a given local date.
+ */
+export function dailyIndex(dateStr: string, count: number): number {
+  if (count <= 0) return 0;
+  const d = new Date(dateStr + "T12:00:00").getTime();
+  const epoch = new Date("2020-01-01T12:00:00").getTime();
+  const days = Math.floor((d - epoch) / 86400000);
+  return ((days % count) + count) % count;
+}
+
 /** Build a shareable plain-text version of a reminder. */
 export function reminderShareText(r: Reminder): string {
   const parts = [r.textEn.trim()];

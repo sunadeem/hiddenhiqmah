@@ -1,16 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Heart, Share2, Sparkles } from "lucide-react";
-import {
-  REMINDER_THEMES,
-  reflectionOfTheDay,
-  themeLabel,
-  type Reminder,
-} from "../../lib/reminders";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Heart, Share2, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { REMINDER_THEMES, dailyIndex, themeLabel, type Reminder } from "../../lib/reminders";
 
-/** Inspirational Reflections feed — theme chips, a daily featured reflection, and
- *  a column of reminder cards. Presentational; saves/share are injected. */
+/**
+ * Reflections deck — one card at a time, swipe left/right (horizontal scroll-snap,
+ * which is robust in the WKWebView). Opens on the day's reflection and advances
+ * one card per day; the user can browse back/forward freely. Theme chips filter
+ * the deck. Save + share per card.
+ */
 export function ReflectionsFeed({
   reminders,
   today,
@@ -27,19 +26,49 @@ export function ReflectionsFeed({
   onHaptic?: () => void;
 }) {
   const [theme, setTheme] = useState<string>("all");
-
-  const featured = useMemo(() => reflectionOfTheDay(reminders, today), [reminders, today]);
+  const [index, setIndex] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   const chips = useMemo(() => {
     const present = new Set(reminders.map((r) => r.theme));
     return [{ key: "all", label: "All" }, ...REMINDER_THEMES.filter((t) => present.has(t.key))];
   }, [reminders]);
 
-  const list = useMemo(() => {
-    const base = theme === "all" ? reminders : reminders.filter((r) => r.theme === theme);
-    // Featured is shown separately on "all"; avoid duplicating it at the top.
-    return theme === "all" && featured ? base.filter((r) => r.id !== featured.id) : base;
-  }, [reminders, theme, featured]);
+  const list = useMemo(
+    () => (theme === "all" ? reminders : reminders.filter((r) => r.theme === theme)),
+    [reminders, theme]
+  );
+
+  // The day's starting card (advances daily) on "All"; first card on a theme.
+  const startIndex = useMemo(
+    () => (theme === "all" ? dailyIndex(today, list.length) : 0),
+    [theme, today, list.length]
+  );
+
+  const scrollToIndex = (i: number, smooth: boolean) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollTo({ left: i * el.clientWidth, behavior: smooth ? "smooth" : "auto" });
+  };
+
+  // Jump to the start card whenever the deck (theme) changes.
+  useEffect(() => {
+    setIndex(startIndex);
+    requestAnimationFrame(() => scrollToIndex(startIndex, false));
+  }, [theme, startIndex]);
+
+  const onScroll = () => {
+    const el = trackRef.current;
+    if (!el || el.clientWidth === 0) return;
+    setIndex(Math.round(el.scrollLeft / el.clientWidth));
+  };
+
+  const go = (delta: number) => {
+    const next = Math.min(Math.max(index + delta, 0), list.length - 1);
+    onHaptic?.();
+    scrollToIndex(next, true);
+    setIndex(next);
+  };
 
   if (reminders.length === 0) {
     return (
@@ -51,8 +80,10 @@ export function ReflectionsFeed({
     );
   }
 
+  const onDailyCard = theme === "all" && index === startIndex;
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Theme chips */}
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {chips.map((c) => (
@@ -74,34 +105,51 @@ export function ReflectionsFeed({
         ))}
       </div>
 
-      {/* Reflection of the day (on "all") */}
-      {theme === "all" && featured && (
-        <div>
-          <div className="text-[10px] uppercase tracking-[0.2em] text-themed-muted px-1 mb-2 flex items-center gap-1.5">
-            <Sparkles size={12} className="text-gold" /> Reflection of the day
+      {/* Swipe deck */}
+      <div
+        ref={trackRef}
+        onScroll={onScroll}
+        className="flex overflow-x-auto snap-x snap-mandatory -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overscroll-x-contain"
+        style={{ scrollbarWidth: "none" }}
+      >
+        {list.map((r, i) => (
+          <div key={r.id} className="snap-center shrink-0 w-full px-1">
+            <ReflectionCard
+              r={r}
+              isToday={theme === "all" && i === startIndex}
+              saved={savedIds.has(r.id)}
+              onToggleSave={onToggleSave}
+              onShare={onShare}
+              onHaptic={onHaptic}
+            />
           </div>
-          <ReflectionCard
-            r={featured}
-            featured
-            saved={savedIds.has(featured.id)}
-            onToggleSave={onToggleSave}
-            onShare={onShare}
-            onHaptic={onHaptic}
-          />
-        </div>
-      )}
-
-      <div className="space-y-3">
-        {list.map((r) => (
-          <ReflectionCard
-            key={r.id}
-            r={r}
-            saved={savedIds.has(r.id)}
-            onToggleSave={onToggleSave}
-            onShare={onShare}
-            onHaptic={onHaptic}
-          />
         ))}
+      </div>
+
+      {/* Position + nav */}
+      <div className="flex items-center justify-between px-1">
+        <button
+          type="button"
+          onClick={() => go(-1)}
+          disabled={index <= 0}
+          className={`p-2 rounded-full touch-manipulation ${index <= 0 ? "text-themed-muted opacity-30" : "text-themed"}`}
+          aria-label="Previous reflection"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <span className="text-xs text-themed-muted tabular-nums">
+          {onDailyCard ? "Today · " : ""}
+          {index + 1} / {list.length}
+        </span>
+        <button
+          type="button"
+          onClick={() => go(1)}
+          disabled={index >= list.length - 1}
+          className={`p-2 rounded-full touch-manipulation ${index >= list.length - 1 ? "text-themed-muted opacity-30" : "text-themed"}`}
+          aria-label="Next reflection"
+        >
+          <ChevronRight size={20} />
+        </button>
       </div>
     </div>
   );
@@ -109,81 +157,73 @@ export function ReflectionsFeed({
 
 function ReflectionCard({
   r,
-  featured = false,
+  isToday,
   saved,
   onToggleSave,
   onShare,
   onHaptic,
 }: {
   r: Reminder;
-  featured?: boolean;
+  isToday: boolean;
   saved: boolean;
   onToggleSave: (id: string) => void;
   onShare?: (r: Reminder) => void;
   onHaptic?: () => void;
 }) {
   return (
-    <div className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden">
-      <div
-        className={`absolute inset-0 pointer-events-none bg-gradient-to-br ${
-          featured
-            ? "from-[var(--color-gold)]/14 to-transparent"
-            : "from-[var(--color-gold)]/[0.06] to-transparent"
-        }`}
-      />
-      <div className="relative">
-        <div className="text-[10px] uppercase tracking-[0.2em] text-themed-muted mb-3">
+    <div className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden min-h-[58vh] flex flex-col">
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-[var(--color-gold)]/[0.08] to-transparent" />
+      <div className="relative flex items-center justify-between mb-3">
+        <span className="text-[10px] uppercase tracking-[0.2em] text-themed-muted">
           {themeLabel(r.theme)}
-          {r.tone === "accountability" ? " · Reflect" : " · Hope"}
-        </div>
+        </span>
+        {isToday && (
+          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.15em] text-gold">
+            <Sparkles size={11} /> Today
+          </span>
+        )}
+      </div>
 
+      <div className="relative flex-1 flex flex-col justify-center">
         {r.arabic && (
-          <p className="font-arabic text-gold text-2xl leading-loose text-right mb-3" dir="rtl">
+          <p className="font-arabic text-gold text-[26px] leading-loose text-right mb-4" dir="rtl">
             {r.arabic}
           </p>
         )}
-
-        <p
-          className={`text-themed leading-relaxed ${
-            featured ? "text-lg font-medium" : "text-[15px]"
-          } ${!r.arabic ? "italic" : ""}`}
-        >
+        <p className={`text-themed leading-relaxed ${r.arabic ? "text-base" : "text-lg font-medium italic"}`}>
           {r.textEn}
         </p>
-
         {r.translit && (
-          <p className="text-themed-muted text-xs leading-relaxed mt-2">{r.translit}</p>
+          <p className="text-themed-muted text-xs leading-relaxed mt-3">{r.translit}</p>
         )}
+      </div>
 
-        <div className="flex items-center justify-between mt-4 pt-3 border-t sidebar-border">
-          <span className="text-xs text-themed-muted">
-            {r.sourceKind === "quran" ? `Qur'an ${r.sourceRef}` : r.sourceRef}
-          </span>
-          <div className="flex items-center gap-1">
-            {onShare && (
-              <button
-                type="button"
-                onClick={() => onShare(r)}
-                aria-label="Share reflection"
-                className="p-2 rounded-full text-themed-muted touch-manipulation"
-              >
-                <Share2 size={16} />
-              </button>
-            )}
+      <div className="relative flex items-center justify-between mt-4 pt-3 border-t sidebar-border">
+        <span className="text-xs text-themed-muted">
+          {r.sourceKind === "quran" ? `Qur'an ${r.sourceRef}` : r.sourceRef}
+        </span>
+        <div className="flex items-center gap-1">
+          {onShare && (
             <button
               type="button"
-              onClick={() => {
-                onHaptic?.();
-                onToggleSave(r.id);
-              }}
-              aria-label={saved ? "Remove from saved" : "Save reflection"}
-              className={`p-2 rounded-full touch-manipulation ${
-                saved ? "text-gold" : "text-themed-muted"
-              }`}
+              onClick={() => onShare(r)}
+              aria-label="Share reflection"
+              className="p-2 rounded-full text-themed-muted touch-manipulation"
             >
-              <Heart size={16} fill={saved ? "currentColor" : "none"} />
+              <Share2 size={16} />
             </button>
-          </div>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              onHaptic?.();
+              onToggleSave(r.id);
+            }}
+            aria-label={saved ? "Remove from saved" : "Save reflection"}
+            className={`p-2 rounded-full touch-manipulation ${saved ? "text-gold" : "text-themed-muted"}`}
+          >
+            <Heart size={16} fill={saved ? "currentColor" : "none"} />
+          </button>
         </div>
       </div>
     </div>
