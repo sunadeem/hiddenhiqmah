@@ -10,6 +10,7 @@ import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import { useIsNative } from "@/lib/mobile/platform";
+import DailyScreen from "@/components/mobile/screens/DailyScreen";
 import {
   BookOpen,
   Sun,
@@ -1612,7 +1613,16 @@ function MuslimDailyContent() {
 export default function MuslimDailyPage() {
   return (
     <Suspense>
-      <MuslimDailyContent />
+      <DailyRouter />
     </Suspense>
   );
+}
+
+// Native app gets the redesigned Daily experience; the website keeps the
+// existing page. useIsNative() is false on web (and on first native paint, then
+// flips true) — the brief first frame is hidden by MobileShell's opacity fade.
+function DailyRouter() {
+  const isNative = useIsNative();
+  if (isNative) return <DailyScreen />;
+  return <MuslimDailyContent />;
 }
