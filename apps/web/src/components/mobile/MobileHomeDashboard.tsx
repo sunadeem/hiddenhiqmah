@@ -17,6 +17,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
+import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { Geolocation } from "@capacitor/geolocation";
 import {
   getFreshCachedLocation,
@@ -353,16 +354,20 @@ function formatGregorianDate(): string {
 }
 
 export function ContinueReadingCard() {
+  const audio = useQuranAudio();
   const [progress, setProgress] = useState<ReturnType<typeof getProgress> | null>(null);
 
   useEffect(() => {
     setProgress(getProgress());
   }, []);
 
+  // Resume target: the verse that's playing if something is playing, else the
+  // last position read on the last surah.
+  const playing = audio.playingVerse != null && audio.surahId != null;
+  const targetSurah = playing ? audio.surahId : progress?.lastSurah ?? null;
+  const targetVerse = playing ? audio.playingVerse : progress?.lastVerse;
   const chapter =
-    progress && progress.lastSurah
-      ? chapters.find((c) => c.id === progress.lastSurah)
-      : null;
+    targetSurah != null ? chapters.find((c) => c.id === targetSurah) : null;
 
   // No reading progress yet → a "Start reading" card instead of hiding it.
   if (!chapter) {
@@ -385,11 +390,11 @@ export function ContinueReadingCard() {
     );
   }
 
-  const href = progress!.lastVerse
-    ? `/quran/${chapter.id}?v=${progress!.lastVerse}`
+  const href = targetVerse
+    ? `/quran/${chapter.id}?v=${targetVerse}`
     : `/quran/${chapter.id}`;
-  const subtitle = progress!.lastVerse
-    ? `Verse ${progress!.lastVerse} · ${chapter.verses} total`
+  const subtitle = targetVerse
+    ? `Verse ${targetVerse} · ${chapter.verses} total`
     : `${chapter.verses} verses`;
 
   return (
@@ -399,7 +404,7 @@ export function ContinueReadingCard() {
     >
       <div className="flex items-center gap-2 text-themed-muted text-xs uppercase tracking-wider mb-1">
         <BookOpen size={14} className="text-gold" />
-        <span>Continue</span>
+        <span>{playing ? "Now playing" : "Continue"}</span>
       </div>
       <p className="text-lg font-bold text-themed leading-tight truncate">
         {chapter.name}

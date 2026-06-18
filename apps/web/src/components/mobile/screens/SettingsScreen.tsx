@@ -33,7 +33,6 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { useTheme } from "@hidden-hiqmah/ui/context/ThemeContext";
-import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { useAuth } from "@/context/AuthContext";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
 import { hapticLight } from "@/lib/mobile/haptics";
@@ -76,7 +75,6 @@ const FONT_SIZE_LABELS = ["Small", "Medium", "Large", "Extra Large"];
 
 export default function SettingsScreen() {
   const { isDark, toggleDarkMode } = useTheme();
-  const adhan = useAdhanAudio();
   const { user, loading: authLoading, signOut } = useAuth();
   const [hydrated, setHydrated] = useState(false);
   const [fontSize, setFontSizeState] = useState(2);
@@ -218,16 +216,6 @@ export default function SettingsScreen() {
           subtitle="After Adhan"
           toggle={notif.iqamah}
           onToggle={(v) => updateNotif({ iqamah: v })}
-        />
-      </SettingsSection>
-
-      <SettingsSection heading="Adhan">
-        <SettingsRow
-          icon={Volume2}
-          title="Play adhan in the app"
-          subtitle="Sounds the full adhan at prayer times while the app is open"
-          toggle={adhan.settings.adhanEnabled}
-          onToggle={(v) => adhan.updateSettings({ adhanEnabled: v })}
         />
       </SettingsSection>
 

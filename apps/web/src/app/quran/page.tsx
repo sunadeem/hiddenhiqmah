@@ -8,6 +8,7 @@ import { Search, ArrowRight, BookOpen, Check } from "lucide-react";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { parseQuranRef } from "@hidden-hiqmah/ui/lib/search";
 import { getProgress } from "@hidden-hiqmah/ui/lib/storage";
+import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { useIsNative } from "@/lib/mobile/platform";
 
 type VerseEntry = { n: number; t: string };
@@ -131,7 +132,6 @@ export default function QuranPage() {
 
   // Native app: compact list — sticky search, continue-reading hero, native rows (no Meccan/Medinan filters).
   if (isNative) {
-    const lastCh = lastPos ? chapters.find((c) => c.id === lastPos.surah) : null;
     return (
       <div className="pb-2">
         <div className="flex items-baseline justify-between px-1 mb-3">
@@ -154,33 +154,11 @@ export default function QuranPage() {
           </div>
         </div>
 
-        {/* Continue reading */}
-        {lastCh && !search && (
-          <Link
-            href={lastPos?.verse ? `/quran/${lastCh.id}?v=${lastPos.verse}` : `/quran/${lastCh.id}`}
-            className="relative block mt-3 mb-4 rounded-2xl overflow-hidden border sidebar-border p-4 active:scale-[0.99] transition-transform"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/20 to-transparent" />
-            <div className="relative">
-              <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-gold mb-1">
-                <BookOpen size={12} /> Continue reading
-              </div>
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="text-lg font-bold text-themed truncate">
-                  {lastCh.name}
-                  {lastPos?.verse ? <span className="text-themed-muted font-normal text-sm"> · Verse {lastPos.verse}</span> : null}
-                </span>
-                <span className="font-arabic text-gold text-lg shrink-0">{lastCh.nameAr}</span>
-              </div>
-              <div className="text-xs text-themed-muted mt-0.5">
-                {lastCh.meaning} · {surahsRead.size} of 114 read
-              </div>
-            </div>
-          </Link>
-        )}
+        {/* Continue reading (or resume the verse that's playing) */}
+        {!search && <ContinueHero lastPos={lastPos} readCount={surahsRead.size} />}
 
         {/* Native rows */}
-        <div className={`rounded-2xl border sidebar-border overflow-hidden ${lastCh && !search ? "" : "mt-3"}`}>
+        <div className={`rounded-2xl border sidebar-border overflow-hidden ${search ? "mt-3" : ""}`}>
           {filtered.map((ch, i) => {
             const match = getVerseMatch(ch.id);
             return (
@@ -368,5 +346,46 @@ export default function QuranPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Continue-reading hero. Kept as its own component (consuming the audio context)
+// so the 114-row list never re-renders on audio progress ticks.
+function ContinueHero({
+  lastPos,
+  readCount,
+}: {
+  lastPos: { surah: number; verse?: number } | null;
+  readCount: number;
+}) {
+  const audio = useQuranAudio();
+  // Resume target: the playing verse if something is playing, else last position.
+  const playing = audio.playingVerse != null && audio.surahId != null;
+  const surah = playing ? audio.surahId : lastPos?.surah ?? null;
+  const verse = playing ? audio.playingVerse : lastPos?.verse;
+  const ch = surah != null ? chapters.find((c) => c.id === surah) : null;
+  if (!ch) return null;
+  return (
+    <Link
+      href={verse ? `/quran/${ch.id}?v=${verse}` : `/quran/${ch.id}`}
+      className="relative block mt-3 mb-4 rounded-2xl overflow-hidden border sidebar-border p-4 active:scale-[0.99] transition-transform"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/20 to-transparent" />
+      <div className="relative">
+        <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-gold mb-1">
+          <BookOpen size={12} /> {playing ? "Now playing" : "Continue reading"}
+        </div>
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="text-lg font-bold text-themed truncate">
+            {ch.name}
+            {verse ? <span className="text-themed-muted font-normal text-sm"> · Verse {verse}</span> : null}
+          </span>
+          <span className="font-arabic text-gold text-lg shrink-0">{ch.nameAr}</span>
+        </div>
+        <div className="text-xs text-themed-muted mt-0.5">
+          {ch.meaning} · {readCount} of 114 read
+        </div>
+      </div>
+    </Link>
   );
 }

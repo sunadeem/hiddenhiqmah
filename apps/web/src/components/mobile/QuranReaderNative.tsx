@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -25,6 +26,7 @@ import {
   setQuranDisplay,
   getFontSize,
   setFontSize,
+  setLastPosition,
   type QuranView,
   type QuranDisplay,
 } from "@hidden-hiqmah/ui/lib/storage";
@@ -91,11 +93,62 @@ export default function QuranReaderNative({
   const [sheetVerse, setSheetVerse] = useState<Verse | null>(null);
   const [focusIdx, setFocusIdx] = useState(0);
 
+  const searchParams = useSearchParams();
+  const initialVerse = Number(searchParams.get("v")) || 0;
+  const didInitVerse = useRef(false);
+  const lastSavedVerse = useRef(0);
+
   useEffect(() => {
     setView(getQuranView());
     setDisplay(getQuranDisplay());
     setFontSizeState(getFontSize());
   }, []);
+
+  // Resume to ?v= on open: position Focus on it and scroll Mushaf to it (once).
+  useEffect(() => {
+    if (!verses || initialVerse <= 0 || didInitVerse.current) return;
+    didInitVerse.current = true;
+    lastSavedVerse.current = initialVerse;
+    const i = verses.findIndex((v) => v.number === initialVerse);
+    if (i >= 0) setFocusIdx(i);
+    requestAnimationFrame(() => {
+      const el = document.querySelector(`[data-vnum="${initialVerse}"]`);
+      if (el) el.scrollIntoView({ block: "center" });
+    });
+  }, [verses, initialVerse]);
+
+  // Remember the reading position so "Continue reading" resumes here.
+  // Mushaf: track the verse near the top of the viewport as the user scrolls.
+  useEffect(() => {
+    if (view !== "mushaf" || !verses) return;
+    const els = Array.from(document.querySelectorAll<HTMLElement>("[data-vnum]"));
+    if (!els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const n = Number((e.target as HTMLElement).dataset.vnum);
+          if (n && n !== lastSavedVerse.current) {
+            lastSavedVerse.current = n;
+            setLastPosition(chapter.id, n);
+          }
+        }
+      },
+      { rootMargin: "-90px 0px -85% 0px", threshold: 0 }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [view, verses, chapter.id]);
+
+  // Focus: the on-screen verse is the position.
+  useEffect(() => {
+    if (view !== "focus" || !verses) return;
+    const v = verses[focusIdx];
+    if (v && v.number !== lastSavedVerse.current) {
+      lastSavedVerse.current = v.number;
+      setLastPosition(chapter.id, v.number);
+    }
+  }, [view, focusIdx, verses, chapter.id]);
 
   const updateView = (v: QuranView) => {
     hapticSelection();
