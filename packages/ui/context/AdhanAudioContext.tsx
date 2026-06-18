@@ -62,6 +62,15 @@ export function useAdhanAudio() {
    HELPERS
    ═══════════════════════════════════════════════════════════════════ */
 
+function clearAdhanMediaSession() {
+  if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
+  navigator.mediaSession.metadata = null;
+  navigator.mediaSession.playbackState = "none";
+  (["play", "pause", "nexttrack", "previoustrack"] as const).forEach((a) =>
+    navigator.mediaSession.setActionHandler(a, null)
+  );
+}
+
 function parseTimeToToday(raw: string): Date | null {
   if (!raw) return null;
   const clean = raw.replace(/\s*\(.*\)/, "");
@@ -167,17 +176,25 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
       setPaused(false);
       setSource(null);
       setProgress(0);
+      clearAdhanMediaSession();
     });
     audio.addEventListener("error", () => {
       audioRef.current = null;
       setPlaying(false);
       setPaused(false);
       setSource(null);
+      clearAdhanMediaSession();
     });
-    audio.addEventListener("play", () => setPaused(false));
+    audio.addEventListener("play", () => {
+      setPaused(false);
+      if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
+    });
     audio.addEventListener("pause", () => {
       // Only mark paused if not fully stopped
-      if (audioRef.current === audio) setPaused(true);
+      if (audioRef.current === audio) {
+        setPaused(true);
+        if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
+      }
     });
 
     audio.play().catch(() => {
@@ -192,6 +209,26 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
     setSource(src);
     setProgress(0);
     if (audio.duration && !isNaN(audio.duration)) setDuration(audio.duration);
+
+    // Own the lock screen while the adhan plays (the Quran channel cleared its
+    // own MediaSession when we claimed focus above).
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: "Adhan — Call to Prayer",
+        artist: "Omar Hisham Al Arabi",
+        album: "Hidden Hiqmah",
+        artwork: [{ src: "/icon.svg", sizes: "any", type: "image/svg+xml" }],
+      });
+      navigator.mediaSession.playbackState = "playing";
+      navigator.mediaSession.setActionHandler("play", () => {
+        audioRef.current?.play().catch(() => {});
+      });
+      navigator.mediaSession.setActionHandler("pause", () => {
+        audioRef.current?.pause();
+      });
+      navigator.mediaSession.setActionHandler("nexttrack", null);
+      navigator.mediaSession.setActionHandler("previoustrack", null);
+    }
   }, []);
 
   const startManual = useCallback(() => {
@@ -218,6 +255,7 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
     setPaused(false);
     setSource(null);
     setProgress(0);
+    clearAdhanMediaSession();
   }, []);
 
   const seekTo = useCallback((fraction: number) => {

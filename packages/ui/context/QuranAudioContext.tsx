@@ -397,6 +397,15 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       preloadRef.current = null;
       preloadedVerseId.current = null;
     }
+    // Tear down the lock-screen / MediaSession controls so they don't linger
+    // (e.g. when the adhan claims audio focus and stops recitation).
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = null;
+      navigator.mediaSession.playbackState = "none";
+      (["play", "pause", "nexttrack", "previoustrack"] as const).forEach((a) =>
+        navigator.mediaSession.setActionHandler(a, null)
+      );
+    }
     setPlayingVerse(null);
     autoPlayRef.current = false;
   }, []);
