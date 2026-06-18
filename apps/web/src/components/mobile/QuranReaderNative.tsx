@@ -82,6 +82,8 @@ export default function QuranReaderNative({
   timestampData: TimestampMap | null;
 }) {
   const audio = useQuranAudio();
+  const adhan = useAdhanAudio();
+  const playerVisible = audio.playingVerse != null || adhan.playing;
   const [view, setView] = useState<QuranView>("mushaf");
   const [display, setDisplay] = useState<QuranDisplay>({ arabic: true, translation: true, translit: false });
   const [fontSize, setFontSizeState] = useState(2);
@@ -236,7 +238,11 @@ export default function QuranReaderNative({
           onTouchMove={lpMoveTouch}
           onTouchEnd={lpEnd}
           onTouchCancel={lpEnd}
-          style={{ WebkitTouchCallout: "none" }}
+          style={{
+            WebkitTouchCallout: "none",
+            // Clear the floating player so the last verses aren't hidden behind it.
+            paddingBottom: playerVisible ? "calc(env(safe-area-inset-bottom) + 88px)" : undefined,
+          }}
         >
           {chapter.id !== 1 && chapter.id !== 9 && (
             <p className="font-arabic text-gold text-2xl text-center leading-loose mb-5">

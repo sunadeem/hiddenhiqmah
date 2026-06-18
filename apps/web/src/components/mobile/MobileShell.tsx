@@ -24,10 +24,12 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   const [askOpen, setAskOpen] = useState(false);
   const edgeSwipe = useRef<{ x: number; y: number } | null>(null);
   // When the floating player is up, the bottom content must clear it too (not just
-  // the tab bar) — otherwise the last items scroll behind the player.
+  // the tab bar) — otherwise the last items scroll behind the player. The surah
+  // reader is excluded: it manages its own bottom spacing (Mushaf list + Focus).
   const { playingVerse } = useQuranAudio();
   const { playing: adhanPlaying } = useAdhanAudio();
-  const playerVisible = playingVerse !== null || adhanPlaying;
+  const isSurahReader = /^\/quran\/[^/]+/.test(pathname);
+  const playerVisible = (playingVerse !== null || adhanPlaying) && !isSurahReader;
 
   useEffect(() => {
     applyNativeSetup();
