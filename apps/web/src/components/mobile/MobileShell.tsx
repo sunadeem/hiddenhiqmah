@@ -15,6 +15,8 @@ import { registerNotificationTapHandler } from "@/lib/mobile/notifications";
 import { useLegacyImport } from "@/lib/daily/useLegacyImport";
 import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
+import { useOnline } from "@/lib/mobile/useOnline";
+import { WifiOff } from "lucide-react";
 
 const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback"]);
 
@@ -30,6 +32,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   const { playing: adhanPlaying } = useAdhanAudio();
   const isSurahReader = /^\/quran\/[^/]+/.test(pathname);
   const playerVisible = (playingVerse !== null || adhanPlaying) && !isSurahReader;
+  const online = useOnline();
 
   useEffect(() => {
     applyNativeSetup();
@@ -79,6 +82,12 @@ export default function MobileShell({ children }: { children: React.ReactNode })
       onTouchEnd={onTouchEnd}
     >
       <MobileTopBar />
+      {!online && (
+        <div className="shrink-0 flex items-center justify-center gap-2 bg-[var(--color-gold)]/15 border-y border-[var(--color-gold)]/25 px-3 py-1.5 text-[12px] text-gold">
+          <WifiOff size={13} />
+          <span>Offline — reading works; audio &amp; prayer updates need a connection</span>
+        </div>
+      )}
       <main className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
         {/* Smooth fade-in on every route change (keyed on pathname).
             Opacity-only on purpose: any transform here becomes an ancestor

@@ -1,4 +1,12 @@
 import type { Metadata } from "next";
+// Self-hosted fonts (bundled into the app) so the reading experience — including
+// the Amiri Arabic font — renders fully offline, with no Google Fonts CDN call.
+import "@fontsource/amiri/arabic-400.css";
+import "@fontsource/amiri/arabic-700.css";
+import "@fontsource/amiri/latin-400.css";
+import "@fontsource/amiri/latin-700.css";
+import "@fontsource/cinzel/700.css";
+import "@fontsource/cormorant-garamond/400-italic.css";
 import "./globals.css";
 import { ThemeProvider } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { QuranAudioProvider } from "@hidden-hiqmah/ui/context/QuranAudioContext";
@@ -28,10 +36,6 @@ export default function RootLayout({
   return (
     <html lang="en" style={{ backgroundColor: "#000" }}>
       <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital@1&display=swap"
-          rel="stylesheet"
-        />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#c9a84c" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

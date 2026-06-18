@@ -1,0 +1,26 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+/**
+ * Live online/offline status. Starts optimistic (true) for SSR/first paint, then
+ * reflects navigator.onLine and the window online/offline events. In the WKWebView
+ * these events fire reliably when connectivity changes.
+ */
+export function useOnline(): boolean {
+  const [online, setOnline] = useState(true);
+
+  useEffect(() => {
+    setOnline(navigator.onLine);
+    const goOnline = () => setOnline(true);
+    const goOffline = () => setOnline(false);
+    window.addEventListener("online", goOnline);
+    window.addEventListener("offline", goOffline);
+    return () => {
+      window.removeEventListener("online", goOnline);
+      window.removeEventListener("offline", goOffline);
+    };
+  }, []);
+
+  return online;
+}

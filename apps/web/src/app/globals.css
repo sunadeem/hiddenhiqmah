@@ -6,25 +6,8 @@
    never appear in apps/web get purged — breaking those components' layout. */
 @source "../../../../packages/ui";
 
-@font-face {
-  font-family: "Amiri";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("https://fonts.gstatic.com/s/amiri/v27/J7aRnpd8CGxBHqUr.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-family: "Amiri";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("https://fonts.gstatic.com/s/amiri/v27/J7acnpd8CGxBHp2VkZY.woff2")
-    format("woff2");
-}
-
-/* Display font loaded via Google Fonts */
+/* Fonts (Amiri / Cinzel / Cormorant Garamond) are self-hosted via @fontsource,
+   imported in app/layout.tsx — bundled into the app so they work offline. */
 
 :root {
   --color-bg: #0a1628;

@@ -107,6 +107,22 @@ export default function MobileHomeDashboard() {
   );
 }
 
+const PRAYER_CACHE_KEY = "hiqmah-prayer-cache-v1";
+
+type PrayerCache = { timings: PrayerTimings; location: string; date: string };
+
+function readPrayerCache(): PrayerCache | null {
+  try {
+    const raw = localStorage.getItem(PRAYER_CACHE_KEY);
+    if (!raw) return null;
+    const c = JSON.parse(raw) as PrayerCache;
+    // Only reuse today's times (prayer times are date-specific).
+    return c.date === new Date().toDateString() && c.timings ? c : null;
+  } catch {
+    return null;
+  }
+}
+
 export function NextPrayerCard() {
   const [timings, setTimings] = useState<PrayerTimings | null>(null);
   const [location, setLocation] = useState("");
@@ -121,19 +137,36 @@ export function NextPrayerCard() {
       );
       if (!res.ok) return;
       const data = await res.json();
+      const loc = display || `${city}, ${country}`;
       setTimings(data.data.timings);
-      setLocation(display || `${city}, ${country}`);
+      setLocation(loc);
+      // Cache so the card still shows today's times when offline.
+      try {
+        localStorage.setItem(
+          PRAYER_CACHE_KEY,
+          JSON.stringify({ timings: data.data.timings, location: loc, date: new Date().toDateString() })
+        );
+      } catch {
+        // ignore
+      }
     } catch {
-      // ignore
+      // ignore (offline / network error) — any cached times stay on screen
     }
   }, []);
 
   useEffect(() => {
     if (fetched.current) return;
 
-    // Render with Makkah fallback IMMEDIATELY so the card has content the
-    // moment the home screen paints.
-    fetchTimes("Makkah", "Saudi Arabia");
+    // Seed from today's cached times so the card has content instantly and works
+    // offline. Only fall back to Makkah when there's no cache (so we don't flash
+    // Makkah over the user's real cached location).
+    const cached = readPrayerCache();
+    if (cached) {
+      setTimings(cached.timings);
+      setLocation(cached.location);
+    } else {
+      fetchTimes("Makkah", "Saudi Arabia");
+    }
 
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | null = null;
