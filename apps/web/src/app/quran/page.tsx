@@ -362,9 +362,11 @@ function ContinueHero({
   // Resume target: the playing verse if something is playing, else last position.
   const playing = audio.playingVerse != null && audio.surahId != null;
   const surah = playing ? audio.surahId : lastPos?.surah ?? null;
-  const verse = playing ? audio.playingVerse : lastPos?.verse;
+  const rawVerse = playing ? audio.playingVerse : lastPos?.verse;
   const ch = surah != null ? chapters.find((c) => c.id === surah) : null;
   if (!ch) return null;
+  // Guard against a stale verse that doesn't exist in the resolved surah.
+  const verse = rawVerse && rawVerse <= ch.verses ? rawVerse : undefined;
   return (
     <Link
       href={verse ? `/quran/${ch.id}?v=${verse}` : `/quran/${ch.id}`}

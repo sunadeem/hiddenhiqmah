@@ -367,8 +367,8 @@ export default function SettingsScreen() {
         />
         <SettingsRow
           icon={Volume2}
-          title="Adhan settings"
-          subtitle="Configure adhan reciter and timing"
+          title="Adhan & Iqamah"
+          subtitle="Read the call to prayer"
           href="/salah?tab=adhan"
           rightChevron
         />

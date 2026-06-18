@@ -390,11 +390,14 @@ export function ContinueReadingCard() {
     );
   }
 
-  const href = targetVerse
-    ? `/quran/${chapter.id}?v=${targetVerse}`
+  // Guard against a stale verse that doesn't exist in the resolved surah.
+  const verse =
+    targetVerse && targetVerse <= chapter.verses ? targetVerse : undefined;
+  const href = verse
+    ? `/quran/${chapter.id}?v=${verse}`
     : `/quran/${chapter.id}`;
-  const subtitle = targetVerse
-    ? `Verse ${targetVerse} · ${chapter.verses} total`
+  const subtitle = verse
+    ? `Verse ${verse} · ${chapter.verses} total`
     : `${chapter.verses} verses`;
 
   return (

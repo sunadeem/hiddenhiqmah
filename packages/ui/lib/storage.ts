@@ -261,6 +261,8 @@ export function markSurahRead(surahId: number) {
   if (!progress.surahsRead.includes(surahId)) {
     progress.surahsRead.push(surahId);
   }
+  // Switching surahs: drop the old verse so lastSurah/lastVerse never disagree.
+  if (progress.lastSurah !== surahId) progress.lastVerse = undefined;
   progress.lastSurah = surahId;
   set(KEYS.progress, progress);
 }

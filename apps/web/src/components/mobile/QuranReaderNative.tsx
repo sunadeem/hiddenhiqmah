@@ -97,6 +97,10 @@ export default function QuranReaderNative({
   const initialVerse = Number(searchParams.get("v")) || 0;
   const didInitVerse = useRef(false);
   const lastSavedVerse = useRef(0);
+  const flushTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Latest playing verse, read inside the IO callback without re-creating it.
+  const playingVerseRef = useRef<number | null>(null);
+  playingVerseRef.current = audio.playingVerse;
 
   useEffect(() => {
     setView(getQuranView());
@@ -118,26 +122,43 @@ export default function QuranReaderNative({
   }, [verses, initialVerse]);
 
   // Remember the reading position so "Continue reading" resumes here.
-  // Mushaf: track the verse near the top of the viewport as the user scrolls.
+  // Mushaf: track the verse nearest the top of the viewport as the user scrolls.
+  // The position ref updates immediately; the localStorage write is debounced.
   useEffect(() => {
     if (view !== "mushaf" || !verses) return;
     const els = Array.from(document.querySelectorAll<HTMLElement>("[data-vnum]"));
     if (!els.length) return;
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          const n = Number((e.target as HTMLElement).dataset.vnum);
-          if (n && n !== lastSavedVerse.current) {
-            lastSavedVerse.current = n;
-            setLastPosition(chapter.id, n);
-          }
-        }
+        // Playback owns the scroll and the Continue card prefers the playing
+        // verse, so don't persist scroll positions during playback.
+        if (playingVerseRef.current != null) return;
+        // Pick the topmost intersecting verse (entry order isn't guaranteed).
+        const top = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (!top) return;
+        const n = Number((top.target as HTMLElement).dataset.vnum);
+        if (!n || n === lastSavedVerse.current) return;
+        lastSavedVerse.current = n;
+        if (flushTimer.current) clearTimeout(flushTimer.current);
+        flushTimer.current = setTimeout(() => {
+          flushTimer.current = null;
+          setLastPosition(chapter.id, lastSavedVerse.current);
+        }, 350);
       },
       { rootMargin: "-90px 0px -85% 0px", threshold: 0 }
     );
     els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      // Flush any pending position so leaving mid-scroll still persists it.
+      if (flushTimer.current) {
+        clearTimeout(flushTimer.current);
+        flushTimer.current = null;
+        setLastPosition(chapter.id, lastSavedVerse.current);
+      }
+    };
   }, [view, verses, chapter.id]);
 
   // Focus: the on-screen verse is the position.
@@ -152,6 +173,12 @@ export default function QuranReaderNative({
 
   const updateView = (v: QuranView) => {
     hapticSelection();
+    // Entering Focus: align it with the last-read position (set by Mushaf scroll)
+    // so the switch shows where you were instead of jumping back to verse 1.
+    if (v === "focus" && verses && lastSavedVerse.current > 0) {
+      const i = verses.findIndex((x) => x.number === lastSavedVerse.current);
+      if (i >= 0) setFocusIdx(i);
+    }
     setView(v);
     setQuranView(v);
   };
