@@ -228,8 +228,14 @@ body {
 body.reader-immersive [data-mobile-tabbar] {
   display: none;
 }
+/* With the tab bar gone, float the mini player as a rounded pill (matching the
+   tab bar) instead of a flush edge-to-edge bar that reads as "cut off". */
 body.reader-immersive [data-mini-player] {
-  padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+  margin: 0 0.75rem max(env(safe-area-inset-bottom), 0.625rem);
+  border-width: 1px;
+  border-radius: 9999px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
 }
 
 /* Fast tooltip */
