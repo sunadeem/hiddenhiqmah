@@ -12,9 +12,11 @@ import {
   Bookmark,
   ScrollText,
   Compass,
-  Repeat,
+  Volume2,
+  Square,
   ArrowRight,
 } from "lucide-react";
+import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { Geolocation } from "@capacitor/geolocation";
 import {
   getFreshCachedLocation,
@@ -410,7 +412,6 @@ export function ContinueReadingCard() {
 const QUICK_LINKS = [
   { href: "/salah?tab=qiblah", icon: Compass, label: "Qiblah" },
   { href: "/hadith", icon: ScrollText, label: "Hadith" },
-  { href: "/dhikr", icon: Repeat, label: "Dhikr" },
   { href: "/bookmarks", icon: Bookmark, label: "Bookmarks" },
 ];
 
@@ -421,6 +422,7 @@ export function QuickActions({
 } = {}) {
   return (
     <div className="grid grid-cols-4 gap-2">
+      <AdhanQuickTile />
       {QUICK_LINKS.map((link) => {
         const Icon = link.icon;
         const isQiblah = link.label === "Qiblah";
@@ -449,5 +451,31 @@ export function QuickActions({
         );
       })}
     </div>
+  );
+}
+
+// Quick access to play the adhan straight from Home. Tapping plays it (and the
+// floating player appears for full controls); tapping again stops it.
+function AdhanQuickTile() {
+  const adhan = useAdhanAudio();
+  const playing = adhan.playing;
+  return (
+    <button
+      type="button"
+      onClick={() => (playing ? adhan.stop() : adhan.startManual())}
+      aria-label={playing ? "Stop adhan" : "Play adhan"}
+      className={`rounded-2xl border py-3 flex flex-col items-center gap-1 touch-manipulation transition-colors ${
+        playing
+          ? "bg-[var(--color-gold)]/15 border-[var(--color-gold)]/40"
+          : "card-bg sidebar-border"
+      }`}
+    >
+      {playing ? (
+        <Square size={18} className="text-gold fill-current" />
+      ) : (
+        <Volume2 size={20} className="text-gold" />
+      )}
+      <span className="text-[11px] font-medium text-themed">{playing ? "Stop" : "Adhan"}</span>
+    </button>
   );
 }

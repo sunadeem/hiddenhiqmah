@@ -6,6 +6,7 @@ import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import { Capacitor } from "@capacitor/core";
 import { Motion } from "@capacitor/motion";
+import { useIsNative } from "@/lib/mobile/platform";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
@@ -1858,20 +1859,25 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
 
 function AdhanSection() {
   const { settings, updateSettings, playing, startManual, stop } = useAdhanAudio();
+  const isNative = useIsNative();
 
   return (
     <div className="space-y-6">
       {/* Intro */}
       <ContentCard delay={0.05}>
         <p className="text-themed-muted text-sm leading-relaxed">
-          The <span className="text-gold">adhan</span> is the call to prayer that announces the time has come. The <span className="text-gold">iqamah</span> is a second, shorter call made by someone in the congregation just before the prayer begins, signaling everyone to stand and align in rows. Below you can read both, and optionally turn on automatic adhan playback at prayer times.
+          The <span className="text-gold">adhan</span> is the call to prayer that announces the time has come. The <span className="text-gold">iqamah</span> is a second, shorter call made by someone in the congregation just before the prayer begins, signaling everyone to stand and align in rows. Below you can read both{isNative ? "." : ", and optionally turn on automatic adhan playback at prayer times."}
         </p>
-        <p className="text-themed-muted text-xs leading-relaxed mt-2">
-          <span className="text-gold/80 font-medium">Note:</span> Automatic adhan playback only works while this site is open in a browser tab. Phones and laptops cannot run background audio when the site is closed.
-        </p>
+        {!isNative && (
+          <p className="text-themed-muted text-xs leading-relaxed mt-2">
+            <span className="text-gold/80 font-medium">Note:</span> Automatic adhan playback only works while this site is open in a browser tab. Phones and laptops cannot run background audio when the site is closed.
+          </p>
+        )}
       </ContentCard>
 
-      {/* Adhan settings panel */}
+      {/* Adhan settings panel — on the native app this lives in Settings instead,
+          and quick playback is on the Home screen. */}
+      {!isNative && (
       <ContentCard delay={0.08}>
         <h3 className="text-gold font-semibold text-lg mb-4 flex items-center gap-2">
           <Volume2 size={18} />
@@ -1912,6 +1918,7 @@ function AdhanSection() {
           Adhan recitation by Omar Hisham Al Arabi.
         </p>
       </ContentCard>
+      )}
 
       {/* Adhan text */}
       <ContentCard delay={0.11}>

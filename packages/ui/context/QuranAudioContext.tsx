@@ -4,6 +4,7 @@ import { createContext, useContext, useRef, useState, useCallback, useEffect, Re
 import { useRouter, usePathname } from "next/navigation";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { getAutoPlayNextSurah, setAutoPlayNextSurah } from "../lib/storage";
+import { registerAudioChannel, claimAudioFocus } from "../lib/audioCoordinator";
 
 export interface Verse {
   id: number;
@@ -135,6 +136,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
   // Core function to start playing an audio file for a verse
   // Reuses a single Audio element so the browser's autoplay activation carries over
   const startAudio = useCallback((verse: Verse) => {
+    claimAudioFocus("quran"); // stop the adhan (or any other channel) first
     const token = ++playTokenRef.current;
     let audio = audioRef.current;
     // Check if we have this verse preloaded — swap elements for instant playback
@@ -398,6 +400,9 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     setPlayingVerse(null);
     autoPlayRef.current = false;
   }, []);
+
+  // Register with the audio coordinator so starting the adhan stops recitation.
+  useEffect(() => registerAudioChannel("quran", stopPlayback), [stopPlayback]);
 
   const toggleAutoNextSurah = useCallback(() => {
     const next = !autoNextSurahRef.current;

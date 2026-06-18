@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState, useCallback, ReactNode } from "react";
+import { registerAudioChannel, claimAudioFocus } from "../lib/audioCoordinator";
 
 /* ═══════════════════════════════════════════════════════════════════
    TYPES
@@ -144,6 +145,7 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
 
   // Core play implementation
   const startPlayback = useCallback((src: "manual" | "scheduled") => {
+    claimAudioFocus("adhan"); // stop Quran recitation (or any other channel) first
     // Stop any current playback
     if (audioRef.current) {
       audioRef.current.pause();
@@ -224,6 +226,9 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
     audio.currentTime = Math.max(0, Math.min(audio.duration, audio.duration * fraction));
     setProgress(audio.currentTime);
   }, []);
+
+  // Register with the audio coordinator so starting recitation stops the adhan.
+  useEffect(() => registerAudioChannel("adhan", stop), [stop]);
 
   // Scheduling effect
   useEffect(() => {
