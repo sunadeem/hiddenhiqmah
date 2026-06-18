@@ -21,7 +21,10 @@ function parentPath(pathname: string): string {
 export default function MobileTopBar() {
   const pathname = usePathname();
   const router = useRouter();
-  const showBack = !isTabRoot(pathname);
+  // The Quran surah reader renders its own top bar (back + title + settings),
+  // so the global bar drops to a slim status-bar spacer to avoid a double back.
+  const isSurahReader = /^\/quran\/[^/]+/.test(pathname);
+  const showBack = !isTabRoot(pathname) && !isSurahReader;
 
   useEffect(() => {
     navCount += 1;

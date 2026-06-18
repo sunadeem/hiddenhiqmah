@@ -13,6 +13,8 @@ import { hapticLight } from "@/lib/mobile/haptics";
 import { applyNativeSetup } from "@/lib/mobile/setup";
 import { registerNotificationTapHandler } from "@/lib/mobile/notifications";
 import { useLegacyImport } from "@/lib/daily/useLegacyImport";
+import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
+import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 
 const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback"]);
 
@@ -21,6 +23,11 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [askOpen, setAskOpen] = useState(false);
   const edgeSwipe = useRef<{ x: number; y: number } | null>(null);
+  // When the floating player is up, the bottom content must clear it too (not just
+  // the tab bar) — otherwise the last items scroll behind the player.
+  const { playingVerse } = useQuranAudio();
+  const { playing: adhanPlaying } = useAdhanAudio();
+  const playerVisible = playingVerse !== null || adhanPlaying;
 
   useEffect(() => {
     applyNativeSetup();
@@ -85,7 +92,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
           style={{
             paddingBottom: hideBottomChrome
               ? 16
-              : "calc(env(safe-area-inset-bottom) + 96px)",
+              : `calc(env(safe-area-inset-bottom) + ${playerVisible ? 168 : 96}px)`,
           }}
         >
           {children}
