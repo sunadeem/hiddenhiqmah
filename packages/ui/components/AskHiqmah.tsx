@@ -157,6 +157,7 @@ export type QuotaInfo = {
 
 export type StreamChatErrorReason =
   | { type: "quota_exceeded"; quota: QuotaInfo }
+  | { type: "offline" }
   | { type: "generic"; detail?: string };
 
 function formatQuotaReset(resetAt: string | null): string {
@@ -199,6 +200,13 @@ export async function streamChat(
     headers["Authorization"] = `Bearer ${authToken}`;
   } else if (typeof window !== "undefined") {
     headers["x-anon-id"] = getOrCreateAnonId();
+  }
+
+  // Ask Hiqmah is an online, server-backed feature — fail clearly when offline
+  // instead of throwing a generic "something went wrong".
+  if (typeof navigator !== "undefined" && navigator.onLine === false) {
+    onError({ type: "offline" });
+    return;
   }
 
   const url = `${getApiBaseUrl()}/api/search`;
@@ -500,7 +508,9 @@ export default function AskHiqmahFloat() {
         },
         (reason) => {
           let content = "I apologize, I was unable to process your question. Please try again.";
-          if (reason?.type === "quota_exceeded") {
+          if (reason?.type === "offline") {
+            content = "You're offline. Ask Hiqmah needs an internet connection to answer — reading the Quran, hadith, and the rest of the app still works offline.";
+          } else if (reason?.type === "quota_exceeded") {
             const q = reason.quota;
             const resetTxt = formatQuotaReset(q.resetAt);
             const signedIn = !!getStoredAuthToken();
