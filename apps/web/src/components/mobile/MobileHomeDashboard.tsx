@@ -27,8 +27,9 @@ import {
 } from "@hidden-hiqmah/ui/lib/location-cache";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
-import { getProgress } from "@hidden-hiqmah/ui/lib/storage";
+import { getProgress, getPrayerSettings } from "@hidden-hiqmah/ui/lib/storage";
 import { reverseGeocode, formatLocation } from "@hidden-hiqmah/ui/lib/location";
+import { computePrayerTimes } from "@/lib/prayer-times";
 
 type PrayerTimings = {
   Fajr: string;
@@ -130,27 +131,29 @@ export function NextPrayerCard() {
   const [countdown, setCountdown] = useState("");
   const fetched = useRef(false);
 
-  const fetchTimes = useCallback(async (city: string, country: string, display?: string) => {
+  // Compute prayer times ON-DEVICE from coordinates — the device's location
+  // never leaves the phone, and this works fully offline. Uses the user's saved
+  // calculation method + Asr madhab.
+  const computeTimes = useCallback((lat: number, lng: number, display: string) => {
     try {
-      const res = await fetch(
-        `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=2`
-      );
-      if (!res.ok) return;
-      const data = await res.json();
-      const loc = display || `${city}, ${country}`;
-      setTimings(data.data.timings);
-      setLocation(loc);
-      // Cache so the card still shows today's times when offline.
+      const ps = getPrayerSettings();
+      const timings = computePrayerTimes(lat, lng, {
+        method: ps.calcMethod,
+        asrHanafi: ps.asrMethod === "hanafi",
+      });
+      setTimings(timings);
+      setLocation(display);
+      // Cache so the card still shows today's times instantly on next open.
       try {
         localStorage.setItem(
           PRAYER_CACHE_KEY,
-          JSON.stringify({ timings: data.data.timings, location: loc, date: new Date().toDateString() })
+          JSON.stringify({ timings, location: display, date: new Date().toDateString() })
         );
       } catch {
         // ignore
       }
     } catch {
-      // ignore (offline / network error) — any cached times stay on screen
+      // ignore — any cached times stay on screen
     }
   }, []);
 
@@ -165,7 +168,7 @@ export function NextPrayerCard() {
       setTimings(cached.timings);
       setLocation(cached.location);
     } else {
-      fetchTimes("Makkah", "Saudi Arabia");
+      computeTimes(21.4225, 39.8262, "Makkah, Saudi Arabia"); // Makkah fallback
     }
 
     let cancelled = false;
@@ -178,7 +181,7 @@ export function NextPrayerCard() {
       // Re-use a cached location if it's recent — no prompt, no network spin
       const fresh = getFreshCachedLocation();
       if (fresh) {
-        fetchTimes(fresh.city, fresh.country, fresh.display);
+        computeTimes(fresh.lat, fresh.lng, fresh.display);
         return;
       }
 
@@ -207,7 +210,7 @@ export function NextPrayerCard() {
           const city = geo.city || "Makkah";
           const country = geo.countryName || "Saudi Arabia";
           const display = formatLocation(geo) || `${city}, ${country}`;
-          fetchTimes(city, country, display);
+          computeTimes(pos.coords.latitude, pos.coords.longitude, display);
           setCachedLocation({
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
@@ -252,7 +255,7 @@ export function NextPrayerCard() {
       cancelled = true;
       if (timer) clearTimeout(timer);
     };
-  }, [fetchTimes]);
+  }, [computeTimes]);
 
   useEffect(() => {
     if (!timings) return;

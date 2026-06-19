@@ -21,6 +21,7 @@ import {
   getPrayerSettings,
 } from "@hidden-hiqmah/ui/lib/storage";
 import { getCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
+import { computePrayerTimes } from "@/lib/prayer-times";
 import { dailyInspirations } from "@/data/home-content";
 import { dailyIndex, type Reminder } from "@hidden-hiqmah/ui/lib/reminders";
 import remindersData from "@hidden-hiqmah/content/reminders.json";
@@ -85,38 +86,27 @@ function inspirationForDate(d: Date, type?: "Quran" | "Hadith") {
   return pool[dayOfYear % pool.length];
 }
 
-/** Fetch prayer-time calendar(s) covering the next DAYS_AHEAD days. */
-async function fetchPrayerTimes(
+/**
+ * Compute prayer times ON-DEVICE for the next DAYS_AHEAD days (batoulapps/Adhan).
+ * No network: the device's coordinates never leave the phone, and scheduling
+ * works fully offline. `school` follows aladhan's convention (1 = Hanafi Asr).
+ */
+function buildPrayerCalendar(
   lat: number,
   lng: number,
   method: number,
   school: number
-): Promise<Map<string, Timings>> {
+): Map<string, Timings> {
   const map = new Map<string, Timings>();
   const now = new Date();
-  const months = new Set<string>();
   for (let i = 0; i <= DAYS_AHEAD; i++) {
     const d = new Date(now);
     d.setDate(d.getDate() + i);
-    months.add(`${d.getFullYear()}-${d.getMonth() + 1}`);
-  }
-  for (const ym of months) {
-    const [year, month] = ym.split("-");
-    try {
-      const res = await fetch(
-        `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${lat}&longitude=${lng}&method=${method}&school=${school}`
-      );
-      if (!res.ok) continue;
-      const json = await res.json();
-      for (const day of json.data || []) {
-        const greg: string | undefined = day?.date?.gregorian?.date; // DD-MM-YYYY
-        if (!greg) continue;
-        const [dd, mm, yyyy] = greg.split("-");
-        map.set(`${yyyy}-${mm}-${dd}`, day.timings);
-      }
-    } catch {
-      // skip this month
-    }
+    d.setHours(0, 0, 0, 0);
+    map.set(
+      dayKey(d),
+      computePrayerTimes(lat, lng, { method, asrHanafi: school === 1, date: d })
+    );
   }
   return map;
 }
@@ -227,12 +217,7 @@ export async function scheduleAllNotifications(
   // ── Prayer-based (adhan + pre-prayer) — needs a location ──
   if ((anyAdhan || prefs.prePrayer) && loc) {
     const school = settings.asrMethod === "hanafi" ? 1 : 0;
-    const times = await fetchPrayerTimes(
-      loc.lat,
-      loc.lng,
-      settings.calcMethod,
-      school
-    );
+    const times = buildPrayerCalendar(loc.lat, loc.lng, settings.calcMethod, school);
     for (let i = 0; i <= DAYS_AHEAD; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);

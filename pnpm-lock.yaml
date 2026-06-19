@@ -80,6 +80,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.108.1
         version: 2.108.1
+      adhan:
+        specifier: ^4.4.4
+        version: 4.4.4
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1188,6 +1191,9 @@ packages:
 
   add-stream@1.0.0:
     resolution: {integrity: sha512-qQLMr+8o0WC4FZGQTcJiKBVC59JylcPSrTtk6usvmIDFUOCKegapy1VHQwRbFMOFyb/inzUVqHs+eMYKDM1YeQ==}
+
+  adhan@4.4.4:
+    resolution: {integrity: sha512-6KmAwLtk2ZU0hLdMR3HofOuoEMa76mKv75Bknv8OEwquIGGNUFabWZna+dJI3gEuS7TqUw62Ro5PkwccgW19zw==}
 
   ajv@6.15.0:
     resolution: {integrity: sha512-fgFx7Hfoq60ytK2c7DhnF8jIvzYgOMxfugjLOSMHjLIPgenqa7S7oaagATUq99mV6IYvN2tRmC0wnTYX6iPbMw==}
@@ -4729,6 +4735,8 @@ snapshots:
   acorn@8.16.0: {}
 
   add-stream@1.0.0: {}
+
+  adhan@4.4.4: {}
 
   ajv@6.15.0:
     dependencies:
