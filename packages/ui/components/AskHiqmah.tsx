@@ -637,14 +637,16 @@ export default function AskHiqmahFloat() {
               {/* Messages */}
               <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3 min-h-0">
                 {messages.length === 0 && (
-                  <div className="text-center py-8">
-                    <MessageCircleQuestion size={24} className="text-[#3b82f6]/30 mx-auto mb-3" />
-                    <p className="text-themed-muted text-sm">
-                      Ask any question about Islam
-                    </p>
-                    <p className="text-themed-muted/50 text-xs mt-1">
-                      Powered by authentic sources
-                    </p>
+                  <div className="py-6">
+                    <div className="bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20 rounded-xl px-4 py-3 text-sm leading-relaxed max-w-[90%]">
+                      <p className="font-medium">Assalāmu ʿalaykum 👋</p>
+                      <p className="mt-1 text-themed">
+                        I&apos;m Hiqmah. Ask me anything about Islam — the Qur&apos;an, hadith, the Prophets, prayer, and more. I&apos;ll explain it in context and point you to authentic sources.
+                      </p>
+                      <p className="mt-2 text-themed-muted text-xs">
+                        I&apos;m a study aid, not a mufti — for personal rulings, please consult a qualified scholar.
+                      </p>
+                    </div>
                   </div>
                 )}
                 {messages.map((msg, i) => (
