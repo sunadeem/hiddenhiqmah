@@ -190,6 +190,7 @@ export async function streamChat(
   onStatus: (text: string) => void,
   onAnswer: (data: { content: string; links: { label: string; href: string }[]; citations: Citation[] }) => void,
   onError: (reason?: StreamChatErrorReason) => void,
+  onDelta?: (text: string) => void,
 ) {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -254,6 +255,7 @@ export async function streamChat(
     try {
       const data = JSON.parse(dataMatch[1]);
       if (event === "status") onStatus(data.text);
+      else if (event === "delta") onDelta?.(data.text);
       else if (event === "answer") onAnswer(data);
       else if (event === "error") onError({ type: "generic" });
     } catch {
@@ -493,6 +495,7 @@ export default function AskHiqmahFloat() {
     setLoading(true);
     setStatusText("Thinking...");
 
+    let streamed = "";
     try {
       await streamChat(
         newMessages.map((m) => ({ role: m.role, content: m.content })),
@@ -521,6 +524,13 @@ export default function AskHiqmahFloat() {
           }
           setMessages([...newMessages, { role: "assistant", content }]);
           setLoading(false);
+        },
+        // onDelta — live token streaming (web). The final `answer` event then
+        // replaces this with the cleaned content + citations/links.
+        (deltaText) => {
+          streamed += deltaText;
+          setLoading(false);
+          setMessages([...newMessages, { role: "assistant", content: streamed }]);
         },
       );
     } catch {

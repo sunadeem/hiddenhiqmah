@@ -617,14 +617,50 @@ export async function POST(req: NextRequest) {
         const allCitations: Citation[] = [];
         const allSearchResults: string[] = [];
 
-        // Step 1: First API call WITH tools — let Claude decide what to search
-        let response = await client.messages.create({
-          model: CHAT_MODEL,
-          max_tokens: 1024,
-          system: SYSTEM_BLOCKS,
-          tools: TOOLS,
-          messages: apiMessages,
-        });
+        // ── Live token streaming ────────────────────────────────────────────
+        // Stream the answer to the client token-by-token. We accumulate the raw
+        // model text across calls, and emit only the marker-free incremental
+        // text as `delta` events — holding back any in-progress [[cite:N]] /
+        // [[link:..]] marker so the user never sees them. (Web reads deltas
+        // live; the native WKWebView buffers the whole response and uses the
+        // final `answer` event, so this is purely additive there.)
+        let raw = "";
+        let emittedLen = 0;
+        const cleanForStream = (s: string): string => {
+          let c = s.replace(/\[\[(?:cite:\d+|link:[^\]]*)\]\]/g, "");
+          const open = c.lastIndexOf("[[");
+          if (open !== -1 && c.indexOf("]]", open) === -1) c = c.slice(0, open);
+          return c;
+        };
+        const flushDeltas = () => {
+          const clean = cleanForStream(raw);
+          if (clean.length > emittedLen) {
+            send("delta", { text: clean.slice(emittedLen) });
+            emittedLen = clean.length;
+          }
+        };
+        const streamCall = async (
+          msgs: Anthropic.Messages.MessageParam[],
+          withTools: boolean
+        ): Promise<Anthropic.Messages.Message> => {
+          const s = client.messages.stream({
+            model: CHAT_MODEL,
+            max_tokens: 1024,
+            system: SYSTEM_BLOCKS,
+            ...(withTools ? { tools: TOOLS } : {}),
+            messages: msgs,
+          });
+          for await (const ev of s) {
+            if (ev.type === "content_block_delta" && ev.delta.type === "text_delta") {
+              raw += ev.delta.text;
+              flushDeltas();
+            }
+          }
+          return s.finalMessage();
+        };
+
+        // Step 1: First call WITH tools — let Claude decide what to search.
+        let response = await streamCall(apiMessages, true);
 
         // Step 2: Execute up to 2 rounds of tool use, accumulating full message chain
         const messageChain: Anthropic.Messages.MessageParam[] = [...apiMessages];
@@ -655,22 +691,12 @@ export async function POST(req: NextRequest) {
           messageChain.push({ role: "assistant" as const, content: response.content });
           messageChain.push({ role: "user" as const, content: toolResults });
 
-          response = await client.messages.create({
-            model: CHAT_MODEL,
-            max_tokens: 1024,
-            system: SYSTEM_BLOCKS,
-            tools: TOOLS,
-            messages: messageChain,
-          });
+          response = await streamCall(messageChain, true);
         }
 
-        // Step 3: If Claude still wants tools after 2 rounds, or if the response
-        // has no text block, force a final text-only call with condensed context
-        let textBlock = response.content.find(
-          (b): b is Anthropic.Messages.TextBlock => b.type === "text"
-        );
-
-        if (!textBlock?.text) {
+        // Step 3: If no answer text was produced (e.g. still wanting tools after
+        // 2 rounds), force a final text-only call with condensed context.
+        if (!raw.trim()) {
           // Execute any remaining tool calls
           if (response.stop_reason === "tool_use") {
             const toolBlocks = response.content.filter(
@@ -689,22 +715,16 @@ export async function POST(req: NextRequest) {
             ? `Here are search results from the app's database. Evaluate each for relevance:\n\n${allSearchResults.join("\n\n---\n\n")}`
             : "No relevant sources were found in the app's database. Do NOT fabricate a verse, hadith, or reference — tell the user you couldn't verify a specific text on this, then give general guidance framed as such.";
 
-          response = await client.messages.create({
-            model: CHAT_MODEL,
-            max_tokens: 1024,
-            system: SYSTEM_BLOCKS,
-            messages: [
+          response = await streamCall(
+            [
               ...apiMessages,
               { role: "user" as const, content: `[SEARCH RESULTS]\n${searchSummary}\n\n[REMINDER] Now answer the user's question above. Be helpful and conversational, but stay grounded: only quote or cite a verse/hadith that appears in the results above (with [[cite:N]]); never invent a reference. Give full-context, non-cherry-picked explanations, and flag any scholarly differences. Include [[link:Label|/path]] at the end.` },
             ],
-          });
-
-          textBlock = response.content.find(
-            (b): b is Anthropic.Messages.TextBlock => b.type === "text"
+            false
           );
         }
 
-        let text = textBlock?.text || "";
+        let text = raw;
 
         // Debug logging (remove in production)
         // try { fs.writeFileSync(path.join(process.cwd(), "ask-debug.log"), JSON.stringify({ stopReason: response.stop_reason, textLen: text.length, rounds }, null, 2)); } catch {}
@@ -759,7 +779,7 @@ export async function POST(req: NextRequest) {
 
         // SAFETY: if text ended up empty somehow, provide all citations as fallback
         if (!text || text.length < 5) {
-          console.error("[Ask Hiqmah] Empty response! Raw was:", JSON.stringify(textBlock?.text || "").slice(0, 500));
+          console.error("[Ask Hiqmah] Empty response! Raw was:", JSON.stringify(raw).slice(0, 500));
           text = text || "I apologize, I encountered an issue generating a response. Please try asking your question again.";
         }
 
