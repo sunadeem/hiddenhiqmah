@@ -443,6 +443,12 @@ export default function SettingsScreen() {
           rightChevron
           href="/privacy"
         />
+        <SettingsRow
+          icon={ScrollText}
+          title="Credits & Sources"
+          rightChevron
+          href="/credits"
+        />
       </SettingsSection>
 
       {/* ABOUT */}

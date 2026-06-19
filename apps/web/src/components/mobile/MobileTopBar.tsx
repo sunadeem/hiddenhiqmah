@@ -12,7 +12,7 @@ let navCount = 0;
 
 /** Fallback parent when there's no in-app history (cold launch / deep link). */
 function parentPath(pathname: string): string {
-  if (pathname === "/privacy") return "/settings";
+  if (pathname === "/privacy" || pathname === "/credits") return "/settings";
   const parts = pathname.split("/").filter(Boolean);
   if (parts.length > 1) return "/" + parts.slice(0, -1).join("/");
   return "/";
