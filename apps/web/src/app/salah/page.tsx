@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Capacitor } from "@capacitor/core";
 import { Motion } from "@capacitor/motion";
 import { useIsNative } from "@/lib/mobile/platform";
+import { computePrayerTimes } from "@/lib/prayer-times";
+import { getPrayerSettings } from "@hidden-hiqmah/ui/lib/storage";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
@@ -562,6 +564,30 @@ interface HijriDate {
   month: { en: string; ar: string };
   year: string;
   designation: { abbreviated: string };
+}
+
+// Local Hijri date (Umm al-Qura) for the on-device path — no network.
+function localHijriDate(date: Date): HijriDate {
+  const get = (parts: Intl.DateTimeFormatPart[], type: string) =>
+    parts.find((p) => p.type === type)?.value ?? "";
+  try {
+    const en = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).formatToParts(date);
+    const ar = new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
+      month: "long",
+    }).formatToParts(date);
+    return {
+      day: get(en, "day"),
+      month: { en: get(en, "month"), ar: get(ar, "month") },
+      year: get(en, "year"),
+      designation: { abbreviated: "AH" },
+    };
+  } catch {
+    return { day: "", month: { en: "", ar: "" }, year: "", designation: { abbreviated: "AH" } };
+  }
 }
 
 interface AladhanResponse {
@@ -2118,9 +2144,29 @@ function SalahContent() {
   );
 
   const ptFetchTimesByCoords = useCallback(
-    async (lat: number, lng: number, m: number) => {
+    // `onDevice` = these are the user's OWN device coordinates → compute locally
+    // (device tz === location tz) so the GPS location never leaves the phone and
+    // it works offline. Remote city-suggestion coords keep using aladhan (it
+    // returns that city's timezone, which on-device computation can't know).
+    async (lat: number, lng: number, m: number, onDevice = false) => {
       setPtLoading(true);
       setPtError("");
+      if (onDevice) {
+        try {
+          const timings = computePrayerTimes(lat, lng, {
+            method: m,
+            asrHanafi: getPrayerSettings().asrMethod === "hanafi",
+          });
+          setPtTimings(timings);
+          setPtHijri(localHijriDate(new Date()));
+          setPtTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+        } catch {
+          setPtError("Could not compute prayer times.");
+        } finally {
+          setPtLoading(false);
+        }
+        return;
+      }
       try {
         const res = await fetch(
           `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=${m}`
@@ -2146,7 +2192,7 @@ function SalahContent() {
       setPtCity(fresh.city);
       setPtCountry(fresh.country);
       setPtDisplayLocation(fresh.display);
-      ptFetchTimesByCoords(fresh.lat, fresh.lng, ptMethod);
+      ptFetchTimesByCoords(fresh.lat, fresh.lng, ptMethod, true); // device location → on-device
       return;
     }
 
@@ -2165,8 +2211,8 @@ function SalahContent() {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
-        // Fetch prayer times directly by coordinates (most reliable)
-        ptFetchTimesByCoords(latitude, longitude, ptMethod);
+        // Device GPS → compute on-device (location never leaves the phone).
+        ptFetchTimesByCoords(latitude, longitude, ptMethod, true);
         setLocationState("granted");
         // Resolve display name in parallel
         const geo = await reverseGeocode(latitude, longitude);
