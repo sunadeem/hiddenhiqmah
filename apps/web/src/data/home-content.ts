@@ -128,6 +128,7 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
       { href: "/duas", icon: HandHeart, title: "Duas", titleAr: "الدعاء", description: "Supplications for every situation" },
       { href: "/dhikr", icon: Repeat, title: "Dhikr", titleAr: "الذكر", description: "Tasbeeh and daily remembrance" },
       { href: "/family", icon: Users, title: "Family", titleAr: "الأسرة", description: "Parents, elders, family ties" },
+      { href: "/household", icon: Users, title: "Family Profiles", titleAr: "ملفات العائلة", description: "Kids' profiles + everyone's daily progress" },
       { href: "/marriage", icon: HeartHandshake, title: "Marriage", titleAr: "الزواج", description: "Nikah, rights, divorce" },
     ],
   },

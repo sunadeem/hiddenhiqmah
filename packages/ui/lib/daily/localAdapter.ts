@@ -50,11 +50,11 @@ function uid(): string {
   }
 }
 
-export function createLocalDailyAdapter(): DailyAdapter {
+export function createLocalDailyAdapter(storeKey: string = STORE_KEY): DailyAdapter {
   function load(): LocalStore {
     if (typeof window === "undefined") return emptyStore();
     try {
-      const raw = window.localStorage.getItem(STORE_KEY);
+      const raw = window.localStorage.getItem(storeKey);
       if (!raw) return emptyStore();
       return { ...emptyStore(), ...(JSON.parse(raw) as LocalStore) };
     } catch {
@@ -65,7 +65,7 @@ export function createLocalDailyAdapter(): DailyAdapter {
   function save(s: LocalStore) {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(STORE_KEY, JSON.stringify(s));
+      window.localStorage.setItem(storeKey, JSON.stringify(s));
     } catch {
       // quota / private mode — ignore
     }

@@ -5,6 +5,7 @@ import { getHomePrefs, recordVisit, type HomeStyle, type TunedFor } from "@hidde
 import TodayStrip from "./TodayStrip";
 import DailyPathHome from "./DailyPathHome";
 import FocusHome from "./FocusHome";
+import ActiveProfileBanner from "./ActiveProfileBanner";
 import ClassicHome from "../screens/HomeScreen";
 
 /**
@@ -32,10 +33,17 @@ export default function MobileHome() {
   // First client tick before prefs resolve — hold a stable container.
   if (style === null) return <div className="space-y-3 pb-4" />;
 
-  if (style === "classic") return <ClassicHome />;
+  if (style === "classic")
+    return (
+      <div className="space-y-3">
+        <ActiveProfileBanner />
+        <ClassicHome />
+      </div>
+    );
 
   return (
     <div className="space-y-3 pb-4">
+      <ActiveProfileBanner />
       <TodayStrip />
       {style === "focus" ? (
         <FocusHome tunedFor={tunedFor} />
