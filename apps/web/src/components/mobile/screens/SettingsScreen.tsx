@@ -341,6 +341,7 @@ export default function SettingsScreen() {
         </p>
         <HomeStylePicker
           value={home.homeStyle}
+          tunedFor={home.tunedFor}
           onChange={(v) => updateHome({ homeStyle: v })}
         />
       </div>

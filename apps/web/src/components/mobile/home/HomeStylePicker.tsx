@@ -1,12 +1,15 @@
 "use client";
 
-import { Check } from "lucide-react";
-import type { HomeStyle } from "@hidden-hiqmah/ui/lib/storage";
+import { useState } from "react";
+import { Check, Maximize2 } from "lucide-react";
+import HomePreviewModal from "./HomePreviewModal";
+import type { HomeStyle, TunedFor } from "@hidden-hiqmah/ui/lib/storage";
 
 /**
  * Visual picker for the Home style — schematic thumbnails of each layout so the
- * user sees what they're choosing (not just a dropdown). Thumbnails are
- * lightweight wireframes, not live renders.
+ * user sees what they're choosing (not just a dropdown). Tapping a thumbnail
+ * opens a full-size live preview (HomePreviewModal) where the choice is
+ * committed. Thumbnails are lightweight wireframes, not live renders.
  */
 
 const OPTIONS: { value: HomeStyle; label: string; desc: string }[] = [
@@ -83,11 +86,21 @@ const THUMBS: Record<HomeStyle, () => React.ReactElement> = {
 
 export default function HomeStylePicker({
   value,
+  tunedFor,
   onChange,
 }: {
   value: HomeStyle;
+  tunedFor: TunedFor;
   onChange: (v: HomeStyle) => void;
 }) {
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewStyle, setPreviewStyle] = useState<HomeStyle>(value);
+
+  const openPreview = (s: HomeStyle) => {
+    setPreviewStyle(s);
+    setPreviewOpen(true);
+  };
+
   const selected = OPTIONS.find((o) => o.value === value) ?? OPTIONS[0];
 
   return (
@@ -99,7 +112,7 @@ export default function HomeStylePicker({
           return (
             <button
               key={o.value}
-              onClick={() => onChange(o.value)}
+              onClick={() => openPreview(o.value)}
               className={`relative rounded-xl border p-1.5 text-left touch-manipulation active:scale-[0.98] transition-transform ${
                 isSel
                   ? "border-[var(--color-gold)] bg-[var(--color-gold)]/8"
@@ -108,6 +121,10 @@ export default function HomeStylePicker({
             >
               <div className="relative">
                 <Thumb />
+                {/* tap-to-expand affordance */}
+                <div className="absolute bottom-1 right-1 w-4 h-4 rounded-md bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                  <Maximize2 size={9} className="text-white/80" />
+                </div>
                 {isSel && (
                   <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gold flex items-center justify-center shadow">
                     <Check size={11} strokeWidth={3} className="text-[#0a1628]" />
@@ -125,7 +142,21 @@ export default function HomeStylePicker({
           );
         })}
       </div>
-      <p className="text-xs text-themed-muted mt-2.5 px-1 leading-relaxed">{selected.desc}</p>
+      <p className="text-xs text-themed-muted mt-2.5 px-1 leading-relaxed">
+        {selected.desc} <span className="text-themed-muted/70">Tap a layout to preview it full-screen.</span>
+      </p>
+
+      <HomePreviewModal
+        open={previewOpen}
+        initialStyle={previewStyle}
+        currentStyle={value}
+        tunedFor={tunedFor}
+        onClose={() => setPreviewOpen(false)}
+        onSelect={(s) => {
+          onChange(s);
+          setPreviewOpen(false);
+        }}
+      />
     </div>
   );
 }
