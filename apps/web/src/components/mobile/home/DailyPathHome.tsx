@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   BookOpen,
   Sun,
@@ -12,6 +13,7 @@ import {
   Users,
   Compass,
   Heart,
+  Check,
   ChevronRight,
   SlidersHorizontal,
 } from "lucide-react";
@@ -21,7 +23,10 @@ import {
   QuickActions,
 } from "../MobileHomeDashboard";
 import QiblahSheet from "../QiblahSheet";
-import type { TunedFor } from "@hidden-hiqmah/ui/lib/storage";
+import { getProgress, type TunedFor } from "@hidden-hiqmah/ui/lib/storage";
+import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
+import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
+import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 
 type Step = {
   key: string;
@@ -29,6 +34,9 @@ type Step = {
   title: string;
   subtitle: string;
   href: string;
+  // Maps to a daily-checklist item (sourceKey) so the step can show live
+  // completion. Steps without one stay as plain suggestions.
+  itemKey?: string;
 };
 
 const TUNED_LABEL: Record<TunedFor, string> = {
@@ -54,9 +62,9 @@ function hijriToday(): string {
 function buildSteps(tunedFor: TunedFor, hour: number): Step[] {
   const adhkar: Step =
     hour < 14
-      ? { key: "adhkar", icon: Sun, title: "Morning adhkar", subtitle: "Start the day in remembrance", href: "/muslim-daily" }
-      : { key: "adhkar", icon: Moon, title: "Evening adhkar", subtitle: "Protection for the evening", href: "/muslim-daily" };
-  const read: Step = { key: "read", icon: BookOpen, title: "Read Qur'an", subtitle: "Continue where you left off", href: "/quran" };
+      ? { key: "adhkar", icon: Sun, title: "Morning adhkar", subtitle: "Start the day in remembrance", href: "/muslim-daily", itemKey: "morning_adhkar" }
+      : { key: "adhkar", icon: Moon, title: "Evening adhkar", subtitle: "Protection for the evening", href: "/muslim-daily", itemKey: "evening_adhkar" };
+  const read: Step = { key: "read", icon: BookOpen, title: "Read Qur'an", subtitle: "Continue where you left off", href: "/quran", itemKey: "quran_page" };
   const reflect: Step = { key: "reflect", icon: Sparkles, title: "Today's reflection", subtitle: "A verse to ponder", href: "/muslim-daily" };
   const hifz: Step = { key: "hifz", icon: Repeat, title: "Hifz review", subtitle: "Strengthen what you've memorised", href: "/quran" };
   const duas: Step = { key: "duas", icon: Heart, title: "Du'as for your day", subtitle: "Supplications for every moment", href: "/duas" };
@@ -81,16 +89,71 @@ function buildSteps(tunedFor: TunedFor, hour: number): Step[] {
 }
 
 export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
+  const { adapter } = useDailyAdapter();
   const [qiblahOpen, setQiblahOpen] = useState(false);
   const [hour, setHour] = useState(8);
   const [hijri, setHijri] = useState("");
+  const [readHref, setReadHref] = useState("/quran");
+  const [doneKeys, setDoneKeys] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setHour(new Date().getHours());
     setHijri(hijriToday());
+    // Resume the Read step at the last position (mirrors ContinueReadingCard).
+    try {
+      const p = getProgress();
+      if (p?.lastSurah) {
+        const ch = chapters.find((c) => c.id === p.lastSurah);
+        if (ch) {
+          const v = p.lastVerse && p.lastVerse <= ch.verses ? p.lastVerse : undefined;
+          setReadHref(v ? `/quran/${ch.id}?v=${v}` : `/quran/${ch.id}`);
+        }
+      }
+    } catch {
+      /* keep default */
+    }
   }, []);
 
-  const steps = buildSteps(tunedFor, hour);
+  // Read today's completion (read-only — never materialize/freeze from a view).
+  useEffect(() => {
+    let alive = true;
+    const today = todayLocalDate();
+    (async () => {
+      try {
+        await adapter.ensureSeeded();
+        const rollups = await adapter.getDayRollups(today, today);
+        if (!alive || rollups.length === 0) return; // day not started → nothing done yet
+        const [items, detail] = await Promise.all([
+          adapter.getUserItems(),
+          adapter.getDayDetail(today),
+        ]);
+        if (!alive) return;
+        const idToSource = new Map(items.map((i) => [i.id, i.sourceKey]));
+        const keys = new Set<string>();
+        for (const d of detail) {
+          if (d.done && d.userItemId) {
+            const src = idToSource.get(d.userItemId);
+            if (src) keys.add(src);
+          }
+        }
+        setDoneKeys(keys);
+      } catch {
+        /* leave empty */
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [adapter]);
+
+  const steps = buildSteps(tunedFor, hour).map((s) =>
+    s.key === "read" ? { ...s, href: readHref } : s
+  );
+  const isDone = (s: Step) => !!s.itemKey && doneKeys.has(s.itemKey);
+  const firstIncomplete = steps.findIndex((s) => !isDone(s));
+  const tracked = steps.filter((s) => s.itemKey);
+  const allTrackedDone =
+    tracked.length > 0 && tracked.every((s) => doneKeys.has(s.itemKey as string));
 
   return (
     <>
@@ -116,20 +179,34 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
 
       {/* The path */}
       <div>
-        <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted font-semibold mb-2 px-1">
-          Your path today
-        </p>
+        <div className="flex items-center justify-between mb-2 px-1">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted font-semibold">
+            Your path today
+          </p>
+          {allTrackedDone && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-gold">
+              <Check size={12} strokeWidth={3} /> On track
+            </span>
+          )}
+        </div>
         <div className="relative">
           {steps.map((s, i) => {
             const Icon = s.icon;
-            const emphasized = i === 0;
+            const done = isDone(s);
+            const emphasized = i === firstIncomplete && !done;
             return (
-              <div key={s.key} className="relative flex gap-3 pb-2.5 last:pb-0">
+              <motion.div
+                key={s.key}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.25, delay: Math.min(i * 0.05, 0.3) }}
+                className="relative flex gap-3 pb-2.5 last:pb-0"
+              >
                 {/* rail */}
                 <div className="flex flex-col items-center pt-3">
                   <div
                     className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                      emphasized ? "bg-gold" : "bg-white/20"
+                      done || emphasized ? "bg-gold" : "bg-white/20"
                     }`}
                   />
                   {i < steps.length - 1 && (
@@ -147,28 +224,36 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
                 >
                   <div
                     className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      emphasized
+                      done
+                        ? "bg-[var(--color-gold)]/15 text-gold"
+                        : emphasized
                         ? "bg-[var(--color-gold)]/20 text-gold"
                         : "bg-white/5 text-themed-muted"
                     }`}
                   >
-                    <Icon size={19} />
+                    {done ? <Check size={19} strokeWidth={2.5} /> : <Icon size={19} />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-themed leading-tight">
+                    <p
+                      className={`text-sm font-semibold leading-tight ${
+                        done ? "text-themed-muted line-through" : "text-themed"
+                      }`}
+                    >
                       {s.title}
                     </p>
                     <p className="text-xs text-themed-muted mt-0.5 truncate">
-                      {s.subtitle}
+                      {done ? "Done today" : s.subtitle}
                     </p>
                   </div>
                   {emphasized ? (
                     <span className="text-xs font-bold text-gold shrink-0">Begin →</span>
+                  ) : done ? (
+                    <Check size={16} className="text-gold shrink-0" />
                   ) : (
                     <ChevronRight size={18} className="text-themed-muted shrink-0" />
                   )}
                 </Link>
-              </div>
+              </motion.div>
             );
           })}
         </div>
