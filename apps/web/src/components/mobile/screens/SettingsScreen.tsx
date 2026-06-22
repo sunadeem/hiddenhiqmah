@@ -7,7 +7,6 @@ import {
   Sparkles,
   Bell,
   Palette,
-  Compass,
   Volume2,
   Sun,
   HandHeart,
@@ -34,6 +33,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import HomeStylePicker from "../home/HomeStylePicker";
+import TunedForPicker from "../home/TunedForPicker";
 import { useTheme } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
@@ -57,7 +57,6 @@ import {
   type PrayerSettings,
   type AsrMethod,
   type HomePrefs,
-  type TunedFor,
 } from "@hidden-hiqmah/ui/lib/storage";
 
 const FEEDBACK_EMAIL = "subhan.s.nadeem@gmail.com";
@@ -346,21 +345,19 @@ export default function SettingsScreen() {
         />
       </div>
 
-      <SettingsSection heading="Home tuning">
-        <SettingsRowSelect
-          icon={Compass}
-          title="Tuned for"
+      <div>
+        <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
+          Tuned for
+        </p>
+        <TunedForPicker
           value={home.tunedFor}
-          options={[
-            { value: "prayer", label: "Prayer" },
-            { value: "hifz", label: "Hifz" },
-            { value: "new-muslim", label: "New Muslim" },
-            { value: "family", label: "Family" },
-            { value: "exploring", label: "Exploring" },
-          ]}
-          onChange={(v) => updateHome({ tunedFor: v as TunedFor })}
+          onChange={(v) => updateHome({ tunedFor: v })}
         />
-      </SettingsSection>
+        <p className="text-xs text-themed-muted mt-2 px-2 leading-relaxed">
+          Shapes your Daily Path order (and the Focus home&apos;s suggested act) around
+          what matters most to you right now.
+        </p>
+      </div>
 
       {/* CUSTOMIZE */}
       <SettingsSection heading="Customize">
