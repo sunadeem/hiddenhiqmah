@@ -60,7 +60,7 @@ export default function HomePreviewModal({
           {/* Header */}
           <div
             className="flex items-center gap-2 px-4 pb-3 border-b sidebar-border shrink-0"
-            style={{ paddingTop: "max(env(safe-area-inset-top), 16px)" }}
+            style={{ paddingTop: "max(env(safe-area-inset-top), 60px)" }}
           >
             <button
               onClick={onClose}
@@ -92,9 +92,13 @@ export default function HomePreviewModal({
             </div>
           </div>
 
-          {/* Live body */}
+          {/* Live body — non-interactive: it's a visual preview, so taps inside
+              (links, cards) don't navigate. The scroll container still scrolls
+              (touches fall through to it), and the switcher/commit below stay live. */}
           <div className="flex-1 overflow-y-auto px-4 pb-4">
-            <HomePreview key={style} style={style} tunedFor={tunedFor} />
+            <div className="pointer-events-none">
+              <HomePreview key={style} style={style} tunedFor={tunedFor} />
+            </div>
           </div>
 
           {/* Commit */}
