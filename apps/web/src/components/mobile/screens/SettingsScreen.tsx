@@ -7,6 +7,8 @@ import {
   Sparkles,
   Bell,
   Palette,
+  LayoutDashboard,
+  Compass,
   Volume2,
   Sun,
   HandHeart,
@@ -45,6 +47,8 @@ import {
   setNotificationPrefs,
   getPrayerSettings,
   setPrayerSettings,
+  getHomePrefs,
+  setHomePrefs,
   clearAllLocalData,
   exportBookmarksJSON,
   isRamadanActive,
@@ -52,6 +56,9 @@ import {
   type NotificationPrefs,
   type PrayerSettings,
   type AsrMethod,
+  type HomePrefs,
+  type HomeStyle,
+  type TunedFor,
 } from "@hidden-hiqmah/ui/lib/storage";
 
 const FEEDBACK_EMAIL = "subhan.s.nadeem@gmail.com";
@@ -81,6 +88,7 @@ export default function SettingsScreen() {
   const [autoPlay, setAutoPlayState] = useState(false);
   const [notif, setNotif] = useState<NotificationPrefs | null>(null);
   const [prayer, setPrayer] = useState<PrayerSettings | null>(null);
+  const [home, setHomeState] = useState<HomePrefs | null>(null);
   const [adhanExpanded, setAdhanExpanded] = useState(false);
 
   useEffect(() => {
@@ -88,8 +96,14 @@ export default function SettingsScreen() {
     setAutoPlayState(getAutoPlayNextSurah());
     setNotif(getNotificationPrefs());
     setPrayer(getPrayerSettings());
+    setHomeState(getHomePrefs());
     setHydrated(true);
   }, []);
+
+  const updateHome = (patch: Partial<HomePrefs>) => {
+    setHomePrefs(patch);
+    setHomeState((h) => (h ? { ...h, ...patch } : h));
+  };
 
   const updateNotif = (patch: Partial<NotificationPrefs>) => {
     setNotificationPrefs(patch);
@@ -104,7 +118,7 @@ export default function SettingsScreen() {
     setPrayer((p) => (p ? { ...p, ...patch } : p));
   };
 
-  if (!hydrated || !notif || !prayer) {
+  if (!hydrated || !notif || !prayer || !home) {
     return (
       <div className="space-y-3 pb-4">
         <p className="text-center text-themed-muted text-sm py-12">Loading settings…</p>
@@ -319,6 +333,34 @@ export default function SettingsScreen() {
           subtitle="After 3+ days without reading"
           toggle={notif.continueReading}
           onToggle={(v) => updateNotif({ continueReading: v })}
+        />
+      </SettingsSection>
+
+      {/* HOME */}
+      <SettingsSection heading="Home">
+        <SettingsRowSelect
+          icon={LayoutDashboard}
+          title="Home style"
+          value={home.homeStyle}
+          options={[
+            { value: "daily-path", label: "Daily Path" },
+            { value: "classic", label: "Classic Dashboard" },
+            { value: "focus", label: "Focus" },
+          ]}
+          onChange={(v) => updateHome({ homeStyle: v as HomeStyle })}
+        />
+        <SettingsRowSelect
+          icon={Compass}
+          title="Tuned for"
+          value={home.tunedFor}
+          options={[
+            { value: "prayer", label: "Prayer" },
+            { value: "hifz", label: "Hifz" },
+            { value: "new-muslim", label: "New Muslim" },
+            { value: "family", label: "Family" },
+            { value: "exploring", label: "Exploring" },
+          ]}
+          onChange={(v) => updateHome({ tunedFor: v as TunedFor })}
         />
       </SettingsSection>
 

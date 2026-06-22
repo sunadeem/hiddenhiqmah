@@ -8,6 +8,22 @@
 
 ---
 
+## Navigation model (LOCKED — 2026-06-22)
+
+**Tab bar (Option A):** `Home · Circles · [Ask] · Quran · More` — the Daily tab folds into Home, freeing a slot for Circles.
+
+**Home is a swappable *style*, not a fixed layout:**
+- **Daily Path** (default, adaptive) — the day as one ribbon; reordered by the "Tuned for" preset (Prayer / Hifz / New Muslim / Family / Exploring) set in onboarding.
+- **Classic Dashboard** — the current home (Today's Quran, prayer card, streak, tiles), kept as a first-class option so nothing is lost.
+- **Focus** — minimal: next prayer + one suggested act + the Today strip.
+
+**Core rule — destinations vs. surfaces:** a home style only changes what's *previewed* on Home, never what's *reachable*. Every feature has a permanent page. Habit-critical items keep a fixed shallow entry point:
+- **Invariant `TodayStrip`** (streak + checklist progress) sits above *every* home style and taps into the full Daily page (`/muslim-daily`, always reachable in More). Build Home as a fixed `TodayStrip` + a swappable `<HomeStyle>` body — not three separate screens.
+
+**Where each B/C feature lives:** Daily Path + humane streaks → Home; Understanding + Hifz → inside Quran; Circles → its own tab; Ramadan → seasonal Home takeover (+ `/ramadan`); Family + Teacher → More/Family + a global profile switcher.
+
+---
+
 ## List 1 — Advantages over competitors (defensible)
 
 **Trust (the core — framed honestly)**

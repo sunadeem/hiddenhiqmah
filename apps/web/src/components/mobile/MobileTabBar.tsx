@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Home,
   BookOpen,
-  ListChecks,
+  Users,
   MessageCircleQuestion,
   Menu,
 } from "lucide-react";
@@ -22,10 +22,10 @@ type Tab = {
 const TABS: Tab[] = [
   { href: "/", label: "Home", icon: Home, matcher: (p) => p === "/" },
   {
-    href: "/muslim-daily",
-    label: "Daily",
-    icon: ListChecks,
-    matcher: (p) => p.startsWith("/muslim-daily"),
+    href: "/circles",
+    label: "Circles",
+    icon: Users,
+    matcher: (p) => p.startsWith("/circles"),
   },
   { label: "Ask", icon: MessageCircleQuestion, ask: true },
   {

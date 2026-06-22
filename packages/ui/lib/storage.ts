@@ -29,6 +29,7 @@ const KEYS = {
   visits: "hiqmah-visits",
   notifications: "hiqmah-notifications",
   prayerSettings: "hiqmah-prayer-settings",
+  homePrefs: "hiqmah-home-prefs",
 } as const;
 
 export type VisitStats = {
@@ -173,6 +174,31 @@ export function getPrayerSettings(): PrayerSettings {
 export function setPrayerSettings(s: Partial<PrayerSettings>) {
   const current = getPrayerSettings();
   set(KEYS.prayerSettings, { ...current, ...s });
+}
+
+// ─── Home preferences (style + onboarding "tuned for") ─────────────
+
+export type HomeStyle = "daily-path" | "classic" | "focus";
+export type TunedFor = "prayer" | "hifz" | "new-muslim" | "family" | "exploring";
+
+export type HomePrefs = {
+  homeStyle: HomeStyle;
+  tunedFor: TunedFor;
+};
+
+const defaultHomePrefs: HomePrefs = {
+  homeStyle: "daily-path",
+  tunedFor: "exploring",
+};
+
+export function getHomePrefs(): HomePrefs {
+  const stored = get<Partial<HomePrefs>>(KEYS.homePrefs, {});
+  return { ...defaultHomePrefs, ...stored };
+}
+
+export function setHomePrefs(p: Partial<HomePrefs>) {
+  const current = getHomePrefs();
+  set(KEYS.homePrefs, { ...current, ...p });
 }
 
 export function clearAllLocalData() {
