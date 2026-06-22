@@ -7,7 +7,6 @@ import {
   Sparkles,
   Bell,
   Palette,
-  LayoutDashboard,
   Compass,
   Volume2,
   Sun,
@@ -34,6 +33,7 @@ import {
   Bookmark,
   MessageCircle,
 } from "lucide-react";
+import HomeStylePicker from "../home/HomeStylePicker";
 import { useTheme } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
@@ -57,7 +57,6 @@ import {
   type PrayerSettings,
   type AsrMethod,
   type HomePrefs,
-  type HomeStyle,
   type TunedFor,
 } from "@hidden-hiqmah/ui/lib/storage";
 
@@ -337,18 +336,17 @@ export default function SettingsScreen() {
       </SettingsSection>
 
       {/* HOME */}
-      <SettingsSection heading="Home">
-        <SettingsRowSelect
-          icon={LayoutDashboard}
-          title="Home style"
+      <div>
+        <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
+          Home style
+        </p>
+        <HomeStylePicker
           value={home.homeStyle}
-          options={[
-            { value: "daily-path", label: "Daily Path" },
-            { value: "classic", label: "Classic Dashboard" },
-            { value: "focus", label: "Focus" },
-          ]}
-          onChange={(v) => updateHome({ homeStyle: v as HomeStyle })}
+          onChange={(v) => updateHome({ homeStyle: v })}
         />
+      </div>
+
+      <SettingsSection heading="Home tuning">
         <SettingsRowSelect
           icon={Compass}
           title="Tuned for"
