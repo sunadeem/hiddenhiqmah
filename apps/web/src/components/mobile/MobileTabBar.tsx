@@ -9,14 +9,13 @@ import {
   MessageCircleQuestion,
   Menu,
 } from "lucide-react";
-import { hapticSelection, hapticLight } from "@/lib/mobile/haptics";
+import { hapticSelection } from "@/lib/mobile/haptics";
 
 type Tab = {
   label: string;
   icon: typeof Home;
   href?: string;
   matcher?: (p: string) => boolean;
-  ask?: boolean;
 };
 
 const TABS: Tab[] = [
@@ -27,7 +26,12 @@ const TABS: Tab[] = [
     icon: Users,
     matcher: (p) => p.startsWith("/circles"),
   },
-  { label: "Ask", icon: MessageCircleQuestion, ask: true },
+  {
+    href: "/ask",
+    label: "Ask",
+    icon: MessageCircleQuestion,
+    matcher: (p) => p.startsWith("/ask"),
+  },
   {
     href: "/quran",
     label: "Quran",
@@ -42,7 +46,7 @@ const TABS: Tab[] = [
   },
 ];
 
-export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
+export default function MobileTabBar() {
   const pathname = usePathname();
 
   return (
@@ -71,23 +75,6 @@ export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
               </span>
             </span>
           );
-
-          if (tab.ask) {
-            return (
-              <button
-                key="ask"
-                type="button"
-                onClick={() => {
-                  hapticLight();
-                  onAsk();
-                }}
-                aria-label="Ask Hiqmah"
-                className="flex-1 touch-manipulation"
-              >
-                {inner}
-              </button>
-            );
-          }
 
           return (
             <Link

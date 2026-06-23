@@ -24,7 +24,9 @@ export default function MobileTopBar() {
   // The Quran surah reader renders its own top bar (back + title + settings),
   // so the global bar drops to a slim status-bar spacer to avoid a double back.
   const isSurahReader = /^\/quran\/[^/]+/.test(pathname);
-  const showBack = !isTabRoot(pathname) && !isSurahReader;
+  // Ask is a full-screen chat that renders its own header + back button.
+  const isFullChat = pathname === "/ask";
+  const showBack = !isTabRoot(pathname) && !isSurahReader && !isFullChat;
 
   useEffect(() => {
     navCount += 1;

@@ -74,6 +74,17 @@ export default function CirclesScreen() {
   const [joinCode, setJoinCode] = useState("");
   const [invites, setInvites] = useState<Record<string, string>>({});
   const [duaSent, setDuaSent] = useState<Set<string>>(new Set());
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const copyCode = (id: string, code: string) => {
+    try {
+      navigator.clipboard?.writeText(code);
+    } catch {
+      /* clipboard may be unavailable in the WebView — the code is still shown */
+    }
+    setCopied(id);
+    setTimeout(() => setCopied((c) => (c === id ? null : c)), 1500);
+  };
 
   const reload = useCallback(async () => {
     if (!user) return;
@@ -178,7 +189,7 @@ export default function CirclesScreen() {
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Circle name (e.g. Family Khatmah)"
-            className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-sm text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
+            className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
           />
           <p className="text-[11px] text-themed-muted">Goal: complete a 30-juz khatmah together.</p>
           <button
@@ -197,7 +208,8 @@ export default function CirclesScreen() {
             value={joinCode}
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
             placeholder="Invite code"
-            className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-sm text-themed tracking-widest placeholder:tracking-normal placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
+            autoCapitalize="characters"
+            className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed tracking-widest placeholder:tracking-normal placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
           />
           <button
             disabled={busy || !joinCode.trim()}
@@ -289,10 +301,14 @@ export default function CirclesScreen() {
           <div className="relative flex items-center gap-2">
             {invites[d.circle.id] ? (
               <button
-                onClick={() => { try { navigator.clipboard?.writeText(invites[d.circle.id]); } catch {} }}
-                className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-gold rounded-xl border border-[var(--color-gold)]/30 py-2.5"
+                onClick={() => copyCode(d.circle.id, invites[d.circle.id])}
+                className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-gold rounded-xl border border-[var(--color-gold)]/30 py-2.5 tracking-widest"
               >
-                <Copy size={14} /> {invites[d.circle.id]}
+                {copied === d.circle.id ? (
+                  <><Check size={14} /> Copied!</>
+                ) : (
+                  <><Copy size={14} /> {invites[d.circle.id]}</>
+                )}
               </button>
             ) : (
               <button

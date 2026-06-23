@@ -156,7 +156,7 @@ export default function HouseholdScreen() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name"
-            className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-sm text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
+            className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
           />
           <div className="flex gap-2">
             {(["child", "adult"] as ProfileKind[]).map((k) => (

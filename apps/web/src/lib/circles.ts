@@ -115,7 +115,12 @@ export async function joinCircle(code: string): Promise<string> {
 }
 
 export async function generateInvite(circleId: string): Promise<string> {
-  const { data, error } = await supabase.rpc("generate_circle_invite", { p_circle: circleId });
+  // Pass p_ttl_hours explicitly — PostgREST can fail to resolve a function call
+  // (PGRST202) when a defaulted arg is omitted.
+  const { data, error } = await supabase.rpc("generate_circle_invite", {
+    p_circle: circleId,
+    p_ttl_hours: 168,
+  });
   if (error) throw error;
   return data as string;
 }
