@@ -195,12 +195,19 @@ export default function RamadanHome({
   }
   const isha = times?.Isha ?? null;
 
-  const onTrack = ramadanDay != null && juz >= ramadanDay;
-  const juzStatus = ramadanDay
-    ? onTrack
-      ? "On track to finish by Eid"
-      : `Day ${ramadanDay} · aim for juz ${ramadanDay}`
-    : "A juz a day completes the Qur'an by Eid";
+  // Khatmah pace: on Ramadan day N you should be at ~N juz to finish 30 by Eid.
+  const complete = juz >= 30;
+  const diff = ramadanDay != null ? juz - ramadanDay : 0;
+  const onTrack = complete || (ramadanDay != null && diff >= 0);
+  const juzStatus = complete
+    ? "Khatmah complete — masha'Allah"
+    : ramadanDay != null
+      ? diff > 0
+        ? `${diff} juz ahead of pace`
+        : diff === 0
+          ? "On track to finish by Eid"
+          : `${-diff} juz behind · aim for ${ramadanDay}`
+      : "A juz a day completes the Qur'an by Eid";
 
   return (
     <div className="space-y-3" style={RAMADAN_STYLE}>
@@ -216,23 +223,23 @@ export default function RamadanHome({
       </div>
 
       {/* ── Iftar / Suhoor hero ── */}
-      <div className="card-bg rounded-2xl border border-[var(--color-gold)]/30 p-6 relative overflow-hidden text-center">
+      <div className="card-bg rounded-2xl border border-[var(--color-gold)]/30 p-4 relative overflow-hidden text-center">
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-gold)]/12 to-transparent pointer-events-none" />
         {timesReady ? (
           <div className="relative">
             <p className="inline-flex items-center gap-1.5 text-gold text-xs font-bold uppercase tracking-[0.16em]">
               <Clock size={13} /> {heroLabel}
             </p>
-            <p className="text-6xl font-extrabold text-themed leading-none tracking-tight mt-2">
+            <p className="text-5xl font-extrabold text-themed leading-none tracking-tight mt-1.5">
               {heroBig}
             </p>
             <div
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2 mt-4 font-bold text-sm bg-gold"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mt-3 font-bold text-sm bg-gold"
               style={{ color: ON_ACCENT }}
             >
               <PillIcon size={15} /> {pillText}
             </div>
-            <div className="h-px bg-[var(--color-border)] mt-5" />
+            <div className="h-px bg-[var(--color-border)] mt-3.5" />
             <p className="inline-flex items-center gap-1.5 text-themed-muted text-sm mt-3">
               <Clock size={14} /> Next prayer · {nextPrayerText}
             </p>
@@ -302,26 +309,26 @@ export default function RamadanHome({
       </div>
 
       {/* ── Taraweeh → Salah › Voluntary & Special › Tarawih ── */}
-      <div className="card-bg rounded-2xl border sidebar-border p-4">
-        <div className="flex items-start gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-[var(--color-gold)]/18 text-gold flex items-center justify-center shrink-0">
-            <Moon size={22} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-themed font-bold leading-tight">Taraweeh tonight</p>
-            <p className="text-themed-muted text-sm mt-0.5">
-              {isha ? `After Isha · ${isha}` : "After Isha"} · read a juz
-            </p>
-            <Link
-              href="/salah?tab=voluntary&sub=tarawih"
-              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 mt-3 font-bold text-sm bg-gold touch-manipulation active:opacity-90"
-              style={{ color: ON_ACCENT }}
-            >
-              Tarawih guide <ArrowRight size={15} />
-            </Link>
-          </div>
+      <Link
+        href="/salah?tab=voluntary&sub=tarawih"
+        className="card-bg rounded-2xl border sidebar-border p-4 flex items-center gap-3 touch-manipulation active:scale-[0.99] transition-transform"
+      >
+        <div className="w-12 h-12 rounded-2xl bg-[var(--color-gold)]/18 text-gold flex items-center justify-center shrink-0">
+          <Moon size={22} />
         </div>
-      </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-themed font-bold leading-tight">Taraweeh tonight</p>
+          <p className="text-themed-muted text-sm mt-0.5">
+            {isha ? `After Isha · ${isha}` : "After Isha"} · read a juz
+          </p>
+        </div>
+        <div
+          className="w-9 h-9 rounded-full bg-gold flex items-center justify-center shrink-0"
+          style={{ color: ON_ACCENT }}
+        >
+          <ArrowRight size={18} />
+        </div>
+      </Link>
 
       {/* ── Last 10 nights / Laylatul Qadr.
           TESTING: always shown so it's reviewable off-season. For real seasonal
