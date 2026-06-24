@@ -139,6 +139,7 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
     items: [
       { href: "/salah", icon: Clock, title: "Salah", titleAr: "الصلاة", description: "The five daily prayers, step by step" },
       { href: "/ramadan", icon: Moon, title: "Ramadan", titleAr: "رمضان", description: "Fasting, Tarawih, Laylatul Qadr" },
+      { href: "/hifz", icon: Repeat, title: "Hifz", titleAr: "الحفظ", description: "Memorize the Qur'an with spaced repetition" },
       { href: "/kids", icon: GraduationCap, title: "Kids Learning", titleAr: "تعليم الأطفال", description: "Lessons + stories + quizzes for children" },
       { href: "/quiz", icon: Trophy, title: "Quizzes", titleAr: "اختبارات", description: "Test your Islamic knowledge" },
     ],
