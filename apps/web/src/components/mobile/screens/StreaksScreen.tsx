@@ -71,6 +71,11 @@ export default function StreaksScreen() {
       setPause(p);
 
       // Recent missed days (last 14, excluding paused + today) for qada catch-up.
+      // Only for users who've started (else pre-start days would look "missed").
+      if (!startDate) {
+        setMissed([]);
+        return;
+      }
       const from = shiftDate(today, -14);
       const yesterday = shiftDate(today, -1);
       const rollups = await adapter.getDayRollups(from, yesterday);
