@@ -23,6 +23,7 @@ import {
 import { getFreshCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
 import { computePrayerTimes } from "@/lib/prayer-times";
 import TodayStrip from "./TodayStrip";
+import { QuickActions } from "../MobileHomeDashboard";
 
 // Festive, cohesive blue palette for Ramadan. Overrides the theme variables
 // within this page only — so the accent, the CARD backgrounds, and the borders
@@ -329,6 +330,9 @@ export default function RamadanHome({
           </Link>
         </div>
       </div>
+
+      {/* Everyday shortcuts — adhan · qiblah · hadith · bookmarks */}
+      <QuickActions />
 
       {/* Daily streak / checklist — the shared invariant, kept at the bottom */}
       <TodayStrip />
