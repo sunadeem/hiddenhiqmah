@@ -55,7 +55,6 @@ export default function MobileHome() {
     return (
       <div className="space-y-3 pb-4">
         <ActiveProfileBanner />
-        <TodayStrip />
         <RamadanHome onUseUsualHome={useUsualHome} />
       </div>
     );

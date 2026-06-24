@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  MoonStar,
   Moon,
   Clock,
   Sunset,
@@ -23,6 +22,7 @@ import {
 } from "@hidden-hiqmah/ui/lib/storage";
 import { getFreshCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
 import { computePrayerTimes } from "@/lib/prayer-times";
+import TodayStrip from "./TodayStrip";
 
 // Festive, cohesive blue palette for Ramadan. Overrides the theme variables
 // within this page only — so the accent, the CARD backgrounds, and the borders
@@ -79,14 +79,12 @@ function hijriDateLine(): string {
 /**
  * Ramadan home — seasonal Home that auto-activates during Ramadan (Hijri month 9).
  * Centered iftar/suhoor hero (on-device prayer times), a juz-a-day khatmah
- * tracker, a Taraweeh card, and a last-10-nights / Laylatul Qadr card.
- * `preview` softens the day copy when shown off-season from Settings.
+ * tracker, a Taraweeh card, a last-10-nights / Laylatul Qadr card, and the
+ * shared daily streak strip kept at the bottom.
  */
 export default function RamadanHome({
-  preview = false,
   onUseUsualHome,
 }: {
-  preview?: boolean;
   onUseUsualHome?: () => void;
 }) {
   const { month, day, year } = getCurrentHijriMonthDay();
@@ -187,17 +185,14 @@ export default function RamadanHome({
   return (
     <div className="space-y-3" style={RAMADAN_STYLE}>
       {/* ── Header ── */}
-      <div className="flex items-start justify-between px-1 pt-1">
+      <div className="flex items-center justify-between px-1 pt-1">
         <div className="min-w-0">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold">
-            Ramadan Mode{ramadanDay ? ` · Day ${ramadanDay}` : preview ? " · Preview" : ""}
-          </p>
-          <h1 className="text-3xl font-extrabold text-themed leading-tight mt-0.5">
+          <h1 className="text-3xl font-extrabold text-themed leading-tight">
             Ramadan Karīm
           </h1>
           <p className="text-themed-muted text-sm mt-0.5">{hijriDateLine()}</p>
         </div>
-        <MoonStar size={40} className="text-gold shrink-0 mt-1" strokeWidth={1.5} />
+        <Moon size={38} className="text-gold shrink-0" strokeWidth={1.5} />
       </div>
 
       {/* ── Iftar / Suhoor hero ── */}
@@ -334,6 +329,9 @@ export default function RamadanHome({
           </Link>
         </div>
       </div>
+
+      {/* Daily streak / checklist — the shared invariant, kept at the bottom */}
+      <TodayStrip />
 
       {onUseUsualHome && (
         <button

@@ -24,12 +24,13 @@ export default function HomePreview({
   tunedFor: TunedFor;
 }) {
   if (style === "classic") return <ClassicHome />;
+  // Ramadan home carries its own streak strip at the bottom (and its own blue
+  // palette wrapper), so it's rendered standalone — no top TodayStrip.
+  if (style === "ramadan") return <RamadanHome />;
   return (
     <div className="space-y-3">
       <TodayStrip />
-      {style === "ramadan" ? (
-        <RamadanHome preview />
-      ) : style === "focus" ? (
+      {style === "focus" ? (
         <FocusHome tunedFor={tunedFor} />
       ) : (
         <DailyPathHome tunedFor={tunedFor} />
