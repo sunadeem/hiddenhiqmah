@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Check } from "lucide-react";
-import HomePreview from "./HomePreview";
+import HomePreview, { type PreviewStyle } from "./HomePreview";
 import type { HomeStyle, TunedFor } from "@hidden-hiqmah/ui/lib/storage";
 
-const STYLES: { value: HomeStyle; label: string }[] = [
+const STYLES: { value: PreviewStyle; label: string }[] = [
   { value: "daily-path", label: "Daily Path" },
   { value: "classic", label: "Classic" },
   { value: "focus", label: "Focus" },
+  { value: "ramadan", label: "Ramadan" },
 ];
 
 /**
@@ -24,18 +25,22 @@ export default function HomePreviewModal({
   initialStyle,
   currentStyle,
   tunedFor,
+  ramadanAuto,
   onClose,
   onSelect,
+  onUseRamadan,
 }: {
   open: boolean;
-  initialStyle: HomeStyle;
+  initialStyle: PreviewStyle;
   currentStyle: HomeStyle;
   tunedFor: TunedFor;
+  ramadanAuto: boolean;
   onClose: () => void;
   onSelect: (s: HomeStyle) => void;
+  onUseRamadan: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
-  const [style, setStyle] = useState<HomeStyle>(initialStyle);
+  const [style, setStyle] = useState<PreviewStyle>(initialStyle);
 
   useEffect(() => setMounted(true), []);
   useEffect(() => {
@@ -44,6 +49,7 @@ export default function HomePreviewModal({
 
   if (!mounted) return null;
 
+  const isRamadan = style === "ramadan";
   const isCurrent = style === currentStyle;
 
   return createPortal(
@@ -106,18 +112,36 @@ export default function HomePreviewModal({
             className="px-4 pt-3 border-t sidebar-border shrink-0"
             style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
           >
-            <button
-              onClick={() => onSelect(style)}
-              className="w-full rounded-xl bg-gold text-[#0a1628] font-bold py-3.5 flex items-center justify-center gap-2 active:opacity-90"
-            >
-              {isCurrent ? (
-                <>
-                  <Check size={18} /> Keep this home
-                </>
-              ) : (
-                "Use this home"
-              )}
-            </button>
+            {isRamadan ? (
+              <button
+                onClick={() => {
+                  onUseRamadan();
+                  onClose();
+                }}
+                className="w-full rounded-xl bg-gold text-[#0a1628] font-bold py-3.5 flex items-center justify-center gap-2 active:opacity-90"
+              >
+                {ramadanAuto ? (
+                  <>
+                    <Check size={18} /> On during Ramadan
+                  </>
+                ) : (
+                  "Use during Ramadan"
+                )}
+              </button>
+            ) : (
+              <button
+                onClick={() => onSelect(style as HomeStyle)}
+                className="w-full rounded-xl bg-gold text-[#0a1628] font-bold py-3.5 flex items-center justify-center gap-2 active:opacity-90"
+              >
+                {isCurrent ? (
+                  <>
+                    <Check size={18} /> Keep this home
+                  </>
+                ) : (
+                  "Use this home"
+                )}
+              </button>
+            )}
           </div>
         </motion.div>
       )}

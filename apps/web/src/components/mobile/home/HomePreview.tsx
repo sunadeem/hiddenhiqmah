@@ -3,8 +3,12 @@
 import TodayStrip from "./TodayStrip";
 import DailyPathHome from "./DailyPathHome";
 import FocusHome from "./FocusHome";
+import RamadanHome from "./RamadanHome";
 import ClassicHome from "../screens/HomeScreen";
 import type { HomeStyle, TunedFor } from "@hidden-hiqmah/ui/lib/storage";
+
+// Style union usable in the preview — base styles + the seasonal Ramadan home.
+export type PreviewStyle = HomeStyle | "ramadan";
 
 /**
  * Renders the live Home body for a given style — the same composition MobileHome
@@ -16,14 +20,16 @@ export default function HomePreview({
   style,
   tunedFor,
 }: {
-  style: HomeStyle;
+  style: PreviewStyle;
   tunedFor: TunedFor;
 }) {
   if (style === "classic") return <ClassicHome />;
   return (
     <div className="space-y-3">
       <TodayStrip />
-      {style === "focus" ? (
+      {style === "ramadan" ? (
+        <RamadanHome preview />
+      ) : style === "focus" ? (
         <FocusHome tunedFor={tunedFor} />
       ) : (
         <DailyPathHome tunedFor={tunedFor} />

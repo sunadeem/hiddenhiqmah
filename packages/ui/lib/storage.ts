@@ -107,17 +107,19 @@ export function setNotificationPrefs(prefs: Partial<NotificationPrefs>) {
 
 // ─── Hijri date helpers (auto-detect Ramadan / Laylatul Qadr) ──
 
-export function getCurrentHijriMonthDay(): { month: number; day: number } {
+export function getCurrentHijriMonthDay(): { month: number; day: number; year: number } {
   try {
     const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
       day: "numeric",
       month: "numeric",
+      year: "numeric",
     }).formatToParts(new Date());
     const month = Number(parts.find((p) => p.type === "month")?.value ?? 0);
     const day = Number(parts.find((p) => p.type === "day")?.value ?? 0);
-    return { month, day };
+    const year = Number((parts.find((p) => p.type === "year")?.value ?? "0").replace(/\D/g, "")) || 0;
+    return { month, day, year };
   } catch {
-    return { month: 0, day: 0 };
+    return { month: 0, day: 0, year: 0 };
   }
 }
 
@@ -184,11 +186,13 @@ export type TunedFor = "prayer" | "hifz" | "new-muslim" | "family" | "exploring"
 export type HomePrefs = {
   homeStyle: HomeStyle;
   tunedFor: TunedFor;
+  ramadanAuto: boolean; // auto-switch Home to Ramadan mode during Ramadan
 };
 
 const defaultHomePrefs: HomePrefs = {
   homeStyle: "daily-path",
   tunedFor: "exploring",
+  ramadanAuto: true,
 };
 
 export function getHomePrefs(): HomePrefs {
