@@ -19,6 +19,7 @@ import {
 import {
   getPrayerSettings,
   getCurrentHijriMonthDay,
+  isLaylatulQadrSeason,
 } from "@hidden-hiqmah/ui/lib/storage";
 import { getFreshCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
 import { computePrayerTimes } from "@/lib/prayer-times";
@@ -100,10 +101,14 @@ function hijriDateLine(): string {
  * Centered iftar/suhoor hero (on-device prayer times), a juz-a-day khatmah
  * tracker, a Taraweeh card, a last-10-nights / Laylatul Qadr card, and the
  * shared daily streak strip kept at the bottom.
+ * `preview` (from Settings) forces the seasonal Last-10-Nights card visible so
+ * the home is fully reviewable off-season.
  */
 export default function RamadanHome({
+  preview = false,
   onUseUsualHome,
 }: {
+  preview?: boolean;
   onUseUsualHome?: () => void;
 }) {
   const { month, day, year } = getCurrentHijriMonthDay();
@@ -330,32 +335,33 @@ export default function RamadanHome({
         </div>
       </Link>
 
-      {/* ── Last 10 nights / Laylatul Qadr.
-          TESTING: always shown so it's reviewable off-season. For real seasonal
-          behaviour, wrap this card in {isLaylatulQadrSeason() && ( ... )}. ── */}
-      <div className="card-bg rounded-2xl border border-[var(--color-gold)]/30 p-5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/12 to-transparent pointer-events-none" />
-        <div className="relative">
-          <span className="inline-flex items-center gap-1.5 bg-[var(--color-gold)]/15 text-gold text-[10px] font-bold uppercase tracking-[0.16em] rounded-full px-2.5 py-1">
-            <Star size={11} /> Last 10 Nights
-          </span>
-          <p className="text-themed font-bold text-base mt-2.5 leading-snug">
-            Seek Laylatul Qadr — better than a thousand months
-          </p>
-          <p className="font-arabic text-gold text-right text-lg leading-loose mt-3" dir="rtl">
-            اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي
-          </p>
-          <p className="text-themed-muted text-xs italic mt-1">
-            &ldquo;O Allah, You are Most Forgiving and love forgiveness, so forgive me.&rdquo;
-          </p>
-          <Link
-            href="/quran/97"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold mt-3"
-          >
-            Read Surah Al-Qadr <ChevronRight size={13} />
-          </Link>
+      {/* ── Last 10 nights / Laylatul Qadr — only in the last 10 nights
+          (forced visible in Settings preview so it's reviewable off-season). ── */}
+      {(preview || isLaylatulQadrSeason()) && (
+        <div className="card-bg rounded-2xl border border-[var(--color-gold)]/30 p-5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/12 to-transparent pointer-events-none" />
+          <div className="relative">
+            <span className="inline-flex items-center gap-1.5 bg-[var(--color-gold)]/15 text-gold text-[10px] font-bold uppercase tracking-[0.16em] rounded-full px-2.5 py-1">
+              <Star size={11} /> Last 10 Nights
+            </span>
+            <p className="text-themed font-bold text-base mt-2.5 leading-snug">
+              Seek Laylatul Qadr — better than a thousand months
+            </p>
+            <p className="font-arabic text-gold text-right text-lg leading-loose mt-3" dir="rtl">
+              اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي
+            </p>
+            <p className="text-themed-muted text-xs italic mt-1">
+              &ldquo;O Allah, You are Most Forgiving and love forgiveness, so forgive me.&rdquo;
+            </p>
+            <Link
+              href="/quran/97"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold mt-3"
+            >
+              Read Surah Al-Qadr <ChevronRight size={13} />
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Everyday shortcuts — adhan · qiblah · hadith · bookmarks */}
       <QuickActions />

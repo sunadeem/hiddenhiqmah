@@ -5,6 +5,7 @@ import {
   getHomePrefs,
   setHomePrefs,
   recordVisit,
+  isRamadanActive,
   type HomeStyle,
   type TunedFor,
 } from "@hidden-hiqmah/ui/lib/storage";
@@ -37,10 +38,8 @@ export default function MobileHome() {
     const p = getHomePrefs();
     setStyle(p.homeStyle);
     setTunedFor(p.tunedFor);
-    // TESTING: manual — show whenever the toggle is on, regardless of season.
-    // Restore `isRamadanActive() && p.ramadanAuto` (and re-import isRamadanActive)
-    // for real auto-seasonal behaviour.
-    setRamadan(p.ramadanAuto);
+    // Auto-activate during Ramadan (Hijri month 9) when the toggle is on.
+    setRamadan(isRamadanActive() && p.ramadanAuto);
   }, []);
 
   const useUsualHome = () => {

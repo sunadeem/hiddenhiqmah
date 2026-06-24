@@ -24,9 +24,10 @@ export default function HomePreview({
   tunedFor: TunedFor;
 }) {
   if (style === "classic") return <ClassicHome />;
-  // Ramadan home carries its own streak strip at the bottom (and its own blue
-  // palette wrapper), so it's rendered standalone — no top TodayStrip.
-  if (style === "ramadan") return <RamadanHome />;
+  // Ramadan home carries its own streak strip at the bottom (and its own palette
+  // wrapper), so it's rendered standalone — no top TodayStrip. `preview` forces
+  // the seasonal Last-10-Nights card visible so the preview is complete.
+  if (style === "ramadan") return <RamadanHome preview />;
   return (
     <div className="space-y-3">
       <TodayStrip />
