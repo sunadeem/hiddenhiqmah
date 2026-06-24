@@ -5,15 +5,19 @@
 
 import {
   buildPreviewDay,
-  consecRun,
   DEFAULT_CHECKLIST,
+  expandPausedDates,
   gradeStatus,
+  humaneRun,
+  HUMANE_MERCY,
   type DailyAdapter,
   type DayItem,
   type DayRollup,
   type DhikrState,
   type ItemPatch,
   type NewItemInput,
+  type PauseReason,
+  type StreakPause,
   type Streaks,
   type UserItem,
 } from "./types";
@@ -28,6 +32,7 @@ interface LocalStore {
   dhikrLifetime: Record<string, number>; // dhikrKey -> count
   streaks: Streaks;
   startDate: string | null; // first day the user used the app (calendar boundary)
+  pauses: StreakPause[]; // humane streaks: travel/illness/menstruation breaks
 }
 
 function emptyStore(): LocalStore {
@@ -39,6 +44,7 @@ function emptyStore(): LocalStore {
     dhikrLifetime: {},
     streaks: { overallCurrent: 0, overallBest: 0, prayerCurrent: 0, prayerBest: 0 },
     startDate: null,
+    pauses: [],
   };
 }
 
@@ -128,8 +134,9 @@ export function createLocalDailyAdapter(storeKey: string = STORE_KEY): DailyAdap
       .map((r) => r.localDate)
       .sort()
       .reverse();
-    const overall = consecRun(overallDates, today);
-    const prayer = consecRun(prayerDates, today);
+    const paused = expandPausedDates(s.pauses ?? [], today);
+    const overall = humaneRun(overallDates, paused, today, HUMANE_MERCY, s.startDate);
+    const prayer = humaneRun(prayerDates, paused, today, HUMANE_MERCY, s.startDate);
     s.streaks = {
       overallCurrent: overall,
       overallBest: Math.max(s.streaks.overallBest, overall),
@@ -318,6 +325,35 @@ export function createLocalDailyAdapter(storeKey: string = STORE_KEY): DailyAdap
     async recomputeStreaks(today: string) {
       const s = load();
       recomputeStreaks(s, today);
+      save(s);
+    },
+
+    async getPauses(): Promise<StreakPause[]> {
+      return (load().pauses ?? [])
+        .slice()
+        .sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
+    },
+
+    async getActivePause(): Promise<StreakPause | null> {
+      return (load().pauses ?? []).find((p) => p.endDate === null) ?? null;
+    },
+
+    async startPause(reason: PauseReason, today: string) {
+      const s = load();
+      s.pauses = s.pauses ?? [];
+      if (s.pauses.some((p) => p.endDate === null)) return; // already paused
+      s.pauses.push({ id: uid(), startDate: today, endDate: null, reason });
+      recomputeStreaks(s, today);
+      save(s);
+    },
+
+    async endPause(today: string) {
+      const s = load();
+      const active = (s.pauses ?? []).find((p) => p.endDate === null);
+      if (active) {
+        active.endDate = today;
+        recomputeStreaks(s, today);
+      }
       save(s);
     },
   };

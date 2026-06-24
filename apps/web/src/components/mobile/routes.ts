@@ -6,6 +6,7 @@ const SECTION_TITLES: Record<string, string> = {
   "/hadith": "Hadith",
   "/salah": "Salah",
   "/muslim-daily": "Daily",
+  "/streaks": "Streak",
   "/circles": "Circles",
   "/family": "Family",
   "/household": "Family",

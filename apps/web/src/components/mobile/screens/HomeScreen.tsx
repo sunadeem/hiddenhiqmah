@@ -86,7 +86,7 @@ function StreakCard({ streaks }: { streaks: Streaks }) {
       : "Keep it going";
   return (
     <Link
-      href="/muslim-daily"
+      href="/streaks"
       className="card-bg rounded-2xl border sidebar-border p-4 flex flex-col justify-center touch-manipulation active:scale-[0.98] transition-transform"
     >
       <div className="flex items-center gap-2 text-themed-muted text-xs uppercase tracking-wider mb-1">

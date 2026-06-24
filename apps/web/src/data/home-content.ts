@@ -22,6 +22,7 @@ import {
   Languages,
   GitBranch,
   Bookmark,
+  Flame,
   Settings as SettingsIcon,
 } from "lucide-react";
 
@@ -125,6 +126,7 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
     heading: "Life",
     items: [
       { href: "/muslim-daily", icon: ListChecks, title: "Muslim Daily", titleAr: "يوميات المسلم", description: "Morning adhkar, evening routines, checklist" },
+      { href: "/streaks", icon: Flame, title: "Streaks", titleAr: "السلسلة", description: "Your streak, pauses, mercy days & qadāʾ" },
       { href: "/duas", icon: HandHeart, title: "Duas", titleAr: "الدعاء", description: "Supplications for every situation" },
       { href: "/dhikr", icon: Repeat, title: "Dhikr", titleAr: "الذكر", description: "Tasbeeh and daily remembrance" },
       { href: "/family", icon: Users, title: "Family", titleAr: "الأسرة", description: "Parents, elders, family ties" },
