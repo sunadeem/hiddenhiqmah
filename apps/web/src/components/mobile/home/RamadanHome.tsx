@@ -60,6 +60,24 @@ function fmtRemaining(ms: number): string {
 function fmtTime(d: Date): string {
   return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 }
+const PRAYER_ORDER = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"] as const;
+/** Next of the five daily prayers (rolls to tomorrow's Fajr after Isha). */
+function nextPrayer(
+  times: Record<string, string>,
+  now: number
+): { name: string; date: Date } | null {
+  for (const name of PRAYER_ORDER) {
+    const d = parseToToday(times[name]);
+    if (d && now < d.getTime()) return { name, date: d };
+  }
+  const f = parseToToday(times.Fajr);
+  if (f) {
+    const fn = new Date(f);
+    fn.setDate(fn.getDate() + 1);
+    return { name: "Fajr", date: fn };
+  }
+  return null;
+}
 /** "Tuesday · 12 Ramadan 1447" — real Hijri (umalqura) date, year-round. */
 function hijriDateLine(): string {
   try {
@@ -91,9 +109,7 @@ export default function RamadanHome({
   const { month, day, year } = getCurrentHijriMonthDay();
   const ramadanDay = month === 9 ? day : null;
 
-  const [maghrib, setMaghrib] = useState<string | null>(null);
-  const [fajr, setFajr] = useState<string | null>(null);
-  const [isha, setIsha] = useState<string | null>(null);
+  const [times, setTimes] = useState<Record<string, string> | null>(null);
   const [hasLoc, setHasLoc] = useState(true);
   const [now, setNow] = useState(0);
   const [juz, setJuz] = useState(0);
@@ -116,9 +132,13 @@ export default function RamadanHome({
         method: ps.calcMethod,
         asrHanafi: ps.asrMethod === "hanafi",
       });
-      setMaghrib(t.Maghrib);
-      setFajr(t.Fajr);
-      setIsha(t.Isha);
+      setTimes({
+        Fajr: t.Fajr,
+        Dhuhr: t.Dhuhr,
+        Asr: t.Asr,
+        Maghrib: t.Maghrib,
+        Isha: t.Isha,
+      });
     } catch {
       setHasLoc(false);
     }
@@ -144,37 +164,36 @@ export default function RamadanHome({
     }
   };
 
-  // ── Iftar / Suhoor hero (centered, two-line) ──
+  // ── Iftar / Suhoor hero (centered) ──
+  // Main countdown flips between Iftar (→ Maghrib) and Suhoor (→ next Fajr),
+  // with the pill showing whichever time is next. The line under the divider is
+  // a live "next prayer" readout across all five daily prayers.
   let heroLabel = "Iftar in";
   let heroBig = "—";
   let PillIcon = Sunset;
   let pillText = "Maghrib —";
-  let SecIcon = Sunrise;
-  let secText = "Suhoor —";
-  const timesReady = !!(maghrib && fajr && now);
+  let nextPrayerText = "";
+  const timesReady = !!(times && now);
   if (timesReady) {
-    const mg = parseToToday(maghrib!);
-    const fj = parseToToday(fajr!);
+    const mg = parseToToday(times!.Maghrib);
+    const fj = parseToToday(times!.Fajr);
     if (mg && now < mg.getTime()) {
-      // Daytime fast → counting down to iftar
       heroLabel = "Iftar in";
       heroBig = fmtRemaining(mg.getTime() - now);
       PillIcon = Sunset;
       pillText = `Maghrib ${fmtTime(mg)}`;
-      SecIcon = Sunrise;
-      secText = fj ? `Suhoor ends ${fmtTime(fj)}` : "Suhoor —";
     } else if (fj) {
-      // Night → counting down to suhoor's end (next Fajr)
       const fjNext = new Date(fj);
       if (now >= fj.getTime()) fjNext.setDate(fjNext.getDate() + 1);
-      heroLabel = "Suhoor ends in";
+      heroLabel = "Suhoor in";
       heroBig = fmtRemaining(fjNext.getTime() - now);
       PillIcon = Sunrise;
       pillText = `Fajr ${fmtTime(fj)}`;
-      SecIcon = Sunset;
-      secText = mg ? `Iftar ${fmtTime(mg)}` : "Iftar —";
     }
+    const np = nextPrayer(times!, now);
+    if (np) nextPrayerText = `${np.name} ${fmtTime(np.date)}`;
   }
+  const isha = times?.Isha ?? null;
 
   const onTrack = ramadanDay != null && juz >= ramadanDay;
   const juzStatus = ramadanDay
@@ -215,7 +234,7 @@ export default function RamadanHome({
             </div>
             <div className="h-px bg-[var(--color-border)] mt-5" />
             <p className="inline-flex items-center gap-1.5 text-themed-muted text-sm mt-3">
-              <SecIcon size={14} /> {secText}
+              <Clock size={14} /> Next prayer · {nextPrayerText}
             </p>
           </div>
         ) : hasLoc ? (
