@@ -19,7 +19,7 @@ _Across all features: 10 ✅ done · 10 🟦 partial · 86 ⏳ todo._
 1. **Teacher/class dashboard** — the rest of Family/Phase-2 (migration 009); do when teacher distribution is a focus.
 2. **Ramadan mode** — self-contained, no backend; schedule closer to Ramadan (~8 months out).
 3. **Hifz coach** — biggest/ML-risk; build after a wedge proves out (and after sync hardening, for cross-device).
-- **Prereqs (when their dependents need them):** Supabase sync conflict-resolution hardening (XL — current sync is last-write-wins); i18n re-arch (before scaling content/localization).
+- **Prereqs — both DEFERRED (decided 2026-06-24):** Supabase sync conflict-resolution → **deferred until Hifz** (its real consumer; current sync — atomic dhikr increments + advisory locks — is adequate for checklist/streaks). i18n re-arch → **held** until committed to localizing (have translators / a target language). Revisit both then.
 - **Separate launch-blocker track (before App Store):** licensing remediation (translation/tafsir/hadith/audio re-sourcing), public AI endpoint rate-limiting, named reviewing scholar, the keyboard bug (verify/fix on a real device), full device-test pass.
 
 ## Suggested build sequence (original plan)
