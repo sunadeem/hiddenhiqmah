@@ -3,20 +3,26 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
+  MoonStar,
   Moon,
+  Clock,
+  Sunset,
   Sunrise,
-  Utensils,
   BookOpen,
   Star,
   Plus,
   Minus,
   ChevronRight,
+  ArrowRight,
+  Check,
   MapPin,
 } from "lucide-react";
 import {
   getPrayerSettings,
   getCurrentHijriMonthDay,
 } from "@hidden-hiqmah/ui/lib/storage";
+import { getFreshCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
+import { computePrayerTimes } from "@/lib/prayer-times";
 
 // Festive, cohesive blue palette for Ramadan. Overrides the theme variables
 // within this page only — so the accent, the CARD backgrounds, and the borders
@@ -30,8 +36,9 @@ const RAMADAN_STYLE = {
   ["--color-card" as string]: "#102a47", // blue-tinted card (was gray-navy)
   ["--color-border" as string]: "#244a73", // blue border
 } as React.CSSProperties;
-import { getFreshCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
-import { computePrayerTimes } from "@/lib/prayer-times";
+
+// Dark text used on the solid-accent pills/buttons (reads on any light accent).
+const ON_ACCENT = "#0a1628";
 
 const JUZ_KEY = "hiqmah-ramadan-juz";
 
@@ -52,12 +59,28 @@ function fmtRemaining(ms: number): string {
 function fmtTime(d: Date): string {
   return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 }
+/** "Tuesday · 12 Ramadan 1447" — real Hijri (umalqura) date, year-round. */
+function hijriDateLine(): string {
+  try {
+    const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).formatToParts(new Date());
+    const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+    const yr = get("year").replace(/\D/g, "");
+    return `${get("weekday")} · ${get("day")} ${get("month")} ${yr}`;
+  } catch {
+    return "";
+  }
+}
 
 /**
  * Ramadan home — seasonal Home that auto-activates during Ramadan (Hijri month 9).
- * Iftar (Maghrib) / Suhoor (Fajr) countdown from on-device prayer times, a
- * juz-a-day khatmah tracker, Taraweeh, and a last-10-nights / Laylatul Qadr card.
- * `preview` softens the day/timing copy when shown off-season from Settings.
+ * Centered iftar/suhoor hero (on-device prayer times), a juz-a-day khatmah
+ * tracker, a Taraweeh card, and a last-10-nights / Laylatul Qadr card.
+ * `preview` softens the day copy when shown off-season from Settings.
  */
 export default function RamadanHome({
   preview = false,
@@ -71,6 +94,7 @@ export default function RamadanHome({
 
   const [maghrib, setMaghrib] = useState<string | null>(null);
   const [fajr, setFajr] = useState<string | null>(null);
+  const [isha, setIsha] = useState<string | null>(null);
   const [hasLoc, setHasLoc] = useState(true);
   const [now, setNow] = useState(0);
   const [juz, setJuz] = useState(0);
@@ -95,6 +119,7 @@ export default function RamadanHome({
       });
       setMaghrib(t.Maghrib);
       setFajr(t.Fajr);
+      setIsha(t.Isha);
     } catch {
       setHasLoc(false);
     }
@@ -120,140 +145,179 @@ export default function RamadanHome({
     }
   };
 
-  // Iftar / Suhoor hero
-  let heroIcon = Utensils;
-  let heroLabel = "Iftar";
-  let heroTime = "";
-  let heroRemaining = "";
-  if (maghrib && fajr && now) {
-    const mg = parseToToday(maghrib);
-    const fj = parseToToday(fajr);
+  // ── Iftar / Suhoor hero (centered, two-line) ──
+  let heroLabel = "Iftar in";
+  let heroBig = "—";
+  let PillIcon = Sunset;
+  let pillText = "Maghrib —";
+  let SecIcon = Sunrise;
+  let secText = "Suhoor —";
+  const timesReady = !!(maghrib && fajr && now);
+  if (timesReady) {
+    const mg = parseToToday(maghrib!);
+    const fj = parseToToday(fajr!);
     if (mg && now < mg.getTime()) {
-      heroIcon = Utensils;
-      heroLabel = "Iftar";
-      heroTime = fmtTime(mg);
-      heroRemaining = fmtRemaining(mg.getTime() - now);
+      // Daytime fast → counting down to iftar
+      heroLabel = "Iftar in";
+      heroBig = fmtRemaining(mg.getTime() - now);
+      PillIcon = Sunset;
+      pillText = `Maghrib ${fmtTime(mg)}`;
+      SecIcon = Sunrise;
+      secText = fj ? `Suhoor ends ${fmtTime(fj)}` : "Suhoor —";
     } else if (fj) {
+      // Night → counting down to suhoor's end (next Fajr)
       const fjNext = new Date(fj);
       if (now >= fj.getTime()) fjNext.setDate(fjNext.getDate() + 1);
-      heroIcon = Sunrise;
-      heroLabel = "Suhoor ends";
-      heroTime = fmtTime(fj);
-      heroRemaining = fmtRemaining(fjNext.getTime() - now);
+      heroLabel = "Suhoor ends in";
+      heroBig = fmtRemaining(fjNext.getTime() - now);
+      PillIcon = Sunrise;
+      pillText = `Fajr ${fmtTime(fj)}`;
+      SecIcon = Sunset;
+      secText = mg ? `Iftar ${fmtTime(mg)}` : "Iftar —";
     }
   }
-  const HeroIcon = heroIcon;
+
+  const onTrack = ramadanDay != null && juz >= ramadanDay;
+  const juzStatus = ramadanDay
+    ? onTrack
+      ? "On track to finish by Eid"
+      : `Day ${ramadanDay} · aim for juz ${ramadanDay}`
+    : "A juz a day completes the Qur'an by Eid";
 
   return (
-    <div className="space-y-3 rounded-2xl" style={RAMADAN_STYLE}>
-      {/* Header */}
-      <div className="px-1 flex items-center gap-2">
-        <Moon size={20} className="text-gold" />
-        <div>
-          <h1 className="text-2xl font-bold text-themed leading-tight">Ramadan</h1>
-          <p className="text-themed-muted text-sm">
-            {ramadanDay ? `Day ${ramadanDay}` : preview ? "Preview" : "Mubarak"}
+    <div className="space-y-3" style={RAMADAN_STYLE}>
+      {/* ── Header ── */}
+      <div className="flex items-start justify-between px-1 pt-1">
+        <div className="min-w-0">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold">
+            Ramadan Mode{ramadanDay ? ` · Day ${ramadanDay}` : preview ? " · Preview" : ""}
           </p>
+          <h1 className="text-3xl font-extrabold text-themed leading-tight mt-0.5">
+            Ramadan Karīm
+          </h1>
+          <p className="text-themed-muted text-sm mt-0.5">{hijriDateLine()}</p>
         </div>
+        <MoonStar size={40} className="text-gold shrink-0 mt-1" strokeWidth={1.5} />
       </div>
 
-      {/* Iftar / Suhoor hero */}
-      <div className="card-bg rounded-2xl border border-[var(--color-gold)]/30 p-5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/14 to-transparent pointer-events-none" />
-        {maghrib && fajr ? (
-          <div className="relative flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[var(--color-gold)]/20 text-gold flex items-center justify-center shrink-0">
-              <HeroIcon size={24} />
+      {/* ── Iftar / Suhoor hero ── */}
+      <div className="card-bg rounded-2xl border border-[var(--color-gold)]/30 p-6 relative overflow-hidden text-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-gold)]/12 to-transparent pointer-events-none" />
+        {timesReady ? (
+          <div className="relative">
+            <p className="inline-flex items-center gap-1.5 text-gold text-xs font-bold uppercase tracking-[0.16em]">
+              <Clock size={13} /> {heroLabel}
+            </p>
+            <p className="text-6xl font-extrabold text-themed leading-none tracking-tight mt-2">
+              {heroBig}
+            </p>
+            <div
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 mt-4 font-bold text-sm bg-gold"
+              style={{ color: ON_ACCENT }}
+            >
+              <PillIcon size={15} /> {pillText}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-themed-muted text-xs uppercase tracking-wider">{heroLabel}</p>
-              <p className="text-3xl font-bold text-themed leading-none mt-0.5">
-                in {heroRemaining}
-              </p>
-              <p className="text-themed-muted text-sm mt-1">
-                {heroLabel === "Iftar" ? "Maghrib" : "Fajr"} {heroTime}
-              </p>
-            </div>
+            <div className="h-px bg-[var(--color-border)] mt-5" />
+            <p className="inline-flex items-center gap-1.5 text-themed-muted text-sm mt-3">
+              <SecIcon size={14} /> {secText}
+            </p>
           </div>
         ) : hasLoc ? (
-          <div className="relative text-themed-muted text-sm">Loading today&apos;s times…</div>
+          <div className="relative text-themed-muted text-sm py-4">
+            Loading today&apos;s times…
+          </div>
         ) : (
-          <Link href="/salah?tab=times" className="relative flex items-center gap-2 text-gold text-sm font-semibold">
+          <Link
+            href="/salah?tab=times"
+            className="relative inline-flex items-center gap-2 text-gold text-sm font-semibold py-3"
+          >
             <MapPin size={16} /> Set your location for iftar &amp; suhoor times
             <ChevronRight size={15} />
           </Link>
         )}
       </div>
 
-      {/* Juz-a-day khatmah */}
+      {/* ── Section label ── */}
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-themed-muted px-1 pt-1">
+        Your Ramadan
+      </p>
+
+      {/* ── Juz-a-day khatmah ── */}
       <div className="card-bg rounded-2xl border sidebar-border p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted font-semibold">
-              Juz-a-day khatmah
-            </p>
-            <p className="text-themed font-bold text-lg mt-0.5">{juz} / 30 juz</p>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--color-gold)]/18 text-gold flex items-center justify-center shrink-0">
+            <BookOpen size={22} />
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setJuzP(juz - 1)}
-              disabled={juz <= 0}
-              className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-themed disabled:opacity-40"
-            >
-              <Minus size={15} />
-            </button>
-            <button
-              onClick={() => setJuzP(juz + 1)}
-              disabled={juz >= 30}
-              className="w-8 h-8 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center text-gold disabled:opacity-40"
-            >
-              <Plus size={15} />
-            </button>
+          <div className="flex-1 min-w-0">
+            <p className="text-themed font-bold leading-tight">Juz-a-day Khatmah</p>
+            <p className="text-themed-muted text-sm mt-0.5">Finish the Qur&apos;an this Ramadan</p>
           </div>
+          <p className="text-right shrink-0">
+            <span className="text-3xl font-extrabold text-themed">{juz}</span>
+            <span className="text-themed-muted text-base font-semibold"> / 30</span>
+          </p>
         </div>
         <div className="h-2 rounded-full bg-white/8 overflow-hidden mt-3">
           <div className="h-full bg-gold rounded-full" style={{ width: `${(juz / 30) * 100}%` }} />
         </div>
-        {ramadanDay && (
-          <p className="text-xs text-themed-muted mt-2">
-            {juz >= ramadanDay
-              ? "On pace to finish by Eid — masha'Allah"
-              : `Day ${ramadanDay} · aim for juz ${ramadanDay} to finish on time`}
+        <div className="flex items-center justify-between mt-2.5">
+          <p className="inline-flex items-center gap-1.5 text-gold text-xs font-semibold min-w-0">
+            {onTrack && <Check size={13} className="shrink-0" />}
+            <span className="truncate">{juzStatus}</span>
           </p>
-        )}
-        <Link
-          href="/quran"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold mt-2"
-        >
-          <BookOpen size={13} /> Continue reading <ChevronRight size={13} />
-        </Link>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setJuzP(juz - 1)}
+              disabled={juz <= 0}
+              aria-label="Log one fewer juz"
+              className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-themed disabled:opacity-40"
+            >
+              <Minus size={14} />
+            </button>
+            <button
+              onClick={() => setJuzP(juz + 1)}
+              disabled={juz >= 30}
+              aria-label="Log one juz read"
+              className="w-7 h-7 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center text-gold disabled:opacity-40"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Taraweeh → Salah › Voluntary & Special › Tarawih sub-tab */}
-      <Link
-        href="/salah?tab=voluntary&sub=tarawih"
-        className="card-bg rounded-2xl border sidebar-border p-4 flex items-center gap-3 touch-manipulation active:scale-[0.99] transition-transform"
-      >
-        <div className="w-10 h-10 rounded-xl bg-[var(--color-gold)]/15 text-gold flex items-center justify-center shrink-0">
-          <Moon size={19} />
+      {/* ── Taraweeh → Salah › Voluntary & Special › Tarawih ── */}
+      <div className="card-bg rounded-2xl border sidebar-border p-4">
+        <div className="flex items-start gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--color-gold)]/18 text-gold flex items-center justify-center shrink-0">
+            <Moon size={22} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-themed font-bold leading-tight">Taraweeh tonight</p>
+            <p className="text-themed-muted text-sm mt-0.5">
+              {isha ? `After Isha · ${isha}` : "After Isha"} · read a juz
+            </p>
+            <Link
+              href="/salah?tab=voluntary&sub=tarawih"
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 mt-3 font-bold text-sm bg-gold touch-manipulation active:opacity-90"
+              style={{ color: ON_ACCENT }}
+            >
+              Tarawih guide <ArrowRight size={15} />
+            </Link>
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-themed font-semibold text-sm leading-tight">Taraweeh tonight</p>
-          <p className="text-themed-muted text-xs mt-0.5">Stand in prayer after Isha</p>
-        </div>
-        <ChevronRight size={18} className="text-themed-muted shrink-0" />
-      </Link>
+      </div>
 
-      {/* Last 10 nights / Laylatul Qadr.
+      {/* ── Last 10 nights / Laylatul Qadr.
           TESTING: always shown so it's reviewable off-season. For real seasonal
-          behaviour, wrap this card in {isLaylatulQadrSeason() && ( ... )}. */}
+          behaviour, wrap this card in {isLaylatulQadrSeason() && ( ... )}. ── */}
       <div className="card-bg rounded-2xl border border-[var(--color-gold)]/30 p-5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/14 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/12 to-transparent pointer-events-none" />
         <div className="relative">
-          <p className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-gold font-semibold">
-            <Star size={12} /> Last 10 nights
-          </p>
-          <p className="text-themed font-bold text-base mt-1 leading-snug">
+          <span className="inline-flex items-center gap-1.5 bg-[var(--color-gold)]/15 text-gold text-[10px] font-bold uppercase tracking-[0.16em] rounded-full px-2.5 py-1">
+            <Star size={11} /> Last 10 Nights
+          </span>
+          <p className="text-themed font-bold text-base mt-2.5 leading-snug">
             Seek Laylatul Qadr — better than a thousand months
           </p>
           <p className="font-arabic text-gold text-right text-lg leading-loose mt-3" dir="rtl">
