@@ -229,9 +229,9 @@ export default function RamadanHome({
         </Link>
       </div>
 
-      {/* Taraweeh */}
+      {/* Taraweeh → Salah › Voluntary & Special › Tarawih sub-tab */}
       <Link
-        href="/salah"
+        href="/salah?tab=voluntary&sub=tarawih"
         className="card-bg rounded-2xl border sidebar-border p-4 flex items-center gap-3 touch-manipulation active:scale-[0.99] transition-transform"
       >
         <div className="w-10 h-10 rounded-xl bg-[var(--color-gold)]/15 text-gold flex items-center justify-center shrink-0">

@@ -2086,7 +2086,12 @@ function SalahContent() {
   const searchParams = useSearchParams();
   const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "times");
   const [activePrayer, setActivePrayer] = useState("types");
-  const [activeVoluntary, setActiveVoluntary] = useState("tahajjud");
+  const [activeVoluntary, setActiveVoluntary] = useState(() => {
+    // Deep-link support: ?sub=<id> (e.g. /salah?tab=voluntary&sub=tarawih).
+    // Validate against real prayer ids — currentPrayer uses .find(...)! below.
+    const sub = searchParams.get("sub");
+    return sub && voluntaryPrayers.some((p) => p.id === sub) ? sub : "tahajjud";
+  });
   const [activeWudu, setActiveWudu] = useState("overview");
   const [showGuide, setShowGuide] = useState(false);
   const [search, setSearch] = useState("");
