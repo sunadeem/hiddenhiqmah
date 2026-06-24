@@ -2,12 +2,15 @@
 
 import { useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/lib/supabase";
 import { createLocalHifzAdapter } from "@hidden-hiqmah/ui/lib/hifz/localAdapter";
+import { createSupabaseHifzAdapter } from "@/lib/hifz/supabaseHifzAdapter";
 import type { HifzAdapter } from "@hidden-hiqmah/ui/lib/hifz/types";
 
 /**
- * Picks the Hifz adapter. Local (device-only) for now; Phase 5 switches signed-in
- * users to the Supabase (synced) adapter. Mirrors useDailyAdapter.
+ * Picks the Hifz adapter: Supabase (synced) when signed in, else device-only
+ * local. Hifz progress is precious long-term data, so signed-in users always
+ * sync. Mirrors useDailyAdapter. Requires migration 010_hifz.sql for the synced path.
  */
 export function useHifzAdapter(): {
   adapter: HifzAdapter;
@@ -16,7 +19,7 @@ export function useHifzAdapter(): {
 } {
   const { user, loading } = useAuth();
   const adapter = useMemo<HifzAdapter>(() => {
-    // Phase 5: if (user) return createSupabaseHifzAdapter(supabase, user.id);
+    if (user) return createSupabaseHifzAdapter(supabase, user.id);
     return createLocalHifzAdapter();
   }, [user]);
   return { adapter, signedIn: !!user, authLoading: loading };
