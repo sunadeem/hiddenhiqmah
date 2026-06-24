@@ -192,7 +192,10 @@ export type HomePrefs = {
 const defaultHomePrefs: HomePrefs = {
   homeStyle: "daily-path",
   tunedFor: "exploring",
-  ramadanAuto: true,
+  // TESTING: default OFF + the seasonal gate is removed in MobileHome, so this
+  // is a manual toggle for now. For real auto-seasonal behaviour, set this back
+  // to `true` AND restore the `isRamadanActive() &&` gate in MobileHome.
+  ramadanAuto: false,
 };
 
 export function getHomePrefs(): HomePrefs {

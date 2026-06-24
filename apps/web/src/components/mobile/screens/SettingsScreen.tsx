@@ -353,9 +353,9 @@ export default function SettingsScreen() {
           icon={Moon}
           title="Ramadan home"
           subtitle={
-            isRamadanActive()
-              ? "Active now — Ramadan home is showing"
-              : "Auto-activates during Ramadan (Hijri month 9)"
+            home.ramadanAuto
+              ? "On — showing the festive Ramadan home"
+              : "Turn on to use the festive Ramadan home"
           }
           toggle={home.ramadanAuto}
           onToggle={(v) => updateHome({ ramadanAuto: v })}

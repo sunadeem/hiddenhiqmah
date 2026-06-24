@@ -16,8 +16,11 @@ import {
 import {
   getPrayerSettings,
   getCurrentHijriMonthDay,
-  isLaylatulQadrSeason,
 } from "@hidden-hiqmah/ui/lib/storage";
+
+// Festive light-blue palette for Ramadan (overrides --color-gold within this
+// page only, so all the gold gradients/accents become blue automatically).
+const RAMADAN_BLUE = "#5cb8e6";
 import { getFreshCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
 import { computePrayerTimes } from "@/lib/prayer-times";
 
@@ -56,7 +59,6 @@ export default function RamadanHome({
 }) {
   const { month, day, year } = getCurrentHijriMonthDay();
   const ramadanDay = month === 9 ? day : null;
-  const lastTen = isLaylatulQadrSeason();
 
   const [maghrib, setMaghrib] = useState<string | null>(null);
   const [fajr, setFajr] = useState<string | null>(null);
@@ -134,7 +136,10 @@ export default function RamadanHome({
   const HeroIcon = heroIcon;
 
   return (
-    <>
+    <div
+      className="space-y-3"
+      style={{ ["--color-gold" as string]: RAMADAN_BLUE } as React.CSSProperties}
+    >
       {/* Header */}
       <div className="px-1 flex items-center gap-2">
         <Moon size={20} className="text-gold" />
@@ -233,32 +238,32 @@ export default function RamadanHome({
         <ChevronRight size={18} className="text-themed-muted shrink-0" />
       </Link>
 
-      {/* Last 10 nights / Laylatul Qadr */}
-      {lastTen && (
-        <div className="card-bg rounded-2xl border border-[var(--color-gold)]/30 p-5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/14 to-transparent pointer-events-none" />
-          <div className="relative">
-            <p className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-gold font-semibold">
-              <Star size={12} /> Last 10 nights
-            </p>
-            <p className="text-themed font-bold text-base mt-1 leading-snug">
-              Seek Laylatul Qadr — better than a thousand months
-            </p>
-            <p className="font-arabic text-gold text-right text-lg leading-loose mt-3" dir="rtl">
-              اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي
-            </p>
-            <p className="text-themed-muted text-xs italic mt-1">
-              &ldquo;O Allah, You are Most Forgiving and love forgiveness, so forgive me.&rdquo;
-            </p>
-            <Link
-              href="/quran/97"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold mt-3"
-            >
-              Read Surah Al-Qadr <ChevronRight size={13} />
-            </Link>
-          </div>
+      {/* Last 10 nights / Laylatul Qadr.
+          TESTING: always shown so it's reviewable off-season. For real seasonal
+          behaviour, wrap this card in {isLaylatulQadrSeason() && ( ... )}. */}
+      <div className="card-bg rounded-2xl border border-[var(--color-gold)]/30 p-5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/14 to-transparent pointer-events-none" />
+        <div className="relative">
+          <p className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-gold font-semibold">
+            <Star size={12} /> Last 10 nights
+          </p>
+          <p className="text-themed font-bold text-base mt-1 leading-snug">
+            Seek Laylatul Qadr — better than a thousand months
+          </p>
+          <p className="font-arabic text-gold text-right text-lg leading-loose mt-3" dir="rtl">
+            اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي
+          </p>
+          <p className="text-themed-muted text-xs italic mt-1">
+            &ldquo;O Allah, You are Most Forgiving and love forgiveness, so forgive me.&rdquo;
+          </p>
+          <Link
+            href="/quran/97"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold mt-3"
+          >
+            Read Surah Al-Qadr <ChevronRight size={13} />
+          </Link>
         </div>
-      )}
+      </div>
 
       {onUseUsualHome && (
         <button
@@ -268,6 +273,6 @@ export default function RamadanHome({
           Use my usual home instead
         </button>
       )}
-    </>
+    </div>
   );
 }
