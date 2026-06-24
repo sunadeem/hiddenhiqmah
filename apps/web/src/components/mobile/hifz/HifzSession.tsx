@@ -12,8 +12,10 @@ import {
   CheckCircle2,
   Volume2,
 } from "lucide-react";
+import { VoiceRecorder } from "@independo/capacitor-voice-recorder";
 import type { AyahRef, Grade, HifzAdapter, HifzCard } from "@hidden-hiqmah/ui/lib/hifz/types";
 import { ayahsInCard } from "@/lib/hifz/quran";
+import { useIsNative } from "@/lib/mobile/platform";
 
 type Verse = {
   id: number;
@@ -93,6 +95,7 @@ export default function HifzSession({
   today: string;
   onDone: () => void;
 }) {
+  const native = useIsNative();
   const [remaining, setRemaining] = useState<HifzCard[]>(() => queue);
   const [mode, setMode] = useState<Mode>("listen");
   const [data, setData] = useState<Loaded[] | null>(null);
@@ -155,30 +158,62 @@ export default function HifzSession({
   const recUrlRef = useRef<string | null>(null); // for unmount revoke (closure-safe)
   const recReqRef = useRef(0); // request token — invalidates superseded getUserMedia
 
+  const setRecUrlSafe = useCallback((url: string | null) => {
+    setRecUrl((prev) => {
+      if (prev && prev.startsWith("blob:")) URL.revokeObjectURL(prev); // data: URLs need no revoke
+      return url;
+    });
+    recUrlRef.current = url;
+  }, []);
+
   const resetRec = useCallback(() => {
-    recReqRef.current++; // invalidate any in-flight getUserMedia
-    try {
-      if (recorderRef.current?.state === "recording") recorderRef.current.stop();
-    } catch {
-      /* ignore */
+    recReqRef.current++; // invalidate any in-flight start
+    if (native) {
+      VoiceRecorder.stopRecording().catch(() => {}); // discard if mid-recording
+    } else {
+      try {
+        if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+      } catch {
+        /* ignore */
+      }
+      streamRef.current?.getTracks().forEach((t) => t.stop());
     }
-    streamRef.current?.getTracks().forEach((t) => t.stop());
     setRecState("idle");
     setRecErr(null);
-    setRecUrl((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return null;
-    });
-    recUrlRef.current = null;
-  }, []);
+    setRecUrlSafe(null);
+  }, [native, setRecUrlSafe]);
 
   const startRec = useCallback(async () => {
     setRecErr(null);
     const myToken = ++recReqRef.current;
+
+    if (native) {
+      // Native AVAudioRecorder via the plugin — reliable on real iOS + triggers
+      // the OS mic-permission prompt (NSMicrophoneUsageDescription).
+      try {
+        const perm = await VoiceRecorder.requestAudioRecordingPermission();
+        if (myToken !== recReqRef.current) return;
+        if (!perm.value) {
+          setRecErr("Allow microphone access to record (Settings › Hidden Hiqmah).");
+          return;
+        }
+        await VoiceRecorder.startRecording();
+        if (myToken !== recReqRef.current) {
+          VoiceRecorder.stopRecording().catch(() => {});
+          return;
+        }
+        setRecState("recording");
+      } catch {
+        setRecErr("Couldn't start recording.");
+        setRecState("idle");
+      }
+      return;
+    }
+
+    // Web: browser MediaRecorder.
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       if (myToken !== recReqRef.current) {
-        // Superseded (card/mode changed while awaiting) — release the mic.
         stream.getTracks().forEach((t) => t.stop());
         return;
       }
@@ -191,14 +226,9 @@ export default function HifzSession({
       };
       mr.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: mr.mimeType || mime || "audio/mp4" });
-        const url = URL.createObjectURL(blob);
-        recUrlRef.current = url;
-        setRecUrl((prev) => {
-          if (prev) URL.revokeObjectURL(prev);
-          return url;
-        });
+        setRecUrlSafe(URL.createObjectURL(blob));
         setRecState("recorded");
-        stream.getTracks().forEach((t) => t.stop()); // this recorder's own stream
+        stream.getTracks().forEach((t) => t.stop());
       };
       recorderRef.current = mr;
       mr.start();
@@ -207,15 +237,26 @@ export default function HifzSession({
       setRecErr("Microphone unavailable — allow mic access to record.");
       setRecState("idle");
     }
-  }, []);
+  }, [native, setRecUrlSafe]);
 
-  const stopRec = useCallback(() => {
+  const stopRec = useCallback(async () => {
+    if (native) {
+      try {
+        const { value } = await VoiceRecorder.stopRecording();
+        setRecUrlSafe(`data:${value.mimeType || "audio/aac"};base64,${value.recordDataBase64}`);
+        setRecState("recorded");
+      } catch {
+        setRecErr("Couldn't save the recording.");
+        setRecState("idle");
+      }
+      return;
+    }
     try {
       recorderRef.current?.stop();
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [native, setRecUrlSafe]);
 
   // Load ayahs whenever the current card changes; reset per-card UI state.
   useEffect(() => {
@@ -239,7 +280,8 @@ export default function HifzSession({
     return () => {
       audioRef.current?.pause();
       streamRef.current?.getTracks().forEach((t) => t.stop());
-      if (recUrlRef.current) URL.revokeObjectURL(recUrlRef.current);
+      if (recUrlRef.current && recUrlRef.current.startsWith("blob:"))
+        URL.revokeObjectURL(recUrlRef.current);
     };
   }, []);
 
