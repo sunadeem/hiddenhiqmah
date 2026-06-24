@@ -190,7 +190,7 @@ begin
               case when p_ttl_hours is null then null else now() + make_interval(hours => p_ttl_hours) end);
       exit;
     exception when unique_violation then
-      -- collision; loop and try another code
+      null; -- code collided; loop and try another (empty handler body is a syntax error)
     end;
   end loop;
   return v_code;

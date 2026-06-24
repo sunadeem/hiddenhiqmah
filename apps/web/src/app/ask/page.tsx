@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Send, Loader2, MessageCircleQuestion, Trash2, ChevronLeft } from "lucide-react";
-import { useIsNative } from "@/lib/mobile/platform";
+import { Send, Loader2, MessageCircleQuestion, Trash2 } from "lucide-react";
 import {
   STORAGE_KEY,
   loadMessages,
@@ -46,7 +45,6 @@ const placeholderQuestions = [
 
 export default function AskPage() {
   const router = useRouter();
-  const isNative = useIsNative();
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -177,17 +175,8 @@ export default function AskPage() {
   return (
     <div className="h-full flex flex-col" style={{ background: "var(--color-bg)" }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-3 border-b sidebar-border shrink-0">
-        <div className="flex items-center gap-1.5">
-          {isNative && (
-            <button
-              onClick={() => router.back()}
-              aria-label="Back"
-              className="w-9 h-9 -ml-1 rounded-full flex items-center justify-center text-themed active:bg-white/10 touch-manipulation"
-            >
-              <ChevronLeft size={24} strokeWidth={2.5} />
-            </button>
-          )}
+      <div className="flex items-center justify-between px-5 py-4 border-b sidebar-border shrink-0">
+        <div className="flex items-center gap-2">
           <MessageCircleQuestion size={16} className="text-[#3b82f6]" />
           <span className="text-base font-semibold text-[#3b82f6] tracking-wide">
             Ask Hiqmah
@@ -290,7 +279,7 @@ export default function AskPage() {
       <form
         onSubmit={handleSubmit}
         className="border-t sidebar-border p-4 shrink-0"
-        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 16px)" }}
+        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 84px)" }}
       >
         <div className="flex items-center gap-3 min-w-0">
           <input

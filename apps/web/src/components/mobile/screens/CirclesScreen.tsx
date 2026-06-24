@@ -26,6 +26,17 @@ import {
   type CircleDetail,
 } from "@/lib/circles";
 
+// Supabase/PostgREST errors aren't Error instances — pull their .message so the
+// real reason surfaces instead of a generic "Something went wrong".
+function errMsg(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  if (e && typeof e === "object" && "message" in e) {
+    const m = (e as { message?: unknown }).message;
+    if (typeof m === "string" && m) return m;
+  }
+  return "Something went wrong.";
+}
+
 const RING_R = 28;
 const RING_C = 2 * Math.PI * RING_R;
 
@@ -92,7 +103,7 @@ export default function CirclesScreen() {
       setCircles(await getMyCirclesWithDetail());
       setErr("");
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "Could not load circles.");
+      setErr(errMsg(e));
       setCircles([]);
     }
   }, [user]);
@@ -108,7 +119,7 @@ export default function CirclesScreen() {
       await fn();
       await reload();
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "Something went wrong.");
+      setErr(errMsg(e));
     } finally {
       setBusy(false);
     }
@@ -186,6 +197,8 @@ export default function CirclesScreen() {
       {showCreate && (
         <div className="card-bg rounded-2xl border sidebar-border p-4 space-y-3">
           <input
+            type="text"
+            autoFocus
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Circle name (e.g. Family Khatmah)"
@@ -205,6 +218,7 @@ export default function CirclesScreen() {
       {showJoin && (
         <div className="card-bg rounded-2xl border sidebar-border p-4 space-y-3">
           <input
+            type="text"
             value={joinCode}
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
             placeholder="Invite code"

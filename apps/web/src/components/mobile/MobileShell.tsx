@@ -47,7 +47,9 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   // On sign-in, migrate signed-out local Daily data into Supabase (once).
   useLegacyImport();
 
-  const hideBottomChrome = FULLSCREEN_ROUTES.has(pathname) || isFullChat;
+  // Ask keeps the bottom tab bar (it's a normal destination you can navigate
+  // away from) — only its scroll layout is full-height (isFullChat below).
+  const hideBottomChrome = FULLSCREEN_ROUTES.has(pathname);
 
   // Edge-swipe-back: a left-edge → right drag navigates back (iOS-style),
   // since the WKWebView SPA has no native back gesture. Only on non-tab-roots.
