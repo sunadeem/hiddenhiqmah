@@ -25,17 +25,17 @@ import { computePrayerTimes } from "@/lib/prayer-times";
 import TodayStrip from "./TodayStrip";
 import { QuickActions } from "../MobileHomeDashboard";
 
-// Festive, cohesive blue palette for Ramadan. Overrides the theme variables
-// within this page only — so the accent, the CARD backgrounds, and the borders
-// all shift into one blue family (instead of a blue accent on gray cards), plus
-// a soft blue glow at the top. (.card-bg/.sidebar-border/.text-gold all resolve
-// through these vars, so everything re-palettes automatically.)
+// Midnight Indigo on a near-black canvas: the page background is near-black so the
+// indigo cards POP (instead of a wall of one colour), with a soft periwinkle glow
+// at the top. Re-palettes accent / card / border within this page only, so
+// .card-bg/.sidebar-border/.text-gold all shift automatically.
 const RAMADAN_STYLE = {
   background:
-    "radial-gradient(130% 55% at 50% 0%, rgba(91,189,240,0.10), transparent 70%)",
-  ["--color-gold" as string]: "#5bbdf0", // accent (icons, rings, gradients)
-  ["--color-card" as string]: "#102a47", // blue-tinted card (was gray-navy)
-  ["--color-border" as string]: "#244a73", // blue border
+    "radial-gradient(130% 50% at 50% 0%, rgba(139,134,255,0.12), transparent 62%), #08090e",
+  ["--color-bg" as string]: "#08090e", // near-black page canvas
+  ["--color-gold" as string]: "#8b86ff", // periwinkle accent
+  ["--color-card" as string]: "#1a1840", // indigo card
+  ["--color-border" as string]: "#2c2a5c", // indigo border
 } as React.CSSProperties;
 
 // Dark text used on the solid-accent pills/buttons (reads on any light accent).
