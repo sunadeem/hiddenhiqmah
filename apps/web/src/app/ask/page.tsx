@@ -58,7 +58,15 @@ export default function AskPage() {
   useEffect(() => {
     setMessages(loadMessages());
     setHydrated(true);
-    inputRef.current?.focus();
+    // Prefill from ?q= (e.g. the Qur'an "ask the tutor about this word" deep-link).
+    let q = "";
+    try {
+      q = new URLSearchParams(window.location.search).get("q") || "";
+    } catch {
+      /* ignore */
+    }
+    if (q) setQuery(q);
+    else inputRef.current?.focus();
   }, []);
 
   useEffect(() => {

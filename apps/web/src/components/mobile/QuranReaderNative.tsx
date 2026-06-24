@@ -31,6 +31,7 @@ import {
   type QuranDisplay,
 } from "@hidden-hiqmah/ui/lib/storage";
 import { ActionSheet } from "@/components/mobile/LongPressActions";
+import UnderstandingSheet from "@/components/mobile/UnderstandingSheet";
 import { hapticSelection, hapticLight, hapticMedium } from "@/lib/mobile/haptics";
 
 type Word = { t: string; tr: string; m: string };
@@ -91,7 +92,14 @@ export default function QuranReaderNative({
   const [fontSize, setFontSizeState] = useState(2);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sheetVerse, setSheetVerse] = useState<Verse | null>(null);
+  const [wordSheet, setWordSheet] = useState<{ verseNumber: number; wordIdx: number; word: Word } | null>(null);
   const [focusIdx, setFocusIdx] = useState(0);
+
+  // Tap a word → open the Understanding sheet (root / meaning / occurrences / tutor).
+  const onWord = (verseNumber: number, wordIdx: number, word: Word) => {
+    hapticSelection();
+    setWordSheet({ verseNumber, wordIdx, word });
+  };
 
   const searchParams = useSearchParams();
   const initialVerse = Number(searchParams.get("v")) || 0;
@@ -310,6 +318,7 @@ export default function QuranReaderNative({
           timestampData={timestampData}
           audio={audio}
           onPlayPause={playPause}
+          onWord={onWord}
         />
       ) : (
         <div
@@ -339,6 +348,7 @@ export default function QuranReaderNative({
               ts={timestampData?.[String(v.number)]}
               audio={audio}
               onPlayPause={() => playPause(v)}
+              onWord={onWord}
             />
           ))}
         </div>
@@ -360,6 +370,16 @@ export default function QuranReaderNative({
           onClose={() => setSheetVerse(null)}
         />
       )}
+
+      {/* Understanding sheet (tap a word) */}
+      <UnderstandingSheet
+        open={!!wordSheet}
+        onClose={() => setWordSheet(null)}
+        surah={chapter.id}
+        verseNumber={wordSheet?.verseNumber ?? 0}
+        wordIdx={wordSheet?.wordIdx ?? 0}
+        word={wordSheet?.word ?? null}
+      />
 
       {/* Settings sheet */}
       <SettingsSheet
@@ -387,6 +407,7 @@ function VerseBlock({
   ts,
   audio,
   onPlayPause,
+  onWord,
 }: {
   verse: Verse;
   display: QuranDisplay;
@@ -395,6 +416,7 @@ function VerseBlock({
   ts: number[][] | undefined;
   audio: ReturnType<typeof useQuranAudio>;
   onPlayPause: () => void;
+  onWord: (verseNumber: number, wordIdx: number, word: Word) => void;
 }) {
   const playing = audio.playingVerse === verse.number;
   const active = activeWordIndex(
@@ -435,13 +457,14 @@ function VerseBlock({
             ? words.map((w, wi) => (
                 <span
                   key={wi}
-                  className={
+                  onClick={() => onWord(verse.number, wi, w)}
+                  className={`cursor-pointer rounded touch-manipulation transition-colors active:bg-[var(--color-gold)]/15 ${
                     wi === active
                       ? "text-gold"
                       : playing && active >= 0 && wi < active
                       ? "text-gold/60"
                       : ""
-                  }
+                  }`}
                 >
                   {w.t}
                 </span>
@@ -482,6 +505,7 @@ function FocusView({
   timestampData,
   audio,
   onPlayPause,
+  onWord,
 }: {
   verses: Verse[];
   idx: number;
@@ -492,6 +516,7 @@ function FocusView({
   timestampData: TimestampMap | null;
   audio: ReturnType<typeof useQuranAudio>;
   onPlayPause: (v: Verse) => void;
+  onWord: (verseNumber: number, wordIdx: number, word: Word) => void;
 }) {
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const adhan = useAdhanAudio();
@@ -564,7 +589,11 @@ function FocusView({
               <p dir="rtl" className={`font-arabic text-themed text-center leading-[2.3] ${AR_SIZES[Math.min(fontSize + 1, 3)]} flex flex-wrap justify-center gap-x-2`}>
                 {words
                   ? words.map((w, wi) => (
-                      <span key={wi} className={wi === active ? "text-gold" : playing && active >= 0 && wi < active ? "text-gold/60" : ""}>
+                      <span
+                        key={wi}
+                        onClick={() => onWord(verse.number, wi, w)}
+                        className={`cursor-pointer rounded touch-manipulation transition-colors active:bg-[var(--color-gold)]/15 ${wi === active ? "text-gold" : playing && active >= 0 && wi < active ? "text-gold/60" : ""}`}
+                      >
                         {w.t}
                       </span>
                     ))
