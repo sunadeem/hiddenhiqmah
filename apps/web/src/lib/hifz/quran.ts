@@ -138,19 +138,20 @@ export function buildRangeCard(
   endSurah: number,
   endAyah: number
 ): NewCardInput {
+  // Clamp to valid bounds (like the other builders) + normalise so start ≤ end in
+  // mushaf order — guards against a backwards range producing a huge bogus card.
+  let ss = Math.max(1, Math.min(TOTAL_SURAHS, startSurah));
+  let es = Math.max(1, Math.min(TOTAL_SURAHS, endSurah));
+  let sa = Math.max(1, Math.min(verseCount(ss) || 1, startAyah));
+  let ea = Math.max(1, Math.min(verseCount(es) || 1, endAyah));
+  if (ord(es, ea) < ord(ss, sa)) {
+    [ss, sa, es, ea] = [es, ea, ss, sa];
+  }
   const label =
-    startSurah === endSurah
-      ? `${surahName(startSurah)} ${startAyah}–${endAyah}`
-      : `${surahName(startSurah)} ${startAyah} – ${surahName(endSurah)} ${endAyah}`;
-  return {
-    unit: "range",
-    label,
-    page: null,
-    startSurah,
-    startAyah,
-    endSurah,
-    endAyah,
-  };
+    ss === es
+      ? `${surahName(ss)} ${sa}–${ea}`
+      : `${surahName(ss)} ${sa} – ${surahName(es)} ${ea}`;
+  return { unit: "range", label, page: null, startSurah: ss, startAyah: sa, endSurah: es, endAyah: ea };
 }
 
 /** Enumerate every ayah in a card's range (crosses surah boundaries). */

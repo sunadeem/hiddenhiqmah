@@ -86,13 +86,16 @@ export default function HifzSession({
   onDone: () => void;
 }) {
   const [remaining, setRemaining] = useState<HifzCard[]>(() => queue);
-  const [reviewed, setReviewed] = useState(0);
   const [mode, setMode] = useState<Mode>("listen");
   const [data, setData] = useState<Loaded[] | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const current = remaining[0] ?? null;
+  const total = queue.length;
+  // Distinct cards finished (an "again" re-queues without completing, so it never
+  // inflates this — it's derived from what's left, not from grade taps).
+  const completed = total - remaining.length;
 
   // ── Audio (sequential per-ayah playback) ──
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -141,10 +144,13 @@ export default function HifzSession({
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
+  const recUrlRef = useRef<string | null>(null); // for unmount revoke (closure-safe)
+  const recReqRef = useRef(0); // request token — invalidates superseded getUserMedia
 
   const resetRec = useCallback(() => {
+    recReqRef.current++; // invalidate any in-flight getUserMedia
     try {
-      recorderRef.current?.state === "recording" && recorderRef.current.stop();
+      if (recorderRef.current?.state === "recording") recorderRef.current.stop();
     } catch {
       /* ignore */
     }
@@ -155,12 +161,19 @@ export default function HifzSession({
       if (prev) URL.revokeObjectURL(prev);
       return null;
     });
+    recUrlRef.current = null;
   }, []);
 
   const startRec = useCallback(async () => {
     setRecErr(null);
+    const myToken = ++recReqRef.current;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (myToken !== recReqRef.current) {
+        // Superseded (card/mode changed while awaiting) — release the mic.
+        stream.getTracks().forEach((t) => t.stop());
+        return;
+      }
       streamRef.current = stream;
       const mr = new MediaRecorder(stream);
       chunksRef.current = [];
@@ -170,12 +183,13 @@ export default function HifzSession({
       mr.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: mr.mimeType || "audio/webm" });
         const url = URL.createObjectURL(blob);
+        recUrlRef.current = url;
         setRecUrl((prev) => {
           if (prev) URL.revokeObjectURL(prev);
           return url;
         });
         setRecState("recorded");
-        streamRef.current?.getTracks().forEach((t) => t.stop());
+        stream.getTracks().forEach((t) => t.stop()); // this recorder's own stream
       };
       recorderRef.current = mr;
       mr.start();
@@ -216,6 +230,7 @@ export default function HifzSession({
     return () => {
       audioRef.current?.pause();
       streamRef.current?.getTracks().forEach((t) => t.stop());
+      if (recUrlRef.current) URL.revokeObjectURL(recUrlRef.current);
     };
   }, []);
 
@@ -227,7 +242,6 @@ export default function HifzSession({
       setBusy(true);
       try {
         await adapter.grade(current.id, g, today);
-        setReviewed((n) => n + 1);
         stopAudio();
         resetRec();
         setRevealed(false);
@@ -248,7 +262,7 @@ export default function HifzSession({
         </div>
         <h2 className="text-themed text-xl font-bold">Session complete</h2>
         <p className="text-themed-muted text-sm mt-1">
-          {reviewed} card{reviewed === 1 ? "" : "s"} reviewed — masha&apos;Allah.
+          {total} card{total === 1 ? "" : "s"} reviewed — masha&apos;Allah.
         </p>
         <button
           onClick={onDone}
@@ -260,7 +274,6 @@ export default function HifzSession({
     );
   }
 
-  const total = queue.length;
   const showReveal = (mode === "hide" || mode === "hint") && !revealed;
 
   return (
@@ -268,14 +281,14 @@ export default function HifzSession({
       {/* Progress + label */}
       <div className="flex items-center justify-between px-1">
         <p className="text-themed-muted text-xs">
-          {Math.min(reviewed + 1, total)} of {total}
+          {Math.min(completed + 1, total)} of {total}
         </p>
         <p className="text-gold text-sm font-bold">{current.label}</p>
       </div>
       <div className="h-1 rounded-full bg-white/8 overflow-hidden">
         <div
           className="h-full bg-gold rounded-full transition-all"
-          style={{ width: `${(reviewed / total) * 100}%` }}
+          style={{ width: `${(completed / total) * 100}%` }}
         />
       </div>
 
@@ -285,6 +298,7 @@ export default function HifzSession({
           <button
             key={m.key}
             onClick={() => {
+              if (mode === "record" && m.key !== "record") resetRec();
               setMode(m.key);
               setRevealed(false);
             }}

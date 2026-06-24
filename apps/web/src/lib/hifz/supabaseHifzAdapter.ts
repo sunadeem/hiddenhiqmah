@@ -1,5 +1,4 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { consecRun } from "@hidden-hiqmah/ui/lib/daily/types";
 import type {
   HifzAdapter,
   HifzCard,
@@ -7,7 +6,13 @@ import type {
   NewCardInput,
   Grade,
 } from "@hidden-hiqmah/ui/lib/hifz/types";
-import { applyGrade, newCard, rangeKey, selectQueue } from "@hidden-hiqmah/ui/lib/hifz/srs";
+import {
+  applyGrade,
+  hifzStreak,
+  newCard,
+  rangeKey,
+  selectQueue,
+} from "@hidden-hiqmah/ui/lib/hifz/srs";
 
 /**
  * Synced Hifz adapter. The SRS scheduling + streak logic are the SAME pure
@@ -50,6 +55,7 @@ export function createSupabaseHifzAdapter(
       reps: r.reps,
       lapses: r.lapses,
       step: r.step,
+      introducedDate: r.introduced_date ?? null,
       due: r.due,
       lastReviewed: r.last_reviewed ?? null,
       createdAt: r.created_at,
@@ -74,6 +80,7 @@ export function createSupabaseHifzAdapter(
       reps: c.reps,
       lapses: c.lapses,
       step: c.step,
+      introduced_date: c.introducedDate,
       due: c.due,
       last_reviewed: c.lastReviewed,
       created_at: c.createdAt,
@@ -97,29 +104,6 @@ export function createSupabaseHifzAdapter(
     if (error) throw error;
     return [...new Set((data ?? []).map((r) => r.local_date as string))];
   }
-  function bestRun(datesDesc: string[]): number {
-    // longest consecutive-day run anywhere in the history
-    const asc = [...datesDesc].sort();
-    let best = 0;
-    let run = 0;
-    let prev: string | null = null;
-    for (const d of asc) {
-      if (prev) {
-        const next = new Date(prev + "T12:00:00");
-        next.setDate(next.getDate() + 1);
-        const nextStr = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}-${String(
-          next.getDate()
-        ).padStart(2, "0")}`;
-        run = d === nextStr ? run + 1 : 1;
-      } else {
-        run = 1;
-      }
-      if (run > best) best = run;
-      prev = d;
-    }
-    return best;
-  }
-
   return {
     synced: true,
 
@@ -152,6 +136,12 @@ export function createSupabaseHifzAdapter(
       const card = cards.find((c) => c.id === id);
       if (!card) return;
       const u = applyGrade(card, grade, today, new Date().toISOString());
+      // Write the review FIRST (it drives the streak): if it fails we throw before
+      // rescheduling, so the card never advances without its review being logged.
+      const { error: revErr } = await client
+        .from("hifz_reviews")
+        .insert({ user_id: userId, card_id: id, grade, local_date: today });
+      if (revErr) throw revErr;
       const { error } = await client
         .from("hifz_cards")
         .update({
@@ -161,20 +151,18 @@ export function createSupabaseHifzAdapter(
           reps: u.reps,
           lapses: u.lapses,
           step: u.step,
+          introduced_date: u.introducedDate,
           due: u.due,
           last_reviewed: u.lastReviewed,
           updated_at: u.updatedAt,
         })
         .eq("id", id);
       if (error) throw error;
-      await client
-        .from("hifz_reviews")
-        .insert({ user_id: userId, card_id: id, grade, local_date: today });
     },
 
     async getStats(today: string): Promise<HifzStats> {
       const [cards, dates] = await Promise.all([fetchCards(), reviewDatesDesc()]);
-      const cur = consecRun(dates, today);
+      const { current, best } = hifzStreak(dates, today);
       return {
         total: cards.length,
         memorized: cards.filter((c) => c.status === "memorized").length,
@@ -182,8 +170,8 @@ export function createSupabaseHifzAdapter(
         learning: cards.filter((c) => c.status === "learning").length,
         fresh: cards.filter((c) => c.status === "new").length,
         dueToday: selectQueue(cards, today).length,
-        streakCurrent: cur,
-        streakBest: Math.max(cur, bestRun(dates)),
+        streakCurrent: current,
+        streakBest: best,
       };
     },
 

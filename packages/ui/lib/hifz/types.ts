@@ -32,6 +32,7 @@ export interface HifzCard {
   reps: number; // successful reviews
   lapses: number; // times forgotten
   step: number; // learning-step index (while new/learning)
+  introducedDate: string | null; // day this card first left "new" (per-day new cap)
   due: string; // YYYY-MM-DD — next review date
   lastReviewed: string | null; // YYYY-MM-DD
   createdAt: string; // ISO

@@ -26,6 +26,7 @@ create table if not exists public.hifz_cards (
     reps          int  not null default 0,
     lapses        int  not null default 0,
     step          int  not null default 0,
+    introduced_date date,                          -- day the card first left "new" (per-day new cap)
     due           date not null,
     last_reviewed date,
     created_at    timestamptz not null default now(),

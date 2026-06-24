@@ -1,7 +1,6 @@
 // Device-only Hifz adapter — persists to localStorage. Mirrors the daily
 // localAdapter shape. The Supabase adapter (synced) implements the same port.
 
-import { consecRun } from "../daily/types";
 import type {
   HifzAdapter,
   HifzCard,
@@ -10,7 +9,7 @@ import type {
   NewCardInput,
   Grade,
 } from "./types";
-import { applyGrade, newCard, rangeKey, selectQueue } from "./srs";
+import { applyGrade, hifzStreak, newCard, rangeKey, selectQueue } from "./srs";
 
 const STORE_KEY = "hiqmah-hifz-v1";
 
@@ -38,10 +37,6 @@ function todayLocal(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
     d.getDate()
   ).padStart(2, "0")}`;
-}
-function currentStreak(reviews: HifzReview[], today: string): number {
-  const dates = [...new Set(reviews.map((r) => r.localDate))].sort().reverse();
-  return consecRun(dates, today);
 }
 
 export function createLocalHifzAdapter(storeKey = STORE_KEY): HifzAdapter {
@@ -98,15 +93,15 @@ export function createLocalHifzAdapter(storeKey = STORE_KEY): HifzAdapter {
       if (i < 0) return;
       s.cards[i] = applyGrade(s.cards[i], grade, today, nowIso());
       s.reviews.push({ id: uuid(), cardId: id, grade, localDate: today, at: nowIso() });
-      const cur = currentStreak(s.reviews, today);
-      if (cur > s.streakBest) s.streakBest = cur;
+      const { best } = hifzStreak(s.reviews.map((r) => r.localDate), today);
+      if (best > s.streakBest) s.streakBest = best;
       save(s);
     },
 
     async getStats(today: string): Promise<HifzStats> {
       const s = load();
       const cards = s.cards;
-      const cur = currentStreak(s.reviews, today);
+      const { current, best } = hifzStreak(s.reviews.map((r) => r.localDate), today);
       return {
         total: cards.length,
         memorized: cards.filter((c) => c.status === "memorized").length,
@@ -114,16 +109,16 @@ export function createLocalHifzAdapter(storeKey = STORE_KEY): HifzAdapter {
         learning: cards.filter((c) => c.status === "learning").length,
         fresh: cards.filter((c) => c.status === "new").length,
         dueToday: selectQueue(cards, today).length,
-        streakCurrent: cur,
-        streakBest: Math.max(s.streakBest, cur),
+        streakCurrent: current,
+        streakBest: Math.max(s.streakBest, best),
       };
     },
 
     async recomputeStreak(today: string): Promise<void> {
       const s = load();
-      const cur = currentStreak(s.reviews, today);
-      if (cur > s.streakBest) {
-        s.streakBest = cur;
+      const { best } = hifzStreak(s.reviews.map((r) => r.localDate), today);
+      if (best > s.streakBest) {
+        s.streakBest = best;
         save(s);
       }
     },
