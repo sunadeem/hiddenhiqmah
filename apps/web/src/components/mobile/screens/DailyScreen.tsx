@@ -91,6 +91,7 @@ export default function DailyScreen() {
 }
 
 function ChecklistTab() {
+  const router = useRouter();
   const { adapter, signedIn, authLoading } = useDailyAdapter();
   const today = useMemo(() => todayLocalDate(), []);
   const list = useChecklist(adapter, today);
@@ -136,11 +137,12 @@ function ChecklistTab() {
         </Link>
       )}
 
+      {/* Streak + prayer badges → the Humane Streaks page (pauses, mercy, qaḍāʾ). */}
       <StreakBadges
         streaks={list.streaks}
         onOpen={() => {
           hapticLight();
-          setCalOpen(true);
+          router.push("/streaks");
         }}
       />
 
