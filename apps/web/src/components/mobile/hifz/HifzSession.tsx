@@ -13,7 +13,6 @@ import {
   Volume2,
 } from "lucide-react";
 import type { AyahRef, Grade, HifzAdapter, HifzCard } from "@hidden-hiqmah/ui/lib/hifz/types";
-import { applyGrade } from "@hidden-hiqmah/ui/lib/hifz/srs";
 import { ayahsInCard } from "@/lib/hifz/quran";
 
 type Verse = {
@@ -36,7 +35,7 @@ const MODES: { key: Mode; label: string; icon: typeof Eye }[] = [
 ];
 
 const GRADES: { key: Grade; label: string; cls: string }[] = [
-  { key: "again", label: "Again", cls: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
+  { key: "again", label: "Forgot", cls: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
   { key: "hard", label: "Hard", cls: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
   { key: "good", label: "Good", cls: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
   { key: "easy", label: "Easy", cls: "bg-sky-500/15 text-sky-300 border-sky-500/30" },
@@ -44,6 +43,21 @@ const GRADES: { key: Grade; label: string; cls: string }[] = [
 
 const audioUrl = (verseId: number) =>
   `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${verseId}.mp3`;
+
+// WKWebView/Safari's MediaRecorder supports audio/mp4 (NOT audio/webm). Pick a
+// container the recorder actually produces AND the <audio> tag can play back, so
+// the recording isn't reinterpreted as noise.
+function pickAudioMime(): string {
+  if (typeof MediaRecorder === "undefined" || !MediaRecorder.isTypeSupported) return "";
+  for (const t of ["audio/mp4", "audio/aac", "audio/webm;codecs=opus", "audio/webm"]) {
+    try {
+      if (MediaRecorder.isTypeSupported(t)) return t;
+    } catch {
+      /* ignore */
+    }
+  }
+  return "";
+}
 
 async function loadCardData(refs: AyahRef[]): Promise<Loaded[]> {
   const surahs = [...new Set(refs.map((r) => r.surah))];
@@ -66,12 +80,6 @@ async function loadCardData(refs: AyahRef[]): Promise<Loaded[]> {
     verse: vmap[r.surah]?.find((v) => v.number === r.ayah) ?? null,
     words: wmap[r.surah]?.[String(r.ayah)] ?? null,
   }));
-}
-
-function intervalHint(card: HifzCard, grade: Grade, today: string): string {
-  const c = applyGrade(card, grade, today, today);
-  if (c.status === "learning") return "soon";
-  return c.interval >= 1 ? `${c.interval}d` : "today";
 }
 
 export default function HifzSession({
@@ -175,13 +183,14 @@ export default function HifzSession({
         return;
       }
       streamRef.current = stream;
-      const mr = new MediaRecorder(stream);
+      const mime = pickAudioMime();
+      const mr = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
       chunksRef.current = [];
       mr.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
       mr.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: mr.mimeType || "audio/webm" });
+        const blob = new Blob(chunksRef.current, { type: mr.mimeType || mime || "audio/mp4" });
         const url = URL.createObjectURL(blob);
         recUrlRef.current = url;
         setRecUrl((prev) => {
@@ -403,10 +412,9 @@ export default function HifzSession({
               key={g.key}
               onClick={() => grade(g.key)}
               disabled={busy}
-              className={`rounded-xl border py-2.5 flex flex-col items-center gap-0.5 touch-manipulation active:opacity-80 disabled:opacity-50 ${g.cls}`}
+              className={`rounded-xl border py-3 flex items-center justify-center text-sm font-bold touch-manipulation active:opacity-80 disabled:opacity-50 ${g.cls}`}
             >
-              <span className="text-sm font-bold">{g.label}</span>
-              <span className="text-[10px] opacity-70">{intervalHint(current, g.key, today)}</span>
+              {g.label}
             </button>
           ))}
         </div>
