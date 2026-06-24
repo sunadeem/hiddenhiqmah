@@ -22,10 +22,10 @@ const sections: { heading: string; note?: string; sources: Source[] }[] = [
         href: "https://tanzil.net",
       },
       {
-        name: "Word-by-word transliteration & meanings",
+        name: "Word-by-word data — transliteration, meanings, roots & morphology",
         detail:
-          "Per-word transliteration and glosses derive from the Quranic Arabic Corpus.",
-        license: "© corpus.quran.com — GNU General Public License v3.",
+          "Per-word transliteration, glosses, roots, lemmas and grammar derive from the Quranic Arabic Corpus (Kais Dukes).",
+        license: "© corpus.quran.com — GNU General Public License. Used unmodified, with attribution.",
         href: "https://corpus.quran.com",
       },
     ],
