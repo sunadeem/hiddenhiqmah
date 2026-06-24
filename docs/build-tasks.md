@@ -11,16 +11,16 @@ _Across all features: 10 ✅ done · 10 🟦 partial · 86 ⏳ todo._
 - **Circles** — migrations 006 (profiles) + 007 (circles) **LIVE IN PROD**; client (`lib/circles.ts` + `CirclesScreen`).
 - **Family** — local multi-profile (no backend).
 - **Ask** — full-screen chat page (slide-up removed).
-- _Pending real-device verification (a simulator keyboard bug blocks input testing — see memory)._
+- **Humane streaks** — pauses (travel/illness/menses) + mercy day + qadāʾ; engine (JS+SQL) + `/streaks` screen. Migration **008 LIVE in prod**. Routed from the Daily streak badge + More + Classic home.
+- **Understanding layer** — tap-a-word → meaning/root/"appears N×"/occurrences/grammar + "ask the tutor"; depth toggle. Bundled corpus morphology (`morphology/*.json` + `roots.json`), additive.
+- _Circles/Family/streaks pending real-device verification (a simulator keyboard bug blocks input testing — see memory)._
 
-## Recommended order for what's LEFT (2026-06-24)
-1. **Humane streaks** — improves the core daily loop *now* (retention). Streak-backend migration + client. No external deps.
-2. **Understanding layer** — the headline Qur'an differentiator; mostly tap/read (testable despite the keyboard bug). Prereq: a word-data source (QUL / generate — **not** the GPL corpus).
-3. **Teacher/class dashboard** — the rest of Family/Phase-2 (migration 009); do when teacher distribution is a focus.
-4. **Ramadan mode** — self-contained, no backend; schedule closer to Ramadan (~8 months out).
-5. **Hifz coach** — biggest/ML-risk; build after a wedge proves out (and after sync hardening, for cross-device).
-- **Prereqs (when their dependents need them):** Supabase sync conflict-resolution hardening (XL); i18n re-arch (before scaling content/localization).
-- **Separate launch-blocker track:** licensing remediation (translation/tafsir/hadith/audio), public AI endpoint rate-limiting, named reviewing scholar.
+## Recommended order for what's LEFT (updated 2026-06-24)
+1. **Teacher/class dashboard** — the rest of Family/Phase-2 (migration 009); do when teacher distribution is a focus.
+2. **Ramadan mode** — self-contained, no backend; schedule closer to Ramadan (~8 months out).
+3. **Hifz coach** — biggest/ML-risk; build after a wedge proves out (and after sync hardening, for cross-device).
+- **Prereqs (when their dependents need them):** Supabase sync conflict-resolution hardening (XL — current sync is last-write-wins); i18n re-arch (before scaling content/localization).
+- **Separate launch-blocker track (before App Store):** licensing remediation (translation/tafsir/hadith/audio re-sourcing), public AI endpoint rate-limiting, named reviewing scholar, the keyboard bug (verify/fix on a real device), full device-test pass.
 
 ## Suggested build sequence (original plan)
 
