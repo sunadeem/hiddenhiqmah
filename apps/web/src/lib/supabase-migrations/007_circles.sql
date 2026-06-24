@@ -183,7 +183,9 @@ declare v_code text;
 begin
   if not public.is_circle_member(p_circle, auth.uid()) then raise exception 'not a member'; end if;
   loop
-    v_code := upper(substr(encode(gen_random_bytes(6), 'hex'), 1, 6));  -- 6-char code
+    -- Built-in gen_random_uuid() (pg_catalog) — avoids pgcrypto's gen_random_bytes,
+    -- which lives in the `extensions` schema and isn't on this function's search_path.
+    v_code := upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 6));  -- 6-char code
     begin
       insert into public.circle_invites (circle_id, code, created_by, expires_at)
       values (p_circle, v_code, auth.uid(),
