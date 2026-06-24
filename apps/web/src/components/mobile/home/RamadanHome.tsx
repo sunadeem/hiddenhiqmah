@@ -18,9 +18,18 @@ import {
   getCurrentHijriMonthDay,
 } from "@hidden-hiqmah/ui/lib/storage";
 
-// Festive light-blue palette for Ramadan (overrides --color-gold within this
-// page only, so all the gold gradients/accents become blue automatically).
-const RAMADAN_BLUE = "#5cb8e6";
+// Festive, cohesive blue palette for Ramadan. Overrides the theme variables
+// within this page only — so the accent, the CARD backgrounds, and the borders
+// all shift into one blue family (instead of a blue accent on gray cards), plus
+// a soft blue glow at the top. (.card-bg/.sidebar-border/.text-gold all resolve
+// through these vars, so everything re-palettes automatically.)
+const RAMADAN_STYLE = {
+  background:
+    "radial-gradient(130% 55% at 50% 0%, rgba(91,189,240,0.10), transparent 70%)",
+  ["--color-gold" as string]: "#5bbdf0", // accent (icons, rings, gradients)
+  ["--color-card" as string]: "#102a47", // blue-tinted card (was gray-navy)
+  ["--color-border" as string]: "#244a73", // blue border
+} as React.CSSProperties;
 import { getFreshCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
 import { computePrayerTimes } from "@/lib/prayer-times";
 
@@ -136,10 +145,7 @@ export default function RamadanHome({
   const HeroIcon = heroIcon;
 
   return (
-    <div
-      className="space-y-3"
-      style={{ ["--color-gold" as string]: RAMADAN_BLUE } as React.CSSProperties}
-    >
+    <div className="space-y-3 rounded-2xl" style={RAMADAN_STYLE}>
       {/* Header */}
       <div className="px-1 flex items-center gap-2">
         <Moon size={20} className="text-gold" />
