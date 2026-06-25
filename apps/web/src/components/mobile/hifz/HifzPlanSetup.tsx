@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 import type { HifzAdapter, NewCardInput } from "@hidden-hiqmah/ui/lib/hifz/types";
+import { NEW_PER_DAY } from "@hidden-hiqmah/ui/lib/hifz/srs";
 import {
   buildPageCards,
   buildAyahCards,
@@ -149,7 +150,7 @@ export default function HifzPlanSetup({
         <p className="text-themed-muted text-sm">
           {preview.length === 0
             ? "Nothing selected"
-            : `Adds ${preview.length} card${preview.length === 1 ? "" : "s"} to your review queue.`}
+            : `Adds ${preview.length} card${preview.length === 1 ? "" : "s"} · introduces up to ${NEW_PER_DAY[preview[0].unit]}/day`}
         </p>
         {preview.length > 0 && preview.length <= 3 && (
           <p className="text-themed-muted/70 text-xs mt-1 truncate">

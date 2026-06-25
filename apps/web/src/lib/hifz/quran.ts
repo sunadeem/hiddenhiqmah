@@ -111,6 +111,11 @@ export function buildAyahCards(surah: number, fromAyah: number, toAyah: number):
   return out;
 }
 
+/**
+ * A surah is split into PAGE-SIZED chunks (the natural hifz unit), so a long surah
+ * like Al-Baqarah becomes ~48 manageable cards instead of one impossible one. A
+ * short surah that fits on a page stays a single whole-surah card.
+ */
 export function buildSurahCards(fromSurah: number, toSurah: number): NewCardInput[] {
   const lo = Math.max(1, Math.min(fromSurah, toSurah));
   const hi = Math.min(TOTAL_SURAHS, Math.max(fromSurah, toSurah));
@@ -118,15 +123,31 @@ export function buildSurahCards(fromSurah: number, toSurah: number): NewCardInpu
   for (let s = lo; s <= hi; s++) {
     const vc = verseCount(s);
     if (!vc) continue;
-    out.push({
-      unit: "surah",
-      label: surahName(s),
-      page: null,
-      startSurah: s,
-      startAyah: 1,
-      endSurah: s,
-      endAyah: vc,
-    });
+    const base = CUM[s - 1]; // global ord of ayah 0 → ayah a is base + a
+    const sStart = base + 1;
+    const sEnd = base + vc;
+    const fromP = pageOfAyah(s, 1);
+    const toP = pageOfAyah(s, vc);
+    for (let p = Math.min(fromP, toP); p <= Math.max(fromP, toP); p++) {
+      const rec = PAGES[p - 1];
+      if (!rec) continue;
+      // Intersect this page's ayah span with the surah, in global-ordinal space.
+      const lo2 = Math.max(sStart, ord(rec.s, rec.a));
+      const hi2 = Math.min(sEnd, ord(rec.es, rec.ea));
+      if (lo2 > hi2) continue;
+      const startAyah = lo2 - base;
+      const endAyah = hi2 - base;
+      const whole = startAyah === 1 && endAyah === vc;
+      out.push({
+        unit: "surah",
+        label: whole ? surahName(s) : `${surahName(s)} ${startAyah}–${endAyah}`,
+        page: p,
+        startSurah: s,
+        startAyah,
+        endSurah: s,
+        endAyah,
+      });
+    }
   }
   return out;
 }

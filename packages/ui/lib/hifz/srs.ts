@@ -2,9 +2,17 @@
 // The "card" is an ayah range regardless of granularity, so scheduling is uniform.
 
 import { consecRun } from "../daily/types";
-import type { HifzCard, Grade, NewCardInput } from "./types";
+import type { HifzCard, Grade, NewCardInput, Granularity } from "./types";
 
-export const NEW_PER_DAY = 5; // cap on brand-new cards introduced per day
+// Per-granularity cap on brand-new cards introduced per day. Pages + surah-chunks
+// (surah selection is split into page-sized cards) pace slowly; single ayahs pace
+// faster. Keeps the compounding review load sustainable.
+export const NEW_PER_DAY: Record<Granularity, number> = {
+  page: 2,
+  ayah: 10,
+  surah: 2,
+  range: 2,
+};
 export const QUEUE_CAP = 80; // safety cap on a single session
 export const MEMORIZED_INTERVAL = 21; // days — a review card at/after this is "memorized"
 const MIN_EASE = 1.3;
@@ -170,9 +178,22 @@ export function selectQueue(cards: HifzCard[], today: string): HifzCard[] {
   const due = cards
     .filter((c) => c.status !== "new" && c.due <= today)
     .sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : 0));
-  const introducedToday = cards.filter((c) => c.introducedDate === today).length;
-  const allowance = Math.max(0, NEW_PER_DAY - introducedToday);
-  const fresh = cards.filter((c) => c.status === "new").slice(0, allowance);
+  // Per-unit daily allowance: already-introduced-today (by unit) counts against
+  // that unit's cap, so each granularity paces independently.
+  const introduced: Record<string, number> = {};
+  for (const c of cards) {
+    if (c.introducedDate === today) introduced[c.unit] = (introduced[c.unit] ?? 0) + 1;
+  }
+  const taken: Record<string, number> = {};
+  const fresh: HifzCard[] = [];
+  for (const c of cards) {
+    if (c.status !== "new") continue;
+    const cap = NEW_PER_DAY[c.unit] ?? 2;
+    if ((introduced[c.unit] ?? 0) + (taken[c.unit] ?? 0) < cap) {
+      fresh.push(c);
+      taken[c.unit] = (taken[c.unit] ?? 0) + 1;
+    }
+  }
   return [...due, ...fresh].slice(0, QUEUE_CAP);
 }
 
