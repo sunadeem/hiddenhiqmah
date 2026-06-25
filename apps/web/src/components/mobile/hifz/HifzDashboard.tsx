@@ -116,7 +116,8 @@ export default function HifzDashboard({
       </div>
 
       <p className="text-themed-muted/70 text-xs text-center px-4 pt-1 leading-relaxed">
-        Reviews are spaced out so you see each portion right before you&apos;d forget it.
+        Each review gives you a few new portions plus anything due. Grading them moves cards
+        New → Learning → Review → Memorized automatically — you don&apos;t sort them yourself.
       </p>
     </div>
   );
