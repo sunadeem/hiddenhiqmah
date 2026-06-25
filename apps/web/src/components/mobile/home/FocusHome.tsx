@@ -14,7 +14,7 @@ import type { TunedFor } from "@hidden-hiqmah/ui/lib/storage";
 type Act = { icon: typeof BookOpen; title: string; subtitle: string; href: string };
 
 const ACT: Record<TunedFor, Act> = {
-  hifz: { icon: Repeat, title: "Hifz review", subtitle: "Strengthen what you've memorised", href: "/quran" },
+  hifz: { icon: Repeat, title: "Hifz review", subtitle: "Strengthen what you've memorised", href: "/hifz" },
   prayer: { icon: Sparkles, title: "Du'as for your day", subtitle: "Supplications for every moment", href: "/duas" },
   "new-muslim": { icon: GraduationCap, title: "Learn the basics", subtitle: "Five pillars & how to pray", href: "/pillars" },
   family: { icon: Users, title: "Family time", subtitle: "Teach & learn together", href: "/family" },

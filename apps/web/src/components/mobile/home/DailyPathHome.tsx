@@ -66,7 +66,7 @@ function buildSteps(tunedFor: TunedFor, hour: number): Step[] {
       : { key: "adhkar", icon: Moon, title: "Evening adhkar", subtitle: "Protection for the evening", href: "/muslim-daily", itemKey: "evening_adhkar" };
   const read: Step = { key: "read", icon: BookOpen, title: "Read Qur'an", subtitle: "Continue where you left off", href: "/quran", itemKey: "quran_page" };
   const reflect: Step = { key: "reflect", icon: Sparkles, title: "Today's reflection", subtitle: "A verse to ponder", href: "/muslim-daily" };
-  const hifz: Step = { key: "hifz", icon: Repeat, title: "Hifz review", subtitle: "Strengthen what you've memorised", href: "/quran" };
+  const hifz: Step = { key: "hifz", icon: Repeat, title: "Hifz review", subtitle: "Strengthen what you've memorised", href: "/hifz" };
   const duas: Step = { key: "duas", icon: Heart, title: "Du'as for your day", subtitle: "Supplications for every moment", href: "/duas" };
   const learn: Step = { key: "learn", icon: GraduationCap, title: "Learn the basics", subtitle: "Five pillars & how to pray", href: "/pillars" };
   const family: Step = { key: "family", icon: Users, title: "Family time", subtitle: "Teach & learn together", href: "/family" };
