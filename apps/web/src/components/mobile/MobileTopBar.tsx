@@ -26,7 +26,10 @@ export default function MobileTopBar() {
   const isSurahReader = /^\/quran\/[^/]+/.test(pathname);
   // Ask is a full-screen chat that renders its own header + back button.
   const isFullChat = pathname === "/ask";
-  const showBack = !isTabRoot(pathname) && !isSurahReader && !isFullChat;
+  // Hifz owns its header — its back button also drives the in-screen sub-views
+  // (dashboard / setup / session / map), which the global router.back() can't.
+  const isHifz = pathname === "/hifz";
+  const showBack = !isTabRoot(pathname) && !isSurahReader && !isFullChat && !isHifz;
 
   useEffect(() => {
     navCount += 1;
