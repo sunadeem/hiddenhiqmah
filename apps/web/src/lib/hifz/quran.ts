@@ -175,6 +175,68 @@ export function buildRangeCard(
   return { unit: "range", label, page: null, startSurah: ss, startAyah: sa, endSurah: es, endAyah: ea };
 }
 
+// ── Guided plans: a journey (scope + order) × a unit → ordered cards ──
+
+export type Journey = "shortest" | "juz-amma" | "back-to-front" | "front-to-back";
+export type GuidedUnit = "page" | "surah" | "ayah";
+
+/** Units that make sense for a journey (full-Qur'an by single ayah = too many). */
+export function unitsForJourney(j: Journey): GuidedUnit[] {
+  return j === "juz-amma" ? ["surah", "page", "ayah"] : ["surah", "page"];
+}
+
+/** Ordered surah list for a journey (used for surah/ayah units). */
+function journeySurahs(j: Journey): number[] {
+  const all = Array.from({ length: TOTAL_SURAHS }, (_, i) => i + 1);
+  if (j === "front-to-back") return all;
+  if (j === "juz-amma") return all.filter((s) => s >= 78); // An-Naba → An-Nas (juz 30)
+  if (j === "shortest")
+    return all.slice().sort((a, b) => verseCount(a) - verseCount(b) || a - b);
+  // back-to-front: later juz first (by the juz of each surah's first page), then mushaf order
+  return all
+    .slice()
+    .sort((a, b) => juzOfPage(pageOfAyah(b, 1)) - juzOfPage(pageOfAyah(a, 1)) || a - b);
+}
+
+/** Ordered page list for a journey (used for the page unit). */
+function journeyPages(j: Journey): number[] {
+  if (j === "front-to-back") return PAGES.map((p) => p.p);
+  if (j === "juz-amma") return PAGES.filter((p) => p.j === 30).map((p) => p.p);
+  if (j === "back-to-front") {
+    const out: number[] = [];
+    for (let juz = TOTAL_JUZ; juz >= 1; juz--) {
+      for (const p of PAGES) if (p.j === juz) out.push(p.p);
+    }
+    return out;
+  }
+  // shortest: walk shortest surahs, their pages in order (de-duped at boundaries)
+  const seen = new Set<number>();
+  const out: number[] = [];
+  for (const s of journeySurahs("shortest")) {
+    const from = pageOfAyah(s, 1);
+    const to = pageOfAyah(s, verseCount(s));
+    for (let p = Math.min(from, to); p <= Math.max(from, to); p++) {
+      if (!seen.has(p)) {
+        seen.add(p);
+        out.push(p);
+      }
+    }
+  }
+  return out;
+}
+
+/** Generate the full ordered card list for a guided plan. */
+export function buildGuidedCards(journey: Journey, unit: GuidedUnit): NewCardInput[] {
+  if (unit === "page") return journeyPages(journey).flatMap((p) => buildPageCards(p, p));
+  const surahs = journeySurahs(journey);
+  const out: NewCardInput[] = [];
+  for (const s of surahs) {
+    if (unit === "surah") out.push(...buildSurahCards(s, s));
+    else out.push(...buildAyahCards(s, 1, verseCount(s)));
+  }
+  return out;
+}
+
 /** Enumerate every ayah in a card's range (crosses surah boundaries). */
 export function ayahsInCard(c: {
   startSurah: number;

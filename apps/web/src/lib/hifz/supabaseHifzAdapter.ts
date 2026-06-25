@@ -114,8 +114,13 @@ export function createSupabaseHifzAdapter(
     async addCards(inputs: NewCardInput[]): Promise<void> {
       if (!inputs.length) return;
       const t = todayLocal();
-      const now = new Date().toISOString();
-      const rows = inputs.map((inp) => cardToRow(newCard(inp, t, now, uuid())));
+      // Increment createdAt per card so a batch insert preserves plan order
+      // (getQueue introduces new cards created-oldest-first; rows in one insert
+      // would otherwise share now() and scramble the journey order).
+      const base = Date.now();
+      const rows = inputs.map((inp, i) =>
+        cardToRow(newCard(inp, t, new Date(base + i).toISOString(), uuid()))
+      );
       const { error } = await client
         .from("hifz_cards")
         .upsert(rows, { onConflict: "user_id,range_key", ignoreDuplicates: true });
