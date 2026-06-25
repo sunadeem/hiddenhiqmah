@@ -140,7 +140,7 @@ export default function HifzProgressMap({ cards }: { cards: HifzCard[] }) {
       )}
 
       {mode === "surah" && (
-        <div className="grid grid-cols-6 gap-1.5">
+        <div className="grid grid-cols-10 gap-1">
           {surahAgg.map((a, i) => {
             const cls = aggColor(a.total, a.memorized, a.maxRank);
             const dark = cls === C.gold;
@@ -148,11 +148,11 @@ export default function HifzProgressMap({ cards }: { cards: HifzCard[] }) {
               <div
                 key={i}
                 title={surahName(i + 1)}
-                className={`aspect-square rounded-lg flex items-center justify-center ${cls} ${
+                className={`aspect-square rounded flex items-center justify-center ${cls} ${
                   cls === C.faint ? "border sidebar-border" : ""
                 }`}
               >
-                <span className={`text-[11px] font-semibold ${dark ? "text-[#0a1628]" : "text-themed"}`}>
+                <span className={`text-[9px] font-semibold ${dark ? "text-[#0a1628]" : "text-themed"}`}>
                   {i + 1}
                 </span>
               </div>
