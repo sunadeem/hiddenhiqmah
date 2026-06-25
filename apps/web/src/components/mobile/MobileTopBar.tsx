@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import { isTabRoot } from "./routes";
+import { isTabRoot, ownsHeader } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 
 // How many in-app navigations have happened since app load. >1 means there's
@@ -21,15 +21,10 @@ function parentPath(pathname: string): string {
 export default function MobileTopBar() {
   const pathname = usePathname();
   const router = useRouter();
-  // The Quran surah reader renders its own top bar (back + title + settings),
-  // so the global bar drops to a slim status-bar spacer to avoid a double back.
-  const isSurahReader = /^\/quran\/[^/]+/.test(pathname);
-  // Ask is a full-screen chat that renders its own header + back button.
-  const isFullChat = pathname === "/ask";
-  // Hifz owns its header — its back button also drives the in-screen sub-views
-  // (dashboard / setup / session / map), which the global router.back() can't.
-  const isHifz = pathname === "/hifz";
-  const showBack = !isTabRoot(pathname) && !isSurahReader && !isFullChat && !isHifz;
+  // Screens that render their own header/back bar (reader, Ask, Hifz, …) are
+  // listed in OWN_HEADER_PATTERNS (routes.ts); the global bar drops to a slim
+  // status-bar spacer for them to avoid a double back.
+  const showBack = !isTabRoot(pathname) && !ownsHeader(pathname);
 
   useEffect(() => {
     navCount += 1;
