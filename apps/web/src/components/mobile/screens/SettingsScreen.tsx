@@ -59,7 +59,7 @@ import {
   type HomePrefs,
 } from "@hidden-hiqmah/ui/lib/storage";
 
-const FEEDBACK_EMAIL = "subhan.s.nadeem@gmail.com";
+const FEEDBACK_EMAIL = "Subhan.Nadeem@HiddenHiqmah.com";
 
 const CALC_METHODS: { value: number; label: string }[] = [
   { value: 2, label: "Islamic Society of North America (ISNA)" },

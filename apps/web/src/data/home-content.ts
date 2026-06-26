@@ -85,12 +85,15 @@ export type NavItem = {
   title: string;
   titleAr: string;
   description?: string;
+  /** Hidden on the website (home grid + sidebar); shown only in the mobile app. */
+  mobileOnly?: boolean;
 };
 
 /**
- * Mirrors the website Sidebar (apps/web/src/components/Sidebar.tsx) exactly.
- * Used by mobile MoreSheet AND the web home page card grid.
- * Update this when adding/moving routes so both surfaces stay in sync.
+ * All content sections. The web home grid shows only items WITHOUT `mobileOnly`;
+ * the mobile app (More menu) shows everything. New app-only features are flagged
+ * `mobileOnly` so they stay off the website until they're web-ready. The desktop
+ * Sidebar (apps/web/src/components/Sidebar.tsx) keeps its own (web-only) copy.
  */
 export const navSections: { heading: string; items: NavItem[] }[] = [
   {
@@ -126,11 +129,11 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
     heading: "Life",
     items: [
       { href: "/muslim-daily", icon: ListChecks, title: "Muslim Daily", titleAr: "يوميات المسلم", description: "Morning adhkar, evening routines, checklist" },
-      { href: "/streaks", icon: Flame, title: "Streaks", titleAr: "السلسلة", description: "Your streak, pauses, mercy days & qadāʾ" },
+      { href: "/streaks", icon: Flame, title: "Streaks", titleAr: "السلسلة", description: "Your streak, pauses, mercy days & qadāʾ", mobileOnly: true },
       { href: "/duas", icon: HandHeart, title: "Duas", titleAr: "الدعاء", description: "Supplications for every situation" },
       { href: "/dhikr", icon: Repeat, title: "Dhikr", titleAr: "الذكر", description: "Tasbeeh and daily remembrance" },
       { href: "/family", icon: Users, title: "Family", titleAr: "الأسرة", description: "Parents, elders, family ties" },
-      { href: "/household", icon: Users, title: "Family Profiles", titleAr: "ملفات العائلة", description: "Kids' profiles + everyone's daily progress" },
+      { href: "/household", icon: Users, title: "Family Profiles", titleAr: "ملفات العائلة", description: "Kids' profiles + everyone's daily progress", mobileOnly: true },
       { href: "/marriage", icon: HeartHandshake, title: "Marriage", titleAr: "الزواج", description: "Nikah, rights, divorce" },
     ],
   },
@@ -139,7 +142,7 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
     items: [
       { href: "/salah", icon: Clock, title: "Salah", titleAr: "الصلاة", description: "The five daily prayers, step by step" },
       { href: "/ramadan", icon: Moon, title: "Ramadan", titleAr: "رمضان", description: "Fasting, Tarawih, Laylatul Qadr" },
-      { href: "/hifz", icon: Repeat, title: "Hifz", titleAr: "الحفظ", description: "Memorize the Qur'an with spaced repetition" },
+      { href: "/hifz", icon: Repeat, title: "Hifz", titleAr: "الحفظ", description: "Memorize the Qur'an with spaced repetition", mobileOnly: true },
       { href: "/kids", icon: GraduationCap, title: "Kids Learning", titleAr: "تعليم الأطفال", description: "Lessons + stories + quizzes for children" },
       { href: "/quiz", icon: Trophy, title: "Quizzes", titleAr: "اختبارات", description: "Test your Islamic knowledge" },
     ],
@@ -158,7 +161,7 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
     heading: "My Path in Islam",
     items: [
       { href: "/bookmarks", icon: Bookmark, title: "Bookmarks", titleAr: "المحفوظات", description: "Saved verses, hadiths, and sections" },
-      { href: "/settings", icon: SettingsIcon, title: "Settings", titleAr: "الإعدادات", description: "Account, notifications, audio, prayer" },
+      { href: "/settings", icon: SettingsIcon, title: "Settings", titleAr: "الإعدادات", description: "Account, notifications, audio, prayer", mobileOnly: true },
     ],
   },
 ];

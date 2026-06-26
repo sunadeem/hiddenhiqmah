@@ -84,7 +84,10 @@ export default function HomePage() {
       </motion.div>
 
       {/* ─── Navigation Sections ─── */}
-      {navSections.map((section, sectionIdx) => (
+      {navSections
+        .map((s) => ({ ...s, items: s.items.filter((i) => !i.mobileOnly) }))
+        .filter((s) => s.items.length > 0)
+        .map((section, sectionIdx) => (
         <motion.div
           key={section.heading}
           initial={{ opacity: 0, y: 20 }}

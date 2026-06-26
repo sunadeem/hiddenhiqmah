@@ -251,10 +251,10 @@ export default function PrivacyPage() {
           <li>
             If you have an account, email{" "}
             <a
-              href="mailto:subhan.s.nadeem@gmail.com"
+              href="mailto:Subhan.Nadeem@HiddenHiqmah.com"
               className="text-gold underline"
             >
-              subhan.s.nadeem@gmail.com
+              Subhan.Nadeem@HiddenHiqmah.com
             </a>{" "}
             from the email address you signed up with and we will delete your
             account record and AI Chat usage logs from Supabase within 7 days.
@@ -318,10 +318,10 @@ export default function PrivacyPage() {
         <p className="text-themed-muted text-sm leading-relaxed">
           Questions, concerns, or deletion requests:{" "}
           <a
-            href="mailto:subhan.s.nadeem@gmail.com"
+            href="mailto:Subhan.Nadeem@HiddenHiqmah.com"
             className="text-gold underline"
           >
-            subhan.s.nadeem@gmail.com
+            Subhan.Nadeem@HiddenHiqmah.com
           </a>
         </p>
       </section>
