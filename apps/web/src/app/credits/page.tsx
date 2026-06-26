@@ -51,17 +51,21 @@ const sections: { heading: string; note?: string; sources: Source[] }[] = [
   },
   {
     heading: "Translation, tafsir & hadith",
-    note: "These English texts belong to their respective authors and publishers. We are reviewing and re-sourcing some of them under clearly-licensed editions; credits here will be updated accordingly.",
+    note: "Qur'an translation and tafsir are used under the redistribution terms of QuranEnc.com (attribution, displayed unmodified). Hadith English translations are being re-sourced under a clearly-licensed edition; this credit will be updated.",
     sources: [
       {
         name: "Qur'an English translation",
-        detail: "English meanings of the Qur'an.",
-        license: "© the respective translator / publisher.",
+        detail:
+          "“The Translation of the Meanings of the Noble Qur'an” by the Rowwad Translation Center (with IslamHouse.com), provided via QuranEnc.com and displayed unmodified.",
+        license: "© Rowwad Translation Center / QuranEnc.com — redistributed with attribution per their terms.",
+        href: "https://quranenc.com",
       },
       {
         name: "Tafsir (commentary)",
-        detail: "Verse commentary drawn from classical tafsir works.",
-        license: "© the respective authors / translators.",
+        detail:
+          "“Al-Mukhtaṣar fī al-Tafsīr (The Concise Interpretation)” by the Tafsir Center for Qur'anic Studies, provided via QuranEnc.com and displayed unmodified.",
+        license: "© Tafsir Center for Qur'anic Studies / QuranEnc.com — redistributed with attribution per their terms.",
+        href: "https://quranenc.com",
       },
       {
         name: "Hadith collections",
