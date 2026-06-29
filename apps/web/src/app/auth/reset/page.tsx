@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
+import PasswordStrength from "@/components/PasswordStrength";
 
 const inputClass =
   "w-full bg-white/5 border sidebar-border rounded-xl px-4 py-3 text-themed text-base focus:outline-none focus:border-[var(--color-gold)]/40";
@@ -129,6 +130,7 @@ export default function ResetPasswordPage() {
                 className={inputClass}
                 required
               />
+              <PasswordStrength password={password} />
             </div>
             {error && (
               <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3">

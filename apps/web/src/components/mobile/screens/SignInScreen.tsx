@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import PasswordStrength from "@/components/PasswordStrength";
 
 function Bismillah() {
   return (
@@ -39,6 +40,8 @@ export default function SignInScreen() {
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [magicStep, setMagicStep] = useState<"email" | "verify">("email");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
@@ -68,6 +71,8 @@ export default function SignInScreen() {
     setError(null);
     setNotice(null);
     setPassword("");
+    setFirstName("");
+    setLastName("");
     setCode("");
     setMagicStep("email");
   };
@@ -87,17 +92,28 @@ export default function SignInScreen() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!firstName.trim() || !lastName.trim())
+      return setError("Please enter your first and last name.");
     if (!isValidEmail) return setError("Please enter a valid email address.");
     if (password.length < 8)
       return setError("Password must be at least 8 characters.");
     setBusy(true);
     setError(null);
-    const { error, needsConfirmation } = await signUpWithPassword(
+    const { error, needsConfirmation, alreadyExists } = await signUpWithPassword(
       trimmedEmail,
-      password
+      password,
+      { firstName: firstName.trim(), lastName: lastName.trim() }
     );
     setBusy(false);
     if (error) return setError(error);
+    if (alreadyExists) {
+      setMode("signin");
+      setPassword("");
+      setNotice(
+        `An account already exists for ${trimmedEmail}. Please sign in below.`
+      );
+      return;
+    }
     if (needsConfirmation) {
       setMode("signin");
       setPassword("");
@@ -335,6 +351,36 @@ export default function SignInScreen() {
             Save your progress, bookmarks, and memorization across devices.
           </p>
           <form onSubmit={handleSignUp} className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
+                  First name
+                </label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="First"
+                  autoComplete="given-name"
+                  className={inputClass}
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
+                  Last name
+                </label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Last"
+                  autoComplete="family-name"
+                  className={inputClass}
+                  required
+                />
+              </div>
+            </div>
             {emailField}
             <div>
               <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
@@ -349,6 +395,7 @@ export default function SignInScreen() {
                 className={inputClass}
                 required
               />
+              <PasswordStrength password={password} />
             </div>
             {errorBox}
             {noticeBox}

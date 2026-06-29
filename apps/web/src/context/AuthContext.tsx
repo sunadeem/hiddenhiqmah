@@ -35,8 +35,13 @@ type AuthState = {
    */
   signUpWithPassword: (
     email: string,
-    password: string
-  ) => Promise<{ error?: string; needsConfirmation?: boolean }>;
+    password: string,
+    meta?: { firstName: string; lastName: string }
+  ) => Promise<{
+    error?: string;
+    needsConfirmation?: boolean;
+    alreadyExists?: boolean;
+  }>;
   /** Sends a password-reset email linking to /auth/reset. */
   resetPassword: (email: string) => Promise<{ error?: string }>;
   /** Sets a new password for the current (recovery) session. */
@@ -134,17 +139,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const signUpWithPassword = useCallback(
-    async (email: string, password: string) => {
+    async (
+      email: string,
+      password: string,
+      meta?: { firstName: string; lastName: string }
+    ) => {
       const emailRedirectTo =
         typeof window !== "undefined"
           ? `${window.location.origin}/auth/callback`
           : undefined;
+      const userData = meta
+        ? {
+            first_name: meta.firstName,
+            last_name: meta.lastName,
+            full_name: `${meta.firstName} ${meta.lastName}`.trim(),
+          }
+        : undefined;
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo },
+        options: { emailRedirectTo, data: userData },
       });
-      if (error) return { error: error.message };
+      if (error) {
+        // Confirmations OFF: an already-registered email surfaces as an error.
+        if (/already\s*(registered|exists)|already in use/i.test(error.message)) {
+          return { alreadyExists: true };
+        }
+        return { error: error.message };
+      }
+      // Confirmations ON: Supabase obfuscates an existing user as a "success"
+      // with an empty identities array (anti-enumeration). Treat as existing.
+      if (data.user && (data.user.identities?.length ?? 0) === 0) {
+        return { alreadyExists: true };
+      }
       // No session => the project requires email confirmation first.
       return { needsConfirmation: !data.session };
     },
