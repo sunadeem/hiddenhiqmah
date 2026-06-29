@@ -16,125 +16,233 @@ function Bismillah() {
   );
 }
 
+const inputClass =
+  "w-full bg-white/5 border sidebar-border rounded-xl px-4 py-3 text-themed text-base focus:outline-none focus:border-[var(--color-gold)]/40";
+const primaryBtn =
+  "w-full bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 rounded-xl py-3.5 font-semibold active:bg-[var(--color-gold)]/30 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation";
+
+type Mode = "signin" | "signup" | "magic" | "forgot";
+
 export default function SignInScreen() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signInWithEmail, verifyOtp } = useAuth();
+  const {
+    signInWithEmail,
+    verifyOtp,
+    signInWithPassword,
+    signUpWithPassword,
+    resetPassword,
+  } = useAuth();
 
   const errorParam = searchParams.get("error");
 
+  const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
-  const [step, setStep] = useState<"email" | "verify">("email");
+  const [password, setPassword] = useState("");
+  const [magicStep, setMagicStep] = useState<"email" | "verify">("email");
   const [code, setCode] = useState("");
-  const [sending, setSending] = useState(false);
-  const [verifying, setVerifying] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [resending, setResending] = useState(false);
-  const [resendNotice, setResendNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(
     errorParam === "callback_failed"
-      ? "We couldn't complete sign-in from the email link. Try the 6-digit code instead."
+      ? "We couldn't complete sign-in from the email link. Try again below."
       : null
   );
 
   const trimmedEmail = email.trim().toLowerCase();
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(trimmedEmail);
 
-  const handleSendLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isValidEmail) {
-      setError("Please enter a valid email address.");
-      return;
+  const finish = () => {
+    try {
+      localStorage.setItem("hiqmah-seen-welcome", "1");
+    } catch {
+      // ignore
     }
-    setSending(true);
+    // replace (not push) so back doesn't return to sign-in
+    router.replace("/");
+  };
+
+  const switchMode = (m: Mode) => {
+    setMode(m);
     setError(null);
-    const result = await signInWithEmail(trimmedEmail);
-    setSending(false);
-    if (result.error) {
-      setError(result.error);
+    setNotice(null);
+    setPassword("");
+    setCode("");
+    setMagicStep("email");
+  };
+
+  // ─── handlers ───
+  const handlePasswordSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isValidEmail) return setError("Please enter a valid email address.");
+    if (!password) return setError("Please enter your password.");
+    setBusy(true);
+    setError(null);
+    const { error } = await signInWithPassword(trimmedEmail, password);
+    setBusy(false);
+    if (error) setError(error);
+    else finish();
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isValidEmail) return setError("Please enter a valid email address.");
+    if (password.length < 8)
+      return setError("Password must be at least 8 characters.");
+    setBusy(true);
+    setError(null);
+    const { error, needsConfirmation } = await signUpWithPassword(
+      trimmedEmail,
+      password
+    );
+    setBusy(false);
+    if (error) return setError(error);
+    if (needsConfirmation) {
+      setMode("signin");
+      setPassword("");
+      setNotice(
+        `Account created. We sent a confirmation link to ${trimmedEmail} — confirm it, then sign in.`
+      );
     } else {
-      setStep("verify");
+      finish();
     }
+  };
+
+  const handleForgot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isValidEmail) return setError("Please enter a valid email address.");
+    setBusy(true);
+    setError(null);
+    setNotice(null);
+    const { error } = await resetPassword(trimmedEmail);
+    setBusy(false);
+    if (error) setError(error);
+    else
+      setNotice(
+        `If an account exists for ${trimmedEmail}, a password-reset link is on its way.`
+      );
+  };
+
+  const handleSendMagic = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isValidEmail) return setError("Please enter a valid email address.");
+    setBusy(true);
+    setError(null);
+    const { error } = await signInWithEmail(trimmedEmail);
+    setBusy(false);
+    if (error) setError(error);
+    else setMagicStep("verify");
   };
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     if (code.length < 6) return;
-    setVerifying(true);
+    setBusy(true);
     setError(null);
-    const result = await verifyOtp(trimmedEmail, code);
-    setVerifying(false);
-    if (result.error) {
-      setError(result.error);
-    } else {
-      // Onboarding complete — mark Welcome seen so it doesn't paint on the
-      // landing page. (Welcome only sets this flag on Continue-as-guest;
-      // sign-in path defers it to here so backing out of signin keeps
-      // showing Welcome.)
-      try {
-        localStorage.setItem("hiqmah-seen-welcome", "1");
-      } catch {
-        // ignore
-      }
-      // replace (not push) so the back button doesn't return to signin
-      router.replace("/");
-    }
+    const { error } = await verifyOtp(trimmedEmail, code);
+    setBusy(false);
+    if (error) setError(error);
+    else finish();
   };
 
   const handleResend = async () => {
     setResending(true);
     setError(null);
-    setResendNotice(null);
-    const result = await signInWithEmail(trimmedEmail);
+    setNotice(null);
+    const { error } = await signInWithEmail(trimmedEmail);
     setResending(false);
-    if (result.error) {
-      setError(result.error);
-    } else {
-      setResendNotice("New code sent. Check your inbox.");
-    }
+    if (error) setError(error);
+    else setNotice("New code sent. Check your inbox.");
   };
 
-  if (step === "email") {
+  // ─── shared blocks ───
+  const errorBox = error ? (
+    <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3">
+      <p className="text-sm text-red-400">{error}</p>
+    </div>
+  ) : null;
+  const noticeBox =
+    notice && !error ? (
+      <div className="rounded-xl border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/10 p-3">
+        <p className="text-sm text-gold">{notice}</p>
+      </div>
+    ) : null;
+
+  const emailField = (
+    <div>
+      <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
+        Email address
+      </label>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="you@example.com"
+        autoComplete="email"
+        className={inputClass}
+        required
+      />
+    </div>
+  );
+
+  // ─── magic-link verify step ───
+  if (mode === "magic" && magicStep === "verify") {
     return (
       <div className="max-w-md mx-auto pt-6 pb-12 px-4">
+        <button
+          type="button"
+          onClick={() => {
+            setMagicStep("email");
+            setCode("");
+            setError(null);
+            setNotice(null);
+          }}
+          className="text-sm text-themed-muted mb-6 flex items-center gap-1.5 active:text-themed touch-manipulation"
+        >
+          <ArrowLeft size={14} /> Change email
+        </button>
         <Bismillah />
-        <h1 className="text-3xl font-bold text-themed mb-2 text-center">
-          Sign in
+        <h1 className="text-2xl font-bold text-themed mb-2 text-center">
+          Check your inbox
         </h1>
-        <p className="text-themed-muted text-sm leading-relaxed text-center mb-8">
-          We&apos;ll email you a sign-in link and a 6-digit code.
+        <p className="text-themed-muted text-sm leading-relaxed text-center mb-6">
+          We sent a sign-in link and a 6-digit code to
           <br />
-          No password required.
+          <strong className="text-themed">{email}</strong>
         </p>
-
-        <form onSubmit={handleSendLink} className="space-y-4">
-          <div>
-            <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
-              Email address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              autoComplete="email"
-              autoFocus
-              className="w-full bg-white/5 border sidebar-border rounded-xl px-4 py-3 text-themed text-base focus:outline-none focus:border-[var(--color-gold)]/40"
-              required
-            />
-          </div>
-
-          {error && (
-            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3">
-              <p className="text-sm text-red-400">{error}</p>
-            </div>
-          )}
-
+        <p className="text-xs text-themed-muted text-center mb-3">
+          Enter the code from your email:
+        </p>
+        <form onSubmit={handleVerify} className="space-y-4">
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={10}
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 10))}
+            placeholder="••••••"
+            autoFocus
+            autoComplete="one-time-code"
+            className="w-full bg-white/5 border sidebar-border rounded-xl px-4 py-4 text-themed text-3xl tracking-[0.3em] text-center font-mono focus:outline-none focus:border-[var(--color-gold)]/40"
+          />
+          {errorBox}
+          {noticeBox}
           <button
             type="submit"
-            disabled={sending || !isValidEmail}
-            className="w-full bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 rounded-xl py-3.5 font-semibold active:bg-[var(--color-gold)]/30 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
+            disabled={busy || code.length < 6}
+            className={primaryBtn}
           >
-            {sending ? "Sending..." : "Send sign-in link"}
+            {busy ? "Verifying..." : "Verify & sign in"}
+          </button>
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resending || busy}
+            className="w-full text-xs text-themed-muted active:text-themed py-2 touch-manipulation disabled:opacity-50"
+          >
+            {resending ? "Resending..." : "Resend code"}
           </button>
         </form>
       </div>
@@ -143,81 +251,168 @@ export default function SignInScreen() {
 
   return (
     <div className="max-w-md mx-auto pt-6 pb-12 px-4">
-      <button
-        type="button"
-        onClick={() => {
-          setStep("email");
-          setCode("");
-          setError(null);
-          setResendNotice(null);
-        }}
-        className="text-sm text-themed-muted mb-6 flex items-center gap-1.5 active:text-themed touch-manipulation"
-      >
-        <ArrowLeft size={14} /> Change email
-      </button>
+      {(mode === "forgot" || mode === "magic") && (
+        <button
+          type="button"
+          onClick={() => switchMode("signin")}
+          className="text-sm text-themed-muted mb-6 flex items-center gap-1.5 active:text-themed touch-manipulation"
+        >
+          <ArrowLeft size={14} /> Back to sign in
+        </button>
+      )}
 
       <Bismillah />
 
-      <h1 className="text-2xl font-bold text-themed mb-2 text-center">
-        Check your inbox
-      </h1>
-      <p className="text-themed-muted text-sm leading-relaxed text-center mb-6">
-        We sent a sign-in link and a 6-digit code to
-        <br />
-        <strong className="text-themed">{email}</strong>
-      </p>
-
-      <p className="text-xs text-themed-muted text-center mb-3">
-        Enter the code from your email:
-      </p>
-
-      <form onSubmit={handleVerify} className="space-y-4">
-        <div>
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={10}
-            value={code}
-            onChange={(e) =>
-              setCode(e.target.value.replace(/\D/g, "").slice(0, 10))
-            }
-            placeholder="••••••"
-            autoFocus
-            autoComplete="one-time-code"
-            className="w-full bg-white/5 border sidebar-border rounded-xl px-4 py-4 text-themed text-3xl tracking-[0.3em] text-center font-mono focus:outline-none focus:border-[var(--color-gold)]/40"
-          />
-        </div>
-
-        {error && (
-          <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3">
-            <p className="text-sm text-red-400">{error}</p>
+      {/* ─── Sign in (email + password) ─── */}
+      {mode === "signin" && (
+        <>
+          <h1 className="text-3xl font-bold text-themed mb-2 text-center">
+            Sign in
+          </h1>
+          <p className="text-themed-muted text-sm text-center mb-8">
+            Welcome back to Hidden Hiqmah.
+          </p>
+          <form onSubmit={handlePasswordSignIn} className="space-y-4">
+            {emailField}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs uppercase tracking-wider text-themed-muted">
+                  Password
+                </label>
+                <button
+                  type="button"
+                  onClick={() => switchMode("forgot")}
+                  className="text-xs text-gold/80 hover:text-gold touch-manipulation"
+                >
+                  Forgot?
+                </button>
+              </div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                className={inputClass}
+                required
+              />
+            </div>
+            {errorBox}
+            {noticeBox}
+            <button type="submit" disabled={busy} className={primaryBtn}>
+              {busy ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
+          <div className="mt-6 space-y-3 text-center">
+            <button
+              type="button"
+              onClick={() => switchMode("magic")}
+              className="text-sm text-themed-muted hover:text-themed touch-manipulation"
+            >
+              Email me a sign-in code instead
+            </button>
+            <p className="text-sm text-themed-muted">
+              New here?{" "}
+              <button
+                type="button"
+                onClick={() => switchMode("signup")}
+                className="text-gold font-medium hover:underline touch-manipulation"
+              >
+                Create an account
+              </button>
+            </p>
           </div>
-        )}
+        </>
+      )}
 
-        {resendNotice && !error && (
-          <div className="rounded-xl border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/10 p-3">
-            <p className="text-sm text-gold">{resendNotice}</p>
-          </div>
-        )}
+      {/* ─── Create account ─── */}
+      {mode === "signup" && (
+        <>
+          <h1 className="text-3xl font-bold text-themed mb-2 text-center">
+            Create your account
+          </h1>
+          <p className="text-themed-muted text-sm text-center mb-8">
+            Save your progress, bookmarks, and memorization across devices.
+          </p>
+          <form onSubmit={handleSignUp} className="space-y-4">
+            {emailField}
+            <div>
+              <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="At least 8 characters"
+                autoComplete="new-password"
+                className={inputClass}
+                required
+              />
+            </div>
+            {errorBox}
+            {noticeBox}
+            <button type="submit" disabled={busy} className={primaryBtn}>
+              {busy ? "Creating account..." : "Create account"}
+            </button>
+          </form>
+          <p className="mt-6 text-sm text-themed-muted text-center">
+            Already have an account?{" "}
+            <button
+              type="button"
+              onClick={() => switchMode("signin")}
+              className="text-gold font-medium hover:underline touch-manipulation"
+            >
+              Sign in
+            </button>
+          </p>
+        </>
+      )}
 
-        <button
-          type="submit"
-          disabled={verifying || code.length < 6}
-          className="w-full bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 rounded-xl py-3.5 font-semibold active:bg-[var(--color-gold)]/30 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
-        >
-          {verifying ? "Verifying..." : "Verify & sign in"}
-        </button>
+      {/* ─── Forgot password ─── */}
+      {mode === "forgot" && (
+        <>
+          <h1 className="text-2xl font-bold text-themed mb-2 text-center">
+            Reset your password
+          </h1>
+          <p className="text-themed-muted text-sm text-center mb-8">
+            Enter your email and we&apos;ll send a link to set a new password.
+          </p>
+          <form onSubmit={handleForgot} className="space-y-4">
+            {emailField}
+            {errorBox}
+            {noticeBox}
+            <button type="submit" disabled={busy} className={primaryBtn}>
+              {busy ? "Sending..." : "Send reset link"}
+            </button>
+          </form>
+        </>
+      )}
 
-        <button
-          type="button"
-          onClick={handleResend}
-          disabled={resending || verifying}
-          className="w-full text-xs text-themed-muted active:text-themed py-2 touch-manipulation disabled:opacity-50"
-        >
-          {resending ? "Resending..." : "Resend code"}
-        </button>
-      </form>
+      {/* ─── Magic-link (email step) ─── */}
+      {mode === "magic" && (
+        <>
+          <h1 className="text-2xl font-bold text-themed mb-2 text-center">
+            Sign in with a code
+          </h1>
+          <p className="text-themed-muted text-sm text-center mb-8">
+            We&apos;ll email you a sign-in link and a 6-digit code — no password
+            needed.
+          </p>
+          <form onSubmit={handleSendMagic} className="space-y-4">
+            {emailField}
+            {errorBox}
+            {noticeBox}
+            <button
+              type="submit"
+              disabled={busy || !isValidEmail}
+              className={primaryBtn}
+            >
+              {busy ? "Sending..." : "Email me a code"}
+            </button>
+          </form>
+        </>
+      )}
     </div>
   );
 }
