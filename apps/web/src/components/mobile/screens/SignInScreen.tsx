@@ -37,6 +37,7 @@ export default function SignInScreen() {
   } = useAuth();
 
   const errorParam = searchParams.get("error");
+  const nextParam = searchParams.get("next");
 
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
@@ -64,8 +65,9 @@ export default function SignInScreen() {
     } catch {
       // ignore
     }
-    // replace (not push) so back doesn't return to sign-in
-    router.replace("/");
+    // replace (not push) so back doesn't return to sign-in; honor ?next= so the
+    // soft-gate returns the user to the page they were on.
+    router.replace(nextParam || "/");
   };
 
   const switchMode = (m: Mode) => {
