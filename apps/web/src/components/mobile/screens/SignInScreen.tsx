@@ -409,6 +409,19 @@ export default function SignInScreen() {
                 autoComplete="new-password"
                 required
               />
+              {confirmPassword.length > 0 && (
+                <p
+                  className={`text-[11px] mt-1 ${
+                    confirmPassword === password
+                      ? "text-green-500"
+                      : "text-red-400"
+                  }`}
+                >
+                  {confirmPassword === password
+                    ? "Passwords match"
+                    : "Passwords don't match"}
+                </p>
+              )}
             </div>
             {errorBox}
             {noticeBox}

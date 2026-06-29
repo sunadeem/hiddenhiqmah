@@ -145,6 +145,17 @@ export default function ResetPasswordPage() {
                 autoComplete="new-password"
                 required
               />
+              {confirm.length > 0 && (
+                <p
+                  className={`text-[11px] mt-1 ${
+                    confirm === password ? "text-green-500" : "text-red-400"
+                  }`}
+                >
+                  {confirm === password
+                    ? "Passwords match"
+                    : "Passwords don't match"}
+                </p>
+              )}
             </div>
             {error && (
               <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3">
