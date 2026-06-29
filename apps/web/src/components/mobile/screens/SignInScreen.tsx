@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import PasswordStrength from "@/components/PasswordStrength";
+import PasswordInput from "@/components/PasswordInput";
 
 function Bismillah() {
   return (
@@ -40,6 +41,7 @@ export default function SignInScreen() {
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [magicStep, setMagicStep] = useState<"email" | "verify">("email");
@@ -71,6 +73,7 @@ export default function SignInScreen() {
     setError(null);
     setNotice(null);
     setPassword("");
+    setConfirmPassword("");
     setFirstName("");
     setLastName("");
     setCode("");
@@ -97,6 +100,8 @@ export default function SignInScreen() {
     if (!isValidEmail) return setError("Please enter a valid email address.");
     if (password.length < 8)
       return setError("Password must be at least 8 characters.");
+    if (password !== confirmPassword)
+      return setError("Passwords do not match.");
     setBusy(true);
     setError(null);
     const { error, needsConfirmation, alreadyExists } = await signUpWithPassword(
@@ -303,13 +308,11 @@ export default function SignInScreen() {
                   Forgot?
                 </button>
               </div>
-              <input
-                type="password"
+              <PasswordInput
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={setPassword}
                 placeholder="••••••••"
                 autoComplete="current-password"
-                className={inputClass}
                 required
               />
             </div>
@@ -386,16 +389,26 @@ export default function SignInScreen() {
               <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
                 Password
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={setPassword}
                 placeholder="At least 8 characters"
                 autoComplete="new-password"
-                className={inputClass}
                 required
               />
               <PasswordStrength password={password} />
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
+                Confirm password
+              </label>
+              <PasswordInput
+                value={confirmPassword}
+                onChange={setConfirmPassword}
+                placeholder="Re-enter password"
+                autoComplete="new-password"
+                required
+              />
             </div>
             {errorBox}
             {noticeBox}

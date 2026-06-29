@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import PasswordStrength from "@/components/PasswordStrength";
+import PasswordInput from "@/components/PasswordInput";
 
-const inputClass =
-  "w-full bg-white/5 border sidebar-border rounded-xl px-4 py-3 text-themed text-base focus:outline-none focus:border-[var(--color-gold)]/40";
 const primaryBtn =
   "w-full bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 rounded-xl py-3.5 font-semibold active:bg-[var(--color-gold)]/30 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation";
 
@@ -21,6 +20,7 @@ export default function ResetPasswordPage() {
     "checking"
   );
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -59,6 +59,10 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (password !== confirm) {
+      setError("Passwords do not match.");
       return;
     }
     setBusy(true);
@@ -120,17 +124,27 @@ export default function ResetPasswordPage() {
               <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
                 New password
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={setPassword}
                 placeholder="At least 8 characters"
                 autoComplete="new-password"
                 autoFocus
-                className={inputClass}
                 required
               />
               <PasswordStrength password={password} />
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
+                Confirm new password
+              </label>
+              <PasswordInput
+                value={confirm}
+                onChange={setConfirm}
+                placeholder="Re-enter password"
+                autoComplete="new-password"
+                required
+              />
             </div>
             {error && (
               <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3">
