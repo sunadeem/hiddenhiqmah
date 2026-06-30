@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   Home,
   BookOpen,
@@ -46,14 +47,16 @@ const TABS: Tab[] = [
   },
 ];
 
-export default function MobileTabBar() {
+export default function MobileTabBar({ hidden = false }: { hidden?: boolean }) {
   const pathname = usePathname();
 
   return (
-    <nav
+    <motion.nav
       data-mobile-tabbar
       className="shrink-0 px-3 pt-1"
       style={{ paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
+      animate={{ y: hidden ? 120 : 0, opacity: hidden ? 0 : 1 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
     >
       {/* Floating rounded pill bar */}
       <div className="flex items-stretch gap-0.5 rounded-full bg-[var(--color-sidebar)]/90 backdrop-blur-xl border sidebar-border shadow-xl shadow-black/30 px-2 py-1">
@@ -88,6 +91,6 @@ export default function MobileTabBar() {
           );
         })}
       </div>
-    </nav>
+    </motion.nav>
   );
 }

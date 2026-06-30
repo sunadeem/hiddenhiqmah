@@ -18,6 +18,7 @@ import { useOnline } from "@/lib/mobile/useOnline";
 import { WifiOff } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import SignInScreen from "./screens/SignInScreen";
+import { useScrollDirection } from "@/lib/mobile/useScrollDirection";
 
 const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback"]);
 
@@ -37,6 +38,8 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   const playerVisible = (playingVerse !== null || adhanPlaying) && !isSurahReader;
   const online = useOnline();
   const { user, loading: authLoading } = useAuth();
+  const mainRef = useRef<HTMLElement>(null);
+  const scrollDir = useScrollDirection(mainRef);
 
   useEffect(() => {
     applyNativeSetup();
@@ -104,6 +107,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
         </div>
       )}
       <main
+        ref={mainRef}
         className={`flex-1 overflow-x-hidden overscroll-contain ${
           isFullChat ? "overflow-hidden" : "overflow-y-auto"
         }`}
@@ -143,7 +147,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
             <MobilePlayer />
           </div>
           <div className="pointer-events-auto">
-            <MobileTabBar />
+            <MobileTabBar hidden={scrollDir === "down"} />
           </div>
         </div>
       )}
