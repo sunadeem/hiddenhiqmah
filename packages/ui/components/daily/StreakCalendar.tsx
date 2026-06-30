@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, X, Heart, Check, Slash, Frown } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Heart, Check, Slash } from "lucide-react";
 import {
   buildPreviewDay,
   toLocalDateString,
@@ -246,12 +246,11 @@ export function StreakCalendar({
                 </span>
                 {c.state === "full" && <Heart size={11} className="text-gold" fill="currentColor" />}
                 {c.state === "partial" && <Slash size={10} className="text-gold" strokeWidth={2.5} />}
-                {(c.state === "missed" || c.state === "none") && (
-                  <Frown size={11} className="text-themed-muted" />
-                )}
-                {(c.state === "before" || c.state === "future" || c.state === "today") && (
-                  <span className="h-[11px]" />
-                )}
+                {(c.state === "missed" ||
+                  c.state === "none" ||
+                  c.state === "before" ||
+                  c.state === "future" ||
+                  c.state === "today") && <span className="h-[11px]" />}
               </button>
             )
           )}
@@ -313,9 +312,6 @@ export function StreakCalendar({
             </span>
             <span className="inline-flex items-center gap-1">
               <Slash size={11} className="text-gold" /> Partial
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <Frown size={11} /> Missed
             </span>
           </div>
         </div>

@@ -335,19 +335,6 @@ export default function SettingsScreen() {
       </SettingsSection>
 
       {/* HOME */}
-      <div>
-        <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
-          Home style
-        </p>
-        <HomeStylePicker
-          value={home.homeStyle}
-          tunedFor={home.tunedFor}
-          ramadanAuto={home.ramadanAuto}
-          onChange={(v) => updateHome({ homeStyle: v })}
-          onToggleRamadan={(on) => updateHome({ ramadanAuto: on })}
-        />
-      </div>
-
       <SettingsSection heading="Ramadan">
         <SettingsRow
           icon={Moon}
@@ -364,7 +351,20 @@ export default function SettingsScreen() {
 
       <div>
         <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
-          Tuned for
+          Home style
+        </p>
+        <HomeStylePicker
+          value={home.homeStyle}
+          tunedFor={home.tunedFor}
+          ramadanAuto={home.ramadanAuto}
+          onChange={(v) => updateHome({ homeStyle: v })}
+          onToggleRamadan={(on) => updateHome({ ramadanAuto: on })}
+        />
+      </div>
+
+      <div>
+        <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
+          Home Page tuned for
         </p>
         <TunedForPicker
           value={home.tunedFor}

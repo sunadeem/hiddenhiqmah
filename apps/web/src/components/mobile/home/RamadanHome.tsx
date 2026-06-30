@@ -99,7 +99,7 @@ function hijriDateLine(): string {
 /**
  * Ramadan home — seasonal Home that auto-activates during Ramadan (Hijri month 9).
  * Centered iftar/suhoor hero (on-device prayer times), a juz-a-day khatmah
- * tracker, a Taraweeh card, a last-10-nights / Laylatul Qadr card, and the
+ * tracker, a Tarawih card, a last-10-nights / Laylatul Qadr card, and the
  * shared daily streak strip kept at the bottom.
  * `preview` (from Settings) forces the seasonal Last-10-Nights card visible so
  * the home is fully reviewable off-season.
@@ -313,7 +313,7 @@ export default function RamadanHome({
         </div>
       </div>
 
-      {/* ── Taraweeh → Salah › Voluntary & Special › Tarawih ── */}
+      {/* ── Tarawih → Salah › Voluntary & Special › Tarawih ── */}
       <Link
         href="/salah?tab=voluntary&sub=tarawih"
         className="card-bg rounded-2xl border sidebar-border p-4 flex items-center gap-3 touch-manipulation active:scale-[0.99] transition-transform"
@@ -322,7 +322,7 @@ export default function RamadanHome({
           <Moon size={22} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-themed font-bold leading-tight">Taraweeh tonight</p>
+          <p className="text-themed font-bold leading-tight">Tarawih tonight</p>
           <p className="text-themed-muted text-sm mt-0.5">
             {isha ? `After Isha · ${isha}` : "After Isha"} · read a juz
           </p>
