@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Plus, Check, Trash2, Flame, UserPlus, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { requireAccount } from "@/lib/requireAccount";
 import { createLocalDailyAdapter } from "@hidden-hiqmah/ui/lib/daily/localAdapter";
 import { createSupabaseDailyAdapter } from "@/lib/daily/supabaseDailyAdapter";
 import { todayLocalDate, toLocalDateString, type DailyAdapter } from "@hidden-hiqmah/ui/lib/daily/types";
@@ -90,6 +91,15 @@ export default function HouseholdScreen() {
   }, [profiles, user]);
 
   const submitAdd = () => {
+    if (
+      !requireAccount({
+        title: "Add a family profile",
+        message:
+          "Create a free account to add family profiles and track everyone's progress.",
+      })
+    ) {
+      return;
+    }
     addProfile({ name: name.trim() || "Child", kind, avatar: emoji });
     setName("");
     setKind("child");

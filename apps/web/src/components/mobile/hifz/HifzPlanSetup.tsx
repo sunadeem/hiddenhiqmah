@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Plus, Check } from "lucide-react";
 import type { HifzAdapter, NewCardInput } from "@hidden-hiqmah/ui/lib/hifz/types";
 import { NEW_PER_DAY } from "@hidden-hiqmah/ui/lib/hifz/srs";
+import { requireAccount } from "@/lib/requireAccount";
 import {
   buildPageCards,
   buildAyahCards,
@@ -96,6 +97,16 @@ export default function HifzPlanSetup({
 
   const add = async () => {
     if (busy || preview.length === 0) return;
+    // Creating a memorization plan saves progress → require an account on web.
+    if (
+      !requireAccount({
+        title: "Save your Hifz plan",
+        message:
+          "Create a free account to save your memorization plan and track it across your devices.",
+      })
+    ) {
+      return;
+    }
     setBusy(true);
     try {
       await adapter.addCards(preview);

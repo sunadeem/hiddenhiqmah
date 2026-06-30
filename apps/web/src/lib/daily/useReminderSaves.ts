@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
+import { requireAccount } from "@/lib/requireAccount";
 
 const LS_KEY = "hiqmah-reminder-saves";
 
@@ -33,25 +34,34 @@ export function useReminderSaves(): { saved: Set<string>; toggle: (id: string) =
 
   const toggle = useCallback(
     (id: string) => {
-      setSaved((prev) => {
-        const next = new Set(prev);
-        const had = next.has(id);
-        if (had) next.delete(id);
-        else next.add(id);
-        if (user) {
-          if (had) void supabase.from("reminder_saves").delete().eq("reminder_id", id);
-          else void supabase.from("reminder_saves").insert({ user_id: user.id, reminder_id: id });
-        } else {
-          try {
-            localStorage.setItem(LS_KEY, JSON.stringify([...next]));
-          } catch {
-            /* ignore */
-          }
+      const had = saved.has(id);
+      // Saving a reflection is a stateful action → require an account on web.
+      if (
+        !had &&
+        !requireAccount({
+          title: "Save this reflection",
+          message:
+            "Create a free account to save reflections and sync them across your devices.",
+        })
+      ) {
+        return; // signed out → gate shown, abort the save
+      }
+      const next = new Set(saved);
+      if (had) next.delete(id);
+      else next.add(id);
+      setSaved(next);
+      if (user) {
+        if (had) void supabase.from("reminder_saves").delete().eq("reminder_id", id);
+        else void supabase.from("reminder_saves").insert({ user_id: user.id, reminder_id: id });
+      } else {
+        try {
+          localStorage.setItem(LS_KEY, JSON.stringify([...next]));
+        } catch {
+          /* ignore */
         }
-        return next;
-      });
+      }
     },
-    [user]
+    [user, saved]
   );
 
   return { saved, toggle };
