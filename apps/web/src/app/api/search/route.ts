@@ -13,9 +13,13 @@ const client = new Anthropic({
   maxRetries: 4,
 });
 
-// Current Sonnet model. Was claude-sonnet-4-20250514 (Sonnet 4.0), which is
-// deprecated and retires 2026-06-15 — would 404 after that date.
-const CHAT_MODEL = "claude-sonnet-4-6";
+// Hybrid model routing. The search rounds (pick keywords, run the tools, judge
+// relevance) are mechanical + latency-heavy → run them on the fast/cheap model.
+// The user-facing answer is credibility-critical → write it on the top model.
+// Both verified live on the Anthropic Models API; undated aliases track the
+// latest snapshot. Flip either constant to re-tier without touching the loop.
+const SEARCH_MODEL = "claude-haiku-4-5";
+const ANSWER_MODEL = "claude-opus-4-8";
 
 // Find the @hidden-hiqmah/content workspace package at runtime. Layouts:
 //   - dev (pnpm dev from apps/web)    → cwd = apps/web → ../../packages/content
@@ -632,15 +636,38 @@ export async function POST(req: NextRequest) {
             emittedLen = clean.length;
           }
         };
-        const streamCall = async (
-          msgs: Anthropic.Messages.MessageParam[],
-          withTools: boolean
+        // Non-streaming SEARCH pass on the fast/cheap model: pick keywords, run
+        // the tools, judge relevance. Any prose it produces is intentionally
+        // discarded — the user-facing answer is written by the ANSWER pass.
+        const gather = async (
+          msgs: Anthropic.Messages.MessageParam[]
         ): Promise<Anthropic.Messages.Message> => {
-          const s = client.messages.stream({
-            model: CHAT_MODEL,
+          const r = await client.messages.create({
+            model: SEARCH_MODEL,
             max_tokens: 1024,
             system: SYSTEM_BLOCKS,
-            ...(withTools ? { tools: TOOLS } : {}),
+            tools: TOOLS,
+            messages: msgs,
+          });
+          const u = r.usage;
+          if (u) {
+            usageTotals.input += u.input_tokens ?? 0;
+            usageTotals.output += u.output_tokens ?? 0;
+            usageTotals.cacheRead += u.cache_read_input_tokens ?? 0;
+            usageTotals.cacheWrite += u.cache_creation_input_tokens ?? 0;
+          }
+          return r;
+        };
+
+        // Streaming ANSWER pass on the quality model: writes the grounded,
+        // user-facing answer from the sources gathered above.
+        const answerStream = async (
+          msgs: Anthropic.Messages.MessageParam[]
+        ): Promise<void> => {
+          const s = client.messages.stream({
+            model: ANSWER_MODEL,
+            max_tokens: 1024,
+            system: SYSTEM_BLOCKS,
             messages: msgs,
           });
           for await (const ev of s) {
@@ -657,13 +684,10 @@ export async function POST(req: NextRequest) {
             usageTotals.cacheRead += u.cache_read_input_tokens ?? 0;
             usageTotals.cacheWrite += u.cache_creation_input_tokens ?? 0;
           }
-          return final;
         };
 
-        // Step 1: First call WITH tools — let Claude decide what to search.
-        let response = await streamCall(apiMessages, true);
-
-        // Step 2: Execute up to 2 rounds of tool use, accumulating full message chain
+        // ── Search phase (fast model, up to 2 tool rounds) ──────────────────
+        let response = await gather(apiMessages);
         const messageChain: Anthropic.Messages.MessageParam[] = [...apiMessages];
         let rounds = 0;
 
@@ -688,42 +712,35 @@ export async function POST(req: NextRequest) {
             };
           });
 
-          // Append this round to the chain
           messageChain.push({ role: "assistant" as const, content: response.content });
           messageChain.push({ role: "user" as const, content: toolResults });
 
-          response = await streamCall(messageChain, true);
+          response = await gather(messageChain);
         }
 
-        // Step 3: If no answer text was produced (e.g. still wanting tools after
-        // 2 rounds), force a final text-only call with condensed context.
-        if (!raw.trim()) {
-          // Execute any remaining tool calls
-          if (response.stop_reason === "tool_use") {
-            const toolBlocks = response.content.filter(
-              (b): b is Anthropic.Messages.ToolUseBlock => b.type === "tool_use"
-            );
-            for (const block of toolBlocks) {
-              const { result, citations } = executeTool(block, citationCounter);
-              allCitations.push(...citations);
-              allSearchResults.push(result);
-            }
-          }
-
-          // Build a condensed final call: original user messages + search summary
-          send("status", { text: "Preparing answer..." });
-          const searchSummary = allSearchResults.length > 0
-            ? `Here are search results from the app's database. Evaluate each for relevance:\n\n${allSearchResults.join("\n\n---\n\n")}`
-            : "No relevant sources were found in the app's database. Do NOT fabricate a verse, hadith, or reference — tell the user you couldn't verify a specific text on this, then give general guidance framed as such.";
-
-          response = await streamCall(
-            [
-              ...apiMessages,
-              { role: "user" as const, content: `[SEARCH RESULTS]\n${searchSummary}\n\n[REMINDER] Now answer the user's question above. Be helpful and conversational, but stay grounded: only quote or cite a verse/hadith that appears in the results above (with [[cite:N]]); never invent a reference. Give full-context, non-cherry-picked explanations, and flag any scholarly differences. Include [[link:Label|/path]] at the end.` },
-            ],
-            false
+        // If we hit the round cap still requesting tools, execute those too so
+        // their sources are available to the answer pass (for citations).
+        if (response.stop_reason === "tool_use") {
+          const toolBlocks = response.content.filter(
+            (b): b is Anthropic.Messages.ToolUseBlock => b.type === "tool_use"
           );
+          for (const block of toolBlocks) {
+            const { result, citations } = executeTool(block, citationCounter);
+            allCitations.push(...citations);
+            allSearchResults.push(result);
+          }
         }
+
+        // ── Answer phase (quality model, streamed) ──────────────────────────
+        send("status", { text: "Preparing answer..." });
+        const searchSummary = allSearchResults.length > 0
+          ? `Here are search results from the app's database. Evaluate each for relevance:\n\n${allSearchResults.join("\n\n---\n\n")}`
+          : "No relevant sources were found in the app's database. Do NOT fabricate a verse, hadith, or reference — if the question needs a specific text, tell the user you couldn't verify one, then give general guidance framed as such.";
+
+        await answerStream([
+          ...apiMessages,
+          { role: "user" as const, content: `[SEARCH RESULTS]\n${searchSummary}\n\n[REMINDER] Now answer the user's question above. Be helpful and conversational, but stay grounded: only quote or cite a verse/hadith that appears in the results above (with [[cite:N]]); never invent a reference. Give full-context, non-cherry-picked explanations, and flag any scholarly differences. Include [[link:Label|/path]] at the end.` },
+        ]);
 
         let text = raw;
 
