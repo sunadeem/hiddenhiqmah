@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { useHifzAdapter } from "@/lib/hifz/useHifzAdapter";
+import { useIsNative } from "@/lib/mobile/platform";
 import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
 import type { HifzCard, HifzStats } from "@hidden-hiqmah/ui/lib/hifz/types";
 import HifzDashboard from "../hifz/HifzDashboard";
@@ -22,6 +23,7 @@ const TITLES: Record<View, string> = {
 
 export default function HifzScreen() {
   const router = useRouter();
+  const isNative = useIsNative();
   const { adapter } = useHifzAdapter();
   const [view, setView] = useState<View>("dashboard");
   const [stats, setStats] = useState<HifzStats | null>(null);
@@ -58,17 +60,20 @@ export default function HifzScreen() {
 
   return (
     <div className="pb-4">
-      {/* Header */}
-      <div className="flex items-center gap-2 px-1 pt-1 pb-3">
-        <button
-          onClick={back}
-          aria-label="Back"
-          className="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center text-themed active:bg-white/5 touch-manipulation"
-        >
-          <ChevronLeft size={22} />
-        </button>
-        <h1 className="text-xl font-bold text-themed">{TITLES[view]}</h1>
-      </div>
+      {/* Header — hidden on web at the top level (the page's PageHeader covers
+          it); kept for sub-views so Back still returns to the dashboard. */}
+      {(isNative || view !== "dashboard") && (
+        <div className="flex items-center gap-2 px-1 pt-1 pb-3">
+          <button
+            onClick={back}
+            aria-label="Back"
+            className="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center text-themed active:bg-white/5 touch-manipulation"
+          >
+            <ChevronLeft size={22} />
+          </button>
+          <h1 className="text-xl font-bold text-themed">{TITLES[view]}</h1>
+        </div>
+      )}
 
       {view === "dashboard" && (
         <HifzDashboard

@@ -110,6 +110,16 @@ export default function SettingsScreen() {
     );
   }
 
+  const meta = (user?.user_metadata ?? {}) as {
+    first_name?: string;
+    last_name?: string;
+    full_name?: string;
+  };
+  const displayName =
+    meta.full_name ||
+    [meta.first_name, meta.last_name].filter(Boolean).join(" ").trim() ||
+    "";
+
   return (
     <div className="space-y-5 pb-6 max-w-xl mx-auto w-full">
       {/* Header (this screen doesn't get MobileTopBar title) */}
@@ -289,9 +299,9 @@ export default function SettingsScreen() {
           <>
             <SettingsRow
               icon={User}
-              title={user.email || "Signed in"}
-              subtitle="Signed in"
-              rightValue="Active"
+              title={displayName || user.email || "Signed in"}
+              subtitle={displayName ? user.email : undefined}
+              rightValue="Signed in"
             />
             <SettingsRow
               icon={Database}

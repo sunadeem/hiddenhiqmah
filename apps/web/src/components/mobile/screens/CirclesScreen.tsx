@@ -13,6 +13,7 @@ import {
   Minus,
   Loader2,
   UserPlus,
+  RefreshCw,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -314,16 +315,30 @@ export default function CirclesScreen() {
           {/* Footer actions */}
           <div className="relative flex items-center gap-2">
             {invites[d.circle.id] ? (
-              <button
-                onClick={() => copyCode(d.circle.id, invites[d.circle.id])}
-                className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-gold rounded-xl border border-[var(--color-gold)]/30 py-2.5 tracking-widest"
-              >
-                {copied === d.circle.id ? (
-                  <><Check size={14} /> Copied!</>
-                ) : (
-                  <><Copy size={14} /> {invites[d.circle.id]}</>
-                )}
-              </button>
+              <>
+                <button
+                  onClick={() => copyCode(d.circle.id, invites[d.circle.id])}
+                  className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-gold rounded-xl border border-[var(--color-gold)]/30 py-2.5 tracking-widest"
+                >
+                  {copied === d.circle.id ? (
+                    <><Check size={14} /> Copied!</>
+                  ) : (
+                    <><Copy size={14} /> {invites[d.circle.id]}</>
+                  )}
+                </button>
+                <button
+                  disabled={busy}
+                  title="New invite code"
+                  aria-label="New invite code"
+                  onClick={() => run(async () => {
+                    const code = await generateInvite(d.circle.id);
+                    setInvites((m) => ({ ...m, [d.circle.id]: code }));
+                  })}
+                  className="shrink-0 inline-flex items-center justify-center rounded-xl border sidebar-border px-3 py-2.5 text-gold active:bg-white/5"
+                >
+                  <RefreshCw size={14} />
+                </button>
+              </>
             ) : (
               <button
                 disabled={busy}
