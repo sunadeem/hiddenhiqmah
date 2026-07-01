@@ -35,15 +35,16 @@ import { getFontSize, setFontSize as saveFontSize, markSurahRead } from "@hidden
 import { useQuranAudio, type Verse } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 
 type TafsirData = Record<string, string>;
-type TafsirImportMap = Record<number, () => Promise<{ default: TafsirData }>>;
-type TafsirSource = "ibn-kathir" | "maarif";
+type TafsirSource = "mukhtasar";
 
 // Word-level audio timestamps: { "verseNum": [[start_ms, end_ms], ...] }
 type TimestampData = Record<string, number[][]>;
 
+// Tafsir = Al-Mukhtaṣar fī al-Tafsīr (QuranEnc). The previous Ibn Kathir + Maʿarif
+// data is preserved on disk at packages/content/quran/tafsirs/{ibn-kathir,maarif}/
+// — re-add a loader + label here to re-enable them (e.g. once licensed).
 const TAFSIR_LABELS: Record<TafsirSource, string> = {
-  "ibn-kathir": "Ibn Kathir",
-  maarif: "Ma'arif al-Qur'an",
+  mukhtasar: "Al-Mukhtaṣar",
 };
 
 function toArabicNumeral(n: number): string {
@@ -168,244 +169,9 @@ const verseImports: Record<number, () => Promise<{ default: Verse[] }>> = {
   114: () => import("@hidden-hiqmah/content/quran/verses/114.json"),
 };
 
-const ibnKathirImports: TafsirImportMap = {
-  1: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/1.json"),
-  2: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/2.json"),
-  3: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/3.json"),
-  4: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/4.json"),
-  5: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/5.json"),
-  6: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/6.json"),
-  7: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/7.json"),
-  8: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/8.json"),
-  9: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/9.json"),
-  10: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/10.json"),
-  11: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/11.json"),
-  12: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/12.json"),
-  13: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/13.json"),
-  14: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/14.json"),
-  15: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/15.json"),
-  16: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/16.json"),
-  17: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/17.json"),
-  18: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/18.json"),
-  19: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/19.json"),
-  20: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/20.json"),
-  21: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/21.json"),
-  22: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/22.json"),
-  23: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/23.json"),
-  24: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/24.json"),
-  25: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/25.json"),
-  26: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/26.json"),
-  27: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/27.json"),
-  28: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/28.json"),
-  29: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/29.json"),
-  30: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/30.json"),
-  31: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/31.json"),
-  32: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/32.json"),
-  33: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/33.json"),
-  34: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/34.json"),
-  35: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/35.json"),
-  36: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/36.json"),
-  37: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/37.json"),
-  38: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/38.json"),
-  39: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/39.json"),
-  40: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/40.json"),
-  41: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/41.json"),
-  42: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/42.json"),
-  43: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/43.json"),
-  44: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/44.json"),
-  45: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/45.json"),
-  46: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/46.json"),
-  47: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/47.json"),
-  48: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/48.json"),
-  49: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/49.json"),
-  50: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/50.json"),
-  51: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/51.json"),
-  52: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/52.json"),
-  53: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/53.json"),
-  54: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/54.json"),
-  55: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/55.json"),
-  56: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/56.json"),
-  57: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/57.json"),
-  58: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/58.json"),
-  59: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/59.json"),
-  60: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/60.json"),
-  61: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/61.json"),
-  62: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/62.json"),
-  63: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/63.json"),
-  64: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/64.json"),
-  65: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/65.json"),
-  66: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/66.json"),
-  67: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/67.json"),
-  68: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/68.json"),
-  69: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/69.json"),
-  70: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/70.json"),
-  71: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/71.json"),
-  72: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/72.json"),
-  73: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/73.json"),
-  74: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/74.json"),
-  75: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/75.json"),
-  76: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/76.json"),
-  77: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/77.json"),
-  78: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/78.json"),
-  79: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/79.json"),
-  80: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/80.json"),
-  81: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/81.json"),
-  82: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/82.json"),
-  83: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/83.json"),
-  84: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/84.json"),
-  85: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/85.json"),
-  86: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/86.json"),
-  87: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/87.json"),
-  88: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/88.json"),
-  89: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/89.json"),
-  90: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/90.json"),
-  91: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/91.json"),
-  92: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/92.json"),
-  93: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/93.json"),
-  94: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/94.json"),
-  95: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/95.json"),
-  96: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/96.json"),
-  97: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/97.json"),
-  98: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/98.json"),
-  99: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/99.json"),
-  100: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/100.json"),
-  101: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/101.json"),
-  102: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/102.json"),
-  103: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/103.json"),
-  104: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/104.json"),
-  105: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/105.json"),
-  106: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/106.json"),
-  107: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/107.json"),
-  108: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/108.json"),
-  109: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/109.json"),
-  110: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/110.json"),
-  111: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/111.json"),
-  112: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/112.json"),
-  113: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/113.json"),
-  114: () => import("@hidden-hiqmah/content/quran/tafsirs/ibn-kathir/114.json"),
-};
-
-const maarifImports: TafsirImportMap = {
-  1: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/1.json"),
-  2: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/2.json"),
-  3: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/3.json"),
-  4: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/4.json"),
-  5: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/5.json"),
-  6: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/6.json"),
-  7: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/7.json"),
-  8: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/8.json"),
-  9: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/9.json"),
-  10: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/10.json"),
-  11: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/11.json"),
-  12: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/12.json"),
-  13: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/13.json"),
-  14: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/14.json"),
-  15: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/15.json"),
-  16: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/16.json"),
-  17: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/17.json"),
-  18: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/18.json"),
-  19: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/19.json"),
-  20: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/20.json"),
-  21: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/21.json"),
-  22: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/22.json"),
-  23: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/23.json"),
-  24: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/24.json"),
-  25: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/25.json"),
-  26: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/26.json"),
-  27: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/27.json"),
-  28: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/28.json"),
-  29: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/29.json"),
-  30: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/30.json"),
-  31: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/31.json"),
-  32: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/32.json"),
-  33: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/33.json"),
-  34: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/34.json"),
-  35: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/35.json"),
-  36: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/36.json"),
-  37: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/37.json"),
-  38: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/38.json"),
-  39: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/39.json"),
-  40: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/40.json"),
-  41: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/41.json"),
-  42: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/42.json"),
-  43: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/43.json"),
-  44: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/44.json"),
-  45: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/45.json"),
-  46: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/46.json"),
-  47: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/47.json"),
-  48: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/48.json"),
-  49: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/49.json"),
-  50: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/50.json"),
-  51: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/51.json"),
-  52: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/52.json"),
-  53: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/53.json"),
-  54: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/54.json"),
-  55: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/55.json"),
-  56: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/56.json"),
-  57: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/57.json"),
-  58: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/58.json"),
-  59: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/59.json"),
-  60: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/60.json"),
-  61: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/61.json"),
-  62: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/62.json"),
-  63: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/63.json"),
-  64: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/64.json"),
-  65: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/65.json"),
-  66: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/66.json"),
-  67: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/67.json"),
-  68: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/68.json"),
-  69: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/69.json"),
-  70: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/70.json"),
-  71: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/71.json"),
-  72: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/72.json"),
-  73: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/73.json"),
-  74: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/74.json"),
-  75: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/75.json"),
-  76: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/76.json"),
-  77: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/77.json"),
-  78: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/78.json"),
-  79: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/79.json"),
-  80: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/80.json"),
-  81: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/81.json"),
-  82: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/82.json"),
-  83: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/83.json"),
-  84: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/84.json"),
-  85: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/85.json"),
-  86: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/86.json"),
-  87: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/87.json"),
-  88: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/88.json"),
-  89: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/89.json"),
-  90: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/90.json"),
-  91: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/91.json"),
-  92: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/92.json"),
-  93: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/93.json"),
-  94: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/94.json"),
-  95: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/95.json"),
-  96: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/96.json"),
-  97: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/97.json"),
-  98: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/98.json"),
-  99: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/99.json"),
-  100: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/100.json"),
-  101: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/101.json"),
-  102: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/102.json"),
-  103: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/103.json"),
-  104: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/104.json"),
-  105: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/105.json"),
-  106: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/106.json"),
-  107: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/107.json"),
-  108: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/108.json"),
-  109: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/109.json"),
-  110: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/110.json"),
-  111: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/111.json"),
-  112: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/112.json"),
-  113: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/113.json"),
-  114: () => import("@hidden-hiqmah/content/quran/tafsirs/maarif/114.json"),
-};
-
-const tafsirImportMaps: Record<TafsirSource, TafsirImportMap> = {
-  "ibn-kathir": ibnKathirImports,
-  maarif: maarifImports,
-};
+// Ibn Kathir + Maʿarif tafsir loaders removed so those copyrighted files no longer
+// ship; their .json data is preserved on disk under tafsirs/{ibn-kathir,maarif}/
+// for revert. Active tafsir (Al-Mukhtaṣar) loads directly in loadTafsir().
 
 // Word-by-word data
 type WordData = { t: string; tr: string; m: string };
@@ -713,7 +479,7 @@ function SurahPageContent() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Tafsir state
-  const [tafsirSource, setTafsirSource] = useState<TafsirSource>("ibn-kathir");
+  const [tafsirSource, setTafsirSource] = useState<TafsirSource>("mukhtasar");
   const [tafsirData, setTafsirData] = useState<TafsirData | null>(null);
   const [tafsirLoading, setTafsirLoading] = useState(false);
   const [showAllTafsir, setShowAllTafsir] = useState(false);
@@ -796,12 +562,13 @@ function SurahPageContent() {
   }, [id]);
 
   // Load tafsir data when source changes or on demand
-  const loadTafsir = useCallback(async (source: TafsirSource) => {
+  const loadTafsir = useCallback(async () => {
     setTafsirLoading(true);
-    const loader = tafsirImportMaps[source][id];
-    if (loader) {
-      const mod = await loader();
-      setTafsirData(mod.default);
+    try {
+      const mod = await import(`@hidden-hiqmah/content/quran/tafsirs/mukhtasar/${id}.json`);
+      setTafsirData(mod.default as TafsirData);
+    } catch {
+      /* ignore */
     }
     setTafsirLoading(false);
   }, [id]);
@@ -809,7 +576,7 @@ function SurahPageContent() {
   // Load tafsir when source changes and we have open tafsirs or showAll
   useEffect(() => {
     if (showAllTafsir || openTafsirs.size > 0) {
-      loadTafsir(tafsirSource);
+      loadTafsir();
     }
   }, [tafsirSource, loadTafsir, showAllTafsir, openTafsirs.size]);
 
@@ -825,7 +592,7 @@ function SurahPageContent() {
     });
     // Ensure data is loaded
     if (!tafsirData) {
-      await loadTafsir(tafsirSource);
+      await loadTafsir();
     }
   }, [tafsirData, loadTafsir, tafsirSource]);
 
@@ -833,7 +600,7 @@ function SurahPageContent() {
     const willShow = !showAllTafsir;
     setShowAllTafsir(willShow);
     if (willShow && !tafsirData) {
-      await loadTafsir(tafsirSource);
+      await loadTafsir();
     }
     if (!willShow) {
       setOpenTafsirs(new Set());

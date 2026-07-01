@@ -1,4 +1,4 @@
-export const TAB_ROOTS = ["/", "/muslim-daily", "/quran", "/more"];
+export const TAB_ROOTS = ["/", "/circles", "/quran", "/more"];
 
 const SECTION_TITLES: Record<string, string> = {
   "/": "Hidden Hiqmah",
@@ -6,7 +6,10 @@ const SECTION_TITLES: Record<string, string> = {
   "/hadith": "Hadith",
   "/salah": "Salah",
   "/muslim-daily": "Daily",
+  "/streaks": "Streak",
+  "/circles": "Circles",
   "/family": "Family",
+  "/household": "Family",
   "/marriage": "Marriage",
   "/sects": "Sects",
   "/prophets": "Prophets",
@@ -46,6 +49,20 @@ export function getSectionTitle(pathname: string): string {
 
 export function isTabRoot(pathname: string): boolean {
   return TAB_ROOTS.includes(pathname);
+}
+
+// Routes whose screen renders its OWN header (with a back button). The global
+// MobileTopBar back button is suppressed for these to avoid a double back.
+// ▶ When you add a screen that owns its top bar, add one pattern here.
+export const OWN_HEADER_PATTERNS: RegExp[] = [
+  /^\/quran\/[^/]+/, // surah reader — its own top bar (back + title + settings)
+  /^\/ask$/, // full-screen Ask chat — own header + back
+  /^\/hifz(?:\/|$)/, // Hifz coach — back also drives its in-screen sub-views
+];
+
+/** True when the screen at this path renders its own header/back bar. */
+export function ownsHeader(pathname: string): boolean {
+  return OWN_HEADER_PATTERNS.some((re) => re.test(pathname));
 }
 
 export function getActiveTab(pathname: string): string | null {

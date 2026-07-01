@@ -2,32 +2,37 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   Home,
   BookOpen,
-  ListChecks,
+  Users,
   MessageCircleQuestion,
   Menu,
 } from "lucide-react";
-import { hapticSelection, hapticLight } from "@/lib/mobile/haptics";
+import { hapticSelection } from "@/lib/mobile/haptics";
 
 type Tab = {
   label: string;
   icon: typeof Home;
   href?: string;
   matcher?: (p: string) => boolean;
-  ask?: boolean;
 };
 
 const TABS: Tab[] = [
   { href: "/", label: "Home", icon: Home, matcher: (p) => p === "/" },
   {
-    href: "/muslim-daily",
-    label: "Daily",
-    icon: ListChecks,
-    matcher: (p) => p.startsWith("/muslim-daily"),
+    href: "/circles",
+    label: "Circles",
+    icon: Users,
+    matcher: (p) => p.startsWith("/circles"),
   },
-  { label: "Ask", icon: MessageCircleQuestion, ask: true },
+  {
+    href: "/ask",
+    label: "Ask",
+    icon: MessageCircleQuestion,
+    matcher: (p) => p.startsWith("/ask"),
+  },
   {
     href: "/quran",
     label: "Quran",
@@ -42,14 +47,16 @@ const TABS: Tab[] = [
   },
 ];
 
-export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
+export default function MobileTabBar({ hidden = false }: { hidden?: boolean }) {
   const pathname = usePathname();
 
   return (
-    <nav
+    <motion.nav
       data-mobile-tabbar
       className="shrink-0 px-3 pt-1"
       style={{ paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
+      animate={{ y: hidden ? 120 : 0, opacity: hidden ? 0 : 1 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
     >
       {/* Floating rounded pill bar */}
       <div className="flex items-stretch gap-0.5 rounded-full bg-[var(--color-sidebar)]/90 backdrop-blur-xl border sidebar-border shadow-xl shadow-black/30 px-2 py-1">
@@ -72,23 +79,6 @@ export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
             </span>
           );
 
-          if (tab.ask) {
-            return (
-              <button
-                key="ask"
-                type="button"
-                onClick={() => {
-                  hapticLight();
-                  onAsk();
-                }}
-                aria-label="Ask Hiqmah"
-                className="flex-1 touch-manipulation"
-              >
-                {inner}
-              </button>
-            );
-          }
-
           return (
             <Link
               key={tab.href}
@@ -101,6 +91,6 @@ export default function MobileTabBar({ onAsk }: { onAsk: () => void }) {
           );
         })}
       </div>
-    </nav>
+    </motion.nav>
   );
 }

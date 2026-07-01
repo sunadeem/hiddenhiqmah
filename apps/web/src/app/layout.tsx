@@ -12,6 +12,7 @@ import { ThemeProvider } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { QuranAudioProvider } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { AdhanAudioProvider } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { AuthGateProvider } from "@/context/AuthGateContext";
 import AppShellGate from "@/components/AppShellGate";
 
 export const metadata: Metadata = {
@@ -45,11 +46,13 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider>
           <AuthProvider>
-            <QuranAudioProvider>
-              <AdhanAudioProvider>
-                <AppShellGate>{children}</AppShellGate>
-              </AdhanAudioProvider>
-            </QuranAudioProvider>
+            <AuthGateProvider>
+              <QuranAudioProvider>
+                <AdhanAudioProvider>
+                  <AppShellGate>{children}</AppShellGate>
+                </AdhanAudioProvider>
+              </QuranAudioProvider>
+            </AuthGateProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

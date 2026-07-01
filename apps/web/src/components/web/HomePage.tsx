@@ -84,7 +84,10 @@ export default function HomePage() {
       </motion.div>
 
       {/* ─── Navigation Sections ─── */}
-      {navSections.map((section, sectionIdx) => (
+      {navSections
+        .map((s) => ({ ...s, items: s.items.filter((i) => !i.mobileOnly) }))
+        .filter((s) => s.items.length > 0)
+        .map((section, sectionIdx) => (
         <motion.div
           key={section.heading}
           initial={{ opacity: 0, y: 20 }}
@@ -140,6 +143,20 @@ export default function HomePage() {
         <p className="text-gold/50 font-arabic text-sm">
           ٱلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ ٱللَّٰهِ وَبَرَكَاتُهُ
         </p>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs">
+          <Link href="/credits" className="text-themed-muted hover:text-gold transition-colors">
+            Credits &amp; Sources
+          </Link>
+          <Link href="/privacy" className="text-themed-muted hover:text-gold transition-colors">
+            Privacy
+          </Link>
+          <a
+            href="mailto:Subhan.Nadeem@HiddenHiqmah.com"
+            className="text-themed-muted hover:text-gold transition-colors"
+          >
+            Contact
+          </a>
+        </div>
         <p className="text-themed-muted/40 text-xs mt-2">
           All content sourced from authentic Islamic references
         </p>

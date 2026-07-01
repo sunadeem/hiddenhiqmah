@@ -1,17 +1,21 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
-import { getDhikrCounts, setDhikrCount } from "@hidden-hiqmah/ui/lib/storage";
+import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
+import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
 import { RotateCcw } from "lucide-react";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
 type DhikrItem = {
   id: string;
+  /** Shared count key — the same key the Worship-tab dhikr uses, so counting
+      here and there stays in unison and feeds Dhikr Stats. */
+  dhikrKey: string;
   arabic: string;
   transliteration: string;
   english: string;
@@ -22,6 +26,7 @@ type DhikrItem = {
 const dhikrList: DhikrItem[] = [
   {
     id: "subhanallah",
+    dhikrKey: "subhanallah",
     arabic: "سبحان الله",
     transliteration: "SubhanAllah",
     english: "Glory be to Allah",
@@ -30,6 +35,7 @@ const dhikrList: DhikrItem[] = [
   },
   {
     id: "alhamdulillah",
+    dhikrKey: "alhamdulillah",
     arabic: "الحمد لله",
     transliteration: "Alhamdulillah",
     english: "Praise be to Allah",
@@ -38,6 +44,7 @@ const dhikrList: DhikrItem[] = [
   },
   {
     id: "allahu-akbar",
+    dhikrKey: "takbir",
     arabic: "الله أكبر",
     transliteration: "Allahu Akbar",
     english: "Allah is the Greatest",
@@ -46,6 +53,7 @@ const dhikrList: DhikrItem[] = [
   },
   {
     id: "la-ilaha-illallah",
+    dhikrKey: "tahlil",
     arabic: "لا إله إلا الله",
     transliteration: "La ilaha illallah",
     english: "There is no god but Allah",
@@ -54,6 +62,7 @@ const dhikrList: DhikrItem[] = [
   },
   {
     id: "subhanallahi-wa-bihamdihi",
+    dhikrKey: "subhanallah_hamd",
     arabic: "سبحان الله وبحمده",
     transliteration: "SubhanAllahi wa bihamdihi",
     english: "Glory and praise be to Allah",
@@ -62,6 +71,7 @@ const dhikrList: DhikrItem[] = [
   },
   {
     id: "astaghfirullah",
+    dhikrKey: "istighfar",
     arabic: "أستغفر الله",
     transliteration: "Astaghfirullah",
     english: "I seek forgiveness from Allah",
@@ -70,6 +80,7 @@ const dhikrList: DhikrItem[] = [
   },
   {
     id: "la-hawla",
+    dhikrKey: "hawqala",
     arabic: "لا حول ولا قوة إلا بالله",
     transliteration: "La hawla wa la quwwata illa billah",
     english: "There is no power except with Allah",
@@ -78,6 +89,7 @@ const dhikrList: DhikrItem[] = [
   },
   {
     id: "salawat",
+    dhikrKey: "salawat",
     arabic: "اللهم صل على محمد",
     transliteration: "Salawat on the Prophet",
     english: "O Allah, send blessings upon Muhammad",
@@ -263,17 +275,39 @@ function DhikrCard({
 function DhikrPageInner() {
   const searchParams = useSearchParams();
   const scrollToItem = searchParams.get("item");
-  const [counts, setCounts] = useState<Record<string, number>>({});
+  const { adapter } = useDailyAdapter();
+  const [today] = useState(() => todayLocalDate());
+  const [counts, setCounts] = useState<Record<string, number>>({}); // keyed by dhikrKey
   const [mounted, setMounted] = useState(false);
+  const pending = useRef<Record<string, number>>({});
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Load today's counts for each dhikr from the shared date-keyed adapter, so
+  // this page and the Worship tab stay in unison.
   useEffect(() => {
-    setCounts(getDhikrCounts());
-    setMounted(true);
-  }, []);
+    let alive = true;
+    Promise.all(
+      dhikrList.map((d) =>
+        adapter.getDhikr(d.dhikrKey, today).then((s) => [d.dhikrKey, s.daily] as const)
+      )
+    )
+      .then((entries) => {
+        if (alive) {
+          setCounts(Object.fromEntries(entries));
+          setMounted(true);
+        }
+      })
+      .catch(() => {
+        if (alive) setMounted(true);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [adapter, today]);
 
   useEffect(() => {
     if (!scrollToItem) return;
-    const timer = setTimeout(() => {
+    const t = setTimeout(() => {
       const el = document.getElementById(scrollToItem);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -281,34 +315,56 @@ function DhikrPageInner() {
         setTimeout(() => el.classList.remove("section-highlight"), 2000);
       }
     }, 500);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(t);
   }, [scrollToItem]);
 
-  const increment = useCallback((id: string) => {
-    setCounts((prev) => {
-      const newCount = (prev[id] || 0) + 1;
-      setDhikrCount(id, newCount);
-      return { ...prev, [id]: newCount };
-    });
-  }, []);
+  const flush = useCallback(() => {
+    const p = pending.current;
+    pending.current = {};
+    for (const [key, delta] of Object.entries(p)) {
+      if (delta > 0)
+        void adapter
+          .incrementDhikr(key, today, delta)
+          .then((s) => setCounts((c) => ({ ...c, [key]: s.daily })))
+          .catch(() => {});
+    }
+  }, [adapter, today]);
 
-  const reset = useCallback((id: string) => {
-    setCounts((prev) => {
-      setDhikrCount(id, 0);
-      return { ...prev, [id]: 0 };
-    });
-  }, []);
+  const increment = useCallback(
+    (key: string) => {
+      setCounts((c) => ({ ...c, [key]: (c[key] || 0) + 1 }));
+      pending.current[key] = (pending.current[key] || 0) + 1;
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(flush, 600);
+    },
+    [flush]
+  );
 
-  const resetAll = useCallback(() => {
-    setCounts((prev) => {
-      const cleared: Record<string, number> = {};
-      for (const key of Object.keys(prev)) {
-        cleared[key] = 0;
-        setDhikrCount(key, 0);
-      }
-      return cleared;
-    });
-  }, []);
+  const reset = useCallback(
+    async (key: string) => {
+      if (timer.current) clearTimeout(timer.current);
+      pending.current[key] = 0;
+      const s = await adapter.setDhikrCount(key, today, 0);
+      setCounts((c) => ({ ...c, [key]: s.daily }));
+    },
+    [adapter, today]
+  );
+
+  const resetAll = useCallback(async () => {
+    if (timer.current) clearTimeout(timer.current);
+    pending.current = {};
+    await Promise.all(dhikrList.map((d) => adapter.setDhikrCount(d.dhikrKey, today, 0)));
+    setCounts(Object.fromEntries(dhikrList.map((d) => [d.dhikrKey, 0])));
+  }, [adapter, today]);
+
+  // Flush any pending taps on unmount.
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+      flush();
+    },
+    [flush]
+  );
 
   const totalCount = Object.values(counts).reduce((a, b) => a + b, 0);
 
@@ -350,9 +406,9 @@ function DhikrPageInner() {
           <DhikrCard
             key={dhikr.id}
             dhikr={dhikr}
-            count={counts[dhikr.id] || 0}
-            onIncrement={() => increment(dhikr.id)}
-            onReset={() => reset(dhikr.id)}
+            count={counts[dhikr.dhikrKey] || 0}
+            onIncrement={() => increment(dhikr.dhikrKey)}
+            onReset={() => reset(dhikr.dhikrKey)}
             delay={0.05 + i * 0.05}
           />
         ))}

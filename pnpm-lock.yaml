@@ -29,6 +29,9 @@ importers:
       '@capacitor/core':
         specifier: ^8.4.0
         version: 8.4.0
+      '@capacitor/filesystem':
+        specifier: ^8.1.2
+        version: 8.1.2(@capacitor/core@8.4.0)
       '@capacitor/geolocation':
         specifier: ^8.2.0
         version: 8.2.0(@capacitor/core@8.4.0)
@@ -71,6 +74,9 @@ importers:
       '@hidden-hiqmah/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@independo/capacitor-voice-recorder':
+        specifier: ^8.3.3
+        version: 8.3.3(@capacitor/core@8.4.0)(@capacitor/filesystem@8.1.2(@capacitor/core@8.4.0))
       '@radix-ui/react-slot':
         specifier: ^1.2.4
         version: 1.2.4(@types/react@19.2.16)(react@19.2.3)
@@ -80,6 +86,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.108.1
         version: 2.108.1
+      adhan:
+        specifier: ^4.4.4
+        version: 4.4.4
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -285,6 +294,11 @@ packages:
 
   '@capacitor/core@8.4.0':
     resolution: {integrity: sha512-LrS1xPIrqLtJABBIPDGXxxKmI9OyesrzWw8DiHbxhSC9JoiLUleUAJlX1a0LWIVLRbuY4Szgf9huFeRqYH2SAQ==}
+
+  '@capacitor/filesystem@8.1.2':
+    resolution: {integrity: sha512-doaaMfGoFR2hWU6aV6u83I+5ZsGyJVq+Gz4r9lMpJzUKMm1eMu0hLnFdV1aXZlU9FlK/RndFrVD8oRZfNOqWgQ==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
 
   '@capacitor/geolocation@8.2.0':
     resolution: {integrity: sha512-N29QcoIPmme0xSxRkm7+3hjoHp6mBAOarxecvtCCZKyOBeKiJsFUq981cezg2XWBa6fhCXJMCCjQPngKK/dIag==}
@@ -554,6 +568,12 @@ packages:
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [win32]
+
+  '@independo/capacitor-voice-recorder@8.3.3':
+    resolution: {integrity: sha512-d/Sv8rcyNLy0ZS8hZ+dWLa/qvPSDKLY53DLz0tmqZQiIB7RukTQU+CRV8BrRdI7UuBYmj9I/Vol2tdirqMWn4g==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+      '@capacitor/filesystem': '>=8.0.0'
 
   '@ionic/cli-framework-output@2.2.8':
     resolution: {integrity: sha512-TshtaFQsovB4NWRBydbNFawql6yul7d5bMiW1WYYf17hd99V6xdDdk3vtF51bw6sLkxON3bDQpWsnUc9/hVo3g==}
@@ -1189,6 +1209,9 @@ packages:
   add-stream@1.0.0:
     resolution: {integrity: sha512-qQLMr+8o0WC4FZGQTcJiKBVC59JylcPSrTtk6usvmIDFUOCKegapy1VHQwRbFMOFyb/inzUVqHs+eMYKDM1YeQ==}
 
+  adhan@4.4.4:
+    resolution: {integrity: sha512-6KmAwLtk2ZU0hLdMR3HofOuoEMa76mKv75Bknv8OEwquIGGNUFabWZna+dJI3gEuS7TqUw62Ro5PkwccgW19zw==}
+
   ajv@6.15.0:
     resolution: {integrity: sha512-fgFx7Hfoq60ytK2c7DhnF8jIvzYgOMxfugjLOSMHjLIPgenqa7S7oaagATUq99mV6IYvN2tRmC0wnTYX6iPbMw==}
 
@@ -1416,6 +1439,12 @@ packages:
 
   caniuse-lite@1.0.30001793:
     resolution: {integrity: sha512-iwSsYWaCOoh26cV8NwNRViHlrfUvYsHDfRVcbtmw0Kg6PJIZZXwMkj1442FYLBGkeUf1juAsU3DTfxW579mrPA==}
+
+  capacitor-blob-writer@1.1.20:
+    resolution: {integrity: sha512-SxYR64Zzb4MB2Ntb0IXJFWlhX6YPTlHiOjXWLqv/pVpa6fU+xFwmGp8+KdDsWRzLAAF71QmTkpMoV0PcT3LgTw==}
+    peerDependencies:
+      '@capacitor/core': '>=3.0.0'
+      '@capacitor/filesystem': '>=1.0.0'
 
   chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -3851,6 +3880,11 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@capacitor/filesystem@8.1.2(@capacitor/core@8.4.0)':
+    dependencies:
+      '@capacitor/core': 8.4.0
+      '@capacitor/synapse': 1.0.4
+
   '@capacitor/geolocation@8.2.0(@capacitor/core@8.4.0)':
     dependencies:
       '@capacitor/core': 8.4.0
@@ -4076,6 +4110,12 @@ snapshots:
 
   '@img/sharp-win32-x64@0.34.5':
     optional: true
+
+  '@independo/capacitor-voice-recorder@8.3.3(@capacitor/core@8.4.0)(@capacitor/filesystem@8.1.2(@capacitor/core@8.4.0))':
+    dependencies:
+      '@capacitor/core': 8.4.0
+      '@capacitor/filesystem': 8.1.2(@capacitor/core@8.4.0)
+      capacitor-blob-writer: 1.1.20(@capacitor/core@8.4.0)(@capacitor/filesystem@8.1.2(@capacitor/core@8.4.0))
 
   '@ionic/cli-framework-output@2.2.8':
     dependencies:
@@ -4730,6 +4770,8 @@ snapshots:
 
   add-stream@1.0.0: {}
 
+  adhan@4.4.4: {}
+
   ajv@6.15.0:
     dependencies:
       fast-deep-equal: 3.1.3
@@ -4964,6 +5006,11 @@ snapshots:
   camelcase@5.3.1: {}
 
   caniuse-lite@1.0.30001793: {}
+
+  capacitor-blob-writer@1.1.20(@capacitor/core@8.4.0)(@capacitor/filesystem@8.1.2(@capacitor/core@8.4.0)):
+    dependencies:
+      '@capacitor/core': 8.4.0
+      '@capacitor/filesystem': 8.1.2(@capacitor/core@8.4.0)
 
   chalk@2.4.2:
     dependencies:

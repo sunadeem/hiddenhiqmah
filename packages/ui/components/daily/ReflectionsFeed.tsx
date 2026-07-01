@@ -255,6 +255,12 @@ function ReflectionCard({
         )}
       </div>
 
+      {/* Horizontal swipe affordance */}
+      <div className="relative flex items-center justify-center gap-2 text-themed-muted/25 mt-3 pointer-events-none select-none">
+        <ChevronLeft size={14} />
+        <ChevronRight size={14} />
+      </div>
+
       <div className="relative flex items-center justify-between mt-4 pt-3 border-t sidebar-border">
         {r.sourceKind === "quran" && onOpen ? (
           <button

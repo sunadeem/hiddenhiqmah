@@ -1,7 +1,7 @@
 import RouteGate from "@/components/mobile/RouteGate";
 import WebHomePage from "@/components/web/HomePage";
-import MobileHomeScreen from "@/components/mobile/screens/HomeScreen";
+import MobileHome from "@/components/mobile/home/MobileHome";
 
 export default function Page() {
-  return <RouteGate mobile={<MobileHomeScreen />} web={<WebHomePage />} />;
+  return <RouteGate mobile={<MobileHome />} web={<WebHomePage />} />;
 }

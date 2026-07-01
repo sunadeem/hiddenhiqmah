@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import MobileTopBar from "./MobileTopBar";
 import MobileTabBar from "./MobileTabBar";
 import MobilePlayer from "./MobilePlayer";
-import AskSheet from "./AskSheet";
 import WelcomeSheet from "./WelcomeSheet";
 import { isTabRoot } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
@@ -17,14 +16,19 @@ import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { useOnline } from "@/lib/mobile/useOnline";
 import { WifiOff } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import SignInScreen from "./screens/SignInScreen";
+import { useScrollDirection } from "@/lib/mobile/useScrollDirection";
 
 const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback"]);
 
 export default function MobileShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [askOpen, setAskOpen] = useState(false);
   const edgeSwipe = useRef<{ x: number; y: number } | null>(null);
+  // Ask is now a full-screen chat page (not a slide-up sheet): it owns the whole
+  // viewport — no padded scroll wrapper, no bottom tab bar/player.
+  const isFullChat = pathname === "/ask";
   // When the floating player is up, the bottom content must clear it too (not just
   // the tab bar) — otherwise the last items scroll behind the player. The surah
   // reader is excluded: it manages its own bottom spacing (Mushaf list + Focus).
@@ -33,6 +37,9 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   const isSurahReader = /^\/quran\/[^/]+/.test(pathname);
   const playerVisible = (playingVerse !== null || adhanPlaying) && !isSurahReader;
   const online = useOnline();
+  const { user, loading: authLoading } = useAuth();
+  const mainRef = useRef<HTMLElement>(null);
+  const scrollDir = useScrollDirection(mainRef);
 
   useEffect(() => {
     applyNativeSetup();
@@ -46,12 +53,23 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   // On sign-in, migrate signed-out local Daily data into Supabase (once).
   useLegacyImport();
 
-  // Close the Ask sheet whenever the route changes (e.g. tapping a citation
-  // or link inside Ask navigates the app — the sheet should dismiss).
-  useEffect(() => {
-    setAskOpen(false);
-  }, [pathname]);
+  // Mobile = mandatory account: until signed in, the entire app IS the sign-in
+  // screen (except the auth routes themselves). All hooks above always run, so
+  // this conditional return is safe.
+  if (!authLoading && !user && !FULLSCREEN_ROUTES.has(pathname)) {
+    return (
+      <div className="relative flex flex-col h-[100dvh] bg-themed overflow-hidden">
+        <main className="flex-1 overflow-y-auto px-3 pt-8">
+          <Suspense fallback={null}>
+            <SignInScreen />
+          </Suspense>
+        </main>
+      </div>
+    );
+  }
 
+  // Ask keeps the bottom tab bar (it's a normal destination you can navigate
+  // away from) — only its scroll layout is full-height (isFullChat below).
   const hideBottomChrome = FULLSCREEN_ROUTES.has(pathname);
 
   // Edge-swipe-back: a left-edge → right drag navigates back (iOS-style),
@@ -88,26 +106,36 @@ export default function MobileShell({ children }: { children: React.ReactNode })
           <span>Offline — reading works; audio &amp; prayer updates need a connection</span>
         </div>
       )}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
-        {/* Smooth fade-in on every route change (keyed on pathname).
-            Opacity-only on purpose: any transform here becomes an ancestor
-            transform that un-pins `position: sticky` descendants in the iOS
-            WKWebView (sticky headers on Daily/Quran). Extra bottom padding
-            clears the floating tab bar so the last content can scroll above it. */}
-        <motion.div
-          key={pathname}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          className="px-3 pt-4"
-          style={{
-            paddingBottom: hideBottomChrome
-              ? 16
-              : `calc(env(safe-area-inset-bottom) + ${playerVisible ? 168 : 96}px)`,
-          }}
-        >
-          {children}
-        </motion.div>
+      <main
+        ref={mainRef}
+        className={`flex-1 overflow-x-hidden overscroll-contain ${
+          isFullChat ? "overflow-hidden" : "overflow-y-auto"
+        }`}
+      >
+        {isFullChat ? (
+          // Ask owns the full viewport (header + scrollable messages + pinned input).
+          <div className="h-full">{children}</div>
+        ) : (
+          /* Smooth fade-in on every route change (keyed on pathname).
+             Opacity-only on purpose: any transform here becomes an ancestor
+             transform that un-pins `position: sticky` descendants in the iOS
+             WKWebView (sticky headers on Daily/Quran). Extra bottom padding
+             clears the floating tab bar so the last content can scroll above it. */
+          <motion.div
+            key={pathname}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="px-3 pt-4"
+            style={{
+              paddingBottom: hideBottomChrome
+                ? 16
+                : `calc(env(safe-area-inset-bottom) + ${playerVisible ? 168 : 96}px)`,
+            }}
+          >
+            {children}
+          </motion.div>
+        )}
       </main>
       {!hideBottomChrome && (
         // Floating bottom chrome: overlaid on top of the scrolling content so
@@ -119,11 +147,10 @@ export default function MobileShell({ children }: { children: React.ReactNode })
             <MobilePlayer />
           </div>
           <div className="pointer-events-auto">
-            <MobileTabBar onAsk={() => setAskOpen(true)} />
+            <MobileTabBar hidden={scrollDir === "down"} />
           </div>
         </div>
       )}
-      <AskSheet open={askOpen} onClose={() => setAskOpen(false)} />
       <WelcomeSheet />
     </div>
   );

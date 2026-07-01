@@ -21,6 +21,7 @@ import {
   getPrayerSettings,
 } from "@hidden-hiqmah/ui/lib/storage";
 import { getCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
+import { computePrayerTimes } from "@/lib/prayer-times";
 import { dailyInspirations } from "@/data/home-content";
 import { dailyIndex, type Reminder } from "@hidden-hiqmah/ui/lib/reminders";
 import remindersData from "@hidden-hiqmah/content/reminders.json";
@@ -54,6 +55,13 @@ const JUMUAH_HOUR = 10; // 10:00 AM Friday
 const LAST_ACTIVE_KEY = "hiqmah-daily-last-active"; // YYYY-MM-DD of last checklist activity
 const DAYS_AHEAD = 10;
 const MAX_NOTIFICATIONS = 60; // stay under iOS's 64 pending cap
+// Engagement notifs (verse/hadith/reminder/streak) only cover a short window so
+// they can never crowd out the adhan within the 64-pending cap.
+const ENGAGEMENT_DAYS = 3;
+// Per-tier slot budgets (sum <= MAX_NOTIFICATIONS). Adhan is protected first,
+// then pre-prayer, then at most a few engagement nudges. Unused higher-tier
+// budget is NOT borrowed down — adhan coverage is guaranteed.
+const TIER_CAPS: Record<number, number> = { 1: 40, 2: 14, 3: 6 };
 
 type Timings = Record<string, string>;
 
@@ -78,38 +86,27 @@ function inspirationForDate(d: Date, type?: "Quran" | "Hadith") {
   return pool[dayOfYear % pool.length];
 }
 
-/** Fetch prayer-time calendar(s) covering the next DAYS_AHEAD days. */
-async function fetchPrayerTimes(
+/**
+ * Compute prayer times ON-DEVICE for the next DAYS_AHEAD days (batoulapps/Adhan).
+ * No network: the device's coordinates never leave the phone, and scheduling
+ * works fully offline. `school` follows aladhan's convention (1 = Hanafi Asr).
+ */
+function buildPrayerCalendar(
   lat: number,
   lng: number,
   method: number,
   school: number
-): Promise<Map<string, Timings>> {
+): Map<string, Timings> {
   const map = new Map<string, Timings>();
   const now = new Date();
-  const months = new Set<string>();
   for (let i = 0; i <= DAYS_AHEAD; i++) {
     const d = new Date(now);
     d.setDate(d.getDate() + i);
-    months.add(`${d.getFullYear()}-${d.getMonth() + 1}`);
-  }
-  for (const ym of months) {
-    const [year, month] = ym.split("-");
-    try {
-      const res = await fetch(
-        `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${lat}&longitude=${lng}&method=${method}&school=${school}`
-      );
-      if (!res.ok) continue;
-      const json = await res.json();
-      for (const day of json.data || []) {
-        const greg: string | undefined = day?.date?.gregorian?.date; // DD-MM-YYYY
-        if (!greg) continue;
-        const [dd, mm, yyyy] = greg.split("-");
-        map.set(`${yyyy}-${mm}-${dd}`, day.timings);
-      }
-    } catch {
-      // skip this month
-    }
+    d.setHours(0, 0, 0, 0);
+    map.set(
+      dayKey(d),
+      computePrayerTimes(lat, lng, { method, asrHanafi: school === 1, date: d })
+    );
   }
   return map;
 }
@@ -212,6 +209,7 @@ export async function scheduleAllNotifications(
     schedule: { at: Date };
     sound?: string;
     url?: string; // deep-link target on tap
+    tier: 1 | 2 | 3; // 1=adhan (protected), 2=pre-prayer, 3=engagement
   };
   const notifs: Notif[] = [];
   let id = 1000;
@@ -219,12 +217,7 @@ export async function scheduleAllNotifications(
   // ── Prayer-based (adhan + pre-prayer) — needs a location ──
   if ((anyAdhan || prefs.prePrayer) && loc) {
     const school = settings.asrMethod === "hanafi" ? 1 : 0;
-    const times = await fetchPrayerTimes(
-      loc.lat,
-      loc.lng,
-      settings.calcMethod,
-      school
-    );
+    const times = buildPrayerCalendar(loc.lat, loc.lng, settings.calcMethod, school);
     for (let i = 0; i <= DAYS_AHEAD; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);
@@ -248,6 +241,7 @@ export async function scheduleAllNotifications(
             schedule: { at },
             sound: ADHAN_SOUND,
             url: "/salah",
+            tier: 1,
           });
         }
         if (prefs.prePrayer) {
@@ -259,6 +253,7 @@ export async function scheduleAllNotifications(
               body: `Get ready for ${PRAYER_LABEL[pk]} prayer.`,
               schedule: { at: pre },
               url: "/salah",
+              tier: 2,
             });
           }
         }
@@ -274,7 +269,7 @@ export async function scheduleAllNotifications(
         : prefs.todaysVerse
         ? "Quran"
         : "Hadith";
-    for (let i = 0; i <= DAYS_AHEAD; i++) {
+    for (let i = 0; i <= ENGAGEMENT_DAYS; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);
       const at = new Date(day);
@@ -288,13 +283,14 @@ export async function scheduleAllNotifications(
         body: `${insp.english} — ${insp.reference}`,
         schedule: { at },
         url: "/",
+        tier: 3,
       });
     }
   }
 
   // ── Today's Reminder (the day's reflection — matches the Reminders tab) ──
   if (wantReminder) {
-    for (let i = 0; i <= DAYS_AHEAD; i++) {
+    for (let i = 0; i <= ENGAGEMENT_DAYS; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);
       const at = new Date(day);
@@ -309,6 +305,7 @@ export async function scheduleAllNotifications(
         body: `${r.textEn} — ${ref}`,
         schedule: { at },
         url: "/muslim-daily?tab=reminders",
+        tier: 3,
       });
     }
   }
@@ -328,6 +325,7 @@ export async function scheduleAllNotifications(
         body: "Read Surah Al-Kahf and prepare for Jumu'ah prayer.",
         schedule: { at },
         url: "/quran/18",
+        tier: 3,
       });
     }
   }
@@ -340,7 +338,7 @@ export async function scheduleAllNotifications(
     } catch {
       // ignore
     }
-    for (let i = 0; i <= DAYS_AHEAD; i++) {
+    for (let i = 0; i <= ENGAGEMENT_DAYS; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);
       const at = new Date(day);
@@ -353,13 +351,26 @@ export async function scheduleAllNotifications(
         body: "You haven't completed today's checklist yet — a little before the day ends keeps your streak alive.",
         schedule: { at },
         url: "/muslim-daily",
+        tier: 3,
       });
     }
   }
 
-  // iOS 64-pending cap: keep the soonest MAX_NOTIFICATIONS.
+  // iOS 64-pending cap. Fill by priority tier (adhan first, then pre-prayer, then
+  // engagement) so engagement nudges can never push out the adhan. Soonest-first
+  // within each tier; per-tier budgets guarantee adhan coverage.
   notifs.sort((a, b) => a.schedule.at.getTime() - b.schedule.at.getTime());
-  const toSchedule = notifs.slice(0, MAX_NOTIFICATIONS);
+  const toSchedule: Notif[] = [];
+  for (const tier of [1, 2, 3] as const) {
+    let taken = 0;
+    for (const n of notifs) {
+      if (n.tier !== tier) continue;
+      if (toSchedule.length >= MAX_NOTIFICATIONS) break;
+      if (taken >= TIER_CAPS[tier]) break;
+      toSchedule.push(n);
+      taken++;
+    }
+  }
 
   // First-time confirmation: fire the adhan immediately so the user hears it
   // works, instead of waiting for the next prayer.
@@ -370,6 +381,7 @@ export async function scheduleAllNotifications(
       body: "You'll hear the adhan at prayer times, in shā' Allah.",
       schedule: { at: new Date(now.getTime() + 4000) },
       sound: ADHAN_SOUND,
+      tier: 1,
     });
   }
 

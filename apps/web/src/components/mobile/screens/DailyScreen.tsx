@@ -17,7 +17,7 @@ import { StreakWeekStrip } from "@hidden-hiqmah/ui/components/daily/StreakWeekSt
 import { StreakCalendar } from "@hidden-hiqmah/ui/components/daily/StreakCalendar";
 import { Checklist } from "@hidden-hiqmah/ui/components/daily/Checklist";
 import { ChecklistEditor } from "@hidden-hiqmah/ui/components/daily/ChecklistEditor";
-import { DhikrCounter } from "@hidden-hiqmah/ui/components/daily/DhikrCounter";
+import WorshipDhikrSection from "./WorshipDhikrSection";
 import { ReflectionsFeed } from "@hidden-hiqmah/ui/components/daily/ReflectionsFeed";
 import { reminderShareText, type Reminder } from "@hidden-hiqmah/ui/lib/reminders";
 import remindersData from "@hidden-hiqmah/content/reminders.json";
@@ -91,6 +91,7 @@ export default function DailyScreen() {
 }
 
 function ChecklistTab() {
+  const router = useRouter();
   const { adapter, signedIn, authLoading } = useDailyAdapter();
   const today = useMemo(() => todayLocalDate(), []);
   const list = useChecklist(adapter, today);
@@ -136,11 +137,12 @@ function ChecklistTab() {
         </Link>
       )}
 
+      {/* Streak + prayer badges → the Humane Streaks page (pauses, mercy, qaḍāʾ). */}
       <StreakBadges
         streaks={list.streaks}
         onOpen={() => {
           hapticLight();
-          setCalOpen(true);
+          router.push("/streaks");
         }}
       />
 
@@ -263,17 +265,9 @@ function WorshipTab() {
         ))}
       </div>
 
-      {/* Synced dhikr counters (write through dhikr_key → also tick the checklist) */}
-      {!authLoading && (
-        <div className="space-y-2">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-themed-muted px-1">Dhikr</div>
-          <DhikrCounter adapter={adapter} today={today} dhikrKey="takbir" label="Allahu Akbar" goal={33} onHaptic={hapticSelection} />
-          <DhikrCounter adapter={adapter} today={today} dhikrKey="subhanallah" label="SubhanAllah" goal={33} onHaptic={hapticSelection} />
-          <DhikrCounter adapter={adapter} today={today} dhikrKey="alhamdulillah" label="Alhamdulillah" goal={33} onHaptic={hapticSelection} />
-          <DhikrCounter adapter={adapter} today={today} dhikrKey="istighfar" label="Astaghfirullah" goal={100} onHaptic={hapticSelection} />
-          <DhikrCounter adapter={adapter} today={today} dhikrKey="salawat" label="Salawat on the Prophet ﷺ" goal={10} onHaptic={hapticSelection} />
-        </div>
-      )}
+      {/* Synced dhikr counters (write through dhikr_key → also tick the checklist).
+          Cards are user-manageable: add from a catalog, edit reps, delete custom. */}
+      {!authLoading && <WorshipDhikrSection adapter={adapter} today={today} />}
 
       {/* The verified adhkar guide for the selected period (reused) */}
       <div className="pt-1">

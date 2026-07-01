@@ -157,6 +157,7 @@ export type QuotaInfo = {
 
 export type StreamChatErrorReason =
   | { type: "quota_exceeded"; quota: QuotaInfo }
+  | { type: "offline" }
   | { type: "generic"; detail?: string };
 
 function formatQuotaReset(resetAt: string | null): string {
@@ -189,6 +190,7 @@ export async function streamChat(
   onStatus: (text: string) => void,
   onAnswer: (data: { content: string; links: { label: string; href: string }[]; citations: Citation[] }) => void,
   onError: (reason?: StreamChatErrorReason) => void,
+  onDelta?: (text: string) => void,
 ) {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -199,6 +201,13 @@ export async function streamChat(
     headers["Authorization"] = `Bearer ${authToken}`;
   } else if (typeof window !== "undefined") {
     headers["x-anon-id"] = getOrCreateAnonId();
+  }
+
+  // Ask Hiqmah is an online, server-backed feature — fail clearly when offline
+  // instead of throwing a generic "something went wrong".
+  if (typeof navigator !== "undefined" && navigator.onLine === false) {
+    onError({ type: "offline" });
+    return;
   }
 
   const url = `${getApiBaseUrl()}/api/search`;
@@ -246,6 +255,7 @@ export async function streamChat(
     try {
       const data = JSON.parse(dataMatch[1]);
       if (event === "status") onStatus(data.text);
+      else if (event === "delta") onDelta?.(data.text);
       else if (event === "answer") onAnswer(data);
       else if (event === "error") onError({ type: "generic" });
     } catch {
@@ -485,6 +495,7 @@ export default function AskHiqmahFloat() {
     setLoading(true);
     setStatusText("Thinking...");
 
+    let streamed = "";
     try {
       await streamChat(
         newMessages.map((m) => ({ role: m.role, content: m.content })),
@@ -500,7 +511,9 @@ export default function AskHiqmahFloat() {
         },
         (reason) => {
           let content = "I apologize, I was unable to process your question. Please try again.";
-          if (reason?.type === "quota_exceeded") {
+          if (reason?.type === "offline") {
+            content = "You're offline. Ask Hiqmah needs an internet connection to answer — reading the Quran, hadith, and the rest of the app still works offline.";
+          } else if (reason?.type === "quota_exceeded") {
             const q = reason.quota;
             const resetTxt = formatQuotaReset(q.resetAt);
             const signedIn = !!getStoredAuthToken();
@@ -511,6 +524,13 @@ export default function AskHiqmahFloat() {
           }
           setMessages([...newMessages, { role: "assistant", content }]);
           setLoading(false);
+        },
+        // onDelta — live token streaming (web). The final `answer` event then
+        // replaces this with the cleaned content + citations/links.
+        (deltaText) => {
+          streamed += deltaText;
+          setLoading(false);
+          setMessages([...newMessages, { role: "assistant", content: streamed }]);
         },
       );
     } catch {
@@ -627,14 +647,16 @@ export default function AskHiqmahFloat() {
               {/* Messages */}
               <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3 min-h-0">
                 {messages.length === 0 && (
-                  <div className="text-center py-8">
-                    <MessageCircleQuestion size={24} className="text-[#3b82f6]/30 mx-auto mb-3" />
-                    <p className="text-themed-muted text-sm">
-                      Ask any question about Islam
-                    </p>
-                    <p className="text-themed-muted/50 text-xs mt-1">
-                      Powered by authentic sources
-                    </p>
+                  <div className="py-6">
+                    <div className="bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20 rounded-xl px-4 py-3 text-sm leading-relaxed max-w-[90%]">
+                      <p className="font-medium">Assalāmu ʿalaykum 👋</p>
+                      <p className="mt-1 text-themed">
+                        I&apos;m Hiqmah. Ask me anything about Islam — the Qur&apos;an, hadith, the Prophets, prayer, and more. I&apos;ll explain it in context and point you to authentic sources.
+                      </p>
+                      <p className="mt-2 text-themed-muted text-xs">
+                        I&apos;m a study aid, not a mufti — for personal rulings, please consult a qualified scholar.
+                      </p>
+                    </div>
                   </div>
                 )}
                 {messages.map((msg, i) => (

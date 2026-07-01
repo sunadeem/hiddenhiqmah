@@ -29,6 +29,7 @@ const KEYS = {
   visits: "hiqmah-visits",
   notifications: "hiqmah-notifications",
   prayerSettings: "hiqmah-prayer-settings",
+  homePrefs: "hiqmah-home-prefs",
 } as const;
 
 export type VisitStats = {
@@ -106,17 +107,19 @@ export function setNotificationPrefs(prefs: Partial<NotificationPrefs>) {
 
 // ─── Hijri date helpers (auto-detect Ramadan / Laylatul Qadr) ──
 
-export function getCurrentHijriMonthDay(): { month: number; day: number } {
+export function getCurrentHijriMonthDay(): { month: number; day: number; year: number } {
   try {
     const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
       day: "numeric",
       month: "numeric",
+      year: "numeric",
     }).formatToParts(new Date());
     const month = Number(parts.find((p) => p.type === "month")?.value ?? 0);
     const day = Number(parts.find((p) => p.type === "day")?.value ?? 0);
-    return { month, day };
+    const year = Number((parts.find((p) => p.type === "year")?.value ?? "0").replace(/\D/g, "")) || 0;
+    return { month, day, year };
   } catch {
-    return { month: 0, day: 0 };
+    return { month: 0, day: 0, year: 0 };
   }
 }
 
@@ -173,6 +176,44 @@ export function getPrayerSettings(): PrayerSettings {
 export function setPrayerSettings(s: Partial<PrayerSettings>) {
   const current = getPrayerSettings();
   set(KEYS.prayerSettings, { ...current, ...s });
+}
+
+// ─── Home preferences (style + onboarding "tuned for") ─────────────
+
+export type HomeStyle = "daily-path" | "classic" | "focus";
+export type TunedFor = "prayer" | "hifz" | "new-muslim" | "family" | "exploring";
+
+export type HomePrefs = {
+  homeStyle: HomeStyle;
+  tunedFor: TunedFor;
+  ramadanAuto: boolean; // auto-switch Home to Ramadan mode during Ramadan
+};
+
+const defaultHomePrefs: HomePrefs = {
+  homeStyle: "daily-path",
+  tunedFor: "exploring",
+  // Auto-activate the Ramadan home during Ramadan (Hijri month 9).
+  ramadanAuto: true,
+};
+
+export function getHomePrefs(): HomePrefs {
+  const stored = get<Partial<HomePrefs>>(KEYS.homePrefs, {});
+  return { ...defaultHomePrefs, ...stored };
+}
+
+export function setHomePrefs(p: Partial<HomePrefs>) {
+  const current = getHomePrefs();
+  set(KEYS.homePrefs, { ...current, ...p });
+  // Let the mounted Home re-read prefs immediately (e.g. the onboarding tune
+  // step, or the Settings home-style/tuned-for pickers) instead of waiting for
+  // a remount.
+  if (typeof window !== "undefined") {
+    try {
+      window.dispatchEvent(new CustomEvent("hiqmah:home-prefs"));
+    } catch {
+      // ignore — non-browser env
+    }
+  }
 }
 
 export function clearAllLocalData() {

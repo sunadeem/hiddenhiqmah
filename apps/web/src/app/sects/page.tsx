@@ -779,6 +779,20 @@ function SectsContent() {
         subtitle="Understanding the origins, beliefs, and key differences between Muslim denominations and groups — based on authentic sources."
       />
 
+      {/* Honest framing — states the perspective, describes groups fairly, and
+          keeps the app out of issuing verdicts on individuals (no scholar on staff). */}
+      <div className="mb-6 rounded-xl border border-gold/30 bg-gold/5 p-4 text-sm leading-relaxed text-themed-muted">
+        <p>
+          <strong className="text-themed">About this overview.</strong> This is an
+          educational introduction written from a mainstream Sunni (Ahl al-Sunnah
+          wal-Jamāʿah) perspective. We try to describe each group fairly and cite
+          authentic sources — but it is a study aid, not a substitute for learning
+          from qualified scholars, and it is <strong className="text-themed">not</strong> a
+          verdict on any individual or community. Who is or isn&apos;t within Islam is
+          a serious matter for qualified scholars, not an app.
+        </p>
+      </div>
+
       <PageSearch
         value={search}
         onChange={setSearch}

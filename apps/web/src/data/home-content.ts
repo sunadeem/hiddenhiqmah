@@ -22,6 +22,8 @@ import {
   Languages,
   GitBranch,
   Bookmark,
+  Flame,
+  Brain,
   Settings as SettingsIcon,
 } from "lucide-react";
 
@@ -84,12 +86,15 @@ export type NavItem = {
   title: string;
   titleAr: string;
   description?: string;
+  /** Hidden on the website (home grid + sidebar); shown only in the mobile app. */
+  mobileOnly?: boolean;
 };
 
 /**
- * Mirrors the website Sidebar (apps/web/src/components/Sidebar.tsx) exactly.
- * Used by mobile MoreSheet AND the web home page card grid.
- * Update this when adding/moving routes so both surfaces stay in sync.
+ * All content sections. The web home grid shows only items WITHOUT `mobileOnly`;
+ * the mobile app (More menu) shows everything. New app-only features are flagged
+ * `mobileOnly` so they stay off the website until they're web-ready. The desktop
+ * Sidebar (apps/web/src/components/Sidebar.tsx) keeps its own (web-only) copy.
  */
 export const navSections: { heading: string; items: NavItem[] }[] = [
   {
@@ -153,8 +158,12 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
   {
     heading: "My Path in Islam",
     items: [
+      { href: "/circles", icon: Users, title: "Circles", titleAr: "الحلقات", description: "Shared goals & gentle accountability", mobileOnly: true },
+      { href: "/hifz", icon: Brain, title: "Hifz", titleAr: "الحفظ", description: "Memorize the Qur'an with spaced repetition", mobileOnly: true },
+      { href: "/streaks", icon: Flame, title: "Streaks", titleAr: "السلسلة", description: "Your streak, pauses, mercy days & qadāʾ", mobileOnly: true },
+      { href: "/household", icon: Users, title: "Family Profiles", titleAr: "ملفات العائلة", description: "Kids' profiles + everyone's daily progress", mobileOnly: true },
       { href: "/bookmarks", icon: Bookmark, title: "Bookmarks", titleAr: "المحفوظات", description: "Saved verses, hadiths, and sections" },
-      { href: "/settings", icon: SettingsIcon, title: "Settings", titleAr: "الإعدادات", description: "Account, notifications, audio, prayer" },
+      { href: "/settings", icon: SettingsIcon, title: "Settings", titleAr: "الإعدادات", description: "Account, notifications, audio, prayer", mobileOnly: true },
     ],
   },
 ];

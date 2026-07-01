@@ -13,9 +13,13 @@ const client = new Anthropic({
   maxRetries: 4,
 });
 
-// Current Sonnet model. Was claude-sonnet-4-20250514 (Sonnet 4.0), which is
-// deprecated and retires 2026-06-15 — would 404 after that date.
-const CHAT_MODEL = "claude-sonnet-4-6";
+// Hybrid model routing. The search rounds (pick keywords, run the tools, judge
+// relevance) are mechanical + latency-heavy → run them on the fast/cheap model.
+// The user-facing answer is credibility-critical → write it on the top model.
+// Both verified live on the Anthropic Models API; undated aliases track the
+// latest snapshot. Flip either constant to re-tier without touching the loop.
+const SEARCH_MODEL = "claude-haiku-4-5";
+const ANSWER_MODEL = "claude-opus-4-8";
 
 // Find the @hidden-hiqmah/content workspace package at runtime. Layouts:
 //   - dev (pnpm dev from apps/web)    → cwd = apps/web → ../../packages/content
@@ -359,32 +363,38 @@ const TOOLS: Anthropic.Messages.Tool[] = [
 
 // ── System prompt ─────────────────────────────────────────────────────────
 
-const SYSTEM_PROMPT = `You are "Hiqmah", the AI assistant for Hidden Hiqmah — an Islamic educational website. You answer questions about Islam using authentic sources (Quran, Sahih Bukhari, Sahih Muslim, and other major hadith collections). You are knowledgeable, warm, respectful, and always cite your sources.
+const SYSTEM_PROMPT = `You are "Hiqmah", the AI assistant for Hidden Hiqmah — an Islamic educational app. You help people learn about Islam from authentic sources. You follow mainstream Sunni scholarship; your sources are the Quran, the major Sunni hadith collections (Bukhari, Muslim, Abu Dawud, Tirmidhi, Nasa'i, Ibn Majah, Ahmad), and classical tafsir. You are warm, respectful, and honest.
 
-IMPORTANT RULES:
-- Always base your answers on authentic Islamic sources (Quran, Sahih hadith collections)
-- When citing hadith, mention the collection and reference (e.g. "Sahih al-Bukhari 1:2")
-- When citing Quran, use surah:ayah format (e.g. "Quran 2:255")
-- Be concise but thorough — aim for 2-4 paragraphs
-- Use respectful Islamic conventions (ﷺ after Prophet Muhammad's name, عليه السلام after other prophets)
-- If a question is outside Islamic topics, politely redirect
-- Do NOT make up hadith numbers or references — if unsure, use the search_hadith tool to verify
+GROUNDING — your most important rule:
+- Base every specific claim about what the Quran or a hadith says on a VERIFIED source. Use the search tools to find and confirm the text before you quote or reference it.
+- NEVER invent, guess, or approximate a hadith number, a surah:ayah reference, or a quotation. If you cannot verify a specific narration or verse with the tools, do not present one — say plainly that you couldn't verify a specific text on this, then give general, clearly-framed guidance.
+- You may explain and teach conversationally, but keep a clear line: quoted scripture and specific rulings must be backed by a cited source; broader educational context should be presented as general understanding, not dressed up as a citation.
+
+FAITHFUL INTERPRETATION — never cherry-pick or mislead:
+- When you explain or interpret a verse or hadith, convey its meaning in its FULL context — the surrounding passage, the occasion of revelation (asbāb al-nuzūl) when known, and the mainstream scholarly understanding. Do not let a quotation stand alone if its plain reading would mislead without that context.
+- Do NOT pull a fragment out of context to support a conclusion the full text does not support, and do NOT present a fringe or out-of-context reading as the plain meaning. If a text is commonly misunderstood, briefly give the correct contextual understanding.
+- If the meaning is genuinely disputed among scholars, say so and present the main positions rather than asserting one as definitive.
+
+RULINGS (fiqh) — answer with sources, flag the gray areas:
+- You may answer practical/ruling questions ("is X permissible?") with the authentic, sourced position.
+- When the matter is contested, differs across the madhhabs, is a gray area, or depends on the person's specific circumstances: say so explicitly, present the main view(s), and recommend consulting a qualified local scholar for their situation. Never flatten a real difference of opinion into a single over-confident ruling.
+- You are an educational aid, not a mufti — for personal, complex, or sensitive matters, point the user to a qualified scholar.
 
 SEARCH TOOLS:
-You have access to the website's Quran and hadith databases. Use these tools to verify and cite content.
+You have access to the app's Quran and hadith databases. Use these tools to verify and cite content — they are how you ground your answers.
 
 search_hadith — Search hadith collections by keywords.
 search_quran — Search all 114 surahs by keywords in English translation.
 get_quran_verse — Look up a specific verse by surah:ayah.
 
 CRITICAL RULES FOR TOOL RESULTS:
-1. You MUST critically evaluate every search result. Read each result carefully and determine: does this hadith/verse ACTUALLY discuss what the user is asking about? Just because keywords match does NOT mean it's relevant.
-2. DISCARD search results that are not semantically relevant to the question. If a user asks about "the person dragged to hellfire who seeks repentance" and the search returns a hadith about travel — that is NOT relevant, do not cite it.
-3. If NO search results are relevant, that's fine — use your own knowledge as an Islamic scholar. Say something like "While I couldn't find the exact hadith in our collections, based on authentic sources..." and provide your best answer.
-4. When you DO find a relevant result, reference it using this exact format in your text: [[cite:N]] where N is the 1-based index of the result from the tool call. For example: "The Prophet ﷺ said... [[cite:1]]" — only the results you mark with [[cite:N]] will be shown as source cards.
-5. Try MULTIPLE different keyword searches if the first one doesn't return relevant results. Think about what distinctive words would actually appear in the hadith text.
+1. Critically evaluate every search result. Does this hadith/verse ACTUALLY discuss what the user is asking about? Keyword matches are not relevance.
+2. DISCARD results that are not semantically relevant. If a user asks about "the person dragged to hellfire who seeks repentance" and the search returns a hadith about travel — that is NOT relevant; do not cite it.
+3. When you DO find a relevant result, reference it using this exact format in your text: [[cite:N]] where N is the 1-based index of the result from the tool call. For example: "The Prophet ﷺ said... [[cite:1]]". Only results you mark with [[cite:N]] are shown as source cards.
+4. Try MULTIPLE keyword searches if the first doesn't return relevant results — think about the distinctive words that would actually appear in the text.
+5. If no relevant source is found, do NOT fabricate one. Say you couldn't verify a specific text in our collections, then give general guidance framed as such — without quoting a verse/hadith or citing a reference you haven't verified.
 
-YOUR #1 PRIORITY: ALWAYS write a substantive, conversational text answer. The answer text is the primary response — citations are supplementary. NEVER return an empty or minimal answer. Even if search returns nothing useful, you MUST still answer the question using your knowledge.
+Always aim to be genuinely helpful — a grounded, honest answer that says "I couldn't verify a specific narration" is far better than a confident answer built on a fabricated or out-of-context source.
 
 FORMATTING:
 Write plain text. You may use **bold** for emphasis and line breaks for structure. No headers, lists, or code blocks.
@@ -411,6 +421,14 @@ ISLAMIC CALENDAR: /islamic-calendar?tab=months|dates
 WHY ISLAM: /why-islam?tab=proofs|christianity|judaism|hinduism|buddhism|sikhism|atheism|questions
 SECTS: /sects?tab=sunni|shia|other
 OTHER: /hadith, /resources, /learn-arabic`;
+
+// Cache the (large, static) system prompt + tools prefix. It's identical across
+// the 2-4 calls in a single request AND across requests, so caching it cuts
+// prefill latency and cost dramatically (cache reads ~0.1x). cache_control on
+// the system block also covers the tools, which render before system.
+const SYSTEM_BLOCKS: Anthropic.Messages.TextBlockParam[] = [
+  { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
+];
 
 // ── Tool execution helper ─────────────────────────────────────────────────
 
@@ -546,17 +564,6 @@ export async function POST(req: NextRequest) {
       const { data, error } = await supabaseSrv.auth.getUser(token);
       if (!error && data.user) {
         userId = data.user.id;
-        // First sign-in-day bonus grant (idempotent — PK on user_id)
-        try {
-          await supabaseSrv
-            .from("sign_in_bonuses")
-            .insert({ user_id: userId })
-            .select()
-            .maybeSingle();
-        } catch {
-          // Likely duplicate (user has already received bonus before today's
-          // window) — safe to ignore. The quota function checks granted_at.
-        }
       }
     }
 
@@ -600,19 +607,87 @@ export async function POST(req: NextRequest) {
         // Request-scoped citation counter
         const citationCounter = { value: 0 };
 
+        // Request-scoped token accounting — summed across every model call in
+        // this request so we can log real per-message cost to chat_usage.
+        const usageTotals = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
+
         const allCitations: Citation[] = [];
         const allSearchResults: string[] = [];
 
-        // Step 1: First API call WITH tools — let Claude decide what to search
-        let response = await client.messages.create({
-          model: CHAT_MODEL,
-          max_tokens: 1024,
-          system: SYSTEM_PROMPT,
-          tools: TOOLS,
-          messages: apiMessages,
-        });
+        // ── Live token streaming ────────────────────────────────────────────
+        // Stream the answer to the client token-by-token. We accumulate the raw
+        // model text across calls, and emit only the marker-free incremental
+        // text as `delta` events — holding back any in-progress [[cite:N]] /
+        // [[link:..]] marker so the user never sees them. (Web reads deltas
+        // live; the native WKWebView buffers the whole response and uses the
+        // final `answer` event, so this is purely additive there.)
+        let raw = "";
+        let emittedLen = 0;
+        const cleanForStream = (s: string): string => {
+          let c = s.replace(/\[\[(?:cite:\d+|link:[^\]]*)\]\]/g, "");
+          const open = c.lastIndexOf("[[");
+          if (open !== -1 && c.indexOf("]]", open) === -1) c = c.slice(0, open);
+          return c;
+        };
+        const flushDeltas = () => {
+          const clean = cleanForStream(raw);
+          if (clean.length > emittedLen) {
+            send("delta", { text: clean.slice(emittedLen) });
+            emittedLen = clean.length;
+          }
+        };
+        // Non-streaming SEARCH pass on the fast/cheap model: pick keywords, run
+        // the tools, judge relevance. Any prose it produces is intentionally
+        // discarded — the user-facing answer is written by the ANSWER pass.
+        const gather = async (
+          msgs: Anthropic.Messages.MessageParam[]
+        ): Promise<Anthropic.Messages.Message> => {
+          const r = await client.messages.create({
+            model: SEARCH_MODEL,
+            max_tokens: 1024,
+            system: SYSTEM_BLOCKS,
+            tools: TOOLS,
+            messages: msgs,
+          });
+          const u = r.usage;
+          if (u) {
+            usageTotals.input += u.input_tokens ?? 0;
+            usageTotals.output += u.output_tokens ?? 0;
+            usageTotals.cacheRead += u.cache_read_input_tokens ?? 0;
+            usageTotals.cacheWrite += u.cache_creation_input_tokens ?? 0;
+          }
+          return r;
+        };
 
-        // Step 2: Execute up to 2 rounds of tool use, accumulating full message chain
+        // Streaming ANSWER pass on the quality model: writes the grounded,
+        // user-facing answer from the sources gathered above.
+        const answerStream = async (
+          msgs: Anthropic.Messages.MessageParam[]
+        ): Promise<void> => {
+          const s = client.messages.stream({
+            model: ANSWER_MODEL,
+            max_tokens: 1024,
+            system: SYSTEM_BLOCKS,
+            messages: msgs,
+          });
+          for await (const ev of s) {
+            if (ev.type === "content_block_delta" && ev.delta.type === "text_delta") {
+              raw += ev.delta.text;
+              flushDeltas();
+            }
+          }
+          const final = await s.finalMessage();
+          const u = final.usage;
+          if (u) {
+            usageTotals.input += u.input_tokens ?? 0;
+            usageTotals.output += u.output_tokens ?? 0;
+            usageTotals.cacheRead += u.cache_read_input_tokens ?? 0;
+            usageTotals.cacheWrite += u.cache_creation_input_tokens ?? 0;
+          }
+        };
+
+        // ── Search phase (fast model, up to 2 tool rounds) ──────────────────
+        let response = await gather(apiMessages);
         const messageChain: Anthropic.Messages.MessageParam[] = [...apiMessages];
         let rounds = 0;
 
@@ -637,60 +712,37 @@ export async function POST(req: NextRequest) {
             };
           });
 
-          // Append this round to the chain
           messageChain.push({ role: "assistant" as const, content: response.content });
           messageChain.push({ role: "user" as const, content: toolResults });
 
-          response = await client.messages.create({
-            model: CHAT_MODEL,
-            max_tokens: 1024,
-            system: SYSTEM_PROMPT,
-            tools: TOOLS,
-            messages: messageChain,
-          });
+          response = await gather(messageChain);
         }
 
-        // Step 3: If Claude still wants tools after 2 rounds, or if the response
-        // has no text block, force a final text-only call with condensed context
-        let textBlock = response.content.find(
-          (b): b is Anthropic.Messages.TextBlock => b.type === "text"
-        );
-
-        if (!textBlock?.text) {
-          // Execute any remaining tool calls
-          if (response.stop_reason === "tool_use") {
-            const toolBlocks = response.content.filter(
-              (b): b is Anthropic.Messages.ToolUseBlock => b.type === "tool_use"
-            );
-            for (const block of toolBlocks) {
-              const { result, citations } = executeTool(block, citationCounter);
-              allCitations.push(...citations);
-              allSearchResults.push(result);
-            }
-          }
-
-          // Build a condensed final call: original user messages + search summary
-          send("status", { text: "Preparing answer..." });
-          const searchSummary = allSearchResults.length > 0
-            ? `Here are search results from the website's database. Evaluate each for relevance:\n\n${allSearchResults.join("\n\n---\n\n")}`
-            : "No search results were found in the website's database. Answer from your own knowledge.";
-
-          response = await client.messages.create({
-            model: CHAT_MODEL,
-            max_tokens: 1024,
-            system: SYSTEM_PROMPT,
-            messages: [
-              ...apiMessages,
-              { role: "user" as const, content: `[SEARCH RESULTS]\n${searchSummary}\n\n[REMINDER] Now answer the user's question above. Write a full, conversational response. Reference relevant results with [[cite:N]] format. Include [[link:Label|/path]] at the end.` },
-            ],
-          });
-
-          textBlock = response.content.find(
-            (b): b is Anthropic.Messages.TextBlock => b.type === "text"
+        // If we hit the round cap still requesting tools, execute those too so
+        // their sources are available to the answer pass (for citations).
+        if (response.stop_reason === "tool_use") {
+          const toolBlocks = response.content.filter(
+            (b): b is Anthropic.Messages.ToolUseBlock => b.type === "tool_use"
           );
+          for (const block of toolBlocks) {
+            const { result, citations } = executeTool(block, citationCounter);
+            allCitations.push(...citations);
+            allSearchResults.push(result);
+          }
         }
 
-        let text = textBlock?.text || "";
+        // ── Answer phase (quality model, streamed) ──────────────────────────
+        send("status", { text: "Preparing answer..." });
+        const searchSummary = allSearchResults.length > 0
+          ? `Here are search results from the app's database. Evaluate each for relevance:\n\n${allSearchResults.join("\n\n---\n\n")}`
+          : "No relevant sources were found in the app's database. Do NOT fabricate a verse, hadith, or reference — if the question needs a specific text, tell the user you couldn't verify one, then give general guidance framed as such.";
+
+        await answerStream([
+          ...apiMessages,
+          { role: "user" as const, content: `[SEARCH RESULTS]\n${searchSummary}\n\n[REMINDER] Now answer the user's question above. Be helpful and conversational, but stay grounded: only quote or cite a verse/hadith that appears in the results above (with [[cite:N]]); never invent a reference. Give full-context, non-cherry-picked explanations, and flag any scholarly differences. Include [[link:Label|/path]] at the end.` },
+        ]);
+
+        let text = raw;
 
         // Debug logging (remove in production)
         // try { fs.writeFileSync(path.join(process.cwd(), "ask-debug.log"), JSON.stringify({ stopReason: response.stop_reason, textLen: text.length, rounds }, null, 2)); } catch {}
@@ -745,7 +797,7 @@ export async function POST(req: NextRequest) {
 
         // SAFETY: if text ended up empty somehow, provide all citations as fallback
         if (!text || text.length < 5) {
-          console.error("[Ask Hiqmah] Empty response! Raw was:", JSON.stringify(textBlock?.text || "").slice(0, 500));
+          console.error("[Ask Hiqmah] Empty response! Raw was:", JSON.stringify(raw).slice(0, 500));
           text = text || "I apologize, I encountered an issue generating a response. Please try asking your question again.";
         }
 
@@ -759,6 +811,10 @@ export async function POST(req: NextRequest) {
               user_id: userId,
               anon_id: userId ? null : anonId,
               ip_hash: ipHash,
+              input_tokens: usageTotals.input,
+              output_tokens: usageTotals.output,
+              cache_read_tokens: usageTotals.cacheRead,
+              cache_creation_tokens: usageTotals.cacheWrite,
             });
           } catch (e) {
             console.error("[Ask Hiqmah] Failed to log chat_usage:", e);

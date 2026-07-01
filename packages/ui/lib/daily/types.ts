@@ -63,9 +63,28 @@ export interface Streaks {
   prayerBest: number;
 }
 
+// ── Humane streaks ──────────────────────────────────────────────────────────
+// A pause (travel / illness / menstruation) makes those days transparent to the
+// streak walk — they never count as a "miss" (the streak bridges over them).
+export type PauseReason = "travel" | "unwell" | "menses";
+
+export interface StreakPause {
+  id: string;
+  startDate: string; // YYYY-MM-DD
+  endDate: string | null; // null = ongoing (active up to today)
+  reason: PauseReason;
+}
+
 export interface DhikrState {
   daily: number;
   lifetime: number;
+}
+
+/** One (dhikrKey, date) count — used to compute day/week/month dhikr stats. */
+export interface DhikrDayCount {
+  dhikrKey: string;
+  localDate: string;
+  count: number;
 }
 
 export interface DailyAdapter {
@@ -91,6 +110,8 @@ export interface DailyAdapter {
   getDhikr(dhikrKey: string, localDate: string): Promise<DhikrState>;
   incrementDhikr(dhikrKey: string, localDate: string, delta?: number): Promise<DhikrState>;
   setDhikrCount(dhikrKey: string, localDate: string, count: number): Promise<DhikrState>;
+  /** Raw per-(dhikr, date) counts within [fromDate, toDate] inclusive — for stats. */
+  getDhikrRange(fromDate: string, toDate: string): Promise<DhikrDayCount[]>;
 
   // ── History (frozen) + streaks ──
   /** Frozen rollups for a date range, inclusive (calendar grid). */
@@ -104,6 +125,16 @@ export interface DailyAdapter {
   getStartDate(): Promise<string | null>;
   /** Recompute streak caches against the real today (e.g. after editing a past day). */
   recomputeStreaks(today: string): Promise<void>;
+
+  // ── Humane streaks: pauses ──
+  /** All pauses (most recent first), for display. */
+  getPauses(): Promise<StreakPause[]>;
+  /** The currently-active (ongoing, endDate=null) pause, if any. */
+  getActivePause(): Promise<StreakPause | null>;
+  /** Start an ongoing pause from `today` (no-op if one is already active). */
+  startPause(reason: PauseReason, today: string): Promise<void>;
+  /** End the active pause at `today` (inclusive). */
+  endPause(today: string): Promise<void>;
 }
 
 // ── Date helpers (device-local, from components — never toISOString/UTC) ──
@@ -223,6 +254,72 @@ export function consecRun(qualifyingDatesDesc: string[], today: string): number 
     } else {
       break; // calendar gap → streak breaks
     }
+  }
+  return run;
+}
+
+// ── Humane streaks ──────────────────────────────────────────────────────────
+
+/** Forgiven missed days before a streak breaks (a single slip won't reset you). */
+export const HUMANE_MERCY = 1;
+
+/** Expand pause ranges into the set of paused YYYY-MM-DD dates (ongoing → up to today). */
+export function expandPausedDates(
+  pauses: { startDate: string; endDate: string | null }[],
+  today: string
+): Set<string> {
+  const set = new Set<string>();
+  for (const p of pauses) {
+    if (!p.startDate) continue;
+    let d = p.startDate;
+    const end = p.endDate ?? today; // ongoing pause runs up to today
+    let guard = 0;
+    while (d <= end && guard++ < 800) {
+      set.add(d);
+      d = shiftDate(d, 1);
+    }
+  }
+  return set;
+}
+
+/**
+ * Humane streak walk (mirrors the SQL _consec_run_humane). Walks back from today:
+ *   - paused days are transparent (skipped, never break, don't count)
+ *   - qualifying (done) days count
+ *   - a missed day is forgiven while mercy remains; once spent, a miss breaks it
+ *   - today is never a break (an incomplete today just starts the walk at yesterday)
+ * Stops at `startDate` so days before the user began aren't treated as misses.
+ */
+export function humaneRun(
+  qualifyingDatesDesc: string[],
+  paused: Set<string>,
+  today: string,
+  mercy: number,
+  startDate?: string | null
+): number {
+  const qual = new Set(qualifyingDatesDesc);
+  let cursor = qual.has(today) ? today : shiftDate(today, -1);
+  let run = 0;
+  let mercyLeft = mercy;
+  let guard = 0;
+  while (guard++ < 3660) {
+    if (startDate && cursor < startDate) break;
+    if (paused.has(cursor)) {
+      cursor = shiftDate(cursor, -1);
+      continue;
+    }
+    if (qual.has(cursor)) {
+      run += 1;
+      cursor = shiftDate(cursor, -1);
+      continue;
+    }
+    // missed day
+    if (mercyLeft > 0) {
+      mercyLeft -= 1;
+      cursor = shiftDate(cursor, -1);
+      continue;
+    }
+    break;
   }
   return run;
 }

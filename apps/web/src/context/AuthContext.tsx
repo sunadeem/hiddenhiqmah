@@ -24,6 +24,28 @@ type AuthState = {
    * On success, the auth listener will fire with the new session.
    */
   verifyOtp: (email: string, code: string) => Promise<{ error?: string }>;
+  /** Email + password sign-in. */
+  signInWithPassword: (
+    email: string,
+    password: string
+  ) => Promise<{ error?: string }>;
+  /**
+   * Email + password sign-up. `needsConfirmation` is true when the project
+   * requires email confirmation before the user can sign in (no session yet).
+   */
+  signUpWithPassword: (
+    email: string,
+    password: string,
+    meta?: { firstName: string; lastName: string }
+  ) => Promise<{
+    error?: string;
+    needsConfirmation?: boolean;
+    alreadyExists?: boolean;
+  }>;
+  /** Sends a password-reset email linking to /auth/reset. */
+  resetPassword: (email: string) => Promise<{ error?: string }>;
+  /** Sets a new password for the current (recovery) session. */
+  updatePassword: (password: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
 };
 
@@ -105,6 +127,73 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
   }, []);
 
+  const signInWithPassword = useCallback(
+    async (email: string, password: string) => {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      return error ? { error: error.message } : {};
+    },
+    []
+  );
+
+  const signUpWithPassword = useCallback(
+    async (
+      email: string,
+      password: string,
+      meta?: { firstName: string; lastName: string }
+    ) => {
+      const emailRedirectTo =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/auth/callback`
+          : undefined;
+      const userData = meta
+        ? {
+            first_name: meta.firstName,
+            last_name: meta.lastName,
+            full_name: `${meta.firstName} ${meta.lastName}`.trim(),
+          }
+        : undefined;
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo, data: userData },
+      });
+      if (error) {
+        // Confirmations OFF: an already-registered email surfaces as an error.
+        if (/already\s*(registered|exists)|already in use/i.test(error.message)) {
+          return { alreadyExists: true };
+        }
+        return { error: error.message };
+      }
+      // Confirmations ON: Supabase obfuscates an existing user as a "success"
+      // with an empty identities array (anti-enumeration). Treat as existing.
+      if (data.user && (data.user.identities?.length ?? 0) === 0) {
+        return { alreadyExists: true };
+      }
+      // No session => the project requires email confirmation first.
+      return { needsConfirmation: !data.session };
+    },
+    []
+  );
+
+  const resetPassword = useCallback(async (email: string) => {
+    const redirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/auth/reset`
+        : undefined;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
+    return error ? { error: error.message } : {};
+  }, []);
+
+  const updatePassword = useCallback(async (password: string) => {
+    const { error } = await supabase.auth.updateUser({ password });
+    return error ? { error: error.message } : {};
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -113,6 +202,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         signInWithEmail,
         verifyOtp,
+        signInWithPassword,
+        signUpWithPassword,
+        resetPassword,
+        updatePassword,
         signOut,
       }}
     >

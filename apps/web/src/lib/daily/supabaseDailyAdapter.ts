@@ -10,8 +10,11 @@ import type {
   DayItem,
   DayRollup,
   DhikrState,
+  DhikrDayCount,
   ItemPatch,
   NewItemInput,
+  PauseReason,
+  StreakPause,
   Streaks,
   UserItem,
 } from "@hidden-hiqmah/ui/lib/daily/types";
@@ -209,6 +212,20 @@ export function createSupabaseDailyAdapter(
       return { daily: data?.daily ?? 0, lifetime: data?.lifetime ?? 0 };
     },
 
+    async getDhikrRange(fromDate: string, toDate: string): Promise<DhikrDayCount[]> {
+      const { data, error } = await client
+        .from("dhikr_daily")
+        .select("dhikr_key, local_date, count")
+        .gte("local_date", fromDate)
+        .lte("local_date", toDate);
+      if (error) throw error;
+      return (data ?? []).map((r) => ({
+        dhikrKey: r.dhikr_key as string,
+        localDate: r.local_date as string,
+        count: r.count as number,
+      }));
+    },
+
     async getDayRollups(fromDate: string, toDate: string) {
       const { data, error } = await client
         .from("checklist_day")
@@ -248,6 +265,47 @@ export function createSupabaseDailyAdapter(
 
     async recomputeStreaks(today: string) {
       await client.rpc("recompute_streaks", { p_today: today });
+    },
+
+    async getPauses(): Promise<StreakPause[]> {
+      const { data } = await client
+        .from("streak_pauses")
+        .select("*")
+        .order("start_date", { ascending: false });
+      return (data ?? []).map((r) => ({
+        id: r.id as string,
+        startDate: r.start_date as string,
+        endDate: (r.end_date as string | null) ?? null,
+        reason: r.reason as PauseReason,
+      }));
+    },
+
+    async getActivePause(): Promise<StreakPause | null> {
+      const { data } = await client
+        .from("streak_pauses")
+        .select("*")
+        .is("end_date", null)
+        .maybeSingle();
+      if (!data) return null;
+      return {
+        id: data.id as string,
+        startDate: data.start_date as string,
+        endDate: null,
+        reason: data.reason as PauseReason,
+      };
+    },
+
+    async startPause(reason: PauseReason, today: string) {
+      const { error } = await client.rpc("start_streak_pause", {
+        p_reason: reason,
+        p_today: today,
+      });
+      if (error) throw error;
+    },
+
+    async endPause(today: string) {
+      const { error } = await client.rpc("end_streak_pause", { p_today: today });
+      if (error) throw error;
     },
   };
 }

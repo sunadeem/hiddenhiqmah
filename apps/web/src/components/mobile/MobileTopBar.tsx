@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import { isTabRoot } from "./routes";
+import { isTabRoot, ownsHeader } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 
 // How many in-app navigations have happened since app load. >1 means there's
@@ -12,7 +12,7 @@ let navCount = 0;
 
 /** Fallback parent when there's no in-app history (cold launch / deep link). */
 function parentPath(pathname: string): string {
-  if (pathname === "/privacy") return "/settings";
+  if (pathname === "/privacy" || pathname === "/credits") return "/settings";
   const parts = pathname.split("/").filter(Boolean);
   if (parts.length > 1) return "/" + parts.slice(0, -1).join("/");
   return "/";
@@ -21,10 +21,10 @@ function parentPath(pathname: string): string {
 export default function MobileTopBar() {
   const pathname = usePathname();
   const router = useRouter();
-  // The Quran surah reader renders its own top bar (back + title + settings),
-  // so the global bar drops to a slim status-bar spacer to avoid a double back.
-  const isSurahReader = /^\/quran\/[^/]+/.test(pathname);
-  const showBack = !isTabRoot(pathname) && !isSurahReader;
+  // Screens that render their own header/back bar (reader, Ask, Hifz, …) are
+  // listed in OWN_HEADER_PATTERNS (routes.ts); the global bar drops to a slim
+  // status-bar spacer for them to avoid a double back.
+  const showBack = !isTabRoot(pathname) && !ownsHeader(pathname);
 
   useEffect(() => {
     navCount += 1;

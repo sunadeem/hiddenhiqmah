@@ -58,7 +58,15 @@ export default function AskPage() {
   useEffect(() => {
     setMessages(loadMessages());
     setHydrated(true);
-    inputRef.current?.focus();
+    // Prefill from ?q= (e.g. the Qur'an "ask the tutor about this word" deep-link).
+    let q = "";
+    try {
+      q = new URLSearchParams(window.location.search).get("q") || "";
+    } catch {
+      /* ignore */
+    }
+    if (q) setQuery(q);
+    else inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -276,7 +284,11 @@ export default function AskPage() {
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="border-t sidebar-border p-4 shrink-0">
+      <form
+        onSubmit={handleSubmit}
+        className="border-t sidebar-border p-4 shrink-0"
+        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 84px)" }}
+      >
         <div className="flex items-center gap-3 min-w-0">
           <input
             ref={inputRef}

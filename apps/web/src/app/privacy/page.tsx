@@ -8,7 +8,7 @@ export default function PrivacyPage() {
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-themed mb-2">Privacy Policy</h1>
         <p className="text-xs text-themed-muted">
-          Effective date: <span className="text-themed">June 10, 2026</span>
+          Effective date: <span className="text-themed">June 18, 2026</span>
         </p>
       </header>
 
@@ -75,10 +75,15 @@ export default function PrivacyPage() {
         <ul className="text-themed-muted text-sm leading-relaxed pl-6 list-disc space-y-2">
           <li>
             <strong className="text-themed">
-              Location for prayer times (optional).
+              Location for prayer times — computed on your device.
             </strong>{" "}
-            If you grant location permission, your device sends your latitude
-            and longitude to{" "}
+            Your prayer times are calculated entirely on your device from your
+            location; your GPS coordinates are <strong className="text-themed">not</strong> sent to
+            any prayer-time server, and they work fully offline. Two optional
+            exceptions: (1) to show your city&apos;s name, your coordinates are sent
+            once to OpenStreetMap&apos;s geocoder (cosmetic only — prayer times don&apos;t
+            need it); and (2) if you look up a <em>different</em> city&apos;s times,
+            that city&apos;s coordinates are sent to{" "}
             <a
               href="https://aladhan.com"
               className="text-gold underline"
@@ -87,10 +92,9 @@ export default function PrivacyPage() {
             >
               aladhan.com
             </a>{" "}
-            to calculate accurate prayer times. You can also enter a city
-            manually or disable location entirely — prayer times will still
-            work, just based on what you provide. We do not store your location
-            on any server of ours.
+            (which supplies that city&apos;s timezone). Your own location is never
+            required to leave your device, and we never store it on any server of
+            ours.
           </li>
           <li>
             <strong className="text-themed">
@@ -247,10 +251,10 @@ export default function PrivacyPage() {
           <li>
             If you have an account, email{" "}
             <a
-              href="mailto:subhan.s.nadeem@gmail.com"
+              href="mailto:Subhan.Nadeem@HiddenHiqmah.com"
               className="text-gold underline"
             >
-              subhan.s.nadeem@gmail.com
+              Subhan.Nadeem@HiddenHiqmah.com
             </a>{" "}
             from the email address you signed up with and we will delete your
             account record and AI Chat usage logs from Supabase within 7 days.
@@ -314,10 +318,10 @@ export default function PrivacyPage() {
         <p className="text-themed-muted text-sm leading-relaxed">
           Questions, concerns, or deletion requests:{" "}
           <a
-            href="mailto:subhan.s.nadeem@gmail.com"
+            href="mailto:Subhan.Nadeem@HiddenHiqmah.com"
             className="text-gold underline"
           >
-            subhan.s.nadeem@gmail.com
+            Subhan.Nadeem@HiddenHiqmah.com
           </a>
         </p>
       </section>
