@@ -303,7 +303,7 @@ export default function SettingsScreen() {
           <SettingsRow
             icon={User}
             title="Sign in"
-            subtitle="+5 bonus questions today · sync coming soon"
+            subtitle="More Ask Hiqmah questions · sync across devices"
             rightChevron
             href="/signin"
           />

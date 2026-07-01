@@ -560,17 +560,6 @@ export async function POST(req: NextRequest) {
       const { data, error } = await supabaseSrv.auth.getUser(token);
       if (!error && data.user) {
         userId = data.user.id;
-        // First sign-in-day bonus grant (idempotent — PK on user_id)
-        try {
-          await supabaseSrv
-            .from("sign_in_bonuses")
-            .insert({ user_id: userId })
-            .select()
-            .maybeSingle();
-        } catch {
-          // Likely duplicate (user has already received bonus before today's
-          // window) — safe to ignore. The quota function checks granted_at.
-        }
       }
     }
 
@@ -614,6 +603,10 @@ export async function POST(req: NextRequest) {
         // Request-scoped citation counter
         const citationCounter = { value: 0 };
 
+        // Request-scoped token accounting — summed across every model call in
+        // this request so we can log real per-message cost to chat_usage.
+        const usageTotals = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
+
         const allCitations: Citation[] = [];
         const allSearchResults: string[] = [];
 
@@ -656,7 +649,15 @@ export async function POST(req: NextRequest) {
               flushDeltas();
             }
           }
-          return s.finalMessage();
+          const final = await s.finalMessage();
+          const u = final.usage;
+          if (u) {
+            usageTotals.input += u.input_tokens ?? 0;
+            usageTotals.output += u.output_tokens ?? 0;
+            usageTotals.cacheRead += u.cache_read_input_tokens ?? 0;
+            usageTotals.cacheWrite += u.cache_creation_input_tokens ?? 0;
+          }
+          return final;
         };
 
         // Step 1: First call WITH tools — let Claude decide what to search.
@@ -793,6 +794,10 @@ export async function POST(req: NextRequest) {
               user_id: userId,
               anon_id: userId ? null : anonId,
               ip_hash: ipHash,
+              input_tokens: usageTotals.input,
+              output_tokens: usageTotals.output,
+              cache_read_tokens: usageTotals.cacheRead,
+              cache_creation_tokens: usageTotals.cacheWrite,
             });
           } catch (e) {
             console.error("[Ask Hiqmah] Failed to log chat_usage:", e);
