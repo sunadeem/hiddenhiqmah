@@ -1283,7 +1283,7 @@ function SurahPageContent() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className={`fixed ${playingVerse !== null ? "bottom-20" : "bottom-6"} right-6 w-10 h-10 rounded-full bg-[var(--color-gold)] text-[var(--color-bg)] flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-50`}
+          className={`fixed ${playingVerse !== null ? "bottom-20" : "bottom-6"} left-1/2 lg:left-[calc(50%+128px)] -translate-x-1/2 w-10 h-10 rounded-full bg-[var(--color-gold)] text-[var(--color-bg)] flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-50`}
         >
           <ChevronUp size={20} />
         </button>
