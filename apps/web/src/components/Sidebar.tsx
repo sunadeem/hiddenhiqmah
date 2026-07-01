@@ -35,8 +35,6 @@ import {
   ListChecks,
   HeartHandshake,
   LogIn,
-  Flame,
-  Brain,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -105,10 +103,8 @@ const navSections: NavSection[] = [
   {
     title: "My Path in Islam",
     items: [
-      { href: "/circles", label: "Circles", labelAr: "الحلقات", icon: Users },
-      { href: "/hifz", label: "Hifz", labelAr: "الحفظ", icon: Brain },
-      { href: "/streaks", label: "Streaks", labelAr: "السلسلة", icon: Flame },
-      { href: "/household", label: "Family Profiles", labelAr: "ملفات العائلة", icon: Users },
+      // Circles / Hifz / Streaks / Family Profiles are mobile-only features —
+      // reachable in the app, intentionally not linked on the website.
       { href: "/bookmarks", label: "Bookmarks", labelAr: "المحفوظات", icon: Bookmark },
     ],
   },
