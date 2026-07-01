@@ -39,6 +39,8 @@ import {
   HeartHandshake,
   LogOut,
   LogIn,
+  Flame,
+  Brain,
 } from "lucide-react";
 import { useTheme } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
@@ -108,6 +110,10 @@ const navSections: NavSection[] = [
   {
     title: "My Path in Islam",
     items: [
+      { href: "/circles", label: "Circles", labelAr: "الحلقات", icon: Users },
+      { href: "/hifz", label: "Hifz", labelAr: "الحفظ", icon: Brain },
+      { href: "/streaks", label: "Streaks", labelAr: "السلسلة", icon: Flame },
+      { href: "/household", label: "Family Profiles", labelAr: "ملفات العائلة", icon: Users },
       { href: "/bookmarks", label: "Bookmarks", labelAr: "المحفوظات", icon: Bookmark },
     ],
   },
@@ -475,7 +481,12 @@ function SidebarContent({
         {(() => {
           if (authLoading) return null;
           if (user) {
-            const initial = (user.email || "?").charAt(0).toUpperCase();
+            const meta = (user.user_metadata ?? {}) as {
+              first_name?: string;
+              full_name?: string;
+            };
+            const name = meta.full_name || meta.first_name || user.email || "Account";
+            const initial = (meta.first_name || user.email || "?").charAt(0).toUpperCase();
             const acct = (
               <div className={isCollapsed ? "" : "flex items-center gap-1"}>
                 <Link
@@ -490,8 +501,8 @@ function SidebarContent({
                   </span>
                   {!isCollapsed && (
                     <span className="flex-1 min-w-0 text-left">
-                      <span className="block text-xs font-medium text-themed truncate">{user.email}</span>
-                      <span className="block text-[10px] text-themed-muted">Signed in</span>
+                      <span className="block text-xs font-medium text-themed truncate">{name}</span>
+                      <span className="block text-[10px] text-themed-muted">Account &amp; settings</span>
                     </span>
                   )}
                 </Link>
@@ -509,7 +520,7 @@ function SidebarContent({
                 )}
               </div>
             );
-            return isCollapsed ? <SidebarTooltip label={user.email || "Account"}>{acct}</SidebarTooltip> : acct;
+            return isCollapsed ? <SidebarTooltip label={name}>{acct}</SidebarTooltip> : acct;
           }
           const signInBtn = (
             <Link
