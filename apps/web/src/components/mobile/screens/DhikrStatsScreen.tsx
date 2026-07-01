@@ -18,6 +18,7 @@ const LABEL_OF: Record<string, { label: string; ar: string }> = {
   tahlil: { label: "La ilaha illallah", ar: "لا إله إلا الله" },
   hawqala: { label: "La hawla wa la quwwata", ar: "لا حول ولا قوة" },
   hasbunallah: { label: "Hasbunallah", ar: "حسبنا الله" },
+  subhanallah_hamd: { label: "SubhanAllah wa bihamdihi", ar: "سبحان الله وبحمده" },
 };
 
 function ymd(d: Date) {
