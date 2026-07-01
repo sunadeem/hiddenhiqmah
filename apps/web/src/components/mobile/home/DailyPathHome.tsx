@@ -268,8 +268,9 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
         </div>
       </div>
 
-      {/* Continue reading + quick actions (reused) */}
-      <ContinueReadingCard />
+      {/* Continue reading — only when the path above doesn't already include a
+          "Read Qur'an" step, so we don't show two reading cards. */}
+      {!steps.some((s) => s.key === "read") && <ContinueReadingCard />}
       <QuickActions onQiblahClick={() => setQiblahOpen(true)} />
 
       <QiblahSheet open={qiblahOpen} onClose={() => setQiblahOpen(false)} />

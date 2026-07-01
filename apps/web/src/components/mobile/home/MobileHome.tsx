@@ -35,11 +35,18 @@ export default function MobileHome() {
 
   useEffect(() => {
     recordVisit();
-    const p = getHomePrefs();
-    setStyle(p.homeStyle);
-    setTunedFor(p.tunedFor);
-    // Auto-activate during Ramadan (Hijri month 9) when the toggle is on.
-    setRamadan(isRamadanActive() && p.ramadanAuto);
+    const read = () => {
+      const p = getHomePrefs();
+      setStyle(p.homeStyle);
+      setTunedFor(p.tunedFor);
+      // Auto-activate during Ramadan (Hijri month 9) when the toggle is on.
+      setRamadan(isRamadanActive() && p.ramadanAuto);
+    };
+    read();
+    // Re-read when prefs change elsewhere (onboarding tune step, Settings
+    // pickers) so Home updates live instead of only on remount.
+    window.addEventListener("hiqmah:home-prefs", read);
+    return () => window.removeEventListener("hiqmah:home-prefs", read);
   }, []);
 
   const useUsualHome = () => {

@@ -27,6 +27,7 @@ import TunedForPicker from "../home/TunedForPicker";
 import { SettingsSection, SettingsRow, SettingsRowSelect } from "./SettingsUI";
 import { useTheme } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
+import { useIsNative } from "@/lib/mobile/platform";
 import {
   getFontSize,
   setFontSize,
@@ -65,6 +66,7 @@ const FONT_SIZE_LABELS = ["Small", "Medium", "Large", "Extra Large"];
 export default function SettingsScreen() {
   const { isDark, toggleDarkMode } = useTheme();
   const { user, loading: authLoading, signOut } = useAuth();
+  const isNative = useIsNative();
   const [hydrated, setHydrated] = useState(false);
   const [fontSize, setFontSizeState] = useState(2);
   const [autoPlay, setAutoPlayState] = useState(false);
@@ -98,21 +100,23 @@ export default function SettingsScreen() {
   }
 
   return (
-    <div className="space-y-5 pb-6">
+    <div className="space-y-5 pb-6 max-w-xl mx-auto w-full">
       {/* Header (this screen doesn't get MobileTopBar title) */}
       <div className="text-center pt-1">
         <h1 className="text-2xl font-bold text-themed">Settings</h1>
       </div>
 
-      {/* PRAYER & NOTIFICATIONS */}
-      <SettingsSection heading="Prayer & Notifications">
-        <SettingsRow
-          icon={Bell}
-          title="Notification settings"
-          subtitle="Prayer alerts, daily reminders, special occasions"
-          rightChevron
-          href="/settings/notifications"
-        />
+      {/* PRAYER & NOTIFICATIONS (notifications are native-only) */}
+      <SettingsSection heading={isNative ? "Prayer & Notifications" : "Prayer"}>
+        {isNative && (
+          <SettingsRow
+            icon={Bell}
+            title="Notification settings"
+            subtitle="Prayer alerts, daily reminders, special occasions"
+            rightChevron
+            href="/settings/notifications"
+          />
+        )}
         <SettingsRow
           icon={MapPin}
           title="Location"
@@ -142,47 +146,51 @@ export default function SettingsScreen() {
         />
       </SettingsSection>
 
-      {/* HOME */}
-      <SettingsSection heading="Home">
-        <SettingsRow
-          icon={Moon}
-          title="Ramadan home"
-          subtitle={
-            home.ramadanAuto
-              ? "On — showing the festive Ramadan home"
-              : "Turn on to use the festive Ramadan home"
-          }
-          toggle={home.ramadanAuto}
-          onToggle={(v) => updateHome({ ramadanAuto: v })}
-        />
-      </SettingsSection>
+      {/* HOME — mobile-home only (the web home is a fixed grid) */}
+      {isNative && (
+        <>
+          <SettingsSection heading="Home">
+            <SettingsRow
+              icon={Moon}
+              title="Ramadan home"
+              subtitle={
+                home.ramadanAuto
+                  ? "On — showing the festive Ramadan home"
+                  : "Turn on to use the festive Ramadan home"
+              }
+              toggle={home.ramadanAuto}
+              onToggle={(v) => updateHome({ ramadanAuto: v })}
+            />
+          </SettingsSection>
 
-      <div>
-        <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
-          Home style
-        </p>
-        <HomeStylePicker
-          value={home.homeStyle}
-          tunedFor={home.tunedFor}
-          ramadanAuto={home.ramadanAuto}
-          onChange={(v) => updateHome({ homeStyle: v })}
-          onToggleRamadan={(on) => updateHome({ ramadanAuto: on })}
-        />
-      </div>
+          <div>
+            <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
+              Home style
+            </p>
+            <HomeStylePicker
+              value={home.homeStyle}
+              tunedFor={home.tunedFor}
+              ramadanAuto={home.ramadanAuto}
+              onChange={(v) => updateHome({ homeStyle: v })}
+              onToggleRamadan={(on) => updateHome({ ramadanAuto: on })}
+            />
+          </div>
 
-      <div>
-        <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
-          Home Page tuned for
-        </p>
-        <TunedForPicker
-          value={home.tunedFor}
-          onChange={(v) => updateHome({ tunedFor: v })}
-        />
-        <p className="text-xs text-themed-muted mt-2 px-2 leading-relaxed">
-          Shapes your Daily Path order (and the Focus home&apos;s suggested act) around
-          what matters most to you right now.
-        </p>
-      </div>
+          <div>
+            <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
+              Home Page tuned for
+            </p>
+            <TunedForPicker
+              value={home.tunedFor}
+              onChange={(v) => updateHome({ tunedFor: v })}
+            />
+            <p className="text-xs text-themed-muted mt-2 px-2 leading-relaxed">
+              Shapes your Daily Path order (and the Focus home&apos;s suggested act) around
+              what matters most to you right now.
+            </p>
+          </div>
+        </>
+      )}
 
       {/* READING & AUDIO */}
       <SettingsSection heading="Reading & Audio">

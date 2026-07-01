@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Moon,
-  Sun,
   BookOpen,
   ScrollText,
   MessageCircleQuestion,
@@ -23,8 +22,6 @@ import {
   WandSparkles,
   Crown,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   Home,
   HelpCircle,
   Languages,
@@ -37,12 +34,10 @@ import {
   Trophy,
   ListChecks,
   HeartHandshake,
-  LogOut,
   LogIn,
   Flame,
   Brain,
 } from "lucide-react";
-import { useTheme } from "@hidden-hiqmah/ui/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 
 type NavItem = { href: string; label: string; labelAr: string; icon: typeof Users };
@@ -128,7 +123,6 @@ interface SidebarProps {
 
 export default function Sidebar({ mobileOpen, onClose, isCollapsed, onToggleCollapse }: SidebarProps) {
   const pathname = usePathname();
-  const { isDark, toggleDarkMode } = useTheme();
 
   return (
     <>
@@ -140,8 +134,6 @@ export default function Sidebar({ mobileOpen, onClose, isCollapsed, onToggleColl
       >
         <SidebarContent
           pathname={pathname}
-          isDark={isDark}
-          toggleDarkMode={toggleDarkMode}
           isCollapsed={isCollapsed}
           onToggleCollapse={onToggleCollapse}
         />
@@ -173,8 +165,6 @@ export default function Sidebar({ mobileOpen, onClose, isCollapsed, onToggleColl
               </button>
               <SidebarContent
                 pathname={pathname}
-                isDark={isDark}
-                toggleDarkMode={toggleDarkMode}
                 onNavigate={onClose}
               />
             </motion.aside>
@@ -215,21 +205,17 @@ function SidebarTooltip({ label, children }: { label: string; children: React.Re
 
 function SidebarContent({
   pathname,
-  isDark,
-  toggleDarkMode,
   onNavigate,
   isCollapsed = false,
   onToggleCollapse,
 }: {
   pathname: string;
-  isDark: boolean;
-  toggleDarkMode: () => void;
   onNavigate?: () => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
 }) {
   const [sectionCollapsed, setSectionCollapsed] = useState<Record<string, boolean>>({});
-  const { user, signOut, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const toggleSection = (title: string) => {
     setSectionCollapsed((prev) => ({ ...prev, [title]: !prev[title] }));
@@ -416,9 +402,9 @@ function SidebarContent({
         })}
       </nav>
 
-      {/* Bottom actions */}
-      <div className="border-t sidebar-border pt-3 space-y-2">
-        {/* Controls row */}
+      {/* Bottom actions — Ask Hiqmah + account + collapse, all as icons.
+          (Dark/light lives in Settings now; account links to Settings.) */}
+      <div className="border-t sidebar-border pt-3">
         <div className={isCollapsed ? "space-y-1" : "flex items-center gap-1 px-2"}>
         {(() => {
           const askBtn = (
@@ -442,22 +428,43 @@ function SidebarContent({
           );
           return isCollapsed ? <SidebarTooltip label="Ask Hiqmah">{askBtn}</SidebarTooltip> : askBtn;
         })()}
-        {(() => {
-          const themeLabel = isDark ? "Light Mode" : "Dark Mode";
-          const themeBtn = (
-            <button
-              onClick={toggleDarkMode}
+        {!authLoading && (() => {
+          if (user) {
+            const meta = (user.user_metadata ?? {}) as {
+              first_name?: string;
+              full_name?: string;
+            };
+            const name = meta.full_name || meta.first_name || user.email || "Account";
+            const initial = (meta.first_name || user.email || "?").charAt(0).toUpperCase();
+            const acctIcon = (
+              <Link
+                href="/settings"
+                onClick={onNavigate}
+                title={`${name} · Account & settings`}
+                className={isCollapsed
+                  ? "flex items-center justify-center w-full px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
+                  : "p-1.5 rounded-lg hover:bg-white/10 transition-colors flex items-center justify-center shrink-0"}
+              >
+                <span className="shrink-0 w-7 h-7 rounded-full bg-[var(--color-gold)]/15 text-gold text-xs font-semibold flex items-center justify-center">
+                  {initial}
+                </span>
+              </Link>
+            );
+            return isCollapsed ? <SidebarTooltip label={`${name} · Settings`}>{acctIcon}</SidebarTooltip> : acctIcon;
+          }
+          const signInIcon = (
+            <Link
+              href="/signin"
+              onClick={onNavigate}
+              title="Sign in"
               className={isCollapsed
                 ? "flex items-center justify-center w-full px-3 py-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors"
-                : "p-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors"
-              }
-              title={themeLabel}
+                : "p-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors"}
             >
-              {isDark ? <Sun size={16} /> : <Moon size={16} />}
-              {isCollapsed ? null : null}
-            </button>
+              <LogIn size={16} />
+            </Link>
           );
-          return isCollapsed ? <SidebarTooltip label={themeLabel}>{themeBtn}</SidebarTooltip> : themeBtn;
+          return isCollapsed ? <SidebarTooltip label="Sign in">{signInIcon}</SidebarTooltip> : signInIcon;
         })()}
         {onToggleCollapse && (() => {
           const collapseLabel = isCollapsed ? "Expand" : "Collapse";
@@ -476,66 +483,6 @@ function SidebarContent({
           return isCollapsed ? <SidebarTooltip label={collapseLabel}>{collapseBtn}</SidebarTooltip> : collapseBtn;
         })()}
         </div>
-
-        {/* Account / sign-in — below the controls */}
-        {(() => {
-          if (authLoading) return null;
-          if (user) {
-            const meta = (user.user_metadata ?? {}) as {
-              first_name?: string;
-              full_name?: string;
-            };
-            const name = meta.full_name || meta.first_name || user.email || "Account";
-            const initial = (meta.first_name || user.email || "?").charAt(0).toUpperCase();
-            const acct = (
-              <div className={isCollapsed ? "" : "flex items-center gap-1"}>
-                <Link
-                  href="/settings"
-                  onClick={onNavigate}
-                  className={isCollapsed
-                    ? "flex items-center justify-center w-full px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
-                    : "flex-1 min-w-0 flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10 transition-colors"}
-                >
-                  <span className="shrink-0 w-7 h-7 rounded-full bg-[var(--color-gold)]/15 text-gold text-xs font-semibold flex items-center justify-center">
-                    {initial}
-                  </span>
-                  {!isCollapsed && (
-                    <span className="flex-1 min-w-0 text-left">
-                      <span className="block text-xs font-medium text-themed truncate">{name}</span>
-                      <span className="block text-[10px] text-themed-muted">Account &amp; settings</span>
-                    </span>
-                  )}
-                </Link>
-                {!isCollapsed && (
-                  <button
-                    onClick={async () => {
-                      await signOut();
-                      if (onNavigate) onNavigate();
-                    }}
-                    title="Sign out"
-                    className="shrink-0 p-2 rounded-lg hover:bg-white/10 text-themed-muted hover:text-gold transition-colors"
-                  >
-                    <LogOut size={16} />
-                  </button>
-                )}
-              </div>
-            );
-            return isCollapsed ? <SidebarTooltip label={name}>{acct}</SidebarTooltip> : acct;
-          }
-          const signInBtn = (
-            <Link
-              href="/signin"
-              onClick={onNavigate}
-              className={isCollapsed
-                ? "flex items-center justify-center w-full px-3 py-2.5 rounded-lg bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/25 hover:bg-[var(--color-gold)]/20 transition-all"
-                : "flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/25 hover:bg-[var(--color-gold)]/20 transition-all"}
-            >
-              <LogIn size={15} className="text-gold shrink-0" />
-              {!isCollapsed && <span className="text-xs font-semibold text-gold">Sign in</span>}
-            </Link>
-          );
-          return isCollapsed ? <SidebarTooltip label="Sign in">{signInBtn}</SidebarTooltip> : signInBtn;
-        })()}
       </div>
     </div>
   );

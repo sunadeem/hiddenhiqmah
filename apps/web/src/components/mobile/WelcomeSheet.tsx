@@ -39,26 +39,32 @@ const SLIDES: Slide[] = [
   {
     kind: "feature",
     icon: CalendarCheck,
-    title: "Your Daily Path",
-    body: "Prayer times, morning & evening adhkār, Qur'an reading and dhikr — gently tracked, all in one place.",
+    title: "Your daily path",
+    body: "Prayer times, morning and evening adhkār, Qur'an reading and dhikr — woven into one gentle daily rhythm, with streaks that forgive an off day.",
   },
   {
     kind: "feature",
     icon: BookOpen,
     title: "The Qur'an, deeply",
-    body: "Read with translation and tafsir, study it word-by-word, and listen to beautiful recitation.",
+    body: "Read every ayah with translation and trusted tafsir, study it word-by-word, and listen to beautiful recitation — on the page or on the go.",
+  },
+  {
+    kind: "feature",
+    icon: GraduationCap,
+    title: "Learn with confidence",
+    body: "Tawḥīd, the five pillars, the articles of faith, the Prophets, and the life of the Prophet ﷺ — explained clearly, always from authentic sources.",
   },
   {
     kind: "feature",
     icon: Sparkles,
     title: "Ask Hiqmah",
-    body: "Ask anything about Islam — thoughtful answers grounded in the Qur'an and authentic Sunnah.",
+    body: "Ask anything about Islam and get a thoughtful, grounded answer — drawn from the Qur'an and authentic Sunnah, with its sources, never guesswork.",
   },
   {
     kind: "feature",
     icon: Users,
     title: "Grow together",
-    body: "Set shared goals with Circles and guide your Family — accountability, the gentle way.",
+    body: "Memorize with Hifz, keep each other going with Circles, and nurture your household with Family profiles — the journey is better shared.",
   },
 ];
 

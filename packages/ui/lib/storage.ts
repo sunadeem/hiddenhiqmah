@@ -204,6 +204,16 @@ export function getHomePrefs(): HomePrefs {
 export function setHomePrefs(p: Partial<HomePrefs>) {
   const current = getHomePrefs();
   set(KEYS.homePrefs, { ...current, ...p });
+  // Let the mounted Home re-read prefs immediately (e.g. the onboarding tune
+  // step, or the Settings home-style/tuned-for pickers) instead of waiting for
+  // a remount.
+  if (typeof window !== "undefined") {
+    try {
+      window.dispatchEvent(new CustomEvent("hiqmah:home-prefs"));
+    } catch {
+      // ignore — non-browser env
+    }
+  }
 }
 
 export function clearAllLocalData() {
