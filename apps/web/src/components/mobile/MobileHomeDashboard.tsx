@@ -224,19 +224,20 @@ export function NextPrayerCard() {
       }
     };
 
-    const seenWelcome = (() => {
+    const onboarded = (() => {
       try {
-        return !!localStorage.getItem("hiqmah-seen-welcome");
+        return !!localStorage.getItem("hiqmah-onboarded");
       } catch {
         return true;
       }
     })();
 
-    // If Welcome has already been dismissed (returning user, or running on
-    // web), schedule a normal post-splash prompt. If Welcome is still showing,
-    // wait for the dismissed event so the OS permission alert doesn't pop on
-    // top of the onboarding / sign-in screens.
-    if (seenWelcome) {
+    // Only prompt for location once onboarding is fully done. The welcome
+    // walkthrough fires "hiqmah:welcome-dismissed" when it finishes/skips — wait
+    // for that so the OS permission alert never pops on top of the walkthrough
+    // (or the sign-in screen). Returning users are already onboarded → schedule
+    // a normal post-splash prompt.
+    if (onboarded) {
       timer = setTimeout(startLocationFlow, 2500);
     } else {
       const handler = () => {

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import {
   User,
-  Sparkles,
   Bell,
   Palette,
   Volume2,
@@ -13,7 +12,6 @@ import {
   MapPin,
   Calculator,
   Sunrise,
-  Download,
   Trash2,
   Shield,
   BookOpen,
@@ -38,11 +36,11 @@ import {
   getHomePrefs,
   setHomePrefs,
   clearAllLocalData,
-  exportBookmarksJSON,
   type PrayerSettings,
   type AsrMethod,
   type HomePrefs,
 } from "@hidden-hiqmah/ui/lib/storage";
+import { getCachedLocation, getLocationState } from "@hidden-hiqmah/ui/lib/location-cache";
 
 const FEEDBACK_EMAIL = "Subhan.Nadeem@HiddenHiqmah.com";
 
@@ -72,12 +70,25 @@ export default function SettingsScreen() {
   const [autoPlay, setAutoPlayState] = useState(false);
   const [prayer, setPrayer] = useState<PrayerSettings | null>(null);
   const [home, setHomeState] = useState<HomePrefs | null>(null);
+  const [loc, setLoc] = useState<{ label: string; sub: string }>({
+    label: "Auto-detect",
+    sub: "Auto-detected from your device",
+  });
 
   useEffect(() => {
     setFontSizeState(getFontSize());
     setAutoPlayState(getAutoPlayNextSurah());
     setPrayer(getPrayerSettings());
     setHomeState(getHomePrefs());
+    // Location is auto-detected app-wide (NextPrayerCard / Salah / Prayer Times
+    // all read the same cache). Surface that here read-only — there's no manual
+    // location entry, so we don't imply one.
+    if (getLocationState() === "denied") {
+      setLoc({ label: "Off", sub: "Turn on location in your device settings" });
+    } else {
+      const c = getCachedLocation();
+      if (c?.display) setLoc({ label: c.display, sub: "Auto-detected from your device" });
+    }
     setHydrated(true);
   }, []);
 
@@ -120,10 +131,8 @@ export default function SettingsScreen() {
         <SettingsRow
           icon={MapPin}
           title="Location"
-          rightValue={prayer.locationMode === "auto" ? "Auto-detect" : "Manual"}
-          rightChevron
-          disabled
-          comingSoon
+          subtitle={loc.sub}
+          rightValue={loc.label}
         />
         <SettingsRowSelect
           icon={Calculator}
@@ -243,18 +252,16 @@ export default function SettingsScreen() {
       {/* DATA & PRIVACY */}
       <SettingsSection heading="Data & Privacy">
         <SettingsRow
-          icon={Download}
-          title="Export bookmarks"
-          subtitle="Download as JSON"
-          onClick={() => {
-            const blob = new Blob([exportBookmarksJSON()], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `hidden-hiqmah-bookmarks-${new Date().toISOString().slice(0, 10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-          }}
+          icon={Shield}
+          title="Privacy"
+          rightChevron
+          href="/privacy"
+        />
+        <SettingsRow
+          icon={ScrollText}
+          title="Credits & Sources"
+          rightChevron
+          href="/credits"
         />
         <SettingsRow
           icon={Trash2}
@@ -271,18 +278,6 @@ export default function SettingsScreen() {
               window.location.reload();
             }
           }}
-        />
-        <SettingsRow
-          icon={Shield}
-          title="Privacy"
-          rightChevron
-          href="/privacy"
-        />
-        <SettingsRow
-          icon={ScrollText}
-          title="Credits & Sources"
-          rightChevron
-          href="/credits"
         />
       </SettingsSection>
 
@@ -316,17 +311,10 @@ export default function SettingsScreen() {
             href="/signin"
           />
         )}
-        <SettingsRow
-          icon={Sparkles}
-          title="Hiqmah Plus"
-          subtitle="Unlimited AI Chat · all reciters · offline mode"
-          rightChevron
-          disabled
-          comingSoon
-        />
       </SettingsSection>
 
-      {/* ABOUT */}
+      {/* ABOUT — mobile only; web keeps just the feedback card below */}
+      {isNative && (
       <SettingsSection heading="About">
         <div className="block card-bg p-5 text-center">
           <p className="text-gold/70 font-arabic text-lg mb-2">
@@ -344,6 +332,7 @@ export default function SettingsScreen() {
         </div>
         <SettingsRow icon={Bookmark} title="Version 0.1.0" disabled />
       </SettingsSection>
+      )}
 
       {/* FEEDBACK — final card, end of the app */}
       <a
