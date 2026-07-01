@@ -104,52 +104,8 @@ export default function SettingsScreen() {
         <h1 className="text-2xl font-bold text-themed">Settings</h1>
       </div>
 
-      {/* ACCOUNT */}
-      <SettingsSection heading="Account">
-        {authLoading ? (
-          <SettingsRow icon={User} title="Loading..." disabled />
-        ) : user ? (
-          <>
-            <SettingsRow
-              icon={User}
-              title={user.email || "Signed in"}
-              subtitle="Signed in"
-              rightValue="Active"
-            />
-            <SettingsRow
-              icon={Database}
-              title="Sign out"
-              onClick={async () => {
-                await signOut();
-              }}
-              danger
-            />
-          </>
-        ) : (
-          <SettingsRow
-            icon={User}
-            title="Sign in"
-            subtitle="+5 bonus questions today · sync coming soon"
-            rightChevron
-            href="/signin"
-          />
-        )}
-      </SettingsSection>
-
-      {/* PLAN */}
-      <SettingsSection heading="Plan">
-        <SettingsRow
-          icon={Sparkles}
-          title="Hiqmah Plus"
-          subtitle="Unlimited AI Chat · all reciters · offline mode"
-          rightChevron
-          disabled
-          comingSoon
-        />
-      </SettingsSection>
-
-      {/* NOTIFICATIONS */}
-      <SettingsSection heading="Notifications">
+      {/* PRAYER & NOTIFICATIONS */}
+      <SettingsSection heading="Prayer & Notifications">
         <SettingsRow
           icon={Bell}
           title="Notification settings"
@@ -157,10 +113,37 @@ export default function SettingsScreen() {
           rightChevron
           href="/settings/notifications"
         />
+        <SettingsRow
+          icon={MapPin}
+          title="Location"
+          rightValue={prayer.locationMode === "auto" ? "Auto-detect" : "Manual"}
+          rightChevron
+          disabled
+          comingSoon
+        />
+        <SettingsRowSelect
+          icon={Calculator}
+          title="Calculation method"
+          value={prayer.calcMethod}
+          options={CALC_METHODS.map((m) => ({ value: m.value, label: m.label }))}
+          onChange={(v) =>
+            updatePrayer({ calcMethod: Number(v) as PrayerSettings["calcMethod"] })
+          }
+        />
+        <SettingsRowSelect
+          icon={Sunrise}
+          title="Asr time"
+          value={prayer.asrMethod}
+          options={[
+            { value: "standard", label: "Standard (Shafi'i)" },
+            { value: "hanafi", label: "Hanafi (later)" },
+          ]}
+          onChange={(v) => updatePrayer({ asrMethod: v as AsrMethod })}
+        />
       </SettingsSection>
 
       {/* HOME */}
-      <SettingsSection heading="Ramadan">
+      <SettingsSection heading="Home">
         <SettingsRow
           icon={Moon}
           title="Ramadan home"
@@ -201,8 +184,8 @@ export default function SettingsScreen() {
         </p>
       </div>
 
-      {/* CUSTOMIZE */}
-      <SettingsSection heading="Customize">
+      {/* READING & AUDIO */}
+      <SettingsSection heading="Reading & Audio">
         <SettingsRow
           icon={Palette}
           title="Theme"
@@ -224,10 +207,6 @@ export default function SettingsScreen() {
             setFontSizeState(n);
           }}
         />
-      </SettingsSection>
-
-      {/* AUDIO */}
-      <SettingsSection heading="Audio">
         <SettingsRow
           icon={Mic}
           title="Reciter"
@@ -253,39 +232,8 @@ export default function SettingsScreen() {
         />
       </SettingsSection>
 
-      {/* PRAYER */}
-      <SettingsSection heading="Prayer">
-        <SettingsRow
-          icon={MapPin}
-          title="Location"
-          rightValue={prayer.locationMode === "auto" ? "Auto-detect" : "Manual"}
-          rightChevron
-          disabled
-          comingSoon
-        />
-        <SettingsRowSelect
-          icon={Calculator}
-          title="Calculation method"
-          value={prayer.calcMethod}
-          options={CALC_METHODS.map((m) => ({ value: m.value, label: m.label }))}
-          onChange={(v) =>
-            updatePrayer({ calcMethod: Number(v) as PrayerSettings["calcMethod"] })
-          }
-        />
-        <SettingsRowSelect
-          icon={Sunrise}
-          title="Asr time"
-          value={prayer.asrMethod}
-          options={[
-            { value: "standard", label: "Standard (Shafi'i)" },
-            { value: "hanafi", label: "Hanafi (later)" },
-          ]}
-          onChange={(v) => updatePrayer({ asrMethod: v as AsrMethod })}
-        />
-      </SettingsSection>
-
-      {/* DATA */}
-      <SettingsSection heading="Data">
+      {/* DATA & PRIVACY */}
+      <SettingsSection heading="Data & Privacy">
         <SettingsRow
           icon={Download}
           title="Export bookmarks"
@@ -327,6 +275,46 @@ export default function SettingsScreen() {
           title="Credits & Sources"
           rightChevron
           href="/credits"
+        />
+      </SettingsSection>
+
+      {/* ACCOUNT */}
+      <SettingsSection heading="Account">
+        {authLoading ? (
+          <SettingsRow icon={User} title="Loading..." disabled />
+        ) : user ? (
+          <>
+            <SettingsRow
+              icon={User}
+              title={user.email || "Signed in"}
+              subtitle="Signed in"
+              rightValue="Active"
+            />
+            <SettingsRow
+              icon={Database}
+              title="Sign out"
+              onClick={async () => {
+                await signOut();
+              }}
+              danger
+            />
+          </>
+        ) : (
+          <SettingsRow
+            icon={User}
+            title="Sign in"
+            subtitle="+5 bonus questions today · sync coming soon"
+            rightChevron
+            href="/signin"
+          />
+        )}
+        <SettingsRow
+          icon={Sparkles}
+          title="Hiqmah Plus"
+          subtitle="Unlimited AI Chat · all reciters · offline mode"
+          rightChevron
+          disabled
+          comingSoon
         />
       </SettingsSection>
 
