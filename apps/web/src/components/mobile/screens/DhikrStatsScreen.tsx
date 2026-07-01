@@ -6,14 +6,19 @@ import type { DhikrDayCount } from "@hidden-hiqmah/ui/lib/daily/types";
 
 type Period = "day" | "week" | "month";
 
-const DHIKR: { key: string; label: string; ar: string }[] = [
-  { key: "istighfar", label: "Astaghfirullah", ar: "أستغفر الله" },
-  { key: "takbir", label: "Allahu Akbar", ar: "الله أكبر" },
-  { key: "subhanallah", label: "SubhanAllah", ar: "سبحان الله" },
-  { key: "alhamdulillah", label: "Alhamdulillah", ar: "الحمد لله" },
-  { key: "salawat", label: "Salawat", ar: "اللهم صل على محمد" },
-];
-const LABEL_OF = Object.fromEntries(DHIKR.map((d) => [d.key, d]));
+// Labels for the built-in dhikr keys (Worship tab). The breakdown is dynamic —
+// any dhikr key that appears in the data is shown; unknown keys fall back to the
+// key itself, so new/added dhikr surface automatically.
+const LABEL_OF: Record<string, { label: string; ar: string }> = {
+  istighfar: { label: "Astaghfirullah", ar: "أستغفر الله" },
+  takbir: { label: "Allahu Akbar", ar: "الله أكبر" },
+  subhanallah: { label: "SubhanAllah", ar: "سبحان الله" },
+  alhamdulillah: { label: "Alhamdulillah", ar: "الحمد لله" },
+  salawat: { label: "Salawat", ar: "اللهم صل على محمد" },
+  tahlil: { label: "La ilaha illallah", ar: "لا إله إلا الله" },
+  hawqala: { label: "La hawla wa la quwwata", ar: "لا حول ولا قوة" },
+  hasbunallah: { label: "Hasbunallah", ar: "حسبنا الله" },
+};
 
 function ymd(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
@@ -25,15 +30,18 @@ function addDays(d: Date, n: number) {
   x.setDate(x.getDate() + n);
   return x;
 }
-function startOfWeek(d: Date) {
-  return addDays(d, -((d.getDay() + 6) % 7)); // Monday
-}
 function sumInRange(rows: DhikrDayCount[], from: string, to: string) {
   return rows.reduce(
     (a, r) => (r.localDate >= from && r.localDate <= to ? a + r.count : a),
     0
   );
 }
+function prettify(key: string) {
+  return key.charAt(0).toUpperCase() + key.slice(1).replace(/[-_]/g, " ");
+}
+
+const DOW = ["S", "M", "T", "W", "T", "F", "S"];
+const MON = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 
 export default function DhikrStatsScreen() {
   const { adapter } = useDailyAdapter();
@@ -44,8 +52,10 @@ export default function DhikrStatsScreen() {
   useEffect(() => {
     let alive = true;
     const now = new Date();
+    // Fetch from Jan 1 of last year so the Month tab (this year) + its
+    // "vs last year" delta both have data.
     adapter
-      .getDhikrRange(ymd(addDays(now, -70)), ymd(now))
+      .getDhikrRange(ymd(new Date(now.getFullYear() - 1, 0, 1)), ymd(now))
       .then((r) => {
         if (alive) {
           setRows(r);
@@ -62,8 +72,8 @@ export default function DhikrStatsScreen() {
 
   const stats = useMemo(() => {
     const now = new Date();
-    const today = ymd(now);
     let from: string;
+    let to: string;
     let prevFrom: string;
     let prevTo: string;
     let unit: string;
@@ -71,58 +81,66 @@ export default function DhikrStatsScreen() {
     let trend: { label: string; count: number }[];
 
     if (period === "day") {
-      from = today;
-      unit = "recitations today";
-      prevFrom = prevTo = ymd(addDays(now, -1));
-      deltaLabel = "vs yesterday";
-      trend = Array.from({ length: 7 }, (_, i) => {
-        const d = addDays(now, -(6 - i));
-        const s = ymd(d);
-        return { label: ["S", "M", "T", "W", "T", "F", "S"][d.getDay()], count: sumInRange(rows, s, s) };
-      });
-    } else if (period === "week") {
-      const ws = startOfWeek(now);
-      from = ymd(ws);
+      // This week, Sunday → Saturday; one bar per day.
+      const sun = addDays(now, -now.getDay());
+      from = ymd(sun);
+      to = ymd(addDays(sun, 6));
+      prevFrom = ymd(addDays(sun, -7));
+      prevTo = ymd(addDays(sun, -1));
       unit = "recitations this week";
-      prevFrom = ymd(addDays(ws, -7));
-      prevTo = ymd(addDays(ws, -1));
       deltaLabel = "vs last week";
       trend = Array.from({ length: 7 }, (_, i) => {
-        const s = ymd(addDays(ws, i));
-        return { label: ["M", "T", "W", "T", "F", "S", "S"][i], count: s <= today ? sumInRange(rows, s, s) : 0 };
+        const s = ymd(addDays(sun, i));
+        return { label: DOW[i], count: sumInRange(rows, s, s) };
       });
-    } else {
-      const ms = new Date(now.getFullYear(), now.getMonth(), 1);
-      from = ymd(ms);
+    } else if (period === "week") {
+      // This month, one bar per week (7-day chunks from the 1st).
+      const mStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const mEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      from = ymd(mStart);
+      to = ymd(mEnd);
+      prevFrom = ymd(new Date(now.getFullYear(), now.getMonth() - 1, 1));
+      prevTo = ymd(new Date(now.getFullYear(), now.getMonth(), 0));
       unit = "recitations this month";
-      const pms = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      prevFrom = ymd(pms);
-      prevTo = ymd(addDays(ms, -1));
       deltaLabel = "vs last month";
       trend = [];
-      let wk = ms;
+      let wk = mStart;
       let idx = 1;
-      while (ymd(wk) <= today) {
-        const end = ymd(addDays(wk, 6));
-        trend.push({ label: `W${idx}`, count: sumInRange(rows, ymd(wk), end > today ? today : end) });
+      while (ymd(wk) <= to) {
+        const ce = ymd(addDays(wk, 6));
+        trend.push({ label: `W${idx}`, count: sumInRange(rows, ymd(wk), ce > to ? to : ce) });
         wk = addDays(wk, 7);
         idx++;
       }
+    } else {
+      // This year, one bar per month (Jan → current month).
+      from = ymd(new Date(now.getFullYear(), 0, 1));
+      to = ymd(new Date(now.getFullYear(), 11, 31));
+      prevFrom = ymd(new Date(now.getFullYear() - 1, 0, 1));
+      prevTo = ymd(new Date(now.getFullYear() - 1, 11, 31));
+      unit = "recitations this year";
+      deltaLabel = "vs last year";
+      trend = [];
+      for (let m = 0; m <= now.getMonth(); m++) {
+        const ms = ymd(new Date(now.getFullYear(), m, 1));
+        const me = ymd(new Date(now.getFullYear(), m + 1, 0));
+        trend.push({ label: MON[m], count: sumInRange(rows, ms, me) });
+      }
     }
 
-    const total = sumInRange(rows, from, today);
+    const total = sumInRange(rows, from, to);
     const prevTotal = sumInRange(rows, prevFrom, prevTo);
     const deltaPct = prevTotal > 0 ? Math.round(((total - prevTotal) / prevTotal) * 100) : null;
 
     const byKey: Record<string, number> = {};
     for (const r of rows) {
-      if (r.localDate >= from && r.localDate <= today)
+      if (r.localDate >= from && r.localDate <= to)
         byKey[r.dhikrKey] = (byKey[r.dhikrKey] || 0) + r.count;
     }
     const breakdown = Object.entries(byKey)
       .map(([key, count]) => {
         const meta = LABEL_OF[key];
-        return { key, count, label: meta?.label ?? key, ar: meta?.ar ?? "" };
+        return { key, count, label: meta?.label ?? prettify(key), ar: meta?.ar ?? "" };
       })
       .filter((b) => b.count > 0)
       .sort((a, b) => b.count - a.count);
@@ -139,7 +157,6 @@ export default function DhikrStatsScreen() {
         <h1 className="text-2xl font-bold text-themed">Dhikr Stats</h1>
       </div>
 
-      {/* Stats card */}
       <div className="card-bg rounded-2xl border sidebar-border p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/[0.07] to-transparent pointer-events-none" />
 
@@ -150,7 +167,6 @@ export default function DhikrStatsScreen() {
           <span className="font-arabic text-gold/55 text-lg">ٱلذِّكْر</span>
         </div>
 
-        {/* Period toggle */}
         <div className="relative flex bg-white/5 border sidebar-border rounded-full p-0.5 mb-5">
           {(["day", "week", "month"] as Period[]).map((p) => (
             <button
@@ -172,11 +188,10 @@ export default function DhikrStatsScreen() {
           <p className="text-center text-themed-muted text-sm py-8 leading-relaxed">
             No dhikr counted yet for this period.
             <br />
-            Start counting in the Worship tab.
+            Start counting from the Worship tab.
           </p>
         ) : (
           <>
-            {/* Total */}
             <div className="relative text-center">
               <div className="font-display text-[44px] font-bold text-gold leading-none">
                 {stats.total.toLocaleString()}
@@ -195,7 +210,6 @@ export default function DhikrStatsScreen() {
               )}
             </div>
 
-            {/* Trend */}
             <div className="relative flex items-end justify-between gap-1.5 h-16 mt-5 mb-1 px-1">
               {stats.trend.map((t, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center justify-end gap-1.5 h-full">
@@ -212,7 +226,6 @@ export default function DhikrStatsScreen() {
               ))}
             </div>
 
-            {/* Breakdown */}
             <div className="relative border-t sidebar-border mt-4 pt-3 space-y-2.5">
               {stats.breakdown.map((b) => (
                 <div key={b.key} className="flex items-center gap-2.5">
@@ -237,7 +250,8 @@ export default function DhikrStatsScreen() {
       </div>
 
       <p className="text-center text-xs text-themed-muted/60 px-6 leading-relaxed">
-        Counts from the Worship tab. {adapter.synced ? "Synced to your account." : "Sign in to sync across devices."}
+        Reflects every dhikr you count in the app.{" "}
+        {adapter.synced ? "Synced to your account." : "Sign in to sync across devices."}
       </p>
     </div>
   );
