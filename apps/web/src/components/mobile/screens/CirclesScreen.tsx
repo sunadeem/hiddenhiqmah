@@ -350,10 +350,6 @@ export default function CirclesScreen() {
           </div>
         </div>
       ))}
-
-      <p className="text-[11px] text-themed-muted/70 text-center pt-2">
-        Preview — syncing is live, but this feature is still being polished.
-      </p>
     </div>
   );
 }

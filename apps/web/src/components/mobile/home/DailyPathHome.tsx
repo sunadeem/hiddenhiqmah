@@ -26,6 +26,8 @@ import QiblahSheet from "../QiblahSheet";
 import { getProgress, type TunedFor } from "@hidden-hiqmah/ui/lib/storage";
 import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
 import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
+import { useAuth } from "@/context/AuthContext";
+import TodayStrip from "./TodayStrip";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 
 type Step = {
@@ -90,6 +92,7 @@ function buildSteps(tunedFor: TunedFor, hour: number): Step[] {
 
 export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
   const { adapter } = useDailyAdapter();
+  const { user } = useAuth();
   const [qiblahOpen, setQiblahOpen] = useState(false);
   const [hour, setHour] = useState(8);
   const [hijri, setHijri] = useState("");
@@ -154,13 +157,16 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
   const tracked = steps.filter((s) => s.itemKey);
   const allTrackedDone =
     tracked.length > 0 && tracked.every((s) => doneKeys.has(s.itemKey as string));
+  const firstName = (
+    (user?.user_metadata as { first_name?: string } | undefined)?.first_name || ""
+  ).trim();
 
   return (
     <>
       {/* Greeting */}
       <div className="px-1">
         <h1 className="text-2xl font-bold text-themed leading-tight">
-          Assalāmu ʿalaykum
+          Assalāmu ʿalaykum{firstName ? `, ${firstName}` : ""}
         </h1>
         {hijri && <p className="text-themed-muted text-sm mt-1">{hijri}</p>}
       </div>
@@ -176,6 +182,9 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
 
       {/* Next prayer — the time-anchored hero */}
       <NextPrayerCard />
+
+      {/* Daily checklist (shallow entry) — under the prayer card, above the path */}
+      <TodayStrip />
 
       {/* The path */}
       <div>

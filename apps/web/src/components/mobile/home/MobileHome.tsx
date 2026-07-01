@@ -69,9 +69,11 @@ export default function MobileHome() {
   return (
     <div className="space-y-3 pb-4">
       <ActiveProfileBanner />
-      <TodayStrip />
       {style === "focus" ? (
-        <FocusHome tunedFor={tunedFor} />
+        <>
+          <TodayStrip />
+          <FocusHome tunedFor={tunedFor} />
+        </>
       ) : (
         <DailyPathHome tunedFor={tunedFor} />
       )}
