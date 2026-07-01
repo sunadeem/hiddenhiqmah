@@ -80,6 +80,13 @@ export interface DhikrState {
   lifetime: number;
 }
 
+/** One (dhikrKey, date) count — used to compute day/week/month dhikr stats. */
+export interface DhikrDayCount {
+  dhikrKey: string;
+  localDate: string;
+  count: number;
+}
+
 export interface DailyAdapter {
   /** Whether this adapter persists to an account (true) or device-only (false). */
   readonly synced: boolean;
@@ -103,6 +110,8 @@ export interface DailyAdapter {
   getDhikr(dhikrKey: string, localDate: string): Promise<DhikrState>;
   incrementDhikr(dhikrKey: string, localDate: string, delta?: number): Promise<DhikrState>;
   setDhikrCount(dhikrKey: string, localDate: string, count: number): Promise<DhikrState>;
+  /** Raw per-(dhikr, date) counts within [fromDate, toDate] inclusive — for stats. */
+  getDhikrRange(fromDate: string, toDate: string): Promise<DhikrDayCount[]>;
 
   // ── History (frozen) + streaks ──
   /** Frozen rollups for a date range, inclusive (calendar grid). */

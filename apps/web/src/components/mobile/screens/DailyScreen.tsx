@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type ComponentType } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Pencil } from "lucide-react";
+import { Pencil, BarChart3 } from "lucide-react";
 import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
 import { useChecklist } from "@hidden-hiqmah/ui/lib/daily/useChecklist";
 import {
@@ -268,7 +268,15 @@ function WorshipTab() {
       {/* Synced dhikr counters (write through dhikr_key → also tick the checklist) */}
       {!authLoading && (
         <div className="space-y-2">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-themed-muted px-1">Dhikr</div>
+          <div className="flex items-center justify-between px-1">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-themed-muted">Dhikr</div>
+            <Link
+              href="/dhikr-stats"
+              className="flex items-center gap-1 text-[11px] font-medium text-gold/80 hover:text-gold touch-manipulation"
+            >
+              <BarChart3 size={12} /> Dhikr Stats
+            </Link>
+          </div>
           <DhikrCounter adapter={adapter} today={today} dhikrKey="takbir" label="Allahu Akbar" goal={33} onHaptic={hapticSelection} />
           <DhikrCounter adapter={adapter} today={today} dhikrKey="subhanallah" label="SubhanAllah" goal={33} onHaptic={hapticSelection} />
           <DhikrCounter adapter={adapter} today={today} dhikrKey="alhamdulillah" label="Alhamdulillah" goal={33} onHaptic={hapticSelection} />

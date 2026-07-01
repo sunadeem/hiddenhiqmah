@@ -14,6 +14,7 @@ import {
   type DayItem,
   type DayRollup,
   type DhikrState,
+  type DhikrDayCount,
   type ItemPatch,
   type NewItemInput,
   type PauseReason,
@@ -300,6 +301,19 @@ export function createLocalDailyAdapter(storeKey: string = STORE_KEY): DailyAdap
       }
       save(s);
       return { daily: next, lifetime };
+    },
+
+    async getDhikrRange(fromDate: string, toDate: string): Promise<DhikrDayCount[]> {
+      const s = load();
+      const out: DhikrDayCount[] = [];
+      for (const [dhikrKey, byDate] of Object.entries(s.dhikrDaily)) {
+        for (const [localDate, count] of Object.entries(byDate)) {
+          if (localDate >= fromDate && localDate <= toDate && count > 0) {
+            out.push({ dhikrKey, localDate, count });
+          }
+        }
+      }
+      return out;
     },
 
     async getDayRollups(fromDate: string, toDate: string) {

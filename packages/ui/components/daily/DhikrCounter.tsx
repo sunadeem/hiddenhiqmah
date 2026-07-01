@@ -84,20 +84,34 @@ export function DhikrCounter({
   const reached = goal != null && daily >= goal;
 
   return (
-    <div className="card-bg rounded-2xl border sidebar-border px-4 py-2.5 flex items-center gap-2.5 relative overflow-hidden">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={tap}
+      onKeyDown={(e) => {
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          tap();
+        }
+      }}
+      aria-label={`Count ${label}`}
+      className="card-bg rounded-2xl border sidebar-border px-4 py-2.5 flex items-center gap-2.5 relative overflow-hidden cursor-pointer touch-manipulation select-none active:scale-[0.99] transition-transform"
+    >
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
       <div className="relative flex-1 min-w-0">
         <div className="text-[15px] font-medium text-themed truncate leading-tight">{label}</div>
         <div className="text-[11px] text-themed-muted leading-tight mt-0.5">
           Lifetime {lifetime.toLocaleString()}
-          {goal != null ? ` · ${goal}×` : ""}
         </div>
       </div>
 
       {daily > 0 && (
         <button
           type="button"
-          onClick={reset}
+          onClick={(e) => {
+            e.stopPropagation();
+            reset();
+          }}
           className="relative p-1.5 text-themed-muted touch-manipulation"
           aria-label="Reset today's count"
         >
@@ -107,7 +121,10 @@ export function DhikrCounter({
 
       <button
         type="button"
-        onClick={tap}
+        onClick={(e) => {
+          e.stopPropagation();
+          tap();
+        }}
         aria-label={`Count ${label}`}
         className={[
           "relative shrink-0 h-9 pl-2.5 pr-3 rounded-full flex items-center gap-1.5 font-bold tabular-nums",

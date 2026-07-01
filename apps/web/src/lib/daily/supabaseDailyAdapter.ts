@@ -10,6 +10,7 @@ import type {
   DayItem,
   DayRollup,
   DhikrState,
+  DhikrDayCount,
   ItemPatch,
   NewItemInput,
   PauseReason,
@@ -209,6 +210,20 @@ export function createSupabaseDailyAdapter(
       });
       if (error) throw error;
       return { daily: data?.daily ?? 0, lifetime: data?.lifetime ?? 0 };
+    },
+
+    async getDhikrRange(fromDate: string, toDate: string): Promise<DhikrDayCount[]> {
+      const { data, error } = await client
+        .from("dhikr_daily")
+        .select("dhikr_key, local_date, count")
+        .gte("local_date", fromDate)
+        .lte("local_date", toDate);
+      if (error) throw error;
+      return (data ?? []).map((r) => ({
+        dhikrKey: r.dhikr_key as string,
+        localDate: r.local_date as string,
+        count: r.count as number,
+      }));
     },
 
     async getDayRollups(fromDate: string, toDate: string) {
