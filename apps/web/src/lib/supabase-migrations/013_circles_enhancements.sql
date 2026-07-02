@@ -353,11 +353,17 @@ end $$;
 
 -- ============================================================================
 -- 7. Grants — execute to signed-in users only; helpers stay internal.
+--    The internal helpers are ONLY called from within the definer RPCs above
+--    (which run as the function owner), so we also revoke `authenticated`:
+--    that closes the PostgREST surface (a member must NOT be able to call
+--    _notify_user / _log_circle_activity directly to forge events) while the
+--    internal owner-context calls keep working. (Contrast is_circle_member in
+--    007, which must stay executable by `authenticated` — it's used in RLS.)
 -- ============================================================================
-revoke all on function public._circle_display_name(uuid)               from public, anon;
-revoke all on function public._log_circle_activity(uuid, uuid, text, jsonb) from public, anon;
-revoke all on function public._notify_circle_members(uuid, uuid, text, text) from public, anon;
-revoke all on function public._notify_user(uuid, uuid, uuid, text, text) from public, anon;
+revoke all on function public._circle_display_name(uuid)                     from public, anon, authenticated;
+revoke all on function public._log_circle_activity(uuid, uuid, text, jsonb)  from public, anon, authenticated;
+revoke all on function public._notify_circle_members(uuid, uuid, text, text) from public, anon, authenticated;
+revoke all on function public._notify_user(uuid, uuid, uuid, text, text)     from public, anon, authenticated;
 
 revoke all on function public.send_circle_message(uuid, text)          from public, anon;
 revoke all on function public.delete_circle_message(uuid)              from public, anon;
