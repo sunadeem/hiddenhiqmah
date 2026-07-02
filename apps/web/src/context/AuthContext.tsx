@@ -23,7 +23,11 @@ type AuthState = {
    * Verifies the 6-digit OTP code entered by the user.
    * On success, the auth listener will fire with the new session.
    */
-  verifyOtp: (email: string, code: string) => Promise<{ error?: string }>;
+  verifyOtp: (
+    email: string,
+    code: string,
+    type?: "email" | "signup" | "recovery"
+  ) => Promise<{ error?: string }>;
   /** Email + password sign-in. */
   signInWithPassword: (
     email: string,
@@ -42,8 +46,10 @@ type AuthState = {
     needsConfirmation?: boolean;
     alreadyExists?: boolean;
   }>;
-  /** Sends a password-reset email linking to /auth/reset. */
+  /** Sends a password-reset email (link + 6-digit recovery code). */
   resetPassword: (email: string) => Promise<{ error?: string }>;
+  /** Resends the sign-up confirmation email (6-digit code) for an unconfirmed account. */
+  resendSignupConfirmation: (email: string) => Promise<{ error?: string }>;
   /** Sets a new password for the current (recovery) session. */
   updatePassword: (password: string) => Promise<{ error?: string }>;
   /** Updates the signed-in user's name (stored in user_metadata). */
@@ -127,11 +133,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return error ? { error: error.message } : {};
   }, []);
 
-  const verifyOtp = useCallback(async (email: string, code: string) => {
+  const verifyOtp = useCallback(async (email: string, code: string, type: "email" | "signup" | "recovery" = "email") => {
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token: code,
-      type: "email",
+      type,
     });
     if (error) return { error: error.message };
     if (!data.session) {
@@ -209,6 +215,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return error ? { error: error.message } : {};
   }, []);
 
+  const resendSignupConfirmation = useCallback(async (email: string) => {
+    const { error } = await supabase.auth.resend({ type: "signup", email });
+    return error ? { error: error.message } : {};
+  }, []);
+
   const updatePassword = useCallback(async (password: string) => {
     const { error } = await supabase.auth.updateUser({ password });
     return error ? { error: error.message } : {};
@@ -241,6 +252,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signInWithPassword,
         signUpWithPassword,
         resetPassword,
+        resendSignupConfirmation,
         updatePassword,
         updateProfile,
         signOut,

@@ -21,7 +21,7 @@ import { useAuth } from "@/context/AuthContext";
 import SignInScreen from "./screens/SignInScreen";
 import { useScrollDirection } from "@/lib/mobile/useScrollDirection";
 
-const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback"]);
+const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback", "/auth/reset"]);
 
 export default function MobileShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

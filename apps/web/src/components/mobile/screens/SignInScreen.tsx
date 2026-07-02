@@ -34,6 +34,8 @@ export default function SignInScreen() {
     signInWithPassword,
     signUpWithPassword,
     resetPassword,
+    updatePassword,
+    resendSignupConfirmation,
   } = useAuth();
 
   const errorParam = searchParams.get("error");
@@ -45,7 +47,8 @@ export default function SignInScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [magicStep, setMagicStep] = useState<"email" | "verify">("email");
+  // Non-null → we're on the 6-digit code step for one of these flows.
+  const [verifyFlow, setVerifyFlow] = useState<null | "magic" | "signup" | "recovery">(null);
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [resending, setResending] = useState(false);
@@ -79,7 +82,7 @@ export default function SignInScreen() {
     setFirstName("");
     setLastName("");
     setCode("");
-    setMagicStep("email");
+    setVerifyFlow(null);
   };
 
   // ─── handlers ───
@@ -122,17 +125,16 @@ export default function SignInScreen() {
       return;
     }
     if (needsConfirmation) {
-      setMode("signin");
-      setPassword("");
-      setNotice(
-        `Account created. We sent a confirmation link to ${trimmedEmail} — confirm it, then sign in.`
-      );
+      // Email confirmation is on. Native can't open the emailed link, so confirm
+      // in-app with the 6-digit code from the same email.
+      setNotice(null);
+      setVerifyFlow("signup");
     } else {
       finish();
     }
   };
 
-  const handleForgot = async (e: React.FormEvent) => {
+  const handleSendReset = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValidEmail) return setError("Please enter a valid email address.");
     setBusy(true);
@@ -140,11 +142,11 @@ export default function SignInScreen() {
     setNotice(null);
     const { error } = await resetPassword(trimmedEmail);
     setBusy(false);
-    if (error) setError(error);
-    else
-      setNotice(
-        `If an account exists for ${trimmedEmail}, a password-reset link is on its way.`
-      );
+    if (error) return setError(error);
+    // The new password is collected on the code step.
+    setPassword("");
+    setConfirmPassword("");
+    setVerifyFlow("recovery");
   };
 
   const handleSendMagic = async (e: React.FormEvent) => {
@@ -155,15 +157,39 @@ export default function SignInScreen() {
     const { error } = await signInWithEmail(trimmedEmail);
     setBusy(false);
     if (error) setError(error);
-    else setMagicStep("verify");
+    else setVerifyFlow("magic");
   };
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     if (code.length < 6) return;
+
+    if (verifyFlow === "recovery") {
+      if (password.length < 8)
+        return setError("Password must be at least 8 characters.");
+      if (password !== confirmPassword)
+        return setError("Passwords do not match.");
+      setBusy(true);
+      setError(null);
+      const { error } = await verifyOtp(trimmedEmail, code, "recovery");
+      if (error) {
+        setBusy(false);
+        return setError(error);
+      }
+      const { error: upErr } = await updatePassword(password);
+      setBusy(false);
+      if (upErr) return setError(upErr);
+      finish();
+      return;
+    }
+
     setBusy(true);
     setError(null);
-    const { error } = await verifyOtp(trimmedEmail, code);
+    const { error } = await verifyOtp(
+      trimmedEmail,
+      code,
+      verifyFlow === "signup" ? "signup" : "email"
+    );
     setBusy(false);
     if (error) setError(error);
     else finish();
@@ -173,7 +199,12 @@ export default function SignInScreen() {
     setResending(true);
     setError(null);
     setNotice(null);
-    const { error } = await signInWithEmail(trimmedEmail);
+    const { error } =
+      verifyFlow === "recovery"
+        ? await resetPassword(trimmedEmail)
+        : verifyFlow === "signup"
+        ? await resendSignupConfirmation(trimmedEmail)
+        : await signInWithEmail(trimmedEmail);
     setResending(false);
     if (error) setError(error);
     else setNotice("New code sent. Check your inbox.");
@@ -209,33 +240,41 @@ export default function SignInScreen() {
     </div>
   );
 
-  // ─── magic-link verify step ───
-  if (mode === "magic" && magicStep === "verify") {
+  // ─── 6-digit code step: magic sign-in / signup confirm / password recovery ───
+  if (verifyFlow) {
+    const isRecovery = verifyFlow === "recovery";
+    const heading = isRecovery
+      ? "Set a new password"
+      : verifyFlow === "signup"
+      ? "Confirm your email"
+      : "Check your inbox";
+    const blurb = isRecovery
+      ? "Enter the 6-digit code we emailed, then choose a new password."
+      : verifyFlow === "signup"
+      ? "Enter the 6-digit confirmation code we emailed to"
+      : "We sent a sign-in link and a 6-digit code to";
     return (
       <div className="max-w-md mx-auto pt-6 pb-12 px-4">
         <button
           type="button"
           onClick={() => {
-            setMagicStep("email");
+            setVerifyFlow(null);
             setCode("");
             setError(null);
             setNotice(null);
           }}
           className="text-sm text-themed-muted mb-6 flex items-center gap-1.5 active:text-themed touch-manipulation"
         >
-          <ArrowLeft size={14} /> Change email
+          <ArrowLeft size={14} /> Back
         </button>
         <Bismillah />
         <h1 className="text-2xl font-bold text-themed mb-2 text-center">
-          Check your inbox
+          {heading}
         </h1>
         <p className="text-themed-muted text-sm leading-relaxed text-center mb-6">
-          We sent a sign-in link and a 6-digit code to
+          {blurb}
           <br />
           <strong className="text-themed">{email}</strong>
-        </p>
-        <p className="text-xs text-themed-muted text-center mb-3">
-          Enter the code from your email:
         </p>
         <form onSubmit={handleVerify} className="space-y-4">
           <input
@@ -250,6 +289,35 @@ export default function SignInScreen() {
             autoComplete="one-time-code"
             className="w-full bg-white/5 border sidebar-border rounded-xl px-4 py-4 text-themed text-3xl tracking-[0.3em] text-center font-mono focus:outline-none focus:border-[var(--color-gold)]/40"
           />
+          {isRecovery && (
+            <>
+              <div>
+                <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
+                  New password
+                </label>
+                <PasswordInput
+                  value={password}
+                  onChange={setPassword}
+                  placeholder="At least 8 characters"
+                  autoComplete="new-password"
+                  required
+                />
+                <PasswordStrength password={password} />
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-wider text-themed-muted mb-1.5 block">
+                  Confirm new password
+                </label>
+                <PasswordInput
+                  value={confirmPassword}
+                  onChange={setConfirmPassword}
+                  placeholder="Re-enter password"
+                  autoComplete="new-password"
+                  required
+                />
+              </div>
+            </>
+          )}
           {errorBox}
           {noticeBox}
           <button
@@ -257,7 +325,15 @@ export default function SignInScreen() {
             disabled={busy || code.length < 6}
             className={primaryBtn}
           >
-            {busy ? "Verifying..." : "Verify & sign in"}
+            {busy
+              ? isRecovery
+                ? "Updating..."
+                : "Verifying..."
+              : isRecovery
+              ? "Reset password"
+              : verifyFlow === "signup"
+              ? "Confirm & continue"
+              : "Verify & sign in"}
           </button>
           <button
             type="button"
@@ -451,14 +527,15 @@ export default function SignInScreen() {
             Reset your password
           </h1>
           <p className="text-themed-muted text-sm text-center mb-8">
-            Enter your email and we&apos;ll send a link to set a new password.
+            Enter your email and we&apos;ll send a 6-digit code to set a new
+            password.
           </p>
-          <form onSubmit={handleForgot} className="space-y-4">
+          <form onSubmit={handleSendReset} className="space-y-4">
             {emailField}
             {errorBox}
             {noticeBox}
             <button type="submit" disabled={busy} className={primaryBtn}>
-              {busy ? "Sending..." : "Send reset link"}
+              {busy ? "Sending..." : "Send reset code"}
             </button>
           </form>
         </>
