@@ -351,9 +351,10 @@ function DhikrPageInner() {
           dhikrKey: k,
           arabic: e.arabic,
           transliteration: e.translit,
-          english: "",
+          english: e.english,
           target: goal,
           manageGoal: goal,
+          hadith: e.reference,
           isCustom: true,
         },
       ];
