@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Shield,
@@ -150,6 +150,58 @@ export default function CirclesScreen() {
       setBusy(false);
     }
   };
+
+  // Progress stepper: update the UI optimistically and persist on a debounce,
+  // so tapping +/- feels instant instead of waiting on an RPC + full refetch
+  // (and without disabling the buttons between presses).
+  const progressTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const pendingProgress = useRef<Record<string, number>>({});
+
+  const flushProgress = useCallback((circleId: string) => {
+    clearTimeout(progressTimers.current[circleId]);
+    const v = pendingProgress.current[circleId];
+    if (v == null) return;
+    delete pendingProgress.current[circleId];
+    setMyProgress(circleId, v).catch((e) => {
+      setErr(errMsg(e));
+      reload();
+    });
+  }, [reload]);
+
+  const bumpProgress = (circleId: string, delta: number) => {
+    setCircles((cs) =>
+      cs
+        ? cs.map((d) => {
+            if (d.circle.id !== circleId) return d;
+            const next = Math.max(0, d.myValue + delta);
+            const applied = next - d.myValue;
+            if (applied === 0) return d;
+            pendingProgress.current[circleId] = next;
+            return {
+              ...d,
+              myValue: next,
+              total: Math.max(0, d.total + applied),
+              members: d.members.map((m) => (m.isMe ? { ...m, value: next } : m)),
+            };
+          })
+        : cs
+    );
+    clearTimeout(progressTimers.current[circleId]);
+    progressTimers.current[circleId] = setTimeout(() => flushProgress(circleId), 600);
+  };
+
+  // Flush any pending progress writes on unmount so nothing is lost.
+  useEffect(() => {
+    const timers = progressTimers.current;
+    const pend = pendingProgress.current;
+    return () => {
+      Object.entries(timers).forEach(([id, t]) => {
+        clearTimeout(t);
+        const v = pend[id];
+        if (v != null) setMyProgress(id, v).catch(() => {});
+      });
+    };
+  }, []);
 
   // ── Not signed in ──────────────────────────────────────────────────────
   if (!authLoading && !user) {
@@ -327,17 +379,16 @@ export default function CirclesScreen() {
             <div className="relative mt-4 flex items-center gap-3 rounded-xl bg-white/[0.04] border sidebar-border px-3 py-2.5">
               <span className="text-xs text-themed-muted flex-1">Your contribution</span>
               <button
-                disabled={busy || d.myValue <= 0}
-                onClick={() => run(() => setMyProgress(d.circle.id, d.myValue - 1))}
-                className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-themed disabled:opacity-40"
+                disabled={d.myValue <= 0}
+                onClick={() => bumpProgress(d.circle.id, -1)}
+                className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-themed disabled:opacity-40 touch-manipulation active:scale-95 transition-transform"
               >
                 <Minus size={14} />
               </button>
               <span className="text-sm font-bold text-gold w-12 text-center">{d.myValue} {d.circle.goal_unit}</span>
               <button
-                disabled={busy}
-                onClick={() => run(() => setMyProgress(d.circle.id, d.myValue + 1))}
-                className="w-7 h-7 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center text-gold disabled:opacity-40"
+                onClick={() => bumpProgress(d.circle.id, 1)}
+                className="w-7 h-7 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center text-gold touch-manipulation active:scale-95 transition-transform"
               >
                 <Plus size={14} />
               </button>
