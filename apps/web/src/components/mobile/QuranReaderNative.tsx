@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -60,7 +60,11 @@ function activeWordIndex(
 ): number {
   if (playingVerse !== verseNumber || paused) return -1;
   const ms = progress * 1000;
-  if (ts && ts.length) {
+  // Only trust per-word timestamps when they match the word count exactly — a
+  // handful of verses have a mismatch that otherwise leaves trailing words
+  // un-highlighted (or highlights a phantom segment). Fall through to the
+  // even-distribution estimate below when they don't line up.
+  if (ts && ts.length === wordCount && wordCount > 0) {
     for (let i = 0; i < ts.length; i++) {
       if (ms >= ts[i][0] && ms < ts[i][1]) return i;
     }
@@ -96,10 +100,10 @@ export default function QuranReaderNative({
   const [focusIdx, setFocusIdx] = useState(0);
 
   // Tap a word → open the Understanding sheet (root / meaning / occurrences / tutor).
-  const onWord = (verseNumber: number, wordIdx: number, word: Word) => {
+  const onWord = useCallback((verseNumber: number, wordIdx: number, word: Word) => {
     hapticSelection();
     setWordSheet({ verseNumber, wordIdx, word });
-  };
+  }, []);
 
   const searchParams = useSearchParams();
   const initialVerse = Number(searchParams.get("v")) || 0;
@@ -109,6 +113,10 @@ export default function QuranReaderNative({
   // Latest playing verse, read inside the IO callback without re-creating it.
   const playingVerseRef = useRef<number | null>(null);
   playingVerseRef.current = audio.playingVerse;
+  // Stable handle to the latest audio API so memoized children get callbacks
+  // whose identity never changes (keeps VerseBlock from re-rendering every tick).
+  const audioApiRef = useRef(audio);
+  audioApiRef.current = audio;
 
   useEffect(() => {
     setView(getQuranView());
@@ -123,10 +131,23 @@ export default function QuranReaderNative({
     lastSavedVerse.current = initialVerse;
     const i = verses.findIndex((v) => v.number === initialVerse);
     if (i >= 0) setFocusIdx(i);
-    requestAnimationFrame(() => {
+    // Wait for fonts + word spans to lay out before scrolling, else the target
+    // shifts under us and we land off-position. Double-rAF after fonts.ready,
+    // with a timeout backstop for surahs without word data.
+    let done = false;
+    const scrollToVerse = () => {
+      if (done) return;
       const el = document.querySelector(`[data-vnum="${initialVerse}"]`);
-      if (el) el.scrollIntoView({ block: "center" });
-    });
+      if (el) {
+        done = true;
+        el.scrollIntoView({ block: "center" });
+      }
+    };
+    const run = () => requestAnimationFrame(() => requestAnimationFrame(scrollToVerse));
+    if (document.fonts?.ready) document.fonts.ready.then(run);
+    else run();
+    const t = setTimeout(scrollToVerse, 600);
+    return () => clearTimeout(t);
   }, [verses, initialVerse]);
 
   // Remember the reading position so "Continue reading" resumes here.
@@ -189,6 +210,18 @@ export default function QuranReaderNative({
     }
     setView(v);
     setQuranView(v);
+    // Entering Mushaf while not playing: restore the scroll to the last-read
+    // āyah (Focus set it) instead of snapping to the top. Double-rAF so the
+    // Mushaf list has mounted before we scroll.
+    if (v === "mushaf" && verses && audio.playingVerse == null && lastSavedVerse.current > 0) {
+      const target = lastSavedVerse.current;
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          const el = document.querySelector(`[data-vnum="${target}"]`);
+          if (el) el.scrollIntoView({ block: "center" });
+        })
+      );
+    }
   };
   const updateDisplay = (patch: Partial<QuranDisplay>) => {
     hapticLight();
@@ -221,7 +254,11 @@ export default function QuranReaderNative({
     if (view !== "mushaf" || audio.playingVerse == null) return;
     const el = document.querySelector(`[data-vnum="${audio.playingVerse}"]`);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [audio.playingVerse, view]);
+    // Keep the saved position in step with playback (the scroll IO is paused
+    // while playing) so Continue Reading resumes at the last-played āyah.
+    lastSavedVerse.current = audio.playingVerse;
+    setLastPosition(chapter.id, audio.playingVerse);
+  }, [audio.playingVerse, view, chapter.id]);
 
   // Focus mode is immersive: hide the bottom tab bar (the floating player becomes
   // the only bottom chrome). Toggled via a body class so MobileShell stays untouched.
@@ -266,11 +303,12 @@ export default function QuranReaderNative({
     chapter.revelationPlace === "makkah" ? "Meccan" : "Medinan"
   }`;
 
-  const playPause = (v: Verse) => {
+  const playPause = useCallback((v: Verse) => {
     hapticLight();
-    if (audio.playingVerse === v.number) audio.togglePause();
-    else audio.playVerse(v);
-  };
+    const a = audioApiRef.current;
+    if (a.playingVerse === v.number) a.togglePause();
+    else a.playVerse(v);
+  }, []);
 
   return (
     <div className="-mx-3">
@@ -305,6 +343,20 @@ export default function QuranReaderNative({
         </div>
       </div>
 
+      {audio.audioError && (
+        <div className="mx-3 mb-1 flex items-center justify-between gap-2 rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2 text-[12px] text-red-400">
+          <span>{audio.audioError}</span>
+          <button
+            type="button"
+            onClick={audio.clearAudioError}
+            className="shrink-0 opacity-70 px-1"
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {!verses ? (
         <div className="px-3 py-16 text-center text-themed-muted text-sm">Loading…</div>
       ) : view === "focus" ? (
@@ -338,19 +390,31 @@ export default function QuranReaderNative({
               بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
             </p>
           )}
-          {verses.map((v) => (
-            <VerseBlock
-              key={v.id}
-              verse={v}
-              display={display}
-              fontSize={fontSize}
-              words={wordsData?.[String(v.number)]}
-              ts={timestampData?.[String(v.number)]}
-              audio={audio}
-              onPlayPause={() => playPause(v)}
-              onWord={onWord}
-            />
-          ))}
+          {verses.map((v) => {
+            const vWords = wordsData?.[String(v.number)];
+            return (
+              <VerseBlock
+                key={v.id}
+                verse={v}
+                display={display}
+                fontSize={fontSize}
+                words={vWords}
+                active={activeWordIndex(
+                  v.number,
+                  audio.playingVerse,
+                  audio.audioPaused,
+                  timestampData?.[String(v.number)],
+                  audio.audioProgress,
+                  audio.audioDuration,
+                  vWords?.length ?? 0
+                )}
+                playing={audio.playingVerse === v.number}
+                paused={audio.audioPaused}
+                onPlayPause={playPause}
+                onWord={onWord}
+              />
+            );
+          })}
         </div>
       )}
 
@@ -399,13 +463,14 @@ export default function QuranReaderNative({
 }
 
 // ── A single verse in Mushaf mode ──
-function VerseBlock({
+const VerseBlock = memo(function VerseBlock({
   verse,
   display,
   fontSize,
   words,
-  ts,
-  audio,
+  active,
+  playing,
+  paused,
   onPlayPause,
   onWord,
 }: {
@@ -413,22 +478,12 @@ function VerseBlock({
   display: QuranDisplay;
   fontSize: number;
   words: Word[] | undefined;
-  ts: number[][] | undefined;
-  audio: ReturnType<typeof useQuranAudio>;
-  onPlayPause: () => void;
+  active: number;
+  playing: boolean;
+  paused: boolean;
+  onPlayPause: (v: Verse) => void;
   onWord: (verseNumber: number, wordIdx: number, word: Word) => void;
 }) {
-  const playing = audio.playingVerse === verse.number;
-  const active = activeWordIndex(
-    verse.number,
-    audio.playingVerse,
-    audio.audioPaused,
-    ts,
-    audio.audioProgress,
-    audio.audioDuration,
-    words?.length ?? 0
-  );
-
   return (
     <div
       data-vnum={verse.number}
@@ -440,11 +495,11 @@ function VerseBlock({
         </span>
         <button
           type="button"
-          onClick={onPlayPause}
+          onClick={() => onPlayPause(verse)}
           className="w-8 h-8 rounded-full flex items-center justify-center text-gold bg-[var(--color-gold)]/10 touch-manipulation"
-          aria-label={playing && !audio.audioPaused ? "Pause" : "Play verse"}
+          aria-label={playing && !paused ? "Pause" : "Play verse"}
         >
-          {playing && !audio.audioPaused ? <Pause size={14} /> : <Play size={14} />}
+          {playing && !paused ? <Pause size={14} /> : <Play size={14} />}
         </button>
       </div>
 
@@ -492,7 +547,7 @@ function VerseBlock({
       )}
     </div>
   );
-}
+});
 
 // ── Focus mode: one āyah at a time ──
 function FocusView({
@@ -548,8 +603,15 @@ function FocusView({
     if (next === idx) return; // at the first/last verse — don't restart the current āyah
     hapticSelection();
     setIdx(next);
-    // If audio is actively playing, switch playback to the verse we moved to.
-    if (audio.playingVerse != null && !audio.audioPaused) audio.playVerse(verses[next]);
+    if (audio.playingVerse != null && !audio.audioPaused) {
+      // Playing → follow to the new āyah.
+      audio.playVerse(verses[next]);
+    } else if (audio.playingVerse != null && audio.audioPaused) {
+      // Paused on a now off-screen āyah → clear the stale mini-player so its play
+      // button can't resume the wrong verse; the center button starts the
+      // on-screen one.
+      audio.stopPlayback();
+    }
   };
 
   return (
@@ -570,7 +632,13 @@ function FocusView({
           const dx = e.changedTouches[0].clientX - swipe.current.x;
           const dy = Math.abs(e.changedTouches[0].clientY - swipe.current.y);
           swipe.current = null;
-          if (Math.abs(dx) > 60 && dy < 50) go(dx < 0 ? 1 : -1);
+          if (Math.abs(dx) > 60 && dy < 50) {
+            // This is our āyah swipe — stop it bubbling to MobileShell's
+            // edge-swipe-back, so a right-swipe from the left edge goes to the
+            // previous āyah instead of navigating back.
+            e.stopPropagation();
+            go(dx < 0 ? 1 : -1);
+          }
         }}
       >
         <div className="text-center text-[10px] uppercase tracking-[0.2em] text-themed-muted py-3">

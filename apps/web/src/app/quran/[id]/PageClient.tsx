@@ -1044,8 +1044,9 @@ function SurahPageContent() {
                         const timestamps = timestampData?.[String(verse.number)];
                         const currentMs = audioProgress * 1000;
                         let activeWordIndex = -1;
-                        if (isCurrentlyPlaying && timestamps && timestamps.length > 0) {
-                          // Use real word-level timestamps from Quran.com
+                        if (isCurrentlyPlaying && timestamps && timestamps.length === words.length) {
+                          // Use real word-level timestamps from Quran.com — only
+                          // when they match the word count (a few verses don't).
                           for (let wi = 0; wi < timestamps.length; wi++) {
                             const [start, end] = timestamps[wi];
                             if (currentMs >= start && currentMs < end) {

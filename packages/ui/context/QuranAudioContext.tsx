@@ -29,6 +29,8 @@ interface QuranAudioState {
   audioProgress: number;
   audioDuration: number;
   audioPaused: boolean;
+  audioError: string | null;
+  clearAudioError: () => void;
   autoNextSurah: boolean;
   surahId: number | null;
   chapter: Chapter | null;
@@ -74,6 +76,8 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
   const [audioProgress, setAudioProgress] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
   const [audioPaused, setAudioPaused] = useState(false);
+  const [audioError, setAudioError] = useState<string | null>(null);
+  const clearAudioError = useCallback(() => setAudioError(null), []);
   const [autoNextSurah, setAutoNextSurahState] = useState(false);
 
   const [surahId, setSurahId] = useState<number | null>(null);
@@ -180,11 +184,13 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     setAudioProgress(0);
     setAudioDuration(0);
     setAudioPaused(false);
+    setAudioError(null);
 
     audio.play().catch(() => {
       // Only reset if this play call wasn't superseded by a newer startAudio()
       if (playTokenRef.current === token) {
         setPlayingVerse(null);
+        setAudioError("Couldn't play the recitation — check your connection.");
       }
     });
 
@@ -229,7 +235,12 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
 
     audio.onloadedmetadata = () => setAudioDuration(audio.duration);
     audio.ontimeupdate = () => setAudioProgress(audio.currentTime);
-    audio.onerror = () => setPlayingVerse(null);
+    audio.onerror = () => {
+      setPlayingVerse(null);
+      if (audioRef.current === audio) {
+        setAudioError("Couldn't load the recitation — check your connection.");
+      }
+    };
 
     // Reflect element-level play/pause that did NOT go through our toggle — a
     // phone call, Control-Center pause, or headphone unplug pauses the audio,
@@ -454,6 +465,8 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         audioProgress,
         audioDuration,
         audioPaused,
+        audioError,
+        clearAudioError,
         autoNextSurah,
         surahId,
         chapter,
