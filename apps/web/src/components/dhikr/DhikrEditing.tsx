@@ -129,7 +129,7 @@ export function AddDhikrDialog({
     >
       <div className="absolute inset-0 bg-black/60" />
       <div
-        className="relative w-full sm:max-w-md bg-themed border-t sm:border sidebar-border sm:rounded-2xl rounded-t-2xl max-h-[85vh] flex flex-col"
+        className="relative w-full sm:max-w-lg bg-themed border-t sm:border sidebar-border sm:rounded-2xl rounded-t-2xl max-h-[85vh] flex flex-col"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -159,7 +159,7 @@ export function AddDhikrDialog({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search dhikr…"
-                  className="flex-1 bg-transparent text-sm text-themed outline-none placeholder:text-themed-muted"
+                  className="flex-1 bg-transparent text-base text-themed outline-none placeholder:text-themed-muted"
                 />
               </div>
             </div>
@@ -173,17 +173,19 @@ export function AddDhikrDialog({
                     key={d.key}
                     type="button"
                     onClick={() => pick(d.key, d.defaultGoal)}
-                    className={`w-full flex items-center gap-3 rounded-xl p-3 text-left touch-manipulation transition ${
+                    className={`w-full block rounded-xl px-3.5 py-3 text-left touch-manipulation transition ${
                       selected === d.key
                         ? "bg-[var(--color-gold)]/15 border border-[var(--color-gold)]/40"
                         : "active:bg-white/5 border border-transparent"
                     }`}
                   >
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-themed truncate">{d.label}</p>
-                      <p className="text-xs text-themed-muted truncate">{d.translit}</p>
-                    </div>
-                    <span className="font-arabic text-gold/70 text-base shrink-0">{d.arabic}</span>
+                    <p className="text-sm font-medium text-themed leading-snug">{d.label}</p>
+                    <p
+                      className="font-arabic text-gold/75 text-lg leading-relaxed line-clamp-2 mt-1.5 text-right"
+                      dir="rtl"
+                    >
+                      {d.arabic}
+                    </p>
                   </button>
                 ))
               )}

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import { isTabRoot, ownsHeader } from "./routes";
+import { isTabRoot, ownsHeader, suppressesBack } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 
 // How many in-app navigations have happened since app load. >1 means there's
@@ -24,7 +24,8 @@ export default function MobileTopBar() {
   // Screens that render their own header/back bar (reader, Ask, Hifz, …) are
   // listed in OWN_HEADER_PATTERNS (routes.ts); the global bar drops to a slim
   // status-bar spacer for them to avoid a double back.
-  const showBack = !isTabRoot(pathname) && !ownsHeader(pathname);
+  const showBack =
+    !isTabRoot(pathname) && !ownsHeader(pathname) && !suppressesBack(pathname);
 
   useEffect(() => {
     navCount += 1;

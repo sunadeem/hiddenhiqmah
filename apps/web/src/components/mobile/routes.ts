@@ -51,6 +51,14 @@ export function isTabRoot(pathname: string): boolean {
   return TAB_ROOTS.includes(pathname);
 }
 
+// Non-tab routes that intentionally hide the global back button — the user
+// navigates back via Home instead. (e.g. the Daily checklist.)
+const NO_BACK_ROUTES = ["/muslim-daily"];
+
+export function suppressesBack(pathname: string): boolean {
+  return NO_BACK_ROUTES.includes(pathname);
+}
+
 // Routes whose screen renders its OWN header (with a back button). The global
 // MobileTopBar back button is suppressed for these to avoid a double back.
 // ▶ When you add a screen that owns its top bar, add one pattern here.

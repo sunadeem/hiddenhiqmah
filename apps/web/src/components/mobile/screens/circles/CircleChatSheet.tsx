@@ -281,7 +281,7 @@ function Sheet({
           {/* Composer — flex child (not sticky); sits above the iOS safe-area/keyboard. */}
           <div
             className="shrink-0 border-t sidebar-border px-3 pt-2.5"
-            style={{ paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
+            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 14px)" }}
           >
             <div className="flex items-end gap-2">
               <textarea

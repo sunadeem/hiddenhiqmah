@@ -15,6 +15,16 @@ export async function applyNativeSetup() {
   // inert on the web build (same static export, different runtime).
   document.documentElement.classList.add("native");
 
+  // Stop the WKWebView from auto-zooming when a text field is focused (and
+  // pinch-zoom, for a native feel). Native-only: the website's <meta viewport>
+  // in layout.tsx is left untouched, so web pinch-zoom / accessibility stays.
+  document
+    .querySelector('meta[name="viewport"]')
+    ?.setAttribute(
+      "content",
+      "width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no"
+    );
+
   try {
     const { Keyboard } = await import("@capacitor/keyboard");
     // Hide the iOS "previous/next/done" accessory toolbar above the keyboard.
