@@ -221,6 +221,13 @@ body.reader-immersive [data-mini-player] {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
 }
 
+/* While the Ask composer's keyboard is open (native), hide the floating tab bar
+   + player so they don't ride up over the keyboard. The class is toggled on
+   <html> only by the /ask page, so the website is never affected. */
+.ask-kb-open .mobile-bottom-chrome {
+  display: none;
+}
+
 /* Fast tooltip */
 .tooltip {
   position: relative;

@@ -150,6 +150,8 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         audio.ontimeupdate = null;
         audio.onloadedmetadata = null;
         audio.onerror = null;
+        audio.onplay = null;
+        audio.onpause = null;
       }
       audio = preloadRef.current!;
       audioRef.current = audio;
@@ -162,6 +164,8 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       audio.ontimeupdate = null;
       audio.onloadedmetadata = null;
       audio.onerror = null;
+      audio.onplay = null;
+      audio.onpause = null;
     } else {
       // First time — create the element
       audio = new Audio();
@@ -226,6 +230,23 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     audio.onloadedmetadata = () => setAudioDuration(audio.duration);
     audio.ontimeupdate = () => setAudioProgress(audio.currentTime);
     audio.onerror = () => setPlayingVerse(null);
+
+    // Reflect element-level play/pause that did NOT go through our toggle — a
+    // phone call, Control-Center pause, or headphone unplug pauses the audio,
+    // and without this the UI stays stuck on "playing". Guarded so a superseded
+    // / swapped-out element (which also fires "pause") can't flip live state.
+    audio.onplay = () => {
+      if (audioRef.current === audio && playTokenRef.current === token) {
+        setAudioPaused(false);
+        if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
+      }
+    };
+    audio.onpause = () => {
+      if (audioRef.current === audio && playTokenRef.current === token) {
+        setAudioPaused(true);
+        if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
+      }
+    };
 
     // If metadata already loaded (e.g. preloaded audio), set duration immediately
     if (audio.duration && !isNaN(audio.duration)) {
@@ -388,6 +409,8 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
 
   const stopPlayback = useCallback(() => {
     if (audioRef.current) {
+      audioRef.current.onplay = null;
+      audioRef.current.onpause = null;
       audioRef.current.pause();
       audioRef.current.onended = null;
       audioRef.current.ontimeupdate = null;

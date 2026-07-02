@@ -9,6 +9,7 @@ import {
   loadMessages,
   saveMessages,
   streamChat,
+  streamChatErrorMessage,
   renderMarkdown,
   CitationCard,
   CopyButton,
@@ -54,6 +55,7 @@ export default function AskPage() {
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   useEffect(() => {
     setMessages(loadMessages());
@@ -72,6 +74,33 @@ export default function AskPage() {
   useEffect(() => {
     if (hydrated) saveMessages(messages);
   }, [messages, hydrated]);
+
+  // Native keyboard handling: while the keyboard is open, drop the tab-bar
+  // clearance under the composer and hide the floating bottom chrome (tab bar +
+  // player) so it doesn't ride up over the keyboard. Web is unaffected.
+  useEffect(() => {
+    const isNative =
+      typeof window !== "undefined" && !!window.Capacitor?.isNativePlatform?.();
+    if (!isNative) return;
+    let showSub: { remove: () => void } | undefined;
+    let hideSub: { remove: () => void } | undefined;
+    (async () => {
+      const { Keyboard } = await import("@capacitor/keyboard");
+      showSub = await Keyboard.addListener("keyboardWillShow", () => {
+        setKeyboardOpen(true);
+        document.documentElement.classList.add("ask-kb-open");
+      });
+      hideSub = await Keyboard.addListener("keyboardWillHide", () => {
+        setKeyboardOpen(false);
+        document.documentElement.classList.remove("ask-kb-open");
+      });
+    })();
+    return () => {
+      showSub?.remove();
+      hideSub?.remove();
+      document.documentElement.classList.remove("ask-kb-open");
+    };
+  }, []);
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
@@ -137,10 +166,10 @@ export default function AskPage() {
           }]);
           setLoading(false);
         },
-        () => {
+        (reason) => {
           setMessages([...newMessages, {
             role: "assistant",
-            content: "I apologize, I was unable to process your question. Please try again.",
+            content: streamChatErrorMessage(reason),
           }]);
           setLoading(false);
         },
@@ -148,7 +177,7 @@ export default function AskPage() {
     } catch {
       setMessages([...newMessages, {
         role: "assistant",
-        content: "I apologize, I was unable to process your question. Please try again.",
+        content: streamChatErrorMessage(),
       }]);
       setLoading(false);
     }
@@ -287,7 +316,11 @@ export default function AskPage() {
       <form
         onSubmit={handleSubmit}
         className="border-t sidebar-border p-4 shrink-0"
-        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 84px)" }}
+        style={{
+          paddingBottom: keyboardOpen
+            ? "calc(env(safe-area-inset-bottom) + 12px)"
+            : "calc(env(safe-area-inset-bottom) + 84px)",
+        }}
       >
         <div className="flex items-center gap-3 min-w-0">
           <input

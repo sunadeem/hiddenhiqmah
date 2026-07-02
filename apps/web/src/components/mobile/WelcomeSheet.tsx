@@ -123,7 +123,7 @@ export default function WelcomeSheet() {
       <div
         className="flex-1 overflow-y-auto px-6 flex flex-col"
         style={{
-          paddingTop: "calc(env(safe-area-inset-top) + 32px)",
+          paddingTop: "max(calc(env(safe-area-inset-top) + 32px), 60px)",
           paddingBottom: "calc(env(safe-area-inset-bottom) + 24px)",
         }}
       >

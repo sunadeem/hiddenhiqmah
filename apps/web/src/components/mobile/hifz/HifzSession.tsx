@@ -16,6 +16,7 @@ import { VoiceRecorder } from "@independo/capacitor-voice-recorder";
 import type { AyahRef, Grade, HifzAdapter, HifzCard } from "@hidden-hiqmah/ui/lib/hifz/types";
 import { ayahsInCard } from "@/lib/hifz/quran";
 import { useIsNative } from "@/lib/mobile/platform";
+import { registerAudioChannel, claimAudioFocus } from "@hidden-hiqmah/ui/lib/audioCoordinator";
 
 type Verse = {
   id: number;
@@ -120,8 +121,14 @@ export default function HifzSession({
     setPlaying(false);
   }, []);
 
+  // Register with the global audio coordinator so starting Qur'an recitation or
+  // the adhan elsewhere stops Hifz playback (and vice-versa) — no two channels
+  // play at once.
+  useEffect(() => registerAudioChannel("hifz", stopAudio), [stopAudio]);
+
   const playSeq = useCallback((ids: number[]) => {
     if (ids.length === 0) return;
+    claimAudioFocus("hifz"); // stop the main Qur'an player / adhan first
     if (!audioRef.current) {
       const a = new Audio();
       a.onended = () => {
@@ -185,6 +192,7 @@ export default function HifzSession({
 
   const startRec = useCallback(async () => {
     setRecErr(null);
+    claimAudioFocus("hifz"); // stop any other playback before recording
     const myToken = ++recReqRef.current;
 
     if (native) {

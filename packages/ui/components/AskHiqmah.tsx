@@ -172,6 +172,19 @@ function formatQuotaReset(resetAt: string | null): string {
   return `${hours}h ${minutes}m`;
 }
 
+/** Maps a streamChat error reason to a user-facing message — shared by the web
+ *  AskHiqmah panel and the mobile /ask page so the two can't drift (offline and
+ *  quota were both collapsing into one generic "try again" on mobile). */
+export function streamChatErrorMessage(reason?: StreamChatErrorReason): string {
+  if (reason?.type === "offline") {
+    return "You appear to be offline. Ask Hiqmah needs a connection — please reconnect and try again.";
+  }
+  if (reason?.type === "quota_exceeded") {
+    return `You've reached today's limit for Ask Hiqmah. Please try again in ${formatQuotaReset(reason.quota.resetAt)}.`;
+  }
+  return "I apologize, I was unable to process your question. Please try again.";
+}
+
 function getApiBaseUrl(): string {
   const isNative =
     typeof window !== "undefined" &&

@@ -10,7 +10,8 @@ import WelcomeSheet from "./WelcomeSheet";
 import { isTabRoot } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 import { applyNativeSetup } from "@/lib/mobile/setup";
-import { registerNotificationTapHandler } from "@/lib/mobile/notifications";
+import { registerNotificationTapHandler, scheduleAllNotifications } from "@/lib/mobile/notifications";
+import { App as CapApp } from "@capacitor/app";
 import { useLegacyImport } from "@/lib/daily/useLegacyImport";
 import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
@@ -50,6 +51,19 @@ export default function MobileShell({ children }: { children: React.ReactNode })
     return registerNotificationTapHandler((url) => router.push(url));
   }, [router]);
 
+  // Refresh the rolling adhan/notification window each time the app returns to
+  // the foreground — otherwise the scheduled window silently drains over days of
+  // use. No-op on web / without notification permission.
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    CapApp.addListener("appStateChange", ({ isActive }) => {
+      if (isActive) void scheduleAllNotifications(false);
+    }).then((handle) => {
+      cleanup = () => void handle.remove();
+    });
+    return () => cleanup?.();
+  }, []);
+
   // On sign-in, migrate signed-out local Daily data into Supabase (once).
   useLegacyImport();
 
@@ -59,7 +73,10 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   if (!authLoading && !user && !FULLSCREEN_ROUTES.has(pathname)) {
     return (
       <div className="relative flex flex-col h-[100dvh] bg-themed overflow-hidden">
-        <main className="flex-1 overflow-y-auto px-3 pt-8">
+        <main
+          className="flex-1 overflow-y-auto px-3"
+          style={{ paddingTop: "max(env(safe-area-inset-top), 60px)" }}
+        >
           <Suspense fallback={null}>
             <SignInScreen />
           </Suspense>
@@ -142,7 +159,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
         // the page shows through around the pill (truly floating, no shelf).
         // pointer-events-none lets taps fall through the transparent gaps;
         // the player + tab bar re-enable pointer events on themselves.
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30">
+        <div className="mobile-bottom-chrome pointer-events-none absolute inset-x-0 bottom-0 z-30">
           <div className="pointer-events-auto">
             <MobilePlayer />
           </div>

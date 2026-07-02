@@ -5,6 +5,11 @@ import * as path from "path";
 import { createHash } from "crypto";
 import { tryGetSupabaseServer } from "@/lib/supabase-server";
 
+// Give the streamed Opus answer room to finish before the platform function
+// timeout. Native buffers the whole SSE response, so a mid-answer timeout there
+// otherwise surfaces as a total failure with zero content.
+export const maxDuration = 60;
+
 // maxRetries bumped from the SDK default of 2 → 4 so brief Anthropic 529
 // (overloaded) spikes are absorbed with exponential backoff instead of
 // surfacing as a user-facing failure.

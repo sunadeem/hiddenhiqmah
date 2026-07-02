@@ -21,6 +21,7 @@ import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { Geolocation } from "@capacitor/geolocation";
 import {
   getFreshCachedLocation,
+  getCachedLocation,
   setCachedLocation,
   getLocationState,
   setLocationState,
@@ -168,7 +169,11 @@ export function NextPrayerCard() {
       setTimings(cached.timings);
       setLocation(cached.location);
     } else {
-      computeTimes(21.4225, 39.8262, "Makkah, Saudi Arabia"); // Makkah fallback
+      // No cached times for today — compute from the last known location if we
+      // have one (works offline, e.g. a new day in airplane mode); else Makkah.
+      const last = getCachedLocation();
+      if (last) computeTimes(last.lat, last.lng, last.display);
+      else computeTimes(21.4225, 39.8262, "Makkah, Saudi Arabia");
     }
 
     let cancelled = false;
@@ -206,16 +211,18 @@ export function NextPrayerCard() {
         if (cancelled) return;
         const geo = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
         if (cancelled) return;
+        // Compute from the real GPS coordinates regardless of whether the
+        // reverse-geocode succeeded — offline, reverseGeocode returns null, and
+        // gating the compute on it stranded first-run offline users on Makkah.
+        const coarse = `${pos.coords.latitude.toFixed(2)}°, ${pos.coords.longitude.toFixed(2)}°`;
+        const display = (geo && formatLocation(geo)) || coarse;
+        computeTimes(pos.coords.latitude, pos.coords.longitude, display);
         if (geo) {
-          const city = geo.city || "Makkah";
-          const country = geo.countryName || "Saudi Arabia";
-          const display = formatLocation(geo) || `${city}, ${country}`;
-          computeTimes(pos.coords.latitude, pos.coords.longitude, display);
           setCachedLocation({
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
-            city,
-            country,
+            city: geo.city || "Makkah",
+            country: geo.countryName || "Saudi Arabia",
             display,
           });
         }
