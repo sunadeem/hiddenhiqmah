@@ -12,11 +12,22 @@
         <scene sceneID="EHf-IW-A2E">
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
-                    <imageView key="view" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splash" id="snD-IY-ifK">
+                    <view key="view" contentMode="scaleToFill" id="snD-IY-ifK">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </imageView>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="Lgo-01-vew">
+                                <rect key="frame" x="-312.75" y="-166.75" width="1000.5" height="1000.5"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="Lgo-01-vew" firstAttribute="centerX" secondItem="snD-IY-ifK" secondAttribute="centerX" id="Lgo-cx-001"/>
+                            <constraint firstItem="Lgo-01-vew" firstAttribute="centerY" secondItem="snD-IY-ifK" secondAttribute="centerY" id="Lgo-cy-001"/>
+                            <constraint firstItem="Lgo-01-vew" firstAttribute="height" secondItem="snD-IY-ifK" secondAttribute="height" multiplier="1.5" id="Lgo-ht-001"/>
+                            <constraint firstItem="Lgo-01-vew" firstAttribute="width" secondItem="Lgo-01-vew" secondAttribute="height" multiplier="1:1" id="Lgo-ar-001"/>
+                        </constraints>
+                    </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

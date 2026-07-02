@@ -431,3 +431,142 @@ export function rescheduleNotificationsDebounced(promptIfNeeded = false) {
     void scheduleAllNotifications(promptIfNeeded);
   }, 600);
 }
+
+// ── Notification test harness (Settings → Notification tests) ─────────────
+// Fire ONE notification of a given kind ~4s out, using the SAME title / body /
+// sound / deep-link the scheduler emits — so a test truly exercises delivery
+// and tap-routing (registerNotificationTapHandler reads the same extra.url).
+export type TestNotificationKind =
+  | "adhan"
+  | "prePrayer"
+  | "dailyVerse"
+  | "dailyHadith"
+  | "todaysReminder"
+  | "jumuah"
+  | "streak"
+  | "enabledConfirmation";
+
+/**
+ * Every distinct notification the scheduler can emit, in a stable order. Drives
+ * the Settings test panel and each test's notification id (TEST_ID_BASE + index).
+ */
+export const TEST_NOTIFICATION_KINDS: { kind: TestNotificationKind; label: string }[] = [
+  { kind: "adhan", label: "Adhan (prayer time)" },
+  { kind: "prePrayer", label: "Pre-prayer reminder" },
+  { kind: "dailyVerse", label: "Today's verse" },
+  { kind: "dailyHadith", label: "Today's hadith" },
+  { kind: "todaysReminder", label: "Today's reminder" },
+  { kind: "jumuah", label: "Jumu'ah reminder" },
+  { kind: "streak", label: "Streak nudge" },
+  { kind: "enabledConfirmation", label: "Enabled confirmation" },
+];
+
+/** Build the exact payload the scheduler would emit for `kind`, with live content. */
+function buildTestNotification(kind: TestNotificationKind): {
+  title: string;
+  body: string;
+  sound?: string;
+  url?: string;
+} {
+  const now = new Date();
+  const samplePrayer: PrayerKey = "dhuhr"; // representative prayer for adhan/pre-prayer
+  switch (kind) {
+    case "adhan": {
+      const loc = getCachedLocation();
+      return {
+        title: `${PRAYER_LABEL[samplePrayer]}${loc?.city ? ` · ${loc.city}` : ""}`,
+        body: `It's time for ${PRAYER_LABEL[samplePrayer]} prayer.`,
+        sound: ADHAN_SOUND,
+        url: "/salah",
+      };
+    }
+    case "prePrayer":
+      return {
+        title: `${PRAYER_LABEL[samplePrayer]} in ${PRE_PRAYER_MINUTES} min`,
+        body: `Get ready for ${PRAYER_LABEL[samplePrayer]} prayer.`,
+        url: "/salah",
+      };
+    case "dailyVerse": {
+      const insp = inspirationForDate(now, "Quran");
+      return {
+        title: "Today's Verse",
+        body: insp ? `${insp.english} — ${insp.reference}` : "Today's verse.",
+        url: "/",
+      };
+    }
+    case "dailyHadith": {
+      const insp = inspirationForDate(now, "Hadith");
+      return {
+        title: "Today's Hadith",
+        body: insp ? `${insp.english} — ${insp.reference}` : "Today's hadith.",
+        url: "/",
+      };
+    }
+    case "todaysReminder": {
+      const r = REMINDERS[dailyIndex(dayKey(now), REMINDERS.length)];
+      const ref = r
+        ? r.sourceKind === "quran"
+          ? `Qur'an ${r.sourceRef}`
+          : r.sourceRef
+        : "";
+      return {
+        title: "Today's Reminder",
+        body: r ? `${r.textEn} — ${ref}` : "Today's reflection.",
+        url: "/muslim-daily?tab=reminders",
+      };
+    }
+    case "jumuah":
+      return {
+        title: "Jumu'ah Mubarak",
+        body: "Read Surah Al-Kahf and prepare for Jumu'ah prayer.",
+        url: "/quran/18",
+      };
+    case "streak":
+      return {
+        title: "Keep your streak going",
+        body: "You haven't completed today's checklist yet — a little before the day ends keeps your streak alive.",
+        url: "/muslim-daily",
+      };
+    case "enabledConfirmation":
+      return {
+        title: "Notifications enabled",
+        body: "You'll hear the adhan at prayer times, in shā' Allah.",
+        sound: ADHAN_SOUND,
+      };
+  }
+}
+
+const TEST_ID_BASE = 90000;
+
+/**
+ * Fire a single test notification of `kind` ~4s from now, mirroring the real
+ * scheduled version (title/body/sound/deep-link). Prompts for OS permission if
+ * needed. Returns whether it was scheduled. Native-only; no-op on web.
+ */
+export async function sendTestNotification(
+  kind: TestNotificationKind
+): Promise<boolean> {
+  if (!Capacitor.isNativePlatform()) return false;
+  const granted = await ensureNotificationPermission();
+  if (!granted) return false;
+  const n = buildTestNotification(kind);
+  const idx = TEST_NOTIFICATION_KINDS.findIndex((k) => k.kind === kind);
+  try {
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          id: TEST_ID_BASE + (idx >= 0 ? idx : 0),
+          title: n.title,
+          body: n.body,
+          schedule: { at: new Date(Date.now() + 4000) },
+          ...(n.sound ? { sound: n.sound } : {}),
+          ...(n.url ? { extra: { url: n.url } } : {}),
+        },
+      ],
+    });
+    return true;
+  } catch (e) {
+    console.error("[notifications] test schedule failed", e);
+    return false;
+  }
+}

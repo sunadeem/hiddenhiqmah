@@ -6,7 +6,7 @@
 // haptics.
 
 import { useMemo, useState } from "react";
-import { Plus, Trash2, X, Search, Minus } from "lucide-react";
+import { Plus, Trash2, X, Check, Minus } from "lucide-react";
 import { DHIKR_CATALOG } from "@/lib/dhikr/catalog";
 
 export interface ManageCard {
@@ -98,28 +98,29 @@ export function AddDhikrDialog({
   onClose: () => void;
   onAdd: (key: string, goal: number) => void;
 }) {
-  const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<string | null>(null);
-  const [reps, setReps] = useState<number>(33);
+  const [selected, setSelected] = useState<Set<string>>(() => new Set());
 
   const available = useMemo(
     () => DHIKR_CATALOG.filter((d) => !presentKeys.has(d.key)),
     [presentKeys]
   );
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return available;
-    return available.filter(
-      (d) =>
-        d.label.toLowerCase().includes(q) ||
-        d.translit.toLowerCase().includes(q) ||
-        d.arabic.includes(query.trim())
-    );
-  }, [available, query]);
 
-  const pick = (key: string, defaultGoal: number) => {
-    setSelected(key);
-    setReps(defaultGoal);
+  const toggle = (key: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const addSelected = () => {
+    // Add each checked dhikr with its catalog default goal (adjustable later in
+    // the Edit view). The module cache updates synchronously, so calling the
+    // parent's single-add onAdd per key never drops a write.
+    for (const d of available) {
+      if (selected.has(d.key)) onAdd(d.key, d.defaultGoal);
+    }
   };
 
   return (
@@ -134,7 +135,7 @@ export function AddDhikrDialog({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b sidebar-border">
-          <h3 className="text-base font-semibold text-themed">Add a dhikr</h3>
+          <h3 className="text-base font-semibold text-themed">Add dhikr</h3>
           <button
             type="button"
             onClick={onClose}
@@ -151,58 +152,58 @@ export function AddDhikrDialog({
           </p>
         ) : (
           <>
-            <div className="p-3 border-b sidebar-border">
-              <div className="flex items-center gap-2 card-bg rounded-xl border sidebar-border px-3 py-2">
-                <Search size={15} className="text-themed-muted shrink-0" />
-                <input
-                  autoFocus
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search dhikr…"
-                  className="flex-1 bg-transparent text-base text-themed outline-none placeholder:text-themed-muted"
-                />
-              </div>
-            </div>
+            <p className="px-4 pt-3 pb-1 text-xs text-themed-muted">
+              {available.length} adhkār — scroll for more
+            </p>
 
             <div className="flex-1 overflow-y-auto p-2">
-              {filtered.length === 0 ? (
-                <p className="text-sm text-themed-muted text-center py-8">No matches.</p>
-              ) : (
-                filtered.map((d) => (
+              {available.map((d) => {
+                const isSelected = selected.has(d.key);
+                return (
                   <button
                     key={d.key}
                     type="button"
-                    onClick={() => pick(d.key, d.defaultGoal)}
-                    className={`w-full block rounded-xl px-3.5 py-3 text-left touch-manipulation transition ${
-                      selected === d.key
+                    onClick={() => toggle(d.key)}
+                    aria-pressed={isSelected}
+                    className={`w-full flex items-start gap-3 rounded-xl px-3.5 py-3 text-left touch-manipulation transition ${
+                      isSelected
                         ? "bg-[var(--color-gold)]/15 border border-[var(--color-gold)]/40"
                         : "active:bg-white/5 border border-transparent"
                     }`}
                   >
-                    <p className="text-sm font-medium text-themed leading-snug">{d.label}</p>
-                    <p
-                      className="font-arabic text-gold/75 text-lg leading-relaxed line-clamp-2 mt-1.5 text-right"
-                      dir="rtl"
+                    <span
+                      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition ${
+                        isSelected
+                          ? "bg-[var(--color-gold)]/80 border-[var(--color-gold)] text-black"
+                          : "border-white/25 text-transparent"
+                      }`}
                     >
-                      {d.arabic}
-                    </p>
+                      <Check size={13} strokeWidth={3} />
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm font-medium text-themed leading-snug">
+                        {d.label}
+                      </span>
+                      <span
+                        className="block font-arabic text-gold/75 text-lg leading-relaxed line-clamp-2 mt-1.5 text-right"
+                        dir="rtl"
+                      >
+                        {d.arabic}
+                      </span>
+                    </span>
                   </button>
-                ))
-              )}
+                );
+              })}
             </div>
 
-            <div className="p-4 border-t sidebar-border space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="text-sm text-themed-muted">Repetitions</label>
-                <GoalStepper value={reps} onChange={setReps} />
-              </div>
+            <div className="p-4 border-t sidebar-border">
               <button
                 type="button"
-                disabled={!selected}
-                onClick={() => selected && onAdd(selected, reps)}
+                disabled={selected.size === 0}
+                onClick={addSelected}
                 className="w-full rounded-xl py-3 font-semibold touch-manipulation transition disabled:opacity-40 bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 active:bg-[var(--color-gold)]/30"
               >
-                Add dhikr
+                {selected.size === 0 ? "Select dhikr to add" : `Add ${selected.size}`}
               </button>
             </div>
           </>

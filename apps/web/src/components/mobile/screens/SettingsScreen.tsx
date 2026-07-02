@@ -21,6 +21,7 @@ import {
   Bookmark,
   MessageCircle,
   Pencil,
+  Send,
   X,
 } from "lucide-react";
 import HomeStylePicker from "../home/HomeStylePicker";
@@ -44,7 +45,13 @@ import {
   type HomePrefs,
 } from "@hidden-hiqmah/ui/lib/storage";
 import { getCachedLocation, getLocationState } from "@hidden-hiqmah/ui/lib/location-cache";
-import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
+import {
+  rescheduleNotificationsDebounced,
+  sendTestNotification,
+  TEST_NOTIFICATION_KINDS,
+  type TestNotificationKind,
+} from "@/lib/mobile/notifications";
+import { hapticMedium } from "@/lib/mobile/haptics";
 
 const FEEDBACK_EMAIL = "Subhan.Nadeem@HiddenHiqmah.com";
 
@@ -81,6 +88,14 @@ export default function SettingsScreen() {
     sub: "Auto-detected from your device",
   });
   const [editingProfile, setEditingProfile] = useState(false);
+  const [testSent, setTestSent] = useState<string | null>(null);
+
+  const fireTest = async (kind: TestNotificationKind, label: string) => {
+    hapticMedium();
+    const ok = await sendTestNotification(kind);
+    setTestSent(ok ? `${label} — arriving in ~4s` : "Enable notifications first");
+    window.setTimeout(() => setTestSent(null), 4000);
+  };
 
   useEffect(() => {
     setFontSizeState(getFontSize());
@@ -185,6 +200,25 @@ export default function SettingsScreen() {
           onChange={(v) => updatePrayer({ asrMethod: v as AsrMethod })}
         />
       </SettingsSection>
+
+      {/* NOTIFICATION TESTS — native-only QA: fire each notification on demand */}
+      {isNative && (
+        <SettingsSection heading="Notification tests">
+          {TEST_NOTIFICATION_KINDS.map(({ kind, label }) => (
+            <SettingsRow
+              key={kind}
+              icon={Send}
+              title={label}
+              subtitle="Delivers in ~4s"
+              rightValue="Send"
+              onClick={() => void fireTest(kind, label)}
+            />
+          ))}
+          {testSent && (
+            <div className="px-3 py-2 text-xs text-gold text-center">{testSent}</div>
+          )}
+        </SettingsSection>
+      )}
 
       {/* HOME — mobile-home only (the web home is a fixed grid) */}
       {isNative && (

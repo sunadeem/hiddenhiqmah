@@ -38,6 +38,7 @@ import {
 import CircleChatSheet from "./circles/CircleChatSheet";
 import CircleManageSheet from "./circles/CircleManageSheet";
 import CircleNotificationsSheet from "./circles/CircleNotificationsSheet";
+import { hapticSelection } from "@/lib/mobile/haptics";
 
 // Supabase/PostgREST errors aren't Error instances — pull their .message so the
 // real reason surfaces instead of a generic "Something went wrong".
@@ -169,6 +170,7 @@ export default function CirclesScreen() {
   }, [reload]);
 
   const bumpProgress = (circleId: string, delta: number) => {
+    hapticSelection();
     setCircles((cs) =>
       cs
         ? cs.map((d) => {
