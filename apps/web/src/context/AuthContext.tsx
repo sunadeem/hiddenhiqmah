@@ -46,6 +46,11 @@ type AuthState = {
   resetPassword: (email: string) => Promise<{ error?: string }>;
   /** Sets a new password for the current (recovery) session. */
   updatePassword: (password: string) => Promise<{ error?: string }>;
+  /** Updates the signed-in user's name (stored in user_metadata). */
+  updateProfile: (meta: {
+    firstName: string;
+    lastName: string;
+  }) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
 };
 
@@ -194,6 +199,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return error ? { error: error.message } : {};
   }, []);
 
+  const updateProfile = useCallback(
+    async (meta: { firstName: string; lastName: string }) => {
+      const first = meta.firstName.trim();
+      const last = meta.lastName.trim();
+      const { error } = await supabase.auth.updateUser({
+        data: {
+          first_name: first,
+          last_name: last,
+          full_name: `${first} ${last}`.trim(),
+        },
+      });
+      return error ? { error: error.message } : {};
+    },
+    []
+  );
+
   return (
     <AuthContext.Provider
       value={{
@@ -206,6 +227,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signUpWithPassword,
         resetPassword,
         updatePassword,
+        updateProfile,
         signOut,
       }}
     >

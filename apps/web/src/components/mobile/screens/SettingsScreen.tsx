@@ -19,6 +19,8 @@ import {
   Moon,
   Bookmark,
   MessageCircle,
+  Pencil,
+  X,
 } from "lucide-react";
 import HomeStylePicker from "../home/HomeStylePicker";
 import TunedForPicker from "../home/TunedForPicker";
@@ -74,6 +76,7 @@ export default function SettingsScreen() {
     label: "Auto-detect",
     sub: "Auto-detected from your device",
   });
+  const [editingProfile, setEditingProfile] = useState(false);
 
   useEffect(() => {
     setFontSizeState(getFontSize());
@@ -304,6 +307,13 @@ export default function SettingsScreen() {
               rightValue="Signed in"
             />
             <SettingsRow
+              icon={Pencil}
+              title="Edit profile"
+              subtitle="Update your name"
+              rightChevron
+              onClick={() => setEditingProfile(true)}
+            />
+            <SettingsRow
               icon={Database}
               title="Sign out"
               onClick={async () => {
@@ -364,6 +374,102 @@ export default function SettingsScreen() {
         </div>
         <p className="text-xs text-gold/80 break-all">{FEEDBACK_EMAIL}</p>
       </a>
+
+      {editingProfile && (
+        <EditProfileDialog
+          initialFirst={meta.first_name ?? ""}
+          initialLast={meta.last_name ?? ""}
+          onClose={() => setEditingProfile(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+function EditProfileDialog({
+  initialFirst,
+  initialLast,
+  onClose,
+}: {
+  initialFirst: string;
+  initialLast: string;
+  onClose: () => void;
+}) {
+  const { updateProfile } = useAuth();
+  const [first, setFirst] = useState(initialFirst);
+  const [last, setLast] = useState(initialLast);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const save = async () => {
+    if (!first.trim() || !last.trim()) {
+      setError("Please enter your first and last name.");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    const res = await updateProfile({ firstName: first, lastName: last });
+    setBusy(false);
+    if (res.error) setError(res.error);
+    else onClose();
+  };
+
+  const inputCls =
+    "mt-1 w-full card-bg border sidebar-border rounded-lg px-3 py-2 text-sm text-themed outline-none focus:border-[var(--color-gold)]/50";
+
+  return (
+    <div
+      className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center"
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-black/60" />
+      <div
+        className="relative w-full sm:max-w-sm bg-themed border-t sm:border sidebar-border sm:rounded-2xl rounded-t-2xl"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between p-4 border-b sidebar-border">
+          <h3 className="text-base font-semibold text-themed">Edit profile</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1 text-themed-muted hover:text-themed touch-manipulation"
+            aria-label="Close"
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <div className="p-4 space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block">
+              <span className="text-xs text-themed-muted">First name</span>
+              <input
+                autoFocus
+                value={first}
+                onChange={(e) => setFirst(e.target.value)}
+                className={inputCls}
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs text-themed-muted">Last name</span>
+              <input
+                value={last}
+                onChange={(e) => setLast(e.target.value)}
+                className={inputCls}
+              />
+            </label>
+          </div>
+          {error && <p className="text-xs text-red-400">{error}</p>}
+          <button
+            type="button"
+            onClick={save}
+            disabled={busy}
+            className="w-full rounded-xl py-3 font-semibold bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 active:bg-[var(--color-gold)]/30 disabled:opacity-50 touch-manipulation"
+          >
+            {busy ? "Saving…" : "Save"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
