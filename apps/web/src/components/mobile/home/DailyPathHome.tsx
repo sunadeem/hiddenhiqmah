@@ -64,10 +64,10 @@ function hijriToday(): string {
 function buildSteps(tunedFor: TunedFor, hour: number): Step[] {
   const adhkar: Step =
     hour < 14
-      ? { key: "adhkar", icon: Sun, title: "Morning adhkar", subtitle: "Start the day in remembrance", href: "/muslim-daily", itemKey: "morning_adhkar" }
-      : { key: "adhkar", icon: Moon, title: "Evening adhkar", subtitle: "Protection for the evening", href: "/muslim-daily", itemKey: "evening_adhkar" };
+      ? { key: "adhkar", icon: Sun, title: "Morning adhkar", subtitle: "Start the day in remembrance", href: "/muslim-daily?tab=worship", itemKey: "morning_adhkar" }
+      : { key: "adhkar", icon: Moon, title: "Evening adhkar", subtitle: "Protection for the evening", href: "/muslim-daily?tab=worship", itemKey: "evening_adhkar" };
   const read: Step = { key: "read", icon: BookOpen, title: "Read Qur'an", subtitle: "Continue where you left off", href: "/quran", itemKey: "quran_page" };
-  const reflect: Step = { key: "reflect", icon: Sparkles, title: "Today's reflection", subtitle: "A verse to ponder", href: "/muslim-daily" };
+  const reflect: Step = { key: "reflect", icon: Sparkles, title: "Today's reflection", subtitle: "A verse to ponder", href: "/muslim-daily?tab=reminders" };
   const hifz: Step = { key: "hifz", icon: Repeat, title: "Hifz review", subtitle: "Strengthen what you've memorised", href: "/hifz" };
   const duas: Step = { key: "duas", icon: Heart, title: "Du'as for your day", subtitle: "Supplications for every moment", href: "/duas" };
   const learn: Step = { key: "learn", icon: GraduationCap, title: "Learn the basics", subtitle: "Five pillars & how to pray", href: "/pillars" };
@@ -153,7 +153,11 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
     s.key === "read" ? { ...s, href: readHref } : s
   );
   const isDone = (s: Step) => !!s.itemKey && doneKeys.has(s.itemKey);
-  const firstIncomplete = steps.findIndex((s) => !isDone(s));
+  // Advance the highlight to the first not-done step AFTER the last completed one,
+  // so an untracked suggestion (reflect/hifz/learn/family/…) can't permanently pin
+  // it to item 0 — completing any tracked item (adhkar/read) moves it forward.
+  const lastDone = steps.reduce((acc, s, i) => (isDone(s) ? i : acc), -1);
+  const firstIncomplete = steps.findIndex((s, i) => i > lastDone && !isDone(s));
   const tracked = steps.filter((s) => s.itemKey);
   const allTrackedDone =
     tracked.length > 0 && tracked.every((s) => doneKeys.has(s.itemKey as string));
@@ -171,9 +175,9 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
         {hijri && <p className="text-themed-muted text-sm mt-1">{hijri}</p>}
       </div>
 
-      {/* Tuned-for chip */}
+      {/* Tuned-for chip → deep-links Settings to the Tuned-for section */}
       <Link
-        href="/settings"
+        href="/settings?section=tuned-for"
         className="inline-flex items-center gap-2 self-start rounded-full bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/30 px-3 py-1.5 text-xs font-semibold text-gold touch-manipulation active:scale-[0.98] transition-transform"
       >
         <SlidersHorizontal size={13} />

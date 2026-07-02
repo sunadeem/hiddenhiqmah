@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   User,
   Bell,
@@ -68,6 +69,8 @@ export default function SettingsScreen() {
   const { isDark, toggleDarkMode } = useTheme();
   const { user, loading: authLoading, signOut } = useAuth();
   const isNative = useIsNative();
+  const searchParams = useSearchParams();
+  const section = searchParams.get("section");
   const [hydrated, setHydrated] = useState(false);
   const [fontSize, setFontSizeState] = useState(2);
   const [autoPlay, setAutoPlayState] = useState(false);
@@ -95,6 +98,16 @@ export default function SettingsScreen() {
     }
     setHydrated(true);
   }, []);
+
+  // Deep-link from the Home "Tuned for" chip (/settings?section=tuned-for):
+  // scroll to the "Home Page tuned for" section once it exists (it's gated on
+  // hydration + native, so wait for both). (HOME-3)
+  useEffect(() => {
+    if (section !== "tuned-for" || !hydrated || !isNative) return;
+    document
+      .getElementById("tuned-for")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [section, hydrated, isNative]);
 
   const updateHome = (patch: Partial<HomePrefs>) => {
     setHomePrefs(patch);
@@ -203,7 +216,7 @@ export default function SettingsScreen() {
             />
           </div>
 
-          <div>
+          <div id="tuned-for" className="scroll-mt-4">
             <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
               Home Page tuned for
             </p>
