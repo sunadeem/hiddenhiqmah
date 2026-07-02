@@ -14,6 +14,12 @@ import {
   Loader2,
   UserPlus,
   RefreshCw,
+  Bell,
+  MessageSquare,
+  Activity as ActivityIcon,
+  Settings2,
+  Crown,
+  X,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -24,8 +30,14 @@ import {
   setMyProgress,
   sendDua,
   leaveCircle,
+  removeCircleMember,
+  getUnreadCount,
   type CircleDetail,
+  type CircleMember,
 } from "@/lib/circles";
+import CircleChatSheet from "./circles/CircleChatSheet";
+import CircleManageSheet from "./circles/CircleManageSheet";
+import CircleNotificationsSheet from "./circles/CircleNotificationsSheet";
 
 // Supabase/PostgREST errors aren't Error instances — pull their .message so the
 // real reason surfaces instead of a generic "Something went wrong".
@@ -87,6 +99,10 @@ export default function CirclesScreen() {
   const [invites, setInvites] = useState<Record<string, string>>({});
   const [duaSent, setDuaSent] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
+  const [unread, setUnread] = useState(0);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const [chat, setChat] = useState<{ id: string; tab: "chat" | "activity" } | null>(null);
+  const [manageId, setManageId] = useState<string | null>(null);
 
   const copyCode = (id: string, code: string) => {
     try {
@@ -98,6 +114,14 @@ export default function CirclesScreen() {
     setTimeout(() => setCopied((c) => (c === id ? null : c)), 1500);
   };
 
+  const loadUnread = useCallback(async () => {
+    try {
+      setUnread(await getUnreadCount());
+    } catch {
+      /* 013 not applied yet, or offline — leave the badge hidden */
+    }
+  }, []);
+
   const reload = useCallback(async () => {
     if (!user) return;
     try {
@@ -107,7 +131,8 @@ export default function CirclesScreen() {
       setErr(errMsg(e));
       setCircles([]);
     }
-  }, [user]);
+    loadUnread();
+  }, [user, loadUnread]);
 
   useEffect(() => {
     if (user) reload();
@@ -139,8 +164,8 @@ export default function CirclesScreen() {
             <h2 className="text-themed font-bold text-lg">Circles</h2>
             <p className="text-themed-muted text-sm mt-2 leading-relaxed max-w-xs mx-auto">
               Private accountability circles with family &amp; friends — shared
-              khatmah goals, a hifz buddy, gentle encouragement. Sign in to
-              create or join one.
+              khatmah goals, a hifz buddy, group chat, gentle encouragement. Sign
+              in to create or join one.
             </p>
             <Link
               href="/signin"
@@ -166,11 +191,30 @@ export default function CirclesScreen() {
     );
   }
 
+  const activeChat = chat ? circles.find((c) => c.circle.id === chat.id) ?? null : null;
+  const manageCircle = manageId ? circles.find((c) => c.circle.id === manageId) ?? null : null;
+
   return (
     <div className="space-y-4 pb-4">
-      <div className="flex items-center gap-2 text-[11px] text-themed-muted">
-        <Shield size={13} className="text-gold shrink-0" />
-        Private circles · no public leaderboards · encouragement only
+      {/* Header with bell */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 text-[11px] text-themed-muted min-w-0">
+          <Shield size={13} className="text-gold shrink-0" />
+          <span className="truncate">Private circles · encouragement only</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowNotifs(true)}
+          aria-label="Notifications"
+          className="relative shrink-0 w-10 h-10 rounded-full border sidebar-border card-bg flex items-center justify-center text-themed touch-manipulation active:bg-white/5"
+        >
+          <Bell size={17} className="text-gold" />
+          {unread > 0 && (
+            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+              {unread > 99 ? "99+" : unread}
+            </span>
+          )}
+        </button>
       </div>
 
       {err && (
@@ -244,127 +288,283 @@ export default function CirclesScreen() {
       )}
 
       {/* Circles */}
-      {circles.map((d) => (
-        <div key={d.circle.id} className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
-          <div className="relative flex items-center gap-4">
-            <Ring total={d.total} target={d.circle.goal_target} unit={d.circle.goal_unit} />
-            <div className="flex-1 min-w-0">
-              <p className="text-themed font-bold text-lg leading-tight truncate">{d.circle.name}</p>
-              <p className="text-themed-muted text-sm mt-0.5">
-                {Math.max(d.circle.goal_target - d.total, 0)} {d.circle.goal_unit} to go · {d.members.length} member{d.members.length === 1 ? "" : "s"}
-              </p>
+      {circles.map((d) => {
+        const meIsOwner = d.myId != null && d.circle.owner_id === d.myId;
+        // Leaderboard: rank by contribution (desc); owner then "you" break ties.
+        const ranked = [...d.members].sort(
+          (a, b) =>
+            b.value - a.value ||
+            (a.role === "owner" ? -1 : b.role === "owner" ? 1 : 0) ||
+            (a.isMe ? -1 : b.isMe ? 1 : 0)
+        );
+        const topValue = ranked.length ? ranked[0].value : 0;
+
+        return (
+          <div key={d.circle.id} className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
+            <div className="relative flex items-center gap-4">
+              <Ring total={d.total} target={d.circle.goal_target} unit={d.circle.goal_unit} />
+              <div className="flex-1 min-w-0">
+                <p className="text-themed font-bold text-lg leading-tight truncate">{d.circle.name}</p>
+                <p className="text-themed-muted text-sm mt-0.5">
+                  {Math.max(d.circle.goal_target - d.total, 0)} {d.circle.goal_unit} to go · {d.members.length} member{d.members.length === 1 ? "" : "s"}
+                </p>
+              </div>
+              {meIsOwner && (
+                <button
+                  type="button"
+                  onClick={() => setManageId(d.circle.id)}
+                  aria-label="Manage circle"
+                  title="Manage circle"
+                  className="relative shrink-0 p-2 rounded-full text-themed-muted active:bg-white/5 touch-manipulation"
+                >
+                  <Settings2 size={17} />
+                </button>
+              )}
             </div>
-          </div>
 
-          {/* My progress stepper */}
-          <div className="relative mt-4 flex items-center gap-3 rounded-xl bg-white/[0.04] border sidebar-border px-3 py-2.5">
-            <span className="text-xs text-themed-muted flex-1">Your contribution</span>
-            <button
-              disabled={busy || d.myValue <= 0}
-              onClick={() => run(() => setMyProgress(d.circle.id, d.myValue - 1))}
-              className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-themed disabled:opacity-40"
-            >
-              <Minus size={14} />
-            </button>
-            <span className="text-sm font-bold text-gold w-12 text-center">{d.myValue} {d.circle.goal_unit}</span>
-            <button
-              disabled={busy}
-              onClick={() => run(() => setMyProgress(d.circle.id, d.myValue + 1))}
-              className="w-7 h-7 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center text-gold disabled:opacity-40"
-            >
-              <Plus size={14} />
-            </button>
-          </div>
+            {/* My progress stepper */}
+            <div className="relative mt-4 flex items-center gap-3 rounded-xl bg-white/[0.04] border sidebar-border px-3 py-2.5">
+              <span className="text-xs text-themed-muted flex-1">Your contribution</span>
+              <button
+                disabled={busy || d.myValue <= 0}
+                onClick={() => run(() => setMyProgress(d.circle.id, d.myValue - 1))}
+                className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-themed disabled:opacity-40"
+              >
+                <Minus size={14} />
+              </button>
+              <span className="text-sm font-bold text-gold w-12 text-center">{d.myValue} {d.circle.goal_unit}</span>
+              <button
+                disabled={busy}
+                onClick={() => run(() => setMyProgress(d.circle.id, d.myValue + 1))}
+                className="w-7 h-7 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center text-gold disabled:opacity-40"
+              >
+                <Plus size={14} />
+              </button>
+            </div>
 
-          <div className="relative h-px bg-white/10 my-4" />
+            <div className="relative h-px bg-white/10 my-4" />
 
-          {/* Members */}
-          <div className="relative space-y-1">
-            {d.members.map((m) => (
-              <div key={m.user_id} className="flex items-center gap-3 py-2">
-                <Avatar name={m.display_name} avatar={m.avatar} accent={m.isMe} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-themed font-semibold text-sm leading-tight truncate">
-                    {m.isMe ? "You" : m.display_name}
-                    {m.role === "owner" && <span className="text-gold/70 text-[11px] font-normal"> · owner</span>}
-                  </p>
-                  <p className="text-themed-muted text-xs mt-0.5">{m.value} {d.circle.goal_unit}</p>
-                </div>
-                {!m.isMe && (
-                  duaSent.has(d.circle.id + m.user_id) ? (
-                    <span className="text-[11px] text-gold flex items-center gap-1"><Check size={12} /> Du&apos;ā sent</span>
-                  ) : (
-                    <button
-                      onClick={() => run(async () => {
+            {/* Leaderboard */}
+            <div className="relative">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted mb-1.5">Leaderboard</p>
+              <div className="space-y-1">
+                {ranked.map((m, i) => (
+                  <LeaderRow
+                    key={m.user_id}
+                    m={m}
+                    rank={i + 1}
+                    isTop={m.value > 0 && m.value === topValue}
+                    target={d.circle.goal_target}
+                    unit={d.circle.goal_unit}
+                    canRemove={meIsOwner && !m.isMe && m.role !== "owner"}
+                    duaSent={duaSent.has(d.circle.id + m.user_id)}
+                    busy={busy}
+                    onDua={() =>
+                      run(async () => {
                         await sendDua(d.circle.id, m.user_id);
                         setDuaSent((s) => new Set(s).add(d.circle.id + m.user_id));
-                      })}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold rounded-full border border-[var(--color-gold)]/30 px-2.5 py-1.5 touch-manipulation active:bg-[var(--color-gold)]/10"
-                    >
-                      <Heart size={12} /> Du&apos;ā
-                    </button>
-                  )
-                )}
+                      })
+                    }
+                    onRemove={() => {
+                      if (confirm(`Remove ${m.display_name} from this circle?`)) {
+                        run(() => removeCircleMember(d.circle.id, m.user_id));
+                      }
+                    }}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
 
-          <div className="relative h-px bg-white/10 my-3" />
+            <div className="relative h-px bg-white/10 my-3" />
 
-          {/* Footer actions */}
-          <div className="relative flex items-center gap-2">
-            {invites[d.circle.id] ? (
-              <>
-                <button
-                  onClick={() => copyCode(d.circle.id, invites[d.circle.id])}
-                  className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-gold rounded-xl border border-[var(--color-gold)]/30 py-2.5 tracking-widest"
-                >
-                  {copied === d.circle.id ? (
-                    <><Check size={14} /> Copied!</>
-                  ) : (
-                    <><Copy size={14} /> {invites[d.circle.id]}</>
-                  )}
-                </button>
+            {/* Chat + Activity */}
+            <div className="relative grid grid-cols-2 gap-2 mb-2">
+              <button
+                onClick={() => setChat({ id: d.circle.id, tab: "chat" })}
+                className="flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-white/5 touch-manipulation"
+              >
+                <MessageSquare size={15} className="text-gold" /> Chat
+              </button>
+              <button
+                onClick={() => setChat({ id: d.circle.id, tab: "activity" })}
+                className="flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-white/5 touch-manipulation"
+              >
+                <ActivityIcon size={15} className="text-gold" /> Activity
+              </button>
+            </div>
+
+            {/* Footer actions */}
+            <div className="relative flex items-center gap-2">
+              {invites[d.circle.id] ? (
+                <>
+                  <button
+                    onClick={() => copyCode(d.circle.id, invites[d.circle.id])}
+                    className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-gold rounded-xl border border-[var(--color-gold)]/30 py-2.5 tracking-widest"
+                  >
+                    {copied === d.circle.id ? (
+                      <><Check size={14} /> Copied!</>
+                    ) : (
+                      <><Copy size={14} /> {invites[d.circle.id]}</>
+                    )}
+                  </button>
+                  <button
+                    disabled={busy}
+                    title="New invite code"
+                    aria-label="New invite code"
+                    onClick={() => run(async () => {
+                      const code = await generateInvite(d.circle.id);
+                      setInvites((m) => ({ ...m, [d.circle.id]: code }));
+                    })}
+                    className="shrink-0 inline-flex items-center justify-center rounded-xl border sidebar-border px-3 py-2.5 text-gold active:bg-white/5"
+                  >
+                    <RefreshCw size={14} />
+                  </button>
+                </>
+              ) : (
                 <button
                   disabled={busy}
-                  title="New invite code"
-                  aria-label="New invite code"
                   onClick={() => run(async () => {
                     const code = await generateInvite(d.circle.id);
                     setInvites((m) => ({ ...m, [d.circle.id]: code }));
                   })}
-                  className="shrink-0 inline-flex items-center justify-center rounded-xl border sidebar-border px-3 py-2.5 text-gold active:bg-white/5"
+                  className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-white/5"
                 >
-                  <RefreshCw size={14} />
+                  <UserPlus size={14} className="text-gold" /> Invite
                 </button>
-              </>
-            ) : (
+              )}
               <button
                 disabled={busy}
-                onClick={() => run(async () => {
-                  const code = await generateInvite(d.circle.id);
-                  setInvites((m) => ({ ...m, [d.circle.id]: code }));
-                })}
-                className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-white/5"
+                onClick={() => {
+                  if (confirm("Leave this circle? If you're the owner, it will be disbanded for everyone.")) {
+                    run(() => leaveCircle(d.circle.id));
+                  }
+                }}
+                className="inline-flex items-center justify-center gap-1.5 text-sm text-themed-muted rounded-xl border sidebar-border px-3 py-2.5 active:bg-white/5"
               >
-                <UserPlus size={14} className="text-gold" /> Invite
+                <LogOut size={14} />
               </button>
-            )}
-            <button
-              disabled={busy}
-              onClick={() => {
-                if (confirm("Leave this circle? If you're the owner, it will be disbanded for everyone.")) {
-                  run(() => leaveCircle(d.circle.id));
-                }
-              }}
-              className="inline-flex items-center justify-center gap-1.5 text-sm text-themed-muted rounded-xl border sidebar-border px-3 py-2.5 active:bg-white/5"
-            >
-              <LogOut size={14} />
-            </button>
+            </div>
           </div>
+        );
+      })}
+
+      {/* Sheets */}
+      {activeChat && (
+        <CircleChatSheet
+          open={!!chat}
+          onClose={() => {
+            setChat(null);
+            loadUnread();
+          }}
+          circleId={activeChat.circle.id}
+          circleName={activeChat.circle.name}
+          goalUnit={activeChat.circle.goal_unit}
+          isOwner={activeChat.myId != null && activeChat.circle.owner_id === activeChat.myId}
+          initialTab={chat?.tab ?? "chat"}
+        />
+      )}
+
+      {manageCircle && (
+        <CircleManageSheet
+          open={!!manageId}
+          onClose={() => setManageId(null)}
+          circle={manageCircle.circle}
+          onSaved={reload}
+        />
+      )}
+
+      <CircleNotificationsSheet
+        open={showNotifs}
+        onClose={() => setShowNotifs(false)}
+        onOpenCircle={(circleId, tab) => setChat({ id: circleId, tab })}
+        onChanged={loadUnread}
+      />
+    </div>
+  );
+}
+
+function LeaderRow({
+  m,
+  rank,
+  isTop,
+  target,
+  unit,
+  canRemove,
+  duaSent,
+  busy,
+  onDua,
+  onRemove,
+}: {
+  m: CircleMember;
+  rank: number;
+  isTop: boolean;
+  target: number;
+  unit: string;
+  canRemove: boolean;
+  duaSent: boolean;
+  busy: boolean;
+  onDua: () => void;
+  onRemove: () => void;
+}) {
+  const pct = target > 0 ? Math.min(m.value / target, 1) * 100 : 0;
+  return (
+    <div className="flex items-center gap-2.5 py-1.5">
+      <span
+        className={`w-5 shrink-0 text-center text-xs font-bold tabular-nums ${
+          isTop ? "text-gold" : "text-themed-muted/70"
+        }`}
+      >
+        {rank}
+      </span>
+      <Avatar name={m.display_name} avatar={m.avatar} accent={m.isMe} />
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-themed font-semibold text-sm leading-tight truncate flex items-center gap-1">
+            {m.isMe ? "You" : m.display_name}
+            {isTop && <Crown size={12} className="text-gold shrink-0" />}
+            {m.role === "owner" && <span className="text-gold/70 text-[11px] font-normal">· owner</span>}
+          </p>
+          <span className="text-xs text-themed-muted shrink-0 tabular-nums">
+            {m.value} {unit}
+          </span>
         </div>
-      ))}
+        <div className="mt-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+          <div
+            className="h-full rounded-full"
+            style={{
+              width: `${pct}%`,
+              background: isTop ? "var(--color-gold)" : "rgba(212,168,67,0.5)",
+            }}
+          />
+        </div>
+      </div>
+      {!m.isMe &&
+        (duaSent ? (
+          <span className="shrink-0 text-gold" title="Du'ā sent">
+            <Check size={15} />
+          </span>
+        ) : (
+          <button
+            onClick={onDua}
+            disabled={busy}
+            aria-label={`Send du'ā to ${m.display_name}`}
+            className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full border border-[var(--color-gold)]/30 text-gold touch-manipulation active:bg-[var(--color-gold)]/10 disabled:opacity-40"
+          >
+            <Heart size={13} />
+          </button>
+        ))}
+      {canRemove && (
+        <button
+          onClick={onRemove}
+          disabled={busy}
+          aria-label={`Remove ${m.display_name}`}
+          title="Remove member"
+          className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full border sidebar-border text-themed-muted/70 hover:text-red-400 touch-manipulation active:bg-white/5 disabled:opacity-40"
+        >
+          <X size={13} />
+        </button>
+      )}
     </div>
   );
 }
