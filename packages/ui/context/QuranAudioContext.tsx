@@ -204,8 +204,14 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         title: `${ch.name} — Verse ${verse.number}`,
         artist: "Mishari Rashid al-Afasy",
         album: `Surah ${ch.name} (${ch.nameAr})`,
-        artwork: [{ src: "/icon.svg", sizes: "any", type: "image/svg+xml" }],
+        artwork: [
+          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+        ],
       });
+      // Assert "playing" synchronously on every āyah so the lock-screen / Dynamic
+      // Island Now-Playing stays live across the short per-verse clips.
+      navigator.mediaSession.playbackState = "playing";
 
       navigator.mediaSession.setActionHandler("play", () => {
         audioRef.current?.play();
@@ -233,7 +239,27 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       });
     }
 
-    audio.onloadedmetadata = () => setAudioDuration(audio.duration);
+    audio.onloadedmetadata = () => {
+      setAudioDuration(audio.duration);
+      // Feed iOS the position/duration so the lock-screen scrubber stays live
+      // (and doesn't read as "stopped") across the short per-āyah clips.
+      if (
+        "mediaSession" in navigator &&
+        "setPositionState" in navigator.mediaSession &&
+        audio.duration &&
+        isFinite(audio.duration)
+      ) {
+        try {
+          navigator.mediaSession.setPositionState({
+            duration: audio.duration,
+            playbackRate: 1,
+            position: 0,
+          });
+        } catch {
+          /* ignore */
+        }
+      }
+    };
     audio.ontimeupdate = () => setAudioProgress(audio.currentTime);
     audio.onerror = () => {
       setPlayingVerse(null);
@@ -253,6 +279,9 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       }
     };
     audio.onpause = () => {
+      // End-of-āyah fires "pause" too — don't flip to paused during an autoplay
+      // transition, or the lock-screen Now-Playing flickers between verses.
+      if (audio.ended) return;
       if (audioRef.current === audio && playTokenRef.current === token) {
         setAudioPaused(true);
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";

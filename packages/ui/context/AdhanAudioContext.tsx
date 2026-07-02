@@ -217,7 +217,10 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
         title: "Adhan — Call to Prayer",
         artist: "Omar Hisham Al Arabi",
         album: "Hidden Hiqmah",
-        artwork: [{ src: "/icon.svg", sizes: "any", type: "image/svg+xml" }],
+        artwork: [
+          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+        ],
       });
       navigator.mediaSession.playbackState = "playing";
       navigator.mediaSession.setActionHandler("play", () => {

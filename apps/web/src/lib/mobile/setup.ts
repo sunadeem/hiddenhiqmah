@@ -29,6 +29,16 @@ export async function applyNativeSetup() {
     const { Keyboard } = await import("@capacitor/keyboard");
     // Hide the iOS "previous/next/done" accessory toolbar above the keyboard.
     await Keyboard.setAccessoryBarVisible({ isVisible: false });
+    // Whenever the keyboard is open, hide the floating tab bar + mini-player (on
+    // every screen) so they don't ride up over it or cover a text input. Toggle
+    // a class on <html>; CSS does the hiding. Listen to will + did for both show
+    // and hide so it's reliable across iOS versions.
+    const showKb = () => document.documentElement.classList.add("keyboard-open");
+    const hideKb = () => document.documentElement.classList.remove("keyboard-open");
+    Keyboard.addListener("keyboardWillShow", showKb);
+    Keyboard.addListener("keyboardDidShow", showKb);
+    Keyboard.addListener("keyboardWillHide", hideKb);
+    Keyboard.addListener("keyboardDidHide", hideKb);
   } catch {
     // plugin unavailable; ignore
   }
