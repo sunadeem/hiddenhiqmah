@@ -110,6 +110,10 @@ export interface DailyAdapter {
   getDhikr(dhikrKey: string, localDate: string): Promise<DhikrState>;
   incrementDhikr(dhikrKey: string, localDate: string, delta?: number): Promise<DhikrState>;
   setDhikrCount(dhikrKey: string, localDate: string, count: number): Promise<DhikrState>;
+  /** Reset TODAY's count to 0 WITHOUT reducing the lifetime tally. (setDhikrCount
+   *  uses delta math that would subtract today from lifetime — required for
+   *  checklist check/uncheck toggles, so reset needs its own path.) */
+  resetDhikrDay(dhikrKey: string, localDate: string): Promise<DhikrState>;
   /** Raw per-(dhikr, date) counts within [fromDate, toDate] inclusive — for stats. */
   getDhikrRange(fromDate: string, toDate: string): Promise<DhikrDayCount[]>;
 

@@ -50,6 +50,8 @@ function gateLocalAdapter(base: DailyAdapter): DailyAdapter {
       ok() ? base.incrementDhikr(k, d, delta) : base.getDhikr(k, d),
     setDhikrCount: async (k, d, c) =>
       ok() ? base.setDhikrCount(k, d, c) : base.getDhikr(k, d),
+    resetDhikrDay: async (k, d) =>
+      ok() ? base.resetDhikrDay(k, d) : base.getDhikr(k, d),
     startPause: async (r, t) => {
       if (ok()) await base.startPause(r, t);
     },

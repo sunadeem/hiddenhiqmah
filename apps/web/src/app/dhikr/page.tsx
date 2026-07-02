@@ -431,7 +431,7 @@ function DhikrPageInner() {
     async (key: string) => {
       if (timer.current) clearTimeout(timer.current);
       pending.current[key] = 0;
-      const s = await adapter.setDhikrCount(key, today, 0);
+      const s = await adapter.resetDhikrDay(key, today);
       setCounts((c) => ({ ...c, [key]: s.daily }));
     },
     [adapter, today]
@@ -441,7 +441,7 @@ function DhikrPageInner() {
     if (timer.current) clearTimeout(timer.current);
     pending.current = {};
     const keys = keysSig ? keysSig.split(",") : [];
-    await Promise.all(keys.map((key) => adapter.setDhikrCount(key, today, 0)));
+    await Promise.all(keys.map((key) => adapter.resetDhikrDay(key, today)));
     setCounts(Object.fromEntries(keys.map((key) => [key, 0])));
   }, [adapter, today, keysSig]);
 

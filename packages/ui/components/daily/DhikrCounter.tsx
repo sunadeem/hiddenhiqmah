@@ -69,7 +69,7 @@ export function DhikrCounter({
   const reset = useCallback(async () => {
     if (timer.current) clearTimeout(timer.current);
     pending.current = 0;
-    const s = await adapter.setDhikrCount(dhikrKey, today, 0);
+    const s = await adapter.resetDhikrDay(dhikrKey, today);
     setDaily(s.daily);
     setLifetime(s.lifetime);
   }, [adapter, dhikrKey, today]);

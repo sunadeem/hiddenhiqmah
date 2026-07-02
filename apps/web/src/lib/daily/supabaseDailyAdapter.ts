@@ -212,6 +212,15 @@ export function createSupabaseDailyAdapter(
       return { daily: data?.daily ?? 0, lifetime: data?.lifetime ?? 0 };
     },
 
+    async resetDhikrDay(dhikrKey: string, localDate: string): Promise<DhikrState> {
+      const { data, error } = await client.rpc("reset_dhikr_day", {
+        p_dhikr_key: dhikrKey,
+        p_local_date: localDate,
+      });
+      if (error) throw error;
+      return { daily: data?.daily ?? 0, lifetime: data?.lifetime ?? 0 };
+    },
+
     async getDhikrRange(fromDate: string, toDate: string): Promise<DhikrDayCount[]> {
       const { data, error } = await client
         .from("dhikr_daily")

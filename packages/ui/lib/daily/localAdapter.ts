@@ -261,6 +261,21 @@ export function createLocalDailyAdapter(storeKey: string = STORE_KEY): DailyAdap
       };
     },
 
+    async resetDhikrDay(dhikrKey: string, localDate: string): Promise<DhikrState> {
+      const s = load();
+      s.dhikrDaily[dhikrKey] = s.dhikrDaily[dhikrKey] ?? {};
+      s.dhikrDaily[dhikrKey][localDate] = 0; // zero today; lifetime untouched
+      if (s.dayRollup[localDate]) {
+        for (const it of s.dayItems[localDate] ?? []) {
+          if (it.dhikrKey === dhikrKey && it.goalCount != null) it.done = false;
+        }
+        refresh(s, localDate);
+        recomputeStreaks(s, localDate);
+      }
+      save(s);
+      return { daily: 0, lifetime: s.dhikrLifetime[dhikrKey] ?? 0 };
+    },
+
     async incrementDhikr(dhikrKey: string, localDate: string, delta = 1): Promise<DhikrState> {
       const s = load();
       const d = Math.max(delta, 0);
