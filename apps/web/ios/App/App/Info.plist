@@ -53,5 +53,9 @@
 	<string>Hidden Hiqmah uses the compass to point you toward the Qiblah.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Hidden Hiqmah uses the microphone so you can record your Qur'an recitation and play it back while memorizing.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>

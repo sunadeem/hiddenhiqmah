@@ -8,7 +8,7 @@ import { Capacitor } from "@capacitor/core";
 import { Motion } from "@capacitor/motion";
 import { useIsNative } from "@/lib/mobile/platform";
 import { computePrayerTimes } from "@/lib/prayer-times";
-import { getPrayerSettings } from "@hidden-hiqmah/ui/lib/storage";
+import { getPrayerSettings, setPrayerSettings, type PrayerCalcMethod } from "@hidden-hiqmah/ui/lib/storage";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
@@ -611,15 +611,23 @@ const PRAYER_TIME_LIST = [
   { key: "Isha", english: "Isha", arabic: "العشاء", icon: Moon, isPrayer: true },
 ] as const;
 
+// Values MUST match the shared PrayerCalcMethod codes (packages/ui storage) and
+// the Settings screen's CALC_METHODS, so the Salah tab, Home card, and scheduled
+// adhan all resolve to the SAME method. (Gulf/Dubai is code 8 — code 16 has no
+// mapping in prayer-times.ts and would silently fall back to Muslim World League.)
 const CALCULATION_METHODS = [
   { value: 2, label: "ISNA" },
   { value: 3, label: "Muslim World League" },
-  { value: 4, label: "Umm Al-Qura" },
+  { value: 4, label: "Umm Al-Qura, Makkah" },
   { value: 5, label: "Egyptian General Authority" },
+  { value: 1, label: "Karachi" },
+  { value: 7, label: "Tehran" },
+  { value: 8, label: "Gulf Region" },
   { value: 9, label: "Kuwait" },
   { value: 10, label: "Qatar" },
   { value: 11, label: "Singapore" },
-  { value: 16, label: "Dubai" },
+  { value: 13, label: "Diyanet (Turkey)" },
+  { value: 15, label: "Moonsighting Committee" },
 ];
 
 function parseTime(timeStr: string): Date {
@@ -2106,7 +2114,12 @@ function SalahContent() {
   const [ptCity, setPtCity] = useState("");
   const [ptCountry, setPtCountry] = useState("");
   const [ptDisplayLocation, setPtDisplayLocation] = useState("");
-  const [ptMethod, setPtMethod] = useState(2);
+  const [ptMethod, setPtMethod] = useState<number>(() => getPrayerSettings().calcMethod);
+  // The coordinates currently driving the displayed times (device GPS or a
+  // picked city). `onDevice` = compute locally (offline-capable). Used so a
+  // calc-method change re-computes from the same location instead of falling
+  // back to a network city lookup that drops the Asr madhab and exact coords.
+  const [ptCoords, setPtCoords] = useState<{ lat: number; lng: number; onDevice: boolean } | null>(null);
   const [ptLoading, setPtLoading] = useState(true);
   const [ptError, setPtError] = useState("");
   const [ptCountdown, setPtCountdown] = useState("");
@@ -2129,7 +2142,7 @@ function SalahContent() {
       setPtError("");
       try {
         const res = await fetch(
-          `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(c)}&country=${encodeURIComponent(co)}&method=${m}`
+          `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(c)}&country=${encodeURIComponent(co)}&method=${m}&school=${getPrayerSettings().asrMethod === "hanafi" ? 1 : 0}`
         );
         if (!res.ok) throw new Error("Failed to fetch prayer times");
         const data: AladhanResponse = await res.json();
@@ -2156,6 +2169,7 @@ function SalahContent() {
     async (lat: number, lng: number, m: number, onDevice = false) => {
       setPtLoading(true);
       setPtError("");
+      setPtCoords({ lat, lng, onDevice });
       if (onDevice) {
         try {
           const timings = computePrayerTimes(lat, lng, {
@@ -2174,7 +2188,7 @@ function SalahContent() {
       }
       try {
         const res = await fetch(
-          `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=${m}`
+          `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=${m}&school=${getPrayerSettings().asrMethod === "hanafi" ? 1 : 0}`
         );
         if (!res.ok) throw new Error("Failed to fetch prayer times");
         const data: AladhanResponse = await res.json();
@@ -2291,7 +2305,14 @@ function SalahContent() {
 
   const ptHandleMethodChange = (newMethod: number) => {
     setPtMethod(newMethod);
-    if (ptCity && ptCountry) {
+    // Persist so the Home card + scheduled adhan use the same method.
+    setPrayerSettings({ calcMethod: newMethod as PrayerCalcMethod });
+    // Re-fetch from the active coordinates when we have them: preserves the
+    // Hanafi Asr madhab + exact location and keeps working offline (on-device
+    // path). Only the manual-city fallback (no coords) uses the network API.
+    if (ptCoords) {
+      ptFetchTimesByCoords(ptCoords.lat, ptCoords.lng, newMethod, ptCoords.onDevice);
+    } else if (ptCity && ptCountry) {
       ptFetchTimesByCity(ptCity, ptCountry, newMethod);
     }
   };

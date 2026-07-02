@@ -67,17 +67,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data: sessionData } = await supabase.auth.getSession();
       if (!mounted) return;
 
-      // If we have a cached session, verify it's still valid by hitting the
-      // auth server. Catches the case where the user has been deleted
-      // server-side but the JWT is still in localStorage.
       if (sessionData.session) {
-        const { data: userData, error } = await supabase.auth.getUser();
-        if (!mounted) return;
-        if (error || !userData.user) {
-          await supabase.auth.signOut();
-          setSession(null);
-        } else {
-          setSession(sessionData.session);
+        // Trust the cached session immediately so the app opens even with no
+        // network. This is a mandatory-account app: a returning user offline
+        // must NOT be dropped onto the sign-in gate (which itself needs a
+        // network round-trip), or they lose access to all offline content.
+        setSession(sessionData.session);
+
+        // Then validate against the auth server to catch a server-side-deleted
+        // user / revoked token — but ONLY sign out on a *definitive* rejection,
+        // never on a transient network failure (offline / flaky / 5xx), which
+        // would otherwise lock the user out.
+        const online = typeof navigator === "undefined" || navigator.onLine;
+        if (online) {
+          const { data: userData, error } = await supabase.auth.getUser();
+          if (!mounted) return;
+          const status = error?.status;
+          const transientNetwork =
+            !!error &&
+            (error.name === "AuthRetryableFetchError" ||
+              status == null ||
+              status === 0 ||
+              status >= 500);
+          if (!transientNetwork && (error || !userData.user)) {
+            await supabase.auth.signOut();
+            setSession(null);
+          }
         }
       }
       setLoading(false);

@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -7,7 +8,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Play adhan + Qur'an recitation with the ring/silent switch on silent,
+        // continue on the lock screen / in the background (paired with the
+        // UIBackgroundModes:audio entitlement in Info.plist), and drive the
+        // lock-screen Now-Playing controls. Category only — the system activates
+        // the session when playback actually starts, so launching the app never
+        // interrupts the user's other audio.
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+        } catch {
+            print("Hidden Hiqmah: failed to set AVAudioSession category — \(error)")
+        }
         return true
     }
 

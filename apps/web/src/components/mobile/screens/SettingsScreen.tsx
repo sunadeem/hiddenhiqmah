@@ -43,6 +43,7 @@ import {
   type HomePrefs,
 } from "@hidden-hiqmah/ui/lib/storage";
 import { getCachedLocation, getLocationState } from "@hidden-hiqmah/ui/lib/location-cache";
+import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
 
 const FEEDBACK_EMAIL = "Subhan.Nadeem@HiddenHiqmah.com";
 
@@ -103,6 +104,10 @@ export default function SettingsScreen() {
   const updatePrayer = (patch: Partial<PrayerSettings>) => {
     setPrayerSettings(patch);
     setPrayer((p) => (p ? { ...p, ...patch } : p));
+    // A calc-method / Asr change moves the prayer times, so re-schedule the
+    // rolling adhan notifications now (no-op on web / without permission) —
+    // otherwise old-method adhans keep firing until the next cold start.
+    rescheduleNotificationsDebounced(false);
   };
 
   if (!hydrated || !prayer || !home) {
