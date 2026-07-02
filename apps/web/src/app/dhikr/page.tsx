@@ -222,7 +222,7 @@ function DhikrCard({
   }, [isComplete]);
 
   return (
-    <ContentCard id={dhikr.id} delay={delay} className="relative overflow-hidden">
+    <ContentCard id={dhikr.id} delay={delay} className="relative overflow-hidden h-full">
       {/* Completion glow overlay */}
       <AnimatePresence>
         {showComplete && (
@@ -522,7 +522,7 @@ function DhikrPageInner() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:auto-rows-fr">
             {cards.map((dhikr, i) => (
               <DhikrCard
                 key={dhikr.dhikrKey}
