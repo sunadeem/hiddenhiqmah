@@ -7,7 +7,6 @@ import {
   Repeat,
   Eye,
   Mic,
-  Square,
   Loader2,
   CheckCircle2,
   Volume2,
@@ -46,6 +45,10 @@ const GRADES: { key: Grade; label: string; cls: string }[] = [
 
 const audioUrl = (verseId: number) =>
   `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${verseId}.mp3`;
+
+// mm:ss elapsed readout for an active recording.
+const fmtSecs = (s: number) =>
+  `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 // WKWebView/Safari's MediaRecorder supports audio/mp4 (NOT audio/webm). Pick a
 // container the recorder actually produces AND the <audio> tag can play back, so
@@ -159,6 +162,7 @@ export default function HifzSession({
   const [recState, setRecState] = useState<"idle" | "recording" | "recorded">("idle");
   const [recUrl, setRecUrl] = useState<string | null>(null);
   const [recErr, setRecErr] = useState<string | null>(null);
+  const [recSecs, setRecSecs] = useState(0);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
@@ -265,6 +269,14 @@ export default function HifzSession({
       /* ignore */
     }
   }, [native, setRecUrlSafe]);
+
+  // Run a mm:ss elapsed timer while a recording is active.
+  useEffect(() => {
+    if (recState !== "recording") return;
+    setRecSecs(0);
+    const id = setInterval(() => setRecSecs((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [recState]);
 
   // Load ayahs whenever the current card changes; reset per-card UI state.
   useEffect(() => {
@@ -432,7 +444,9 @@ export default function HifzSession({
                 onClick={stopRec}
                 className="flex-1 rounded-xl bg-rose-500/15 text-rose-300 border border-rose-500/30 font-semibold py-3 flex items-center justify-center gap-2 touch-manipulation"
               >
-                <Square size={15} className="fill-current" /> Stop recording
+                <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
+                Stop recording
+                <span className="tabular-nums">{fmtSecs(recSecs)}</span>
               </button>
             ) : (
               <button
@@ -443,6 +457,9 @@ export default function HifzSession({
               </button>
             )}
           </div>
+          <p className="text-[11px] text-themed-muted/70 text-center leading-relaxed">
+            Recordings are just for comparing with the reciter — they aren&apos;t saved.
+          </p>
           {recUrl && (
             <div>
               <p className="text-themed-muted text-xs mb-1.5">Your recitation — compare with the reciter above:</p>

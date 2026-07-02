@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Flame, Play, Plus, Map, BookMarked, CheckCircle2, ChevronRight } from "lucide-react";
 import type { HifzStats } from "@hidden-hiqmah/ui/lib/hifz/types";
 
@@ -7,15 +8,18 @@ export default function HifzDashboard({
   stats,
   hasCards,
   onStart,
+  onReviewMore,
   onSetup,
   onMap,
 }: {
   stats: HifzStats | null;
   hasCards: boolean;
   onStart: () => void;
+  onReviewMore: () => void;
   onSetup: () => void;
   onMap: () => void;
 }) {
+  const [confirmMore, setConfirmMore] = useState(false);
   const due = stats?.dueToday ?? 0;
 
   return (
@@ -42,32 +46,62 @@ export default function HifzDashboard({
 
       {/* Today */}
       {hasCards ? (
-        <button
-          onClick={onStart}
-          disabled={due === 0}
-          className={`w-full rounded-2xl p-5 text-left touch-manipulation transition-transform active:scale-[0.99] ${
-            due > 0
-              ? "bg-gold text-[#0a1628]"
-              : "card-bg border sidebar-border text-themed"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            {due > 0 ? (
+        due > 0 ? (
+          <button
+            onClick={onStart}
+            className="w-full rounded-2xl p-5 text-left touch-manipulation transition-transform active:scale-[0.99] bg-gold text-[#0a1628]"
+          >
+            <div className="flex items-center gap-3">
               <Play size={22} className="shrink-0" />
-            ) : (
-              <CheckCircle2 size={22} className="text-gold shrink-0" />
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-lg leading-tight">
-                {due > 0 ? "Start review" : "All caught up"}
-              </p>
-              <p className={`text-sm mt-0.5 ${due > 0 ? "text-[#0a1628]/70" : "text-themed-muted"}`}>
-                {due > 0 ? `${due} due today` : "Nothing due — come back tomorrow"}
-              </p>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-lg leading-tight">Start review</p>
+                <p className="text-sm mt-0.5 text-[#0a1628]/70">{due} due today</p>
+              </div>
+              <ChevronRight size={20} className="shrink-0" />
             </div>
-            {due > 0 && <ChevronRight size={20} className="shrink-0" />}
+          </button>
+        ) : confirmMore ? (
+          <div className="w-full rounded-2xl p-5 card-bg border sidebar-border">
+            <p className="font-bold text-themed leading-tight">Review a little more?</p>
+            <p className="text-themed-muted text-sm mt-1">
+              You&apos;re all caught up for today. A little at a time helps
+              retention — there&apos;s no need to overdo it.
+            </p>
+            <div className="grid grid-cols-2 gap-2.5 mt-4">
+              <button
+                onClick={() => setConfirmMore(false)}
+                className="rounded-xl border sidebar-border py-2.5 font-semibold text-themed touch-manipulation active:scale-[0.99] transition-transform"
+              >
+                Not now
+              </button>
+              <button
+                onClick={() => {
+                  setConfirmMore(false);
+                  onReviewMore();
+                }}
+                className="rounded-xl bg-gold text-[#0a1628] py-2.5 font-semibold touch-manipulation active:scale-[0.99] transition-transform"
+              >
+                Review ahead
+              </button>
+            </div>
           </div>
-        </button>
+        ) : (
+          <button
+            onClick={() => setConfirmMore(true)}
+            className="w-full rounded-2xl p-5 text-left touch-manipulation transition-transform active:scale-[0.99] card-bg border sidebar-border text-themed"
+          >
+            <div className="flex items-center gap-3">
+              <CheckCircle2 size={22} className="text-gold shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-lg leading-tight">All caught up</p>
+                <p className="text-sm mt-0.5 text-themed-muted">
+                  Nothing due — tap to review ahead
+                </p>
+              </div>
+              <ChevronRight size={20} className="shrink-0" />
+            </div>
+          </button>
+        )
       ) : (
         <button
           onClick={onSetup}

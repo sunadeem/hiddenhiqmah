@@ -203,31 +203,33 @@ export default function SettingsScreen() {
             />
           </SettingsSection>
 
-          <div>
-            <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
-              Home style
+          <div className="space-y-4">
+            <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2">
+              Home Style
             </p>
-            <HomeStylePicker
-              value={home.homeStyle}
-              tunedFor={home.tunedFor}
-              ramadanAuto={home.ramadanAuto}
-              onChange={(v) => updateHome({ homeStyle: v })}
-              onToggleRamadan={(on) => updateHome({ ramadanAuto: on })}
-            />
-          </div>
 
-          <div id="tuned-for" className="scroll-mt-4">
-            <p className="text-[11px] font-semibold text-themed-muted/80 uppercase tracking-wider px-2 mb-2">
-              Home Page tuned for
-            </p>
-            <TunedForPicker
-              value={home.tunedFor}
-              onChange={(v) => updateHome({ tunedFor: v })}
-            />
-            <p className="text-xs text-themed-muted mt-2 px-2 leading-relaxed">
-              Shapes your Daily Path order (and the Focus home&apos;s suggested act) around
-              what matters most to you right now.
-            </p>
+            <div>
+              <p className="text-xs font-medium text-themed-muted px-2 mb-2">Layout</p>
+              <HomeStylePicker
+                value={home.homeStyle}
+                tunedFor={home.tunedFor}
+                ramadanAuto={home.ramadanAuto}
+                onChange={(v) => updateHome({ homeStyle: v })}
+                onToggleRamadan={(on) => updateHome({ ramadanAuto: on })}
+              />
+            </div>
+
+            <div id="tuned-for" className="scroll-mt-4">
+              <p className="text-xs font-medium text-themed-muted px-2 mb-2">Tuned for</p>
+              <TunedForPicker
+                value={home.tunedFor}
+                onChange={(v) => updateHome({ tunedFor: v })}
+              />
+              <p className="text-xs text-themed-muted mt-2 px-2 leading-relaxed">
+                Shapes your Daily Path order (and the Focus home&apos;s suggested act) around
+                what matters most to you right now.
+              </p>
+            </div>
           </div>
         </>
       )}

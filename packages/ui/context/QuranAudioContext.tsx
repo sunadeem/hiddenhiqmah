@@ -68,6 +68,9 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const preloadRef = useRef<HTMLAudioElement | null>(null);
   const preloadedVerseId = useRef<number | null>(null);
+  // Which next-surah verse JSON we've already warmed, so the boundary handoff in
+  // onended resolves the dynamic import from cache instead of a fresh chunk fetch.
+  const prefetchedSurahId = useRef<number | null>(null);
   const autoPlayRef = useRef(false);
   const autoNextSurahRef = useRef(false);
   const playTokenRef = useRef(0);
@@ -125,6 +128,16 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       // Preload first verse of next surah (global verse ID = sum of previous surah verses + 1)
       // We can compute this from the current verse: last verse id + 1
       preloadId = currentVerseId + 1;
+      // Warm the next surah's verse-JSON chunk NOW, while the final āyah is still
+      // playing, so the onended handoff below resolves from cache (no chunk-load
+      // stall at the boundary — the āyah-1 audio is already preloaded above).
+      const nextSurahId = surahIdRef.current + 1;
+      if (prefetchedSurahId.current !== nextSurahId) {
+        prefetchedSurahId.current = nextSurahId;
+        import(`@hidden-hiqmah/content/quran/verses/${nextSurahId}.json`).catch(() => {
+          prefetchedSurahId.current = null;
+        });
+      }
     }
     if (!preloadId || preloadId === preloadedVerseId.current) return;
     // Create or reuse preload element

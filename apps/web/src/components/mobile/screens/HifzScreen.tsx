@@ -51,6 +51,19 @@ export default function HifzScreen() {
     setView("session");
   }, [adapter, today]);
 
+  // Extra practice when nothing is due today: review the soonest-scheduled cards
+  // ahead (gentle, capped). Gated behind a confirm in the dashboard. (HIFZ-3)
+  const startExtraSession = useCallback(async () => {
+    const all = await adapter.getCards();
+    const q = all
+      .filter((c) => c.status !== "new")
+      .sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : 0))
+      .slice(0, 20);
+    if (q.length === 0) return;
+    setQueue(q);
+    setView("session");
+  }, [adapter]);
+
   const back = () => {
     if (view === "dashboard") router.back();
     else setView("dashboard");
@@ -75,6 +88,7 @@ export default function HifzScreen() {
           stats={stats}
           hasCards={cards.length > 0}
           onStart={startSession}
+          onReviewMore={startExtraSession}
           onSetup={() => setView("setup")}
           onMap={() => setView("map")}
         />

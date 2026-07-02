@@ -51,6 +51,8 @@ export default function AskPage() {
   const [loading, setLoading] = useState(false);
   const [statusText, setStatusText] = useState("Thinking...");
   const [hydrated, setHydrated] = useState(false);
+  const [autoSend, setAutoSend] = useState<string | null>(null);
+  const autoSentRef = useRef(false);
   const [placeholderText, setPlaceholderText] = useState("");
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -59,14 +61,19 @@ export default function AskPage() {
   useEffect(() => {
     setMessages(loadMessages());
     setHydrated(true);
-    // Prefill from ?q= (e.g. the Qur'an "ask the tutor about this word" deep-link).
+    // Prefill from ?q= (e.g. the Qur'an "ask the tutor about this word" deep-link);
+    // when the deep-link adds &submit=1, auto-send it instead of only prefilling.
     let q = "";
+    let submit = false;
     try {
-      q = new URLSearchParams(window.location.search).get("q") || "";
+      const sp = new URLSearchParams(window.location.search);
+      q = sp.get("q") || "";
+      submit = sp.get("submit") === "1";
     } catch {
       /* ignore */
     }
-    if (q) setQuery(q);
+    if (q && submit) setAutoSend(q);
+    else if (q) setQuery(q);
     else inputRef.current?.focus();
   }, []);
 
@@ -154,6 +161,15 @@ export default function AskPage() {
       setLoading(false);
     }
   }, []);
+
+  // Fire the deep-link's auto-submit exactly once, after localStorage messages
+  // have hydrated (the ref guard also blocks React 18 StrictMode double-invoke).
+  useEffect(() => {
+    if (!hydrated || !autoSend || autoSentRef.current) return;
+    autoSentRef.current = true;
+    setAutoSend(null);
+    sendMessage(autoSend, messages);
+  }, [hydrated, autoSend, messages, sendMessage]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

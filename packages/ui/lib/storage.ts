@@ -92,7 +92,7 @@ const defaultNotificationPrefs: NotificationPrefs = {
   ramadan: false,
   laylatulQadr: false,
   aiChatResponses: true,
-  continueReading: false,
+  continueReading: true,
 };
 
 export function getNotificationPrefs(): NotificationPrefs {

@@ -89,8 +89,10 @@ export default function UnderstandingSheet({
 
   const askTutor = () => {
     if (!word) return;
-    const q = `Explain the Qur'anic word "${word.t}" (${word.tr}) from ${surah}:${verseNumber} — its root, its meaning, and how it's used here.`;
-    router.push(`/ask?q=${encodeURIComponent(q)}`);
+    const q = `What does the word "${word.t}" (${word.tr}) mean in Surah ${surah}, ayah ${verseNumber}? Explain its root and how it's used here.`;
+    onClose();
+    // submit=1 tells /ask to auto-send the question, not just prefill the input.
+    router.push(`/ask?q=${encodeURIComponent(q)}&submit=1`);
   };
 
   const showStudent = depth === "student" || depth === "scholar";
