@@ -47,37 +47,42 @@ function initial(name: string): string {
 
 type Tab = "chat" | "activity";
 
-export default function CircleChatSheet({
-  open,
-  onClose,
-  circleId,
-  circleName,
-  goalUnit,
-  isOwner,
-  initialTab = "chat",
-}: {
-  open: boolean;
-  onClose: () => void;
+export type ChatTarget = {
   circleId: string;
   circleName: string;
   goalUnit: string;
   isOwner: boolean;
-  initialTab?: Tab;
+  initialTab: Tab;
+};
+
+export default function CircleChatSheet({
+  open,
+  onClose,
+  target,
+}: {
+  open: boolean;
+  onClose: () => void;
+  target: ChatTarget | null;
 }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  // Keep the last target while animating out (open flips false before unmount).
+  const cache = useRef<ChatTarget | null>(target);
+  if (target) cache.current = target;
+  const t = target ?? cache.current;
   if (!mounted) return null;
 
   return createPortal(
     <AnimatePresence>
-      {open && (
+      {open && t && (
         <Sheet
+          key={t.circleId}
           onClose={onClose}
-          circleId={circleId}
-          circleName={circleName}
-          goalUnit={goalUnit}
-          isOwner={isOwner}
-          initialTab={initialTab}
+          circleId={t.circleId}
+          circleName={t.circleName}
+          goalUnit={t.goalUnit}
+          isOwner={t.isOwner}
+          initialTab={t.initialTab}
         />
       )}
     </AnimatePresence>,

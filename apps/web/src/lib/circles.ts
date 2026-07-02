@@ -203,16 +203,17 @@ async function resolveNames(ids: string[]): Promise<Map<string, { display_name: 
 
 export async function getCircleMessages(circleId: string, limit = 200): Promise<CircleMessage[]> {
   const [{ data, error }, { data: auth }] = await Promise.all([
+    // Fetch the most recent `limit`, then flip to chronological for display.
     supabase
       .from("circle_messages")
       .select("id, circle_id, user_id, body, created_at, deleted_at")
       .eq("circle_id", circleId)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(limit),
     supabase.auth.getUser(),
   ]);
   if (error) throw error;
-  const rows = (data ?? []) as Omit<CircleMessage, "sender_name" | "sender_avatar" | "isMine">[];
+  const rows = ((data ?? []) as Omit<CircleMessage, "sender_name" | "sender_avatar" | "isMine">[]).reverse();
   const myId = auth?.user?.id ?? null;
   const names = await resolveNames(rows.map((r) => r.user_id));
   return rows.map((r) => ({

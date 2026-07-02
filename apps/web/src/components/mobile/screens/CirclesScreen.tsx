@@ -450,20 +450,24 @@ export default function CirclesScreen() {
       })}
 
       {/* Sheets */}
-      {activeChat && (
-        <CircleChatSheet
-          open={!!chat}
-          onClose={() => {
-            setChat(null);
-            loadUnread();
-          }}
-          circleId={activeChat.circle.id}
-          circleName={activeChat.circle.name}
-          goalUnit={activeChat.circle.goal_unit}
-          isOwner={activeChat.myId != null && activeChat.circle.owner_id === activeChat.myId}
-          initialTab={chat?.tab ?? "chat"}
-        />
-      )}
+      <CircleChatSheet
+        open={!!chat}
+        onClose={() => {
+          setChat(null);
+          loadUnread();
+        }}
+        target={
+          activeChat
+            ? {
+                circleId: activeChat.circle.id,
+                circleName: activeChat.circle.name,
+                goalUnit: activeChat.circle.goal_unit,
+                isOwner: activeChat.myId != null && activeChat.circle.owner_id === activeChat.myId,
+                initialTab: chat?.tab ?? "chat",
+              }
+            : null
+        }
+      />
 
       {manageCircle && (
         <CircleManageSheet
