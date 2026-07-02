@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Design prototypes / mockups — kept locally, not committed
+*-preview.html
+
 # dependencies (any depth — monorepo-friendly)
 node_modules/
 .pnp

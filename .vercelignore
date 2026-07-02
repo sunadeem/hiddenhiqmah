@@ -1,0 +1,23 @@
+# Dependencies — Vercel reinstalls these during the build. Uploading the
+# pnpm store (thousands of files) blows past the free-tier 5000-file limit.
+node_modules
+**/node_modules
+
+# Build artifacts — regenerated on Vercel
+.next
+**/.next
+apps/web/out
+
+# Native mobile projects — not needed for the Next.js web build (iOS ~200MB)
+apps/web/ios
+apps/web/android
+
+# Icon/splash source masters (generated public/icons are committed separately)
+apps/web/assets
+
+# Local tooling / one-off audit scripts
+scripts
+
+# VCS + misc
+.git
+**/*.log
