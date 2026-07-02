@@ -232,14 +232,6 @@ function BookPageContent() {
 
   return (
     <div>
-      <Link
-        href={`/hadith/${collection}`}
-        className="inline-flex items-center gap-2 text-sm text-themed-muted hover:text-themed transition-colors mb-6"
-      >
-        <ArrowLeft size={16} />
-        Back to {metadata?.name || "Collection"}
-      </Link>
-
       <PageHeader
         title={bookMeta ? `Book ${bookId}: ${bookMeta.name}` : "Loading..."}
         titleAr={metadata?.nameAr || ""}

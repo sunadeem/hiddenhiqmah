@@ -178,7 +178,7 @@ export default function DhikrStatsScreen() {
                 period === p ? "bg-[var(--color-gold)] text-[var(--color-bg)]" : "text-themed-muted"
               }`}
             >
-              {p}
+              {p === "day" ? "Week" : p === "week" ? "Month" : "Year"}
             </button>
           ))}
         </div>

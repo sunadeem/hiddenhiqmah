@@ -1,6 +1,6 @@
 "use client";
 
-import { Flame, BadgeCheck } from "lucide-react";
+import { Flame, BadgeCheck, ChevronRight } from "lucide-react";
 import type { Streaks } from "../../lib/daily/types";
 
 function plural(n: number) {
@@ -43,6 +43,12 @@ export function StreakBadges({
             <div className="mt-1 text-[11px] text-themed-muted">Best {streaks.overallBest}</div>
           )}
         </div>
+        {/* Subtle tap affordance — the whole badge opens the streak history */}
+        <ChevronRight
+          size={14}
+          aria-hidden="true"
+          className="absolute top-3 right-3 text-themed-muted"
+        />
       </div>
 
       {/* Prayer streak — secondary */}
@@ -62,6 +68,12 @@ export function StreakBadges({
             <div className="mt-1 text-[11px] text-themed-muted">Best {streaks.prayerBest}</div>
           )}
         </div>
+        {/* Subtle tap affordance — the whole badge opens the streak history */}
+        <ChevronRight
+          size={14}
+          aria-hidden="true"
+          className="absolute top-3 right-3 text-themed-muted"
+        />
       </div>
     </button>
   );

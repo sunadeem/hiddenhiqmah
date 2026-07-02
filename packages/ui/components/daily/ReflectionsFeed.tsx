@@ -228,7 +228,7 @@ function ReflectionCard({
   onHaptic?: () => void;
 }) {
   return (
-    <div className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden min-h-[58vh] flex flex-col">
+    <div className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden flex flex-col">
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-[var(--color-gold)]/[0.08] to-transparent" />
       <div className="relative flex items-center justify-between mb-3">
         <span className="text-[10px] uppercase tracking-[0.2em] text-themed-muted">

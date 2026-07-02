@@ -239,10 +239,13 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       });
     }
 
-    audio.onloadedmetadata = () => {
-      setAudioDuration(audio.duration);
-      // Feed iOS the position/duration so the lock-screen scrubber stays live
-      // (and doesn't read as "stopped") across the short per-āyah clips.
+    // Keep iOS's lock-screen / Dynamic Island scrubber live. iOS infers BOTH the
+    // play/pause indicator and the elapsed/duration from setPositionState — if the
+    // position never advances it flips to "paused" even while audio plays. So push
+    // an advancing position on every timeupdate (throttled to ~1/sec); rate 0 when
+    // genuinely paused. `lastPosSec` is per-āyah (this closure), so it resets each verse.
+    let lastPosSec = -1;
+    const updatePos = (rate: number) => {
       if (
         "mediaSession" in navigator &&
         "setPositionState" in navigator.mediaSession &&
@@ -252,15 +255,27 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         try {
           navigator.mediaSession.setPositionState({
             duration: audio.duration,
-            playbackRate: 1,
-            position: 0,
+            playbackRate: rate,
+            position: Math.min(Math.max(audio.currentTime, 0), audio.duration),
           });
         } catch {
           /* ignore */
         }
       }
     };
-    audio.ontimeupdate = () => setAudioProgress(audio.currentTime);
+
+    audio.onloadedmetadata = () => {
+      setAudioDuration(audio.duration);
+      updatePos(1);
+    };
+    audio.ontimeupdate = () => {
+      setAudioProgress(audio.currentTime);
+      const sec = Math.floor(audio.currentTime);
+      if (sec !== lastPosSec) {
+        lastPosSec = sec;
+        updatePos(audio.paused ? 0 : 1);
+      }
+    };
     audio.onerror = () => {
       setPlayingVerse(null);
       if (audioRef.current === audio) {
@@ -276,6 +291,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       if (audioRef.current === audio && playTokenRef.current === token) {
         setAudioPaused(false);
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
+        updatePos(1);
       }
     };
     audio.onpause = () => {
@@ -285,6 +301,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       if (audioRef.current === audio && playTokenRef.current === token) {
         setAudioPaused(true);
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
+        updatePos(0);
       }
     };
 

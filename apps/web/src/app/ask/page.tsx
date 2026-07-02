@@ -207,13 +207,18 @@ export default function AskPage() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden p-5 space-y-4 min-h-0">
         {messages.length === 0 && (
-          <div className="text-center py-16">
+          <div className="text-center py-16 px-4">
             <MessageCircleQuestion size={32} className="text-[#3b82f6]/20 mx-auto mb-4" />
-            <p className="text-themed-muted text-sm">
-              Ask any question about Islam
+            <p className="text-themed text-base font-semibold">
+              Assalāmu ʿalaykum 👋
             </p>
-            <p className="text-themed-muted/50 text-xs mt-1">
-              Powered by authentic sources
+            <p className="text-themed-muted text-sm mt-1.5 max-w-xs mx-auto leading-relaxed">
+              Ask me anything about Islam — the Qur&apos;an, hadith, the Prophets,
+              fiqh, and more.
+            </p>
+            <p className="text-themed-muted/60 text-xs mt-3 max-w-xs mx-auto leading-relaxed">
+              Answers draw on authentic sources, but I&apos;m a study aid — not a
+              substitute for a qualified scholar.
             </p>
           </div>
         )}
