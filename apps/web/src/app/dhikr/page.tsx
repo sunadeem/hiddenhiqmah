@@ -1,15 +1,29 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
 import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Pencil, Check, Plus } from "lucide-react";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import { DHIKR_CATALOG_BY_KEY } from "@/lib/dhikr/catalog";
+import {
+  getWorshipDhikr,
+  addWorshipDhikr,
+  removeWorshipDhikr,
+  setWorshipGoal,
+  subscribeWorshipDhikr,
+  useWorshipDhikrSync,
+} from "@/lib/dhikr/worshipDhikr";
+import {
+  AddDhikrDialog,
+  ManageRow,
+  type ManageCard,
+} from "@/components/dhikr/DhikrEditing";
 
 type DhikrItem = {
   id: string;
@@ -23,7 +37,11 @@ type DhikrItem = {
   hadith?: string;
 };
 
-const dhikrList: DhikrItem[] = [
+// The page's base cards. The user's *custom* cards (added via the Worship tab
+// or the "Add dhikr" affordance below) are merged in on top of these, and any
+// per-card rep-goal overrides are applied — so this page and the Worship tab
+// show the same custom dhikr, goals, and counts.
+const BASE_DHIKR: DhikrItem[] = [
   {
     id: "subhanallah",
     dhikrKey: "subhanallah",
@@ -97,6 +115,20 @@ const dhikrList: DhikrItem[] = [
     hadith: "Muslim 4:74",
   },
 ];
+
+const BASE_KEYS = new Set(BASE_DHIKR.map((d) => d.dhikrKey));
+
+type DhikrCardModel = {
+  id: string;
+  dhikrKey: string;
+  arabic: string;
+  transliteration: string;
+  english: string;
+  target: number | null; // counting ring (null = free)
+  manageGoal: number; // goal-stepper value (always a number)
+  hadith?: string;
+  isCustom: boolean;
+};
 
 const CIRCLE_RADIUS = 36;
 const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
@@ -172,7 +204,7 @@ function DhikrCard({
   onReset,
   delay,
 }: {
-  dhikr: DhikrItem;
+  dhikr: DhikrCardModel;
   count: number;
   onIncrement: () => void;
   onReset: () => void;
@@ -218,7 +250,9 @@ function DhikrCard({
             <p className="text-sm font-semibold text-themed mt-1">
               {dhikr.transliteration}
             </p>
-            <p className="text-xs text-themed-muted mt-0.5">{dhikr.english}</p>
+            {dhikr.english && (
+              <p className="text-xs text-themed-muted mt-0.5">{dhikr.english}</p>
+            )}
             {dhikr.hadith && (
               <p className="text-[10px] text-themed-muted/60 mt-1.5 italic">
                 <HadithRefText text={dhikr.hadith} />
@@ -248,7 +282,7 @@ function DhikrCard({
           type="dhikr"
           id={dhikr.id}
           title={dhikr.transliteration}
-          subtitle={dhikr.english}
+          subtitle={dhikr.english || dhikr.transliteration}
           href={`/dhikr?item=${dhikr.id}`}
         />
       </div>
@@ -276,19 +310,69 @@ function DhikrPageInner() {
   const searchParams = useSearchParams();
   const scrollToItem = searchParams.get("item");
   const { adapter } = useDailyAdapter();
+  useWorshipDhikrSync();
   const [today] = useState(() => todayLocalDate());
+  const [store, setStore] = useState(() => getWorshipDhikr());
   const [counts, setCounts] = useState<Record<string, number>>({}); // keyed by dhikrKey
   const [mounted, setMounted] = useState(false);
+  const [manage, setManage] = useState(false);
+  const [adding, setAdding] = useState(false);
   const pending = useRef<Record<string, number>>({});
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load today's counts for each dhikr from the shared date-keyed adapter, so
-  // this page and the Worship tab stay in unison.
+  useEffect(() => subscribeWorshipDhikr(() => setStore(getWorshipDhikr())), []);
+
+  // Base cards (with any rep-goal overrides applied) + the user's custom cards.
+  const cards: DhikrCardModel[] = useMemo(() => {
+    const base = BASE_DHIKR.map((d): DhikrCardModel => {
+      const override = store.goals[d.dhikrKey];
+      const fallback =
+        d.target ?? DHIKR_CATALOG_BY_KEY[d.dhikrKey]?.defaultGoal ?? 33;
+      return {
+        id: d.id,
+        dhikrKey: d.dhikrKey,
+        arabic: d.arabic,
+        transliteration: d.transliteration,
+        english: d.english,
+        target: override ?? d.target,
+        manageGoal: override ?? fallback,
+        hadith: d.hadith,
+        isCustom: false,
+      };
+    });
+    const customs = store.added.flatMap((k): DhikrCardModel[] => {
+      if (BASE_KEYS.has(k)) return [];
+      const e = DHIKR_CATALOG_BY_KEY[k];
+      if (!e) return [];
+      const goal = store.goals[k] ?? e.defaultGoal;
+      return [
+        {
+          id: k,
+          dhikrKey: k,
+          arabic: e.arabic,
+          transliteration: e.translit,
+          english: "",
+          target: goal,
+          manageGoal: goal,
+          isCustom: true,
+        },
+      ];
+    });
+    return [...base, ...customs];
+  }, [store]);
+
+  const keysSig = useMemo(() => cards.map((c) => c.dhikrKey).join(","), [cards]);
+  const presentKeys = useMemo(() => new Set(cards.map((c) => c.dhikrKey)), [cards]);
+
+  // Load today's counts for each card from the shared date-keyed adapter, so
+  // this page and the Worship tab stay in unison. Re-runs when the card set
+  // changes (custom card added/removed) or the adapter swaps (sign-in/out).
   useEffect(() => {
     let alive = true;
+    const keys = keysSig ? keysSig.split(",") : [];
     Promise.all(
-      dhikrList.map((d) =>
-        adapter.getDhikr(d.dhikrKey, today).then((s) => [d.dhikrKey, s.daily] as const)
+      keys.map((key) =>
+        adapter.getDhikr(key, today).then((s) => [key, s.daily] as const)
       )
     )
       .then((entries) => {
@@ -303,7 +387,7 @@ function DhikrPageInner() {
     return () => {
       alive = false;
     };
-  }, [adapter, today]);
+  }, [adapter, today, keysSig]);
 
   useEffect(() => {
     if (!scrollToItem) return;
@@ -353,9 +437,10 @@ function DhikrPageInner() {
   const resetAll = useCallback(async () => {
     if (timer.current) clearTimeout(timer.current);
     pending.current = {};
-    await Promise.all(dhikrList.map((d) => adapter.setDhikrCount(d.dhikrKey, today, 0)));
-    setCounts(Object.fromEntries(dhikrList.map((d) => [d.dhikrKey, 0])));
-  }, [adapter, today]);
+    const keys = keysSig ? keysSig.split(",") : [];
+    await Promise.all(keys.map((key) => adapter.setDhikrCount(key, today, 0)));
+    setCounts(Object.fromEntries(keys.map((key) => [key, 0])));
+  }, [adapter, today, keysSig]);
 
   // Flush any pending taps on unmount.
   useEffect(
@@ -368,6 +453,17 @@ function DhikrPageInner() {
 
   const totalCount = Object.values(counts).reduce((a, b) => a + b, 0);
 
+  const manageCards: ManageCard[] = useMemo(
+    () =>
+      cards.map((c) => ({
+        key: c.dhikrKey,
+        label: DHIKR_CATALOG_BY_KEY[c.dhikrKey]?.label ?? c.transliteration,
+        goal: c.manageGoal,
+        isCustom: c.isCustom,
+      })),
+    [cards]
+  );
+
   if (!mounted) return null;
 
   return (
@@ -377,15 +473,28 @@ function DhikrPageInner() {
         titleAr="الذكر"
         subtitle="Tasbeeh counter for daily remembrance of Allah."
         action={
-          totalCount > 0 ? (
+          <div className="flex items-center gap-2">
+            {!manage && totalCount > 0 && (
+              <button
+                onClick={resetAll}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-themed-muted hover:text-themed hover:bg-white/10 transition-colors border sidebar-border"
+              >
+                <RotateCcw size={14} />
+                Reset All
+              </button>
+            )}
             <button
-              onClick={resetAll}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-themed-muted hover:text-themed hover:bg-white/10 transition-colors border sidebar-border"
+              onClick={() => setManage((m) => !m)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors border sidebar-border ${
+                manage
+                  ? "text-gold"
+                  : "text-themed-muted hover:text-themed hover:bg-white/10"
+              }`}
             >
-              <RotateCcw size={14} />
-              Reset All
+              {manage ? <Check size={14} /> : <Pencil size={14} />}
+              {manage ? "Done" : "Edit"}
             </button>
-          ) : undefined
+          </div>
         }
       />
 
@@ -400,20 +509,53 @@ function DhikrPageInner() {
       </ContentCard>
 
       <div className="max-w-5xl mx-auto">
+        {manage ? (
+          <div className="max-w-2xl mx-auto space-y-2">
+            {manageCards.map((c) => (
+              <ManageRow
+                key={c.key}
+                card={c}
+                onGoal={(g) => setWorshipGoal(c.key, g)}
+                onDelete={() => removeWorshipDhikr(c.key)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {cards.map((dhikr, i) => (
+              <DhikrCard
+                key={dhikr.dhikrKey}
+                dhikr={dhikr}
+                count={counts[dhikr.dhikrKey] || 0}
+                onIncrement={() => increment(dhikr.dhikrKey)}
+                onReset={() => reset(dhikr.dhikrKey)}
+                delay={0.05 + i * 0.05}
+              />
+            ))}
+          </div>
+        )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {dhikrList.map((dhikr, i) => (
-          <DhikrCard
-            key={dhikr.id}
-            dhikr={dhikr}
-            count={counts[dhikr.dhikrKey] || 0}
-            onIncrement={() => increment(dhikr.dhikrKey)}
-            onReset={() => reset(dhikr.dhikrKey)}
-            delay={0.05 + i * 0.05}
-          />
-        ))}
+        <div className="max-w-2xl mx-auto mt-4">
+          <button
+            type="button"
+            onClick={() => setAdding(true)}
+            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-dashed sidebar-border text-themed-muted hover:text-gold py-3 text-sm font-medium touch-manipulation active:scale-[0.99] transition"
+          >
+            <Plus size={16} /> Add dhikr
+          </button>
+        </div>
       </div>
-      </div>
+
+      {adding && (
+        <AddDhikrDialog
+          presentKeys={presentKeys}
+          onClose={() => setAdding(false)}
+          onAdd={(key, goal) => {
+            addWorshipDhikr(key, goal);
+            setAdding(false);
+          }}
+        />
+      )}
     </div>
   );
 }
