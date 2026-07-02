@@ -9,8 +9,9 @@
 //   * Signed OUT → localStorage (device-local fallback).
 //   * Signed IN  → the `custom_dhikr` table (migration 012), so the card list +
 //     goals follow the user across devices.
-// A React hook (useWorshipDhikrSync) wires auth → setWorshipDhikrUser, which
-// swaps the backing store. Reads stay synchronous: they return an in-memory
+// A React hook (useWorshipDhikrSync) wires auth + active household profile →
+// configureWorshipStore, which swaps the backing store (a child profile is
+// device-local + namespaced). Reads stay synchronous: they return an in-memory
 // cache that is hydrated from localStorage immediately and refreshed from
 // Supabase asynchronously (subscribers are notified via the change event).
 //
@@ -18,9 +19,14 @@
 // leak into the daily checklist. Built-in cards are never in `added`, so they
 // are never deletable through this store.
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
+import {
+  getActiveProfileId,
+  PROFILE_CHANGED_EVENT,
+  dailyStoreKeyForProfile,
+} from "@/lib/household";
 import { DHIKR_CATALOG_BY_KEY } from "./catalog";
 
 const KEY = "hiqmah-worship-dhikr";
@@ -43,6 +49,9 @@ const EMPTY: WorshipDhikrStore = { added: [], goals: {} };
 let cache: WorshipDhikrStore | null = null;
 // Current signed-in user id (null = guest → localStorage).
 let userId: string | null = null;
+// Active localStorage key — namespaced per non-primary household profile so a
+// child's dhikr-card layout never reads/writes the parent's (or a sibling's).
+let localKey = KEY;
 // Bumped on every local mutation + identity change; guards a slow cloud load
 // from clobbering newer optimistic writes.
 let version = 0;
@@ -54,7 +63,7 @@ function clampGoal(g: number): number {
 function readLocal(): WorshipDhikrStore {
   if (typeof window === "undefined") return { ...EMPTY };
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(localKey);
     if (!raw) return { ...EMPTY };
     const parsed = JSON.parse(raw) as Partial<WorshipDhikrStore>;
     return {
@@ -71,7 +80,7 @@ function readLocal(): WorshipDhikrStore {
 function writeLocal(store: WorshipDhikrStore) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(KEY, JSON.stringify(store));
+    localStorage.setItem(localKey, JSON.stringify(store));
   } catch {
     // ignore quota / private-mode errors
   }
@@ -233,7 +242,7 @@ export function subscribeWorshipDhikr(cb: () => void): () => void {
   if (typeof window === "undefined") return () => {};
   const onEvt = () => cb();
   const onStorage = (e: StorageEvent) => {
-    if (e.key !== KEY) return;
+    if (e.key !== localKey) return;
     // Another tab wrote localStorage (guest mode) — refresh our cache from it.
     if (!userId) cache = readLocal();
     cb();
@@ -250,13 +259,22 @@ export function subscribeWorshipDhikr(cb: () => void): () => void {
 // Auth wiring — swap the backing store when the signed-in user changes.
 // ---------------------------------------------------------------------------
 
-/** Point the store at a user (Supabase) or null (guest → localStorage). */
-export function setWorshipDhikrUser(uid: string | null) {
-  if (uid === userId) return;
-  userId = uid;
+/**
+ * Point the store at the active identity. The primary profile uses the signed-in
+ * user's cloud rows (or localStorage as a guest); any child household profile is
+ * always device-local + namespaced by profile id (mirrors useDailyAdapter), so a
+ * kid's dhikr layout on a shared phone never leaks the parent's (FAMILY-1).
+ */
+export function configureWorshipStore(uid: string | null, profileId: string) {
+  const child = dailyStoreKeyForProfile(profileId) !== undefined;
+  const nextUser = child ? null : uid;
+  const nextKey = child ? `${KEY}:p:${profileId}` : KEY;
+  if (nextUser === userId && nextKey === localKey) return;
+  userId = nextUser;
+  localKey = nextKey;
   version++; // invalidate any in-flight load tied to the previous identity
-  if (uid) {
-    void loadFromCloud(uid);
+  if (userId) {
+    void loadFromCloud(userId);
   } else {
     cache = readLocal();
     emit();
@@ -264,13 +282,19 @@ export function setWorshipDhikrUser(uid: string | null) {
 }
 
 /**
- * Keeps the store in sync with auth. Call from any surface that reads the
- * store; idempotent, so multiple mounted consumers are fine.
+ * Keeps the store in sync with auth + the active household profile. Call from any
+ * surface that reads the store; idempotent, so multiple mounted consumers are fine.
  */
 export function useWorshipDhikrSync() {
   const { user } = useAuth();
   const uid = user?.id ?? null;
+  const [profileId, setProfileId] = useState(getActiveProfileId);
   useEffect(() => {
-    setWorshipDhikrUser(uid);
-  }, [uid]);
+    const onChange = () => setProfileId(getActiveProfileId());
+    window.addEventListener(PROFILE_CHANGED_EVENT, onChange);
+    return () => window.removeEventListener(PROFILE_CHANGED_EVENT, onChange);
+  }, []);
+  useEffect(() => {
+    configureWorshipStore(uid, profileId);
+  }, [uid, profileId]);
 }

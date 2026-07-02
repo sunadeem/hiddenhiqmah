@@ -644,15 +644,16 @@ function FocusView({
         <div className="text-center text-[10px] uppercase tracking-[0.2em] text-themed-muted py-3">
           Verse {verse.number} · {idx + 1} / {verses.length}
         </div>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={verse.id}
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={{ duration: 0.2 }}
-            className="flex-1 flex flex-col justify-center gap-6"
-          >
+        {/* Keyed motion.div (no AnimatePresence) so it remounts instantly on the
+            new āyah — a blocking exit ("mode=wait") froze the outgoing āyah and
+            desynced the highlight/view from the playing verse (QURAN-2 / QURAN-3). */}
+        <motion.div
+          key={verse.id}
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.2 }}
+          className="flex-1 flex flex-col justify-center gap-6"
+        >
             {display.arabic && (
               <p dir="rtl" className={`font-arabic text-themed text-center leading-[2.3] ${AR_SIZES[Math.min(fontSize + 1, 3)]} flex flex-wrap justify-center gap-x-2`}>
                 {words
@@ -684,8 +685,7 @@ function FocusView({
                 {verse.textEn}
               </p>
             )}
-          </motion.div>
-        </AnimatePresence>
+        </motion.div>
       </div>
 
       {/* Fixed controls — sit above the floating player; play/pause is omitted

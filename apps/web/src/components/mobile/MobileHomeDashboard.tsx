@@ -31,6 +31,7 @@ import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
 import { getProgress, getPrayerSettings } from "@hidden-hiqmah/ui/lib/storage";
 import { reverseGeocode, formatLocation } from "@hidden-hiqmah/ui/lib/location";
 import { computePrayerTimes } from "@/lib/prayer-times";
+import { ensureNotificationPermission, scheduleAllNotifications } from "@/lib/mobile/notifications";
 
 type PrayerTimings = {
   Fajr: string;
@@ -226,6 +227,10 @@ export function NextPrayerCard() {
             display,
           });
         }
+        // Location is set up — prompt for notifications once and schedule adhan /
+        // reminders so they fire without the user hunting for a toggle (NOTIF-1).
+        await ensureNotificationPermission();
+        void scheduleAllNotifications(false);
       } catch {
         // keep showing Makkah
       }
