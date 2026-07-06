@@ -9,6 +9,7 @@ import {
   PROFILE_CHANGED_EVENT,
   type Profile,
 } from "@/lib/household";
+import { ProfileAvatarContent } from "../ProfileAvatar";
 
 /**
  * Shown on Home only when a non-primary (child) profile is active, so the user
@@ -34,7 +35,7 @@ export default function ActiveProfileBanner() {
       className="flex items-center gap-2.5 rounded-2xl border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/10 px-4 py-2.5 touch-manipulation active:scale-[0.99] transition-transform"
     >
       <span className="w-7 h-7 rounded-full bg-[var(--color-gold)]/20 text-gold flex items-center justify-center text-sm font-bold shrink-0">
-        {profile.avatar || profile.name[0]?.toUpperCase()}
+        <ProfileAvatarContent profile={profile} iconSize={14} />
       </span>
       <span className="flex-1 min-w-0 text-sm text-themed">
         Viewing <span className="font-semibold text-gold">{profile.name}</span>&apos;s day

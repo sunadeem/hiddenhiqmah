@@ -21,9 +21,9 @@ import {
   type Profile,
   type ProfileKind,
 } from "@/lib/household";
+import { ProfileAvatarContent, PROFILE_ICONS, initialsOf } from "../ProfileAvatar";
 
 type Stat = { done: number; total: number; streak: number };
-const EMOJIS = ["🧒", "👦", "👧", "👶", "🌙", "⭐", "📖", "🤲"];
 
 function adapterForProfile(p: Profile, user: User | null): DailyAdapter {
   const childKey = dailyStoreKeyForProfile(p.id);
@@ -63,7 +63,7 @@ export default function HouseholdScreen() {
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState("");
   const [kind, setKind] = useState<ProfileKind>("child");
-  const [emoji, setEmoji] = useState(EMOJIS[0]);
+  const [avatar, setAvatar] = useState(""); // "" = initials (default); else an icon key
 
   const refresh = useCallback(() => {
     setProfiles(getProfiles());
@@ -100,10 +100,10 @@ export default function HouseholdScreen() {
     ) {
       return;
     }
-    addProfile({ name: name.trim() || "Child", kind, avatar: emoji });
+    addProfile({ name: name.trim() || "Child", kind, avatar: avatar || undefined });
     setName("");
     setKind("child");
-    setEmoji(EMOJIS[0]);
+    setAvatar("");
     setAdding(false);
   };
 
@@ -134,7 +134,7 @@ export default function HouseholdScreen() {
                     : "border-transparent bg-white/5 text-themed-muted"
                 }`}
               >
-                {p.avatar || p.name[0]?.toUpperCase()}
+                <ProfileAvatarContent profile={p} iconSize={22} />
               </div>
               <span className={`text-[11px] font-medium truncate max-w-full ${active ? "text-gold" : "text-themed-muted"}`}>
                 {p.id === PRIMARY_ID ? "You" : p.name}
@@ -182,15 +182,30 @@ export default function HouseholdScreen() {
             ))}
           </div>
           <div className="flex gap-2 flex-wrap">
-            {EMOJIS.map((e) => (
+            <button
+              type="button"
+              onClick={() => setAvatar("")}
+              aria-label="Use initials"
+              className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
+                avatar === ""
+                  ? "bg-[var(--color-gold)]/20 ring-2 ring-[var(--color-gold)] text-gold"
+                  : "bg-white/5 text-themed-muted"
+              }`}
+            >
+              {initialsOf(name || "Child")}
+            </button>
+            {PROFILE_ICONS.map(({ key, Icon }) => (
               <button
-                key={e}
-                onClick={() => setEmoji(e)}
-                className={`w-9 h-9 rounded-full flex items-center justify-center text-lg ${
-                  emoji === e ? "bg-[var(--color-gold)]/20 ring-2 ring-[var(--color-gold)]" : "bg-white/5"
+                key={key}
+                type="button"
+                onClick={() => setAvatar(key)}
+                className={`w-9 h-9 rounded-full flex items-center justify-center ${
+                  avatar === key
+                    ? "bg-[var(--color-gold)]/20 ring-2 ring-[var(--color-gold)] text-gold"
+                    : "bg-white/5 text-themed-muted"
                 }`}
               >
-                {e}
+                <Icon size={18} />
               </button>
             ))}
           </div>
@@ -216,7 +231,7 @@ export default function HouseholdScreen() {
               }`}
             >
               <div className="w-11 h-11 rounded-full bg-[var(--color-gold)]/15 text-gold flex items-center justify-center text-lg font-bold shrink-0">
-                {p.avatar || p.name[0]?.toUpperCase()}
+                <ProfileAvatarContent profile={p} iconSize={18} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-themed font-semibold text-sm leading-tight truncate">
