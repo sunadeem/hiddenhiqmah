@@ -47,15 +47,17 @@ const PRAYER_LABEL: Record<PrayerKey, string> = {
 };
 
 const ADHAN_SOUND = "adhan.caf";
-// Per-prayer adhan body — a short, authentic reminder for each prayer, verified
-// against the local hadith corpus (Fajr=Muslim 657, Dhuhr=Tirmidhi 478,
-// Asr=Bukhari 552, Maghrib=Bukhari 528 [general 5-prayers virtue],
-// Isha=Muslim 656).
+// Per-prayer adhan body — a short, authentic reminder for each prayer. Fajr,
+// Asr and Isha use prayer-specific hadith (verified against the local hadith
+// corpus: Muslim 657, Bukhari 552, Muslim 656). Dhuhr and Maghrib use their
+// direct Qur'anic anchors from Sūrah Ar-Rūm, verified against our local Quran
+// text + tafsir: the Mukhtaṣar (and Maʿārif) names Ẓuhr for "ḥīna tuẓhirūn"
+// (30:18) and Maghrib for "ḥīna tumsūn" (30:17).
 const ADHAN_BODY: Record<PrayerKey, string> = {
   fajr: "Pray Fajr — you'll be under Allah's protection all day. (Muslim)",
-  dhuhr: "Dhuhr falls when the gates of heaven open — send a good deed up with it. (Tirmidhi)",
+  dhuhr: "To Him be all praise in the heavens and earth — glorify Him at noon. (Qur'an 30:18)",
   asr: "Don't miss Asr — the Prophet ﷺ said missing it is like losing your family and wealth. (Bukhari)",
-  maghrib: "The five daily prayers wash away sins like a river you bathe in five times a day. (Bukhari)",
+  maghrib: "So glory be to Allah as evening falls — the hour of Maghrib. (Qur'an 30:17)",
   isha: "Pray Isha in congregation — it's as if you prayed half the night. (Muslim)",
 };
 /** Local 12-hour clock label for a prayer time, e.g. "7:12 PM". */
