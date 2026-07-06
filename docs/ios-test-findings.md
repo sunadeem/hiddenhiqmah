@@ -67,3 +67,13 @@ Triaged from the first real-device pass. Tags: `[Bug]` `[Enh]` `[Q]`.
 ## 📳 Global
 - [x] **GLOBAL-1** `[Enh]` Haptic feedback on most counter buttons.
 - [x] **GLOBAL-2** `[Bug]` ⚠️ On every screen, opening the keyboard pushes the bottom menu/tab bar up over it (should stay put/hidden). Related to ASK-1 / ASK-3 — the SA2 fix only covered /ask.
+
+## 🔔 Batch 7 — notifications overhaul + first-time page tips (2026-07-06, commit 0f68e25)
+Post-findings enhancements requested after batches 1–6.
+- [x] **B7-1** `[Bug]` Adhan never fired at prayer times (other notifs did): prayer block was gated on a cached location only written on reverse-geocode success (Nominatim fails often on-device). Now caches GPS coords unconditionally.
+- [x] **B7-2** `[Enh]` Adhan notifications default **OFF** (`adhanEnabled: false`) so they never play unexpectedly.
+- [x] **B7-3** `[Bug]` "Today's Hadith" push had an empty body — `dailyInspirations` is Qur'an-only. Now draws the daily hadith from the hadith-sourced reminders; verse + hadith schedule independently.
+- [x] **B7-4** `[Enh]` Prayer title = prayer · city · **time** (e.g. "Maghrib · Toronto · 7:12 PM").
+- [x] **B7-5** `[Enh]` Per-prayer authentic reminders as the adhan body, verified against the local hadith corpus — Fajr (Muslim 657), Asr (Bukhari 552), Isha (Muslim 656) prayer-specific; Dhuhr (Tirmidhi 478) + Maghrib (Bukhari 528) general-virtue (⚠️ no fard-specific hadith for those two — revisit copy if desired).
+- [x] **B7-6** `[Q]` "Enabled confirmation" fires once, when a user flips a Notifications-screen toggle while OS permission is still undetermined and then grants it (usually pre-resolved by onboarding, so rarely fires). Copy made generic; no longer previews the 25s adhan.
+- [x] **B7-7** `[Enh]` First-time per-page tips (`PageTip`, one-shot localStorage flag, native-only, post-onboarding). Live on Quran (Focus mode), Dhikr, Hifz, Circles, Daily. Ask skipped (already has a greeting).
