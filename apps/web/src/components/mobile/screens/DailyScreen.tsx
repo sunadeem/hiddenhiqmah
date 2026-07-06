@@ -18,6 +18,7 @@ import { StreakCalendar } from "@hidden-hiqmah/ui/components/daily/StreakCalenda
 import { Checklist } from "@hidden-hiqmah/ui/components/daily/Checklist";
 import { ChecklistEditor } from "@hidden-hiqmah/ui/components/daily/ChecklistEditor";
 import WorshipDhikrSection from "./WorshipDhikrSection";
+import PageTip from "@/components/mobile/PageTip";
 import { ReflectionsFeed } from "@hidden-hiqmah/ui/components/daily/ReflectionsFeed";
 import { reminderShareText, type Reminder } from "@hidden-hiqmah/ui/lib/reminders";
 import remindersData from "@hidden-hiqmah/content/reminders.json";
@@ -127,6 +128,12 @@ function ChecklistTab() {
 
   return (
     <div className="space-y-4">
+      <PageTip
+        tipKey="daily-checklist"
+        anchor="top-center"
+        title="Your daily checklist"
+        body="Check off prayers, adhkār and reading as you go. Streaks build day by day — and forgive the occasional off day."
+      />
       {!signedIn && (
         <Link
           href="/signin"

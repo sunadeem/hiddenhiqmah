@@ -33,6 +33,7 @@ import {
 import { ActionSheet } from "@/components/mobile/LongPressActions";
 import UnderstandingSheet from "@/components/mobile/UnderstandingSheet";
 import { hapticSelection, hapticLight, hapticMedium } from "@/lib/mobile/haptics";
+import PageTip from "@/components/mobile/PageTip";
 
 type Word = { t: string; tr: string; m: string };
 type WordsMap = Record<string, Word[]>;
@@ -312,6 +313,12 @@ export default function QuranReaderNative({
 
   return (
     <div className="-mx-3">
+      <PageTip
+        tipKey="quran-focus"
+        anchor="top-right"
+        title="Read one āyah at a time"
+        body="Tap the settings icon to switch to Focus mode — a single āyah fills the screen, tap any word for its meaning, and recitation follows along."
+      />
       {/* Top bar */}
       <div
         className="sticky top-0 z-30 bg-[var(--color-bg)]/90 backdrop-blur-xl px-3"

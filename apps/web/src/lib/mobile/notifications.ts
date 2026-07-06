@@ -47,6 +47,25 @@ const PRAYER_LABEL: Record<PrayerKey, string> = {
 };
 
 const ADHAN_SOUND = "adhan.caf";
+// Per-prayer adhan body — a short, authentic reminder for each prayer, verified
+// against the local hadith corpus (Fajr=Muslim 657, Dhuhr=Tirmidhi 478,
+// Asr=Bukhari 552, Maghrib=Bukhari 528 [general 5-prayers virtue],
+// Isha=Muslim 656).
+const ADHAN_BODY: Record<PrayerKey, string> = {
+  fajr: "Pray Fajr — you'll be under Allah's protection all day. (Muslim)",
+  dhuhr: "Dhuhr falls when the gates of heaven open — send a good deed up with it. (Tirmidhi)",
+  asr: "Don't miss Asr — the Prophet ﷺ said missing it is like losing your family and wealth. (Bukhari)",
+  maghrib: "The five daily prayers wash away sins like a river you bathe in five times a day. (Bukhari)",
+  isha: "Pray Isha in congregation — it's as if you prayed half the night. (Muslim)",
+};
+/** Local 12-hour clock label for a prayer time, e.g. "7:12 PM". */
+function fmtClock(d: Date): string {
+  let h = d.getHours();
+  const m = d.getMinutes().toString().padStart(2, "0");
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return `${h}:${m} ${ampm}`;
+}
 const PRE_PRAYER_MINUTES = 15;
 const DAILY_HOUR = 8; // 8:00 AM local — daily verse/hadith
 const REMINDER_HOUR = 20; // 8:00 PM local — today's reflection (evening wind-down)
@@ -75,11 +94,24 @@ function dayKey(d: Date): string {
   ).padStart(2, "0")}`;
 }
 
+// dailyInspirations ships Qur'an-only (no type:"Hadith" entries), so a "Hadith"
+// filter yielded an empty pool → null → a blank daily-hadith body. Draw the
+// daily hadith from the hadith-sourced reminders instead, in the same shape.
+const HADITH_POOL: { type: "Hadith"; english: string; reference: string }[] =
+  REMINDERS.filter((r) => r.sourceKind === "hadith").map((r) => ({
+    type: "Hadith",
+    english: r.textEn,
+    reference: r.sourceRef,
+  }));
+
 /** Today's-style inspiration for an arbitrary date (day-of-year rotation). */
 function inspirationForDate(d: Date, type?: "Quran" | "Hadith") {
-  const pool = type
-    ? dailyInspirations.filter((x) => x.type === type)
-    : dailyInspirations;
+  const pool =
+    type === "Hadith"
+      ? HADITH_POOL
+      : type === "Quran"
+      ? dailyInspirations.filter((x) => x.type === "Quran")
+      : dailyInspirations;
   if (!pool.length) return null;
   const start = new Date(d.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((d.getTime() - start.getTime()) / 86_400_000);
@@ -234,10 +266,13 @@ export async function scheduleAllNotifications(
         if (at <= now) continue;
 
         if (anyAdhan && prefs.adhanPerPrayer[pk]) {
+          const title = [PRAYER_LABEL[pk], loc.city, fmtClock(at)]
+            .filter(Boolean)
+            .join(" · "); // e.g. "Maghrib · Toronto · 7:12 PM"
           notifs.push({
             id: id++,
-            title: `${PRAYER_LABEL[pk]}${loc.city ? ` · ${loc.city}` : ""}`,
-            body: `It's time for ${PRAYER_LABEL[pk]} prayer.`,
+            title,
+            body: ADHAN_BODY[pk],
             schedule: { at },
             sound: ADHAN_SOUND,
             url: "/salah",
@@ -261,30 +296,38 @@ export async function scheduleAllNotifications(
     }
   }
 
-  // ── Daily verse / hadith ──
+  // ── Daily verse / hadith (independent — either or both can be enabled) ──
   if (wantDaily) {
-    const type =
-      prefs.todaysVerse && prefs.todaysHadith
-        ? undefined
-        : prefs.todaysVerse
-        ? "Quran"
-        : "Hadith";
     for (let i = 0; i <= ENGAGEMENT_DAYS; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);
       const at = new Date(day);
       at.setHours(DAILY_HOUR, 0, 0, 0);
       if (at <= now) continue;
-      const insp = inspirationForDate(at, type);
-      if (!insp) continue;
-      notifs.push({
-        id: id++,
-        title: insp.type === "Quran" ? "Today's Verse" : "Today's Hadith",
-        body: `${insp.english} — ${insp.reference}`,
-        schedule: { at },
-        url: "/",
-        tier: 3,
-      });
+      if (prefs.todaysVerse) {
+        const insp = inspirationForDate(at, "Quran");
+        if (insp)
+          notifs.push({
+            id: id++,
+            title: "Today's Verse",
+            body: `${insp.english} — ${insp.reference}`,
+            schedule: { at },
+            url: "/",
+            tier: 3,
+          });
+      }
+      if (prefs.todaysHadith) {
+        const insp = inspirationForDate(at, "Hadith");
+        if (insp)
+          notifs.push({
+            id: id++,
+            title: "Today's Hadith",
+            body: `${insp.english} — ${insp.reference}`,
+            schedule: { at },
+            url: "/",
+            tier: 3,
+          });
+      }
     }
   }
 
@@ -372,15 +415,15 @@ export async function scheduleAllNotifications(
     }
   }
 
-  // First-time confirmation: fire the adhan immediately so the user hears it
-  // works, instead of waiting for the next prayer.
+  // First-time confirmation: a quick ping so the user knows notifications work,
+  // instead of waiting for the next scheduled one. Kept generic (adhan is off by
+  // default) and uses the default sound rather than the 25s adhan.
   if (newlyGranted) {
     toSchedule.push({
       id: 999,
-      title: "Notifications enabled",
-      body: "You'll hear the adhan at prayer times, in shā' Allah.",
+      title: "Notifications on",
+      body: "You're all set — you'll get the reminders you've turned on, in shā' Allah.",
       schedule: { at: new Date(now.getTime() + 4000) },
-      sound: ADHAN_SOUND,
       tier: 1,
     });
   }
@@ -474,8 +517,10 @@ function buildTestNotification(kind: TestNotificationKind): {
     case "adhan": {
       const loc = getCachedLocation();
       return {
-        title: `${PRAYER_LABEL[samplePrayer]}${loc?.city ? ` · ${loc.city}` : ""}`,
-        body: `It's time for ${PRAYER_LABEL[samplePrayer]} prayer.`,
+        title: [PRAYER_LABEL[samplePrayer], loc?.city, fmtClock(now)]
+          .filter(Boolean)
+          .join(" · "),
+        body: ADHAN_BODY[samplePrayer],
         sound: ADHAN_SOUND,
         url: "/salah",
       };
@@ -529,9 +574,8 @@ function buildTestNotification(kind: TestNotificationKind): {
       };
     case "enabledConfirmation":
       return {
-        title: "Notifications enabled",
-        body: "You'll hear the adhan at prayer times, in shā' Allah.",
-        sound: ADHAN_SOUND,
+        title: "Notifications on",
+        body: "You're all set — you'll get the reminders you've turned on, in shā' Allah.",
       };
   }
 }

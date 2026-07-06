@@ -76,7 +76,7 @@ export type NotificationPrefs = {
 };
 
 const defaultNotificationPrefs: NotificationPrefs = {
-  adhanEnabled: true,
+  adhanEnabled: false,
   adhanPerPrayer: { fajr: true, dhuhr: true, asr: true, maghrib: true, isha: true },
   prePrayer: false,
   iqamah: false,

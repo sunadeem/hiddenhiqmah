@@ -218,15 +218,18 @@ export function NextPrayerCard() {
         const coarse = `${pos.coords.latitude.toFixed(2)}°, ${pos.coords.longitude.toFixed(2)}°`;
         const display = (geo && formatLocation(geo)) || coarse;
         computeTimes(pos.coords.latitude, pos.coords.longitude, display);
-        if (geo) {
-          setCachedLocation({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-            city: geo.city || "Makkah",
-            country: geo.countryName || "Saudi Arabia",
-            display,
-          });
-        }
+        // Cache the coordinates even when reverse-geocoding fails. The adhan
+        // scheduler reads getCachedLocation() and skips ALL prayer notifications
+        // when it's null, so gating this on `geo` silently disabled the adhan for
+        // anyone whose Nominatim lookup didn't resolve. City is cosmetic; the
+        // coordinates are what scheduling needs.
+        setCachedLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          city: geo?.city || "",
+          country: geo?.countryName || "",
+          display,
+        });
         // Location is set up — prompt for notifications once and schedule adhan /
         // reminders so they fire without the user hunting for a toggle (NOTIF-1).
         await ensureNotificationPermission();

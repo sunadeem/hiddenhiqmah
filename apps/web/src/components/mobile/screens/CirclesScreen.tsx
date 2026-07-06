@@ -39,6 +39,7 @@ import CircleChatSheet from "./circles/CircleChatSheet";
 import CircleManageSheet from "./circles/CircleManageSheet";
 import CircleNotificationsSheet from "./circles/CircleNotificationsSheet";
 import { hapticSelection } from "@/lib/mobile/haptics";
+import PageTip from "@/components/mobile/PageTip";
 
 // Supabase/PostgREST errors aren't Error instances — pull their .message so the
 // real reason surfaces instead of a generic "Something went wrong".
@@ -250,6 +251,12 @@ export default function CirclesScreen() {
 
   return (
     <div className="space-y-4 pb-4">
+      <PageTip
+        tipKey="circles-nudge"
+        anchor="top-center"
+        title="Keep each other going"
+        body="Circles are private accountability groups — see your members' streaks and send a nudge or duʿā to cheer them on."
+      />
       {/* Header with bell */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-[11px] text-themed-muted min-w-0">

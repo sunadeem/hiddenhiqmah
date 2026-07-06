@@ -12,6 +12,7 @@ import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import { DHIKR_CATALOG_BY_KEY } from "@/lib/dhikr/catalog";
 import { hapticSelection } from "@/lib/mobile/haptics";
+import PageTip from "@/components/mobile/PageTip";
 import {
   getWorshipDhikr,
   addWorshipDhikr,
@@ -471,6 +472,12 @@ function DhikrPageInner() {
 
   return (
     <div>
+      <PageTip
+        tipKey="dhikr-tap"
+        anchor="bottom-center"
+        title="Tap to count"
+        body="Tap any dhikr card to count your recitation — the ring fills as you go, and today's progress saves automatically."
+      />
       <PageHeader
         title="Dhikr"
         titleAr="الذكر"
