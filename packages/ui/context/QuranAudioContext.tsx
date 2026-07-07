@@ -187,33 +187,26 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     claimAudioFocus("quran"); // stop the adhan (or any other channel) first
     const token = ++playTokenRef.current;
     currentVerseRef.current = verse;
+    // SINGLE persistent audio element — never swap. iOS binds the lock-screen
+    // Now-Playing panel to ONE media element; the old preload-swap optimization
+    // made a *different* element active each āyah, so iOS stayed bound to a
+    // now-paused element (lock screen showed "paused" / no player at all) while
+    // sound came from another element, and the play button resumed the wrong one
+    // (double playback + overlap). Now we ALWAYS reuse audioRef and only change its
+    // src; the preload element (preloadNext) merely warms the HTTP cache, so
+    // re-pointing src here still loads fast.
     let audio = audioRef.current;
-    // Check if we have this verse preloaded — swap elements for instant playback
-    const usePreloaded = preloadRef.current && preloadedVerseId.current === verse.id;
-
-    if (usePreloaded) {
-      // Swap: old audio becomes preload, preloaded becomes active. Hard-stop (not
-      // just pause) the outgoing element so an orphaned reference can never resume
-      // it mid-clip under the newly promoted one.
-      if (audio) hardStop(audio);
-      audio = preloadRef.current!;
-      audioRef.current = audio;
-      preloadRef.current = null;
-      preloadedVerseId.current = null;
-    } else if (audio) {
-      // Reuse existing element — fully stop + reset it before swapping in the new
-      // src so an abandoned/stale reference can't resume mid-clip (overlap).
+    if (audio) {
+      // Fully stop + reset before re-pointing src so a stale reference can't resume
+      // mid-clip and overlap the incoming āyah.
       hardStop(audio);
     } else {
-      // First time — create the element
+      // First time — create the one element we reuse for the whole session (its
+      // user-gesture autoplay activation then carries across every āyah).
       audio = new Audio();
       audioRef.current = audio;
     }
-
-    // Change source and play (preloaded already has correct src)
-    if (!usePreloaded) {
-      audio.src = getAudioUrl(verse.id);
-    }
+    audio.src = getAudioUrl(verse.id);
     setPlayingVerse(verse.number);
     setAudioProgress(0);
     setAudioDuration(0);
