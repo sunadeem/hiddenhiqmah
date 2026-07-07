@@ -24,30 +24,6 @@ function getAudioUrl(globalVerseId: number): string {
   return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalVerseId}.mp3`;
 }
 
-// Fully stop an audio element: detach ALL handlers first (so the teardown itself
-// can't fire play/pause/ended events that mutate live state), then pause and rewind.
-// Used before swapping/abandoning an element so a stale reference can't resume it.
-function hardStop(el: HTMLAudioElement | null) {
-  if (!el) return;
-  el.onended = null;
-  el.ontimeupdate = null;
-  el.onloadedmetadata = null;
-  el.onerror = null;
-  el.onplay = null;
-  el.onplaying = null;
-  el.onpause = null;
-  try {
-    el.pause();
-  } catch {
-    /* ignore */
-  }
-  try {
-    el.currentTime = 0;
-  } catch {
-    /* ignore */
-  }
-}
-
 interface QuranAudioState {
   playingVerse: number | null;
   audioProgress: number;
@@ -98,13 +74,6 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
   const autoPlayRef = useRef(false);
   const autoNextSurahRef = useRef(false);
   const playTokenRef = useRef(0);
-  // The Verse currently owning playback — authoritative for the lock-screen
-  // next/previous remote commands (the closed-over `verse` goes stale after an
-  // autoplay surah handoff mutates versesRef).
-  const currentVerseRef = useRef<Verse | null>(null);
-  // Debounce duplicate remote next/prev deliveries (iOS can fire a command twice,
-  // and may pair a next-tap with a spurious play command).
-  const advanceLockRef = useRef(0);
 
   const [playingVerse, setPlayingVerse] = useState<number | null>(null);
   const [audioProgress, setAudioProgress] = useState(0);
@@ -186,27 +155,44 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
   const startAudio = useCallback((verse: Verse) => {
     claimAudioFocus("quran"); // stop the adhan (or any other channel) first
     const token = ++playTokenRef.current;
-    currentVerseRef.current = verse;
-    // SINGLE persistent audio element — never swap. iOS binds the lock-screen
-    // Now-Playing panel to ONE media element; the old preload-swap optimization
-    // made a *different* element active each āyah, so iOS stayed bound to a
-    // now-paused element (lock screen showed "paused" / no player at all) while
-    // sound came from another element, and the play button resumed the wrong one
-    // (double playback + overlap). Now we ALWAYS reuse audioRef and only change its
-    // src; the preload element (preloadNext) merely warms the HTTP cache, so
-    // re-pointing src here still loads fast.
     let audio = audioRef.current;
-    if (audio) {
-      // Fully stop + reset before re-pointing src so a stale reference can't resume
-      // mid-clip and overlap the incoming āyah.
-      hardStop(audio);
+    // Check if we have this verse preloaded — swap elements for instant playback
+    const usePreloaded = preloadRef.current && preloadedVerseId.current === verse.id;
+
+    if (usePreloaded) {
+      // Swap: old audio becomes preload, preloaded becomes active
+      if (audio) {
+        audio.pause();
+        audio.onended = null;
+        audio.ontimeupdate = null;
+        audio.onloadedmetadata = null;
+        audio.onerror = null;
+        audio.onplay = null;
+        audio.onpause = null;
+      }
+      audio = preloadRef.current!;
+      audioRef.current = audio;
+      preloadRef.current = null;
+      preloadedVerseId.current = null;
+    } else if (audio) {
+      // Reuse existing element — just stop current playback
+      audio.pause();
+      audio.onended = null;
+      audio.ontimeupdate = null;
+      audio.onloadedmetadata = null;
+      audio.onerror = null;
+      audio.onplay = null;
+      audio.onpause = null;
     } else {
-      // First time — create the one element we reuse for the whole session (its
-      // user-gesture autoplay activation then carries across every āyah).
+      // First time — create the element
       audio = new Audio();
       audioRef.current = audio;
     }
-    audio.src = getAudioUrl(verse.id);
+
+    // Change source and play (preloaded already has correct src)
+    if (!usePreloaded) {
+      audio.src = getAudioUrl(verse.id);
+    }
     setPlayingVerse(verse.number);
     setAudioProgress(0);
     setAudioDuration(0);
@@ -224,27 +210,6 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     // Preload next verse immediately for seamless transition
     preloadNext(verse.id);
 
-    // Advance/rewind exactly ONE āyah for the lock-screen remote commands. Stops
-    // the current element SYNCHRONOUSLY (hardStop) before queuing the next, so the
-    // outgoing recitation can't overlap the incoming one while backgrounded/locked
-    // (where the deferred React effect is throttled). hardStop also nulls the
-    // outgoing element's onended, so the same tap can't also fire the autoplay
-    // path. Target is computed from currentVerseRef (never the stale closed-over
-    // `verse`), and we advance currentVerseRef immediately so a debounced-through
-    // duplicate stays consistent.
-    const advance = (dir: 1 | -1) => {
-      const vrs = versesRef.current;
-      const cur = currentVerseRef.current;
-      if (!vrs || !cur) return;
-      const idx = vrs.findIndex((v) => v.id === cur.id);
-      const target = vrs[idx + dir];
-      if (!target) return;
-      currentVerseRef.current = target;
-      hardStop(audioRef.current);
-      setPendingVerse(target);
-      setPendingScroll(true);
-    };
-
     // Lock screen / notification media info
     const ch = chapterRef.current;
     if ("mediaSession" in navigator && ch) {
@@ -260,28 +225,8 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       // Assert "playing" synchronously on every āyah so the lock-screen / Dynamic
       // Island Now-Playing stays live across the short per-verse clips.
       navigator.mediaSession.playbackState = "playing";
-      // Push an initial position state synchronously so iOS surfaces the
-      // Now-Playing panel on the FIRST play — before onloadedmetadata fires. With
-      // metadata + playbackState but no positionState, WebKit shows nothing on a
-      // cold lock (which is why it only appeared after a pause→play cycle). Do NOT
-      // gate this first push on a finite duration; onloadedmetadata refreshes it.
-      if ("setPositionState" in navigator.mediaSession) {
-        try {
-          const dur = audio.duration && isFinite(audio.duration) ? audio.duration : 0;
-          navigator.mediaSession.setPositionState({
-            duration: dur,
-            playbackRate: 1,
-            position: dur ? Math.min(Math.max(audio.currentTime, 0), dur) : 0,
-          });
-        } catch {
-          /* ignore */
-        }
-      }
 
       navigator.mediaSession.setActionHandler("play", () => {
-        // iOS can bundle a spurious "play" with a next/prev remote command; if we
-        // just advanced, ignore it so it can't resume the hard-stopped old element.
-        if (Date.now() - advanceLockRef.current < 600) return;
         audioRef.current?.play();
         setAudioPaused(false);
       });
@@ -290,16 +235,20 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         setAudioPaused(true);
       });
       navigator.mediaSession.setActionHandler("nexttrack", () => {
-        const now = Date.now();
-        if (now - advanceLockRef.current < 600) return; // ignore duplicate delivery
-        advanceLockRef.current = now;
-        advance(1);
+        const vrs = versesRef.current;
+        if (vrs) {
+          const idx = vrs.findIndex((v) => v.id === verse.id);
+          const next = vrs[idx + 1];
+          if (next) { setPendingVerse(next); setPendingScroll(true); }
+        }
       });
       navigator.mediaSession.setActionHandler("previoustrack", () => {
-        const now = Date.now();
-        if (now - advanceLockRef.current < 600) return; // ignore duplicate delivery
-        advanceLockRef.current = now;
-        advance(-1);
+        const vrs = versesRef.current;
+        if (vrs) {
+          const idx = vrs.findIndex((v) => v.id === verse.id);
+          const prev = vrs[idx - 1];
+          if (prev) { setPendingVerse(prev); setPendingScroll(true); }
+        }
       });
     }
 
@@ -338,21 +287,6 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       if (sec !== lastPosSec) {
         lastPosSec = sec;
         updatePos(audio.paused ? 0 : 1);
-        // Keep the lock-screen play/pause indicator in lockstep with real audio:
-        // iOS fires a spurious 'pause' when the app backgrounds/locks and the
-        // matching 'play' on resume is often dropped, leaving playbackState stuck
-        // at "paused" while the elapsed time keeps advancing (symptom 3). Re-assert
-        // "playing" whenever the element is actually producing audio. Gated on
-        // !audio.paused so a genuine user / Control-Center pause is left alone.
-        // Word highlighting is driven by audioProgress + audioPaused, not
-        // playbackState, so this does not touch it.
-        if (
-          !audio.paused &&
-          "mediaSession" in navigator &&
-          navigator.mediaSession.playbackState !== "playing"
-        ) {
-          navigator.mediaSession.playbackState = "playing";
-        }
       }
     };
     audio.onerror = () => {
@@ -367,18 +301,6 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     // and without this the UI stays stuck on "playing". Guarded so a superseded
     // / swapped-out element (which also fires "pause") can't flip live state.
     audio.onplay = () => {
-      if (audioRef.current === audio && playTokenRef.current === token) {
-        setAudioPaused(false);
-        if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
-        updatePos(1);
-      }
-    };
-    // WebKit registers the iOS Now-Playing session only when the element actually
-    // begins producing sound (the "playing" event), NOT at play() call time — which
-    // is why the panel didn't appear on a cold first play until a pause→play cycle.
-    // Re-assert playback state + position the moment real audio starts, so the lock
-    // screen populates on the FIRST lock. Guarded against superseded elements.
-    audio.onplaying = () => {
       if (audioRef.current === audio && playTokenRef.current === token) {
         setAudioPaused(false);
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
