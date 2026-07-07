@@ -49,15 +49,18 @@ const PRAYER_LABEL: Record<PrayerKey, string> = {
 const ADHAN_SOUND = "adhan.caf";
 // Per-prayer adhan body — a short, authentic reminder for each prayer. Fajr,
 // Asr and Isha use prayer-specific hadith (verified against the local hadith
-// corpus: Muslim 657, Bukhari 552, Muslim 656). Dhuhr and Maghrib use their
-// direct Qur'anic anchors from Sūrah Ar-Rūm, verified against our local Quran
-// text + tafsir: the Mukhtaṣar (and Maʿārif) names Ẓuhr for "ḥīna tuẓhirūn"
-// (30:18) and Maghrib for "ḥīna tumsūn" (30:17).
+// corpus: Muslim 657, Bukhari 552, Muslim 656). Dhuhr and Maghrib quote their
+// direct Qur'anic anchors from Sūrah Ar-Rūm VERBATIM from our shipped
+// translation (verses/30.json) — the Mukhtaṣar (and Maʿārif) name Ẓuhr for
+// "ḥīna tuẓhirūn" (30:18) and Maghrib for "ḥīna tumsūn" (30:17). Only change
+// from the source text: sentence-case the first letter + terminal period.
 const ADHAN_BODY: Record<PrayerKey, string> = {
   fajr: "Pray Fajr — you'll be under Allah's protection all day. (Muslim)",
-  dhuhr: "To Him be all praise in the heavens and earth — glorify Him at noon. (Qur'an 30:18)",
+  dhuhr:
+    "And all praise is due to Him in the heavens and earth – and [glorify Him] in the afternoon and at noon. (Qur'an 30:18)",
   asr: "Don't miss Asr — the Prophet ﷺ said missing it is like losing your family and wealth. (Bukhari)",
-  maghrib: "So glory be to Allah as evening falls — the hour of Maghrib. (Qur'an 30:17)",
+  maghrib:
+    "So glory be to Allah in the evening and in the morning. (Qur'an 30:17)",
   isha: "Pray Isha in congregation — it's as if you prayed half the night. (Muslim)",
 };
 /** Local 12-hour clock label for a prayer time, e.g. "7:12 PM". */
