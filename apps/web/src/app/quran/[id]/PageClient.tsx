@@ -719,7 +719,12 @@ function SurahPageContent() {
     if (shouldAutoPlay && verses && verses.length > 0 && !autoPlayTriggered.current) {
       autoPlayTriggered.current = true;
       setAutoPlay(true);
-      playVerse(verses[0]);
+      // The surah→surah handoff already started verse 1 via the context's
+      // onended → pendingVerse chain; restarting it here aborts the in-flight
+      // load (and while locked, that reload can stall the autoplay chain).
+      if (!(contextSurahId === id && playingVerse !== null)) {
+        playVerse(verses[0]);
+      }
     }
   }, [shouldAutoPlay, verses, playVerse, setAutoPlay]);
 

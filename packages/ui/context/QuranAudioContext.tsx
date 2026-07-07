@@ -24,6 +24,22 @@ function getAudioUrl(globalVerseId: number): string {
   return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalVerseId}.mp3`;
 }
 
+// iOS WebKit elects ONE media element as the app's lock-screen Now-Playing
+// session (re-evaluated only at play/pause transitions) and routes remote
+// commands to that element. The election is unreliable for detached
+// `new Audio()` elements, and a binding left on an element we later abandon is
+// what made the panel miss, lie ("Paused" while playing), and double-play.
+// Every element we create is therefore appended hidden to <body> and lives for
+// the whole session — exactly two ever exist: active + preload buffer.
+function createAttachedAudio(): HTMLAudioElement {
+  const el = document.createElement("audio");
+  el.setAttribute("playsinline", "");
+  el.preload = "auto";
+  el.style.display = "none";
+  document.body.appendChild(el);
+  return el;
+}
+
 interface QuranAudioState {
   playingVerse: number | null;
   audioProgress: number;
@@ -142,7 +158,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     if (!preloadId || preloadId === preloadedVerseId.current) return;
     // Create or reuse preload element
     if (!preloadRef.current) {
-      preloadRef.current = new Audio();
+      preloadRef.current = createAttachedAudio();
     }
     preloadRef.current.src = getAudioUrl(preloadId);
     preloadRef.current.preload = "auto";
@@ -170,9 +186,14 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         audio.onplay = null;
         audio.onpause = null;
       }
+      // Recycle the outgoing element (paused + handlers detached above) as the
+      // next preload buffer — a closed 2-element pool. Never orphan an element:
+      // iOS routes lock-screen commands to the element it is bound to, and an
+      // orphan we can no longer reach is what produced overlapping playback.
+      const outgoing = audio;
       audio = preloadRef.current!;
       audioRef.current = audio;
-      preloadRef.current = null;
+      preloadRef.current = outgoing;
       preloadedVerseId.current = null;
     } else if (audio) {
       // Reuse existing element — just stop current playback
@@ -184,8 +205,9 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       audio.onplay = null;
       audio.onpause = null;
     } else {
-      // First time — create the element
-      audio = new Audio();
+      // First time — create the element ATTACHED to the DOM so iOS WebKit can
+      // bind its lock-screen Now-Playing session to it.
+      audio = createAttachedAudio();
       audioRef.current = audio;
     }
 
@@ -199,18 +221,9 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     setAudioPaused(false);
     setAudioError(null);
 
-    audio.play().catch(() => {
-      // Only reset if this play call wasn't superseded by a newer startAudio()
-      if (playTokenRef.current === token) {
-        setPlayingVerse(null);
-        setAudioError("Couldn't play the recitation — check your connection.");
-      }
-    });
-
-    // Preload next verse immediately for seamless transition
-    preloadNext(verse.id);
-
-    // Lock screen / notification media info
+    // Lock screen / notification media info — set BEFORE play() so metadata and
+    // action handlers already exist when WebKit registers the Now-Playing
+    // session on this element's first "playing" transition.
     const ch = chapterRef.current;
     if ("mediaSession" in navigator && ch) {
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -239,7 +252,15 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         if (vrs) {
           const idx = vrs.findIndex((v) => v.id === verse.id);
           const next = vrs[idx + 1];
-          if (next) { setPendingVerse(next); setPendingScroll(true); }
+          if (next) {
+            // Silence the outgoing āyah NOW: while locked, the React effect
+            // that starts the next element can be deferred, and iOS must never
+            // hear two elements at once. Plain pause() only — no seek, no src
+            // reset (a seek before a src change stalled autoplay in 5ba8870).
+            audioRef.current?.pause();
+            setPendingVerse(next);
+            setPendingScroll(true);
+          }
         }
       });
       navigator.mediaSession.setActionHandler("previoustrack", () => {
@@ -247,10 +268,26 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         if (vrs) {
           const idx = vrs.findIndex((v) => v.id === verse.id);
           const prev = vrs[idx - 1];
-          if (prev) { setPendingVerse(prev); setPendingScroll(true); }
+          if (prev) {
+            audioRef.current?.pause();
+            setPendingVerse(prev);
+            setPendingScroll(true);
+          }
         }
       });
     }
+
+    audio.play().catch((err: unknown) => {
+      // Only reset if this play call wasn't superseded by a newer startAudio()
+      if (playTokenRef.current === token) {
+        const name = err instanceof DOMException ? err.name : "Error";
+        setPlayingVerse(null);
+        setAudioError(`Couldn't play the recitation (${name}) — check your connection.`);
+      }
+    });
+
+    // Preload next verse immediately for seamless transition
+    preloadNext(verse.id);
 
     // Keep iOS's lock-screen / Dynamic Island scrubber live. iOS infers BOTH the
     // play/pause indicator and the elapsed/duration from setPositionState — if the
@@ -486,8 +523,10 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       audioRef.current.ontimeupdate = null;
     }
     if (preloadRef.current) {
-      preloadRef.current.src = "";
-      preloadRef.current = null;
+      // Keep the node pooled (attached + reusable) — discarding it would grow
+      // the element population again on the next play. Just drop its load.
+      preloadRef.current.removeAttribute("src");
+      preloadRef.current.load();
       preloadedVerseId.current = null;
     }
     // Tear down the lock-screen / MediaSession controls so they don't linger
