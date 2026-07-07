@@ -162,6 +162,12 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     }
     preloadRef.current.src = getAudioUrl(preloadId);
     preloadRef.current.preload = "auto";
+    // Keep the idle buffer MUTED: iOS WebKit only elects a "not muted" element as
+    // the lock-screen Now-Playing session, so a muted buffer can never be picked
+    // over the audible element. Without this, WebKit sometimes bound Now-Playing
+    // to this paused buffer → the panel showed "Paused" while the real element
+    // played (elapsed still advanced via setPositionState). Un-muted on promotion.
+    preloadRef.current.muted = true;
     preloadRef.current.load();
     preloadedVerseId.current = preloadId;
   }, []);
@@ -210,6 +216,11 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       audio = createAttachedAudio();
       audioRef.current = audio;
     }
+
+    // The active element must be audible AND now-playing-eligible. The preload
+    // buffer is kept muted (ineligible) so iOS never binds the lock screen to it;
+    // a just-promoted buffer therefore has to be un-muted here.
+    audio.muted = false;
 
     // Change source and play (preloaded already has correct src)
     if (!usePreloaded) {
