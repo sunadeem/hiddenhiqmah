@@ -18,7 +18,7 @@ type Mode = "juz" | "surah" | "page";
 // Distinct state colours: faint (untouched) · gray (learning/new) · brown (review)
 // · hiqmah gold (memorized).
 const C = {
-  faint: "bg-white/[0.06]",
+  faint: "bg-[var(--overlay-medium)]",
   gray: "bg-slate-500/70",
   brown: "bg-[#8f5d34]",
   gold: "bg-gold",

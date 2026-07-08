@@ -81,7 +81,7 @@ export default function HomePreviewModal({
 
           {/* Style switcher */}
           <div className="px-4 py-3 shrink-0">
-            <div className="flex bg-white/[0.06] rounded-xl p-1 gap-1">
+            <div className="flex bg-[var(--overlay-medium)] rounded-xl p-1 gap-1">
               {STYLES.map((s) => (
                 <button
                   key={s.value}

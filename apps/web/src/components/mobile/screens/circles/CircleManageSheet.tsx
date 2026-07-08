@@ -99,7 +99,7 @@ export default function CircleManageSheet({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Circle name"
-              className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
+              className="w-full bg-[var(--overlay-subtle)] border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function CircleManageSheet({
                   className={`rounded-xl py-2.5 text-sm font-semibold border touch-manipulation ${
                     goalType === g.key
                       ? "bg-[var(--color-gold)]/18 text-gold border-[var(--color-gold)]/40"
-                      : "text-themed-muted border-[var(--color-border)] active:bg-white/5"
+                      : "text-themed-muted border-[var(--color-border)] active:bg-[var(--overlay-subtle)]"
                   }`}
                 >
                   {g.label}
@@ -134,7 +134,7 @@ export default function CircleManageSheet({
               value={goalUnit}
               onChange={(e) => setGoalUnit(e.target.value)}
               placeholder="juz"
-              className="w-32 bg-white/5 border sidebar-border rounded-xl px-3 py-2 text-sm text-themed text-center focus:outline-none focus:border-[var(--color-gold)]/40"
+              className="w-32 bg-[var(--overlay-subtle)] border sidebar-border rounded-xl px-3 py-2 text-sm text-themed text-center focus:outline-none focus:border-[var(--color-gold)]/40"
             />
           </div>
 

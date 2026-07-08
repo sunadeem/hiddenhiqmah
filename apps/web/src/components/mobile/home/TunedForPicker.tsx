@@ -38,11 +38,11 @@ export default function TunedForPicker({
           <button
             key={o.value}
             onClick={() => onChange(o.value)}
-            className="w-full flex items-center gap-3 px-3 py-3 text-left touch-manipulation active:bg-white/[0.03]"
+            className="w-full flex items-center gap-3 px-3 py-3 text-left touch-manipulation active:bg-[var(--overlay-subtle)]"
           >
             <div
               className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                isSel ? "bg-[var(--color-gold)]/20 text-gold" : "bg-white/5 text-themed-muted"
+                isSel ? "bg-[var(--color-gold)]/20 text-gold" : "bg-[var(--overlay-subtle)] text-themed-muted"
               }`}
             >
               <Icon size={17} />

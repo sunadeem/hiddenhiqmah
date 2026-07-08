@@ -232,12 +232,12 @@ export function ActionSheet({
             style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
           >
             <div className="flex justify-center pt-2 pb-1">
-              <div className="w-10 h-1.5 rounded-full bg-white/25" />
+              <div className="w-10 h-1.5 rounded-full bg-[var(--overlay-strong)]" />
             </div>
             <p className="px-5 py-2 text-xs text-themed-muted truncate">
               {item.reference}
             </p>
-            <div className="divide-y divide-white/5">
+            <div className="divide-y divide-[var(--overlay-subtle)]">
               {rows
                 .filter((r) => r.show)
                 .map((r, i) => (
@@ -245,7 +245,7 @@ export function ActionSheet({
                     key={i}
                     type="button"
                     onClick={r.onClick}
-                    className="w-full flex items-center gap-4 px-5 py-4 text-left active:bg-white/5 touch-manipulation"
+                    className="w-full flex items-center gap-4 px-5 py-4 text-left active:bg-[var(--overlay-subtle)] touch-manipulation"
                   >
                     {r.icon}
                     <span className="text-themed text-sm font-medium">

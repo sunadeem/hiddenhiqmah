@@ -31,7 +31,7 @@ function DailyPathThumb() {
   return (
     <ThumbFrame>
       <div className="h-2 rounded-sm bg-[var(--color-gold)]/45" />
-      <div className="h-5 rounded bg-white/[0.07]" />
+      <div className="h-5 rounded bg-[var(--overlay-medium)]" />
       {[0, 1, 2].map((i) => (
         <div key={i} className="flex items-center gap-1">
           <div
@@ -51,17 +51,17 @@ function DailyPathThumb() {
 function ClassicThumb() {
   return (
     <ThumbFrame>
-      <div className="h-7 rounded bg-white/[0.07] flex flex-col items-center justify-center gap-1">
+      <div className="h-7 rounded bg-[var(--overlay-medium)] flex flex-col items-center justify-center gap-1">
         <div className="h-1 w-3/5 rounded-sm bg-[var(--color-gold)]/45" />
-        <div className="h-1 w-4/5 rounded-sm bg-white/15" />
+        <div className="h-1 w-4/5 rounded-sm bg-[var(--overlay-strong)]" />
       </div>
       <div className="grid grid-cols-2 gap-1">
-        <div className="h-3.5 rounded bg-white/[0.07]" />
-        <div className="h-3.5 rounded bg-white/[0.07]" />
+        <div className="h-3.5 rounded bg-[var(--overlay-medium)]" />
+        <div className="h-3.5 rounded bg-[var(--overlay-medium)]" />
       </div>
       <div className="grid grid-cols-4 gap-1">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-2.5 rounded bg-white/[0.07]" />
+          <div key={i} className="h-2.5 rounded bg-[var(--overlay-medium)]" />
         ))}
       </div>
     </ThumbFrame>
@@ -72,7 +72,7 @@ function FocusThumb() {
   return (
     <ThumbFrame>
       <div className="h-2 rounded-sm bg-[var(--color-gold)]/45" />
-      <div className="h-7 rounded bg-white/[0.07]" />
+      <div className="h-7 rounded bg-[var(--overlay-medium)]" />
       <div className="h-4 rounded bg-[var(--color-gold)]/15 border border-[var(--color-gold)]/25" />
       <div className="flex-1" />
     </ThumbFrame>
@@ -87,9 +87,9 @@ function RamadanThumb() {
         <div className="h-1.5 flex-1 rounded-sm bg-[var(--color-gold)]/40" />
       </div>
       <div className="h-6 rounded bg-[var(--color-gold)]/15 border border-[var(--color-gold)]/25" />
-      <div className="h-2 rounded-sm bg-white/[0.07]" />
+      <div className="h-2 rounded-sm bg-[var(--overlay-medium)]" />
       <div className="h-2 w-2/3 rounded-sm bg-[var(--color-gold)]/40" />
-      <div className="h-4 rounded bg-white/[0.07]" />
+      <div className="h-4 rounded bg-[var(--overlay-medium)]" />
     </ThumbFrame>
   );
 }

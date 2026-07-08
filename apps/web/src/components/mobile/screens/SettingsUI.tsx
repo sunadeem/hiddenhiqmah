@@ -90,7 +90,7 @@ export function SettingsRow({
             {title}
           </p>
           {comingSoon && (
-            <span className="text-[9px] uppercase tracking-wider text-themed-muted bg-white/5 px-1.5 py-0.5 rounded">
+            <span className="text-[9px] uppercase tracking-wider text-themed-muted bg-[var(--overlay-subtle)] px-1.5 py-0.5 rounded">
               Soon
             </span>
           )}
@@ -99,7 +99,7 @@ export function SettingsRow({
               className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded ${
                 badgeTone === "gold"
                   ? "text-gold bg-[var(--color-gold)]/15"
-                  : "text-themed-muted bg-white/5"
+                  : "text-themed-muted bg-[var(--overlay-subtle)]"
               }`}
             >
               {badge}
@@ -126,7 +126,7 @@ export function SettingsRow({
 
   if (href && !disabled) {
     return (
-      <Link href={href} className="touch-manipulation active:bg-white/5 block">
+      <Link href={href} className="touch-manipulation active:bg-[var(--overlay-subtle)] block">
         {content}
       </Link>
     );
@@ -136,7 +136,7 @@ export function SettingsRow({
       <button
         type="button"
         onClick={onClick}
-        className="touch-manipulation active:bg-white/5 block w-full text-left"
+        className="touch-manipulation active:bg-[var(--overlay-subtle)] block w-full text-left"
       >
         {content}
       </button>

@@ -119,7 +119,7 @@ export default function UnderstandingSheet({
             style={{ paddingBottom: "max(env(safe-area-inset-bottom), 16px)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mx-auto mt-2.5 mb-1 h-1 w-10 rounded-full bg-white/15" />
+            <div className="mx-auto mt-2.5 mb-1 h-1 w-10 rounded-full bg-[var(--overlay-strong)]" />
 
             {/* Word header */}
             <div className="flex items-start gap-3 px-5 pt-3 pb-4">
@@ -132,7 +132,7 @@ export default function UnderstandingSheet({
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-themed-muted bg-white/5 shrink-0"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-themed-muted bg-[var(--overlay-subtle)] shrink-0"
               >
                 <X size={17} />
               </button>
@@ -149,7 +149,7 @@ export default function UnderstandingSheet({
 
               {/* Root + occurrences */}
               {morph?.root ? (
-                <div className="rounded-2xl border sidebar-border bg-white/[0.03] p-4">
+                <div className="rounded-2xl border sidebar-border bg-[var(--overlay-subtle)] p-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted font-semibold mb-1">
@@ -171,7 +171,7 @@ export default function UnderstandingSheet({
 
                   {/* Occurrences (Scholar) */}
                   {showScholar && rootInfo && rootInfo.occ.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-white/10">
+                    <div className="mt-3 pt-3 border-t border-[var(--overlay-medium)]">
                       <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted font-semibold mb-2">
                         Some occurrences
                       </p>
@@ -212,7 +212,7 @@ export default function UnderstandingSheet({
               {showStudent && morph && (morph.lemma || morph.pos) && (
                 <div className="grid grid-cols-2 gap-3">
                   {morph.pos && (
-                    <div className="rounded-xl border sidebar-border bg-white/[0.03] p-3">
+                    <div className="rounded-xl border sidebar-border bg-[var(--overlay-subtle)] p-3">
                       <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted font-semibold mb-1">
                         Part of speech
                       </p>
@@ -220,7 +220,7 @@ export default function UnderstandingSheet({
                     </div>
                   )}
                   {morph.lemma && (
-                    <div className="rounded-xl border sidebar-border bg-white/[0.03] p-3">
+                    <div className="rounded-xl border sidebar-border bg-[var(--overlay-subtle)] p-3">
                       <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted font-semibold mb-1">
                         Lemma
                       </p>
@@ -244,7 +244,7 @@ export default function UnderstandingSheet({
                 <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted font-semibold mb-2 text-center">
                   Explain like I&apos;m
                 </p>
-                <div className="flex bg-white/[0.06] rounded-xl p-1 gap-1">
+                <div className="flex bg-[var(--overlay-medium)] rounded-xl p-1 gap-1">
                   {DEPTHS.map((d) => (
                     <button
                       key={d.value}

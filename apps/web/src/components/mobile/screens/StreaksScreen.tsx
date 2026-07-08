@@ -206,7 +206,7 @@ export default function StreaksScreen() {
                   key={r.value}
                   disabled={busy}
                   onClick={() => run(() => adapter.startPause(r.value, todayLocalDate()))}
-                  className="card-bg rounded-2xl border sidebar-border p-3 flex flex-col items-center gap-1.5 touch-manipulation active:bg-white/5 disabled:opacity-60"
+                  className="card-bg rounded-2xl border sidebar-border p-3 flex flex-col items-center gap-1.5 touch-manipulation active:bg-[var(--overlay-subtle)] disabled:opacity-60"
                 >
                   <Icon size={20} className="text-gold" />
                   <span className="text-[11px] font-medium text-themed text-center leading-tight">{r.label}</span>
@@ -239,7 +239,7 @@ export default function StreaksScreen() {
           <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted font-semibold mb-2 px-1">
             Make up a missed day (qaḍāʾ)
           </p>
-          <div className="card-bg rounded-2xl border sidebar-border overflow-hidden divide-y divide-white/5">
+          <div className="card-bg rounded-2xl border sidebar-border overflow-hidden divide-y divide-[var(--overlay-subtle)]">
             {missed.map((day) => (
               <div key={day} className="flex items-center gap-3 px-4 py-3">
                 <div className="flex-1 min-w-0">

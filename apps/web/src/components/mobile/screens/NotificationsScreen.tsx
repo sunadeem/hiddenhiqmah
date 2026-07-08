@@ -80,7 +80,7 @@ export default function NotificationsScreen() {
           }
         />
         {adhanExpanded && (
-          <div className="bg-white/5 border-t sidebar-border">
+          <div className="bg-[var(--overlay-subtle)] border-t sidebar-border">
             {(["fajr", "dhuhr", "asr", "maghrib", "isha"] as const).map((key) => (
               <SettingsRow
                 key={key}

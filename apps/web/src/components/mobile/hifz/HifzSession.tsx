@@ -356,7 +356,7 @@ export default function HifzSession({
         </p>
         <p className="text-gold text-sm font-bold">{current.label}</p>
       </div>
-      <div className="h-1 rounded-full bg-white/8 overflow-hidden">
+      <div className="h-1 rounded-full bg-[var(--overlay-medium)] overflow-hidden">
         <div
           className="h-full bg-gold rounded-full transition-all"
           style={{ width: `${(completed / total) * 100}%` }}

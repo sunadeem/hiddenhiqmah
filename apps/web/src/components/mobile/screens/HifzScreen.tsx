@@ -90,7 +90,7 @@ export default function HifzScreen() {
         <button
           onClick={back}
           aria-label="Back"
-          className="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center text-themed active:bg-white/5 touch-manipulation"
+          className="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center text-themed active:bg-[var(--overlay-subtle)] touch-manipulation"
         >
           <ChevronLeft size={22} />
         </button>

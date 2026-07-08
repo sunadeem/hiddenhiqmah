@@ -634,7 +634,7 @@ export default function AskHiqmahFloat() {
                   {messages.length > 0 && (
                     <button
                       onClick={handleClear}
-                      className="p-1.5 rounded-lg hover:bg-white/10 text-themed-muted/50 hover:text-themed-muted transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-[var(--overlay-medium)] text-themed-muted/50 hover:text-themed-muted transition-colors"
                       title="Clear chat"
                     >
                       <Trash2 size={14} />
@@ -642,14 +642,14 @@ export default function AskHiqmahFloat() {
                   )}
                   <button
                     onClick={handlePopOut}
-                    className="p-1.5 rounded-lg hover:bg-white/10 text-themed-muted/50 hover:text-themed-muted transition-colors hidden lg:block"
+                    className="p-1.5 rounded-lg hover:bg-[var(--overlay-medium)] text-themed-muted/50 hover:text-themed-muted transition-colors hidden lg:block"
                     title="Open in new window"
                   >
                     <ExternalLink size={14} />
                   </button>
                   <button
                     onClick={handleClose}
-                    className="p-1.5 rounded-lg hover:bg-white/10 text-themed-muted hover:text-themed transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-[var(--overlay-medium)] text-themed-muted hover:text-themed transition-colors"
                     title="Minimize"
                   >
                     <X size={16} />

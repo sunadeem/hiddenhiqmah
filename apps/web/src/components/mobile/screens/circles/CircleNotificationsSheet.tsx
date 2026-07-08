@@ -130,7 +130,7 @@ export default function CircleNotificationsSheet({
               <button
                 type="button"
                 onClick={markAll}
-                className="text-[11px] font-semibold text-gold flex items-center gap-1 px-2 py-1 rounded-lg active:bg-white/5 touch-manipulation"
+                className="text-[11px] font-semibold text-gold flex items-center gap-1 px-2 py-1 rounded-lg active:bg-[var(--overlay-subtle)] touch-manipulation"
               >
                 <CheckCheck size={13} /> Mark all read
               </button>
@@ -171,11 +171,11 @@ export default function CircleNotificationsSheet({
                   key={n.id}
                   type="button"
                   onClick={() => tap(n)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b border-white/5 last:border-0 touch-manipulation active:bg-white/5 ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b border-[var(--overlay-subtle)] last:border-0 touch-manipulation active:bg-[var(--overlay-subtle)] ${
                     n.read_at ? "" : "bg-[var(--color-gold)]/[0.06]"
                   }`}
                 >
-                  <div className="w-9 h-9 rounded-full bg-white/[0.05] flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-[var(--overlay-subtle)] flex items-center justify-center shrink-0">
                     {iconFor(n.kind)}
                   </div>
                   <div className="flex-1 min-w-0">

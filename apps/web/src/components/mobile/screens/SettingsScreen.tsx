@@ -427,7 +427,7 @@ export default function SettingsScreen() {
       {/* FEEDBACK — final card, end of the app */}
       <a
         href={`mailto:${FEEDBACK_EMAIL}?subject=Hidden%20Hiqmah%20feedback`}
-        className="block card-bg rounded-2xl border sidebar-border p-5 touch-manipulation active:bg-white/5"
+        className="block card-bg rounded-2xl border sidebar-border p-5 touch-manipulation active:bg-[var(--overlay-subtle)]"
       >
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-[var(--color-gold)]/15 flex items-center justify-center shrink-0">

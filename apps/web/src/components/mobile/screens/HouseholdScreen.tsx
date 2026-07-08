@@ -131,7 +131,7 @@ export default function HouseholdScreen() {
                 className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold border-2 transition-colors ${
                   active
                     ? "border-[var(--color-gold)] bg-[var(--color-gold)]/15 text-gold"
-                    : "border-transparent bg-white/5 text-themed-muted"
+                    : "border-transparent bg-[var(--overlay-subtle)] text-themed-muted"
                 }`}
               >
                 <ProfileAvatarContent profile={p} iconSize={22} />
@@ -166,7 +166,7 @@ export default function HouseholdScreen() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name"
-            className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
+            className="w-full bg-[var(--overlay-subtle)] border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
           />
           <div className="flex gap-2">
             {(["child", "adult"] as ProfileKind[]).map((k) => (
@@ -174,7 +174,7 @@ export default function HouseholdScreen() {
                 key={k}
                 onClick={() => setKind(k)}
                 className={`flex-1 rounded-lg py-2 text-xs font-semibold capitalize ${
-                  kind === k ? "bg-[var(--color-gold)]/18 text-gold" : "bg-white/5 text-themed-muted"
+                  kind === k ? "bg-[var(--color-gold)]/18 text-gold" : "bg-[var(--overlay-subtle)] text-themed-muted"
                 }`}
               >
                 {k}
@@ -189,7 +189,7 @@ export default function HouseholdScreen() {
               className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
                 avatar === ""
                   ? "bg-[var(--color-gold)]/20 ring-2 ring-[var(--color-gold)] text-gold"
-                  : "bg-white/5 text-themed-muted"
+                  : "bg-[var(--overlay-subtle)] text-themed-muted"
               }`}
             >
               {initialsOf(name || "Child")}
@@ -202,7 +202,7 @@ export default function HouseholdScreen() {
                 className={`w-9 h-9 rounded-full flex items-center justify-center ${
                   avatar === key
                     ? "bg-[var(--color-gold)]/20 ring-2 ring-[var(--color-gold)] text-gold"
-                    : "bg-white/5 text-themed-muted"
+                    : "bg-[var(--overlay-subtle)] text-themed-muted"
                 }`}
               >
                 <Icon size={18} />

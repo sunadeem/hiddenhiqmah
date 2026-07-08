@@ -65,7 +65,7 @@ export default function DailyScreen() {
     <div className="space-y-4">
       <h1 className="text-2xl font-extrabold text-themed tracking-tight px-1">Daily</h1>
 
-      <div className="flex bg-white/[0.06] rounded-2xl p-1 gap-1">
+      <div className="flex bg-[var(--overlay-medium)] rounded-2xl p-1 gap-1">
         {TABS.map((t) => (
           <button
             key={t.key}

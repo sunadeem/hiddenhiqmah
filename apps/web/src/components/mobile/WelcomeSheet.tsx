@@ -195,7 +195,7 @@ export default function WelcomeSheet() {
                   <span
                     key={i}
                     className={`h-1.5 rounded-full transition-all ${
-                      i === idx ? "w-5 bg-[var(--color-gold)]" : "w-1.5 bg-white/20"
+                      i === idx ? "w-5 bg-[var(--color-gold)]" : "w-1.5 bg-[var(--overlay-strong)]"
                     }`}
                   />
                 ))}

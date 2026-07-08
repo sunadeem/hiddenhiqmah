@@ -270,7 +270,7 @@ export default function CirclesScreen() {
           type="button"
           onClick={() => setShowNotifs(true)}
           aria-label="Notifications"
-          className="relative shrink-0 w-10 h-10 rounded-full border sidebar-border card-bg flex items-center justify-center text-themed touch-manipulation active:bg-white/5"
+          className="relative shrink-0 w-10 h-10 rounded-full border sidebar-border card-bg flex items-center justify-center text-themed touch-manipulation active:bg-[var(--overlay-subtle)]"
         >
           <Bell size={17} className="text-gold" />
           {unread > 0 && (
@@ -291,13 +291,13 @@ export default function CirclesScreen() {
       <div className="grid grid-cols-2 gap-2.5">
         <button
           onClick={() => { setShowCreate((v) => !v); setShowJoin(false); }}
-          className="flex items-center justify-center gap-2 rounded-xl border sidebar-border card-bg py-3 text-sm font-semibold text-themed touch-manipulation active:bg-white/5"
+          className="flex items-center justify-center gap-2 rounded-xl border sidebar-border card-bg py-3 text-sm font-semibold text-themed touch-manipulation active:bg-[var(--overlay-subtle)]"
         >
           <Plus size={16} className="text-gold" /> New circle
         </button>
         <button
           onClick={() => { setShowJoin((v) => !v); setShowCreate(false); }}
-          className="flex items-center justify-center gap-2 rounded-xl border sidebar-border card-bg py-3 text-sm font-semibold text-themed touch-manipulation active:bg-white/5"
+          className="flex items-center justify-center gap-2 rounded-xl border sidebar-border card-bg py-3 text-sm font-semibold text-themed touch-manipulation active:bg-[var(--overlay-subtle)]"
         >
           <UserPlus size={16} className="text-gold" /> Join with code
         </button>
@@ -311,7 +311,7 @@ export default function CirclesScreen() {
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Circle name (e.g. Family Khatmah)"
-            className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
+            className="w-full bg-[var(--overlay-subtle)] border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
           />
           <p className="text-[11px] text-themed-muted">Goal: complete a 30-juz khatmah together.</p>
           <button
@@ -332,7 +332,7 @@ export default function CirclesScreen() {
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
             placeholder="Invite code"
             autoCapitalize="characters"
-            className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed tracking-widest placeholder:tracking-normal placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
+            className="w-full bg-[var(--overlay-subtle)] border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed tracking-widest placeholder:tracking-normal placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
           />
           <button
             disabled={busy || !joinCode.trim()}
@@ -380,7 +380,7 @@ export default function CirclesScreen() {
                   onClick={() => setManageId(d.circle.id)}
                   aria-label="Manage circle"
                   title="Manage circle"
-                  className="relative shrink-0 p-2 rounded-full text-themed-muted active:bg-white/5 touch-manipulation"
+                  className="relative shrink-0 p-2 rounded-full text-themed-muted active:bg-[var(--overlay-subtle)] touch-manipulation"
                 >
                   <Settings2 size={17} />
                 </button>
@@ -388,12 +388,12 @@ export default function CirclesScreen() {
             </div>
 
             {/* My progress stepper */}
-            <div className="relative mt-4 flex items-center gap-3 rounded-xl bg-white/[0.04] border sidebar-border px-3 py-2.5">
+            <div className="relative mt-4 flex items-center gap-3 rounded-xl bg-[var(--overlay-subtle)] border sidebar-border px-3 py-2.5">
               <span className="text-xs text-themed-muted flex-1">Your contribution</span>
               <button
                 disabled={d.myValue <= 0}
                 onClick={() => bumpProgress(d.circle.id, -1)}
-                className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-themed disabled:opacity-40 touch-manipulation active:scale-95 transition-transform"
+                className="w-7 h-7 rounded-full bg-[var(--overlay-subtle)] flex items-center justify-center text-themed disabled:opacity-40 touch-manipulation active:scale-95 transition-transform"
               >
                 <Minus size={14} />
               </button>
@@ -406,7 +406,7 @@ export default function CirclesScreen() {
               </button>
             </div>
 
-            <div className="relative h-px bg-white/10 my-4" />
+            <div className="relative h-px bg-[var(--overlay-medium)] my-4" />
 
             {/* Leaderboard */}
             <div className="relative">
@@ -439,19 +439,19 @@ export default function CirclesScreen() {
               </div>
             </div>
 
-            <div className="relative h-px bg-white/10 my-3" />
+            <div className="relative h-px bg-[var(--overlay-medium)] my-3" />
 
             {/* Chat + Activity */}
             <div className="relative grid grid-cols-2 gap-2 mb-2">
               <button
                 onClick={() => setChat({ id: d.circle.id, tab: "chat" })}
-                className="flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-white/5 touch-manipulation"
+                className="flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-[var(--overlay-subtle)] touch-manipulation"
               >
                 <MessageSquare size={15} className="text-gold" /> Chat
               </button>
               <button
                 onClick={() => setChat({ id: d.circle.id, tab: "activity" })}
-                className="flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-white/5 touch-manipulation"
+                className="flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-[var(--overlay-subtle)] touch-manipulation"
               >
                 <ActivityIcon size={15} className="text-gold" /> Activity
               </button>
@@ -479,7 +479,7 @@ export default function CirclesScreen() {
                       const code = await generateInvite(d.circle.id);
                       setInvites((m) => ({ ...m, [d.circle.id]: code }));
                     })}
-                    className="shrink-0 inline-flex items-center justify-center rounded-xl border sidebar-border px-3 py-2.5 text-gold active:bg-white/5"
+                    className="shrink-0 inline-flex items-center justify-center rounded-xl border sidebar-border px-3 py-2.5 text-gold active:bg-[var(--overlay-subtle)]"
                   >
                     <RefreshCw size={14} />
                   </button>
@@ -491,7 +491,7 @@ export default function CirclesScreen() {
                     const code = await generateInvite(d.circle.id);
                     setInvites((m) => ({ ...m, [d.circle.id]: code }));
                   })}
-                  className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-white/5"
+                  className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-[var(--overlay-subtle)]"
                 >
                   <UserPlus size={14} className="text-gold" /> Invite
                 </button>
@@ -503,7 +503,7 @@ export default function CirclesScreen() {
                     run(() => leaveCircle(d.circle.id));
                   }
                 }}
-                className="inline-flex items-center justify-center gap-1.5 text-sm text-themed-muted rounded-xl border sidebar-border px-3 py-2.5 active:bg-white/5"
+                className="inline-flex items-center justify-center gap-1.5 text-sm text-themed-muted rounded-xl border sidebar-border px-3 py-2.5 active:bg-[var(--overlay-subtle)]"
               >
                 <LogOut size={14} />
               </button>
@@ -596,7 +596,7 @@ function LeaderRow({
             {m.value} {unit}
           </span>
         </div>
-        <div className="mt-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <div className="mt-1 h-1.5 rounded-full bg-[var(--overlay-medium)] overflow-hidden">
           <div
             className="h-full rounded-full"
             style={{
@@ -627,7 +627,7 @@ function LeaderRow({
           disabled={busy}
           aria-label={`Remove ${m.display_name}`}
           title="Remove member"
-          className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full border sidebar-border text-themed-muted/70 hover:text-red-400 touch-manipulation active:bg-white/5 disabled:opacity-40"
+          className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full border sidebar-border text-themed-muted/70 hover:text-red-400 touch-manipulation active:bg-[var(--overlay-subtle)] disabled:opacity-40"
         >
           <X size={13} />
         </button>

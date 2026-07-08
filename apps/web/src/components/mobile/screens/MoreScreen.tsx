@@ -30,7 +30,7 @@ function SectionCard({ heading, items }: { heading: string; items: NavItem[] }) 
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-3 touch-manipulation active:bg-white/5 ${
+              className={`flex items-center gap-3 px-3 py-3 touch-manipulation active:bg-[var(--overlay-subtle)] ${
                 i < items.length - 1 ? "border-b sidebar-border" : ""
               }`}
             >

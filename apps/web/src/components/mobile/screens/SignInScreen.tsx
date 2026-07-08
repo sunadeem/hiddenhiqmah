@@ -19,7 +19,7 @@ function Bismillah() {
 }
 
 const inputClass =
-  "w-full bg-white/5 border sidebar-border rounded-xl px-4 py-3 text-themed text-base focus:outline-none focus:border-[var(--color-gold)]/40";
+  "w-full bg-[var(--overlay-subtle)] border sidebar-border rounded-xl px-4 py-3 text-themed text-base focus:outline-none focus:border-[var(--color-gold)]/40";
 const primaryBtn =
   "w-full bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 rounded-xl py-3.5 font-semibold active:bg-[var(--color-gold)]/30 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation";
 
@@ -287,7 +287,7 @@ export default function SignInScreen() {
             placeholder="••••••"
             autoFocus
             autoComplete="one-time-code"
-            className="w-full bg-white/5 border sidebar-border rounded-xl px-4 py-4 text-themed text-3xl tracking-[0.3em] text-center font-mono focus:outline-none focus:border-[var(--color-gold)]/40"
+            className="w-full bg-[var(--overlay-subtle)] border sidebar-border rounded-xl px-4 py-4 text-themed text-3xl tracking-[0.3em] text-center font-mono focus:outline-none focus:border-[var(--color-gold)]/40"
           />
           {isRecovery && (
             <>

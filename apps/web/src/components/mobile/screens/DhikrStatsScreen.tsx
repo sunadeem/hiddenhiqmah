@@ -168,7 +168,7 @@ export default function DhikrStatsScreen() {
           <span className="font-arabic text-gold/55 text-lg">ٱلذِّكْر</span>
         </div>
 
-        <div className="relative flex bg-white/5 border sidebar-border rounded-full p-0.5 mb-5">
+        <div className="relative flex bg-[var(--overlay-subtle)] border sidebar-border rounded-full p-0.5 mb-5">
           {(["day", "week", "month"] as Period[]).map((p) => (
             <button
               key={p}
@@ -234,7 +234,7 @@ export default function DhikrStatsScreen() {
                     {b.label}
                     {b.ar && <span className="font-arabic text-gold/60 text-xs ml-1">{b.ar}</span>}
                   </div>
-                  <div className="flex-1 h-1.5 bg-white/6 rounded-full overflow-hidden">
+                  <div className="flex-1 h-1.5 bg-[var(--overlay-medium)] rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-[var(--color-gold)]/70 to-[var(--color-gold)]"
                       style={{ width: `${Math.round((b.count / rowMax) * 100)}%` }}

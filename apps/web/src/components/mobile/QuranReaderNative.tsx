@@ -336,7 +336,7 @@ export default function QuranReaderNative({
         <div className="flex items-center justify-between gap-2">
           <Link
             href="/quran"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-themed bg-white/[0.05] touch-manipulation"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-themed bg-[var(--overlay-subtle)] touch-manipulation"
             aria-label="All surahs"
           >
             <ArrowLeft size={18} />
@@ -351,7 +351,7 @@ export default function QuranReaderNative({
               hapticLight();
               setSettingsOpen(true);
             }}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-themed bg-white/[0.05] touch-manipulation"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-themed bg-[var(--overlay-subtle)] touch-manipulation"
             aria-label="Reading settings"
           >
             <SlidersHorizontal size={17} />
@@ -802,7 +802,7 @@ function SettingsSheet({
             style={{ paddingBottom: "max(env(safe-area-inset-bottom), 16px)", paddingTop: 8 }}
           >
             <div className="flex justify-center pb-3">
-              <div className="w-10 h-1.5 rounded-full bg-white/25" />
+              <div className="w-10 h-1.5 rounded-full bg-[var(--overlay-strong)]" />
             </div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-themed font-bold text-lg">Reading</h2>
@@ -813,7 +813,7 @@ function SettingsSheet({
 
             {/* View mode */}
             <div className="text-[10px] uppercase tracking-[0.2em] text-themed-muted mb-2">View</div>
-            <div className="flex bg-white/[0.06] rounded-xl p-1 gap-1 mb-5">
+            <div className="flex bg-[var(--overlay-medium)] rounded-xl p-1 gap-1 mb-5">
               {(["mushaf", "focus"] as QuranView[]).map((v) => (
                 <button
                   key={v}
@@ -858,11 +858,11 @@ function SettingsSheet({
             <div className="flex items-center justify-between mb-5">
               <span className="text-themed text-[15px]">Text size</span>
               <div className="flex items-center gap-2">
-                <button type="button" onClick={() => onFont(-1)} className="w-9 h-9 rounded-full bg-white/[0.06] text-themed flex items-center justify-center touch-manipulation" aria-label="Smaller">
+                <button type="button" onClick={() => onFont(-1)} className="w-9 h-9 rounded-full bg-[var(--overlay-medium)] text-themed flex items-center justify-center touch-manipulation" aria-label="Smaller">
                   <Minus size={16} />
                 </button>
                 <span className="text-themed-muted text-xs w-8 text-center tabular-nums">{fontSize + 1}/4</span>
-                <button type="button" onClick={() => onFont(1)} className="w-9 h-9 rounded-full bg-white/[0.06] text-themed flex items-center justify-center touch-manipulation" aria-label="Larger">
+                <button type="button" onClick={() => onFont(1)} className="w-9 h-9 rounded-full bg-[var(--overlay-medium)] text-themed flex items-center justify-center touch-manipulation" aria-label="Larger">
                   <Plus size={16} />
                 </button>
               </div>

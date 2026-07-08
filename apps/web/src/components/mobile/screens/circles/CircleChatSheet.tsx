@@ -210,7 +210,7 @@ function Sheet({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="shrink-0 p-2.5 rounded-full bg-white/10 text-themed touch-manipulation active:bg-white/20"
+            className="shrink-0 p-2.5 rounded-full bg-[var(--overlay-medium)] text-themed touch-manipulation active:bg-[var(--overlay-strong)]"
           >
             <X size={20} />
           </button>
@@ -295,7 +295,7 @@ function Sheet({
                 }}
                 rows={1}
                 placeholder="Message…"
-                className="flex-1 resize-none max-h-28 bg-white/5 border sidebar-border rounded-2xl px-4 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
+                className="flex-1 resize-none max-h-28 bg-[var(--overlay-subtle)] border sidebar-border rounded-2xl px-4 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
               />
               <button
                 type="button"
@@ -447,8 +447,8 @@ function activityText(a: CircleActivity, unit: string): string {
 
 function ActivityRow({ a, unit }: { a: CircleActivity; unit: string }) {
   return (
-    <div className="flex items-center gap-3 py-2.5 border-b border-white/5 last:border-0">
-      <div className="w-8 h-8 rounded-full bg-white/[0.04] flex items-center justify-center shrink-0">
+    <div className="flex items-center gap-3 py-2.5 border-b border-[var(--overlay-subtle)] last:border-0">
+      <div className="w-8 h-8 rounded-full bg-[var(--overlay-subtle)] flex items-center justify-center shrink-0">
         {ACT_ICON[a.kind] ?? <ActivityIcon size={15} className="text-themed-muted" />}
       </div>
       <p className="flex-1 min-w-0 text-sm text-themed leading-snug">{activityText(a, unit)}</p>
@@ -486,7 +486,7 @@ function DeleteConfirm({
             style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
           >
             <div className="flex justify-center pt-2 pb-1">
-              <div className="w-10 h-1.5 rounded-full bg-white/25" />
+              <div className="w-10 h-1.5 rounded-full bg-[var(--overlay-strong)]" />
             </div>
             <p className="px-5 pt-2 pb-1 text-sm text-themed font-semibold">Delete this message?</p>
             <p className="px-5 pb-3 text-xs text-themed-muted truncate">{msg.body}</p>
@@ -501,7 +501,7 @@ function DeleteConfirm({
               <button
                 type="button"
                 onClick={onCancel}
-                className="w-full rounded-xl border sidebar-border py-3 text-themed font-semibold touch-manipulation active:bg-white/5"
+                className="w-full rounded-xl border sidebar-border py-3 text-themed font-semibold touch-manipulation active:bg-[var(--overlay-subtle)]"
               >
                 Cancel
               </button>
