@@ -53,7 +53,7 @@ function buildGreeting(firstName?: string): string {
   const salaam = firstName
     ? `**Assalāmu ʿalaykum, ${firstName}**`
     : "**Assalāmu ʿalaykum**";
-  return `${salaam}\n\nAsk me anything about Islam — the Qur'an, hadith, the Prophets, fiqh, and more.\n\nAnswers draw on authentic sources, but I'm a study aid — not a substitute for a qualified scholar.`;
+  return `${salaam}\n\nAsk me anything about Islam — the Qur'an, hadith, the Prophets, fiqh, and more.`;
 }
 
 export default function AskPage() {
@@ -254,7 +254,7 @@ export default function AskPage() {
           transition={{ duration: 0.25 }}
           className="flex justify-start"
         >
-          <div className="max-w-[85%] rounded-xl px-4 py-3 text-sm leading-relaxed bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20">
+          <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-sm leading-relaxed bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20">
             <div className="whitespace-pre-wrap break-words overflow-hidden">
               {renderMarkdown(greeting)}
             </div>
@@ -269,10 +269,10 @@ export default function AskPage() {
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[85%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
+              className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                 msg.role === "user"
-                  ? "bg-[var(--color-accent)]/20 text-themed border border-[var(--color-accent)]/30"
-                  : "bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20"
+                  ? "rounded-br-md bg-[var(--color-accent)]/20 text-themed border border-[var(--color-accent)]/30"
+                  : "rounded-bl-md bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20"
               }`}
             >
               <div className="whitespace-pre-wrap break-words overflow-hidden">{renderMarkdown(msg.content)}</div>
