@@ -73,10 +73,13 @@ export default function HifzScreen() {
   return (
     <div className="pb-4">
       <PageTip
-        tipKey="hifz-plan"
-        anchor="top-center"
-        title="Built to make it stick"
-        body="Add sūrahs to your plan and Hifz schedules daily reviews at just the right moment — so what you memorise stays memorised."
+        tips={[
+          {
+            key: "hifz-plan-v2",
+            title: "Built to make it stick",
+            body: "Add sūrahs to your plan and Hifz schedules daily reviews at just the right moment — so what you memorise stays memorised.",
+          },
+        ]}
       />
       {/* Header */}
       <div className="flex items-center gap-2 px-1 pt-1 pb-3">

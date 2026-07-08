@@ -252,10 +252,13 @@ export default function CirclesScreen() {
   return (
     <div className="space-y-4 pb-4">
       <PageTip
-        tipKey="circles-nudge"
-        anchor="top-center"
-        title="Keep each other going"
-        body="Circles are private accountability groups — see your members' streaks and send a nudge or duʿā to cheer them on."
+        tips={[
+          {
+            key: "circles-nudge-v2",
+            title: "Keep each other going",
+            body: "Circles are private accountability groups — see your members' streaks and send a nudge or duʿā to cheer them on.",
+          },
+        ]}
       />
       {/* Header with bell */}
       <div className="flex items-center justify-between gap-2">

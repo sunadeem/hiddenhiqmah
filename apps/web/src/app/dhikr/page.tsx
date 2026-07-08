@@ -473,10 +473,13 @@ function DhikrPageInner() {
   return (
     <div>
       <PageTip
-        tipKey="dhikr-tap"
-        anchor="bottom-center"
-        title="Tap to count"
-        body="Tap any dhikr card to count your recitation — the ring fills as you go, and today's progress saves automatically."
+        tips={[
+          {
+            key: "dhikr-tap-v2",
+            title: "Tap to count",
+            body: "Tap any dhikr card to count your recitation — the ring fills as you go, and today's progress saves automatically.",
+          },
+        ]}
       />
       <PageHeader
         title="Dhikr"

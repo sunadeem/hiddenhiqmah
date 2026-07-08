@@ -129,10 +129,13 @@ function ChecklistTab() {
   return (
     <div className="space-y-4">
       <PageTip
-        tipKey="daily-checklist"
-        anchor="top-center"
-        title="Your daily checklist"
-        body="Check off prayers, adhkār and reading as you go. Streaks build day by day — and forgive the occasional off day."
+        tips={[
+          {
+            key: "daily-checklist-v2",
+            title: "Your daily checklist",
+            body: "Check off prayers, adhkār and reading as you go. Streaks build day by day — and forgive the occasional off day.",
+          },
+        ]}
       />
       {!signedIn && (
         <Link

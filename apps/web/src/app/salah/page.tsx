@@ -2428,10 +2428,13 @@ function SalahContent() {
   return (
     <div>
       <PageTip
-        tipKey="salah-guide"
-        anchor="top-center"
-        title="More than prayer times"
-        body="Use the section menu for a live qiblah compass, a full wudu guide, and a step-by-step walkthrough that shows you every position of the prayer."
+        tips={[
+          {
+            key: "salah-guide-v2",
+            title: "More than prayer times",
+            body: "Use the section menu for a live qiblah compass, a full wudu guide, and a step-by-step walkthrough that shows you every position of the prayer.",
+          },
+        ]}
       />
       <PageHeader
         title="Salah"

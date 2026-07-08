@@ -314,17 +314,19 @@ export default function QuranReaderNative({
   return (
     <div className="-mx-3">
       <PageTip
-        tipKey="quran-focus"
-        anchor="top-right"
-        title="Make the reader yours"
-        body="Tap the settings icon to switch between Mushaf and Focus mode, show or hide the translation and transliteration, size the text, and play the recitation."
-      />
-      <PageTip
-        tipKey="quran-word"
-        anchor="bottom-center"
-        delayMs={1500}
-        title="Tap any word to understand it"
-        body="Tap an Arabic word — in Mushaf or Focus mode — to see its meaning and root, where else it appears in the Qur'an, and to ask the tutor about it."
+        delayMs={900}
+        tips={[
+          {
+            key: "reader-focus-v2",
+            title: "Make the reader yours",
+            body: "Tap the settings icon to switch between Mushaf and Focus mode, show or hide the translation and transliteration, size the text, and play the recitation.",
+          },
+          {
+            key: "reader-word-v2",
+            title: "Tap any word to understand it",
+            body: "Tap an Arabic word — in Mushaf or Focus mode — to see its meaning and root, where else it appears in the Qur'an, and to ask the tutor about it.",
+          },
+        ]}
       />
       {/* Top bar */}
       <div
