@@ -21,15 +21,6 @@ const POS: Record<Anchor, string> = {
     "left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+104px)]",
 };
 
-// A rotated square whose two visible edges carry the gold border, so it reads
-// as a small arrow pointing toward the feature being highlighted.
-const ARROW: Record<Anchor, string> = {
-  "top-left": "-top-1.5 left-7 border-t border-l",
-  "top-right": "-top-1.5 right-7 border-t border-l",
-  "top-center": "-top-1.5 left-1/2 -translate-x-1/2 border-t border-l",
-  "bottom-center": "-bottom-1.5 left-1/2 -translate-x-1/2 border-b border-r",
-};
-
 /**
  * First-time page coach-mark. Renders ONCE per `tipKey` (persisted as
  * `hiqmah-tip-<key>` in localStorage), then never again on any device that has
@@ -97,9 +88,6 @@ export default function PageTip({
           transition={{ type: "spring", damping: 26, stiffness: 320 }}
         >
           <div className="relative rounded-2xl border border-[var(--color-gold)]/40 bg-[var(--color-sidebar)]/95 backdrop-blur-xl shadow-xl shadow-black/40 p-4">
-            <span
-              className={`absolute w-3 h-3 rotate-45 bg-[var(--color-sidebar)]/95 border-[var(--color-gold)]/40 ${ARROW[anchor]}`}
-            />
             <div className="flex items-start gap-3">
               <span className="mt-0.5 shrink-0 w-8 h-8 rounded-full bg-[var(--color-gold)]/15 text-gold flex items-center justify-center">
                 <Sparkles size={16} />

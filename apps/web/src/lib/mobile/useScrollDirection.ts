@@ -14,14 +14,15 @@ export function useScrollDirection(
   const lastY = useRef(0);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    lastY.current = el.scrollTop;
-    let raf = 0;
+    let attached: HTMLElement | null = null;
+    let scrollRaf = 0;
+    let attachRaf = 0;
     const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = 0;
+        const el = attached;
+        if (!el) return;
         const y = el.scrollTop;
         const delta = y - lastY.current;
         if (y < 28) setDir("up"); // always show near the top
@@ -30,10 +31,26 @@ export function useScrollDirection(
         lastY.current = y;
       });
     };
-    el.addEventListener("scroll", onScroll, { passive: true });
+    // The scroll container (MobileShell's <main>) may not exist the instant this
+    // effect first runs (e.g. auth still resolving swaps the tree), and the effect
+    // won't re-run since `ref` is stable — so if we bailed on a null ref the
+    // listener would NEVER attach and the bars would never hide. Retry until it's
+    // there, then attach once.
+    const attach = () => {
+      const el = ref.current;
+      if (!el) {
+        attachRaf = requestAnimationFrame(attach);
+        return;
+      }
+      attached = el;
+      lastY.current = el.scrollTop;
+      el.addEventListener("scroll", onScroll, { passive: true });
+    };
+    attach();
     return () => {
-      el.removeEventListener("scroll", onScroll);
-      if (raf) cancelAnimationFrame(raf);
+      if (attachRaf) cancelAnimationFrame(attachRaf);
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      attached?.removeEventListener("scroll", onScroll);
     };
   }, [ref]);
 
