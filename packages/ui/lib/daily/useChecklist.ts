@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  DAILY_CHANGED_EVENT,
   gradeStatus,
   type DailyAdapter,
   type DayItem,
@@ -19,6 +20,11 @@ export interface ChecklistRow extends DayItem {
 function rowKindOf(r: DayItem): "check" | "count" | "dhikr" {
   if (r.goalCount == null) return "check"; // simple checkbox (prayers, sections, tasks)
   return r.dhikrKey ? "dhikr" : "count";
+}
+
+function emitDailyChanged() {
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new CustomEvent(DAILY_CHANGED_EVENT));
 }
 
 const EMPTY_STREAKS: Streaks = {
@@ -144,6 +150,7 @@ export function useChecklist(adapter: DailyAdapter, today: string): UseChecklist
           await adapter.setDone(today, id, nextDone);
         }
         await refreshStreaks();
+        emitDailyChanged();
       };
       run().catch(() => reload());
     },
@@ -172,6 +179,7 @@ export function useChecklist(adapter: DailyAdapter, today: string): UseChecklist
           );
           return refreshStreaks();
         })
+        .then(emitDailyChanged)
         .catch(() => reload());
     },
     [adapter, today, refreshStreaks, reload]
@@ -193,6 +201,7 @@ export function useChecklist(adapter: DailyAdapter, today: string): UseChecklist
         adapter
           .setCount(today, row.userItemId as string, nextCount)
           .then(refreshStreaks)
+          .then(emitDailyChanged)
           .catch(() => reload());
         return;
       }

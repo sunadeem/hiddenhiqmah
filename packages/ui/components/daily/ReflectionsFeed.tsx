@@ -31,6 +31,8 @@ export function ReflectionsFeed({
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
+  // Timer that fires on scroll-end to force a settle onto the nearest card.
+  const snapTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   // The deck's natural height is the TALLEST of all cards (they're laid out in a
   // flex row), so a short reminder sat atop a huge track — the big dead space down
   // to the pager. Size the track to the CURRENT card instead (measured below).
@@ -81,7 +83,26 @@ export function ReflectionsFeed({
     const el = trackRef.current;
     if (!el || el.clientWidth === 0) return;
     setIndex(Math.round(el.scrollLeft / el.clientWidth));
+    // WKWebView momentum + snap-mandatory frequently leaves the deck parked
+    // halfway between two cards after a free flick (the engine never re-snaps).
+    // Debounce until scrolling stops, then programmatically settle onto the
+    // nearest card so every swipe always ends on a full card.
+    if (snapTimer.current) clearTimeout(snapTimer.current);
+    snapTimer.current = setTimeout(() => {
+      const e = trackRef.current;
+      if (!e || e.clientWidth === 0) return;
+      const nearest = Math.round(e.scrollLeft / e.clientWidth);
+      const target = nearest * e.clientWidth;
+      if (Math.abs(e.scrollLeft - target) > 1) {
+        e.scrollTo({ left: target, behavior: "smooth" });
+      }
+    }, 120);
   };
+
+  // Clear the settle timer on unmount.
+  useEffect(() => () => {
+    if (snapTimer.current) clearTimeout(snapTimer.current);
+  }, []);
 
   const go = (delta: number) => {
     const next = Math.min(Math.max(index + delta, 0), list.length - 1);
@@ -184,7 +205,7 @@ export function ReflectionsFeed({
         style={{ scrollbarWidth: "none", height: deckH }}
       >
         {list.map((r, i) => (
-          <div key={r.id} className="snap-center shrink-0 w-full px-1">
+          <div key={r.id} className="snap-center snap-always shrink-0 w-full px-1">
             <ReflectionCard
               r={r}
               isToday={isAll && i === startIndex}

@@ -15,6 +15,7 @@ import {
   CopyButton,
 } from "@hidden-hiqmah/ui/components/AskHiqmah";
 import type { Message } from "@hidden-hiqmah/ui/components/AskHiqmah";
+import { useAuth } from "@/context/AuthContext";
 
 const placeholderQuestions = [
   "What is Islam?",
@@ -46,9 +47,14 @@ const placeholderQuestions = [
 
 // Rendered as the first assistant bubble in the thread. Kept OUT of the
 // `messages` state so it is never persisted, never sent to the API, and never
-// counted as a real turn — it is purely a welcome message.
-const GREETING_MESSAGE =
-  "**Assalāmu ʿalaykum 👋**\n\nAsk me anything about Islam — the Qur'an, hadith, the Prophets, fiqh, and more.\n\nAnswers draw on authentic sources, but I'm a study aid — not a substitute for a qualified scholar.";
+// counted as a real turn — it is purely a welcome message. Built at runtime so
+// it can greet the signed-in user by name (falls back to the plain greeting).
+function buildGreeting(firstName?: string): string {
+  const salaam = firstName
+    ? `**Assalāmu ʿalaykum, ${firstName} 👋**`
+    : "**Assalāmu ʿalaykum 👋**";
+  return `${salaam}\n\nAsk me anything about Islam — the Qur'an, hadith, the Prophets, fiqh, and more.\n\nAnswers draw on authentic sources, but I'm a study aid — not a substitute for a qualified scholar.`;
+}
 
 export default function AskPage() {
   const router = useRouter();
@@ -63,6 +69,18 @@ export default function AskPage() {
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
+  const meta = (user?.user_metadata ?? {}) as {
+    first_name?: string;
+    full_name?: string;
+    name?: string;
+  };
+  const firstName = (
+    meta.first_name ||
+    (meta.full_name || meta.name || "").split(" ")[0] ||
+    ""
+  ).trim();
+  const greeting = buildGreeting(firstName);
 
   useEffect(() => {
     setMessages(loadMessages());
@@ -238,7 +256,7 @@ export default function AskPage() {
         >
           <div className="max-w-[85%] rounded-xl px-4 py-3 text-sm leading-relaxed bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20">
             <div className="whitespace-pre-wrap break-words overflow-hidden">
-              {renderMarkdown(GREETING_MESSAGE)}
+              {renderMarkdown(greeting)}
             </div>
           </div>
         </motion.div>

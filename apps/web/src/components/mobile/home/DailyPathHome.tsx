@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -24,7 +24,7 @@ import {
 } from "../MobileHomeDashboard";
 import QiblahSheet from "../QiblahSheet";
 import { getProgress, type TunedFor } from "@hidden-hiqmah/ui/lib/storage";
-import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
+import { todayLocalDate, DAILY_CHANGED_EVENT } from "@hidden-hiqmah/ui/lib/daily/types";
 import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
 import { useAuth } from "@/context/AuthContext";
 import TodayStrip from "./TodayStrip";
@@ -118,36 +118,51 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
   }, []);
 
   // Read today's completion (read-only — never materialize/freeze from a view).
-  useEffect(() => {
-    let alive = true;
+  const readDone = useCallback(async () => {
     const today = todayLocalDate();
-    (async () => {
-      try {
-        await adapter.ensureSeeded();
-        const rollups = await adapter.getDayRollups(today, today);
-        if (!alive || rollups.length === 0) return; // day not started → nothing done yet
-        const [items, detail] = await Promise.all([
-          adapter.getUserItems(),
-          adapter.getDayDetail(today),
-        ]);
-        if (!alive) return;
-        const idToSource = new Map(items.map((i) => [i.id, i.sourceKey]));
-        const keys = new Set<string>();
-        for (const d of detail) {
-          if (d.done && d.userItemId) {
-            const src = idToSource.get(d.userItemId);
-            if (src) keys.add(src);
-          }
-        }
-        setDoneKeys(keys);
-      } catch {
-        /* leave empty */
+    try {
+      await adapter.ensureSeeded();
+      const rollups = await adapter.getDayRollups(today, today);
+      if (rollups.length === 0) {
+        setDoneKeys(new Set()); // day not started (or reset) → nothing done
+        return;
       }
-    })();
-    return () => {
-      alive = false;
-    };
+      const [items, detail] = await Promise.all([
+        adapter.getUserItems(),
+        adapter.getDayDetail(today),
+      ]);
+      const idToSource = new Map(items.map((i) => [i.id, i.sourceKey]));
+      const keys = new Set<string>();
+      for (const d of detail) {
+        if (d.done && d.userItemId) {
+          const src = idToSource.get(d.userItemId);
+          if (src) keys.add(src);
+        }
+      }
+      setDoneKeys(keys);
+    } catch {
+      /* leave as-is */
+    }
   }, [adapter]);
+
+  // Read on mount / adapter (profile) change, then re-read on any live signal:
+  // the checklist emits DAILY_CHANGED_EVENT on check/bump, and Home regaining
+  // focus (tab switch / app foreground) reflects edits made on another screen.
+  useEffect(() => {
+    void readDone();
+    const onChanged = () => void readDone();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void readDone();
+    };
+    window.addEventListener(DAILY_CHANGED_EVENT, onChanged);
+    window.addEventListener("focus", onChanged);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener(DAILY_CHANGED_EVENT, onChanged);
+      window.removeEventListener("focus", onChanged);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [readDone]);
 
   const steps = buildSteps(tunedFor, hour).map((s) =>
     s.key === "read" ? { ...s, href: readHref } : s

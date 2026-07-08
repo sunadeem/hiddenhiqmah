@@ -10,6 +10,10 @@
 export type ItemKind = "prayer" | "dhikr" | "task";
 export type DayStatus = "none" | "partial" | "full";
 
+/** Fired on `window` whenever the daily checklist mutates (check / bump / count),
+ *  so passive readers (Home path, Today strip) can re-read completion live. */
+export const DAILY_CHANGED_EVENT = "hiqmah:daily-changed";
+
 export interface UserItem {
   id: string;
   sourceKey: string | null; // default key it came from; null = user-created
