@@ -22,6 +22,7 @@ import {
   MessageCircle,
   Pencil,
   Send,
+  Sparkles,
   X,
 } from "lucide-react";
 import HomeStylePicker from "../home/HomeStylePicker";
@@ -52,6 +53,7 @@ import {
   type TestNotificationKind,
 } from "@/lib/mobile/notifications";
 import { hapticMedium } from "@/lib/mobile/haptics";
+import { resetPageTips } from "@/components/mobile/PageTip";
 
 const FEEDBACK_EMAIL = "Subhan.Nadeem@HiddenHiqmah.com";
 
@@ -94,6 +96,13 @@ export default function SettingsScreen() {
     hapticMedium();
     const ok = await sendTestNotification(kind);
     setTestSent(ok ? `${label} — arriving in ~4s` : "Enable notifications first");
+    window.setTimeout(() => setTestSent(null), 4000);
+  };
+
+  const resetTips = () => {
+    hapticMedium();
+    resetPageTips();
+    setTestSent("Page tips reset — open a feature page to see them.");
     window.setTimeout(() => setTestSent(null), 4000);
   };
 
@@ -214,6 +223,13 @@ export default function SettingsScreen() {
               onClick={() => void fireTest(kind, label)}
             />
           ))}
+          <SettingsRow
+            icon={Sparkles}
+            title="Reset page tips"
+            subtitle="Show the first-time tips again"
+            rightValue="Reset"
+            onClick={resetTips}
+          />
           {testSent && (
             <div className="px-3 py-2 text-xs text-gold text-center">{testSent}</div>
           )}

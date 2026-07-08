@@ -10,6 +10,20 @@ const KEY_PREFIX = "hiqmah-tip-";
 
 export type Tip = { key: string; title: string; body: string };
 
+/** Clear every first-time tip flag so all PageTips show again (QA/testing). */
+export function resetPageTips() {
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(KEY_PREFIX)) keys.push(k);
+    }
+    keys.forEach((k) => localStorage.removeItem(k));
+  } catch {
+    /* ignore */
+  }
+}
+
 /**
  * First-time page coach-marks. Renders any tips not yet seen (each tracked by
  * `hiqmah-tip-<key>` in localStorage), ONE AT A TIME, centered on screen over a
