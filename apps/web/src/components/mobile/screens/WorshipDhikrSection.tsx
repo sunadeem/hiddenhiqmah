@@ -5,7 +5,7 @@ import Link from "next/link";
 import { BarChart3, Pencil, Plus, Check } from "lucide-react";
 import { DhikrCounter } from "@hidden-hiqmah/ui/components/daily/DhikrCounter";
 import type { DailyAdapter } from "@hidden-hiqmah/ui/lib/daily/types";
-import { hapticSelection, hapticLight } from "@/lib/mobile/haptics";
+import { hapticLight } from "@/lib/mobile/haptics";
 import {
   DHIKR_CATALOG_BY_KEY,
   DEFAULT_WORSHIP_DHIKR,
@@ -122,7 +122,7 @@ export default function WorshipDhikrSection({
               dhikrKey={c.key}
               label={c.label}
               goal={c.goal}
-              onHaptic={hapticSelection}
+              onHaptic={hapticLight}
             />
           ))}
 

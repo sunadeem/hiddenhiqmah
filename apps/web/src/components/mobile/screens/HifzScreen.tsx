@@ -54,16 +54,20 @@ export default function HifzScreen() {
 
   // Extra practice when nothing is due today: review the soonest-scheduled cards
   // ahead (gentle, capped). Gated behind a confirm in the dashboard. (HIFZ-3)
+  // "Ahead" must exclude cards already handled today — otherwise the cards just
+  // cleared in today's session (now the soonest-due non-new cards) sort straight
+  // back to the top, so "review ahead" would just replay today's queue instead of
+  // pulling the next scheduled items.
   const startExtraSession = useCallback(async () => {
     const all = await adapter.getCards();
     const q = all
-      .filter((c) => c.status !== "new")
+      .filter((c) => c.status !== "new" && c.lastReviewed !== today)
       .sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : 0))
       .slice(0, 20);
     if (q.length === 0) return;
     setQueue(q);
     setView("session");
-  }, [adapter]);
+  }, [adapter, today]);
 
   const back = () => {
     if (view === "dashboard") router.back();

@@ -590,6 +590,9 @@ function FocusView({
   onWord: (verseNumber: number, wordIdx: number, word: Word) => void;
 }) {
   const swipe = useRef<{ x: number; y: number } | null>(null);
+  // Ref to the currently-highlighted Arabic word so Focus mode can keep it on
+  // screen during playback (see auto-scroll effect below).
+  const activeWordRef = useRef<HTMLSpanElement | null>(null);
   const adhan = useAdhanAudio();
   const clamp = (n: number) => Math.max(0, Math.min(verses.length - 1, n));
   const verse = verses[clamp(idx)];
@@ -613,6 +616,25 @@ function FocusView({
   // never redundant with the player, yet always available to start the on-screen verse
   // (incl. after pausing then navigating to a different āyah).
   const showCenterPlay = audio.playingVerse == null || audio.audioPaused;
+
+  // Focus mode only: when the highlighted word advances (long āyahs wrap below
+  // the fold), nudge it back into the visible band. Keyed on `active` so it
+  // fires only as the active word changes — not on every scroll — and the
+  // out-of-view guard means it won't fight the user's manual scrolling.
+  // `active` is -1 unless the on-screen verse is actively playing, so this is
+  // inert while paused/idle.
+  useEffect(() => {
+    if (active < 0) return;
+    const el = activeWordRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const topBound = 72; // clear the status bar / header
+    // clear the fixed controls (+ mini-player when a verse/adhan is loaded)
+    const bottomBound = window.innerHeight - (playerMounted ? 220 : 140);
+    if (rect.top < topBound || rect.bottom > bottomBound) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [active, playerMounted]);
 
   const go = (d: number) => {
     const next = clamp(idx + d);
@@ -676,6 +698,7 @@ function FocusView({
                   ? words.map((w, wi) => (
                       <span
                         key={wi}
+                        ref={wi === active ? activeWordRef : null}
                         onClick={() => onWord(verse.number, wi, w)}
                         className={`cursor-pointer rounded touch-manipulation transition-colors active:bg-[var(--color-gold)]/15 ${wi === active ? "text-gold" : playing && active >= 0 && wi < active ? "text-gold/60" : ""}`}
                       >

@@ -163,7 +163,7 @@ export function ReflectionsFeed({
       <div
         ref={trackRef}
         onScroll={onScroll}
-        className="flex overflow-x-auto snap-x snap-mandatory -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overscroll-x-contain"
+        className="flex items-start overflow-x-auto snap-x snap-mandatory -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overscroll-x-contain"
         style={{ scrollbarWidth: "none" }}
       >
         {list.map((r, i) => (

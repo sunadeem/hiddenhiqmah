@@ -44,6 +44,12 @@ const placeholderQuestions = [
   "How do I perform Hajj?",
 ];
 
+// Rendered as the first assistant bubble in the thread. Kept OUT of the
+// `messages` state so it is never persisted, never sent to the API, and never
+// counted as a real turn — it is purely a welcome message.
+const GREETING_MESSAGE =
+  "**Assalāmu ʿalaykum 👋**\n\nAsk me anything about Islam — the Qur'an, hadith, the Prophets, fiqh, and more.\n\nAnswers draw on authentic sources, but I'm a study aid — not a substitute for a qualified scholar.";
+
 export default function AskPage() {
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -222,22 +228,20 @@ export default function AskPage() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden p-5 space-y-4 min-h-0">
-        {messages.length === 0 && (
-          <div className="text-center py-16 px-4">
-            <MessageCircleQuestion size={32} className="text-[#3b82f6]/20 mx-auto mb-4" />
-            <p className="text-themed text-base font-semibold">
-              Assalāmu ʿalaykum 👋
-            </p>
-            <p className="text-themed-muted text-sm mt-1.5 max-w-xs mx-auto leading-relaxed">
-              Ask me anything about Islam — the Qur&apos;an, hadith, the Prophets,
-              fiqh, and more.
-            </p>
-            <p className="text-themed-muted/60 text-xs mt-3 max-w-xs mx-auto leading-relaxed">
-              Answers draw on authentic sources, but I&apos;m a study aid — not a
-              substitute for a qualified scholar.
-            </p>
+        {/* Greeting rendered as the first assistant bubble. It lives outside
+            `messages`, so it is never saved, sent to the API, or counted as a turn. */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="flex justify-start"
+        >
+          <div className="max-w-[85%] rounded-xl px-4 py-3 text-sm leading-relaxed bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20">
+            <div className="whitespace-pre-wrap break-words overflow-hidden">
+              {renderMarkdown(GREETING_MESSAGE)}
+            </div>
           </div>
-        )}
+        </motion.div>
         {messages.map((msg, i) => (
           <motion.div
             key={i}

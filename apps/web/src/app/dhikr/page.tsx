@@ -11,7 +11,7 @@ import { RotateCcw, Pencil, Check, Plus } from "lucide-react";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import { DHIKR_CATALOG_BY_KEY } from "@/lib/dhikr/catalog";
-import { hapticSelection } from "@/lib/mobile/haptics";
+import { hapticLight } from "@/lib/mobile/haptics";
 import PageTip from "@/components/mobile/PageTip";
 import {
   getWorshipDhikr,
@@ -419,7 +419,7 @@ function DhikrPageInner() {
 
   const increment = useCallback(
     (key: string) => {
-      hapticSelection();
+      hapticLight();
       setCounts((c) => ({ ...c, [key]: (c[key] || 0) + 1 }));
       pending.current[key] = (pending.current[key] || 0) + 1;
       if (timer.current) clearTimeout(timer.current);
