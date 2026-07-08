@@ -137,19 +137,19 @@ function MiniBar({
         <button
           onClick={handlePauseToggle}
           aria-label={paused ? "Play" : "Pause"}
-          className="p-2 -mr-1 rounded-lg hover:bg-white/10 text-themed touch-manipulation"
+          className="p-2 -mr-1 rounded-lg hover:bg-[var(--overlay-medium)] text-themed touch-manipulation"
         >
           {paused ? <Play size={22} /> : <Pause size={22} />}
         </button>
         <button
           onClick={handleClose}
           aria-label="Stop"
-          className="p-2 -mr-2 rounded-lg hover:bg-white/10 text-themed-muted touch-manipulation"
+          className="p-2 -mr-2 rounded-lg hover:bg-[var(--overlay-medium)] text-themed-muted touch-manipulation"
         >
           <X size={20} />
         </button>
       </div>
-      <div className="h-0.5 bg-white/5">
+      <div className="h-0.5 bg-[var(--overlay-subtle)]">
         <div
           className="h-full bg-[var(--color-gold)] transition-[width] duration-100"
           style={{ width: `${progress}%` }}
@@ -218,13 +218,13 @@ function FullSheet({
             touchAction: "none",
           }}
         >
-          <div className="w-12 h-1.5 rounded-full bg-white/40" />
+          <div className="w-12 h-1.5 rounded-full bg-[var(--overlay-strong)]" />
         </div>
         <button
           type="button"
           onClick={onClose}
           aria-label="Close player"
-          className="absolute right-3 p-3 rounded-full bg-white/10 text-themed touch-manipulation"
+          className="absolute right-3 p-3 rounded-full bg-[var(--overlay-medium)] text-themed touch-manipulation"
           style={{ top: "max(calc(env(safe-area-inset-top) + 0.5rem), 3.5rem)" }}
         >
           <ChevronDown size={22} />
@@ -283,7 +283,7 @@ function FullSheet({
         style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1.5rem)" }}
       >
         <div
-          className="h-1.5 bg-white/10 rounded-full cursor-pointer mb-2 touch-manipulation"
+          className="h-1.5 bg-[var(--overlay-medium)] rounded-full cursor-pointer mb-2 touch-manipulation"
           onClick={handleSeek}
           role="slider"
           aria-label="Seek"

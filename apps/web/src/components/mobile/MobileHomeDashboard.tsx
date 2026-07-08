@@ -357,7 +357,7 @@ export function NextPrayerCard() {
           </div>
         </div>
 
-        <div className="h-px bg-white/10 my-4" />
+        <div className="h-px bg-[var(--overlay-medium)] my-4" />
 
         <div className="space-y-1.5">
           {allPrayers.map(({ key, label }) => {

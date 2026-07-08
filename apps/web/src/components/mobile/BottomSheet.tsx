@@ -90,13 +90,13 @@ function Sheet({
             touchAction: "none",
           }}
         >
-          <div className="w-12 h-1.5 rounded-full bg-white/40" />
+          <div className="w-12 h-1.5 rounded-full bg-[var(--overlay-strong)]" />
         </div>
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-3 p-3 rounded-full bg-white/10 text-themed touch-manipulation"
+          className="absolute right-3 p-3 rounded-full bg-[var(--overlay-medium)] text-themed touch-manipulation"
           style={{
             top: "max(calc(env(safe-area-inset-top) + 0.5rem), 3.5rem)",
           }}

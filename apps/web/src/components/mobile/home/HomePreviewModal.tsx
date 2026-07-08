@@ -71,7 +71,7 @@ export default function HomePreviewModal({
             <button
               onClick={onClose}
               aria-label="Close preview"
-              className="w-9 h-9 rounded-full flex items-center justify-center text-themed bg-white/5 active:bg-white/10"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-themed bg-[var(--overlay-subtle)] active:bg-[var(--overlay-medium)]"
             >
               <X size={18} />
             </button>

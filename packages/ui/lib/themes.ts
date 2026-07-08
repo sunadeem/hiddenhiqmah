@@ -58,5 +58,13 @@ export function getThemeCSSVariables(isDark: boolean): Record<string, string> {
     "--color-accent": isDark ? c.accentDark : c.accent,
     "--color-accent-hover": isDark ? c.accentHoverDark : c.accentHover,
     "--color-gold": isDark ? c.goldDark : c.gold,
+    // Theme-aware overlay/subtle-surface tokens. In dark mode these are
+    // white-alpha (lighten the dark bg); in light mode they are black-alpha
+    // (darken the cream bg) so subtle surfaces, dividers, tracks and drag
+    // handles stay visible in BOTH themes. Consume via Tailwind arbitrary
+    // values, e.g. bg-[var(--overlay-subtle)] / hover:bg-[var(--overlay-medium)].
+    "--overlay-subtle": isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.045)",
+    "--overlay-medium": isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.075)",
+    "--overlay-strong": isDark ? "rgba(255,255,255,0.20)" : "rgba(0,0,0,0.15)",
   };
 }

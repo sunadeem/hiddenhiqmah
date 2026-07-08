@@ -219,11 +219,11 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
                 <div className="flex flex-col items-center pt-3">
                   <div
                     className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                      done || emphasized ? "bg-gold" : "bg-white/20"
+                      done || emphasized ? "bg-gold" : "bg-[var(--overlay-strong)]"
                     }`}
                   />
                   {i < steps.length - 1 && (
-                    <div className="w-px flex-1 bg-white/10 mt-1" />
+                    <div className="w-px flex-1 bg-[var(--overlay-medium)] mt-1" />
                   )}
                 </div>
                 {/* node */}
@@ -241,7 +241,7 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
                         ? "bg-[var(--color-gold)]/15 text-gold"
                         : emphasized
                         ? "bg-[var(--color-gold)]/20 text-gold"
-                        : "bg-white/5 text-themed-muted"
+                        : "bg-[var(--overlay-subtle)] text-themed-muted"
                     }`}
                   >
                     {done ? <Check size={19} strokeWidth={2.5} /> : <Icon size={19} />}

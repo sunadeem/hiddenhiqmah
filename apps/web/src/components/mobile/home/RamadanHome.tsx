@@ -284,7 +284,7 @@ export default function RamadanHome({
             <span className="text-themed-muted text-base font-semibold"> / 30</span>
           </p>
         </div>
-        <div className="h-2 rounded-full bg-white/8 overflow-hidden mt-3">
+        <div className="h-2 rounded-full bg-[var(--overlay-medium)] overflow-hidden mt-3">
           <div className="h-full bg-gold rounded-full" style={{ width: `${(juz / 30) * 100}%` }} />
         </div>
         <div className="flex items-center justify-between mt-2.5">
@@ -297,7 +297,7 @@ export default function RamadanHome({
               onClick={() => setJuzP(juz - 1)}
               disabled={juz <= 0}
               aria-label="Log one fewer juz"
-              className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-themed disabled:opacity-40"
+              className="w-7 h-7 rounded-full bg-[var(--overlay-subtle)] flex items-center justify-center text-themed disabled:opacity-40"
             >
               <Minus size={14} />
             </button>

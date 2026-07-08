@@ -40,12 +40,12 @@ export function StreakWeekStrip({
                 "w-7 h-7 rounded-full flex items-center justify-center",
                 isToday ? "ring-1 ring-[var(--color-gold)]" : "",
                 future
-                  ? "bg-white/[0.04] opacity-40"
+                  ? "bg-[var(--overlay-subtle)] opacity-40"
                   : status === "full"
                   ? "bg-[var(--color-gold)] text-[var(--color-bg)]"
                   : status === "partial"
                   ? "border border-[var(--color-gold)]/60 text-gold"
-                  : "bg-white/[0.06] text-themed-muted",
+                  : "bg-[var(--overlay-medium)] text-themed-muted",
               ].join(" ")}
             >
               {!future && status === "full" && <Heart size={13} fill="currentColor" />}

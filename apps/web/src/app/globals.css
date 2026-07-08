@@ -19,6 +19,11 @@
   --color-accent: #4a8fe7;
   --color-accent-hover: #6aa3f0;
   --color-gold: #d4a843;
+  /* Theme-aware subtle-surface overlays (dark defaults; flipped for light
+     in packages/ui/lib/themes.ts). Use via bg-[var(--overlay-subtle)] etc. */
+  --overlay-subtle: rgba(255, 255, 255, 0.05);
+  --overlay-medium: rgba(255, 255, 255, 0.10);
+  --overlay-strong: rgba(255, 255, 255, 0.20);
 }
 
 @theme inline {

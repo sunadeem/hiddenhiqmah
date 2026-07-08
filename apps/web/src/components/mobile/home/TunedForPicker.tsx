@@ -30,7 +30,7 @@ export default function TunedForPicker({
   onChange: (v: TunedFor) => void;
 }) {
   return (
-    <div className="card-bg rounded-2xl border sidebar-border overflow-hidden divide-y divide-white/5">
+    <div className="card-bg rounded-2xl border sidebar-border overflow-hidden divide-y divide-[var(--overlay-subtle)]">
       {OPTIONS.map((o) => {
         const Icon = o.icon;
         const isSel = o.value === value;

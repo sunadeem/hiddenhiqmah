@@ -63,7 +63,7 @@ export default function MobileTopBar() {
           type="button"
           onClick={handleBack}
           aria-label="Back"
-          className="flex items-center justify-center w-12 h-12 rounded-full text-themed bg-white/5 active:bg-white/15 touch-manipulation"
+          className="flex items-center justify-center w-12 h-12 rounded-full text-themed bg-[var(--overlay-subtle)] active:bg-[var(--overlay-strong)] touch-manipulation"
           style={{ touchAction: "manipulation" }}
         >
           <ChevronLeft size={28} strokeWidth={2.5} />

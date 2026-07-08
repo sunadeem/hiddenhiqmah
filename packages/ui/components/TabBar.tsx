@@ -105,7 +105,7 @@ export default function TabBar({
                     className={`w-full flex items-center gap-2 px-4 py-3 text-sm text-left transition-colors ${
                       isActive
                         ? "bg-gold/15 text-gold font-medium"
-                        : "text-themed-muted hover:text-themed hover:bg-white/5"
+                        : "text-themed-muted hover:text-themed hover:bg-[var(--overlay-subtle)]"
                     }`}
                   >
                     {tab.icon}

@@ -882,7 +882,7 @@ function SettingsSheet({
               </span>
               <span
                 className={`w-11 h-6 rounded-full relative transition-colors ${
-                  autoNext ? "bg-[var(--color-gold)]" : "bg-white/15"
+                  autoNext ? "bg-[var(--color-gold)]" : "bg-[var(--overlay-strong)]"
                 }`}
               >
                 <span

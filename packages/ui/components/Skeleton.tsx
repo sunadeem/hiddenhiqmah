@@ -9,7 +9,7 @@
  */
 export function Skeleton({ className = "" }: { className?: string }) {
   return (
-    <div className={`animate-pulse rounded-lg bg-white/10 ${className}`} />
+    <div className={`animate-pulse rounded-lg bg-[var(--overlay-medium)] ${className}`} />
   );
 }
 

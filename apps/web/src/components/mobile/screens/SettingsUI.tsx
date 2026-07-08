@@ -26,7 +26,7 @@ export function SettingsSection({
 
 function SectionShell({ children }: { children?: ReactNode }) {
   return (
-    <div className="card-bg rounded-2xl border sidebar-border overflow-hidden divide-y divide-white/5">
+    <div className="card-bg rounded-2xl border sidebar-border overflow-hidden divide-y divide-[var(--overlay-subtle)]">
       {children}
     </div>
   );
@@ -249,7 +249,7 @@ export function Toggle({
       role="switch"
       aria-checked={value}
       className={`relative inline-flex h-6 w-10 shrink-0 rounded-full transition-colors touch-manipulation ${
-        value ? "bg-[var(--color-gold)]" : "bg-white/15"
+        value ? "bg-[var(--color-gold)]" : "bg-[var(--overlay-strong)]"
       } ${disabled ? "opacity-50" : ""}`}
     >
       <span
