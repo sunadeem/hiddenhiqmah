@@ -31,6 +31,10 @@ export function ReflectionsFeed({
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
+  // The deck's natural height is the TALLEST of all cards (they're laid out in a
+  // flex row), so a short reminder sat atop a huge track — the big dead space down
+  // to the pager. Size the track to the CURRENT card instead (measured below).
+  const [deckH, setDeckH] = useState<number>();
 
   const themes = useMemo(() => {
     const present = new Set(reminders.map((r) => r.theme));
@@ -59,6 +63,19 @@ export function ReflectionsFeed({
     setIndex(startIndex);
     requestAnimationFrame(() => scrollToIndex(startIndex, false));
   }, [selectionKey, startIndex]);
+
+  // Measure the active card and size the deck to it (items-start keeps slides at
+  // their content height, so this reads the real card height regardless of the
+  // track's current height). rAF + fonts.ready so Arabic has laid out first.
+  useEffect(() => {
+    const measure = () => {
+      const slide = trackRef.current?.children[index] as HTMLElement | undefined;
+      if (slide) setDeckH(slide.offsetHeight);
+    };
+    const raf = requestAnimationFrame(measure);
+    document.fonts?.ready.then(() => requestAnimationFrame(measure));
+    return () => cancelAnimationFrame(raf);
+  }, [index, selectionKey, list.length]);
 
   const onScroll = () => {
     const el = trackRef.current;
@@ -163,8 +180,8 @@ export function ReflectionsFeed({
       <div
         ref={trackRef}
         onScroll={onScroll}
-        className="flex items-start overflow-x-auto snap-x snap-mandatory -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overscroll-x-contain"
-        style={{ scrollbarWidth: "none" }}
+        className="flex items-start overflow-x-auto overflow-y-hidden snap-x snap-mandatory -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overscroll-x-contain transition-[height] duration-200"
+        style={{ scrollbarWidth: "none", height: deckH }}
       >
         {list.map((r, i) => (
           <div key={r.id} className="snap-center shrink-0 w-full px-1">
