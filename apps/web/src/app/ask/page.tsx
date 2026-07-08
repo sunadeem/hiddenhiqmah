@@ -51,8 +51,8 @@ const placeholderQuestions = [
 // it can greet the signed-in user by name (falls back to the plain greeting).
 function buildGreeting(firstName?: string): string {
   const salaam = firstName
-    ? `**Assalāmu ʿalaykum, ${firstName} 👋**`
-    : "**Assalāmu ʿalaykum 👋**";
+    ? `**Assalāmu ʿalaykum, ${firstName}**`
+    : "**Assalāmu ʿalaykum**";
   return `${salaam}\n\nAsk me anything about Islam — the Qur'an, hadith, the Prophets, fiqh, and more.\n\nAnswers draw on authentic sources, but I'm a study aid — not a substitute for a qualified scholar.`;
 }
 
