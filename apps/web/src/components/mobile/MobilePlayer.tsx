@@ -26,7 +26,7 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export default function MobilePlayer() {
+export default function MobilePlayer({ hidden = false }: { hidden?: boolean }) {
   const quran = useQuranAudio();
   const adhan = useAdhanAudio();
   const [expanded, setExpanded] = useState(false);
@@ -49,6 +49,7 @@ export default function MobilePlayer() {
         isQuran={isQuran}
         quran={quran}
         adhan={adhan}
+        hidden={hidden}
         onExpand={() => setExpanded(true)}
       />
       {mounted &&
@@ -76,11 +77,13 @@ function MiniBar({
   isQuran,
   quran,
   adhan,
+  hidden,
   onExpand,
 }: {
   isQuran: boolean;
   quran: QuranAudio;
   adhan: AdhanAudio;
+  hidden: boolean;
   onExpand: () => void;
 }) {
   const title = isQuran ? quran.chapter?.name || "Surah" : "Adhan";
@@ -109,12 +112,15 @@ function MiniBar({
   };
 
   return (
-    <div
+    <motion.div
       data-mini-player
       className="shrink-0 sidebar-bg border-t sidebar-border touch-manipulation"
       onClick={onExpand}
       role="button"
       tabIndex={0}
+      animate={{ y: hidden ? 140 : 0, opacity: hidden ? 0 : 1 }}
+      transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
+      style={{ pointerEvents: hidden ? "none" : "auto" }}
     >
       <div className="px-3 py-2 flex items-center gap-3">
         <div className="w-10 h-10 rounded-lg bg-[var(--color-gold)]/15 flex items-center justify-center shrink-0">
@@ -149,7 +155,7 @@ function MiniBar({
           style={{ width: `${progress}%` }}
         />
       </div>
-    </div>
+    </motion.div>
   );
 }
 

@@ -11,6 +11,7 @@ import { computePrayerTimes } from "@/lib/prayer-times";
 import { getPrayerSettings, setPrayerSettings, type PrayerCalcMethod } from "@hidden-hiqmah/ui/lib/storage";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import PageTip from "@/components/mobile/PageTip";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
@@ -2426,6 +2427,12 @@ function SalahContent() {
 
   return (
     <div>
+      <PageTip
+        tipKey="salah-guide"
+        anchor="top-center"
+        title="More than prayer times"
+        body="Use the section menu for a live qiblah compass, a full wudu guide, and a step-by-step walkthrough that shows you every position of the prayer."
+      />
       <PageHeader
         title="Salah"
         titleAr="الصلاة"

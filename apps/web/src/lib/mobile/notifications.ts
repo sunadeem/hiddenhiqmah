@@ -247,6 +247,11 @@ export async function scheduleAllNotifications(
     sound?: string;
     url?: string; // deep-link target on tap
     tier: 1 | 2 | 3; // 1=adhan (protected), 2=pre-prayer, 3=engagement
+    // iOS delivery priority. Adhan is time-sensitive so Focus/Sleep/DND don't
+    // silence it (Sleep Focus at Fajr is the common culprit). NOTE: this does NOT
+    // bypass the hardware ring/silent switch — that needs a Critical Alert
+    // (critical-alerts entitlement + UNNotificationSound.criticalSoundNamed).
+    interruptionLevel?: "timeSensitive" | "critical";
   };
   const notifs: Notif[] = [];
   let id = 1000;
@@ -282,6 +287,7 @@ export async function scheduleAllNotifications(
             sound: ADHAN_SOUND,
             url: "/salah",
             tier: 1,
+            interruptionLevel: "timeSensitive",
           });
         }
         if (prefs.prePrayer) {
@@ -443,6 +449,7 @@ export async function scheduleAllNotifications(
         body: n.body,
         schedule: n.schedule,
         ...(n.sound ? { sound: n.sound } : {}),
+        ...(n.interruptionLevel ? { interruptionLevel: n.interruptionLevel } : {}),
         ...(n.url ? { extra: { url: n.url } } : {}),
       })),
     });
@@ -609,6 +616,7 @@ export async function sendTestNotification(
           body: n.body,
           schedule: { at: new Date(Date.now() + 4000) },
           ...(n.sound ? { sound: n.sound } : {}),
+          ...(kind === "adhan" ? { interruptionLevel: "timeSensitive" } : {}),
           ...(n.url ? { extra: { url: n.url } } : {}),
         },
       ],

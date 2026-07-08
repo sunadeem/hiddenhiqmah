@@ -161,7 +161,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
         // the player + tab bar re-enable pointer events on themselves.
         <div className="mobile-bottom-chrome pointer-events-none absolute inset-x-0 bottom-0 z-30">
           <div className="pointer-events-auto">
-            <MobilePlayer />
+            <MobilePlayer hidden={scrollDir === "down"} />
           </div>
           <div className="pointer-events-auto">
             <MobileTabBar hidden={scrollDir === "down"} />

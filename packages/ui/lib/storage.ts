@@ -76,21 +76,23 @@ export type NotificationPrefs = {
 };
 
 const defaultNotificationPrefs: NotificationPrefs = {
+  // Everything ON by default EXCEPT the adhan itself — the adhan plays a long
+  // sound at prayer time, so it stays opt-in; all other reminders default on.
   adhanEnabled: false,
   adhanPerPrayer: { fajr: true, dhuhr: true, asr: true, maghrib: true, isha: true },
-  prePrayer: false,
-  iqamah: false,
+  prePrayer: true,
+  iqamah: true,
   todaysVerse: true,
-  todaysHadith: false,
+  todaysHadith: true,
   todaysReminder: true,
-  morningAdhkar: false,
-  eveningAdhkar: false,
+  morningAdhkar: true,
+  eveningAdhkar: true,
   streak: true,
-  dhikrReminders: false,
+  dhikrReminders: true,
   dhikrIntervalHours: 4,
   jumuah: true,
-  ramadan: false,
-  laylatulQadr: false,
+  ramadan: true,
+  laylatulQadr: true,
   aiChatResponses: true,
   continueReading: true,
 };

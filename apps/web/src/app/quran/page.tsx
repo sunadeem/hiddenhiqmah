@@ -10,6 +10,7 @@ import { parseQuranRef } from "@hidden-hiqmah/ui/lib/search";
 import { getProgress } from "@hidden-hiqmah/ui/lib/storage";
 import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { useIsNative } from "@/lib/mobile/platform";
+import PageTip from "@/components/mobile/PageTip";
 
 type VerseEntry = { n: number; t: string };
 type SearchIndex = { id: number; v: VerseEntry[] }[];
@@ -134,6 +135,12 @@ export default function QuranPage() {
   if (isNative) {
     return (
       <div className="pb-2">
+        <PageTip
+          tipKey="quran-search"
+          anchor="top-center"
+          title="Search by meaning, not just names"
+          body="Type any word or phrase — like 'patience' or 'light' — and search finds matching āyahs across all 114 sūrahs, then drops you right on the verse."
+        />
         <div className="flex items-baseline justify-between px-1 mb-3">
           <h1 className="text-2xl font-extrabold text-themed">Quran</h1>
           <span className="text-lg font-arabic text-gold">القرآن الكريم</span>

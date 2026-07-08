@@ -10,13 +10,13 @@ type Anchor = "top-left" | "top-right" | "top-center" | "bottom-center";
 
 const KEY_PREFIX = "hiqmah-tip-";
 
-// Fixed placement per anchor. Top offsets clear the iOS status bar + top bar;
-// the bottom offset clears the floating tab bar.
+// Fixed placement per anchor. Top offsets sit a comfortable gap below the iOS
+// status bar + the page's header; the bottom offset clears the floating tab bar.
 const POS: Record<Anchor, string> = {
-  "top-left": "left-3 top-[calc(env(safe-area-inset-top)+56px)]",
-  "top-right": "right-3 top-[calc(env(safe-area-inset-top)+56px)]",
+  "top-left": "left-3 top-[calc(env(safe-area-inset-top)+88px)]",
+  "top-right": "right-3 top-[calc(env(safe-area-inset-top)+88px)]",
   "top-center":
-    "left-1/2 -translate-x-1/2 top-[calc(env(safe-area-inset-top)+56px)]",
+    "left-1/2 -translate-x-1/2 top-[calc(env(safe-area-inset-top)+88px)]",
   "bottom-center":
     "left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+104px)]",
 };

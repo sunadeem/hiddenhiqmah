@@ -30,9 +30,11 @@ export default function HomePreview({
   if (style === "ramadan") return <RamadanHome preview />;
   return (
     <div className="space-y-3">
-      <TodayStrip />
       {style === "focus" ? (
-        <FocusHome tunedFor={tunedFor} />
+        <>
+          <TodayStrip />
+          <FocusHome tunedFor={tunedFor} />
+        </>
       ) : (
         <DailyPathHome tunedFor={tunedFor} />
       )}

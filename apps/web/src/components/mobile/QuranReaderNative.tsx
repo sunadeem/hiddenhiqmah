@@ -316,8 +316,15 @@ export default function QuranReaderNative({
       <PageTip
         tipKey="quran-focus"
         anchor="top-right"
-        title="Read one āyah at a time"
-        body="Tap the settings icon to switch to Focus mode — a single āyah fills the screen, tap any word for its meaning, and recitation follows along."
+        title="Make the reader yours"
+        body="Tap the settings icon to switch between Mushaf and Focus mode, show or hide the translation and transliteration, size the text, and play the recitation."
+      />
+      <PageTip
+        tipKey="quran-word"
+        anchor="bottom-center"
+        delayMs={1500}
+        title="Tap any word to understand it"
+        body="Tap an Arabic word — in Mushaf or Focus mode — to see its meaning and root, where else it appears in the Qur'an, and to ask the tutor about it."
       />
       {/* Top bar */}
       <div
