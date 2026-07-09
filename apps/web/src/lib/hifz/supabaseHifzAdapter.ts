@@ -102,7 +102,9 @@ export function createSupabaseHifzAdapter(
       peek_count: c.peekCount ?? 0,
       source: c.source ?? "learned",
       content_kind: c.contentKind ?? "quran",
-      card_order: c.order ?? null,
+      // Only send card_order when set, so ordinary adds still work before migration
+      // 019 is applied (the column is only needed for out-of-reading-order inserts).
+      ...(c.order != null ? { card_order: c.order } : {}),
     };
   }
 
