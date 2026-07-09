@@ -265,34 +265,36 @@ export default function Practice({ path, nav }: HifzScreenProps) {
               </div>
             </div>
 
-            {/* Hold-to-peek */}
-            <button
-              onPointerDown={(e) => {
-                e.preventDefault();
-                peekOn();
-              }}
-              onPointerUp={peekOff}
-              onPointerLeave={peekOff}
-              onPointerCancel={peekOff}
-              onKeyDown={(e) => {
-                if ((e.key === " " || e.key === "Enter") && !heldKey.current) {
+            {/* Hold-to-peek — only when the text is faded (Letters / Anchors),
+                since there's nothing to reveal on Full. */}
+            {stageIdx > 0 && (
+              <button
+                onPointerDown={(e) => {
                   e.preventDefault();
-                  heldKey.current = true;
                   peekOn();
-                }
-              }}
-              onKeyUp={(e) => {
-                if (e.key === " " || e.key === "Enter") {
-                  heldKey.current = false;
-                  peekOff();
-                }
-              }}
-              disabled={stageIdx === 0}
-              className="block mx-auto mt-5 rounded-full border border-dashed border-[var(--color-gold)]/40 px-5 py-2 text-[11.5px] tracking-[0.1em] uppercase text-gold touch-manipulation select-none disabled:opacity-30 active:bg-[var(--color-gold)]/10"
-              style={{ touchAction: "none" }}
-            >
-              hold to peek
-            </button>
+                }}
+                onPointerUp={peekOff}
+                onPointerLeave={peekOff}
+                onPointerCancel={peekOff}
+                onKeyDown={(e) => {
+                  if ((e.key === " " || e.key === "Enter") && !heldKey.current) {
+                    e.preventDefault();
+                    heldKey.current = true;
+                    peekOn();
+                  }
+                }}
+                onKeyUp={(e) => {
+                  if (e.key === " " || e.key === "Enter") {
+                    heldKey.current = false;
+                    peekOff();
+                  }
+                }}
+                className="block mx-auto mt-5 rounded-full border border-dashed border-[var(--color-gold)]/40 px-5 py-2 text-[11.5px] tracking-[0.1em] uppercase text-gold touch-manipulation select-none active:bg-[var(--color-gold)]/10"
+                style={{ touchAction: "none" }}
+              >
+                hold to peek
+              </button>
+            )}
           </div>
         </>
       )}

@@ -355,22 +355,24 @@ export default function LearnLadder({ path, nav, params }: LearnLadderProps) {
     async (base: Grade) => {
       if (busy) return;
       setBusy(true);
-      // Grade the current member card. Its own peekCount (persisted via bumpPeek
-      // during Fade) shapes its Seal grade — heavy peeking can't count as clean.
-      const card = memberCards[sealIdx];
-      if (card) {
-        const fresh = path.cards.find((x) => x.id === card.id) ?? card;
-        const g = sealGrade(base, fresh.peekCount ?? 0, stationAyahs);
-        await path.actions.grade(card.id, g);
+      const gradeCard = async (c: HifzCard) => {
+        const fresh = path.cards.find((x) => x.id === c.id) ?? c;
+        await path.actions.grade(c.id, sealGrade(base, fresh.peekCount ?? 0, stationAyahs));
+      };
+      if (content?.kind === "asma") {
+        // The 99 Names are sealed one Name at a time — grade the current, advance.
+        const card = memberCards[sealIdx];
+        if (card) await gradeCard(card);
+        if (sealIdx < memberCards.length - 1) {
+          hapticSelection();
+          setSealIdx((i) => i + 1);
+          setBusy(false);
+          return;
+        }
+      } else {
+        // Qur'ān: the portion is recited + sealed as ONE unit — grade every member.
+        for (const c of memberCards) await gradeCard(c);
       }
-      // More members to seal → move to the next one, staying on the Seal step.
-      if (sealIdx < memberCards.length - 1) {
-        hapticSelection();
-        setSealIdx((i) => i + 1);
-        setBusy(false);
-        return;
-      }
-      // Last member sealed → finish the station.
       hapticSuccess();
       // A completed sūrah earns a Milestone (station ends on the sūrah's last āyah).
       const finishedSurah =
@@ -383,7 +385,7 @@ export default function LearnLadder({ path, nav, params }: LearnLadderProps) {
         nav("today");
       }
     },
-    [busy, memberCards, sealIdx, path.cards, path.actions, stationAyahs, station, content, nav]
+    [busy, content, memberCards, sealIdx, path.cards, path.actions, stationAyahs, station, nav]
   );
 
   // ── nothing to learn ──
@@ -427,17 +429,21 @@ export default function LearnLadder({ path, nav, params }: LearnLadderProps) {
 
   const stationLabel = station.label || `${surahName(station.startSurah)}`;
 
-  // The member being sealed right now + a human label for it (Name, or āyah range).
-  const sealCard = memberCards[sealIdx];
+  // What the Seal is grading right now. Qur'ān seals the whole portion as one
+  // unit (no per-āyah count); the 99 Names are sealed one Name at a time.
+  const isAsmaSeal = content.kind === "asma";
+  const sealCard = isAsmaSeal ? memberCards[sealIdx] : memberCards[0];
+  const sealTotal = isAsmaSeal ? memberCards.length : 1;
+  const sealShownIdx = isAsmaSeal ? sealIdx : 0;
   const sealLabel: string = (() => {
-    if (!sealCard) return stationLabel;
-    if (content.kind === "asma") {
+    if (isAsmaSeal) {
       const names = (content.items as AItem[])
-        .filter((it) => it.cardId === sealCard.id)
+        .filter((it) => it.cardId === sealCard?.id)
         .map((it) => it.name.name);
       return names.join(" · ") || stationLabel;
     }
-    const ays = (content.items as QItem[]).filter((it) => it.cardId === sealCard.id);
+    // Qur'ān: the whole portion range.
+    const ays = content.items as QItem[];
     if (!ays.length) return stationLabel;
     const f = ays[0];
     const l = ays[ays.length - 1];
@@ -493,8 +499,8 @@ export default function LearnLadder({ path, nav, params }: LearnLadderProps) {
         {step === 4 && (
           <Seal
             itemLabel={sealLabel}
-            sealIdx={sealIdx}
-            total={memberCards.length}
+            sealIdx={sealShownIdx}
+            total={sealTotal}
             card={sealCard}
             today={today}
             stationAyahs={stationAyahs}
@@ -759,7 +765,7 @@ function Absorb({
             className="text-[13px] tracking-wide text-gold px-3 py-1.5 rounded-lg touch-manipulation active:opacity-70"
             style={{ animation: done < 3 ? "hifzPulse 1.6s ease-in-out infinite" : undefined }}
           >
-            ۔ Your turn — echo it aloud ۔
+            Recite it aloud, then tap here ›
           </button>
           <div className="flex gap-1.5">
             {[0, 1, 2].map((i) => (

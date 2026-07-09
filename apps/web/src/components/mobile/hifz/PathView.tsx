@@ -16,7 +16,7 @@
 // Today, and any open sheet) re-read in lock-step.
 
 import { useMemo, useState } from "react";
-import { Plus, X } from "lucide-react";
+import { ChevronLeft, Plus, X } from "lucide-react";
 import type { HifzPath } from "@/lib/hifz/useHifzPath";
 import type {
   HifzCard,
@@ -138,6 +138,19 @@ export default function PathView({ path, nav }: PathViewProps) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto px-6 pt-2 pb-28">
+        {/* Back to Today */}
+        <button
+          type="button"
+          onClick={() => {
+            hapticLight();
+            nav("today");
+          }}
+          aria-label="Back to Today"
+          className="-ml-2 mb-1 w-9 h-9 rounded-full flex items-center justify-center text-themed-muted active:bg-[var(--overlay-subtle)] touch-manipulation"
+        >
+          <ChevronLeft size={22} />
+        </button>
+
         {/* Header */}
         <p
           className="text-[10.5px] font-semibold uppercase mb-2"

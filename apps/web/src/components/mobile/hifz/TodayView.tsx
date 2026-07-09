@@ -226,17 +226,17 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
         </button>
       )}
 
-      {/* Quiet links. */}
-      <div className="flex justify-center gap-1.5 mt-4 flex-wrap">
+      {/* Free Practice + My Path — real buttons. */}
+      <div className="flex gap-2 mt-5">
         <button
           type="button"
           onClick={() => {
             hapticLight();
             nav("practice");
           }}
-          className="text-[12px] text-themed-muted px-2.5 py-1.5 rounded-lg active:opacity-70"
+          className="flex-1 rounded-xl border sidebar-border py-2.5 text-[13px] font-semibold text-themed active:opacity-80 touch-manipulation"
         >
-          Practice · schedule untouched
+          Free Practice
         </button>
         <button
           type="button"
@@ -244,7 +244,7 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
             hapticLight();
             nav("path");
           }}
-          className="text-[12px] text-themed-muted px-2.5 py-1.5 rounded-lg active:opacity-70"
+          className="flex-1 rounded-xl border sidebar-border py-2.5 text-[13px] font-semibold text-themed active:opacity-80 touch-manipulation"
         >
           My Path
         </button>
@@ -305,7 +305,7 @@ function Hero({
     eyebrow = "Today's step";
     title = "Today's step is complete.\nMāshāʼ Allāh.";
     est = `Kept in your care · consistency: day ${streak}`;
-    cta = "Practice freely — schedule untouched";
+    cta = "Free Practice";
     target = "practice";
   }
 
