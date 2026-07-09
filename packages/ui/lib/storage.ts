@@ -15,7 +15,6 @@ export type ReadingProgress = {
   surahsRead: number[]; // surah IDs the user has visited
   lastSurah?: number;
   lastVerse?: number;
-  maxJuzReached?: number; // highest juz the reader has entered (monotonic)
 };
 
 const KEYS = {
@@ -316,24 +315,6 @@ export function setLastPosition(surahId: number, verseNum: number) {
   progress.lastSurah = surahId;
   progress.lastVerse = verseNum;
   set(KEYS.progress, progress);
-}
-
-/**
- * Record the highest juz the reader has entered. When the user crosses CONTIGUOUSLY
- * into the next juz (juz === max + 1), the previous juz is newly complete → return
- * it so the caller can offer to log it toward a khatmah; otherwise return null.
- * Monotonic, so scrolling back up never re-fires, and a big jump (search/deep-link)
- * only advances the max without falsely crediting a juz the user didn't read.
- */
-export function noteJuz(juz: number): number | null {
-  if (!Number.isFinite(juz) || juz < 1) return null;
-  const progress = getProgress();
-  const prevMax = progress.maxJuzReached ?? 1;
-  if (juz <= prevMax) return null;
-  const completed = juz === prevMax + 1 ? juz - 1 : null;
-  progress.maxJuzReached = juz;
-  set(KEYS.progress, progress);
-  return completed;
 }
 
 // ─── Font Size ───

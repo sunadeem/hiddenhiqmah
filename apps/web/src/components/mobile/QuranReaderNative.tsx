@@ -27,7 +27,6 @@ import {
   getFontSize,
   setFontSize,
   setLastPosition,
-  noteJuz,
   type QuranView,
   type QuranDisplay,
 } from "@hidden-hiqmah/ui/lib/storage";
@@ -132,6 +131,7 @@ export default function QuranReaderNative({
   const khatmahRef = useRef<CircleDetail[] | null>(null);
   const juz30Ref = useRef(false);
   const enteredJuz30Ref = useRef(false);
+  const lastJuzRef = useRef<number | null>(null);
   const logJuzBusyRef = useRef(false);
 
   const onJuzComplete = useCallback(
@@ -180,16 +180,19 @@ export default function QuranReaderNative({
   // Stable juz-detector called from the position-tracking effects (which keep their
   // own dep arrays); a ref keeps those effects from re-subscribing when this changes.
   const saveJuzRef = useRef<(verseNumber: number) => void>(() => {});
+  // Detect a juz boundary from the reader's own recent position (session-local),
+  // NOT a lifetime max — so it fires on your current read-through even if you've
+  // opened later sūrahs before. Credit juz N only on a CONTIGUOUS N→N+1 crossing
+  // (per-circle idempotency prevents re-credit; a jump just re-baselines).
   saveJuzRef.current = (verseNumber: number) => {
     const v = verses?.find((x) => x.number === verseNumber);
-    if (v) {
-      const done = noteJuz(v.juz);
-      if (done != null) {
-        onJuzComplete(done);
-        // Crediting juz 29 means the reader just crossed 29→30 by READING, not by
-        // jumping — the only case where finishing 114 should count as juz 30.
-        if (done === 29) enteredJuz30Ref.current = true;
+    if (v && typeof v.juz === "number") {
+      const prev = lastJuzRef.current;
+      if (prev != null && v.juz === prev + 1) {
+        onJuzComplete(prev); // the juz just read to its end
+        if (prev === 29) enteredJuz30Ref.current = true; // reached juz 30 by reading
       }
+      lastJuzRef.current = v.juz;
     }
     // Finishing the muṣḥaf (An-Nās's last āyah) completes juz 30 — but ONLY when
     // juz 30 was reached by contiguous reading this session, so reciting the
