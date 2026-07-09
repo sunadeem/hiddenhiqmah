@@ -3,6 +3,15 @@ import { supabase } from "@/lib/supabase";
 // Client data layer for Circles (migration 007). All writes go through the
 // SECURITY DEFINER RPCs; reads are RLS-scoped to the caller's circles.
 
+/** Notify same-session listeners (the More-tab badge + the Home card) to refresh
+ *  after a local mutation. SPA navigation never fires visibilitychange, so screens
+ *  that cache circle data can't rely on it — they listen for this event instead. */
+function broadcastCirclesChanged(): void {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("hiqmah:circles-changed"));
+  }
+}
+
 export type Circle = {
   id: string;
   name: string;
@@ -105,12 +114,14 @@ export async function createCircle(
     p_goal_target: goalTarget,
   });
   if (error) throw error;
+  broadcastCirclesChanged();
   return data as string;
 }
 
 export async function joinCircle(code: string): Promise<string> {
   const { data, error } = await supabase.rpc("join_circle_by_code", { p_code: code });
   if (error) throw error;
+  broadcastCirclesChanged();
   return data as string;
 }
 
@@ -131,16 +142,19 @@ export async function setMyProgress(circleId: string, value: number): Promise<vo
     p_value: Math.max(0, Math.round(value)),
   });
   if (error) throw error;
+  broadcastCirclesChanged();
 }
 
 export async function sendDua(circleId: string, toUser: string): Promise<void> {
   const { error } = await supabase.rpc("send_circle_dua", { p_circle: circleId, p_to_user: toUser });
   if (error) throw error;
+  broadcastCirclesChanged();
 }
 
 export async function leaveCircle(circleId: string): Promise<void> {
   const { error } = await supabase.rpc("leave_circle", { p_circle: circleId });
   if (error) throw error;
+  broadcastCirclesChanged();
 }
 
 // ── Enhancements (migration 013): chat, activity feed, moderation, notifs ──
@@ -327,6 +341,7 @@ export async function markNotificationsRead(ids?: string[]): Promise<void> {
     p_ids: ids && ids.length ? ids : null,
   });
   if (error) throw error;
+  broadcastCirclesChanged();
 }
 
 /** Short relative timestamp ("now", "3m", "2h", "4d", or a date). */

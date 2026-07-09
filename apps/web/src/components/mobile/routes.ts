@@ -1,4 +1,11 @@
-export const TAB_ROOTS = ["/", "/circles", "/quran", "/more"];
+// Primary bottom-tab destinations that behave as roots: no global back button and
+// no edge-swipe-back (you switch away via the tab bar). /hifz owns its header and
+// drives its own in-screen sub-view back, so it belongs here. NOTE: /ask is a visual
+// tab but intentionally NOT listed — it has no in-header back control, so it relies
+// on edge-swipe-back to return to a deep-link origin (e.g. the Qur'an word-tutor →
+// the exact āyah). Listing it would strand that flow. (Circles moved off the tab bar
+// — it's now a normal sub-page reached from the Home card + the More menu.)
+export const TAB_ROOTS = ["/", "/hifz", "/quran", "/more"];
 
 const SECTION_TITLES: Record<string, string> = {
   "/": "Hidden Hiqmah",
@@ -8,6 +15,7 @@ const SECTION_TITLES: Record<string, string> = {
   "/muslim-daily": "Daily",
   "/streaks": "Streak",
   "/circles": "Circles",
+  "/hifz": "Your Path",
   "/family": "Family",
   "/household": "Family",
   "/marriage": "Marriage",

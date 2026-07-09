@@ -14,6 +14,7 @@ import DailyPathHome from "./DailyPathHome";
 import FocusHome from "./FocusHome";
 import RamadanHome from "./RamadanHome";
 import ActiveProfileBanner from "./ActiveProfileBanner";
+import CirclesHomeCard from "./CirclesHomeCard";
 import ClassicHome from "../screens/HomeScreen";
 
 /**
@@ -62,6 +63,7 @@ export default function MobileHome() {
       <div className="space-y-3 pb-4">
         <ActiveProfileBanner />
         <RamadanHome onUseUsualHome={useUsualHome} />
+        <CirclesHomeCard />
       </div>
     );
 
@@ -70,6 +72,7 @@ export default function MobileHome() {
       <div className="space-y-3">
         <ActiveProfileBanner />
         <ClassicHome />
+        <CirclesHomeCard />
       </div>
     );
 
@@ -84,6 +87,7 @@ export default function MobileHome() {
       ) : (
         <DailyPathHome tunedFor={tunedFor} />
       )}
+      <CirclesHomeCard />
     </div>
   );
 }

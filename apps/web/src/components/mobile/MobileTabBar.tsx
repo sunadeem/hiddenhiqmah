@@ -6,11 +6,12 @@ import { motion } from "framer-motion";
 import {
   Home,
   BookOpen,
-  Users,
+  Brain,
   MessageCircleQuestion,
   Menu,
 } from "lucide-react";
 import { hapticSelection } from "@/lib/mobile/haptics";
+import { useCircleUnread } from "@/lib/mobile/useCircleUnread";
 
 type Tab = {
   label: string;
@@ -22,10 +23,10 @@ type Tab = {
 const TABS: Tab[] = [
   { href: "/", label: "Home", icon: Home, matcher: (p) => p === "/" },
   {
-    href: "/circles",
-    label: "Circles",
-    icon: Users,
-    matcher: (p) => p.startsWith("/circles"),
+    href: "/hifz",
+    label: "Hifz",
+    icon: Brain,
+    matcher: (p) => p.startsWith("/hifz"),
   },
   {
     href: "/ask",
@@ -49,6 +50,8 @@ const TABS: Tab[] = [
 
 export default function MobileTabBar({ hidden = false }: { hidden?: boolean }) {
   const pathname = usePathname();
+  // Circles lives under More now — surface its unread nudges as a badge there.
+  const moreUnread = useCircleUnread();
 
   return (
     <motion.nav
@@ -63,6 +66,7 @@ export default function MobileTabBar({ hidden = false }: { hidden?: boolean }) {
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const isActive = tab.matcher ? tab.matcher(pathname) : false;
+          const badge = tab.href === "/more" && moreUnread > 0;
 
           const inner = (
             <span
@@ -72,7 +76,17 @@ export default function MobileTabBar({ hidden = false }: { hidden?: boolean }) {
                   : "text-themed-muted"
               }`}
             >
-              <Icon size={22} strokeWidth={isActive ? 2.4 : 1.9} />
+              <span className="relative">
+                <Icon size={22} strokeWidth={isActive ? 2.4 : 1.9} />
+                {badge && (
+                  <span
+                    className="absolute -top-1.5 -right-2 min-w-[15px] h-[15px] px-1 rounded-full bg-[var(--color-gold)] text-[9px] font-bold leading-none flex items-center justify-center"
+                    style={{ color: "#181305" }}
+                  >
+                    {moreUnread > 9 ? "9+" : moreUnread}
+                  </span>
+                )}
+              </span>
               <span className="text-[9px] font-medium tracking-wide">
                 {tab.label}
               </span>
