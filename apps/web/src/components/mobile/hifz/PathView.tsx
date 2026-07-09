@@ -110,25 +110,25 @@ function buildNamesCards(from: number, to: number, pace: string): NewCardInput[]
 }
 
 export default function PathView({ path, nav }: PathViewProps) {
-  const { stations, currentStation, stats, forecast, plan } = path;
+  const { quranStations, nameStations, currentStation, currentNames, stats, forecast, plan } = path;
   const pace = plan?.pace ?? "steady";
 
   const [tab, setTab] = useState<"path" | "mushaf">("path");
   const [sheetStation, setSheetStation] = useState<HifzStation | null>(null);
   const [addOpen, setAddOpen] = useState(false);
 
-  // Split the derived path: the active learning line (Qurʼān you're progressing)
-  // vs. everything you "also" carry — seeded portions + the 99 Names — which live
-  // on their own shelf rather than the mushaf journey.
+  // The Qurʼān track splits again: the active learning line (mushaf you're
+  // progressing) vs. seeded portions you "also" carry off the journey line. The
+  // Names are their OWN parallel track (nameStations) — never mixed into the mushaf.
   const { pathStations, alsoMemorized } = useMemo(() => {
     const on: HifzStation[] = [];
     const also: HifzStation[] = [];
-    for (const s of stations) {
-      if (s.source === "seeded" || isAsmaStation(s)) also.push(s);
+    for (const s of quranStations) {
+      if (s.source === "seeded") also.push(s);
       else on.push(s);
     }
     return { pathStations: on, alsoMemorized: also };
-  }, [stations]);
+  }, [quranStations]);
 
   const openStation = (s: HifzStation) => {
     hapticLight();
@@ -179,19 +179,46 @@ export default function PathView({ path, nav }: PathViewProps) {
         </div>
 
         {tab === "path" ? (
-          <div className="mt-4">
-            {pathStations.length > 0 ? (
-              <StationMap
-                stations={pathStations}
-                currentKey={currentStation?.key ?? null}
-                onTap={openStation}
-                variant="full"
-              />
-            ) : (
-              <p className="text-themed-muted text-[13px] leading-relaxed py-6 text-center">
-                Your learning line is empty. Add a sūrah, a juzʼ, or the 99 Names
-                below to begin your path.
+          <div className="mt-4 space-y-7">
+            {/* Track 1 — the Qurʼān mushaf journey. */}
+            <div>
+              <p
+                className="text-[10.5px] font-semibold uppercase mb-2"
+                style={{ letterSpacing: "0.26em", color: GOLD }}
+              >
+                Qurʼān
               </p>
+              {pathStations.length > 0 ? (
+                <StationMap
+                  stations={pathStations}
+                  currentKey={currentStation?.key ?? null}
+                  onTap={openStation}
+                  variant="full"
+                />
+              ) : (
+                <p className="text-themed-muted text-[13px] leading-relaxed py-6 text-center">
+                  Your Qurʼān line is empty. Add a sūrah, a juzʼ, or a page below to
+                  begin your path.
+                </p>
+              )}
+            </div>
+
+            {/* Track 2 — the 99 Names of Allah, progressing in parallel. */}
+            {nameStations.length > 0 && (
+              <div>
+                <p
+                  className="text-[10.5px] font-semibold uppercase mb-2"
+                  style={{ letterSpacing: "0.26em", color: GOLD }}
+                >
+                  The 99 Names of Allah
+                </p>
+                <StationMap
+                  stations={nameStations}
+                  currentKey={currentNames?.key ?? null}
+                  onTap={openStation}
+                  variant="full"
+                />
+              </div>
             )}
           </div>
         ) : (

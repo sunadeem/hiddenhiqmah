@@ -47,21 +47,34 @@ function isAsmaStation(station: HifzStation): boolean {
 }
 
 export default function TodayView({ path, nav }: HifzScreenProps) {
-  const { loading, cards, stations, currentStation, todayReview, todayLearn, stats } = path;
+  const { loading, cards, stations, currentStation, currentNames, todayReview, todayLearn, stats } =
+    path;
 
   const today = useMemo(() => todayLocalDate(), []);
   const paused = useMemo(() => newLearningPaused(cards, today), [cards, today]);
 
   const reviewCount = todayReview.length;
   const hasReviews = reviewCount > 0;
-  // New learning is only offered when the guardrail isn't holding it back.
+  // New learning is only offered when the guardrail isn't holding it back. Two
+  // PARALLEL tracks: today's Qur'ān portion (todayLearn) and a Name of Allah
+  // (currentNames) — each launches its own station, neither blocks the other.
   const learnStation = paused ? null : todayLearn;
   const canLearn = learnStation !== null;
+  const namesStation = paused ? null : currentNames;
+  const canLearnNames = namesStation !== null;
 
   const learnCount = learnStation ? stationUnitCount(learnStation) : 0;
-  const learnUnitWord = learnStation && isAsmaStation(learnStation)
-    ? learnCount === 1 ? "Name" : "Names"
-    : learnCount === 1 ? "āyah" : "āyāt";
+  const learnUnitWord = learnCount === 1 ? "āyah" : "āyāt";
+  const namesCount = namesStation ? stationUnitCount(namesStation) : 0;
+  const namesUnitWord = namesCount === 1 ? "Name" : "Names";
+
+  // The gold hero chains today's work: reviews → Qur'ān → (else) a Name → complete.
+  // It never reads "complete" while either track still has something to carry.
+  const heroLearn = learnStation ?? namesStation;
+  const heroCount = heroLearn ? stationUnitCount(heroLearn) : 0;
+  const heroUnitWord = heroLearn && isAsmaStation(heroLearn)
+    ? heroCount === 1 ? "Name" : "Names"
+    : heroCount === 1 ? "āyah" : "āyāt";
 
   // ── Streak beads (7-dot ring + running day count). ──
   const streak = stats?.streakCurrent ?? 0;
@@ -128,14 +141,13 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
         </button>
       )}
 
-      {/* ── The one gold hero — chains today's work. ── */}
+      {/* ── The one gold hero — chains today's work across both tracks. ── */}
       <Hero
         hasReviews={hasReviews}
         reviewCount={reviewCount}
-        canLearn={canLearn}
-        learnStation={learnStation}
-        learnCount={learnCount}
-        learnUnitWord={learnUnitWord}
+        learnStation={heroLearn}
+        learnCount={heroCount}
+        learnUnitWord={heroUnitWord}
         streak={streak}
         nav={nav}
       />
@@ -154,7 +166,7 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
         </div>
       )}
 
-      {/* Review / Learn split tiles. */}
+      {/* Review / Learn (Qur'ān) split tiles. */}
       <div className="flex gap-2.5 mt-3">
         <SplitTile
           label="Review"
@@ -170,7 +182,7 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
           }}
         />
         <SplitTile
-          label="Learn"
+          label="Learn Qur'ān"
           done={!canLearn && !paused}
           value={
             paused
@@ -181,10 +193,38 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
           }
           onTap={() => {
             hapticLight();
-            nav(canLearn ? "learn" : "path");
+            if (canLearn && learnStation) nav("learn", { stationKey: learnStation.key });
+            else nav("path");
           }}
         />
       </div>
+
+      {/* Names of Allah — a distinct parallel track, surfaced alongside the Qur'ān. */}
+      {canLearnNames && namesStation && (
+        <button
+          type="button"
+          onClick={() => {
+            hapticLight();
+            nav("learn", { stationKey: namesStation.key });
+          }}
+          className="mt-2.5 w-full text-left rounded-[15px] px-4 py-3.5 card-bg border active:opacity-90 transition-opacity flex items-center justify-between gap-3"
+          style={{ borderColor: "var(--color-gold-line, rgba(201,168,76,0.28))" }}
+        >
+          <span className="min-w-0">
+            <span
+              className="block text-[10px] tracking-[0.18em] uppercase text-gold"
+            >
+              Learn a Name of Allah
+            </span>
+            <span className="block text-[13px] font-semibold text-themed mt-1 leading-snug truncate">
+              {namesStation.label} · {namesCount} new {namesUnitWord}
+            </span>
+          </span>
+          <span aria-hidden className="text-gold text-[18px] shrink-0">
+            ›
+          </span>
+        </button>
+      )}
 
       {/* Quiet links. */}
       <div className="flex justify-center gap-1.5 mt-4 flex-wrap">
@@ -218,7 +258,6 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
 interface HeroProps {
   hasReviews: boolean;
   reviewCount: number;
-  canLearn: boolean;
   learnStation: HifzStation | null;
   learnCount: number;
   learnUnitWord: string;
@@ -229,18 +268,22 @@ interface HeroProps {
 function Hero({
   hasReviews,
   reviewCount,
-  canLearn,
   learnStation,
   learnCount,
   learnUnitWord,
   streak,
   nav,
 }: HeroProps) {
+  const canLearn = learnStation !== null;
+  const learnIsNames = learnStation !== null && isAsmaStation(learnStation);
   let eyebrow = "Today's step";
   let title: string;
   let est: string;
   let cta: string;
   let target: HifzView;
+  // When the hero routes to Learn we hand the specific station forward so the
+  // ladder opens the right track (Qur'ān or the 99 Names).
+  let params: unknown = undefined;
   let complete = false;
 
   if (hasReviews) {
@@ -252,10 +295,11 @@ function Hero({
     cta = "Begin — reviews first ›";
     target = "review";
   } else if (canLearn && learnStation) {
-    title = "Learn today's āyāt";
+    title = learnIsNames ? "Learn today's Name" : "Learn today's āyāt";
     est = `${learnStation.label} · ${learnCount} new ${learnUnitWord} to carry`;
     cta = `Learn ${learnStation.label} ›`;
     target = "learn";
+    params = { stationKey: learnStation.key };
   } else {
     complete = true;
     eyebrow = "Today's step";
@@ -291,7 +335,7 @@ function Hero({
         type="button"
         onClick={() => {
           hapticMedium();
-          nav(target);
+          nav(target, params);
         }}
         className={
           complete

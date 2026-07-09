@@ -51,12 +51,23 @@ export interface HifzPath {
   hasPlan: boolean;
   plan: HifzPlan | null;
   cards: HifzCard[];
+  /** Every derived station, both tracks, in mushaf order (Names sort first). */
   stations: HifzStation[];
-  /** The gold "you are here" station (null once everything is memorized). */
+  /** The Qur'ān track: stations whose startSurah !== 0, in mushaf order. */
+  quranStations: HifzStation[];
+  /** The 99-Names track: stations whose startSurah === 0. */
+  nameStations: HifzStation[];
+  /**
+   * The gold "you are here" QUR'ĀN station — the first not-complete Qur'ān station
+   * (asma excluded), so the Names block can never sit in front of the mushaf.
+   * Null once every Qur'ān station is memorized (or none exist).
+   */
   currentStation: HifzStation | null;
+  /** The first not-complete NAME station (parallel track). Null when none remain. */
+  currentNames: HifzStation | null;
   /** Cards due for review today (oldest first) — excludes brand-new cards. */
   todayReview: HifzCard[];
-  /** The station to learn today (= currentStation when there's learning left). */
+  /** The station to learn today (= currentStation, the Qur'ān track). */
   todayLearn: HifzStation | null;
   stats: HifzStats | null;
   /** Reviews landing on each of the next 7 days (index 0 = today). */
@@ -115,14 +126,32 @@ export function useHifzPath(): HifzPath {
     };
   }, [adapter, today, reloadKey]);
 
-  const { stations, currentKey } = useMemo(
+  const { stations } = useMemo(
     () => (today ? deriveStations(cards, today) : { stations: [], currentKey: null }),
     [cards, today]
   );
 
+  // Two PARALLEL tracks. asma stations (startSurah === 0) sort to the front of the
+  // single derived trail, so we split them out rather than let them lead the mushaf.
+  const { quranStations, nameStations } = useMemo(() => {
+    const quran: HifzStation[] = [];
+    const names: HifzStation[] = [];
+    for (const s of stations) {
+      (s.startSurah === 0 ? names : quran).push(s);
+    }
+    return { quranStations: quran, nameStations: names };
+  }, [stations]);
+
+  // A station is still "to learn" while any member is new → status learning/locked.
+  // Each track advances independently: the current Qur'ān station excludes Names,
+  // so finishing a batch of Names never blocks the mushaf (and vice-versa).
   const currentStation = useMemo(
-    () => stations.find((s) => s.key === currentKey) ?? null,
-    [stations, currentKey]
+    () => quranStations.find((s) => s.status === "learning" || s.status === "locked") ?? null,
+    [quranStations]
+  );
+  const currentNames = useMemo(
+    () => nameStations.find((s) => s.status === "learning" || s.status === "locked") ?? null,
+    [nameStations]
   );
 
   // Today's queue → split into reviews (non-new due cards) and new learning. The
@@ -136,7 +165,8 @@ export function useHifzPath(): HifzPath {
     return queue.filter((c) => c.status !== "new");
   }, [cards, today, plan]);
 
-  // The gold station is where the user learns next; null once all memorized.
+  // Today's Qur'ān learning is the current Qur'ān station; null once all memorized.
+  // (The Names track is offered separately via currentNames.)
   const todayLearn = currentStation;
 
   const forecast = useMemo(
@@ -178,7 +208,10 @@ export function useHifzPath(): HifzPath {
     plan,
     cards,
     stations,
+    quranStations,
+    nameStations,
     currentStation,
+    currentNames,
     todayReview,
     todayLearn,
     stats,

@@ -42,7 +42,7 @@ export default function HifzScreen() {
       case "review":
         return <ReviewLoop path={path} nav={nav} />;
       case "learn":
-        return <LearnLadder path={path} nav={nav} />;
+        return <LearnLadder path={path} nav={nav} params={params} />;
       case "practice":
         return <Practice path={path} nav={nav} />;
       case "path":

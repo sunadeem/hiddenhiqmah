@@ -60,6 +60,8 @@ export type HifzView =
 export interface LearnLadderProps {
   path: HifzPath;
   nav: (view: HifzView, params?: unknown) => void;
+  /** Nav context — an optional stationKey selects WHICH station to learn. */
+  params?: unknown;
 }
 
 // ── helpers ──
@@ -112,10 +114,24 @@ function returnsLabel(card: HifzCard, grade: Grade, today: string): string {
   return `returns in ~${d} days`;
 }
 
-export default function LearnLadder({ path, nav }: LearnLadderProps) {
+export default function LearnLadder({ path, nav, params }: LearnLadderProps) {
   const native = useIsNative();
   const today = useMemo(() => todayLocalDate(), []);
-  const station: HifzStation | null = path.todayLearn ?? path.currentStation;
+
+  // Learn a SPECIFIC station when Today (or the Path sheet) hands one forward via
+  // params.stationKey — this is how the Qur'ān track and the Names track each launch
+  // their own current station. Falls back to today's Qur'ān learning station.
+  const requestedKey =
+    params && typeof params === "object" && "stationKey" in params
+      ? (params as { stationKey?: unknown }).stationKey
+      : undefined;
+  const station: HifzStation | null = useMemo(() => {
+    if (typeof requestedKey === "string") {
+      const found = path.stations.find((s) => s.key === requestedKey);
+      if (found) return found;
+    }
+    return path.todayLearn ?? path.currentStation;
+  }, [requestedKey, path.stations, path.todayLearn, path.currentStation]);
 
   // Member cards of this station, in mushaf order (station.cardIds is ordered).
   const memberCards = useMemo<HifzCard[]>(() => {
