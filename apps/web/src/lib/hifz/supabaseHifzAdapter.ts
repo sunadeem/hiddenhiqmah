@@ -211,14 +211,19 @@ export function createSupabaseHifzAdapter(
     },
 
     async reorderCards(updates: { id: string; order: number }[]): Promise<void> {
-      for (const u of updates) {
-        const { error } = await client
-          .from("hifz_cards")
-          .update({ card_order: u.order })
-          .eq("id", u.id)
-          .eq("user_id", userId);
-        if (error) throw error;
-      }
+      if (!updates.length) return;
+      const orderById = new Map(updates.map((u) => [u.id, u.order]));
+      const rows = (await fetchCards())
+        .filter((c) => orderById.has(c.id))
+        .map((c) => cardToRow({ ...c, order: orderById.get(c.id) }));
+      if (!rows.length) return;
+      // One bulk upsert instead of N sequential UPDATEs — rewrites each row's
+      // columns to their current values plus the new card_order, so a big re-sort
+      // completes in a single round-trip.
+      const { error } = await client
+        .from("hifz_cards")
+        .upsert(rows, { onConflict: "user_id,range_key" });
+      if (error) throw error;
     },
 
     async getPlan(): Promise<HifzPlan | null> {

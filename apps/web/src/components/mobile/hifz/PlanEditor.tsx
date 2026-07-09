@@ -103,7 +103,9 @@ export default function PlanEditor({
   return (
     <div
       className="fixed inset-0 z-[75] flex items-end sm:items-center justify-center"
-      onClick={onClose}
+      onClick={() => {
+        if (!busy) onClose();
+      }}
     >
       <div className="absolute inset-0 bg-black/60" />
       <div
@@ -115,8 +117,11 @@ export default function PlanEditor({
           <h3 className="text-base font-semibold text-themed">Your plan</h3>
           <button
             type="button"
-            onClick={onClose}
-            className="p-1 text-themed-muted hover:text-themed touch-manipulation"
+            disabled={busy}
+            onClick={() => {
+              if (!busy) onClose();
+            }}
+            className="p-1 text-themed-muted hover:text-themed touch-manipulation disabled:opacity-40"
             aria-label="Close"
           >
             <X size={18} />
@@ -244,7 +249,7 @@ export default function PlanEditor({
             onClick={save}
             className="w-full rounded-xl bg-gold text-[#0a1628] font-bold py-3 disabled:opacity-60 touch-manipulation"
           >
-            Save plan
+            {busy ? "Saving…" : "Save plan"}
           </button>
         </div>
       </div>

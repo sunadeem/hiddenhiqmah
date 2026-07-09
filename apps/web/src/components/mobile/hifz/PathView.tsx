@@ -141,17 +141,15 @@ export default function PathView({ path, nav }: PathViewProps) {
   const [addOpen, setAddOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
 
-  // The Qurʼān track splits again: the active learning line (mushaf you're
-  // progressing) vs. seeded portions you "also" carry off the journey line. The
-  // Names are their OWN parallel track (nameStations) — never mixed into the mushaf.
-  const { pathStations, alsoMemorized } = useMemo(() => {
-    const on: HifzStation[] = [];
-    const also: HifzStation[] = [];
-    for (const s of quranStations) {
-      if (s.source === "seeded") also.push(s);
-      else on.push(s);
-    }
-    return { pathStations: on, alsoMemorized: also };
+  // One Qurʼān trail, GROUPED BY STATUS: memorized/due → you-are-here → upcoming, so
+  // your current step always sits right after what you've done. Seeded "already
+  // carried" portions (e.g. Āyat al-Kursī) fall into the memorized group rather than
+  // a separate shelf. Order within each group is preserved. The Names are their OWN
+  // parallel track (nameStations) — never mixed into the mushaf.
+  const trailStations = useMemo(() => {
+    const rank = (s: HifzStation) =>
+      s.status === "memorized" || s.status === "due" ? 0 : s.status === "learning" ? 1 : 2;
+    return [...quranStations].sort((a, b) => rank(a) - rank(b));
   }, [quranStations]);
 
   const openStation = (s: HifzStation) => {
@@ -282,9 +280,9 @@ export default function PathView({ path, nav }: PathViewProps) {
               >
                 Qurʼān
               </p>
-              {pathStations.length > 0 ? (
+              {trailStations.length > 0 ? (
                 <StationMap
-                  stations={pathStations}
+                  stations={trailStations}
                   currentKey={currentStation?.key ?? null}
                   onTap={openStation}
                   variant="full"
@@ -353,46 +351,6 @@ export default function PathView({ path, nav }: PathViewProps) {
           Add to my path
         </button>
 
-        {/* Also memorized */}
-        {alsoMemorized.length > 0 && (
-          <div className="mt-7">
-            <p className="text-themed font-semibold text-[13px] mb-1">Also memorized</p>
-            <p className="text-themed-muted text-[11.5px] mb-3 leading-relaxed">
-              What you already carry, kept strong alongside your path.
-            </p>
-            <div className="flex flex-col gap-2">
-              {alsoMemorized.map((s) => (
-                <button
-                  key={s.key}
-                  type="button"
-                  onClick={() => openStation(s)}
-                  className="w-full flex items-center justify-between gap-3 rounded-xl border sidebar-border card-bg px-4 py-3 text-left touch-manipulation active:opacity-80"
-                >
-                  <span className="min-w-0">
-                    <span className="block truncate text-themed text-[13.5px] font-medium">
-                      {s.label}
-                    </span>
-                    <span className="block text-themed-muted text-[11px] mt-0.5">
-                      {isAsmaStation(s) ? "99 Names" : "Already carried"} ·{" "}
-                      {STATUS_LABEL[s.status]}
-                    </span>
-                  </span>
-                  <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                    style={{
-                      background:
-                        s.status === "memorized"
-                          ? "#5ea77b"
-                          : s.status === "due"
-                          ? "#d99a3d"
-                          : GOLD,
-                    }}
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       <PlanEditor path={path} open={planOpen} onClose={() => setPlanOpen(false)} />

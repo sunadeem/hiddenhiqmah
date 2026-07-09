@@ -121,28 +121,26 @@ function Trail({ stations, currentKey, onTap, className, collapseLocked }: Stati
   if (stations.length === 0) return null;
 
   const collapse = Boolean(collapseLocked);
-  // Anchor on "you are here" (the gold learning station), else the first upcoming.
-  let anchor = stations.findIndex((s) => s.status === "learning");
-  if (anchor < 0) anchor = stations.findIndex((s) => s.status === "locked");
-  if (anchor < 0) anchor = stations.length - 1; // everything done → anchor the last
+  // Stations arrive status-grouped: [memorized/due…][you-are-here][locked…].
+  let done = 0;
+  while (
+    done < stations.length &&
+    (stations[done].status === "memorized" || stations[done].status === "due")
+  )
+    done++;
+  let lockedStart = stations.length;
+  while (lockedStart > 0 && stations[lockedStart - 1].status === "locked") lockedStart--;
+  const lockedCount = stations.length - lockedStart;
 
-  // Fold only the leading run of fully-memorized stations — so a due-for-review or
-  // an out-of-order "added-earlier" locked station above the anchor stays visible
-  // (not hidden and miscounted as "memorized").
-  let lead = 0;
-  while (lead < stations.length && stations[lead].status === "memorized") lead++;
-  const topFold = collapse && lead > 1 && lead < stations.length;
-  const start = topFold && !expandTop ? lead : 0;
-  const topHidden = lead;
+  // Collapse whichever run is LARGER; the smaller side + "you are here" stay visible.
+  const topFold = collapse && done > 1 && done < stations.length && done >= lockedCount;
+  const bottomFold = collapse && lockedCount > 1 && lockedCount > done;
 
-  // Fold the upcoming tail below the anchor (keep one for context).
-  const AFTER = 1;
-  const tailStart = anchor + 1 + AFTER;
-  const bottomFold = collapse && stations.length - tailStart > 1;
-  const end = bottomFold && !expandBottom ? tailStart : stations.length;
-  const bottomHidden = stations.length - tailStart;
-
+  const start = topFold && !expandTop ? done : 0;
+  const end = bottomFold && !expandBottom ? lockedStart : stations.length;
   const shown = stations.slice(start, end);
+  const topHidden = done;
+  const bottomHidden = lockedCount;
 
   const Pill = ({ up, label, onClick }: { up: boolean; label: string; onClick: () => void }) => (
     <button
