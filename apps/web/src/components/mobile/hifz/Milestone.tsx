@@ -6,11 +6,13 @@
 // milestone on the path. One calm "Continue" returns to Today. Purely
 // celebratory: it reads the plan for context but never mutates the schedule.
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import type { HifzPath } from "@/lib/hifz/useHifzPath";
 import { chapter } from "@/lib/hifz/quran";
 import { hapticSuccess } from "@/lib/mobile/haptics";
+import { useAuth } from "@/context/AuthContext";
+import { getMyCirclesWithDetail, setMyProgress, type CircleDetail } from "@/lib/circles";
 
 export type HifzView =
   | "onboarding"
@@ -58,6 +60,29 @@ const DEFAULT_FADILA = {
   by: "",
 };
 
+// Per-circle idempotency for hifz surah auto-logging (a sūrah is credited once).
+const SURAH_LOG_KEY = "hiqmah-circle-surah-logged";
+function surahLoggedFor(circleId: string): number[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return (JSON.parse(localStorage.getItem(SURAH_LOG_KEY) || "{}")[circleId] as number[]) || [];
+  } catch {
+    return [];
+  }
+}
+function markSurahLogged(circleId: string, surah: number): void {
+  if (typeof window === "undefined") return;
+  try {
+    const all = JSON.parse(localStorage.getItem(SURAH_LOG_KEY) || "{}") as Record<string, number[]>;
+    const arr = all[circleId] || [];
+    if (!arr.includes(surah)) arr.push(surah);
+    all[circleId] = arr;
+    localStorage.setItem(SURAH_LOG_KEY, JSON.stringify(all));
+  } catch {
+    /* ignore */
+  }
+}
+
 /** Prefer the Islamic (Umm al-Qurā) date; fall back to Gregorian day + month. */
 function formatDate(iso?: string): string {
   const d = iso ? new Date(iso) : new Date();
@@ -86,6 +111,44 @@ export default function Milestone({ nav, params }: MilestoneProps) {
   }, [params?.fadila, params?.attribution, surahId]);
 
   const dateLine = useMemo(() => formatDate(params?.date), [params?.date]);
+
+  // Optional: offer to credit this completed sūrah toward a hifz circle.
+  const { user } = useAuth();
+  const [hifzCircles, setHifzCircles] = useState<CircleDetail[] | null>(null);
+  const [logged, setLogged] = useState(false);
+
+  useEffect(() => {
+    if (!user || !surahId) return;
+    let alive = true;
+    getMyCirclesWithDetail()
+      .then((all) => {
+        if (!alive) return;
+        const hifz = all.filter((d) => d.circle.goal_type === "hifz");
+        const pending = hifz.some((d) => !surahLoggedFor(d.circle.id).includes(surahId));
+        setHifzCircles(pending ? hifz : []);
+      })
+      .catch(() => {
+        if (alive) setHifzCircles([]);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [user, surahId]);
+
+  const addToHifzCircles = async () => {
+    if (!surahId || !hifzCircles) return;
+    setLogged(true);
+    hapticSuccess();
+    for (const d of hifzCircles) {
+      if (surahLoggedFor(d.circle.id).includes(surahId)) continue;
+      try {
+        await setMyProgress(d.circle.id, d.myValue + 1);
+        markSurahLogged(d.circle.id, surahId);
+      } catch {
+        /* ignore — the manual stepper still works */
+      }
+    }
+  };
 
   // A single success buzz as the ceremony blooms in.
   useEffect(() => {
@@ -155,6 +218,17 @@ export default function Milestone({ nav, params }: MilestoneProps) {
         </motion.div>
       </div>
 
+      {hifzCircles && hifzCircles.length > 0 && !logged && (
+        <button
+          onClick={addToHifzCircles}
+          className="w-full rounded-2xl border border-[var(--color-gold)]/30 py-3.5 mb-2.5 text-gold font-semibold text-sm active:opacity-80 touch-manipulation"
+        >
+          Add to your Hifz circle
+        </button>
+      )}
+      {logged && (
+        <p className="text-themed-muted text-[12px] mb-2.5">Added to your Hifz circle ✓</p>
+      )}
       <button
         onClick={() => {
           hapticSuccess();

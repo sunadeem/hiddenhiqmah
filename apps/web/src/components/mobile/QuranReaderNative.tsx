@@ -27,6 +27,7 @@ import {
   getFontSize,
   setFontSize,
   setLastPosition,
+  noteJuz,
   type QuranView,
   type QuranDisplay,
 } from "@hidden-hiqmah/ui/lib/storage";
@@ -34,6 +35,8 @@ import { ActionSheet } from "@/components/mobile/LongPressActions";
 import UnderstandingSheet from "@/components/mobile/UnderstandingSheet";
 import { hapticSelection, hapticLight, hapticMedium } from "@/lib/mobile/haptics";
 import PageTip from "@/components/mobile/PageTip";
+import { useAuth } from "@/context/AuthContext";
+import { getMyCirclesWithDetail, setMyProgress, type CircleDetail } from "@/lib/circles";
 
 type Word = { t: string; tr: string; m: string };
 type WordsMap = Record<string, Word[]>;
@@ -78,6 +81,29 @@ function activeWordIndex(
   return -1;
 }
 
+// Per-circle idempotency for juz auto-logging (a juz is credited to a circle once).
+const JUZ_LOG_KEY = "hiqmah-circle-juz-logged";
+function juzLoggedFor(circleId: string): number[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return (JSON.parse(localStorage.getItem(JUZ_LOG_KEY) || "{}")[circleId] as number[]) || [];
+  } catch {
+    return [];
+  }
+}
+function markJuzLogged(circleId: string, juz: number): void {
+  if (typeof window === "undefined") return;
+  try {
+    const all = JSON.parse(localStorage.getItem(JUZ_LOG_KEY) || "{}") as Record<string, number[]>;
+    const arr = all[circleId] || [];
+    if (!arr.includes(juz)) arr.push(juz);
+    all[circleId] = arr;
+    localStorage.setItem(JUZ_LOG_KEY, JSON.stringify(all));
+  } catch {
+    /* ignore */
+  }
+}
+
 export default function QuranReaderNative({
   chapter,
   verses,
@@ -99,6 +125,65 @@ export default function QuranReaderNative({
   const [sheetVerse, setSheetVerse] = useState<Verse | null>(null);
   const [wordSheet, setWordSheet] = useState<{ verseNumber: number; wordIdx: number; word: Word } | null>(null);
   const [focusIdx, setFocusIdx] = useState(0);
+
+  const { user } = useAuth();
+  // Auto-log a completed juz toward the user's khatmah circles (opt-in per prompt).
+  const [completedJuz, setCompletedJuz] = useState<number | null>(null);
+  const khatmahRef = useRef<CircleDetail[] | null>(null);
+  const juz30Ref = useRef(false);
+
+  const onJuzComplete = useCallback(
+    async (juz: number) => {
+      if (!user) return;
+      if (khatmahRef.current === null) {
+        try {
+          const all = await getMyCirclesWithDetail();
+          khatmahRef.current = all.filter(
+            (d) => d.circle.goal_type === "khatmah" && d.circle.goal_unit === "juz"
+          );
+        } catch {
+          khatmahRef.current = [];
+        }
+      }
+      if (!khatmahRef.current.length) return;
+      if (!khatmahRef.current.some((d) => !juzLoggedFor(d.circle.id).includes(juz))) return;
+      setCompletedJuz(juz);
+    },
+    [user]
+  );
+
+  const logJuz = async () => {
+    const juz = completedJuz;
+    setCompletedJuz(null);
+    if (juz == null || !khatmahRef.current) return;
+    hapticMedium();
+    for (const d of khatmahRef.current) {
+      if (juzLoggedFor(d.circle.id).includes(juz)) continue;
+      try {
+        await setMyProgress(d.circle.id, d.myValue + 1);
+        d.myValue += 1; // keep the cache fresh for the next juz this session
+        markJuzLogged(d.circle.id, juz);
+      } catch {
+        /* ignore — the manual stepper still works */
+      }
+    }
+  };
+
+  // Stable juz-detector called from the position-tracking effects (which keep their
+  // own dep arrays); a ref keeps those effects from re-subscribing when this changes.
+  const saveJuzRef = useRef<(verseNumber: number) => void>(() => {});
+  saveJuzRef.current = (verseNumber: number) => {
+    const v = verses?.find((x) => x.number === verseNumber);
+    if (v) {
+      const done = noteJuz(v.juz);
+      if (done != null) onJuzComplete(done);
+    }
+    // Finishing the whole muṣḥaf (An-Nās's last āyah) completes juz 30.
+    if (chapter.id === 114 && verses && verseNumber === verses.length && !juz30Ref.current) {
+      juz30Ref.current = true;
+      onJuzComplete(30);
+    }
+  };
 
   // Tap a word → open the Understanding sheet (root / meaning / occurrences / tutor).
   const onWord = useCallback((verseNumber: number, wordIdx: number, word: Word) => {
@@ -175,6 +260,7 @@ export default function QuranReaderNative({
         flushTimer.current = setTimeout(() => {
           flushTimer.current = null;
           setLastPosition(chapter.id, lastSavedVerse.current);
+          saveJuzRef.current(lastSavedVerse.current);
         }, 350);
       },
       { rootMargin: "-90px 0px -85% 0px", threshold: 0 }
@@ -198,6 +284,7 @@ export default function QuranReaderNative({
     if (v && v.number !== lastSavedVerse.current) {
       lastSavedVerse.current = v.number;
       setLastPosition(chapter.id, v.number);
+      saveJuzRef.current(v.number);
     }
   }, [view, focusIdx, verses, chapter.id]);
 
@@ -259,6 +346,7 @@ export default function QuranReaderNative({
     // while playing) so Continue Reading resumes at the last-played āyah.
     lastSavedVerse.current = audio.playingVerse;
     setLastPosition(chapter.id, audio.playingVerse);
+    saveJuzRef.current(audio.playingVerse);
   }, [audio.playingVerse, view, chapter.id]);
 
   // Focus mode is immersive: hide the bottom tab bar (the floating player becomes
@@ -474,6 +562,45 @@ export default function QuranReaderNative({
         autoNext={audio.autoNextSurah}
         onToggleAutoNext={audio.toggleAutoNextSurah}
       />
+
+      {/* Juz complete → add to your khatmah (opt-in, only when in a khatmah circle). */}
+      <AnimatePresence>
+        {completedJuz != null && (
+          <motion.div
+            className="fixed inset-x-0 z-[80] flex justify-center px-4"
+            style={{ bottom: "calc(env(safe-area-inset-bottom) + 90px)" }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+          >
+            <div className="w-full max-w-sm rounded-2xl border border-[var(--color-gold)]/30 card-bg shadow-xl shadow-black/30 px-4 py-3.5">
+              <p className="text-themed text-sm font-semibold">
+                Juz {completedJuz} complete — mā shāʼ Allāh
+              </p>
+              <p className="text-themed-muted text-[12px] mt-0.5 leading-snug">
+                Add it to your family khatmah?
+              </p>
+              <div className="flex gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={() => setCompletedJuz(null)}
+                  className="flex-1 rounded-xl border sidebar-border py-2.5 text-[13px] text-themed-muted active:opacity-80 touch-manipulation"
+                >
+                  Not now
+                </button>
+                <button
+                  type="button"
+                  onClick={logJuz}
+                  className="flex-1 rounded-xl bg-gold text-[#0a1628] font-bold py-2.5 text-[13px] active:opacity-90 touch-manipulation"
+                >
+                  Add to khatmah
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
