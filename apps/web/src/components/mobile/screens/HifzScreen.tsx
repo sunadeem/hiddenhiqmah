@@ -1,133 +1,62 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
-import { useHifzAdapter } from "@/lib/hifz/useHifzAdapter";
-import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
-import type { HifzCard, HifzStats } from "@hidden-hiqmah/ui/lib/hifz/types";
-import HifzDashboard from "../hifz/HifzDashboard";
-import HifzPlanSetup from "../hifz/HifzPlanSetup";
-import HifzSession from "../hifz/HifzSession";
-import HifzProgressMap from "../hifz/HifzProgressMap";
-import PageTip from "@/components/mobile/PageTip";
+// HifzScreen — the Hifz feature router. It owns the active-view state + the nav()
+// dispatcher and renders exactly one screen at a time; the seven screens never
+// import each other, they hand off through nav(view, params). All data comes from
+// the single shared useHifzPath() hook, passed down as `path`. Onboarding is gated
+// on !hasPlan so a first-time user always lands there; everyone else starts on
+// Today. (Phase Wire — replaces the old dashboard/session/setup state machine.)
 
-type View = "dashboard" | "setup" | "session" | "map";
-
-const TITLES: Record<View, string> = {
-  dashboard: "Hifz",
-  setup: "Add to plan",
-  session: "Review",
-  map: "Progress",
-};
+import { useCallback, useState } from "react";
+import { useHifzPath } from "@/lib/hifz/useHifzPath";
+import type { HifzView } from "@/lib/hifz/hifzViews";
+import Onboarding from "../hifz/Onboarding";
+import TodayView from "../hifz/TodayView";
+import PathView from "../hifz/PathView";
+import ReviewLoop from "../hifz/ReviewLoop";
+import LearnLadder from "../hifz/LearnLadder";
+import Practice from "../hifz/Practice";
+import Milestone from "../hifz/Milestone";
 
 export default function HifzScreen() {
-  const router = useRouter();
-  const { adapter } = useHifzAdapter();
-  const [view, setView] = useState<View>("dashboard");
-  const [stats, setStats] = useState<HifzStats | null>(null);
-  const [cards, setCards] = useState<HifzCard[]>([]);
-  const [queue, setQueue] = useState<HifzCard[]>([]);
-  const today = todayLocalDate();
+  const path = useHifzPath();
+  const [view, setView] = useState<HifzView>("today");
+  const [params, setParams] = useState<unknown>(undefined);
 
-  const reload = useCallback(async () => {
-    try {
-      await adapter.recomputeStreak(today);
-      const [s, c] = await Promise.all([adapter.getStats(today), adapter.getCards()]);
-      setStats(s);
-      setCards(c);
-    } catch {
-      /* leave as-is */
+  // The single dispatcher every screen uses. Storing params alongside the view
+  // lets screens hand structured context forward (e.g. the completed sūrah for
+  // the milestone) without any screen knowing about another.
+  const nav = useCallback((next: HifzView, nextParams?: unknown) => {
+    setParams(nextParams);
+    setView(next);
+  }, []);
+
+  // Gate onboarding until the plan exists. While the plan is still loading we
+  // render nothing chrome-heavy — the screens show their own calm loading state.
+  const active: HifzView = !path.loading && !path.hasPlan ? "onboarding" : view;
+
+  const screen = (() => {
+    switch (active) {
+      case "onboarding":
+        return <Onboarding path={path} nav={nav} />;
+      case "review":
+        return <ReviewLoop path={path} nav={nav} />;
+      case "learn":
+        return <LearnLadder path={path} nav={nav} />;
+      case "practice":
+        return <Practice path={path} nav={nav} />;
+      case "path":
+        return <PathView path={path} nav={nav} />;
+      case "milestone":
+        return <Milestone path={path} nav={nav} params={params as never} />;
+      case "today":
+      default:
+        return <TodayView path={path} nav={nav} />;
     }
-  }, [adapter, today]);
+  })();
 
-  useEffect(() => {
-    reload();
-  }, [reload]);
-
-  const startSession = useCallback(async () => {
-    const q = await adapter.getQueue(today);
-    if (q.length === 0) return;
-    setQueue(q);
-    setView("session");
-  }, [adapter, today]);
-
-  // Extra practice when nothing is due today: review the soonest-scheduled cards
-  // ahead (gentle, capped). Gated behind a confirm in the dashboard. (HIFZ-3)
-  // "Ahead" must exclude cards already handled today — otherwise the cards just
-  // cleared in today's session (now the soonest-due non-new cards) sort straight
-  // back to the top, so "review ahead" would just replay today's queue instead of
-  // pulling the next scheduled items.
-  const startExtraSession = useCallback(async () => {
-    const all = await adapter.getCards();
-    const q = all
-      .filter((c) => c.status !== "new" && c.lastReviewed !== today)
-      .sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : 0))
-      .slice(0, 20);
-    if (q.length === 0) return;
-    setQueue(q);
-    setView("session");
-  }, [adapter, today]);
-
-  const back = () => {
-    if (view === "dashboard") router.back();
-    else setView("dashboard");
-  };
-
-  return (
-    <div className="pb-4">
-      <PageTip
-        tips={[
-          {
-            key: "hifz-plan-v2",
-            title: "Built to make it stick",
-            body: "Add sūrahs to your plan and Hifz schedules daily reviews at just the right moment — so what you memorise stays memorised.",
-          },
-        ]}
-      />
-      {/* Header */}
-      <div className="flex items-center gap-2 px-1 pt-1 pb-3">
-        <button
-          onClick={back}
-          aria-label="Back"
-          className="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center text-themed active:bg-[var(--overlay-subtle)] touch-manipulation"
-        >
-          <ChevronLeft size={22} />
-        </button>
-        <h1 className="text-xl font-bold text-themed">{TITLES[view]}</h1>
-      </div>
-
-      {view === "dashboard" && (
-        <HifzDashboard
-          stats={stats}
-          hasCards={cards.length > 0}
-          onStart={startSession}
-          onReviewMore={startExtraSession}
-          onSetup={() => setView("setup")}
-          onMap={() => setView("map")}
-        />
-      )}
-      {view === "setup" && (
-        <HifzPlanSetup
-          adapter={adapter}
-          onDone={async () => {
-            await reload();
-            setView("dashboard");
-          }}
-        />
-      )}
-      {view === "session" && (
-        <HifzSession
-          adapter={adapter}
-          queue={queue}
-          today={today}
-          onDone={async () => {
-            await reload();
-            setView("dashboard");
-          }}
-        />
-      )}
-      {view === "map" && <HifzProgressMap cards={cards} />}
-    </div>
-  );
+  // Full-height flex column, edge-to-edge: the shell wraps children in a padded,
+  // scrollable <main>; we cancel its horizontal padding (screens own their px-6)
+  // and provide the flex context the flow screens' `flex-1` layouts rely on.
+  return <div className="-mx-3 flex min-h-full flex-col">{screen}</div>;
 }

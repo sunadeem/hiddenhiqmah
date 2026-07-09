@@ -1,0 +1,352 @@
+"use client";
+
+// TodayView — the Hifz home. Straight to content (no salam / greeting eyebrow):
+// a compact StationMap peek strip up top, ONE gold hero that chains the day's
+// work (due reviews first → then today's new āyāt → else a complete state), a
+// Review / Learn split, and quiet links to Practice + My Path. When the adaptive
+// guardrail is holding back new learning (review debt is high) it surfaces a
+// calm reassurance instead of pushing new āyāt.
+//
+// Reads only from useHifzPath; navigates via nav() and never imports a sibling
+// screen. Matches the approved prototype's Today screen for layout + copy.
+
+import { useMemo } from "react";
+import type { HifzPath } from "@/lib/hifz/useHifzPath";
+import type { HifzStation } from "@hidden-hiqmah/ui/lib/hifz/types";
+import { newLearningPaused } from "@hidden-hiqmah/ui/lib/hifz/srs";
+import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
+import StationMap from "./StationMap";
+import { hapticMedium, hapticLight } from "@/lib/mobile/haptics";
+
+/** The Hifz view router keys (HifzScreen owns the state; screens only nav). */
+export type HifzView =
+  | "onboarding"
+  | "today"
+  | "review"
+  | "learn"
+  | "practice"
+  | "path"
+  | "milestone";
+
+export interface HifzScreenProps {
+  path: HifzPath;
+  nav: (view: HifzView, params?: unknown) => void;
+}
+
+/** A station spans one contiguous portion — count its units (āyāt or Names). */
+function stationUnitCount(station: HifzStation): number {
+  if (station.startSurah === station.endSurah) {
+    return Math.max(1, station.endAyah - station.startAyah + 1);
+  }
+  return Math.max(1, station.cardIds.length);
+}
+
+/** The 99 Names live on surah 0 (Name indices in the ayah fields). */
+function isAsmaStation(station: HifzStation): boolean {
+  return station.startSurah === 0;
+}
+
+export default function TodayView({ path, nav }: HifzScreenProps) {
+  const { loading, cards, stations, currentStation, todayReview, todayLearn, stats } = path;
+
+  const today = useMemo(() => todayLocalDate(), []);
+  const paused = useMemo(() => newLearningPaused(cards, today), [cards, today]);
+
+  const reviewCount = todayReview.length;
+  const hasReviews = reviewCount > 0;
+  // New learning is only offered when the guardrail isn't holding it back.
+  const learnStation = paused ? null : todayLearn;
+  const canLearn = learnStation !== null;
+
+  const learnCount = learnStation ? stationUnitCount(learnStation) : 0;
+  const learnUnitWord = learnStation && isAsmaStation(learnStation)
+    ? learnCount === 1 ? "Name" : "Names"
+    : learnCount === 1 ? "āyah" : "āyāt";
+
+  // ── Streak beads (7-dot ring + running day count). ──
+  const streak = stats?.streakCurrent ?? 0;
+  const litBeads = streak === 0 ? 0 : streak % 7 || 7;
+
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-4 px-6 pt-2 pb-24">
+        <div className="h-4 w-32 rounded card-bg opacity-40" />
+        <div className="h-20 w-full rounded-2xl card-bg opacity-40" />
+        <div className="h-40 w-full rounded-2xl card-bg opacity-40" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col px-6 pt-2 pb-24 overflow-y-auto">
+      {/* Streak row — content-first, no salam. */}
+      <div className="flex items-center justify-between pb-1">
+        <span
+          className="text-[19px] text-themed"
+          style={{ fontFamily: "var(--font-serif, Georgia, serif)" }}
+        >
+          Today
+        </span>
+        <div className="flex items-center gap-1 text-[11px] text-themed-muted">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <span
+              key={i}
+              className="rounded-full"
+              style={{
+                width: 5,
+                height: 5,
+                background:
+                  i < litBeads ? "var(--color-gold)" : "var(--overlay-soft, rgba(255,255,255,0.12))",
+              }}
+            />
+          ))}
+          <span className="ml-1.5">Day {streak}</span>
+        </div>
+      </div>
+
+      {/* Peek strip — tap opens the full path. */}
+      {stations.length > 0 && (
+        <button
+          type="button"
+          onClick={() => {
+            hapticLight();
+            nav("path");
+          }}
+          aria-label="Open your full path"
+          className="mt-3 w-full rounded-2xl px-3 py-4 card-bg sidebar-border border touch-manipulation active:opacity-90 flex justify-center overflow-x-auto"
+        >
+          <StationMap
+            stations={stations}
+            currentKey={currentStation?.key ?? null}
+            variant="peek"
+            peekWindow={5}
+            onTap={() => {
+              hapticLight();
+              nav("path");
+            }}
+          />
+        </button>
+      )}
+
+      {/* ── The one gold hero — chains today's work. ── */}
+      <Hero
+        hasReviews={hasReviews}
+        reviewCount={reviewCount}
+        canLearn={canLearn}
+        learnStation={learnStation}
+        learnCount={learnCount}
+        learnUnitWord={learnUnitWord}
+        streak={streak}
+        nav={nav}
+      />
+
+      {/* Adaptive guardrail — calm, never a scolding wall. */}
+      {paused && (
+        <div
+          className="mt-3 rounded-xl px-4 py-3 text-[12.5px] leading-relaxed text-themed-muted"
+          style={{
+            border: "1px dashed var(--color-gold-line, rgba(201,168,76,0.28))",
+            background: "var(--color-gold-dim, rgba(201,168,76,0.06))",
+          }}
+        >
+          New āyāt are resting today while your reviews catch up — they return the
+          moment your path is steady again. Consistency over quantity.
+        </div>
+      )}
+
+      {/* Review / Learn split tiles. */}
+      <div className="flex gap-2.5 mt-3">
+        <SplitTile
+          label="Review"
+          done={!hasReviews}
+          value={
+            hasReviews
+              ? `${reviewCount} due · keep strong`
+              : "All kept strong"
+          }
+          onTap={() => {
+            hapticLight();
+            nav("review");
+          }}
+        />
+        <SplitTile
+          label="Learn"
+          done={!canLearn && !paused}
+          value={
+            paused
+              ? "Resting today"
+              : canLearn && learnStation
+              ? `${learnStation.label} · ${learnCount} new ${learnUnitWord}`
+              : "Sealed for now"
+          }
+          onTap={() => {
+            hapticLight();
+            nav(canLearn ? "learn" : "path");
+          }}
+        />
+      </div>
+
+      {/* Quiet links. */}
+      <div className="flex justify-center gap-1.5 mt-4 flex-wrap">
+        <button
+          type="button"
+          onClick={() => {
+            hapticLight();
+            nav("practice");
+          }}
+          className="text-[12px] text-themed-muted px-2.5 py-1.5 rounded-lg active:opacity-70"
+        >
+          Practice · schedule untouched
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            hapticLight();
+            nav("path");
+          }}
+          className="text-[12px] text-themed-muted px-2.5 py-1.5 rounded-lg active:opacity-70"
+        >
+          My Path
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Hero ──────────────────────────────────────────────────────────────────
+
+interface HeroProps {
+  hasReviews: boolean;
+  reviewCount: number;
+  canLearn: boolean;
+  learnStation: HifzStation | null;
+  learnCount: number;
+  learnUnitWord: string;
+  streak: number;
+  nav: (view: HifzView, params?: unknown) => void;
+}
+
+function Hero({
+  hasReviews,
+  reviewCount,
+  canLearn,
+  learnStation,
+  learnCount,
+  learnUnitWord,
+  streak,
+  nav,
+}: HeroProps) {
+  let eyebrow = "Today's step";
+  let title: string;
+  let est: string;
+  let cta: string;
+  let target: HifzView;
+  let complete = false;
+
+  if (hasReviews) {
+    title = "Begin today's session";
+    const portions = `${reviewCount} ${reviewCount === 1 ? "portion" : "portions"} to keep strong`;
+    est = canLearn && learnStation
+      ? `${portions}, then ${learnCount} new ${learnUnitWord} of ${learnStation.label}`
+      : portions;
+    cta = "Begin — reviews first ›";
+    target = "review";
+  } else if (canLearn && learnStation) {
+    title = "Learn today's āyāt";
+    est = `${learnStation.label} · ${learnCount} new ${learnUnitWord} to carry`;
+    cta = `Learn ${learnStation.label} ›`;
+    target = "learn";
+  } else {
+    complete = true;
+    eyebrow = "Today's step";
+    title = "Today's step is complete.\nMāshāʼ Allāh.";
+    est = `Kept in your care · consistency: day ${streak}`;
+    cta = "Practice freely — schedule untouched";
+    target = "practice";
+  }
+
+  return (
+    <div
+      className="mt-4 rounded-2xl p-5 relative overflow-hidden"
+      style={{
+        border: "1px solid var(--color-gold-line, rgba(201,168,76,0.28))",
+        background:
+          "linear-gradient(165deg, var(--color-gold-dim, rgba(201,168,76,0.14)), rgba(201,168,76,0.03))",
+        textAlign: complete ? "center" : "left",
+      }}
+    >
+      <div
+        className="text-[10.5px] tracking-[0.26em] uppercase text-gold mb-2"
+      >
+        {eyebrow}
+      </div>
+      <div
+        className="text-[21px] leading-snug text-themed whitespace-pre-line"
+        style={{ fontFamily: "var(--font-serif, Georgia, serif)" }}
+      >
+        {title}
+      </div>
+      <div className="text-[12.5px] text-themed-muted mt-2">{est}</div>
+      <button
+        type="button"
+        onClick={() => {
+          hapticMedium();
+          nav(target);
+        }}
+        className={
+          complete
+            ? "mt-4 w-full rounded-[15px] px-4 py-3.5 text-[14px] font-semibold text-themed sidebar-border border active:scale-[0.98] transition-transform"
+            : "mt-4 w-full rounded-[15px] px-4 py-4 text-[15.5px] font-bold active:scale-[0.98] transition-transform"
+        }
+        style={
+          complete
+            ? { background: "var(--overlay-soft, rgba(255,255,255,0.03))" }
+            : {
+                background:
+                  "linear-gradient(170deg, var(--color-gold-hi, #e2c476), var(--color-gold) 55%, #ab8b3c)",
+                color: "#181305",
+                boxShadow: "0 6px 22px rgba(201,168,76,0.22)",
+              }
+        }
+      >
+        {cta}
+      </button>
+    </div>
+  );
+}
+
+// ── Split tile ────────────────────────────────────────────────────────────
+
+function SplitTile({
+  label,
+  value,
+  done,
+  onTap,
+}: {
+  label: string;
+  value: string;
+  done: boolean;
+  onTap: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onTap}
+      className="flex-1 text-left rounded-[15px] px-3.5 py-3.5 card-bg sidebar-border border active:opacity-90 transition-opacity"
+    >
+      <div
+        className="text-[10px] tracking-[0.18em] uppercase"
+        style={{ color: done ? "#5ea77b" : "var(--color-text-muted, #808aa0)" }}
+      >
+        {label}
+        {done ? " ✓" : ""}
+      </div>
+      <div
+        className="text-[13px] font-semibold mt-1.5 leading-snug"
+        style={{ color: done ? "#89b99a" : undefined }}
+      >
+        <span className={done ? "" : "text-themed"}>{value}</span>
+      </div>
+    </button>
+  );
+}
