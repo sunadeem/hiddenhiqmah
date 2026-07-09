@@ -110,17 +110,25 @@ function buildNamesCards(from: number, to: number, pace: string): NewCardInput[]
   return out;
 }
 
-// Assign each added station an increasing float order just after `base`, so a
-// batch of inserted portions slots into the path exactly where the user chose.
-function withOrder(inputs: NewCardInput[], base: number): NewCardInput[] {
+// Spread the added stations EVENLY inside the open gap (base, nextOrder), so a
+// batch of inserted portions lands exactly where the user chose and can never
+// collide with an existing order — or with a later insert, which sees these as its
+// new neighbour and subdivides the smaller remaining gap.
+function withOrder(inputs: NewCardInput[], base: number, nextOrder: number): NewCardInput[] {
   const keyOf = (inp: NewCardInput) =>
     inp.stationKey ?? `${inp.startSurah}:${inp.startAyah}-${inp.endSurah}:${inp.endAyah}`;
-  const orderByKey = new Map<string, number>();
-  let i = 0;
+  const keys: string[] = [];
+  const seen = new Set<string>();
   for (const inp of inputs) {
     const k = keyOf(inp);
-    if (!orderByKey.has(k)) orderByKey.set(k, base + 0.001 * ++i);
+    if (!seen.has(k)) {
+      seen.add(k);
+      keys.push(k);
+    }
   }
+  const step = (nextOrder - base) / (keys.length + 1);
+  const orderByKey = new Map<string, number>();
+  keys.forEach((k, idx) => orderByKey.set(k, base + step * (idx + 1)));
   return inputs.map((inp) => ({ ...inp, order: orderByKey.get(keyOf(inp)) }));
 }
 
@@ -158,9 +166,19 @@ export default function PathView({ path, nav }: PathViewProps) {
     addedSurah: number;
   } | null>(null);
 
-  const orderOfStation = (s: HifzStation): number => {
+  const cardOrder = (s: HifzStation): number => {
     const c = path.cards.find((x) => x.id === s.cardIds[0]);
     return c?.order ?? s.startSurah * 1000 + s.startAyah;
+  };
+  // Smallest existing card order strictly greater than `base` — the right edge of
+  // the gap an insert drops into (base + 1 when base is the last position).
+  const nextOrderAfter = (base: number): number => {
+    let next = Infinity;
+    for (const c of path.cards) {
+      const o = c.order ?? c.startSurah * 1000 + c.startAyah;
+      if (o > base && o < next) next = o;
+    }
+    return next === Infinity ? base + 1 : next;
   };
 
   const applyAdd = async (inputs: NewCardInput[]) => {
@@ -169,19 +187,21 @@ export default function PathView({ path, nav }: PathViewProps) {
     setPendingAdd(null);
   };
 
-  // "Start next" → right after your current portion. "Finish current first" →
-  // right after the current sūrah's last portion.
+  // "Start next" → into the gap right after your current portion. "Finish current
+  // first" → into the gap right after the current sūrah's last portion.
   const confirmStartNext = () => {
     if (!pendingAdd || !currentStation) return;
-    applyAdd(withOrder(pendingAdd.inputs, orderOfStation(currentStation)));
+    const base = cardOrder(currentStation);
+    applyAdd(withOrder(pendingAdd.inputs, base, nextOrderAfter(base)));
   };
   const confirmFinishFirst = () => {
     if (!pendingAdd) return;
     const inSurah = quranStations.filter((s) => s.startSurah === pendingAdd.curSurah);
     const last = inSurah.length
-      ? inSurah.reduce((a, b) => (orderOfStation(a) >= orderOfStation(b) ? a : b))
+      ? inSurah.reduce((a, b) => (cardOrder(a) >= cardOrder(b) ? a : b))
       : currentStation;
-    applyAdd(withOrder(pendingAdd.inputs, last ? orderOfStation(last) : 0));
+    const base = last ? cardOrder(last) : 0;
+    applyAdd(withOrder(pendingAdd.inputs, base, nextOrderAfter(base)));
   };
 
   return (
@@ -448,8 +468,21 @@ export default function PathView({ path, nav }: PathViewProps) {
             const first = inputs[0];
             const isQuran = !!first && (first.contentKind ?? "quran") !== "asma";
             const cur = currentStation;
-            // A DIFFERENT sūrah added mid-way through one → ask where it goes.
-            if (isQuran && cur && cur.startSurah !== 0 && cur.startSurah !== first.startSurah) {
+            // Only ask when you're genuinely MID-sūrah on a DIFFERENT sūrah — i.e. the
+            // current sūrah still has not-done portions after where you are. Otherwise
+            // the two choices are equivalent, so just add in reading order.
+            const midSurah =
+              isQuran &&
+              !!cur &&
+              cur.startSurah !== 0 &&
+              cur.startSurah !== first.startSurah &&
+              quranStations.some(
+                (s) =>
+                  s.startSurah === cur.startSurah &&
+                  (s.status === "learning" || s.status === "locked") &&
+                  cardOrder(s) > cardOrder(cur)
+              );
+            if (midSurah && cur) {
               setAddOpen(false);
               setPendingAdd({ inputs, curSurah: cur.startSurah, addedSurah: first.startSurah });
               return;
