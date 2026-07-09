@@ -47,21 +47,39 @@ function isAsmaStation(station: HifzStation): boolean {
 }
 
 export default function TodayView({ path, nav }: HifzScreenProps) {
-  const { loading, cards, stations, currentStation, currentNames, todayReview, todayLearn, stats } =
-    path;
+  const {
+    loading,
+    cards,
+    stations,
+    currentStation,
+    currentNames,
+    todayReview,
+    todayLearn,
+    newLearningDoneToday,
+    newPortionsToday,
+    stats,
+  } = path;
 
   const today = useMemo(() => todayLocalDate(), []);
   const paused = useMemo(() => newLearningPaused(cards, today), [cards, today]);
 
   const reviewCount = todayReview.length;
   const hasReviews = reviewCount > 0;
-  // New learning is only offered when the guardrail isn't holding it back. Two
-  // PARALLEL tracks: today's Qur'ān portion (todayLearn) and a Name of Allah
-  // (currentNames) — each launches its own station, neither blocks the other.
-  const learnStation = paused ? null : todayLearn;
+  // The actual next portion on each parallel track (Qur'ān + a Name of Allah),
+  // held back only by the review-debt guardrail. These stay reachable for "start
+  // early" even after today's budget is spent.
+  const nextLearn = paused ? null : todayLearn;
+  const nextNames = paused ? null : currentNames;
+  // Once today's new-learning budget is spent we STOP pushing new material — the
+  // pushed stations go null, so the hero + tiles read "done for today" instead of
+  // handing out the next portion. The next portion is still one tap away below.
+  const learnStation = newLearningDoneToday ? null : nextLearn;
+  const namesStation = newLearningDoneToday ? null : nextNames;
   const canLearn = learnStation !== null;
-  const namesStation = paused ? null : currentNames;
   const canLearnNames = namesStation !== null;
+  // What "start early" opens (Qur'ān first, else a Name) when the budget is spent.
+  const startEarlyStation = nextLearn ?? nextNames;
+  const dailyDone = newLearningDoneToday && startEarlyStation !== null;
 
   const learnCount = learnStation ? stationUnitCount(learnStation) : 0;
   const learnUnitWord = learnCount === 1 ? "āyah" : "āyāt";
@@ -148,6 +166,9 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
         learnStation={heroLearn}
         learnCount={heroCount}
         learnUnitWord={heroUnitWord}
+        dailyDone={dailyDone}
+        startEarlyStation={startEarlyStation}
+        newPortionsToday={newPortionsToday}
         streak={streak}
         nav={nav}
       />
@@ -189,11 +210,15 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
               ? "Resting today"
               : canLearn && learnStation
               ? `${learnStation.label} · ${learnCount} new ${learnUnitWord}`
+              : dailyDone
+              ? "Done for today"
               : "Sealed for now"
           }
           onTap={() => {
             hapticLight();
             if (canLearn && learnStation) nav("learn", { stationKey: learnStation.key });
+            else if (dailyDone && startEarlyStation)
+              nav("learn", { stationKey: startEarlyStation.key });
             else nav("path");
           }}
         />
@@ -261,6 +286,9 @@ interface HeroProps {
   learnStation: HifzStation | null;
   learnCount: number;
   learnUnitWord: string;
+  dailyDone: boolean;
+  startEarlyStation: HifzStation | null;
+  newPortionsToday: number;
   streak: number;
   nav: (view: HifzView, params?: unknown) => void;
 }
@@ -271,6 +299,9 @@ function Hero({
   learnStation,
   learnCount,
   learnUnitWord,
+  dailyDone,
+  startEarlyStation,
+  newPortionsToday,
   streak,
   nav,
 }: HeroProps) {
@@ -294,6 +325,16 @@ function Hero({
       : portions;
     cta = "Begin — reviews first ›";
     target = "review";
+  } else if (dailyDone && startEarlyStation) {
+    // Today's new-learning budget is spent, but there's still more ahead. This is
+    // a real daily "you're done" moment — new material rests until tomorrow, with
+    // a quiet "start early" for anyone who wants to press on. Reviews are clear.
+    complete = true;
+    title = "Today's new learning is done.\nMāshāʼ Allāh.";
+    est = `${newPortionsToday} new ${newPortionsToday === 1 ? "portion" : "portions"} carried today · rest, or press on`;
+    cta = "Start early ›";
+    target = "learn";
+    params = { stationKey: startEarlyStation.key };
   } else if (canLearn && learnStation) {
     title = learnIsNames ? "Learn today's Name" : "Learn today's āyāt";
     est = `${learnStation.label} · ${learnCount} new ${learnUnitWord} to carry`;

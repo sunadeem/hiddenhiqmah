@@ -387,6 +387,28 @@ export function stationKeyOf(c: HifzCard): string {
   return c.stationKey ?? rangeKey(c);
 }
 
+/**
+ * How many distinct NEW portions the user first began TODAY — counted by unique
+ * stationKey among cards whose introducedDate === today. Seeded (already-carried)
+ * cards never leave "new", so their introducedDate stays null and they are never
+ * counted: this measures only genuine new learning. It is the SPEND against the
+ * per-day new-learning budget (paceNewPerDay is the allowance). Pass a filter to
+ * scope to one track (e.g. Qur'ān only, `c => c.startSurah !== 0`).
+ */
+export function portionsStartedToday(
+  cards: HifzCard[],
+  today: string,
+  filter?: (card: HifzCard) => boolean
+): number {
+  const keys = new Set<string>();
+  for (const card of cards) {
+    if (card.introducedDate !== today) continue;
+    if (filter && !filter(card)) continue;
+    keys.add(stationKeyOf(card));
+  }
+  return keys.size;
+}
+
 /** Mushaf-order comparator by (surah, ayah) — no cumulative ordinal needed. */
 function byMushaf(a: HifzCard, b: HifzCard): number {
   return a.startSurah - b.startSurah || a.startAyah - b.startAyah;

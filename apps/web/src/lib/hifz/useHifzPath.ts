@@ -9,12 +9,14 @@
 // so every mounted instance (Today + Path + a sheet, say) re-reads in lock-step.
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { App as CapApp } from "@capacitor/app";
 import { useHifzAdapter } from "./useHifzAdapter";
 import {
   deriveStations,
   selectQueue,
   reviewForecast,
   paceNewPerDay,
+  portionsStartedToday,
 } from "@hidden-hiqmah/ui/lib/hifz/srs";
 import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
 import type {
@@ -69,6 +71,12 @@ export interface HifzPath {
   todayReview: HifzCard[];
   /** The station to learn today (= currentStation, the Qur'ān track). */
   todayLearn: HifzStation | null;
+  /** Per-day new-learning allowance (portions/day) from the plan's pace. */
+  dailyNewBudget: number;
+  /** New portions the user has already begun today (spend against the budget). */
+  newPortionsToday: number;
+  /** True once today's new-learning budget is spent — Today offers "start early". */
+  newLearningDoneToday: boolean;
   stats: HifzStats | null;
   /** Reviews landing on each of the next 7 days (index 0 = today). */
   forecast: number[];
@@ -91,8 +99,36 @@ export function useHifzPath(): HifzPath {
 
   const reload = useCallback(() => setReloadKey((k) => k + 1), []);
 
+  // Keep `today` fresh across local-day rollover. It's captured at mount, but a
+  // long-lived WKWebView session — backgrounded overnight, or simply left open past
+  // midnight — would otherwise keep serving yesterday's date, staling every
+  // day-keyed derivation (the new-learning cap, today's reviews, the 7-day
+  // forecast, station due-status) until a full relaunch. Re-derive on resume /
+  // tab-visible and on a slow tick, committing only when the value actually
+  // changes (so no needless re-render, and the load effect below re-runs exactly
+  // once per real day change).
   useEffect(() => {
-    setToday(todayLocalDate());
+    const sync = () => setToday((prev) => {
+      const next = todayLocalDate();
+      return prev !== next ? next : prev;
+    });
+    sync(); // catch a rollover that happened while unmounted / hidden
+    const onVisible = () => {
+      if (document.visibilityState === "visible") sync();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    const timer = setInterval(sync, 60_000);
+    let removeApp: (() => void) | undefined;
+    CapApp.addListener("appStateChange", ({ isActive }) => {
+      if (isActive) sync();
+    }).then((handle) => {
+      removeApp = () => void handle.remove();
+    });
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      clearInterval(timer);
+      removeApp?.();
+    };
   }, []);
 
   // Re-read whenever any instance broadcasts a change.
@@ -169,6 +205,17 @@ export function useHifzPath(): HifzPath {
   // (The Names track is offered separately via currentNames.)
   const todayLearn = currentStation;
 
+  // Per-day new-learning budget: the pace's newPerDay, counted in PORTIONS begun
+  // today across both tracks. Once spent, Today stops PUSHING new material and
+  // offers an opt-in "start early" instead — reviews stay open regardless. This is
+  // what turns "endlessly hand out the next portion" into a real daily cadence.
+  const dailyNewBudget = plan ? paceNewPerDay(plan.pace) : 1;
+  const newPortionsToday = useMemo(
+    () => (today ? portionsStartedToday(cards, today) : 0),
+    [cards, today]
+  );
+  const newLearningDoneToday = dailyNewBudget > 0 && newPortionsToday >= dailyNewBudget;
+
   const forecast = useMemo(
     () => (today ? reviewForecast(cards, today, 7) : EMPTY_FORECAST),
     [cards, today]
@@ -214,6 +261,9 @@ export function useHifzPath(): HifzPath {
     currentNames,
     todayReview,
     todayLearn,
+    dailyNewBudget,
+    newPortionsToday,
+    newLearningDoneToday,
     stats,
     forecast,
     signedIn,
