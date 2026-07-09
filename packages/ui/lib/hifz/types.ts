@@ -102,6 +102,9 @@ export interface HifzCard {
    * so rangeKey/stationKey stay unique and the SRS engine treats them identically.
    */
   contentKind?: ContentKind;
+  /** Explicit path position (float). Absent ⇒ derived from muṣḥaf order. Set when a
+   *  portion is inserted out of reading order ("start next" / "after current sūrah"). */
+  order?: number | null;
 }
 
 export interface NewCardInput {
@@ -118,6 +121,8 @@ export interface NewCardInput {
   source?: CardSource;
   /** Defaults to "quran"; the 99-Names path passes "asma". */
   contentKind?: ContentKind;
+  /** Explicit path position (see HifzCard.order). Omit ⇒ natural muṣḥaf order. */
+  order?: number | null;
 }
 
 /**

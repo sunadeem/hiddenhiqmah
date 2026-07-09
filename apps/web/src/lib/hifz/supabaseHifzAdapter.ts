@@ -72,6 +72,7 @@ export function createSupabaseHifzAdapter(
       peekCount: r.peek_count ?? 0,
       source: r.source ?? "learned",
       contentKind: r.content_kind ?? "quran",
+      order: r.card_order ?? null,
     };
   }
   function cardToRow(c: HifzCard) {
@@ -101,6 +102,7 @@ export function createSupabaseHifzAdapter(
       peek_count: c.peekCount ?? 0,
       source: c.source ?? "learned",
       content_kind: c.contentKind ?? "quran",
+      card_order: c.order ?? null,
     };
   }
 

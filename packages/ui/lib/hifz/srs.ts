@@ -124,6 +124,7 @@ export function newCard(
     peekCount: 0,
     source: input.source ?? "learned",
     contentKind: input.contentKind,
+    order: input.order ?? null,
   };
 }
 
@@ -443,7 +444,10 @@ export function deriveStations(
     members.sort(byMushaf);
     return { key, members };
   });
-  raw.sort((a, b) => byMushaf(a.members[0], b.members[0]));
+  // Sort by explicit path order when set, else muṣḥaf position — station-inserted
+  // portions carry a float `order` that slots them between existing positions.
+  const cardOrder = (c: HifzCard) => c.order ?? c.startSurah * 1000 + c.startAyah;
+  raw.sort((a, b) => cardOrder(a.members[0]) - cardOrder(b.members[0]));
 
   // Per track, pick the "you are here" (gold learning) station: prefer the first
   // STARTED not-complete station (any member has left "new"), so adding an earlier

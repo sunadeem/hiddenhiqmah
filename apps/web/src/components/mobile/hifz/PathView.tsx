@@ -110,6 +110,20 @@ function buildNamesCards(from: number, to: number, pace: string): NewCardInput[]
   return out;
 }
 
+// Assign each added station an increasing float order just after `base`, so a
+// batch of inserted portions slots into the path exactly where the user chose.
+function withOrder(inputs: NewCardInput[], base: number): NewCardInput[] {
+  const keyOf = (inp: NewCardInput) =>
+    inp.stationKey ?? `${inp.startSurah}:${inp.startAyah}-${inp.endSurah}:${inp.endAyah}`;
+  const orderByKey = new Map<string, number>();
+  let i = 0;
+  for (const inp of inputs) {
+    const k = keyOf(inp);
+    if (!orderByKey.has(k)) orderByKey.set(k, base + 0.001 * ++i);
+  }
+  return inputs.map((inp) => ({ ...inp, order: orderByKey.get(keyOf(inp)) }));
+}
+
 export default function PathView({ path, nav }: PathViewProps) {
   const { quranStations, nameStations, currentStation, currentNames, stats, forecast, plan } = path;
   const pace = plan?.pace ?? "steady";
@@ -135,6 +149,39 @@ export default function PathView({ path, nav }: PathViewProps) {
   const openStation = (s: HifzStation) => {
     hapticLight();
     setSheetStation(s);
+  };
+
+  // Adding a different sūrah while mid-way through one asks where it should land.
+  const [pendingAdd, setPendingAdd] = useState<{
+    inputs: NewCardInput[];
+    curSurah: number;
+    addedSurah: number;
+  } | null>(null);
+
+  const orderOfStation = (s: HifzStation): number => {
+    const c = path.cards.find((x) => x.id === s.cardIds[0]);
+    return c?.order ?? s.startSurah * 1000 + s.startAyah;
+  };
+
+  const applyAdd = async (inputs: NewCardInput[]) => {
+    await path.actions.addToPath(inputs);
+    hapticSuccess();
+    setPendingAdd(null);
+  };
+
+  // "Start next" → right after your current portion. "Finish current first" →
+  // right after the current sūrah's last portion.
+  const confirmStartNext = () => {
+    if (!pendingAdd || !currentStation) return;
+    applyAdd(withOrder(pendingAdd.inputs, orderOfStation(currentStation)));
+  };
+  const confirmFinishFirst = () => {
+    if (!pendingAdd) return;
+    const inSurah = quranStations.filter((s) => s.startSurah === pendingAdd.curSurah);
+    const last = inSurah.length
+      ? inSurah.reduce((a, b) => (orderOfStation(a) >= orderOfStation(b) ? a : b))
+      : currentStation;
+    applyAdd(withOrder(pendingAdd.inputs, last ? orderOfStation(last) : 0));
   };
 
   return (
@@ -398,11 +445,52 @@ export default function PathView({ path, nav }: PathViewProps) {
           pace={pace}
           onCancel={() => setAddOpen(false)}
           onAdd={async (inputs) => {
+            const first = inputs[0];
+            const isQuran = !!first && (first.contentKind ?? "quran") !== "asma";
+            const cur = currentStation;
+            // A DIFFERENT sūrah added mid-way through one → ask where it goes.
+            if (isQuran && cur && cur.startSurah !== 0 && cur.startSurah !== first.startSurah) {
+              setAddOpen(false);
+              setPendingAdd({ inputs, curSurah: cur.startSurah, addedSurah: first.startSurah });
+              return;
+            }
             await path.actions.addToPath(inputs);
             hapticSuccess();
             setAddOpen(false);
           }}
         />
+      </Sheet>
+
+      {/* Placement — when adding a sūrah while mid-way through another. */}
+      <Sheet open={pendingAdd !== null} onClose={() => setPendingAdd(null)}>
+        {pendingAdd && (
+          <>
+            <p
+              className="text-[10.5px] font-semibold uppercase"
+              style={{ letterSpacing: "0.2em", color: GOLD }}
+            >
+              Add to path
+            </p>
+            <p className="font-serif text-[20px] text-themed mt-1">
+              {surahName(pendingAdd.addedSurah)}
+            </p>
+            <p className="text-themed-muted text-[13px] leading-relaxed mt-1.5">
+              You&rsquo;re partway through {surahName(pendingAdd.curSurah)}. When should{" "}
+              {surahName(pendingAdd.addedSurah)} come up?
+            </p>
+            <div className="flex flex-col gap-2.5 mt-5">
+              <SheetBtn
+                primary
+                label={`Finish ${surahName(pendingAdd.curSurah)} first`}
+                onClick={confirmFinishFirst}
+              />
+              <SheetBtn
+                label={`Start ${surahName(pendingAdd.addedSurah)} next`}
+                onClick={confirmStartNext}
+              />
+            </div>
+          </>
+        )}
       </Sheet>
     </div>
   );
