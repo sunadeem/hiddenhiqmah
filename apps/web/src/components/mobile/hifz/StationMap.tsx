@@ -126,10 +126,14 @@ function Trail({ stations, currentKey, onTap, className, collapseLocked }: Stati
   if (anchor < 0) anchor = stations.findIndex((s) => s.status === "locked");
   if (anchor < 0) anchor = stations.length - 1; // everything done → anchor the last
 
-  // Fold completed stations above the anchor into a summary (worth it past 1).
-  const topFold = collapse && anchor > 1;
-  const start = topFold && !expandTop ? anchor : 0;
-  const topHidden = anchor;
+  // Fold only the leading run of fully-memorized stations — so a due-for-review or
+  // an out-of-order "added-earlier" locked station above the anchor stays visible
+  // (not hidden and miscounted as "memorized").
+  let lead = 0;
+  while (lead < stations.length && stations[lead].status === "memorized") lead++;
+  const topFold = collapse && lead > 1 && lead < stations.length;
+  const start = topFold && !expandTop ? lead : 0;
+  const topHidden = lead;
 
   // Fold the upcoming tail below the anchor (keep one for context).
   const AFTER = 1;

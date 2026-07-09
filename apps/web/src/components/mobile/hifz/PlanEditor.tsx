@@ -64,10 +64,20 @@ export default function PlanEditor({
         a.startAyah - b.startAyah
     );
     const base = cardOrderOf(cur);
+    // Right edge = the next NON-locked station after base, so re-sorted portions
+    // stay strictly below any memorized/current station and can't collide with
+    // one another across repeated re-sorts.
+    let hi = Infinity;
+    for (const s of path.quranStations) {
+      if (s.status === "locked") continue;
+      const o = cardOrderOf(s);
+      if (o > base && o < hi) hi = o;
+    }
+    if (hi === Infinity) hi = base + 1;
     const n = sorted.length;
     const updates: { id: string; order: number }[] = [];
     sorted.forEach((st, i) => {
-      const o = base + (i + 1) / (n + 1);
+      const o = base + ((i + 1) / (n + 1)) * (hi - base);
       for (const id of st.cardIds) updates.push({ id, order: o });
     });
     return updates;
@@ -76,7 +86,10 @@ export default function PlanEditor({
   const save = async () => {
     setBusy(true);
     try {
-      if (journey !== (plan.journey ?? "")) {
+      // Compare against the SAME default the selector shows, so an untouched order
+      // (or a legacy null journey) never triggers a phantom re-sort.
+      const prevJourney = (plan.journey as Journey) ?? "front-to-back";
+      if (journey !== prevJourney) {
         const updates = resortUpdates(journey);
         if (updates.length) await path.actions.reorder(updates);
       }
