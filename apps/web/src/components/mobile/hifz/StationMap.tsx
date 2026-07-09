@@ -52,10 +52,11 @@ function StationNode({ station, active }: { station: HifzStation; active: boolea
     >
       {station.status === "memorized" ? (
         <Check size={active ? 20 : 16} strokeWidth={2.5} />
+      ) : active || station.status === "learning" ? (
+        // The gold "you are here" is always a pin — never a lock, even while resting.
+        <MapPin size={active ? 20 : 16} strokeWidth={2.4} />
       ) : station.status === "locked" ? (
         <Lock size={14} />
-      ) : active || station.status === "learning" ? (
-        <MapPin size={active ? 20 : 16} strokeWidth={2.4} />
       ) : (
         <span className="text-[12px] font-bold tabular-nums">{station.index + 1}</span>
       )}

@@ -419,14 +419,20 @@ function byMushaf(a: HifzCard, b: HifzCard): number {
  * The station OBJECT is fully derived from cards (no second source of truth):
  *   green  "memorized" — every member is review/memorized and none due today
  *   amber  "due"       — every member scheduled, but ≥1 is due today
- *   gold   "learning"  — the single FIRST not-yet-complete station (you are here)
- *   grey   "locked"    — a not-complete station AFTER the gold one
- * Exactly one gold station exists whenever any learning remains. `currentKey` is
- * that gold station (null once everything is memorized).
+ *   gold   "learning"  — the FIRST not-yet-complete station in EACH track (you are here)
+ *   grey   "locked"    — a not-complete station after its track's gold one
+ * One gold station exists PER track (see trackOf) whenever that track still has
+ * learning left — so parallel tracks (the Qur'ān mushaf and the 99 Names) each keep
+ * their own "you are here" instead of the first-sorting track stealing the only slot
+ * and rendering the other track's current portion as a grey lock. `currentKey` is the
+ * first learning station overall (null once everything is memorized).
  */
 export function deriveStations(
   cards: HifzCard[],
-  today: string
+  today: string,
+  /** Groups stations into independent tracks, each with its own gold "you are here".
+   *  Defaults to a single track (legacy linear journey). */
+  trackOf: (card: HifzCard) => string = () => "single"
 ): { stations: HifzStation[]; currentKey: string | null } {
   const groups = new Map<string, HifzCard[]>();
   for (const c of cards) {
@@ -440,6 +446,7 @@ export function deriveStations(
   raw.sort((a, b) => byMushaf(a.members[0], b.members[0]));
 
   let currentKey: string | null = null;
+  const learningTracks = new Set<string>();
   const stations: HifzStation[] = raw.map(({ key, members }, index) => {
     const first = members[0];
     const last = members[members.length - 1];
@@ -451,9 +458,11 @@ export function deriveStations(
     let status: StationStatus;
     if (allDone) {
       status = anyDue ? "due" : "memorized";
-    } else if (currentKey === null) {
+    } else if (!learningTracks.has(trackOf(first))) {
+      // First not-complete station in its track → that track's gold "you are here".
       status = "learning";
-      currentKey = key;
+      learningTracks.add(trackOf(first));
+      if (currentKey === null) currentKey = key;
     } else {
       status = "locked";
     }

@@ -163,7 +163,12 @@ export function useHifzPath(): HifzPath {
   }, [adapter, today, reloadKey]);
 
   const { stations } = useMemo(
-    () => (today ? deriveStations(cards, today) : { stations: [], currentKey: null }),
+    () =>
+      today
+        ? // Two parallel tracks so each keeps its own gold "you are here": the 99
+          // Names live on sūrah 0, the Qur'ān mushaf on sūrah ≥ 1.
+          deriveStations(cards, today, (c) => (c.startSurah === 0 ? "names" : "quran"))
+        : { stations: [], currentKey: null },
     [cards, today]
   );
 
