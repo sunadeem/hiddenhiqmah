@@ -111,22 +111,48 @@ function PeekStrip({ stations, currentKey, onTap, peekWindow = 5, className }: S
 }
 
 /** Full winding vertical trail — for the Path / My-Progress screen. When
- *  `collapseLocked` is set, a long trailing run of not-yet-reached (locked)
- *  stations folds behind a tap so the page's forecast + "Add to my path" stay in
- *  reach. Locked stations are the contiguous tail (done → you-are-here → locked),
- *  so we keep everything up to the current step, show one upcoming for context,
- *  and fold the rest. */
+ *  `collapseLocked` is set it folds BOTH the run of completed stations ABOVE "you
+ *  are here" (into an "X memorized" summary) and the not-yet-reached tail below it
+ *  ("N more ahead") — so your current step sits near the top, with only upcoming
+ *  work beneath it and the page's forecast + "Add to my path" in reach. */
 function Trail({ stations, currentKey, onTap, className, collapseLocked }: StationMapProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [expandTop, setExpandTop] = useState(false);
+  const [expandBottom, setExpandBottom] = useState(false);
   if (stations.length === 0) return null;
 
-  const firstLocked = stations.findIndex((s) => s.status === "locked");
-  const KEEP = 1; // show the next portion after "you are here"; fold the rest
-  const totalLocked = firstLocked < 0 ? 0 : stations.length - firstLocked;
-  const collapsible = Boolean(collapseLocked) && totalLocked > KEEP + 1;
-  const cutoff = collapsible && !expanded ? firstLocked + KEEP : stations.length;
-  const shown = stations.slice(0, cutoff);
-  const hidden = stations.length - cutoff;
+  const collapse = Boolean(collapseLocked);
+  // Anchor on "you are here" (the gold learning station), else the first upcoming.
+  let anchor = stations.findIndex((s) => s.status === "learning");
+  if (anchor < 0) anchor = stations.findIndex((s) => s.status === "locked");
+  if (anchor < 0) anchor = stations.length - 1; // everything done → anchor the last
+
+  // Fold completed stations above the anchor into a summary (worth it past 1).
+  const topFold = collapse && anchor > 1;
+  const start = topFold && !expandTop ? anchor : 0;
+  const topHidden = anchor;
+
+  // Fold the upcoming tail below the anchor (keep one for context).
+  const AFTER = 1;
+  const tailStart = anchor + 1 + AFTER;
+  const bottomFold = collapse && stations.length - tailStart > 1;
+  const end = bottomFold && !expandBottom ? tailStart : stations.length;
+  const bottomHidden = stations.length - tailStart;
+
+  const shown = stations.slice(start, end);
+
+  const Pill = ({ up, label, onClick }: { up: boolean; label: string; onClick: () => void }) => (
+    <button
+      type="button"
+      onClick={() => {
+        hapticLight();
+        onClick();
+      }}
+      className="relative mx-auto flex items-center gap-1.5 rounded-full border border-dashed sidebar-border card-bg px-3.5 py-1.5 text-themed-muted touch-manipulation active:opacity-70"
+    >
+      {up ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+      <span className="text-[11px] font-medium">{label}</span>
+    </button>
+  );
 
   return (
     <div className={`relative ${className ?? ""}`}>
@@ -136,8 +162,16 @@ function Trail({ stations, currentKey, onTap, className, collapseLocked }: Stati
         style={{ background: "var(--color-gold)", opacity: 0.24 }}
       />
       <div className="relative flex flex-col gap-2.5">
+        {topFold && (
+          <Pill
+            up={expandTop}
+            label={expandTop ? "Show less" : `${topHidden} memorized`}
+            onClick={() => setExpandTop((e) => !e)}
+          />
+        )}
+
         {shown.map((s, i) => {
-          const left = i % 2 === 0;
+          const left = (start + i) % 2 === 0;
           const active = s.key === currentKey;
           return (
             <button
@@ -175,21 +209,12 @@ function Trail({ stations, currentKey, onTap, className, collapseLocked }: Stati
           );
         })}
 
-        {/* Fold / unfold the locked tail — sits on the spine like a continuation. */}
-        {collapsible && (
-          <button
-            type="button"
-            onClick={() => {
-              hapticLight();
-              setExpanded((e) => !e);
-            }}
-            className="relative mx-auto mt-1 flex items-center gap-1.5 rounded-full border border-dashed sidebar-border card-bg px-3.5 py-1.5 text-themed-muted touch-manipulation active:opacity-70"
-          >
-            {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            <span className="text-[11px] font-medium">
-              {expanded ? "Show less" : `${hidden} more ahead`}
-            </span>
-          </button>
+        {bottomFold && (
+          <Pill
+            up={expandBottom}
+            label={expandBottom ? "Show less" : `${bottomHidden} more ahead`}
+            onClick={() => setExpandBottom((e) => !e)}
+          />
         )}
       </div>
     </div>

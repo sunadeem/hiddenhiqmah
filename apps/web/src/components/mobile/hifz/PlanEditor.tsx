@@ -7,14 +7,21 @@
 import { useState } from "react";
 import { X, Check, Minus, Plus } from "lucide-react";
 import type { HifzPath } from "@/lib/hifz/useHifzPath";
-import type { Pace } from "@hidden-hiqmah/ui/lib/hifz/types";
+import type { Pace, HifzStation } from "@hidden-hiqmah/ui/lib/hifz/types";
 import { paceNewPerDay, paceStationAyahs } from "@hidden-hiqmah/ui/lib/hifz/srs";
+import { journeySurahs, type Journey } from "@/lib/hifz/quran";
 import { hapticSelection } from "@/lib/mobile/haptics";
 
 const PACES: { key: Pace; title: string; desc: string }[] = [
   { key: "gentle", title: "Gentle", desc: "~3 āyāt per portion" },
   { key: "steady", title: "Steady", desc: "~5 āyāt per portion" },
   { key: "devoted", title: "Devoted", desc: "~7 āyāt per portion" },
+];
+
+const JOURNEYS: { key: Journey; title: string; desc: string }[] = [
+  { key: "shortest", title: "Shortest sūrahs first", desc: "Build momentum on the short ones" },
+  { key: "juz-amma", title: "Juzʼ ʿAmma", desc: "The 30th juzʼ (An-Nabaʼ → An-Nās)" },
+  { key: "front-to-back", title: "Front to back", desc: "Al-Fātiḥah onward, in order" },
 ];
 
 export default function PlanEditor({
@@ -31,14 +38,49 @@ export default function PlanEditor({
   const [portions, setPortions] = useState<number>(
     plan?.dailyPortions ?? paceNewPerDay(plan?.pace ?? "steady")
   );
+  const [journey, setJourney] = useState<Journey>((plan?.journey as Journey) ?? "front-to-back");
   const [busy, setBusy] = useState(false);
 
   if (!open || !plan) return null;
 
+  const cardOrderOf = (s: HifzStation): number => {
+    const c = path.cards.find((x) => x.id === s.cardIds[0]);
+    return c?.order ?? s.startSurah * 1000 + s.startAyah;
+  };
+  // Re-sort the NOT-STARTED (locked) portions by the chosen journey, placed after
+  // your current position — your current sūrah stays first, memorized stays put.
+  const resortUpdates = (j: Journey): { id: string; order: number }[] => {
+    const cur = path.currentStation;
+    if (!cur) return [];
+    const js = journeySurahs(j);
+    const rank = (surah: number) =>
+      surah === cur.startSurah ? -1 : js.indexOf(surah) < 0 ? 9999 : js.indexOf(surah);
+    const locked = path.quranStations.filter((s) => s.status === "locked");
+    if (!locked.length) return [];
+    const sorted = [...locked].sort(
+      (a, b) =>
+        rank(a.startSurah) - rank(b.startSurah) ||
+        a.startSurah - b.startSurah ||
+        a.startAyah - b.startAyah
+    );
+    const base = cardOrderOf(cur);
+    const n = sorted.length;
+    const updates: { id: string; order: number }[] = [];
+    sorted.forEach((st, i) => {
+      const o = base + (i + 1) / (n + 1);
+      for (const id of st.cardIds) updates.push({ id, order: o });
+    });
+    return updates;
+  };
+
   const save = async () => {
     setBusy(true);
     try {
-      await path.actions.savePlan({ ...plan, pace, dailyPortions: portions });
+      if (journey !== (plan.journey ?? "")) {
+        const updates = resortUpdates(journey);
+        if (updates.length) await path.actions.reorder(updates);
+      }
+      await path.actions.savePlan({ ...plan, pace, dailyPortions: portions, journey });
       onClose();
     } finally {
       setBusy(false);
@@ -142,6 +184,42 @@ export default function PlanEditor({
             <p className="text-[11px] text-themed-muted/70 leading-relaxed">
               Today shows &ldquo;portion N of {portions}&rdquo; and stops once you finish
               them. Start early always lets you keep going.
+            </p>
+          </div>
+
+          {/* Learning order */}
+          <div className="space-y-2">
+            <label className="text-[11px] uppercase tracking-wider text-themed-muted">
+              Learning order
+            </label>
+            <div className="space-y-2">
+              {JOURNEYS.map((jj) => (
+                <button
+                  key={jj.key}
+                  type="button"
+                  onClick={() => {
+                    hapticSelection();
+                    setJourney(jj.key);
+                  }}
+                  className={`w-full flex items-center justify-between rounded-xl border px-4 py-3 text-left touch-manipulation ${
+                    journey === jj.key
+                      ? "border-[var(--color-gold)]/50 bg-[var(--color-gold)]/10"
+                      : "sidebar-border active:bg-[var(--overlay-subtle)]"
+                  }`}
+                >
+                  <span className="min-w-0">
+                    <span className={`block text-sm font-semibold ${journey === jj.key ? "text-gold" : "text-themed"}`}>
+                      {jj.title}
+                    </span>
+                    <span className="block text-[11.5px] text-themed-muted">{jj.desc}</span>
+                  </span>
+                  {journey === jj.key && <Check size={16} className="text-gold shrink-0" />}
+                </button>
+              ))}
+            </div>
+            <p className="text-[11px] text-themed-muted/70 leading-relaxed">
+              Re-sorts your upcoming portions — what you&rsquo;re on now and what you&rsquo;ve
+              memorized stay put.
             </p>
           </div>
         </div>

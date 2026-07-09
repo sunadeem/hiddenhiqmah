@@ -193,6 +193,9 @@ export interface HifzAdapter {
    * Pure counter bump — does NOT touch the SRS schedule.
    */
   bumpPeek?(id: string): Promise<void>;
+  /** Update the path order (card_order) of existing cards — used to re-sort the
+   *  upcoming path by a new journey. Optional (older adapters omit it). */
+  reorderCards?(updates: { id: string; order: number }[]): Promise<void>;
   /** Today's review session: due reviews (oldest first) + up to NEW_PER_DAY new cards. */
   getQueue(today: string): Promise<HifzCard[]>;
   /** Grade a card; reschedules it (SM-2) and logs the review. */

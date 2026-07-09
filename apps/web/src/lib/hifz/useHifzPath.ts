@@ -43,6 +43,8 @@ export interface HifzPathActions {
   grade(cardId: string, grade: Grade): Promise<void>;
   /** Record a Fade peek (informs the Seal grade; no schedule change). */
   bumpPeek(cardId: string): Promise<void>;
+  /** Re-sort upcoming path portions by updating their card_order. */
+  reorder(updates: { id: string; order: number }[]): Promise<void>;
   /** Force a re-read (rarely needed — actions already broadcast). */
   reload(): void;
 }
@@ -257,6 +259,10 @@ export function useHifzPath(): HifzPath {
       },
       async bumpPeek(cardId) {
         await adapter.bumpPeek?.(cardId);
+        broadcast();
+      },
+      async reorder(updates) {
+        if (updates.length) await adapter.reorderCards?.(updates);
         broadcast();
       },
       reload,

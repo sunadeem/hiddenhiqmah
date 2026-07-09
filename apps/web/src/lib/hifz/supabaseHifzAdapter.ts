@@ -210,6 +210,17 @@ export function createSupabaseHifzAdapter(
       if (error) throw error;
     },
 
+    async reorderCards(updates: { id: string; order: number }[]): Promise<void> {
+      for (const u of updates) {
+        const { error } = await client
+          .from("hifz_cards")
+          .update({ card_order: u.order })
+          .eq("id", u.id)
+          .eq("user_id", userId);
+        if (error) throw error;
+      }
+    },
+
     async getPlan(): Promise<HifzPlan | null> {
       const { data, error } = await client
         .from("hifz_plan")

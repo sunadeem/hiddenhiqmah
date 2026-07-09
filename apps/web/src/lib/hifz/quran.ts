@@ -187,7 +187,7 @@ export function unitsForJourney(j: Journey): GuidedUnit[] {
 }
 
 /** Ordered surah list for a journey (used for surah/ayah units). */
-function journeySurahs(j: Journey): number[] {
+export function journeySurahs(j: Journey): number[] {
   const all = Array.from({ length: TOTAL_SURAHS }, (_, i) => i + 1);
   if (j === "front-to-back") return all;
   if (j === "juz-amma") return all.filter((s) => s >= 78); // An-Naba → An-Nas (juz 30)

@@ -125,6 +125,14 @@ export function createLocalHifzAdapter(storeKey = STORE_KEY): HifzAdapter {
       save(s);
     },
 
+    async reorderCards(updates: { id: string; order: number }[]): Promise<void> {
+      if (!updates.length) return;
+      const s = load();
+      const map = new Map(updates.map((u) => [u.id, u.order]));
+      s.cards = s.cards.map((c) => (map.has(c.id) ? { ...c, order: map.get(c.id)! } : c));
+      save(s);
+    },
+
     async getQueue(today: string): Promise<HifzCard[]> {
       return selectQueue(load().cards, today);
     },
