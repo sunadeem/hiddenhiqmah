@@ -8,7 +8,9 @@ import {
   Heart,
   Check,
   Users,
-  Copy,
+  Share2,
+  BookOpen,
+  Moon,
   LogOut,
   Minus,
   Loader2,
@@ -89,6 +91,14 @@ function Avatar({ name, avatar, accent }: { name: string; avatar: string | null;
   );
 }
 
+// One-tap starting points for the empty state — each creates a ready-made circle
+// so a new user's first move is texting a sibling, not staring at a blank form.
+const TEMPLATES: { label: string; desc: string; icon: typeof Users; make: () => Promise<string> }[] = [
+  { label: "Family Khatmah", desc: "Finish the Qur'an together", icon: BookOpen, make: () => createCircle("Family Khatmah", 30, "khatmah", "juz") },
+  { label: "Hifz Circle", desc: "Memorize side by side", icon: Heart, make: () => createCircle("Hifz Circle", 10, "hifz", "surah") },
+  { label: "Ramadan Khatmah", desc: "A juz a day this Ramadan", icon: Moon, make: () => createCircle("Ramadan Khatmah", 30, "khatmah", "juz") },
+];
+
 export default function CirclesScreen() {
   const { user, loading: authLoading } = useAuth();
   const [circles, setCircles] = useState<CircleDetail[] | null>(null);
@@ -116,6 +126,23 @@ export default function CirclesScreen() {
     setTimeout(() => setCopied((c) => (c === id ? null : c)), 1500);
   };
 
+  // Invite via the native share sheet (WhatsApp/Messages/etc.) instead of making
+  // the user copy a bare code. Falls back to copy on web / where Share is absent.
+  // (A universal-link URL can be added here once the live domain + Associated
+  // Domains are set up — see 017/deeplinks; the code alone already works.)
+  const shareOrCopy = async (id: string, name: string, code: string) => {
+    try {
+      const { Share } = await import("@capacitor/share");
+      await Share.share({
+        title: "Join our circle",
+        text: `Join "${name}" on Hidden Hiqmah — open the app and enter code ${code}.`,
+        dialogTitle: "Invite to circle",
+      });
+    } catch {
+      copyCode(id, code);
+    }
+  };
+
   const loadUnread = useCallback(async () => {
     try {
       setUnread(await getUnreadCount());
@@ -127,7 +154,17 @@ export default function CirclesScreen() {
   const reload = useCallback(async () => {
     if (!user) return;
     try {
-      setCircles(await getMyCirclesWithDetail());
+      const data = await getMyCirclesWithDetail();
+      setCircles(data);
+      // Rehydrate "duʿā sent today" from the server so the hearts survive a reload
+      // (and reset on their own at local midnight).
+      const sent = new Set<string>();
+      for (const d of data) {
+        for (const m of d.members) {
+          if (m.iSentDua) sent.add(d.circle.id + m.user_id);
+        }
+      }
+      setDuaSent(sent);
       setErr("");
     } catch (e) {
       setErr(errMsg(e));
@@ -344,24 +381,65 @@ export default function CirclesScreen() {
         </div>
       )}
 
-      {/* Empty */}
+      {/* Empty — a recruiting surface, not a dead end. */}
       {circles.length === 0 && !showCreate && !showJoin && (
-        <div className="text-center py-10 text-themed-muted text-sm">
-          No circles yet. Create one for your family, or join with a code.
+        <div className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
+          <div className="relative">
+            <div className="w-11 h-11 rounded-full bg-[var(--color-gold)]/15 text-gold flex items-center justify-center mb-3">
+              <Users size={20} />
+            </div>
+            <h2 className="text-themed font-bold text-[17px]">Start a circle</h2>
+            <p className="text-themed-muted text-[13px] mt-1 leading-relaxed">
+              Pursue a shared goal with family or friends — everyone logs their own
+              part and cheers the others on. Pick one to begin:
+            </p>
+            <div className="mt-4 space-y-2">
+              {TEMPLATES.map((t) => (
+                <button
+                  key={t.label}
+                  disabled={busy}
+                  onClick={() => run(t.make)}
+                  className="w-full flex items-center gap-3 rounded-xl border sidebar-border px-4 py-3 text-left touch-manipulation active:bg-[var(--overlay-subtle)] disabled:opacity-60"
+                >
+                  <t.icon size={18} className="text-gold shrink-0" />
+                  <span className="min-w-0">
+                    <span className="block text-themed font-semibold text-sm">{t.label}</span>
+                    <span className="block text-themed-muted text-[11.5px]">{t.desc}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => { setShowJoin(true); setShowCreate(false); }}
+              className="mt-3 text-[13px] text-gold font-semibold active:opacity-70 touch-manipulation"
+            >
+              Have a code? Join a circle ›
+            </button>
+            <p className="text-[11px] text-themed-muted/70 mt-4 flex items-center gap-1.5">
+              <Shield size={12} className="text-gold" /> Private · no public leaderboards
+            </p>
+          </div>
         </div>
       )}
 
       {/* Circles */}
       {circles.map((d) => {
         const meIsOwner = d.myId != null && d.circle.owner_id === d.myId;
-        // Leaderboard: rank by contribution (desc); owner then "you" break ties.
-        const ranked = [...d.members].sort(
-          (a, b) =>
-            b.value - a.value ||
-            (a.role === "owner" ? -1 : b.role === "owner" ? 1 : 0) ||
-            (a.isMe ? -1 : b.isMe ? 1 : 0)
-        );
-        const topValue = ranked.length ? ranked[0].value : 0;
+        // Competitive ranking is opt-in per circle (owner toggle, migration 017).
+        // Default OFF = a gentle "Members" view (no crown, no rank numbers) using
+        // the lib's owner → you → value order — matches "Private · no public
+        // leaderboards". An absent column (pre-017) reads as off.
+        const showRank = d.circle.ranking_enabled === true;
+        const ordered = showRank
+          ? [...d.members].sort(
+              (a, b) =>
+                b.value - a.value ||
+                (a.role === "owner" ? -1 : b.role === "owner" ? 1 : 0) ||
+                (a.isMe ? -1 : b.isMe ? 1 : 0)
+            )
+          : d.members;
+        const topValue = showRank && ordered.length ? ordered[0].value : 0;
 
         return (
           <div key={d.circle.id} className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden">
@@ -408,16 +486,19 @@ export default function CirclesScreen() {
 
             <div className="relative h-px bg-[var(--overlay-medium)] my-4" />
 
-            {/* Leaderboard */}
+            {/* Members / Leaderboard */}
             <div className="relative">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted mb-1.5">Leaderboard</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-themed-muted mb-1.5">
+                {showRank ? "Leaderboard" : "Members"}
+              </p>
               <div className="space-y-1">
-                {ranked.map((m, i) => (
+                {ordered.map((m, i) => (
                   <LeaderRow
                     key={m.user_id}
                     m={m}
                     rank={i + 1}
-                    isTop={m.value > 0 && m.value === topValue}
+                    showRank={showRank}
+                    isTop={showRank && m.value > 0 && m.value === topValue}
                     target={d.circle.goal_target}
                     unit={d.circle.goal_unit}
                     canRemove={meIsOwner && !m.isMe && m.role !== "owner"}
@@ -462,13 +543,13 @@ export default function CirclesScreen() {
               {invites[d.circle.id] ? (
                 <>
                   <button
-                    onClick={() => copyCode(d.circle.id, invites[d.circle.id])}
+                    onClick={() => shareOrCopy(d.circle.id, d.circle.name, invites[d.circle.id])}
                     className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-gold rounded-xl border border-[var(--color-gold)]/30 py-2.5 tracking-widest"
                   >
                     {copied === d.circle.id ? (
                       <><Check size={14} /> Copied!</>
                     ) : (
-                      <><Copy size={14} /> {invites[d.circle.id]}</>
+                      <><Share2 size={14} /> {invites[d.circle.id]}</>
                     )}
                   </button>
                   <button
@@ -499,9 +580,13 @@ export default function CirclesScreen() {
               <button
                 disabled={busy}
                 onClick={() => {
-                  if (confirm("Leave this circle? If you're the owner, it will be disbanded for everyone.")) {
-                    run(() => leaveCircle(d.circle.id));
-                  }
+                  const owner = d.myId != null && d.circle.owner_id === d.myId;
+                  const msg = owner
+                    ? d.members.length > 1
+                      ? "Leave this circle? Ownership passes to the longest-standing member."
+                      : "Leave this circle? You're the last member, so it will be closed."
+                    : "Leave this circle?";
+                  if (confirm(msg)) run(() => leaveCircle(d.circle.id));
                 }}
                 className="inline-flex items-center justify-center gap-1.5 text-sm text-themed-muted rounded-xl border sidebar-border px-3 py-2.5 active:bg-[var(--overlay-subtle)]"
               >
@@ -554,6 +639,7 @@ export default function CirclesScreen() {
 function LeaderRow({
   m,
   rank,
+  showRank,
   isTop,
   target,
   unit,
@@ -565,6 +651,7 @@ function LeaderRow({
 }: {
   m: CircleMember;
   rank: number;
+  showRank: boolean;
   isTop: boolean;
   target: number;
   unit: string;
@@ -577,13 +664,15 @@ function LeaderRow({
   const pct = target > 0 ? Math.min(m.value / target, 1) * 100 : 0;
   return (
     <div className="flex items-center gap-2.5 py-1.5">
-      <span
-        className={`w-5 shrink-0 text-center text-xs font-bold tabular-nums ${
-          isTop ? "text-gold" : "text-themed-muted/70"
-        }`}
-      >
-        {rank}
-      </span>
+      {showRank && (
+        <span
+          className={`w-5 shrink-0 text-center text-xs font-bold tabular-nums ${
+            isTop ? "text-gold" : "text-themed-muted/70"
+          }`}
+        >
+          {rank}
+        </span>
+      )}
       <Avatar name={m.display_name} avatar={m.avatar} accent={m.isMe} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">

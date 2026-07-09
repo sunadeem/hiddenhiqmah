@@ -12,6 +12,13 @@ function broadcastCirclesChanged(): void {
   }
 }
 
+/** Local-midnight ISO — the cutoff for "sent a duʿā today" (natural daily reset). */
+function startOfTodayIso(): string {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d.toISOString();
+}
+
 export type Circle = {
   id: string;
   name: string;
@@ -20,6 +27,9 @@ export type Circle = {
   goal_unit: string;
   goal_target: number;
   created_at: string;
+  /** Competitive rank/crown shown when true; gentle "Members" view when false.
+   *  Optional because it's absent until migration 017 is applied (treat as off). */
+  ranking_enabled?: boolean;
 };
 
 export type CircleMember = {
@@ -29,6 +39,8 @@ export type CircleMember = {
   avatar: string | null;
   value: number;
   isMe: boolean;
+  /** True if I've sent this member a duʿā today (rehydrated from circle_reactions). */
+  iSentDua: boolean;
 };
 
 export type CircleDetail = {
@@ -49,16 +61,33 @@ export async function getMyCircles(): Promise<Circle[]> {
 }
 
 export async function getCircleDetail(circleId: string): Promise<CircleDetail> {
-  const [{ data: circleRows, error: cErr }, { data: memberRows }, { data: progressRows }, { data: auth }] =
-    await Promise.all([
-      supabase.from("circles").select("*").eq("id", circleId).limit(1),
-      supabase.from("circle_members").select("user_id, role").eq("circle_id", circleId),
-      supabase.from("circle_member_progress").select("user_id, value").eq("circle_id", circleId),
-      supabase.auth.getUser(),
-    ]);
+  const [
+    { data: circleRows, error: cErr },
+    { data: memberRows },
+    { data: progressRows },
+    { data: auth },
+    { data: reactionRows },
+  ] = await Promise.all([
+    supabase.from("circles").select("*").eq("id", circleId).limit(1),
+    supabase.from("circle_members").select("user_id, role").eq("circle_id", circleId),
+    supabase.from("circle_member_progress").select("user_id, value").eq("circle_id", circleId),
+    supabase.auth.getUser(),
+    // Today's duʿā I've sent in this circle — rehydrates the "sent" state so the
+    // heart survives a reload (and resets naturally at local midnight).
+    supabase
+      .from("circle_reactions")
+      .select("from_user, to_user")
+      .eq("circle_id", circleId)
+      .eq("kind", "dua")
+      .gte("created_at", startOfTodayIso()),
+  ]);
   if (cErr) throw cErr;
   const circle = (circleRows ?? [])[0] as Circle;
   const myId = auth?.user?.id ?? null;
+  const duaSentTo = new Set<string>();
+  for (const r of (reactionRows ?? []) as { from_user: string; to_user: string }[]) {
+    if (r.from_user === myId) duaSentTo.add(r.to_user);
+  }
 
   const members = (memberRows ?? []) as { user_id: string; role: "owner" | "member" }[];
   const ids = members.map((m) => m.user_id);
@@ -83,6 +112,7 @@ export async function getCircleDetail(circleId: string): Promise<CircleDetail> {
     avatar: profById.get(m.user_id)?.avatar ?? null,
     value: progById.get(m.user_id) ?? 0,
     isMe: m.user_id === myId,
+    iSentDua: duaSentTo.has(m.user_id),
   }));
   // Owner first, then "you", then the rest by contribution.
   merged.sort((a, b) => {
@@ -153,6 +183,26 @@ export async function sendDua(circleId: string, toUser: string): Promise<void> {
 
 export async function leaveCircle(circleId: string): Promise<void> {
   const { error } = await supabase.rpc("leave_circle", { p_circle: circleId });
+  if (error) throw error;
+  broadcastCirclesChanged();
+}
+
+/** Owner toggles competitive ranking on/off (migration 017). */
+export async function setCircleRanking(circleId: string, enabled: boolean): Promise<void> {
+  const { error } = await supabase.rpc("set_circle_ranking", {
+    p_circle: circleId,
+    p_enabled: enabled,
+  });
+  if (error) throw error;
+  broadcastCirclesChanged();
+}
+
+/** Owner hands the circle to another member (migration 017). */
+export async function transferOwnership(circleId: string, newOwner: string): Promise<void> {
+  const { error } = await supabase.rpc("transfer_circle_ownership", {
+    p_circle: circleId,
+    p_new_owner: newOwner,
+  });
   if (error) throw error;
   broadcastCirclesChanged();
 }
