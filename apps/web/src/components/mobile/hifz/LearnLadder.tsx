@@ -133,6 +133,7 @@ export default function LearnLadder({ path, nav }: LearnLadderProps) {
   const [peeking, setPeeking] = useState(false);
   const [peeks, setPeeks] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [sealIdx, setSealIdx] = useState(0); // which member card we're sealing
 
   const stationKey = station?.key ?? null;
 
@@ -181,7 +182,13 @@ export default function LearnLadder({ path, nav }: LearnLadderProps) {
     setFadeStage(0);
     setEchoes({});
     setPeeks(0);
+    setSealIdx(0);
   }, [stationKey]);
+
+  // Start the Seal at the first member each time the user reaches it.
+  useEffect(() => {
+    if (step === 4) setSealIdx(0);
+  }, [step]);
 
   const items = content?.items ?? [];
   const itemCount = items.length;
@@ -327,29 +334,27 @@ export default function LearnLadder({ path, nav }: LearnLadderProps) {
   }, [ai, items, path.actions]);
   const endPeek = useCallback(() => setPeeking(false), []);
 
-  // ── Seal — the one graded moment ──
+  // ── Seal — one honest grade PER member (each Name / āyah in turn) ──
   const doSeal = useCallback(
     async (base: Grade) => {
       if (busy) return;
       setBusy(true);
-      // Grade every member card once. Each card's own peekCount (persisted via
-      // bumpPeek during Fade) shapes its Seal grade — heavy peeking can't count
-      // as a clean recall.
-      for (const c of memberCards) {
-        const fresh = path.cards.find((x) => x.id === c.id) ?? c;
+      // Grade the current member card. Its own peekCount (persisted via bumpPeek
+      // during Fade) shapes its Seal grade — heavy peeking can't count as clean.
+      const card = memberCards[sealIdx];
+      if (card) {
+        const fresh = path.cards.find((x) => x.id === card.id) ?? card;
         const g = sealGrade(base, fresh.peekCount ?? 0, stationAyahs);
-        await path.actions.grade(c.id, g);
+        await path.actions.grade(card.id, g);
       }
-      if (base === "again") {
-        // No harm — walk it again today. Back to Fade for another pass.
+      // More members to seal → move to the next one, staying on the Seal step.
+      if (sealIdx < memberCards.length - 1) {
         hapticSelection();
-        setStep(2);
-        setAi(0);
-        setFadeStage(0);
-        setPeeks(0);
+        setSealIdx((i) => i + 1);
         setBusy(false);
         return;
       }
+      // Last member sealed → finish the station.
       hapticSuccess();
       // A completed sūrah earns a Milestone (station ends on the sūrah's last āyah).
       const finishedSurah =
@@ -362,7 +367,7 @@ export default function LearnLadder({ path, nav }: LearnLadderProps) {
         nav("today");
       }
     },
-    [busy, memberCards, path.cards, path.actions, stationAyahs, station, content, nav]
+    [busy, memberCards, sealIdx, path.cards, path.actions, stationAyahs, station, content, nav]
   );
 
   // ── nothing to learn ──
@@ -390,18 +395,40 @@ export default function LearnLadder({ path, nav }: LearnLadderProps) {
     );
   }
 
-  if (path.loading || !content) {
+  // Only block on the INITIAL content load. Never fall back to the loader once
+  // content exists — a background path reload (e.g. bumpPeek during a peek) sets
+  // path.loading briefly, and blanking the ladder here is what killed the peek.
+  if (!content) {
     return (
       <div className="flex flex-col min-h-full">
         <FlowHeader label="Learning" step={step} onClose={() => nav("today")} />
         <div className="flex-1 flex items-center justify-center">
-          <span className="text-themed-muted text-sm">Preparing your āyāt…</span>
+          <span className="text-themed-muted text-sm">Preparing…</span>
         </div>
       </div>
     );
   }
 
   const stationLabel = station.label || `${surahName(station.startSurah)}`;
+
+  // The member being sealed right now + a human label for it (Name, or āyah range).
+  const sealCard = memberCards[sealIdx];
+  const sealLabel: string = (() => {
+    if (!sealCard) return stationLabel;
+    if (content.kind === "asma") {
+      const names = (content.items as AItem[])
+        .filter((it) => it.cardId === sealCard.id)
+        .map((it) => it.name.name);
+      return names.join(" · ") || stationLabel;
+    }
+    const ays = (content.items as QItem[]).filter((it) => it.cardId === sealCard.id);
+    if (!ays.length) return stationLabel;
+    const f = ays[0];
+    const l = ays[ays.length - 1];
+    return ays.length === 1
+      ? `${surahName(f.surah)} ${f.ayah}`
+      : `${surahName(f.surah)} ${f.ayah}–${l.ayah}`;
+  })();
 
   return (
     <div className="flex flex-col min-h-full">
@@ -449,10 +476,10 @@ export default function LearnLadder({ path, nav }: LearnLadderProps) {
         )}
         {step === 4 && (
           <Seal
-            content={content}
-            stationLabel={stationLabel}
-            peeks={peeks}
-            firstCard={memberCards[0]}
+            itemLabel={sealLabel}
+            sealIdx={sealIdx}
+            total={memberCards.length}
+            card={sealCard}
             today={today}
             stationAyahs={stationAyahs}
             busy={busy}
@@ -740,10 +767,23 @@ function Absorb({
 function FadedArabic({ text, stage, ayahNum }: { text: string; stage: FadeStage; ayahNum?: number }) {
   const words = text.split(/\s+/).filter(Boolean);
   if (stage === 3) {
+    // One dot-cluster per word so it wraps naturally and stays inside the box
+    // (a single long dot run overflowed horizontally).
     return (
-      <span dir="rtl" className="font-arabic" style={{ color: "var(--overlay-strong, rgba(255,255,255,0.28))", letterSpacing: "0.2em" }}>
-        {ayahNum != null ? `﴿ ${arNum(ayahNum)} ﴾ ` : ""}
-        ································
+      <span dir="rtl" className="font-arabic break-words">
+        {ayahNum != null ? (
+          <span className="text-gold" style={{ fontSize: "0.62em" }}>
+            ﴿{arNum(ayahNum)}﴾{" "}
+          </span>
+        ) : null}
+        {words.map((_, i) => (
+          <span
+            key={i}
+            style={{ color: "var(--overlay-strong, rgba(255,255,255,0.28))", fontSize: "0.7em" }}
+          >
+            ····{" "}
+          </span>
+        ))}
       </span>
     );
   }
@@ -803,7 +843,8 @@ function Fade({
         <span className="text-themed font-semibold">
           Fade — {isQuran ? "āyah" : "Name"} {ai + 1}.
         </span>{" "}
-        Recite with less and less help. Hold to peek — peeking is learning, not cheating.
+        Recite with less and less help.
+        {fadeStage === 3 ? " Hold to peek — peeking is learning, not cheating." : ""}
       </p>
 
       <div
@@ -848,20 +889,23 @@ function Fade({
           )}
         </div>
 
-        <button
-          type="button"
-          onPointerDown={(e) => {
-            e.preventDefault();
-            startPeek();
-          }}
-          onPointerUp={endPeek}
-          onPointerLeave={endPeek}
-          onPointerCancel={endPeek}
-          className="mx-auto mt-3 block rounded-full px-5 py-2 text-[11.5px] tracking-[0.1em] uppercase select-none touch-none"
-          style={{ border: "1px dashed var(--color-gold-line, rgba(201,168,76,0.28))", color: "var(--color-gold)" }}
-        >
-          Hold to peek
-        </button>
+        {/* Peek only makes sense when the text is fully Hidden. */}
+        {fadeStage === 3 && (
+          <button
+            type="button"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              startPeek();
+            }}
+            onPointerUp={endPeek}
+            onPointerLeave={endPeek}
+            onPointerCancel={endPeek}
+            className="mx-auto mt-3 block rounded-full px-5 py-2 text-[11.5px] tracking-[0.1em] uppercase select-none touch-none"
+            style={{ border: "1px dashed var(--color-gold-line, rgba(201,168,76,0.28))", color: "var(--color-gold)" }}
+          >
+            Hold to peek
+          </button>
+        )}
       </div>
 
       {peeks > 0 && (
@@ -996,33 +1040,34 @@ function Recite({
 // ═══════════════ Rung 4 · SEAL ═══════════════
 
 function Seal({
-  content,
-  stationLabel,
-  peeks,
-  firstCard,
+  itemLabel,
+  sealIdx,
+  total,
+  card,
   today,
   stationAyahs,
   busy,
   onSeal,
 }: {
-  content: NonNullable<Content>;
-  stationLabel: string;
-  peeks: number;
-  firstCard: HifzCard | undefined;
+  itemLabel: string;
+  sealIdx: number;
+  total: number;
+  card: HifzCard | undefined;
   today: string;
   stationAyahs: number;
   busy: boolean;
   onSeal: (base: Grade) => void;
 }) {
-  const low = peeks <= 2;
+  const cardPeeks = card?.peekCount ?? 0;
+  const low = cardPeeks <= 2;
   const holdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const holdFired = useRef(false);
 
-  // Preview each grade's next interval on the first member card (post-seal grade).
+  // Preview each grade's next interval on THIS member card (post-seal grade).
   const preview = (base: Grade): string => {
-    if (!firstCard) return "";
-    const g = sealGrade(base, firstCard.peekCount ?? 0, stationAyahs);
-    return returnsLabel(firstCard, g, today);
+    if (!card) return "";
+    const g = sealGrade(base, cardPeeks, stationAyahs);
+    return returnsLabel(card, g, today);
   };
 
   const Grade = ({
@@ -1088,14 +1133,19 @@ function Seal({
   return (
     <div className="pt-1">
       <p className="text-themed-muted text-sm leading-relaxed mb-4">
-        <span className="text-themed font-semibold">The Seal.</span> One honest grade — the only
-        moment that touches your schedule.
+        <span className="text-themed font-semibold">The Seal.</span> One honest grade
+        {total > 1 ? " for each" : ""} — the only moment that touches your schedule.
       </p>
 
       <div className="rounded-2xl card-bg border sidebar-border p-5 text-center">
-        <p className="text-[11px] tracking-[0.2em] uppercase text-gold mb-1.5">{stationLabel}</p>
+        {total > 1 && (
+          <p className="text-[11px] tracking-[0.15em] uppercase text-themed-muted mb-1">
+            {sealIdx + 1} of {total}
+          </p>
+        )}
+        <p className="text-[11px] tracking-[0.2em] uppercase text-gold mb-1.5">{itemLabel}</p>
         <p className="text-themed text-lg" style={{ fontFamily: "var(--font-serif, Georgia, serif)" }}>
-          How did it come?
+          How did it go?
         </p>
 
         <div className="flex flex-col gap-2.5 mt-4">
@@ -1109,10 +1159,10 @@ function Seal({
           style={{ color: low ? "var(--color-gold)" : "var(--color-themed-muted,#808aa0)" }}
         >
           {low
-            ? peeks === 0
+            ? cardPeeks === 0
               ? "Suggested — you recalled it without a single peek"
-              : `Suggested — you needed only ${peeks} peek${peeks === 1 ? "" : "s"}`
-            : `You peeked ${peeks} times — “Getting there” may be the honest grade`}
+              : `Suggested — you needed only ${cardPeeks} peek${cardPeeks === 1 ? "" : "s"}`
+            : `You peeked ${cardPeeks} times — “Getting there” may be the honest grade`}
         </p>
         <p className="text-[11px] text-themed-muted mt-2">
           Press and hold “It&apos;s with me” for <span className="italic">rock solid</span> — a longer first gap.
