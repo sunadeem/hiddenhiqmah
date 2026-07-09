@@ -445,8 +445,25 @@ export function deriveStations(
   });
   raw.sort((a, b) => byMushaf(a.members[0], b.members[0]));
 
+  // Per track, pick the "you are here" (gold learning) station: prefer the first
+  // STARTED not-complete station (any member has left "new"), so adding an earlier
+  // portion never bumps the one you're mid-way through; else the first not-complete.
+  const firstNotDone = new Map<string, string>();
+  const firstStarted = new Map<string, string>();
+  for (const { key, members } of raw) {
+    if (members.every((m) => m.status === "review" || m.status === "memorized")) continue;
+    const track = trackOf(members[0]);
+    if (!firstNotDone.has(track)) firstNotDone.set(track, key);
+    if (members.some((m) => m.status !== "new") && !firstStarted.has(track)) {
+      firstStarted.set(track, key);
+    }
+  }
+  const learningKeyByTrack = new Map<string, string>();
+  for (const [track, k] of firstNotDone) {
+    learningKeyByTrack.set(track, firstStarted.get(track) ?? k);
+  }
+
   let currentKey: string | null = null;
-  const learningTracks = new Set<string>();
   const stations: HifzStation[] = raw.map(({ key, members }, index) => {
     const first = members[0];
     const last = members[members.length - 1];
@@ -458,10 +475,9 @@ export function deriveStations(
     let status: StationStatus;
     if (allDone) {
       status = anyDue ? "due" : "memorized";
-    } else if (!learningTracks.has(trackOf(first))) {
-      // First not-complete station in its track → that track's gold "you are here".
+    } else if (key === learningKeyByTrack.get(trackOf(first))) {
+      // This track's gold "you are here".
       status = "learning";
-      learningTracks.add(trackOf(first));
       if (currentKey === null) currentKey = key;
     } else {
       status = "locked";

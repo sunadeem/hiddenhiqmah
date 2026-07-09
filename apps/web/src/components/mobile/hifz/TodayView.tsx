@@ -57,6 +57,7 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
     todayLearn,
     newLearningDoneToday,
     newPortionsToday,
+    dailyNewBudget,
     stats,
   } = path;
 
@@ -169,6 +170,7 @@ export default function TodayView({ path, nav }: HifzScreenProps) {
         dailyDone={dailyDone}
         startEarlyStation={startEarlyStation}
         newPortionsToday={newPortionsToday}
+        dailyNewBudget={dailyNewBudget}
         streak={streak}
         nav={nav}
       />
@@ -289,6 +291,7 @@ interface HeroProps {
   dailyDone: boolean;
   startEarlyStation: HifzStation | null;
   newPortionsToday: number;
+  dailyNewBudget: number;
   streak: number;
   nav: (view: HifzView, params?: unknown) => void;
 }
@@ -302,6 +305,7 @@ function Hero({
   dailyDone,
   startEarlyStation,
   newPortionsToday,
+  dailyNewBudget,
   streak,
   nav,
 }: HeroProps) {
@@ -337,6 +341,10 @@ function Hero({
     params = { stationKey: startEarlyStation.key };
   } else if (canLearn && learnStation) {
     title = learnIsNames ? "Learn today's Name" : "Learn today's āyāt";
+    // Show today's portion counter when the daily target is more than one.
+    if (dailyNewBudget > 1) {
+      eyebrow = `Portion ${Math.min(newPortionsToday + 1, dailyNewBudget)} of ${dailyNewBudget} today`;
+    }
     est = `${learnStation.label} · ${learnCount} new ${learnUnitWord} to carry`;
     cta = `Learn ${learnStation.label} ›`;
     target = "learn";

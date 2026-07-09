@@ -186,12 +186,21 @@ export function useHifzPath(): HifzPath {
   // A station is still "to learn" while any member is new → status learning/locked.
   // Each track advances independently: the current Qur'ān station excludes Names,
   // so finishing a batch of Names never blocks the mushaf (and vice-versa).
+  // Prefer the track's gold "learning" station (which deriveStations points at the
+  // one you've started), falling back to the first locked — so an added earlier
+  // portion doesn't hijack "today".
   const currentStation = useMemo(
-    () => quranStations.find((s) => s.status === "learning" || s.status === "locked") ?? null,
+    () =>
+      quranStations.find((s) => s.status === "learning") ??
+      quranStations.find((s) => s.status === "locked") ??
+      null,
     [quranStations]
   );
   const currentNames = useMemo(
-    () => nameStations.find((s) => s.status === "learning" || s.status === "locked") ?? null,
+    () =>
+      nameStations.find((s) => s.status === "learning") ??
+      nameStations.find((s) => s.status === "locked") ??
+      null,
     [nameStations]
   );
 
@@ -214,7 +223,7 @@ export function useHifzPath(): HifzPath {
   // today across both tracks. Once spent, Today stops PUSHING new material and
   // offers an opt-in "start early" instead — reviews stay open regardless. This is
   // what turns "endlessly hand out the next portion" into a real daily cadence.
-  const dailyNewBudget = plan ? paceNewPerDay(plan.pace) : 1;
+  const dailyNewBudget = plan?.dailyPortions ?? (plan ? paceNewPerDay(plan.pace) : 1);
   const newPortionsToday = useMemo(
     () => (today ? portionsStartedToday(cards, today) : 0),
     [cards, today]

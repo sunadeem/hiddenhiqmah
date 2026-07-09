@@ -16,7 +16,7 @@
 // Today, and any open sheet) re-read in lock-step.
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, Plus, X } from "lucide-react";
+import { ChevronLeft, Plus, X, Settings2 } from "lucide-react";
 import type { HifzPath } from "@/lib/hifz/useHifzPath";
 import type {
   HifzCard,
@@ -39,6 +39,7 @@ import {
 } from "@/lib/hifz/quran";
 import namesOfAllah from "@hidden-hiqmah/content/names-of-allah";
 import StationMap from "./StationMap";
+import PlanEditor from "./PlanEditor";
 import { hapticLight, hapticSelection, hapticSuccess } from "@/lib/mobile/haptics";
 
 // Kept local so PathView never imports a sibling screen for its nav type.
@@ -116,6 +117,7 @@ export default function PathView({ path, nav }: PathViewProps) {
   const [tab, setTab] = useState<"path" | "mushaf">("path");
   const [sheetStation, setSheetStation] = useState<HifzStation | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
 
   // The Qurʼān track splits again: the active learning line (mushaf you're
   // progressing) vs. seeded portions you "also" carry off the journey line. The
@@ -138,18 +140,30 @@ export default function PathView({ path, nav }: PathViewProps) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto px-6 pt-2 pb-28">
-        {/* Back to Today */}
-        <button
-          type="button"
-          onClick={() => {
-            hapticLight();
-            nav("today");
-          }}
-          aria-label="Back to Today"
-          className="-ml-2 mb-1 w-9 h-9 rounded-full flex items-center justify-center text-themed-muted active:bg-[var(--overlay-subtle)] touch-manipulation"
-        >
-          <ChevronLeft size={22} />
-        </button>
+        {/* Back to Today + Edit plan */}
+        <div className="flex items-center justify-between -ml-2 mb-1">
+          <button
+            type="button"
+            onClick={() => {
+              hapticLight();
+              nav("today");
+            }}
+            aria-label="Back to Today"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-themed-muted active:bg-[var(--overlay-subtle)] touch-manipulation"
+          >
+            <ChevronLeft size={22} />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              hapticLight();
+              setPlanOpen(true);
+            }}
+            className="mr-2 flex items-center gap-1.5 rounded-full border sidebar-border px-3 py-1.5 text-[12px] text-themed-muted active:bg-[var(--overlay-subtle)] touch-manipulation"
+          >
+            <Settings2 size={13} /> Edit plan
+          </button>
+        </div>
 
         {/* Header */}
         <p
@@ -313,6 +327,8 @@ export default function PathView({ path, nav }: PathViewProps) {
           </div>
         )}
       </div>
+
+      <PlanEditor path={path} open={planOpen} onClose={() => setPlanOpen(false)} />
 
       {/* Station sheet */}
       <Sheet open={sheetStation !== null} onClose={() => setSheetStation(null)}>

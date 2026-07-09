@@ -46,6 +46,9 @@ export interface HifzPlan {
   journey: string | null;
   /** Preferred daily practice time "HH:MM" (local) for the reminder; null = none. */
   quietTime: string | null;
+  /** New portions to learn per day. Null ⇒ derive from pace (gentle 1 / steady 2
+   *  / devoted 3). Set via the plan editor; the cutoff + "N of M today" use it. */
+  dailyPortions?: number | null;
   createdAt: string; // ISO
   updatedAt: string; // ISO
 }

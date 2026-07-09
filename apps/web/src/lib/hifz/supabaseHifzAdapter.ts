@@ -118,6 +118,7 @@ export function createSupabaseHifzAdapter(
       startPoint,
       journey: r.journey ?? null,
       quietTime: r.quiet_time ?? null,
+      dailyPortions: r.daily_portions ?? null,
       createdAt: r.created_at,
       updatedAt: r.updated_at,
     };
@@ -133,6 +134,7 @@ export function createSupabaseHifzAdapter(
       start_page: p.startPoint.page ?? null,
       journey: p.journey,
       quiet_time: p.quietTime,
+      daily_portions: p.dailyPortions ?? null,
       created_at: p.createdAt,
       updated_at: p.updatedAt,
     };
