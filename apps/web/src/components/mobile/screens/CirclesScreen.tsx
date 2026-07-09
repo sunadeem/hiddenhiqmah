@@ -131,6 +131,11 @@ export default function CirclesScreen() {
   // (A universal-link URL can be added here once the live domain + Associated
   // Domains are set up — see 017/deeplinks; the code alone already works.)
   const shareOrCopy = async (id: string, name: string, code: string) => {
+    const { Capacitor } = await import("@capacitor/core");
+    if (!Capacitor.isNativePlatform()) {
+      copyCode(id, code); // no native share sheet on web — copy instead
+      return;
+    }
     try {
       const { Share } = await import("@capacitor/share");
       await Share.share({
@@ -139,7 +144,7 @@ export default function CirclesScreen() {
         dialogTitle: "Invite to circle",
       });
     } catch {
-      copyCode(id, code);
+      // User cancelled the sheet (or it failed) — do nothing; don't fake a copy.
     }
   };
 
@@ -174,7 +179,13 @@ export default function CirclesScreen() {
   }, [user, loadUnread]);
 
   useEffect(() => {
-    if (user) reload();
+    if (!user) return;
+    // When arriving via a ?join= deep link, let the join effect own the load so a
+    // stale mount-reload can't drop the just-joined circle.
+    const hasJoin =
+      typeof window !== "undefined" && new URLSearchParams(window.location.search).get("join");
+    if (hasJoin) return;
+    reload();
   }, [user, reload]);
 
   // Consume a deep-link invite (?join=CODE) once signed in — the deep-link handler
@@ -193,10 +204,10 @@ export default function CirclesScreen() {
       setErr("");
       try {
         await joinCircle(code.trim());
-        await reload();
       } catch (e) {
         setErr(errMsg(e));
       } finally {
+        await reload(); // always refresh, even if the join failed (invalid/expired)
         setBusy(false);
         if (typeof window !== "undefined") {
           window.history.replaceState(null, "", "/circles");

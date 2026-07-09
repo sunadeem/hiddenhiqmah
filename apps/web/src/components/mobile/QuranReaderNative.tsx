@@ -131,6 +131,8 @@ export default function QuranReaderNative({
   const [completedJuz, setCompletedJuz] = useState<number | null>(null);
   const khatmahRef = useRef<CircleDetail[] | null>(null);
   const juz30Ref = useRef(false);
+  const enteredJuz30Ref = useRef(false);
+  const logJuzBusyRef = useRef(false);
 
   const onJuzComplete = useCallback(
     async (juz: number) => {
@@ -153,19 +155,25 @@ export default function QuranReaderNative({
   );
 
   const logJuz = async () => {
+    if (logJuzBusyRef.current) return; // ignore a double-tap during the toast's exit
+    logJuzBusyRef.current = true;
     const juz = completedJuz;
     setCompletedJuz(null);
-    if (juz == null || !khatmahRef.current) return;
-    hapticMedium();
-    for (const d of khatmahRef.current) {
-      if (juzLoggedFor(d.circle.id).includes(juz)) continue;
-      try {
-        await setMyProgress(d.circle.id, d.myValue + 1);
-        d.myValue += 1; // keep the cache fresh for the next juz this session
-        markJuzLogged(d.circle.id, juz);
-      } catch {
-        /* ignore — the manual stepper still works */
+    try {
+      if (juz == null || !khatmahRef.current) return;
+      hapticMedium();
+      for (const d of khatmahRef.current) {
+        if (juzLoggedFor(d.circle.id).includes(juz)) continue;
+        try {
+          await setMyProgress(d.circle.id, d.myValue + 1);
+          d.myValue += 1; // keep the cache fresh for the next juz this session
+          markJuzLogged(d.circle.id, juz);
+        } catch {
+          /* ignore — the manual stepper still works */
+        }
       }
+    } finally {
+      logJuzBusyRef.current = false;
     }
   };
 
@@ -176,10 +184,23 @@ export default function QuranReaderNative({
     const v = verses?.find((x) => x.number === verseNumber);
     if (v) {
       const done = noteJuz(v.juz);
-      if (done != null) onJuzComplete(done);
+      if (done != null) {
+        onJuzComplete(done);
+        // Crediting juz 29 means the reader just crossed 29→30 by READING, not by
+        // jumping — the only case where finishing 114 should count as juz 30.
+        if (done === 29) enteredJuz30Ref.current = true;
+      }
     }
-    // Finishing the whole muṣḥaf (An-Nās's last āyah) completes juz 30.
-    if (chapter.id === 114 && verses && verseNumber === verses.length && !juz30Ref.current) {
+    // Finishing the muṣḥaf (An-Nās's last āyah) completes juz 30 — but ONLY when
+    // juz 30 was reached by contiguous reading this session, so reciting the
+    // Muʿawwidhatayn / last Quls directly never over-credits a whole juz.
+    if (
+      chapter.id === 114 &&
+      verses &&
+      verseNumber === verses.length &&
+      enteredJuz30Ref.current &&
+      !juz30Ref.current
+    ) {
       juz30Ref.current = true;
       onJuzComplete(30);
     }
