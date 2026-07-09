@@ -5,6 +5,50 @@
 export type Granularity = "page" | "ayah" | "surah" | "range";
 export type CardStatus = "new" | "learning" | "review" | "memorized";
 export type Grade = "again" | "hard" | "good" | "easy";
+/** Memorization content: Qur'an āyāt (default) or the 99 Names of Allah. */
+export type ContentKind = "quran" | "asma";
+
+// ── "Your Hifz Path" redesign — plan, pace, stations ──
+//
+// A station is a small Qur'an portion (~3–7 āyāt, sized by pace) that the user
+// learns as one gold "you are here" unit. Underneath, a station is nothing more
+// than an ordered set of existing HifzCards sharing a `stationKey`; the SM-2
+// engine is untouched. The Station OBJECT is always DERIVED from cards + plan
+// (see srs.deriveStations) — never persisted — so there's one source of truth.
+
+/** What the user is here to do. Drives seeding vs new-learning emphasis. */
+export type Intention = "start" | "maintain" | "both";
+/** Pace preset → NEW_PER_DAY + station size (see srs.PACE). */
+export type Pace = "gentle" | "steady" | "devoted";
+/** Where a card came from: normal new-learning vs an already-memorized seed. */
+export type CardSource = "learned" | "seeded";
+/** How well the user already carries a seeded portion (drives staggered due). */
+export type SeedStrength = "strong" | "refreshing";
+
+/** Anywhere the user can begin — a sūrah, a juz, or a mushaf page. */
+export interface HifzStartPoint {
+  kind: "surah" | "juz" | "page";
+  surah?: number;
+  juz?: number;
+  page?: number;
+}
+
+/**
+ * The user's memorization plan. Exactly ONE per user (a singleton), stored
+ * device-side in the local store and account-side in `hifz_plan` (one row per
+ * user). Station boundaries + the new-card cap are derived from `pace`.
+ */
+export interface HifzPlan {
+  intention: Intention;
+  pace: Pace;
+  startPoint: HifzStartPoint;
+  /** Ordering scope for the journey (mirrors quran.Journey string union). */
+  journey: string | null;
+  /** Preferred daily practice time "HH:MM" (local) for the reminder; null = none. */
+  quietTime: string | null;
+  createdAt: string; // ISO
+  updatedAt: string; // ISO
+}
 
 export interface AyahRef {
   surah: number;
@@ -37,6 +81,24 @@ export interface HifzCard {
   lastReviewed: string | null; // YYYY-MM-DD
   createdAt: string; // ISO
   updatedAt: string; // ISO
+  // ── "Your Hifz Path" additions (all optional → old rows/stores stay valid) ──
+  /**
+   * Stable grouping tag: cards sharing a stationKey form one station. Assigned
+   * once at build time from the plan's pace (so the grouping never shifts if the
+   * user later changes pace). Absent on legacy cards → srs.stationKeyOf() falls
+   * back to the card's own range, so every card still maps to exactly one station.
+   */
+  stationKey?: string;
+  /** Learn-ladder "Fade" peeks on this card since introduction (informs the Seal grade). */
+  peekCount?: number;
+  /** "learned" = normal new-learning; "seeded" = an already-memorized seed (staggered). */
+  source?: CardSource;
+  /**
+   * Content type — Qur'an āyāt (default/absent) or the 99 Names of Allah. For
+   * "asma", startAyah/endAyah are Name indices (1–99) and the surah fields are 0,
+   * so rangeKey/stationKey stay unique and the SRS engine treats them identically.
+   */
+  contentKind?: ContentKind;
 }
 
 export interface NewCardInput {
@@ -47,6 +109,39 @@ export interface NewCardInput {
   startAyah: number;
   endSurah: number;
   endAyah: number;
+  /** Station grouping tag (see HifzCard.stationKey). Omit → derived from range. */
+  stationKey?: string;
+  /** Defaults to "learned"; the seeding path passes "seeded". */
+  source?: CardSource;
+  /** Defaults to "quran"; the 99-Names path passes "asma". */
+  contentKind?: ContentKind;
+}
+
+/**
+ * An already-memorized portion the user "already carries". Seeds as a REVIEW
+ * card (not new) with a staggered due date so it never lands a day-one wall of
+ * reviews. `strength` picks the stagger window (see srs.seedCard).
+ */
+export interface SeedCardInput extends NewCardInput {
+  strength: SeedStrength;
+}
+
+/** A station = an ordered set of cards, DERIVED (never stored). */
+export type StationStatus = "locked" | "learning" | "due" | "memorized";
+
+export interface HifzStation {
+  key: string; // the shared stationKey
+  index: number; // 0-based position along the path
+  label: string; // first member card's label (UI may relabel from range)
+  startSurah: number;
+  startAyah: number;
+  endSurah: number;
+  endAyah: number;
+  page: number | null;
+  cardIds: string[]; // member cards, mushaf order
+  status: StationStatus; // green=memorized · amber=due · gold=learning · grey=locked
+  due: string | null; // earliest due among non-new members (null if none scheduled)
+  source: CardSource; // "seeded" if all members are seeds, else "learned"
 }
 
 export interface HifzReview {
@@ -75,7 +170,21 @@ export interface HifzAdapter {
   getCards(): Promise<HifzCard[]>;
   /** Add cards; skips any whose ayah-range already exists (idempotent). */
   addCards(inputs: NewCardInput[]): Promise<void>;
+  /**
+   * Seed already-memorized portions as REVIEW cards with staggered due dates
+   * (Strong ≈ 3-week spread, Refreshing ≈ 1-week). Idempotent by range like
+   * addCards. Never introduces a day-one review wall. See srs.seedCards.
+   */
+  seedCards?(inputs: SeedCardInput[]): Promise<void>;
   removeCard(id: string): Promise<void>;
+  /** The singleton plan (null until onboarding completes). */
+  getPlan?(): Promise<HifzPlan | null>;
+  savePlan?(plan: HifzPlan): Promise<void>;
+  /**
+   * Record a peek from the Learn-ladder "Fade" rung (informs the Seal grade).
+   * Pure counter bump — does NOT touch the SRS schedule.
+   */
+  bumpPeek?(id: string): Promise<void>;
   /** Today's review session: due reviews (oldest first) + up to NEW_PER_DAY new cards. */
   getQueue(today: string): Promise<HifzCard[]>;
   /** Grade a card; reschedules it (SM-2) and logs the review. */
