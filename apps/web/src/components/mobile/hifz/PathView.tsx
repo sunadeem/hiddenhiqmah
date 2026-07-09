@@ -207,6 +207,7 @@ export default function PathView({ path, nav }: PathViewProps) {
                   currentKey={currentStation?.key ?? null}
                   onTap={openStation}
                   variant="full"
+                  collapseLocked
                 />
               ) : (
                 <p className="text-themed-muted text-[13px] leading-relaxed py-6 text-center">
@@ -230,6 +231,7 @@ export default function PathView({ path, nav }: PathViewProps) {
                   currentKey={currentNames?.key ?? null}
                   onTap={openStation}
                   variant="full"
+                  collapseLocked
                 />
               </div>
             )}

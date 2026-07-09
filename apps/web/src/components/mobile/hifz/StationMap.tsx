@@ -6,7 +6,8 @@
 // "you are here" learning station, grey = locked/upcoming. Tapping a station calls
 // onTap so the screen can open its sheet or nav into Learn/Review.
 
-import { Check, Lock, MapPin } from "lucide-react";
+import { useState } from "react";
+import { Check, ChevronDown, ChevronUp, Lock, MapPin } from "lucide-react";
 import type { HifzStation, StationStatus } from "@hidden-hiqmah/ui/lib/hifz/types";
 import { hapticLight } from "@/lib/mobile/haptics";
 
@@ -32,6 +33,8 @@ export interface StationMapProps {
   variant?: "full" | "peek";
   /** peek only — how many stations to show around the current one. */
   peekWindow?: number;
+  /** full only — fold a long trailing run of locked (not-yet-reached) stations. */
+  collapseLocked?: boolean;
   className?: string;
 }
 
@@ -107,9 +110,24 @@ function PeekStrip({ stations, currentKey, onTap, peekWindow = 5, className }: S
   );
 }
 
-/** Full winding vertical trail — for the Path / My-Progress screen. */
-function Trail({ stations, currentKey, onTap, className }: StationMapProps) {
+/** Full winding vertical trail — for the Path / My-Progress screen. When
+ *  `collapseLocked` is set, a long trailing run of not-yet-reached (locked)
+ *  stations folds behind a tap so the page's forecast + "Add to my path" stay in
+ *  reach. Locked stations are the contiguous tail (done → you-are-here → locked),
+ *  so we keep everything up to the current step, show one upcoming for context,
+ *  and fold the rest. */
+function Trail({ stations, currentKey, onTap, className, collapseLocked }: StationMapProps) {
+  const [expanded, setExpanded] = useState(false);
   if (stations.length === 0) return null;
+
+  const firstLocked = stations.findIndex((s) => s.status === "locked");
+  const KEEP = 1; // show the next portion after "you are here"; fold the rest
+  const totalLocked = firstLocked < 0 ? 0 : stations.length - firstLocked;
+  const collapsible = Boolean(collapseLocked) && totalLocked > KEEP + 1;
+  const cutoff = collapsible && !expanded ? firstLocked + KEEP : stations.length;
+  const shown = stations.slice(0, cutoff);
+  const hidden = stations.length - cutoff;
+
   return (
     <div className={`relative ${className ?? ""}`}>
       {/* the trail spine */}
@@ -118,7 +136,7 @@ function Trail({ stations, currentKey, onTap, className }: StationMapProps) {
         style={{ background: "var(--color-gold)", opacity: 0.24 }}
       />
       <div className="relative flex flex-col gap-2.5">
-        {stations.map((s, i) => {
+        {shown.map((s, i) => {
           const left = i % 2 === 0;
           const active = s.key === currentKey;
           return (
@@ -156,6 +174,23 @@ function Trail({ stations, currentKey, onTap, className }: StationMapProps) {
             </button>
           );
         })}
+
+        {/* Fold / unfold the locked tail — sits on the spine like a continuation. */}
+        {collapsible && (
+          <button
+            type="button"
+            onClick={() => {
+              hapticLight();
+              setExpanded((e) => !e);
+            }}
+            className="relative mx-auto mt-1 flex items-center gap-1.5 rounded-full border border-dashed sidebar-border card-bg px-3.5 py-1.5 text-themed-muted touch-manipulation active:opacity-70"
+          >
+            {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            <span className="text-[11px] font-medium">
+              {expanded ? "Show less" : `${hidden} more ahead`}
+            </span>
+          </button>
+        )}
       </div>
     </div>
   );
