@@ -213,13 +213,13 @@ export function createSupabaseHifzAdapter(
     async reorderCards(updates: { id: string; order: number }[]): Promise<void> {
       if (!updates.length) return;
       const orderById = new Map(updates.map((u) => [u.id, u.order]));
+      // Send ONLY the conflict target + card_order, so the upsert's DO UPDATE touches
+      // card_order alone and can never clobber SRS fields (status/due/…) from a stale
+      // snapshot if the card was graded on another device meanwhile. One round-trip.
       const rows = (await fetchCards())
         .filter((c) => orderById.has(c.id))
-        .map((c) => cardToRow({ ...c, order: orderById.get(c.id) }));
+        .map((c) => ({ user_id: userId, range_key: rangeKey(c), card_order: orderById.get(c.id) }));
       if (!rows.length) return;
-      // One bulk upsert instead of N sequential UPDATEs — rewrites each row's
-      // columns to their current values plus the new card_order, so a big re-sort
-      // completes in a single round-trip.
       const { error } = await client
         .from("hifz_cards")
         .upsert(rows, { onConflict: "user_id,range_key" });

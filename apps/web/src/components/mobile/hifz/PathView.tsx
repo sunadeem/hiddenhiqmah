@@ -141,14 +141,15 @@ export default function PathView({ path, nav }: PathViewProps) {
   const [addOpen, setAddOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
 
-  // One Qurʼān trail, GROUPED BY STATUS: memorized/due → you-are-here → upcoming, so
-  // your current step always sits right after what you've done. Seeded "already
-  // carried" portions (e.g. Āyat al-Kursī) fall into the memorized group rather than
-  // a separate shelf. Order within each group is preserved. The Names are their OWN
-  // parallel track (nameStations) — never mixed into the mushaf.
+  // One Qurʼān trail, GROUPED BY STATUS: memorized → due → you-are-here → upcoming,
+  // so your current step always sits right after what you've done, and amber
+  // due-for-review portions stay between the memorized fold and "you are here".
+  // Seeded "already carried" portions (e.g. Āyat al-Kursī) fall into the memorized
+  // group rather than a separate shelf; order within each group is preserved. The
+  // Names are their OWN parallel track (nameStations) — never mixed into the mushaf.
   const trailStations = useMemo(() => {
     const rank = (s: HifzStation) =>
-      s.status === "memorized" || s.status === "due" ? 0 : s.status === "learning" ? 1 : 2;
+      s.status === "memorized" ? 0 : s.status === "due" ? 1 : s.status === "learning" ? 2 : 3;
     return [...quranStations].sort((a, b) => rank(a) - rank(b));
   }, [quranStations]);
 

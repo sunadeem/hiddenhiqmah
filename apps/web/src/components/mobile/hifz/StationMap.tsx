@@ -121,13 +121,10 @@ function Trail({ stations, currentKey, onTap, className, collapseLocked }: Stati
   if (stations.length === 0) return null;
 
   const collapse = Boolean(collapseLocked);
-  // Stations arrive status-grouped: [memorized/due…][you-are-here][locked…].
+  // Stations arrive status-grouped: [memorized…][due…][you-are-here][locked…].
+  // Only fold fully-memorized ones — due-for-review (amber) stations stay visible.
   let done = 0;
-  while (
-    done < stations.length &&
-    (stations[done].status === "memorized" || stations[done].status === "due")
-  )
-    done++;
+  while (done < stations.length && stations[done].status === "memorized") done++;
   let lockedStart = stations.length;
   while (lockedStart > 0 && stations[lockedStart - 1].status === "locked") lockedStart--;
   const lockedCount = stations.length - lockedStart;
