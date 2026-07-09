@@ -674,12 +674,14 @@ function Absorb({
   const done = echoes[ai] ?? 0;
   return (
     <div className="pt-1">
-      <p className="text-themed-muted text-sm leading-relaxed mb-4">
-        <span className="text-themed font-semibold">
-          Absorb — {content.kind === "asma" ? "Name" : "āyah"} {ai + 1} of {count}.
-        </span>{" "}
-        Listen, then echo it aloud. Three times is a good habit; more if you like.
-      </p>
+      <div className="mb-4">
+        <p className="text-themed font-semibold text-sm">
+          Absorb — {content.kind === "asma" ? "Name" : "āyah"} {ai + 1} of {count}
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed mt-1">
+          Listen, then echo it aloud. Three times is a good habit; more if you like.
+        </p>
+      </div>
 
       <div
         className="rounded-2xl card-bg p-4"
