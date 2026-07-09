@@ -1,10 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Plus, Check, Trash2, Flame, UserPlus, X } from "lucide-react";
+import { Plus, Check, Trash2, Flame, UserPlus, X, BookOpen, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { requireAccount } from "@/lib/requireAccount";
+import { createCircle, generateInvite } from "@/lib/circles";
 import { createLocalDailyAdapter } from "@hidden-hiqmah/ui/lib/daily/localAdapter";
 import { createSupabaseDailyAdapter } from "@/lib/daily/supabaseDailyAdapter";
 import { todayLocalDate, toLocalDateString, type DailyAdapter } from "@hidden-hiqmah/ui/lib/daily/types";
@@ -57,6 +59,8 @@ async function statsFor(adapter: DailyAdapter): Promise<Stat> {
 
 export default function HouseholdScreen() {
   const { user } = useAuth();
+  const router = useRouter();
+  const [khBusy, setKhBusy] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [activeId, setActiveId] = useState(PRIMARY_ID);
   const [stats, setStats] = useState<Record<string, Stat>>({});
@@ -107,6 +111,32 @@ export default function HouseholdScreen() {
     setAdding(false);
   };
 
+  // Bridge Household → Circles: spin up a shared family khatmah, then hand off to
+  // the Circles screen to share the code. (Local child profiles can't be members —
+  // circle membership needs a real account — so this recruits by invite code.)
+  const startFamilyKhatmah = async () => {
+    if (
+      !requireAccount({
+        title: "Start a Family Khatmah",
+        message: "Create a free account to start a shared circle your family can join.",
+      })
+    ) {
+      return;
+    }
+    setKhBusy(true);
+    try {
+      const id = await createCircle("Family Khatmah", 30, "khatmah", "juz");
+      try {
+        await generateInvite(id);
+      } catch {
+        /* the code can also be generated on the Circles screen */
+      }
+      router.push("/circles");
+    } catch {
+      setKhBusy(false);
+    }
+  };
+
   return (
     <div className="space-y-4 pb-4">
       <div>
@@ -116,6 +146,27 @@ export default function HouseholdScreen() {
           checklist &amp; streak — switch to track theirs.
         </p>
       </div>
+
+      {/* Start a Family Khatmah — bridge into Circles. */}
+      <button
+        type="button"
+        disabled={khBusy}
+        onClick={startFamilyKhatmah}
+        className="w-full card-bg rounded-2xl border sidebar-border p-4 flex items-center gap-3 text-left relative overflow-hidden touch-manipulation active:opacity-90 disabled:opacity-60"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
+        <div className="relative w-10 h-10 rounded-full bg-[var(--color-gold)]/15 text-gold flex items-center justify-center shrink-0">
+          <BookOpen size={18} />
+        </div>
+        <div className="relative min-w-0 flex-1">
+          <p className="text-themed font-semibold text-sm">Start a Family Khatmah</p>
+          <p className="text-themed-muted text-[11.5px] leading-snug mt-0.5">
+            Finish the Qur&apos;an together — create a circle and share the code with
+            family (each needs their own account).
+          </p>
+        </div>
+        <ChevronRight size={18} className="relative text-themed-muted shrink-0" />
+      </button>
 
       {/* Switcher */}
       <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">

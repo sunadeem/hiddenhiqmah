@@ -177,6 +177,34 @@ export default function CirclesScreen() {
     if (user) reload();
   }, [user, reload]);
 
+  // Consume a deep-link invite (?join=CODE) once signed in — the deep-link handler
+  // routes hiddenhiqmah://join?code=… (and later a universal link) here.
+  const joinHandled = useRef(false);
+  useEffect(() => {
+    if (!user || joinHandled.current) return;
+    const code =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search).get("join")
+        : null;
+    if (!code) return;
+    joinHandled.current = true;
+    (async () => {
+      setBusy(true);
+      setErr("");
+      try {
+        await joinCircle(code.trim());
+        await reload();
+      } catch (e) {
+        setErr(errMsg(e));
+      } finally {
+        setBusy(false);
+        if (typeof window !== "undefined") {
+          window.history.replaceState(null, "", "/circles");
+        }
+      }
+    })();
+  }, [user, reload]);
+
   const run = async (fn: () => Promise<unknown>) => {
     setBusy(true);
     setErr("");
@@ -622,6 +650,7 @@ export default function CirclesScreen() {
           open={!!manageId}
           onClose={() => setManageId(null)}
           circle={manageCircle.circle}
+          members={manageCircle.members}
           onSaved={reload}
         />
       )}

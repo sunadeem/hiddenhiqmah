@@ -11,6 +11,7 @@ import { isTabRoot } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 import { applyNativeSetup } from "@/lib/mobile/setup";
 import { registerNotificationTapHandler, scheduleAllNotifications } from "@/lib/mobile/notifications";
+import { registerDeepLinkHandler } from "@/lib/mobile/deeplinks";
 import { App as CapApp } from "@capacitor/app";
 import { useLegacyImport } from "@/lib/daily/useLegacyImport";
 import { useHifzImport } from "@/lib/hifz/hifzImport";
@@ -50,6 +51,11 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   // Route notification taps to their relevant screen.
   useEffect(() => {
     return registerNotificationTapHandler((url) => router.push(url));
+  }, [router]);
+
+  // Route inbound deep links (circle invite links) into the app.
+  useEffect(() => {
+    return registerDeepLinkHandler((url) => router.push(url));
   }, [router]);
 
   // Refresh the rolling adhan/notification window each time the app returns to

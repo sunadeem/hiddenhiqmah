@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { X, Loader2, Settings2 } from "lucide-react";
-import { renameCircle, updateCircleGoal, type Circle } from "@/lib/circles";
+import {
+  renameCircle,
+  updateCircleGoal,
+  setCircleRanking,
+  transferOwnership,
+  type Circle,
+  type CircleMember,
+} from "@/lib/circles";
 import { GoalStepper } from "@/components/dhikr/DhikrEditing";
 
 function errMsg(e: unknown): string {
@@ -25,21 +32,40 @@ export default function CircleManageSheet({
   open,
   onClose,
   circle,
+  members,
   onSaved,
 }: {
   open: boolean;
   onClose: () => void;
   circle: Circle;
+  members: CircleMember[];
   onSaved: () => void;
 }) {
   const [name, setName] = useState(circle.name);
   const [goalType, setGoalType] = useState(circle.goal_type);
   const [goalUnit, setGoalUnit] = useState(circle.goal_unit);
   const [goalTarget, setGoalTarget] = useState(circle.goal_target);
+  const [ranking, setRanking] = useState(circle.ranking_enabled === true);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
   if (!open) return null;
+
+  const transferable = members.filter((m) => m.role !== "owner");
+  const transferTo = async (m: CircleMember) => {
+    if (!confirm(`Make ${m.display_name} the owner? You'll become a regular member.`)) return;
+    setBusy(true);
+    setErr("");
+    try {
+      await transferOwnership(circle.id, m.user_id);
+      onSaved();
+      onClose();
+    } catch (e) {
+      setErr(errMsg(e));
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const save = async () => {
     setBusy(true);
@@ -53,6 +79,9 @@ export default function CircleManageSheet({
         goalTarget !== circle.goal_target
       ) {
         await updateCircleGoal(circle.id, goalType, goalUnit.trim() || "juz", goalTarget);
+      }
+      if (ranking !== (circle.ranking_enabled === true)) {
+        await setCircleRanking(circle.id, ranking);
       }
       onSaved();
       onClose();
@@ -146,6 +175,57 @@ export default function CircleManageSheet({
           <p className="text-[11px] text-themed-muted/70 leading-relaxed">
             The target is the shared goal — everyone&apos;s contributions add toward it.
           </p>
+
+          {/* Competitive ranking — off by default (gentle "Members" view). */}
+          <div className="flex items-center justify-between gap-3 pt-1">
+            <div className="min-w-0">
+              <p className="text-sm text-themed">Show ranking</p>
+              <p className="text-[11px] text-themed-muted/80 leading-snug mt-0.5">
+                Off shows members without a leaderboard, crown, or rank numbers.
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={ranking}
+              onClick={() => setRanking((v) => !v)}
+              className={`shrink-0 w-11 h-6 rounded-full relative transition-colors touch-manipulation ${
+                ranking ? "bg-[var(--color-gold)]" : "bg-[var(--overlay-medium)]"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${
+                  ranking ? "left-[22px]" : "left-0.5"
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Transfer ownership to another member. */}
+          {transferable.length > 0 && (
+            <div className="space-y-2 pt-1">
+              <label className="text-[11px] uppercase tracking-wider text-themed-muted">
+                Transfer ownership
+              </label>
+              <p className="text-[11px] text-themed-muted/80 leading-snug">
+                Hand the circle to another member. You&apos;ll become a regular member.
+              </p>
+              <div className="space-y-1.5">
+                {transferable.map((m) => (
+                  <button
+                    key={m.user_id}
+                    type="button"
+                    disabled={busy}
+                    onClick={() => transferTo(m)}
+                    className="w-full flex items-center justify-between gap-2 rounded-xl border sidebar-border px-3 py-2.5 text-left touch-manipulation active:bg-[var(--overlay-subtle)] disabled:opacity-60"
+                  >
+                    <span className="text-sm text-themed truncate">{m.display_name}</span>
+                    <span className="text-[12px] text-gold font-semibold shrink-0">Make owner</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="p-4 border-t sidebar-border">
