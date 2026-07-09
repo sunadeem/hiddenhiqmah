@@ -118,3 +118,13 @@ export function removeProfile(id: string) {
 export function dailyStoreKeyForProfile(id: string): string | undefined {
   return id === PRIMARY_ID ? undefined : `hiqmah-daily-v2:p:${id}`;
 }
+
+/**
+ * The local Hifz-store key for a profile. `undefined` = the primary profile,
+ * which uses the normal adapter (default local key, or Supabase when signed in).
+ * Mirrors dailyStoreKeyForProfile so child profiles keep their own device-only
+ * memorization progress.
+ */
+export function hifzStoreKeyForProfile(id: string): string | undefined {
+  return id === PRIMARY_ID ? undefined : `hiqmah-hifz-v1:p:${id}`;
+}

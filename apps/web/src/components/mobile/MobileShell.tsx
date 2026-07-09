@@ -13,6 +13,7 @@ import { applyNativeSetup } from "@/lib/mobile/setup";
 import { registerNotificationTapHandler, scheduleAllNotifications } from "@/lib/mobile/notifications";
 import { App as CapApp } from "@capacitor/app";
 import { useLegacyImport } from "@/lib/daily/useLegacyImport";
+import { useHifzImport } from "@/lib/hifz/hifzImport";
 import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { useOnline } from "@/lib/mobile/useOnline";
@@ -66,6 +67,8 @@ export default function MobileShell({ children }: { children: React.ReactNode })
 
   // On sign-in, migrate signed-out local Daily data into Supabase (once).
   useLegacyImport();
+  // Same for signed-out local Hifz data (cards + reviews + plan), preserving SRS state.
+  useHifzImport();
 
   // Mobile = mandatory account: until signed in, the entire app IS the sign-in
   // screen (except the auth routes themselves). All hooks above always run, so

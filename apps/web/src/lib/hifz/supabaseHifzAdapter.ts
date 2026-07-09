@@ -2,8 +2,11 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   HifzAdapter,
   HifzCard,
+  HifzPlan,
+  HifzStartPoint,
   HifzStats,
   NewCardInput,
+  SeedCardInput,
   Grade,
 } from "@hidden-hiqmah/ui/lib/hifz/types";
 import {
@@ -11,6 +14,7 @@ import {
   hifzStreak,
   newCard,
   rangeKey,
+  seedCards as seedCardsPure,
   selectQueue,
 } from "@hidden-hiqmah/ui/lib/hifz/srs";
 
@@ -60,6 +64,14 @@ export function createSupabaseHifzAdapter(
       lastReviewed: r.last_reviewed ?? null,
       createdAt: r.created_at,
       updatedAt: r.updated_at,
+      // "Your Hifz Path" columns (016). Legacy rows may be missing them → sane
+      // defaults that match the pure layer (station_key falls back to the range).
+      stationKey:
+        r.station_key ??
+        `${r.start_surah}:${r.start_ayah}-${r.end_surah}:${r.end_ayah}`,
+      peekCount: r.peek_count ?? 0,
+      source: r.source ?? "learned",
+      contentKind: r.content_kind ?? "quran",
     };
   }
   function cardToRow(c: HifzCard) {
@@ -85,6 +97,44 @@ export function createSupabaseHifzAdapter(
       last_reviewed: c.lastReviewed,
       created_at: c.createdAt,
       updated_at: c.updatedAt,
+      station_key: c.stationKey ?? rangeKey(c),
+      peek_count: c.peekCount ?? 0,
+      source: c.source ?? "learned",
+      content_kind: c.contentKind ?? "quran",
+    };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function rowToPlan(r: any): HifzPlan {
+    const startPoint: HifzStartPoint = {
+      kind: r.start_kind,
+      surah: r.start_surah ?? undefined,
+      juz: r.start_juz ?? undefined,
+      page: r.start_page ?? undefined,
+    };
+    return {
+      intention: r.intention,
+      pace: r.pace,
+      startPoint,
+      journey: r.journey ?? null,
+      quietTime: r.quiet_time ?? null,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+    };
+  }
+  function planToRow(p: HifzPlan) {
+    return {
+      user_id: userId,
+      intention: p.intention,
+      pace: p.pace,
+      start_kind: p.startPoint.kind,
+      start_surah: p.startPoint.surah ?? null,
+      start_juz: p.startPoint.juz ?? null,
+      start_page: p.startPoint.page ?? null,
+      journey: p.journey,
+      quiet_time: p.quietTime,
+      created_at: p.createdAt,
+      updated_at: p.updatedAt,
     };
   }
 
@@ -124,6 +174,50 @@ export function createSupabaseHifzAdapter(
       const { error } = await client
         .from("hifz_cards")
         .upsert(rows, { onConflict: "user_id,range_key", ignoreDuplicates: true });
+      if (error) throw error;
+    },
+
+    async seedCards(inputs: SeedCardInput[]): Promise<void> {
+      if (!inputs.length) return;
+      // Skip ranges the user already carries so a re-seed never duplicates or
+      // resets an existing card (idempotent by range, like addCards).
+      const existing = new Set((await fetchCards()).map(rangeKey));
+      const fresh = inputs.filter((inp) => !existing.has(rangeKey(inp)));
+      if (!fresh.length) return;
+      const cards = seedCardsPure(fresh, todayLocal(), new Date().toISOString(), uuid);
+      const rows = cards.map(cardToRow);
+      const { error } = await client
+        .from("hifz_cards")
+        .upsert(rows, { onConflict: "user_id,range_key", ignoreDuplicates: true });
+      if (error) throw error;
+    },
+
+    async bumpPeek(id: string): Promise<void> {
+      const cards = await fetchCards();
+      const card = cards.find((c) => c.id === id);
+      if (!card) return;
+      // Pure counter bump — the SRS schedule is untouched.
+      const { error } = await client
+        .from("hifz_cards")
+        .update({ peek_count: (card.peekCount ?? 0) + 1 })
+        .eq("id", id);
+      if (error) throw error;
+    },
+
+    async getPlan(): Promise<HifzPlan | null> {
+      const { data, error } = await client
+        .from("hifz_plan")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? rowToPlan(data) : null;
+    },
+
+    async savePlan(plan: HifzPlan): Promise<void> {
+      const { error } = await client
+        .from("hifz_plan")
+        .upsert(planToRow(plan), { onConflict: "user_id" });
       if (error) throw error;
     },
 

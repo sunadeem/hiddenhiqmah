@@ -4,12 +4,21 @@
 import type {
   HifzAdapter,
   HifzCard,
+  HifzPlan,
   HifzReview,
   HifzStats,
   NewCardInput,
+  SeedCardInput,
   Grade,
 } from "./types";
-import { applyGrade, hifzStreak, newCard, rangeKey, selectQueue } from "./srs";
+import {
+  applyGrade,
+  hifzStreak,
+  newCard,
+  rangeKey,
+  seedCards as seedCardsPure,
+  selectQueue,
+} from "./srs";
 
 const STORE_KEY = "hiqmah-hifz-v1";
 
@@ -17,9 +26,10 @@ interface LocalStore {
   cards: HifzCard[];
   reviews: HifzReview[];
   streakBest: number;
+  plan: HifzPlan | null;
 }
 function empty(): LocalStore {
-  return { cards: [], reviews: [], streakBest: 0 };
+  return { cards: [], reviews: [], streakBest: 0, plan: null };
 }
 
 function uuid(): string {
@@ -77,9 +87,41 @@ export function createLocalHifzAdapter(storeKey = STORE_KEY): HifzAdapter {
       save(s);
     },
 
+    async seedCards(inputs: SeedCardInput[]): Promise<void> {
+      if (!inputs.length) return;
+      const s = load();
+      const existing = new Set(s.cards.map(rangeKey));
+      // Only seed ranges we don't already carry (idempotent, like addCards) — a
+      // re-seed must never duplicate or reset an existing card's SRS state.
+      const fresh = inputs.filter((inp) => !existing.has(rangeKey(inp)));
+      if (!fresh.length) return;
+      const seeded = seedCardsPure(fresh, todayLocal(), nowIso(), uuid);
+      s.cards.push(...seeded);
+      save(s);
+    },
+
     async removeCard(id: string): Promise<void> {
       const s = load();
       s.cards = s.cards.filter((c) => c.id !== id);
+      save(s);
+    },
+
+    async getPlan(): Promise<HifzPlan | null> {
+      return load().plan;
+    },
+
+    async savePlan(plan: HifzPlan): Promise<void> {
+      const s = load();
+      s.plan = plan;
+      save(s);
+    },
+
+    async bumpPeek(id: string): Promise<void> {
+      const s = load();
+      const i = s.cards.findIndex((c) => c.id === id);
+      if (i < 0) return;
+      // Pure counter bump — the SRS schedule is untouched.
+      s.cards[i] = { ...s.cards[i], peekCount: (s.cards[i].peekCount ?? 0) + 1 };
       save(s);
     },
 

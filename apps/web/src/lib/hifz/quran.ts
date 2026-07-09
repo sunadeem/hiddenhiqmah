@@ -4,7 +4,8 @@
 
 import chaptersRaw from "@hidden-hiqmah/content/quran/chapters.json";
 import pagesRaw from "@hidden-hiqmah/content/quran/pages.json";
-import type { NewCardInput, AyahRef } from "@hidden-hiqmah/ui/lib/hifz/types";
+import type { NewCardInput, AyahRef, Pace } from "@hidden-hiqmah/ui/lib/hifz/types";
+import { paceStationAyahs } from "@hidden-hiqmah/ui/lib/hifz/srs";
 
 interface Chapter {
   id: number;
@@ -233,6 +234,91 @@ export function buildGuidedCards(journey: Journey, unit: GuidedUnit): NewCardInp
   for (const s of surahs) {
     if (unit === "surah") out.push(...buildSurahCards(s, s));
     else out.push(...buildAyahCards(s, 1, verseCount(s)));
+  }
+  return out;
+}
+
+// ── Station-sized builders ("Your Hifz Path") ──
+//
+// A scope (a sūrah / a juz / a page / a custom range) is cut into STATIONS of
+// paceStationAyahs(pace) āyāt. Every āyah in the scope becomes its own single-
+// āyah NewCardInput (rangeKey = that āyah, so its SRS state is stable forever),
+// and all cards in the same station carry a SHARED stationKey so srs.deriveStations
+// groups them into one "you are here" unit. Re-cutting the same scope at a
+// different pace produces the SAME per-āyah cards (same rangeKey → deduped, SRS
+// preserved) with new stationKey grouping — never a new/reset card.
+
+/** Where a station-cut begins. Mirrors HifzStartPoint + adds a custom range. */
+export type HifzScope =
+  | { kind: "surah"; surah: number }
+  | { kind: "juz"; juz: number }
+  | { kind: "page"; page: number }
+  | { kind: "range"; startSurah: number; startAyah: number; endSurah: number; endAyah: number };
+
+/** The [start, end] āyah bounds a scope covers, in mushaf order. */
+function scopeBounds(scope: HifzScope): { s: number; a: number; es: number; ea: number } | null {
+  if (scope.kind === "surah") {
+    const vc = verseCount(scope.surah);
+    if (!vc) return null;
+    return { s: scope.surah, a: 1, es: scope.surah, ea: vc };
+  }
+  if (scope.kind === "page") {
+    const r = PAGES[scope.page - 1];
+    if (!r) return null;
+    return { s: r.s, a: r.a, es: r.es, ea: r.ea };
+  }
+  if (scope.kind === "juz") {
+    const inJuz = PAGES.filter((p) => p.j === scope.juz);
+    if (!inJuz.length) return null;
+    const first = inJuz[0];
+    const last = inJuz[inJuz.length - 1];
+    return { s: first.s, a: first.a, es: last.es, ea: last.ea };
+  }
+  // range — normalise so start ≤ end in mushaf order
+  let { startSurah: s, startAyah: a, endSurah: es, endAyah: ea } = scope;
+  s = Math.max(1, Math.min(TOTAL_SURAHS, s));
+  es = Math.max(1, Math.min(TOTAL_SURAHS, es));
+  a = Math.max(1, Math.min(verseCount(s) || 1, a));
+  ea = Math.max(1, Math.min(verseCount(es) || 1, ea));
+  if (ord(es, ea) < ord(s, a)) [s, a, es, ea] = [es, ea, s, a];
+  return { s, a, es, ea };
+}
+
+/**
+ * Cut a scope into stations of `paceStationAyahs(pace)` āyāt. Returns the flat
+ * list of single-āyah NewCardInputs across all stations, each stamped with its
+ * station's shared stationKey (the station's own āyah-range). Feed straight to
+ * adapter.addCards — dedupe-by-rangeKey keeps re-cuts idempotent + progress-safe.
+ */
+export function buildStationCards(scope: HifzScope, pace: Pace): NewCardInput[] {
+  const bounds = scopeBounds(scope);
+  if (!bounds) return [];
+  const ayahs = ayahsInCard({
+    startSurah: bounds.s,
+    startAyah: bounds.a,
+    endSurah: bounds.es,
+    endAyah: bounds.ea,
+  });
+  const size = Math.max(1, paceStationAyahs(pace));
+  const out: NewCardInput[] = [];
+  for (let i = 0; i < ayahs.length; i += size) {
+    const group = ayahs.slice(i, i + size);
+    const first = group[0];
+    const last = group[group.length - 1];
+    // Shared, stable grouping tag = this station's full āyah range.
+    const stationKey = `${first.surah}:${first.ayah}-${last.surah}:${last.ayah}`;
+    for (const { surah, ayah } of group) {
+      out.push({
+        unit: "ayah",
+        label: `${surahName(surah)} ${ayah}`,
+        page: pageOfAyah(surah, ayah),
+        startSurah: surah,
+        startAyah: ayah,
+        endSurah: surah,
+        endAyah: ayah,
+        stationKey,
+      });
+    }
   }
   return out;
 }
