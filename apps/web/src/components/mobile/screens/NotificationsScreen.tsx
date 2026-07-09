@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
+  Bell,
   HandHeart,
   Sunrise,
   Clock,
@@ -60,6 +61,13 @@ export default function NotificationsScreen() {
       </div>
 
       <SettingsSection heading="Prayer">
+        <SettingsRow
+          icon={Bell}
+          title="Prayer notifications"
+          subtitle="A reminder at each prayer time"
+          toggle={notif.prayerNotif !== false}
+          onToggle={(v) => updateNotif({ prayerNotif: v })}
+        />
         <SettingsExpandableRow
           icon={HandHeart}
           title="Adhan at prayer time"

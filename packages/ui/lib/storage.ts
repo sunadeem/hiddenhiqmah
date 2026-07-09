@@ -58,6 +58,10 @@ export function getVisitStats(): VisitStats {
 export type NotificationPrefs = {
   adhanEnabled: boolean;
   adhanPerPrayer: { fajr: boolean; dhuhr: boolean; asr: boolean; maghrib: boolean; isha: boolean };
+  /** A plain notification at each prayer time (default on). Independent of the
+   *  adhan SOUND: adhan on ⇒ that notification plays the adhan; adhan off but this
+   *  on ⇒ a standard prayer notification; both off ⇒ nothing at prayer time. */
+  prayerNotif: boolean;
   prePrayer: boolean;
   iqamah: boolean;
   todaysVerse: boolean;
@@ -76,10 +80,12 @@ export type NotificationPrefs = {
 };
 
 const defaultNotificationPrefs: NotificationPrefs = {
-  // Everything ON by default EXCEPT the adhan itself — the adhan plays a long
-  // sound at prayer time, so it stays opt-in; all other reminders default on.
+  // Everything ON by default EXCEPT the adhan SOUND — a plain prayer-time
+  // notification fires by default (prayerNotif); turning adhan on upgrades that
+  // notification to play the long adhan sound. All other reminders default on.
   adhanEnabled: false,
   adhanPerPrayer: { fajr: true, dhuhr: true, asr: true, maghrib: true, isha: true },
+  prayerNotif: true,
   prePrayer: true,
   iqamah: true,
   todaysVerse: true,

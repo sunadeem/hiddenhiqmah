@@ -226,10 +226,13 @@ export async function scheduleAllNotifications(
 
   const anyAdhan =
     prefs.adhanEnabled && PRAYER_KEYS.some((k) => prefs.adhanPerPrayer[k]);
+  // A plain prayer-time notification, default on (undefined = on for older prefs).
+  const wantPrayerNotif = prefs.prayerNotif !== false;
   const wantDaily = prefs.todaysVerse || prefs.todaysHadith;
   const wantReminder = prefs.todaysReminder && REMINDERS.length > 0;
   if (
     !anyAdhan &&
+    !wantPrayerNotif &&
     !prefs.prePrayer &&
     !wantDaily &&
     !wantReminder &&
@@ -256,8 +259,8 @@ export async function scheduleAllNotifications(
   const notifs: Notif[] = [];
   let id = 1000;
 
-  // ── Prayer-based (adhan + pre-prayer) — needs a location ──
-  if ((anyAdhan || prefs.prePrayer) && loc) {
+  // ── Prayer-based (adhan / prayer notif + pre-prayer) — needs a location ──
+  if ((anyAdhan || wantPrayerNotif || prefs.prePrayer) && loc) {
     const school = settings.asrMethod === "hanafi" ? 1 : 0;
     const times = buildPrayerCalendar(loc.lat, loc.lng, settings.calcMethod, school);
     for (let i = 0; i <= DAYS_AHEAD; i++) {
@@ -275,19 +278,23 @@ export async function scheduleAllNotifications(
         at.setHours(hh, mm, 0, 0);
         if (at <= now) continue;
 
-        if (anyAdhan && prefs.adhanPerPrayer[pk]) {
+        // One prayer-time notification when EITHER the adhan (for this prayer) or
+        // the plain prayer-notif is on. The adhan case carries the adhan sound +
+        // time-sensitive delivery; the plain case is a standard notification.
+        const adhanForThis = anyAdhan && prefs.adhanPerPrayer[pk];
+        if (wantPrayerNotif || adhanForThis) {
           const title = [PRAYER_LABEL[pk], loc.city, fmtClock(at)]
             .filter(Boolean)
             .join(" · "); // e.g. "Maghrib · Toronto · 7:12 PM"
           notifs.push({
             id: id++,
             title,
-            body: ADHAN_BODY[pk],
+            body: adhanForThis ? ADHAN_BODY[pk] : `It's time for ${PRAYER_LABEL[pk]} prayer.`,
             schedule: { at },
-            sound: ADHAN_SOUND,
+            sound: adhanForThis ? ADHAN_SOUND : undefined,
             url: "/salah",
             tier: 1,
-            interruptionLevel: "timeSensitive",
+            interruptionLevel: adhanForThis ? "timeSensitive" : undefined,
           });
         }
         if (prefs.prePrayer) {
