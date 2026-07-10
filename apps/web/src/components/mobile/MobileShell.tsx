@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import MobileTopBar from "./MobileTopBar";
@@ -19,8 +19,6 @@ import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { useOnline } from "@/lib/mobile/useOnline";
 import { WifiOff } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
-import SignInScreen from "./screens/SignInScreen";
 import { useScrollDirection } from "@/lib/mobile/useScrollDirection";
 
 const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback", "/auth/reset"]);
@@ -40,7 +38,6 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   const isSurahReader = /^\/quran\/[^/]+/.test(pathname);
   const playerVisible = (playingVerse !== null || adhanPlaying) && !isSurahReader;
   const online = useOnline();
-  const { user, loading: authLoading } = useAuth();
   const mainRef = useRef<HTMLElement>(null);
   const scrollDir = useScrollDirection(mainRef);
 
@@ -76,23 +73,11 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   // Same for signed-out local Hifz data (cards + reviews + plan), preserving SRS state.
   useHifzImport();
 
-  // Mobile = mandatory account: until signed in, the entire app IS the sign-in
-  // screen (except the auth routes themselves). All hooks above always run, so
-  // this conditional return is safe.
-  if (!authLoading && !user && !FULLSCREEN_ROUTES.has(pathname)) {
-    return (
-      <div className="relative flex flex-col h-[100dvh] bg-themed overflow-hidden">
-        <main
-          className="flex-1 overflow-y-auto px-3"
-          style={{ paddingTop: "max(env(safe-area-inset-top), 60px)" }}
-        >
-          <Suspense fallback={null}>
-            <SignInScreen />
-          </Suspense>
-        </main>
-      </div>
-    );
-  }
+  // Soft gate (App Store 5.1.1(i)): the app is fully browsable signed-out — Qur'ān,
+  // hadith, prayer times, du'ās all work on-device with a local fallback. Only
+  // account-based actions (Circles, cross-device sync) prompt sign-in, via
+  // requireAuth/requireAccount; /signin is a normal route reachable from Settings,
+  // the sync banners, and the Circles empty state.
 
   // Ask keeps the bottom tab bar (it's a normal destination you can navigate
   // away from) — only its scroll layout is full-height (isFullChat below).

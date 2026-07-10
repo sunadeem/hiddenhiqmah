@@ -58,6 +58,8 @@ type AuthState = {
     lastName: string;
   }) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
+  /** Permanently deletes the account + all of the user's data, then signs out. */
+  deleteAccount: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -150,6 +152,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+  }, []);
+
+  // Self-serve account deletion (App Store 5.1.1(v)). The definer RPC deletes the
+  // auth.users row, which cascade-deletes every table keyed to the user; then we
+  // clear the local session.
+  const deleteAccount = useCallback(async () => {
+    const { error } = await supabase.rpc("delete_my_account");
+    if (error) throw error;
     await supabase.auth.signOut();
   }, []);
 
@@ -256,6 +267,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         updatePassword,
         updateProfile,
         signOut,
+        deleteAccount,
       }}
     >
       {children}

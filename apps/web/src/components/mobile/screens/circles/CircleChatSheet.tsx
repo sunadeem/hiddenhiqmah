@@ -10,6 +10,8 @@ import {
   MessageSquare,
   Activity as ActivityIcon,
   Trash2,
+  Flag,
+  Ban,
   Heart,
   UserPlus,
   UserMinus,
@@ -23,6 +25,8 @@ import {
   getCircleMessages,
   sendCircleMessage,
   deleteCircleMessage,
+  reportCircleMessage,
+  blockCircleUser,
   subscribeCircleMessages,
   getCircleActivity,
   timeAgo,
@@ -112,6 +116,8 @@ function Sheet({
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<CircleMessage | null>(null);
+  const [actionsMsg, setActionsMsg] = useState<CircleMessage | null>(null);
+  const [notice, setNotice] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -183,6 +189,36 @@ function Sheet({
     } catch (e) {
       setErr(errMsg(e));
       setPendingDelete(null);
+    }
+  };
+
+  const showNotice = (m: string) => {
+    setNotice(m);
+    setTimeout(() => setNotice((n) => (n === m ? "" : n)), 2600);
+  };
+  const reportMsg = async () => {
+    const m = actionsMsg;
+    setActionsMsg(null);
+    if (!m) return;
+    hapticMedium();
+    try {
+      await reportCircleMessage(m.id);
+      showNotice("Reported — we'll review it.");
+    } catch (e) {
+      setErr(errMsg(e));
+    }
+  };
+  const blockSender = async () => {
+    const m = actionsMsg;
+    setActionsMsg(null);
+    if (!m) return;
+    hapticMedium();
+    try {
+      await blockCircleUser(m.user_id);
+      await loadMessages();
+      showNotice(`Blocked ${m.sender_name}.`);
+    } catch (e) {
+      setErr(errMsg(e));
     }
   };
 
@@ -269,8 +305,7 @@ function Sheet({
                     key={m.id}
                     msg={m}
                     grouped={!!grouped}
-                    canDelete={m.isMine || isOwner}
-                    onRequestDelete={() => setPendingDelete(m)}
+                    onActions={() => setActionsMsg(m)}
                   />
                 );
               })
@@ -336,6 +371,33 @@ function Sheet({
         </div>
       )}
 
+      {/* Message actions — report / block / delete (UGC moderation). */}
+      {actionsMsg && (
+        <MessageActionSheet
+          msg={actionsMsg}
+          isOwner={isOwner}
+          onDelete={() => {
+            const m = actionsMsg;
+            setActionsMsg(null);
+            setPendingDelete(m);
+          }}
+          onReport={reportMsg}
+          onBlock={blockSender}
+          onClose={() => setActionsMsg(null)}
+        />
+      )}
+
+      {notice &&
+        createPortal(
+          <div
+            className="fixed left-1/2 -translate-x-1/2 z-[96] rounded-full card-bg border sidebar-border px-4 py-2 text-[12px] text-themed shadow-lg"
+            style={{ bottom: "calc(env(safe-area-inset-bottom) + 90px)" }}
+          >
+            {notice}
+          </div>,
+          document.body
+        )}
+
       {/* Delete confirm */}
       <DeleteConfirm
         msg={pendingDelete}
@@ -346,21 +408,83 @@ function Sheet({
   );
 }
 
+function MessageActionSheet({
+  msg,
+  isOwner,
+  onDelete,
+  onReport,
+  onBlock,
+  onClose,
+}: {
+  msg: CircleMessage;
+  isOwner: boolean;
+  onDelete: () => void;
+  onReport: () => void;
+  onBlock: () => void;
+  onClose: () => void;
+}) {
+  const canDelete = msg.isMine || isOwner;
+  return createPortal(
+    <div className="fixed inset-0 z-[95] flex items-end justify-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/50" />
+      <div
+        className="relative w-full max-w-md m-3 rounded-2xl card-bg border sidebar-border overflow-hidden"
+        style={{ marginBottom: "max(env(safe-area-inset-bottom), 12px)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {canDelete && (
+          <button
+            type="button"
+            onClick={onDelete}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-left text-red-400 active:bg-[var(--overlay-subtle)] touch-manipulation"
+          >
+            <Trash2 size={17} /> Delete message
+          </button>
+        )}
+        {!msg.isMine && (
+          <>
+            <button
+              type="button"
+              onClick={onReport}
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-left text-themed border-t sidebar-border active:bg-[var(--overlay-subtle)] touch-manipulation"
+            >
+              <Flag size={17} className="text-themed-muted" /> Report message
+            </button>
+            <button
+              type="button"
+              onClick={onBlock}
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-left text-themed border-t sidebar-border active:bg-[var(--overlay-subtle)] touch-manipulation"
+            >
+              <Ban size={17} className="text-themed-muted" /> Block {msg.sender_name}
+            </button>
+          </>
+        )}
+        <button
+          type="button"
+          onClick={onClose}
+          className="w-full px-4 py-3.5 text-center text-themed-muted border-t sidebar-border active:bg-[var(--overlay-subtle)] touch-manipulation"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 function MessageRow({
   msg,
   grouped,
-  canDelete,
-  onRequestDelete,
+  onActions,
 }: {
   msg: CircleMessage;
   grouped: boolean;
-  canDelete: boolean;
-  onRequestDelete: () => void;
+  onActions: () => void;
 }) {
   const longPress = useLongPress(() => {
-    if (canDelete && !msg.deleted_at) {
+    if (!msg.deleted_at) {
       hapticMedium();
-      onRequestDelete();
+      onActions();
     }
   });
 

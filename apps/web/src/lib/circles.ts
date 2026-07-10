@@ -266,7 +266,7 @@ async function resolveNames(ids: string[]): Promise<Map<string, { display_name: 
 }
 
 export async function getCircleMessages(circleId: string, limit = 200): Promise<CircleMessage[]> {
-  const [{ data, error }, { data: auth }] = await Promise.all([
+  const [{ data, error }, { data: auth }, blocked] = await Promise.all([
     // Fetch the most recent `limit`, then flip to chronological for display.
     supabase
       .from("circle_messages")
@@ -275,9 +275,12 @@ export async function getCircleMessages(circleId: string, limit = 200): Promise<
       .order("created_at", { ascending: false })
       .limit(limit),
     supabase.auth.getUser(),
+    getMyBlockedUserIds(),
   ]);
   if (error) throw error;
-  const rows = ((data ?? []) as Omit<CircleMessage, "sender_name" | "sender_avatar" | "isMine">[]).reverse();
+  const rows = ((data ?? []) as Omit<CircleMessage, "sender_name" | "sender_avatar" | "isMine">[])
+    .reverse()
+    .filter((r) => !blocked.has(r.user_id));
   const myId = auth?.user?.id ?? null;
   const names = await resolveNames(rows.map((r) => r.user_id));
   return rows.map((r) => ({
@@ -299,6 +302,34 @@ export async function sendCircleMessage(circleId: string, body: string): Promise
 export async function deleteCircleMessage(messageId: string): Promise<void> {
   const { error } = await supabase.rpc("delete_circle_message", { p_message: messageId });
   if (error) throw error;
+}
+
+// ── Moderation (migration 020) — report a message, block/unblock a user ──
+
+/** The user_ids the caller has blocked (RLS-scoped to blocker = me). */
+export async function getMyBlockedUserIds(): Promise<Set<string>> {
+  const { data } = await supabase.from("circle_user_blocks").select("blocked");
+  return new Set((data ?? []).map((r) => (r as { blocked: string }).blocked));
+}
+
+export async function reportCircleMessage(messageId: string, reason?: string): Promise<void> {
+  const { error } = await supabase.rpc("report_circle_message", {
+    p_message: messageId,
+    p_reason: reason ?? null,
+  });
+  if (error) throw error;
+}
+
+export async function blockCircleUser(userId: string): Promise<void> {
+  const { error } = await supabase.rpc("block_circle_user", { p_user: userId });
+  if (error) throw error;
+  broadcastCirclesChanged();
+}
+
+export async function unblockCircleUser(userId: string): Promise<void> {
+  const { error } = await supabase.rpc("unblock_circle_user", { p_user: userId });
+  if (error) throw error;
+  broadcastCirclesChanged();
 }
 
 /**

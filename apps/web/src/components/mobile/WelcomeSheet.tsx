@@ -85,10 +85,12 @@ export default function WelcomeSheet() {
     }
   }, [pathname, user?.id]);
 
-  if (hidden || pathname !== "/" || !user) return null;
+  // Show the welcome/onboarding to signed-OUT first-timers too (soft gate) — it's
+  // what dispatches "hiqmah:welcome-dismissed" that kicks off the location prompt.
+  if (hidden || pathname !== "/") return null;
 
   const firstName = (
-    (user.user_metadata as { first_name?: string } | undefined)?.first_name || ""
+    (user?.user_metadata as { first_name?: string } | undefined)?.first_name || ""
   ).trim();
 
   const finish = (tunedFor?: TunedFor) => {
@@ -261,6 +263,10 @@ export default function WelcomeSheet() {
               See our{" "}
               <Link href="/privacy" className="text-gold/70 underline">
                 privacy policy
+              </Link>{" "}
+              and{" "}
+              <Link href="/terms" className="text-gold/70 underline">
+                terms
               </Link>
               .
             </p>

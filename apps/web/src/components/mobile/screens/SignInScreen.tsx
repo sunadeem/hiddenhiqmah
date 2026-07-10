@@ -47,6 +47,7 @@ export default function SignInScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   // Non-null → we're on the 6-digit code step for one of these flows.
   const [verifyFlow, setVerifyFlow] = useState<null | "magic" | "signup" | "recovery">(null);
   const [code, setCode] = useState("");
@@ -81,6 +82,7 @@ export default function SignInScreen() {
     setConfirmPassword("");
     setFirstName("");
     setLastName("");
+    setAgreedToTerms(false);
     setCode("");
     setVerifyFlow(null);
   };
@@ -107,6 +109,8 @@ export default function SignInScreen() {
       return setError("Password must be at least 8 characters.");
     if (password !== confirmPassword)
       return setError("Passwords do not match.");
+    if (!agreedToTerms)
+      return setError("Please agree to the Terms of Use to create an account.");
     setBusy(true);
     setError(null);
     const { error, needsConfirmation, alreadyExists } = await signUpWithPassword(
@@ -501,9 +505,22 @@ export default function SignInScreen() {
                 </p>
               )}
             </div>
+            <label className="flex items-start gap-2.5 text-[13px] text-themed-muted leading-snug">
+              <input
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-0.5 w-4 h-4 shrink-0 accent-[var(--color-gold)]"
+              />
+              <span>
+                I agree to the{" "}
+                <a href="/terms" className="text-gold underline">Terms of Use</a> and{" "}
+                <a href="/privacy" className="text-gold underline">Privacy Policy</a>.
+              </span>
+            </label>
             {errorBox}
             {noticeBox}
-            <button type="submit" disabled={busy} className={primaryBtn}>
+            <button type="submit" disabled={busy || !agreedToTerms} className={primaryBtn}>
               {busy ? "Creating account..." : "Create account"}
             </button>
           </form>

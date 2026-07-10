@@ -90,6 +90,7 @@ export default function SettingsScreen() {
     sub: "Auto-detected from your device",
   });
   const [editingProfile, setEditingProfile] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [testSent, setTestSent] = useState<string | null>(null);
 
   const fireTest = async (kind: TestNotificationKind, label: string) => {
@@ -342,6 +343,12 @@ export default function SettingsScreen() {
         />
         <SettingsRow
           icon={ScrollText}
+          title="Terms of Use"
+          rightChevron
+          href="/terms"
+        />
+        <SettingsRow
+          icon={BookOpen}
           title="Credits & Sources"
           rightChevron
           href="/credits"
@@ -389,6 +396,13 @@ export default function SettingsScreen() {
               onClick={async () => {
                 await signOut();
               }}
+              danger
+            />
+            <SettingsRow
+              icon={Trash2}
+              title="Delete account"
+              subtitle="Permanently erase your account & data"
+              onClick={() => setDeleting(true)}
               danger
             />
           </>
@@ -452,6 +466,93 @@ export default function SettingsScreen() {
           onClose={() => setEditingProfile(false)}
         />
       )}
+
+      {deleting && <DeleteAccountDialog onClose={() => setDeleting(false)} />}
+    </div>
+  );
+}
+
+function DeleteAccountDialog({ onClose }: { onClose: () => void }) {
+  const { deleteAccount } = useAuth();
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const ok = confirm.trim().toUpperCase() === "DELETE";
+
+  const run = async () => {
+    if (!ok || busy) return;
+    setBusy(true);
+    setErr("");
+    try {
+      await deleteAccount();
+      onClose();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Couldn't delete the account. Try again.");
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center"
+      onClick={() => !busy && onClose()}
+    >
+      <div className="absolute inset-0 bg-black/60" />
+      <div
+        className="relative w-full sm:max-w-md bg-themed border-t sm:border sidebar-border sm:rounded-2xl rounded-t-2xl"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-5 space-y-4">
+          <div className="flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-full bg-red-500/15 text-red-400 flex items-center justify-center shrink-0">
+              <Trash2 size={18} />
+            </span>
+            <h3 className="text-base font-semibold text-themed">Delete account</h3>
+          </div>
+          <p className="text-themed-muted text-[13px] leading-relaxed">
+            This permanently deletes your account and all your data — Hifz progress, daily
+            checklist &amp; streaks, circles you own, and saved reflections. It can&rsquo;t be
+            undone.
+          </p>
+          <div>
+            <label className="text-[11px] uppercase tracking-wider text-themed-muted">
+              Type DELETE to confirm
+            </label>
+            <input
+              type="text"
+              autoCapitalize="characters"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              placeholder="DELETE"
+              className="mt-1.5 w-full bg-[var(--overlay-subtle)] border sidebar-border rounded-xl px-3 py-2.5 text-base text-themed tracking-widest focus:outline-none focus:border-red-400/50"
+            />
+          </div>
+          {err && (
+            <div className="rounded-xl border border-red-400/30 bg-red-400/10 px-3 py-2 text-xs text-red-300">
+              {err}
+            </div>
+          )}
+          <div className="flex gap-2.5">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => !busy && onClose()}
+              className="flex-1 rounded-xl border sidebar-border py-3 text-sm text-themed-muted disabled:opacity-50 touch-manipulation"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={!ok || busy}
+              onClick={run}
+              className="flex-1 rounded-xl bg-red-500 text-white font-bold py-3 disabled:opacity-40 touch-manipulation"
+            >
+              {busy ? "Deleting…" : "Delete forever"}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -17,8 +17,8 @@ export default function PrivacyPage() {
         <p className="text-themed-muted text-sm leading-relaxed">
           Hidden Hiqmah is an Islamic learning and worship companion app —
           Quran, hadith, prayer times, daily du&apos;as, Kids learning, and an
-          AI chat assistant called Ask Hiqmah. The app is built and maintained
-          by Subhan Nadeem as an independent project.
+          AI chat assistant called Ask Hiqmah. The Service is operated by{" "}
+          Hidden Hiqmah LLC (&ldquo;we,&rdquo; &ldquo;us&rdquo;).
         </p>
         <p className="text-themed-muted text-sm leading-relaxed">
           We built Hidden Hiqmah to be useful without being invasive. We do not
@@ -249,17 +249,20 @@ export default function PrivacyPage() {
           </li>
           <li>Uninstall the app from your device.</li>
           <li>
-            If you have an account, email{" "}
+            If you have an account, open{" "}
+            <strong className="text-themed">
+              Settings → Account → Delete account
+            </strong>{" "}
+            to permanently delete your account and all associated data — Hifz
+            progress, daily checklist &amp; streaks, Circles you own, saved
+            reflections, and AI-chat usage logs. You can also email{" "}
             <a
               href="mailto:Subhan.Nadeem@HiddenHiqmah.com"
               className="text-gold underline"
             >
               Subhan.Nadeem@HiddenHiqmah.com
             </a>{" "}
-            from the email address you signed up with and we will delete your
-            account record and AI Chat usage logs from Supabase within 7 days.
-            (A self-serve &ldquo;Delete account&rdquo; button is on the
-            roadmap.)
+            from the address you signed up with.
           </li>
         </ol>
         <p className="text-themed-muted text-sm leading-relaxed">
