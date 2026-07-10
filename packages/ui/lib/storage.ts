@@ -30,6 +30,7 @@ const KEYS = {
   notifications: "hiqmah-notifications",
   prayerSettings: "hiqmah-prayer-settings",
   homePrefs: "hiqmah-home-prefs",
+  syncPrompt: "hiqmah-sync-prompt",
 } as const;
 
 export type VisitStats = {
@@ -233,6 +234,87 @@ export function clearAllLocalData() {
       // ignore
     }
   }
+}
+
+// ── Sync nudge ──────────────────────────────────────────────────────────────
+// A non-blocking, once-per-device prompt inviting a signed-OUT user to sign in
+// and sync their progress across devices. Personal-progress features save
+// locally with NO gate; after a few meaningful actions we surface this nudge a
+// single time. It never blocks the action that triggered it (App Store 5.1.1(v)
+// — on-device functionality must not require an account).
+export const SYNC_NUDGE_EVENT = "hiqmah:sync-nudge";
+// Escalating milestones (cumulative meaningful actions) at which we re-invite a
+// signed-out user to sync. We show at most MILESTONES.length times total — the
+// first to get them saving, later ones once they have a streak worth protecting
+// — then never again. A cooldown stops two shows firing close together (e.g. a
+// power user blowing past several thresholds in one sitting).
+const SYNC_NUDGE_MILESTONES = [3, 20, 60];
+const SYNC_NUDGE_COOLDOWN_MS = 2 * 24 * 60 * 60 * 1000; // 2 days
+
+type SyncPromptState = { count: number; timesShown: number; lastShownAt: number };
+
+function readSyncPrompt(): SyncPromptState {
+  if (typeof window === "undefined") return { count: 0, timesShown: 0, lastShownAt: 0 };
+  try {
+    const raw = localStorage.getItem(KEYS.syncPrompt);
+    if (!raw) return { count: 0, timesShown: 0, lastShownAt: 0 };
+    const s = JSON.parse(raw) as Partial<SyncPromptState> & { seen?: boolean };
+    return {
+      count: s.count ?? 0,
+      // Migrate the earlier {count, seen} shape: a retired prompt → "capped".
+      timesShown: s.timesShown ?? (s.seen ? SYNC_NUDGE_MILESTONES.length : 0),
+      lastShownAt: s.lastShownAt ?? 0,
+    };
+  } catch {
+    return { count: 0, timesShown: 0, lastShownAt: 0 };
+  }
+}
+
+function writeSyncPrompt(s: SyncPromptState) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(KEYS.syncPrompt, JSON.stringify(s));
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * Record one meaningful local-progress action (a checklist completion, a Hifz
+ * grade). When the cumulative count reaches the next milestone AND the cooldown
+ * has elapsed, it dispatches SYNC_NUDGE_EVENT so a top-level listener can decide
+ * whether to show the nudge (only when signed out). Escalates across the
+ * milestones, then stops for good.
+ */
+export function maybeNudgeSync() {
+  if (typeof window === "undefined") return;
+  const s = readSyncPrompt();
+  const count = s.count + 1;
+  writeSyncPrompt({ ...s, count });
+  if (s.timesShown >= SYNC_NUDGE_MILESTONES.length) return; // capped — done forever
+  const threshold = SYNC_NUDGE_MILESTONES[s.timesShown];
+  const cooled =
+    s.lastShownAt === 0 || Date.now() - s.lastShownAt >= SYNC_NUDGE_COOLDOWN_MS;
+  if (count >= threshold && cooled) {
+    try {
+      window.dispatchEvent(new CustomEvent(SYNC_NUDGE_EVENT));
+    } catch {
+      // non-browser
+    }
+  }
+}
+
+/** The nudge was just shown to a signed-out user — advance the milestone and
+ *  start the cooldown so the next one is spaced out. */
+export function recordSyncPromptShown() {
+  const s = readSyncPrompt();
+  writeSyncPrompt({ ...s, timesShown: s.timesShown + 1, lastShownAt: Date.now() });
+}
+
+/** Stop the nudge for good (the user signed in, so it's irrelevant now). */
+export function retireSyncPrompt() {
+  const s = readSyncPrompt();
+  writeSyncPrompt({ ...s, timesShown: SYNC_NUDGE_MILESTONES.length });
 }
 
 export function exportBookmarksJSON(): string {

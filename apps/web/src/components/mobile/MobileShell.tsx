@@ -7,6 +7,7 @@ import MobileTopBar from "./MobileTopBar";
 import MobileTabBar from "./MobileTabBar";
 import MobilePlayer from "./MobilePlayer";
 import WelcomeSheet from "./WelcomeSheet";
+import SyncNudge from "./SyncNudge";
 import { isTabRoot } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 import { applyNativeSetup } from "@/lib/mobile/setup";
@@ -163,6 +164,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
         </div>
       )}
       <WelcomeSheet />
+      <SyncNudge />
     </div>
   );
 }

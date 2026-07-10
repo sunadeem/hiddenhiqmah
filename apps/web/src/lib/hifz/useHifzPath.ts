@@ -19,6 +19,7 @@ import {
   portionsStartedToday,
 } from "@hidden-hiqmah/ui/lib/hifz/srs";
 import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
+import { maybeNudgeSync } from "@hidden-hiqmah/ui/lib/storage";
 import type {
   Grade,
   HifzCard,
@@ -255,6 +256,8 @@ export function useHifzPath(): HifzPath {
       },
       async grade(cardId, grade) {
         await adapter.grade(cardId, grade, day());
+        // A graded portion/card is meaningful local progress → maybe nudge sync.
+        maybeNudgeSync();
         broadcast();
       },
       async bumpPeek(cardId) {

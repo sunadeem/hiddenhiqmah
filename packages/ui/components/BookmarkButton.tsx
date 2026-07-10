@@ -33,27 +33,12 @@ export default function BookmarkButton({
     e.preventDefault();
     e.stopPropagation();
     if (saved) {
-      // Removing a bookmark is always allowed.
       removeBookmark(type, id);
       setSaved(false);
       return;
     }
-    // Saving is a stateful action → require an account (web soft-gate; on mobile
-    // the user is always signed in). The global is set by AuthGateProvider.
-    const requireAuth = (window as unknown as Record<string, unknown>)
-      .__requireAuth as
-      | ((opts?: { title?: string; message?: string }) => boolean)
-      | undefined;
-    if (
-      requireAuth &&
-      !requireAuth({
-        title: "Save this bookmark",
-        message:
-          "Create a free account to save bookmarks and keep them across your devices.",
-      })
-    ) {
-      return; // signed out → gate modal shown, abort the save
-    }
+    // Bookmarks are device-local with no gate (there's no cloud bookmark sync
+    // yet), so there's nothing to require an account for — just save.
     addBookmark({ type, id, title, subtitle, href });
     setSaved(true);
   };

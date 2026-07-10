@@ -95,15 +95,9 @@ export default function HouseholdScreen() {
   }, [profiles, user]);
 
   const submitAdd = () => {
-    if (
-      !requireAccount({
-        title: "Add a family profile",
-        message:
-          "Create a free account to add family profiles and track everyone's progress.",
-      })
-    ) {
-      return;
-    }
+    // Family profiles are device-local (each child gets a namespaced local
+    // store), so creating one needs no account — only the shared Family Khatmah
+    // below (a real server circle) still requires sign-in.
     addProfile({ name: name.trim() || "Child", kind, avatar: avatar || undefined });
     setName("");
     setKind("child");

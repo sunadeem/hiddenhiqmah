@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
-import { requireAccount } from "@/lib/requireAccount";
 
 const LS_KEY = "hiqmah-reminder-saves";
 
@@ -35,17 +34,8 @@ export function useReminderSaves(): { saved: Set<string>; toggle: (id: string) =
   const toggle = useCallback(
     (id: string) => {
       const had = saved.has(id);
-      // Saving a reflection is a stateful action → require an account on web.
-      if (
-        !had &&
-        !requireAccount({
-          title: "Save this reflection",
-          message:
-            "Create a free account to save reflections and sync them across your devices.",
-        })
-      ) {
-        return; // signed out → gate shown, abort the save
-      }
+      // Reflections save locally when signed out (no gate); signing in switches
+      // to the synced Supabase store. Never blocks the save.
       const next = new Set(saved);
       if (had) next.delete(id);
       else next.add(id);

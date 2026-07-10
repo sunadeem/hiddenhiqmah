@@ -6,60 +6,12 @@ import { useAuth } from "@/context/AuthContext";
 import { createLocalDailyAdapter } from "@hidden-hiqmah/ui/lib/daily/localAdapter";
 import { toLocalDateString, type DailyAdapter } from "@hidden-hiqmah/ui/lib/daily/types";
 import { createSupabaseDailyAdapter } from "@/lib/daily/supabaseDailyAdapter";
-import { requireAccount } from "@/lib/requireAccount";
 import {
   PRIMARY_ID,
   PROFILE_CHANGED_EVENT,
   dailyStoreKeyForProfile,
   getActiveProfileId,
 } from "@/lib/household";
-
-// Wraps a device-local DailyAdapter so user-initiated WRITES require an account
-// on web (the soft-gate). Reads + internal ops (ensureSeeded, recomputeStreaks,
-// getDay materialization) are untouched, so nothing prompts on page load. For
-// signed-in users requireAccount() returns true → a no-op (also used for the
-// child-profile local adapter, where the parent is signed in).
-function gateLocalAdapter(base: DailyAdapter): DailyAdapter {
-  const SAVE = {
-    title: "Save your progress",
-    message:
-      "Create a free account to save your daily progress and streaks across your devices.",
-  };
-  const ok = () => requireAccount(SAVE);
-  return {
-    ...base,
-    addItem: async (input) => {
-      if (ok()) await base.addItem(input);
-    },
-    editItem: async (id, patch) => {
-      if (ok()) await base.editItem(id, patch);
-    },
-    removeItem: async (id) => {
-      if (ok()) await base.removeItem(id);
-    },
-    reorderItems: async (ids) => {
-      if (ok()) await base.reorderItems(ids);
-    },
-    setDone: async (d, u, done) => {
-      if (ok()) await base.setDone(d, u, done);
-    },
-    setCount: async (d, u, c) => {
-      if (ok()) await base.setCount(d, u, c);
-    },
-    incrementDhikr: async (k, d, delta) =>
-      ok() ? base.incrementDhikr(k, d, delta) : base.getDhikr(k, d),
-    setDhikrCount: async (k, d, c) =>
-      ok() ? base.setDhikrCount(k, d, c) : base.getDhikr(k, d),
-    resetDhikrDay: async (k, d) =>
-      ok() ? base.resetDhikrDay(k, d) : base.getDhikr(k, d),
-    startPause: async (r, t) => {
-      if (ok()) await base.startPause(r, t);
-    },
-    endPause: async (t) => {
-      if (ok()) await base.endPause(t);
-    },
-  };
-}
 
 /**
  * Picks the DailyAdapter based on auth state + the active household profile:
@@ -85,9 +37,13 @@ export function useDailyAdapter(): {
   }, []);
 
   const adapter = useMemo<DailyAdapter>(() => {
+    // Signed-out (and child) writes persist locally with NO gate — a daily
+    // checklist works entirely on-device, so requiring an account would violate
+    // App Store 5.1.1(v). Cross-device sync (the account benefit) is nudged
+    // separately via maybeNudgeSync(), never blocked here.
     const childKey = dailyStoreKeyForProfile(activeId);
-    if (childKey) return gateLocalAdapter(createLocalDailyAdapter(childKey));
-    if (!user) return gateLocalAdapter(createLocalDailyAdapter());
+    if (childKey) return createLocalDailyAdapter(childKey);
+    if (!user) return createLocalDailyAdapter();
     const start = user.created_at ? toLocalDateString(new Date(user.created_at)) : null;
     return createSupabaseDailyAdapter(supabase, user.id, start);
   }, [user, activeId]);

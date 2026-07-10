@@ -11,6 +11,7 @@ import {
   type NewItemInput,
   type Streaks,
 } from "./types";
+import { maybeNudgeSync } from "../storage";
 
 // A checklist row = the frozen day item + (for keyed dhikr) its live daily count.
 export interface ChecklistRow extends DayItem {
@@ -119,6 +120,8 @@ export function useChecklist(adapter: DailyAdapter, today: string): UseChecklist
     (row: ChecklistRow) => {
       const kind = rowKindOf(row);
       const nextDone = !row.done;
+      // A completion is a meaningful bit of local progress → maybe nudge sync.
+      if (nextDone) maybeNudgeSync();
       // Optimistic UI.
       setRows((prev) => {
         const next = prev.map((r) =>
