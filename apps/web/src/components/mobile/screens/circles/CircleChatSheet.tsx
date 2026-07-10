@@ -29,6 +29,7 @@ import {
   blockCircleUser,
   subscribeCircleMessages,
   getCircleActivity,
+  getMyModeration,
   timeAgo,
   type CircleMessage,
   type CircleActivity,
@@ -118,6 +119,8 @@ function Sheet({
   const [pendingDelete, setPendingDelete] = useState<CircleMessage | null>(null);
   const [actionsMsg, setActionsMsg] = useState<CircleMessage | null>(null);
   const [notice, setNotice] = useState("");
+  const [warn, setWarn] = useState(""); // red inline profanity / suspension notice
+  const [suspended, setSuspended] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -156,6 +159,21 @@ function Sheet({
     return unsub;
   }, [circleId, loadMessages]);
 
+  // Am I blocked for review? Disable the composer + show a persistent notice.
+  useEffect(() => {
+    let alive = true;
+    getMyModeration()
+      .then((m) => {
+        if (!alive) return;
+        setSuspended(m.suspended);
+        if (m.suspended) setWarn("Your account is blocked from posting and under review.");
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [circleId]);
+
   // Auto-scroll to newest whenever the chat list grows.
   useEffect(() => {
     if (tab === "chat" && messages) {
@@ -165,13 +183,31 @@ function Sheet({
 
   const send = async () => {
     const body = text.trim();
-    if (!body || sending) return;
+    if (!body || sending || suspended) return;
     setSending(true);
     setErr("");
+    setWarn("");
     try {
-      await sendCircleMessage(circleId, body);
-      setText("");
-      await loadMessages();
+      const res = await sendCircleMessage(circleId, body);
+      if (res.status === "ok") {
+        setText("");
+        await loadMessages();
+      } else if (res.status === "profanity") {
+        // Strike recorded server-side; warn and let them edit the message out.
+        const remaining = Math.max(0, (res.limit ?? 3) - (res.strikes ?? 0));
+        setWarn(
+          `We don't allow or tolerate profanity. ${remaining} more ${
+            remaining === 1 ? "occurrence" : "occurrences"
+          } and your account will be blocked for review.`
+        );
+      } else if (res.status === "suspended") {
+        setSuspended(true);
+        setWarn("Your account is blocked from posting and under review.");
+      } else {
+        // Unknown status → assume it posted; clear + refetch.
+        setText("");
+        await loadMessages();
+      }
     } catch (e) {
       setErr(errMsg(e));
     } finally {
@@ -318,10 +354,18 @@ function Sheet({
             className="shrink-0 border-t sidebar-border px-3 pt-2.5"
             style={{ paddingBottom: "max(calc(env(safe-area-inset-bottom) + 16px), 34px)" }}
           >
+            {warn && (
+              <div className="mb-2 rounded-xl border border-red-400/30 bg-red-400/10 px-3 py-2 text-[12px] text-red-300 leading-snug">
+                {warn}
+              </div>
+            )}
             <div className="flex items-end gap-2">
               <textarea
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                onChange={(e) => {
+                  setText(e.target.value);
+                  if (warn && !suspended) setWarn("");
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -329,13 +373,14 @@ function Sheet({
                   }
                 }}
                 rows={1}
-                placeholder="Message…"
-                className="flex-1 resize-none max-h-28 bg-[var(--overlay-subtle)] border sidebar-border rounded-2xl px-4 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40"
+                disabled={suspended}
+                placeholder={suspended ? "Posting disabled — under review" : "Message…"}
+                className="flex-1 resize-none max-h-28 bg-[var(--overlay-subtle)] border sidebar-border rounded-2xl px-4 py-2.5 text-base text-themed placeholder:text-themed-muted/60 focus:outline-none focus:border-[var(--color-gold)]/40 disabled:opacity-60"
               />
               <button
                 type="button"
                 onClick={send}
-                disabled={!text.trim() || sending}
+                disabled={!text.trim() || sending || suspended}
                 aria-label="Send"
                 className="shrink-0 w-11 h-11 rounded-full bg-gold text-[#0a1628] flex items-center justify-center disabled:opacity-40 touch-manipulation active:scale-95"
               >

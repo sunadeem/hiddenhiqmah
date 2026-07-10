@@ -8,6 +8,7 @@ import MobileTabBar from "./MobileTabBar";
 import MobilePlayer from "./MobilePlayer";
 import WelcomeSheet from "./WelcomeSheet";
 import SyncNudge from "./SyncNudge";
+import GlobalBanner from "../GlobalBanner";
 import { isTabRoot } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 import { applyNativeSetup } from "@/lib/mobile/setup";
@@ -112,6 +113,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
       onTouchEnd={onTouchEnd}
     >
       <MobileTopBar />
+      <GlobalBanner />
       {!online && (
         <div className="shrink-0 flex items-center justify-center gap-2 bg-[var(--color-gold)]/15 border-y border-[var(--color-gold)]/25 px-3 py-1.5 text-[12px] text-gold">
           <WifiOff size={13} />

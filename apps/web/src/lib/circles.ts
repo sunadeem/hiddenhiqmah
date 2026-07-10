@@ -291,12 +291,40 @@ export async function getCircleMessages(circleId: string, limit = 200): Promise<
   }));
 }
 
-export async function sendCircleMessage(circleId: string, body: string): Promise<void> {
-  const { error } = await supabase.rpc("send_circle_message", {
+// Result of a send attempt. The server (send_circle_message RPC) screens for
+// profanity and suspension and returns one of these statuses; "ok" means posted.
+export type SendResult = {
+  status: "ok" | "profanity" | "suspended";
+  strikes?: number;
+  limit?: number;
+  message_id?: string;
+};
+
+export async function sendCircleMessage(circleId: string, body: string): Promise<SendResult> {
+  const { data, error } = await supabase.rpc("send_circle_message", {
     p_circle: circleId,
     p_body: body,
   });
   if (error) throw error;
+  // Migration 021 returns { status, ... }. Before it's applied the RPC returns
+  // the inserted row (no `status`) — treat that as a successful post so the
+  // client works regardless of migration deploy order.
+  const d = data as Record<string, unknown> | null;
+  if (d && typeof d.status === "string") return d as unknown as SendResult;
+  return { status: "ok", message_id: d?.id as string | undefined };
+}
+
+/** The caller's own moderation state (RLS-scoped to self) — for showing a
+ *  "you're blocked for review" state and disabling the composer. */
+export async function getMyModeration(): Promise<{ suspended: boolean; strikes: number }> {
+  const { data } = await supabase
+    .from("user_moderation")
+    .select("strike_count, suspended")
+    .maybeSingle();
+  return {
+    suspended: !!(data as { suspended?: boolean } | null)?.suspended,
+    strikes: (data as { strike_count?: number } | null)?.strike_count ?? 0,
+  };
 }
 
 export async function deleteCircleMessage(messageId: string): Promise<void> {

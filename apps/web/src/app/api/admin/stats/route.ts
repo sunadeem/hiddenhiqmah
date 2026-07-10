@@ -134,6 +134,9 @@ type ChatRow = {
 type DhikrRow = { user_id: string; local_date: string; count: number };
 type HifzRow = { user_id: string; status: string };
 type ProfileRow = { id: string; display_name: string | null };
+type CircleMemberRow = { user_id: string };
+type StreakRow = { user_id: string; overall_current: number | null };
+type ModRow = { user_id: string; strike_count: number | null; suspended: boolean | null };
 
 export async function POST(req: NextRequest) {
   // ── Parse + authenticate ──────────────────────────────────────────────
@@ -174,8 +177,10 @@ export async function POST(req: NextRequest) {
     const d30 = now - 30 * DAY_MS;
     const d24h = now - DAY_MS;
 
-    const [users, chat, dhikr, hifz, profiles, circlesCount, membersCount, streaksActive] =
-      await Promise.all([
+    const [
+      users, chat, dhikr, hifz, profiles, circlesCount, membersCount, streaksActive,
+      memberRows, streakRows,
+    ] = await Promise.all([
         listAllUsers(supa),
         fetchAll<ChatRow>(
           supa,
@@ -188,7 +193,28 @@ export async function POST(req: NextRequest) {
         headCount(supa, "circles"),
         headCount(supa, "circle_members"),
         activeStreakCount(supa),
+        fetchAll<CircleMemberRow>(supa, "circle_members", "user_id"),
+        fetchAll<StreakRow>(supa, "user_streaks", "user_id, overall_current"),
       ]);
+
+    // Moderation is from migration 021 — tolerate it not being applied yet so
+    // the dashboard still loads (just without strike/suspension columns).
+    let modRows: ModRow[] = [];
+    try {
+      modRows = await fetchAll<ModRow>(supa, "user_moderation", "user_id, strike_count, suspended");
+    } catch {
+      modRows = [];
+    }
+
+    // Maintenance banner config (migration 022) — tolerate not-yet-applied.
+    let banner = { enabled: false, level: "info", message: "" };
+    try {
+      const { data } = await supa.from("app_config").select("value").eq("key", "banner").maybeSingle();
+      const v = ((data?.value ?? {}) as { enabled?: boolean; level?: string; message?: string });
+      banner = { enabled: !!v.enabled, level: v.level ?? "info", message: v.message ?? "" };
+    } catch {
+      /* table may not exist yet */
+    }
 
     // Lookups: user_id → email, user_id → display name.
     const emailById = new Map<string, string | null>();
@@ -312,6 +338,54 @@ export async function POST(req: NextRequest) {
         at: r.used_at,
       }));
 
+    // ── 6. Per-user table + guest count ───────────────────────────────
+    // Guests = distinct anon device ids that have used Ask with no account.
+    const askByUser = new Map<string, number>();
+    const askLastByUser = new Map<string, number>();
+    const guestSet = new Set<string>();
+    for (const r of chat) {
+      if (r.user_id) {
+        askByUser.set(r.user_id, (askByUser.get(r.user_id) ?? 0) + 1);
+        const t = Date.parse(r.used_at);
+        if (!Number.isNaN(t)) {
+          askLastByUser.set(r.user_id, Math.max(askLastByUser.get(r.user_id) ?? 0, t));
+        }
+      } else if (r.anon_id) {
+        guestSet.add(r.anon_id);
+      }
+    }
+    const dhikrByUser = new Map<string, number>();
+    for (const r of dhikr) dhikrByUser.set(r.user_id, (dhikrByUser.get(r.user_id) ?? 0) + (r.count ?? 0));
+    const hifzByUser = new Map<string, number>();
+    for (const c of hifz) hifzByUser.set(c.user_id, (hifzByUser.get(c.user_id) ?? 0) + 1);
+    const circleByUser = new Map<string, number>();
+    for (const m of memberRows) circleByUser.set(m.user_id, (circleByUser.get(m.user_id) ?? 0) + 1);
+    const streakByUser = new Map<string, number>();
+    for (const s of streakRows) streakByUser.set(s.user_id, s.overall_current ?? 0);
+    const modByUser = new Map<string, { strikes: number; suspended: boolean }>();
+    for (const m of modRows) modByUser.set(m.user_id, { strikes: m.strike_count ?? 0, suspended: !!m.suspended });
+
+    const userTable = users
+      .map((u) => {
+        const mod = modByUser.get(u.id);
+        const last = askLastByUser.get(u.id);
+        return {
+          id: u.id,
+          name: nameById.get(u.id) || null,
+          email: u.email,
+          joinedAt: u.created_at,
+          lastActiveAt: last ? new Date(last).toISOString() : null,
+          ask: askByUser.get(u.id) ?? 0,
+          hifz: hifzByUser.get(u.id) ?? 0,
+          dhikr: dhikrByUser.get(u.id) ?? 0,
+          circles: circleByUser.get(u.id) ?? 0,
+          streak: streakByUser.get(u.id) ?? 0,
+          strikes: mod?.strikes ?? 0,
+          suspended: mod?.suspended ?? false,
+        };
+      })
+      .sort((a, b) => Date.parse(b.joinedAt) - Date.parse(a.joinedAt));
+
     // Build the 30-day daily series (oldest → newest) for both charts.
     const signupSeries: { label: string; date: string; count: number }[] = [];
     const messageSeries: { label: string; date: string; count: number }[] = [];
@@ -328,11 +402,14 @@ export async function POST(req: NextRequest) {
         generatedAt: new Date(now).toISOString(),
         users: {
           total: users.length,
+          signedUp: users.length,
+          guests: guestSet.size,
           today: signupsToday,
           last7d: signups7d,
           last30d: signups30d,
           series: signupSeries,
         },
+        userTable,
         ask: {
           total: chat.length,
           today: msgToday,
@@ -380,6 +457,7 @@ export async function POST(req: NextRequest) {
           signups: recentSignups,
           messages: recentMessages,
         },
+        config: { banner },
       },
       { headers: CORS_HEADERS }
     );

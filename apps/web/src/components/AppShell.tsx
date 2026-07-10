@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
+import GlobalBanner from "./GlobalBanner";
 import AskHiqmahFloat from "@hidden-hiqmah/ui/components/AskHiqmah";
 import MiniPlayer from "@hidden-hiqmah/ui/components/MiniPlayer";
 import AdhanMiniPlayer from "@hidden-hiqmah/ui/components/AdhanMiniPlayer";
@@ -65,6 +66,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             sidebarCollapsed ? "lg:ml-[68px]" : "lg:ml-64"
           }`}
         >
+          <GlobalBanner />
           <div className="p-3 sm:p-5 md:p-6 lg:p-8">
             {children}
           </div>

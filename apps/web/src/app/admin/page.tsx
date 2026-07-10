@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, type ReactNode } from "react";
+import { useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PasswordInput from "@/components/PasswordInput";
 import {
@@ -12,15 +12,43 @@ import {
   Clock,
   Loader2,
   Lock,
+  Megaphone,
+  UserCog,
 } from "lucide-react";
 
 // ── Response shape (mirrors /api/admin/stats) ───────────────────────────────
 type Tokens = { input: number; output: number; cacheRead: number; cacheWrite: number };
 type SeriesPoint = { label: string; date: string; count: number };
 
+type UserRow = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  joinedAt: string;
+  lastActiveAt: string | null;
+  ask: number;
+  hifz: number;
+  dhikr: number;
+  circles: number;
+  streak: number;
+  strikes: number;
+  suspended: boolean;
+};
+type BannerConfig = { enabled: boolean; level: string; message: string };
+
 interface Stats {
   generatedAt: string;
-  users: { total: number; today: number; last7d: number; last30d: number; series: SeriesPoint[] };
+  users: {
+    total: number;
+    signedUp: number;
+    guests: number;
+    today: number;
+    last7d: number;
+    last30d: number;
+    series: SeriesPoint[];
+  };
+  userTable: UserRow[];
+  config: { banner: BannerConfig };
   ask: {
     total: number;
     today: number;
@@ -168,6 +196,20 @@ export default function AdminPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [banner, setBanner] = useState<BannerConfig>({ enabled: false, level: "info", message: "" });
+  const [bannerBusy, setBannerBusy] = useState(false);
+  const [bannerMsg, setBannerMsg] = useState("");
+  const [busyUser, setBusyUser] = useState<string | null>(null);
+  const bannerSeeded = useRef(false);
+
+  // Seed the banner form from the server ONCE, on first load — later refetches
+  // (Refresh, clear-suspension) must not clobber the admin's in-progress edits.
+  useEffect(() => {
+    if (!bannerSeeded.current && stats?.config?.banner) {
+      setBanner(stats.config.banner);
+      bannerSeeded.current = true;
+    }
+  }, [stats]);
 
   const fetchStats = useCallback(
     async (c: { email: string; password1: string; password2: string }) => {
@@ -206,6 +248,43 @@ export default function AdminPage() {
     e.preventDefault();
     if (loading) return;
     fetchStats({ email, password1, password2 });
+  };
+
+  // ── Admin write actions (clear suspension, set banner) ────────────────
+  const runAction = useCallback(
+    async (payload: Record<string, unknown>): Promise<{ ok: boolean; error?: string }> => {
+      if (!creds) return { ok: false, error: "Not authenticated" };
+      try {
+        const res = await fetch("/api/admin/actions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...creds, ...payload }),
+        });
+        if (!res.ok) {
+          const d = await res.json().catch(() => ({}));
+          return { ok: false, error: d.error || `Failed (${res.status})` };
+        }
+        return { ok: true };
+      } catch {
+        return { ok: false, error: "Network error" };
+      }
+    },
+    [creds]
+  );
+
+  const clearSuspension = async (userId: string) => {
+    setBusyUser(userId);
+    const r = await runAction({ action: "clearSuspension", userId });
+    setBusyUser(null);
+    if (r.ok && creds) fetchStats(creds);
+  };
+
+  const saveBanner = async () => {
+    setBannerBusy(true);
+    setBannerMsg("");
+    const r = await runAction({ action: "setBanner", ...banner });
+    setBannerBusy(false);
+    setBannerMsg(r.ok ? "Saved." : r.error || "Failed.");
   };
 
   // ── Login gate ────────────────────────────────────────────────────────
@@ -261,8 +340,9 @@ export default function AdminPage() {
   }
 
   // ── Dashboard ─────────────────────────────────────────────────────────
-  const { users, ask, cost, engagement, recent } = stats;
+  const { users, ask, cost, engagement, recent, userTable } = stats;
   const topMax = Math.max(1, ...ask.topUsers.map((u) => u.count));
+  const suspendedCount = userTable.filter((u) => u.suspended).length;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 pb-24">
@@ -288,12 +368,83 @@ export default function AdminPage() {
         {/* 1. Users */}
         <Section icon={<Users size={18} />} title="Users">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <StatTile label="Total accounts" value={fmt(users.total)} />
+            <StatTile label="Signed-up" value={fmt(users.signedUp)} />
+            <StatTile label="Guests" value={fmt(users.guests)} hint="anon devices (Ask)" />
             <StatTile label="New today" value={fmt(users.today)} />
-            <StatTile label="New · 7d" value={fmt(users.last7d)} />
             <StatTile label="New · 30d" value={fmt(users.last30d)} />
           </div>
           <BarChart series={users.series} caption={`${fmt(users.last30d)} signups · 30d`} />
+        </Section>
+
+        {/* 1b. All users table */}
+        <Section
+          icon={<UserCog size={18} />}
+          title={`All users · ${fmt(users.signedUp)} signed-up${
+            suspendedCount > 0 ? ` · ${fmt(suspendedCount)} suspended` : ""
+          }`}
+        >
+          <div className="card-bg rounded-2xl border sidebar-border overflow-x-auto">
+            <table className="w-full text-sm min-w-[760px]">
+              <thead>
+                <tr className="text-themed-muted text-[11px] uppercase tracking-wider border-b sidebar-border">
+                  <th className="text-left font-semibold px-3 py-2.5">User</th>
+                  <th className="text-left font-semibold px-3 py-2.5 whitespace-nowrap">Joined</th>
+                  <th className="text-right font-semibold px-3 py-2.5">Ask</th>
+                  <th className="text-right font-semibold px-3 py-2.5">Hifz</th>
+                  <th className="text-right font-semibold px-3 py-2.5">Dhikr</th>
+                  <th className="text-right font-semibold px-3 py-2.5">Circles</th>
+                  <th className="text-right font-semibold px-3 py-2.5">Streak</th>
+                  <th className="text-left font-semibold px-3 py-2.5">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {userTable.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="px-3 py-6 text-center text-themed-muted/70">
+                      No signed-up users yet.
+                    </td>
+                  </tr>
+                ) : (
+                  userTable.map((u) => (
+                    <tr key={u.id} className="border-b border-[var(--overlay-subtle)] last:border-0">
+                      <td className="px-3 py-2.5">
+                        <div className="text-themed truncate max-w-[200px]">
+                          {u.name || u.email || u.id.slice(0, 8) + "…"}
+                        </div>
+                        {u.name && u.email && (
+                          <div className="text-themed-muted/60 text-xs truncate max-w-[200px]">{u.email}</div>
+                        )}
+                      </td>
+                      <td className="px-3 py-2.5 text-themed-muted whitespace-nowrap">{fmtWhen(u.joinedAt)}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-themed">{fmt(u.ask)}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-themed">{fmt(u.hifz)}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-themed">{fmt(u.dhikr)}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-themed">{fmt(u.circles)}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-themed">{fmt(u.streak)}</td>
+                      <td className="px-3 py-2.5">
+                        {u.suspended ? (
+                          <button
+                            type="button"
+                            onClick={() => clearSuspension(u.id)}
+                            disabled={busyUser === u.id}
+                            className="inline-flex items-center gap-1 text-xs rounded-lg bg-red-500/15 text-red-300 border border-red-400/30 px-2 py-1 disabled:opacity-50 hover:bg-red-500/25 transition-colors"
+                          >
+                            {busyUser === u.id ? "…" : "Suspended · clear"}
+                          </button>
+                        ) : u.strikes > 0 ? (
+                          <span className="text-xs text-amber-400">
+                            {u.strikes} strike{u.strikes > 1 ? "s" : ""}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-themed-muted/40">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </Section>
 
         {/* 2. Ask Hiqmah */}
@@ -413,6 +564,53 @@ export default function AdminPage() {
                 </ul>
               )}
             </div>
+          </div>
+        </Section>
+
+        {/* 6. Maintenance / status banner */}
+        <Section icon={<Megaphone size={18} />} title="Maintenance / status banner">
+          <div className="card-bg rounded-2xl border sidebar-border p-4 space-y-3">
+            <label className="flex items-center gap-2.5 text-sm text-themed">
+              <input
+                type="checkbox"
+                checked={banner.enabled}
+                onChange={(e) => setBanner((b) => ({ ...b, enabled: e.target.checked }))}
+                className="w-4 h-4 accent-[var(--color-gold)]"
+              />
+              Show a banner to all users (web + app)
+            </label>
+            <select
+              value={banner.level}
+              onChange={(e) => setBanner((b) => ({ ...b, level: e.target.value }))}
+              className="bg-white/5 border sidebar-border rounded-xl px-3 py-2 text-sm text-themed focus:outline-none focus:border-[var(--color-gold)]/40"
+            >
+              <option value="info">Info (gold)</option>
+              <option value="warning">Warning (amber)</option>
+              <option value="maintenance">Maintenance (red)</option>
+            </select>
+            <textarea
+              value={banner.message}
+              onChange={(e) => setBanner((b) => ({ ...b, message: e.target.value }))}
+              rows={2}
+              maxLength={500}
+              placeholder="Message shown in the banner…"
+              className="w-full bg-white/5 border sidebar-border rounded-xl px-3 py-2 text-sm text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/40 resize-none"
+            />
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={saveBanner}
+                disabled={bannerBusy}
+                className="inline-flex items-center gap-2 bg-[var(--color-gold)] text-[var(--color-bg)] font-semibold rounded-xl px-4 py-2 text-sm disabled:opacity-50"
+              >
+                {bannerBusy ? <Loader2 size={15} className="animate-spin" /> : "Save banner"}
+              </button>
+              {bannerMsg && <span className="text-xs text-themed-muted">{bannerMsg}</span>}
+            </div>
+            <p className="text-xs text-themed-muted/70 leading-relaxed">
+              The app checks this on launch and when it returns to the foreground. Use it to announce
+              downtime or an issue without shipping an App Store update.
+            </p>
           </div>
         </Section>
       </div>
