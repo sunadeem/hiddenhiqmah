@@ -3,6 +3,9 @@
 # Design prototypes / mockups — kept locally, not committed
 *-preview.html
 
+# Local-only release runbook — kept out of the repo on purpose
+/DEPLOYMENT.md
+
 # dependencies (any depth — monorepo-friendly)
 node_modules/
 .pnp
