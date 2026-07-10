@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:mobile": "BUILD_TARGET=mobile next build",
+    "build:mobile:prod": "set -a && . ./.env.prod && set +a && BUILD_TARGET=mobile next build",
     "start": "next start",
     "lint": "eslint"
   },

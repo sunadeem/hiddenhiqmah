@@ -7,9 +7,9 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
  * before deploy keys are set).
  */
 export function tryGetSupabaseServer(): SupabaseClient | null {
-  const url =
-    process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    "https://fiyffkjeatxgmwgmdmkt.supabase.co";
+  // No hardcoded fallback — if env isn't wired, return null (callers handle it)
+  // rather than silently hitting a default project.
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !serviceKey) return null;
   return createClient(url, serviceKey, {

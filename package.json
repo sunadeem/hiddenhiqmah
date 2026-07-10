@@ -10,7 +10,8 @@
     "lint": "turbo run lint",
     "web:dev": "pnpm --filter @hidden-hiqmah/web dev",
     "web:build": "pnpm --filter @hidden-hiqmah/web build",
-    "mobile:build": "pnpm --filter @hidden-hiqmah/web build:mobile"
+    "mobile:build": "pnpm --filter @hidden-hiqmah/web build:mobile",
+    "mobile:build:prod": "pnpm --filter @hidden-hiqmah/web build:mobile:prod"
   },
   "devDependencies": {
     "turbo": "^2.5.0"
