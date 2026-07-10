@@ -25,7 +25,8 @@ create table if not exists public.circle_message_reports (
   circle_id  uuid not null references public.circles (id) on delete cascade,
   reporter   uuid not null references auth.users (id) on delete cascade,
   reason     text,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  unique (reporter, message_id)
 );
 create index if not exists circle_message_reports_created_idx
   on public.circle_message_reports (created_at desc);
@@ -42,7 +43,8 @@ begin
     raise exception 'not a member';
   end if;
   insert into public.circle_message_reports (message_id, circle_id, reporter, reason)
-  values (p_message, v_circle, auth.uid(), nullif(trim(coalesce(p_reason, '')), ''));
+  values (p_message, v_circle, auth.uid(), nullif(trim(coalesce(p_reason, '')), ''))
+  on conflict (reporter, message_id) do nothing;
 end $$;
 
 -- 3. Block a user (global across shared circles). The blocker reads its own list

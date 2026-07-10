@@ -312,6 +312,18 @@ export async function getMyBlockedUserIds(): Promise<Set<string>> {
   return new Set((data ?? []).map((r) => (r as { blocked: string }).blocked));
 }
 
+/** Blocked users with resolved display names, for the "Blocked accounts" list. */
+export async function getMyBlockedUsers(): Promise<{ id: string; name: string }[]> {
+  const { data } = await supabase
+    .from("circle_user_blocks")
+    .select("blocked, created_at")
+    .order("created_at", { ascending: false });
+  const ids = (data ?? []).map((r) => (r as { blocked: string }).blocked);
+  if (!ids.length) return [];
+  const names = await resolveNames(ids);
+  return ids.map((id) => ({ id, name: names.get(id)?.display_name ?? "Member" }));
+}
+
 export async function reportCircleMessage(messageId: string, reason?: string): Promise<void> {
   const { error } = await supabase.rpc("report_circle_message", {
     p_message: messageId,
@@ -352,14 +364,19 @@ export function subscribeCircleMessages(circleId: string, onChange: () => void):
 }
 
 export async function getCircleActivity(circleId: string, limit = 100): Promise<CircleActivity[]> {
-  const { data, error } = await supabase
-    .from("circle_activity")
-    .select("id, circle_id, actor_id, kind, meta, created_at")
-    .eq("circle_id", circleId)
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const [{ data, error }, blocked] = await Promise.all([
+    supabase
+      .from("circle_activity")
+      .select("id, circle_id, actor_id, kind, meta, created_at")
+      .eq("circle_id", circleId)
+      .order("created_at", { ascending: false })
+      .limit(limit),
+    getMyBlockedUserIds(),
+  ]);
   if (error) throw error;
-  const rows = (data ?? []) as Omit<CircleActivity, "actor_name">[];
+  const rows = ((data ?? []) as Omit<CircleActivity, "actor_name">[]).filter(
+    (r) => !r.actor_id || !blocked.has(r.actor_id)
+  );
   const names = await resolveNames(rows.map((r) => r.actor_id ?? "").filter(Boolean));
   return rows.map((r) => ({
     ...r,
@@ -397,13 +414,18 @@ export async function removeCircleMember(circleId: string, userId: string): Prom
 }
 
 export async function getMyNotifications(limit = 50): Promise<CircleNotification[]> {
-  const { data, error } = await supabase
-    .from("circle_notifications")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const [{ data, error }, blocked] = await Promise.all([
+    supabase
+      .from("circle_notifications")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(limit),
+    getMyBlockedUserIds(),
+  ]);
   if (error) throw error;
-  return (data ?? []) as CircleNotification[];
+  return ((data ?? []) as CircleNotification[]).filter(
+    (r) => !r.actor_id || !blocked.has(r.actor_id)
+  );
 }
 
 export async function getUnreadCount(): Promise<number> {

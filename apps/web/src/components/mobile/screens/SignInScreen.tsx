@@ -579,6 +579,13 @@ export default function SignInScreen() {
             >
               {busy ? "Sending..." : "Email me a code"}
             </button>
+            {/* This flow creates an account for first-time emails, so agreement
+                to the Terms/EULA must be captured here too (App Store 1.2). */}
+            <p className="text-[12px] text-themed-muted/80 text-center leading-snug">
+              By continuing, you agree to our{" "}
+              <a href="/terms" className="text-gold underline">Terms of Use</a> and{" "}
+              <a href="/privacy" className="text-gold underline">Privacy Policy</a>.
+            </p>
           </form>
         </>
       )}
