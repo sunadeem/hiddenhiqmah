@@ -285,13 +285,13 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3 mb-8">
-        <h2 className="text-xl font-semibold text-gold">Push notifications</h2>
+        <h2 className="text-xl font-semibold text-gold">Notifications</h2>
         <p className="text-themed-muted text-sm leading-relaxed">
-          Push notifications (for prayer time reminders and daily reminders)
-          are planned but not yet active. When they launch, they will be
-          delivered through Apple Push Notification service (APNs) on iOS and
-          Firebase Cloud Messaging (FCM) on Android. They are off by default.
-          You can disable them at any time:
+          Prayer-time and daily reminders are scheduled locally on your device.
+          They are computed on-device from your prayer settings and are not sent
+          from, or through, any server — nothing about them leaves your phone.
+          They stay off until you enable them, and you can turn them off at any
+          time:
         </p>
         <ul className="text-themed-muted text-sm leading-relaxed pl-6 list-disc space-y-1">
           <li>

@@ -6,22 +6,15 @@ import {
   HandHeart,
   Sunrise,
   Clock,
-  Mic,
   BookOpen,
   ScrollText,
   Sparkles,
-  Sun,
-  Moon,
   Flame,
-  Repeat,
   Sparkle,
-  MessageCircle,
 } from "lucide-react";
 import {
   getNotificationPrefs,
   setNotificationPrefs,
-  isRamadanActive,
-  isLaylatulQadrSeason,
   type NotificationPrefs,
 } from "@hidden-hiqmah/ui/lib/storage";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
@@ -31,6 +24,10 @@ import {
   SettingsExpandableRow,
 } from "./SettingsUI";
 
+// Only notifications the on-device scheduler (scheduleAllNotifications) actually
+// emits are exposed here — a toggle that does nothing is an App Store 2.3.1 risk
+// and confusing UX. Retired toggles (iqamah, morning/evening adhkar, dhikr,
+// ramadan, laylatul-qadr, AI-chat, continue-reading) can return once scheduled.
 export default function NotificationsScreen() {
   const [notif, setNotif] = useState<NotificationPrefs | null>(null);
   const [adhanExpanded, setAdhanExpanded] = useState(false);
@@ -112,13 +109,6 @@ export default function NotificationsScreen() {
           toggle={notif.prePrayer}
           onToggle={(v) => updateNotif({ prePrayer: v })}
         />
-        <SettingsRow
-          icon={Mic}
-          title="Iqamah call"
-          subtitle="After Adhan"
-          toggle={notif.iqamah}
-          onToggle={(v) => updateNotif({ iqamah: v })}
-        />
       </SettingsSection>
 
       <SettingsSection heading="Daily">
@@ -142,85 +132,21 @@ export default function NotificationsScreen() {
           onToggle={(v) => updateNotif({ todaysReminder: v })}
         />
         <SettingsRow
-          icon={Sun}
-          title="Morning adhkar"
-          subtitle="After Fajr"
-          toggle={notif.morningAdhkar}
-          onToggle={(v) => updateNotif({ morningAdhkar: v })}
-        />
-        <SettingsRow
-          icon={Moon}
-          title="Evening adhkar"
-          subtitle="After Asr"
-          toggle={notif.eveningAdhkar}
-          onToggle={(v) => updateNotif({ eveningAdhkar: v })}
-        />
-        <SettingsRow
           icon={Flame}
           title="Streak reminder"
           subtitle="If you miss a day"
           toggle={notif.streak}
           onToggle={(v) => updateNotif({ streak: v })}
         />
-        <SettingsRow
-          icon={Repeat}
-          title="Dhikr reminders"
-          subtitle={`Every ${notif.dhikrIntervalHours} hours`}
-          toggle={notif.dhikrReminders}
-          onToggle={(v) => updateNotif({ dhikrReminders: v })}
-        />
       </SettingsSection>
 
-      <SettingsSection heading="Weekly & Special">
+      <SettingsSection heading="Weekly">
         <SettingsRow
           icon={Sparkle}
           title="Jumu'ah reminder"
           subtitle="Friday morning"
           toggle={notif.jumuah}
           onToggle={(v) => updateNotif({ jumuah: v })}
-        />
-        <SettingsRow
-          icon={Moon}
-          title="Ramadan"
-          badge={isRamadanActive() ? "Active" : "Off-season"}
-          badgeTone={isRamadanActive() ? "gold" : "muted"}
-          subtitle={
-            isRamadanActive()
-              ? "Suhoor, iftar, Tarawih"
-              : "Auto-enables when Ramadan starts"
-          }
-          toggle={notif.ramadan}
-          onToggle={(v) => updateNotif({ ramadan: v })}
-        />
-        <SettingsRow
-          icon={Sparkle}
-          title="Laylatul Qadr"
-          badge={isLaylatulQadrSeason() ? "Active" : "Off-season"}
-          badgeTone={isLaylatulQadrSeason() ? "gold" : "muted"}
-          subtitle={
-            isLaylatulQadrSeason()
-              ? "Last 10 nights of Ramadan"
-              : "Auto-enables in the last 10 nights of Ramadan"
-          }
-          toggle={notif.laylatulQadr}
-          onToggle={(v) => updateNotif({ laylatulQadr: v })}
-        />
-      </SettingsSection>
-
-      <SettingsSection heading="App">
-        <SettingsRow
-          icon={MessageCircle}
-          title="AI Chat responses"
-          subtitle="When long answers complete"
-          toggle={notif.aiChatResponses}
-          onToggle={(v) => updateNotif({ aiChatResponses: v })}
-        />
-        <SettingsRow
-          icon={BookOpen}
-          title="Continue reading reminder"
-          subtitle="After 3+ days without reading"
-          toggle={notif.continueReading}
-          onToggle={(v) => updateNotif({ continueReading: v })}
         />
       </SettingsSection>
     </div>
