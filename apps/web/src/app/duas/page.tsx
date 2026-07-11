@@ -10,6 +10,7 @@ import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import { ArrowLeft, Sun, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import { getBookmarks, addBookmark, removeBookmark } from "@hidden-hiqmah/ui/lib/storage";
 
 type Dua = {
   /** Stable slug — bookmark ids and ?d= deep links depend on it; never renumber. */
@@ -727,12 +728,43 @@ function resolveDuaParam(raw: string | null): string | null {
   return raw;
 }
 
+/** One-time rewrite of legacy index-based dua bookmarks (id "dua-<N>") onto the
+ *  stable slug ids, so old saves register as saved again. Idempotent — after
+ *  the rewrite no legacy ids remain. The duas array order is unchanged since
+ *  the index era, so the index → slug mapping is exact. */
+function migrateLegacyDuaBookmarks() {
+  try {
+    for (const b of getBookmarks()) {
+      if (b.type !== "dua") continue;
+      const m = /^dua-(\d+)$/.exec(b.id);
+      if (!m) continue;
+      const target = duas[Number(m[1])];
+      removeBookmark("dua", b.id);
+      if (target) {
+        addBookmark({
+          type: "dua",
+          id: target.id,
+          title: b.title || target.title,
+          subtitle: b.subtitle,
+          href: `/duas?d=${target.id}`,
+        });
+      }
+    }
+  } catch {
+    /* non-browser / storage unavailable */
+  }
+}
+
 function DuasContent() {
   useScrollToSection();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const scrollToDua = resolveDuaParam(searchParams.get("d"));
+
+  useEffect(() => {
+    migrateLegacyDuaBookmarks();
+  }, []);
 
   // null = category landing grid; ?tab= deep links (and ?d= links, which need
   // their dua's card rendered to scroll to) skip the landing.

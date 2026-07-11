@@ -817,7 +817,7 @@ function DuaBeforeIntimacyView() {
             <p className="text-themed-muted text-sm leading-relaxed italic mb-1">
               &ldquo;In the name of Allah. O Allah, keep Shaytan away from us, and keep Shaytan away from what You provide us.&rdquo;
             </p>
-            <Ref text="Bukhari 67:100" />
+            <Ref text="Bukhari 80:83" />
           </div>
           <BookmarkButton type="hadith" id="marriage-dua-before-intimacy" title="Du'a Before Intimacy" subtitle="Marriage" href="/marriage?tab=married-life&sub=dua-before-intimacy" />
         </div>
@@ -828,7 +828,7 @@ function DuaBeforeIntimacyView() {
         <p className="text-themed-muted text-sm leading-relaxed">
           The Prophet &#xFDFA; said: if a child is decreed for them, Shaytan will never be able to harm that child. A simple sentence before intimacy can shape the spiritual fate of a life not yet conceived.
         </p>
-        <Ref text="Bukhari 67:100" />
+        <Ref text="Bukhari 80:83" />
       </ContentCard>
 
       <ContentCard delay={0.15}>
@@ -842,7 +842,7 @@ function DuaBeforeIntimacyView() {
       </ContentCard>
 
       <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 67:100", desc: "Du'a before intimacy — protection of the child from Shaytan" },
+        { ref: "Bukhari 80:83", desc: "Du'a before intimacy — protection of the child from Shaytan" },
       ]} />
     </div>
   );

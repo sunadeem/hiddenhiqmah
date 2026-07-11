@@ -756,10 +756,38 @@ async function migrateLegacyChecklist(adapter: DailyAdapter, today: string): Pro
     return false;
   }
   if (!raw) return false;
+
+  const dropLegacyKeys = () => {
+    try {
+      localStorage.removeItem(LEGACY_CHECKLIST_KEY);
+      localStorage.removeItem(LEGACY_STREAK_KEY);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  // Parse failures mean genuinely corrupt data — drop it. Adapter failures
+  // (offline signed-in user, transient 5xx) must NOT delete the legacy keys:
+  // return early and let the next visit retry the one-shot migration.
+  let legacy: Record<string, string[]>;
+  try {
+    legacy = JSON.parse(raw);
+  } catch {
+    dropLegacyKeys();
+    return false;
+  }
+
+  // The legacy writer keyed "today" in UTC (toISOString) while the adapter uses
+  // the device-local date — read the union of both buckets so evening (west of
+  // UTC) and pre-Fajr (east of UTC) ticks aren't dropped at the boundary.
+  const utcToday = new Date().toISOString().slice(0, 10);
+  const checkedToday = new Set([
+    ...(legacy[today] ?? []),
+    ...(utcToday !== today ? legacy[utcToday] ?? [] : []),
+  ]);
+
   let migrated = false;
   try {
-    const legacy: Record<string, string[]> = JSON.parse(raw);
-    const checkedToday = new Set(legacy[today] ?? []);
     await adapter.ensureSeeded();
     const { rollup } = await adapter.getDay(today);
     if (rollup.doneItems === 0 && checkedToday.size > 0) {
@@ -783,14 +811,10 @@ async function migrateLegacyChecklist(adapter: DailyAdapter, today: string): Pro
       }
     }
   } catch {
-    /* corrupt legacy data — just drop it below */
+    // Retryable adapter failure — keep the legacy data for the next visit.
+    return false;
   }
-  try {
-    localStorage.removeItem(LEGACY_CHECKLIST_KEY);
-    localStorage.removeItem(LEGACY_STREAK_KEY);
-  } catch {
-    /* ignore */
-  }
+  dropLegacyKeys();
   return migrated;
 }
 

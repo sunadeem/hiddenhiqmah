@@ -457,8 +457,9 @@ function NamesGrid({ search, initialNameKey }: { search: string; initialNameKey:
                     </div>
                   )}
 
-                  {/* Prev / Next */}
-                  {prevName && nextName && (
+                  {/* Prev / Next (hidden when a filter leaves a single match —
+                      both would self-reference the open name) */}
+                  {filteredNames.length > 1 && prevName && nextName && (
                     <div className="flex justify-between mt-4 pt-3 border-t sidebar-border">
                       <button
                         onClick={() => selectName(prevName.name)}

@@ -1600,7 +1600,10 @@ function SalahContent() {
   const pathname = usePathname();
 
   const [activeSection, setActiveSection] = useState<SectionKey>(() => {
-    const tab = searchParams.get("tab");
+    // 'purification' is an alias for the wudu tab (its visible label) so links
+    // written against the label keep working.
+    const raw = searchParams.get("tab");
+    const tab = raw === "purification" ? "wudu" : raw;
     return tab && sections.some((s) => s.key === tab) ? (tab as SectionKey) : "intro";
   });
   const [activePrayer, setActivePrayer] = useState(() => {

@@ -293,7 +293,7 @@ function SunnahTab() {
           arabic="مَنْ أَحَبَّ أَنْ يُبْسَطَ لَهُ فِي رِزْقِهِ وَيُنْسَأَ لَهُ فِي أَثَرِهِ فَلْيَصِلْ رَحِمَهُ"
           transliteration="Man ahabba an yubsata lahu fi rizqihi wa yunsa'a lahu fi atharihi falyasil rahimah"
           english="Whoever wishes that his provision be expanded and his lifespan extended — let him maintain his ties of kinship."
-          source="Bukhari 78:16"
+          source="Bukhari 78:17"
           delay={0.14}
         />
         <VerseCard
@@ -648,7 +648,7 @@ function ConceivingTab() {
       </div>
 
       <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 67:100", desc: "Du'a before intimacy (see Marriage → Married Life)" },
+        { ref: "Bukhari 80:83", desc: "Du'a before intimacy (see Marriage → Married Life)" },
         { ref: "Quran 25:74", desc: "Asking for spouses and offspring as comfort of the eyes" },
         { ref: "Quran 3:38", desc: "Zakariyya's du'a for pure offspring" },
         { ref: "Quran 14:40", desc: "Ibrahim's du'a for prayer in his offspring" },
@@ -1130,7 +1130,7 @@ function KinshipWhyTab() {
         <VerseCard
           arabic="وَٱلَّذِينَ يَصِلُونَ مَآ أَمَرَ ٱللَّهُ بِهِۦٓ أَن يُوصَلَ وَيَخْشَوْنَ رَبَّهُمْ وَيَخَافُونَ سُوٓءَ ٱلْحِسَابِ"
           transliteration="Walladhina yasiluna ma amara Allahu bihi an yusala wa yakhshawna Rabbahum wa yakhafuna su'a al-hisab"
-          english="And those who maintain [the ties] which Allah has ordered to be maintained, and fear their Lord, and are afraid of a terrible reckoning."
+          english="[And] those who maintain [the ties] which Allah has ordered to be maintained, and fear their Lord, and are afraid of a terrible reckoning"
           source="Quran 13:21"
           delay={0.11}
         />

@@ -667,7 +667,7 @@ function ProtectionContent() {
                   قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ
                 </p>
                 <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;Say, I seek refuge with the Lord of the daybreak&rdquo;
+                  Say, &ldquo;I seek refuge with the Lord of the daybreak&hellip;&rdquo;
                 </p>
                 <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
                   Quran 113:1
