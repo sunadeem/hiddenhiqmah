@@ -17,7 +17,7 @@ const SECTION_TITLES: Record<string, string> = {
   "/circles": "Circles",
   "/hifz": "Your Path",
   "/family": "Family",
-  "/household": "Family",
+  "/household": "Family Profiles",
   "/marriage": "Marriage",
   "/sects": "Sects",
   "/prophets": "Prophets",
@@ -43,6 +43,8 @@ const SECTION_TITLES: Record<string, string> = {
   "/ask": "Ask",
   "/more": "More",
   "/prayer-times": "Prayer Times",
+  "/qiblah": "Qiblah",
+  "/protection": "Protection & Ruqyah",
 };
 
 export function getSectionTitle(pathname: string): string {

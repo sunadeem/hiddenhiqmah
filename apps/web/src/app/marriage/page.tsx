@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
+import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import {
   BookOpen,
   Search,
@@ -27,20 +30,23 @@ import {
   HeartCrack,
   Ban,
   ArrowRightLeft,
+  Lock,
+  Droplets,
+  Moon,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
    TYPES
    ═══════════════════════════════════════════════════════════════════ */
 
-type Tab = "finding" | "getting-married" | "wedding" | "husband-rights" | "wife-rights" | "divorce";
+type Tab = "before" | "wedding" | "husband-rights" | "wife-rights" | "married-life" | "divorce";
 
 const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
-  { key: "finding", label: "Finding a Spouse", icon: <Search size={16} /> },
-  { key: "getting-married", label: "Getting Married", icon: <Heart size={16} /> },
+  { key: "before", label: "Before Marriage", icon: <Search size={16} /> },
   { key: "wedding", label: "The Wedding", icon: <Scroll size={16} /> },
   { key: "husband-rights", label: "Husband's Rights", icon: <ShieldCheck size={16} /> },
   { key: "wife-rights", label: "Wife's Rights", icon: <Scale size={16} /> },
+  { key: "married-life", label: "Married Life", icon: <Heart size={16} /> },
   { key: "divorce", label: "Divorce", icon: <AlertTriangle size={16} /> },
 ];
 
@@ -48,14 +54,10 @@ const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
    SUB-TAB DEFINITIONS
    ═══════════════════════════════════════════════════════════════════ */
 
-type FindingSub = "what-to-look-for" | "the-halal-way";
-const findingSubs: { key: FindingSub; label: string; icon: React.ReactNode }[] = [
+type BeforeSub = "what-to-look-for" | "the-halal-way" | "marry-timely" | "trust-in-allah";
+const beforeSubs: { key: BeforeSub; label: string; icon: React.ReactNode }[] = [
   { key: "what-to-look-for", label: "What to Look For", icon: <Eye size={14} /> },
   { key: "the-halal-way", label: "The Halal Way", icon: <ShieldHalf size={14} /> },
-];
-
-type GettingMarriedSub = "marry-timely" | "trust-in-allah";
-const gettingMarriedSubs: { key: GettingMarriedSub; label: string; icon: React.ReactNode }[] = [
   { key: "marry-timely", label: "Marry Timely", icon: <Clock size={14} /> },
   { key: "trust-in-allah", label: "Trust in Allah", icon: <Sparkles size={14} /> },
 ];
@@ -79,6 +81,16 @@ const wifeRightsSubs: { key: WifeRightsSub; label: string; icon: React.ReactNode
   { key: "specific-rights", label: "Specific Rights", icon: <Scale size={14} /> },
 ];
 
+type MarriedLifeSub = "intimacy" | "permitted" | "privacy" | "dua-before-intimacy" | "purity" | "menses-planning";
+const marriedLifeSubs: { key: MarriedLifeSub; label: string; icon: React.ReactNode }[] = [
+  { key: "intimacy", label: "Intimacy in Islam", icon: <Heart size={14} /> },
+  { key: "permitted", label: "Permitted & Not", icon: <Scale size={14} /> },
+  { key: "privacy", label: "Privacy of the Bedroom", icon: <Lock size={14} /> },
+  { key: "dua-before-intimacy", label: "Du'a Before Intimacy", icon: <HandHeart size={14} /> },
+  { key: "purity", label: "Purity Afterwards", icon: <Droplets size={14} /> },
+  { key: "menses-planning", label: "Menses & Family Planning", icon: <Moon size={14} /> },
+];
+
 type DivorceSub = "last-resort" | "three-talaqs" | "khul" | "after-divorce";
 const divorceSubs: { key: DivorceSub; label: string; icon: React.ReactNode }[] = [
   { key: "last-resort", label: "A Last Resort", icon: <AlertTriangle size={14} /> },
@@ -100,54 +112,8 @@ function Ref({ text }: { text: string }) {
   );
 }
 
-function SubTabLayout<T extends string>({
-  subs,
-  activeSub,
-  setActiveSub,
-  children,
-}: {
-  subs: { key: T; label: string; icon: React.ReactNode }[];
-  activeSub: T;
-  setActiveSub: (s: T) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col md:flex-row gap-4 items-start">
-      <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-52 w-full shrink-0">
-        {subs.map((sub) => (
-          <button
-            key={sub.key}
-            onClick={() => setActiveSub(sub.key)}
-            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
-              activeSub === sub.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {sub.icon}
-            {sub.label}
-          </button>
-        ))}
-      </div>
-      <div className="flex-1 min-w-0">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeSub}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-}
-
 /* ═══════════════════════════════════════════════════════════════════
-   TAB: Finding a Spouse
+   TAB: Before Marriage
    ═══════════════════════════════════════════════════════════════════ */
 
 function FindingWhatToLookFor() {
@@ -164,7 +130,7 @@ function FindingWhatToLookFor() {
             </p>
             <Ref text="Bukhari 67:28" />
           </div>
-          <BookmarkButton type="hadith" id="marriage-choose-religion" title="Choose the One with Religion" subtitle="Marriage" href="/marriage?tab=finding" />
+          <BookmarkButton type="hadith" id="marriage-choose-religion" title="Choose the One with Religion" subtitle="Marriage" href="/marriage?tab=before&sub=what-to-look-for" />
         </div>
       </ContentCard>
 
@@ -236,20 +202,6 @@ function FindingTheHalalWay() {
   );
 }
 
-function FindingTab() {
-  const [activeSub, setActiveSub] = useState<FindingSub>("what-to-look-for");
-  return (
-    <SubTabLayout subs={findingSubs} activeSub={activeSub} setActiveSub={setActiveSub}>
-      {activeSub === "what-to-look-for" && <FindingWhatToLookFor />}
-      {activeSub === "the-halal-way" && <FindingTheHalalWay />}
-    </SubTabLayout>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   TAB: Getting Married
-   ═══════════════════════════════════════════════════════════════════ */
-
 function MarryTimely() {
   return (
     <div className="space-y-4">
@@ -264,7 +216,7 @@ function MarryTimely() {
             </p>
             <Ref text="Bukhari 67:4" />
           </div>
-          <BookmarkButton type="hadith" id="marriage-marry-young" title="Marry if You Can" subtitle="Marriage" href="/marriage?tab=getting-married" />
+          <BookmarkButton type="hadith" id="marriage-marry-young" title="Marry if You Can" subtitle="Marriage" href="/marriage?tab=before&sub=marry-timely" />
         </div>
       </ContentCard>
 
@@ -308,7 +260,7 @@ function TrustInAllah() {
             </p>
             <Ref text="Tirmidhi 22:38" />
           </div>
-          <BookmarkButton type="hadith" id="marriage-allah-helps" title="Allah Helps Those Who Marry" subtitle="Marriage" href="/marriage?tab=getting-married" />
+          <BookmarkButton type="hadith" id="marriage-allah-helps" title="Allah Helps Those Who Marry" subtitle="Marriage" href="/marriage?tab=before&sub=trust-in-allah" />
         </div>
       </ContentCard>
 
@@ -356,16 +308,6 @@ function TrustInAllah() {
         </p>
       </ContentCard>
     </div>
-  );
-}
-
-function GettingMarriedTab() {
-  const [activeSub, setActiveSub] = useState<GettingMarriedSub>("marry-timely");
-  return (
-    <SubTabLayout subs={gettingMarriedSubs} activeSub={activeSub} setActiveSub={setActiveSub}>
-      {activeSub === "marry-timely" && <MarryTimely />}
-      {activeSub === "trust-in-allah" && <TrustInAllah />}
-    </SubTabLayout>
   );
 }
 
@@ -489,17 +431,6 @@ function DuaForNewlyweds() {
   );
 }
 
-function WeddingTab() {
-  const [activeSub, setActiveSub] = useState<WeddingSub>("the-nikah");
-  return (
-    <SubTabLayout subs={weddingSubs} activeSub={activeSub} setActiveSub={setActiveSub}>
-      {activeSub === "the-nikah" && <TheNikah />}
-      {activeSub === "the-walimah" && <TheWalimah />}
-      {activeSub === "dua-for-newlyweds" && <DuaForNewlyweds />}
-    </SubTabLayout>
-  );
-}
-
 /* ═══════════════════════════════════════════════════════════════════
    TAB: Husband's Rights
    ═══════════════════════════════════════════════════════════════════ */
@@ -564,17 +495,13 @@ function HusbandSpecificRights() {
       </ContentCard>
 
       <ContentCard delay={0.15}>
-        <h4 className="text-gold font-semibold text-sm mb-2">Not Refusing Intimacy</h4>
+        <h4 className="text-gold font-semibold text-sm mb-2">Intimacy Between Spouses</h4>
         <p className="text-themed-muted text-sm leading-relaxed">
-          The Prophet &#xFDFA; said:
+          Intimacy is a mutual right of both spouses — including the hadith on not refusing without a valid excuse. This topic now lives in the Married Life tab.
         </p>
-        <p className="text-themed font-medium text-sm mt-2 italic">
-          &quot;If a man calls his wife to his bed and she refuses, and he goes to sleep angry with her, the angels will curse her until morning.&quot;
-        </p>
-        <Ref text="Bukhari 67:127" />
-        <p className="text-themed-muted/70 text-xs mt-2 italic">
-          Scholars note that this applies when there is no valid excuse (illness, hardship, etc.).
-        </p>
+        <Link href="/marriage?tab=married-life&sub=intimacy" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+          Read in Married Life →
+        </Link>
       </ContentCard>
 
       <ContentCard delay={0.2}>
@@ -588,16 +515,6 @@ function HusbandSpecificRights() {
         <Ref text="Bukhari 2:29" />
       </ContentCard>
     </div>
-  );
-}
-
-function HusbandRightsTab() {
-  const [activeSub, setActiveSub] = useState<HusbandRightsSub>("status");
-  return (
-    <SubTabLayout subs={husbandRightsSubs} activeSub={activeSub} setActiveSub={setActiveSub}>
-      {activeSub === "status" && <HusbandStatus />}
-      {activeSub === "specific-rights" && <HusbandSpecificRights />}
-    </SubTabLayout>
   );
 }
 
@@ -704,17 +621,334 @@ function WifeSpecificRights() {
         </p>
         <Ref text="Bukhari 10:70" />
       </ContentCard>
+
+      <ContentCard delay={0.25}>
+        <h4 className="text-gold font-semibold text-sm mb-2">Intimacy Between Spouses</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Intimacy is the wife&apos;s right just as it is the husband&apos;s — a mutual right covered in the Married Life tab.
+        </p>
+        <Link href="/marriage?tab=married-life&sub=intimacy" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+          Read in Married Life →
+        </Link>
+      </ContentCard>
     </div>
   );
 }
 
-function WifeRightsTab() {
-  const [activeSub, setActiveSub] = useState<WifeRightsSub>("kind-treatment");
+/* ═══════════════════════════════════════════════════════════════════
+   TAB: Married Life
+   ═══════════════════════════════════════════════════════════════════ */
+
+function IntimacyView() {
   return (
-    <SubTabLayout subs={wifeRightsSubs} activeSub={activeSub} setActiveSub={setActiveSub}>
-      {activeSub === "kind-treatment" && <WifeKindTreatment />}
-      {activeSub === "specific-rights" && <WifeSpecificRights />}
-    </SubTabLayout>
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1">
+            <p className="font-arabic text-gold text-lg leading-loose mb-2">
+              وَفِي بُضْعِ أَحَدِكُمْ صَدَقَةٌ
+            </p>
+            <p className="text-themed font-medium text-sm mb-1 italic">
+              &quot;...and in the intimacy of one of you there is a charity.&quot; The companions asked: &quot;O Messenger of Allah, when one of us fulfils his desire, is there reward in that?&quot; He said: &quot;Tell me, if he were to devote it to something forbidden, would it not be a sin on his part? Similarly, if he devotes it to something lawful, he has a reward.&quot;
+            </p>
+            <Ref text="Muslim 12:66" />
+          </div>
+          <BookmarkButton type="hadith" id="marriage-intimacy-charity" title="Intimacy is a Charity" subtitle="Marriage" href="/marriage?tab=married-life&sub=intimacy" />
+        </div>
+      </ContentCard>
+
+      <ContentCard delay={0.1}>
+        <h4 className="text-gold font-semibold text-sm mb-2">A Right of Both Spouses</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Intimacy in marriage is not a favor one spouse grants the other — it is a mutual right, and one of the central purposes of nikah: guarding chastity and building the affection and mercy Allah describes between spouses (Quran 30:21). Far from being something shameful, Islam treats the lawful fulfillment of desire as an act of worship that Allah rewards.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.15}>
+        <h4 className="text-gold font-semibold text-sm mb-2">Not Refusing Without Excuse</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The Prophet &#xFDFA; said:
+        </p>
+        <p className="text-themed font-medium text-sm mt-2 italic">
+          &quot;If a man calls his wife to his bed and she refuses, and he goes to sleep angry with her, the angels will curse her until morning.&quot;
+        </p>
+        <Ref text="Bukhari 67:127" />
+        <p className="text-themed-muted/70 text-xs mt-2 italic">
+          Scholars note that this applies when there is no valid excuse (illness, hardship, etc.) — and that the husband is likewise obligated to fulfill his wife&apos;s need and must not neglect her.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.2}>
+        <h4 className="text-gold font-semibold text-sm mb-2">Kindness, Tenderness & Foreplay</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Scholars — classical and contemporary — emphasize that a husband should not treat intimacy as something rushed or one-sided. Gentle words, affection, and foreplay before intercourse are part of the kind treatment Allah commands (&quot;And live with them in kindness&quot; — Quran 4:19), and each spouse should care that the other is satisfied, not only themselves. The Prophet &#xFDFA; was affectionate and playful with his wives, and his Sunnah in marriage was warmth, not coldness.
+        </p>
+      </ContentCard>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Muslim 12:66", desc: "In the intimacy of one of you there is a charity" },
+        { ref: "Bukhari 67:127", desc: "Not refusing the spouse without a valid excuse" },
+        { ref: "Quran 30:21", desc: "Affection and mercy placed between spouses" },
+        { ref: "Quran 4:19", desc: "And live with them in kindness" },
+      ]} />
+    </div>
+  );
+}
+
+function PermittedView() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="font-arabic text-gold text-lg leading-loose mb-2">
+          هُنَّ لِبَاسٌ لَّكُمْ وَأَنتُمْ لِبَاسٌ لَّهُنَّ
+        </p>
+        <p className="text-themed font-medium text-sm mb-1 italic">
+          &quot;They are a garment for you just as you are a garment for them.&quot;
+        </p>
+        <Ref text="Quran 2:187" />
+        <p className="text-themed-muted text-sm mt-2 leading-relaxed">
+          Spouses cover, protect, warm, and beautify one another — the Quran&apos;s own image for the closeness of marriage. Within that closeness, the default is permissibility: everything between spouses is halal except the few things Allah and His Messenger &#xFDFA; excluded.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.1}>
+        <p className="font-arabic text-gold text-lg leading-loose mb-2">
+          نِسَآؤُكُمْ حَرْثٌ لَّكُمْ فَأْتُوا۟ حَرْثَكُمْ أَنَّىٰ شِئْتُمْ
+        </p>
+        <p className="text-themed font-medium text-sm mb-1 italic">
+          &quot;Your wives are a [place of] tillage for you, so come to your tillage as you please.&quot;
+        </p>
+        <Ref text="Quran 2:223" />
+        <p className="text-themed-muted text-sm mt-2 leading-relaxed">
+          Scholars explain &quot;as you please&quot; to mean any manner or position — so long as it is in the <span className="text-gold font-medium">place of tilth</span>, the place from which children come. The verse grants breadth of manner, not breadth of place.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.15}>
+        <h4 className="text-gold font-semibold text-sm mb-2">Not During Menstruation</h4>
+        <p className="font-arabic text-gold text-lg leading-loose mb-2">
+          فَٱعْتَزِلُوا۟ ٱلنِّسَآءَ فِى ٱلْمَحِيضِ ۖ وَلَا تَقْرَبُوهُنَّ حَتَّىٰ يَطْهُرْنَ
+        </p>
+        <p className="text-themed font-medium text-sm mb-1 italic">
+          &quot;...so stay away from women during menstruation and do not have intercourse with them until they become pure.&quot;
+        </p>
+        <Ref text="Quran 2:222" />
+        <p className="text-themed-muted text-sm mt-2 leading-relaxed">
+          Intercourse is prohibited during menses and postnatal bleeding. Everything else between the spouses remains permitted — see the <span className="text-gold">Menses &amp; Family Planning</span> section.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.2}>
+        <h4 className="text-gold font-semibold text-sm mb-2">Anal Intercourse is Forbidden</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The Prophet &#xFDFA; said:
+        </p>
+        <p className="text-themed font-medium text-sm mt-2 italic">
+          &quot;He who has intercourse with his wife through her anus is accursed.&quot;
+        </p>
+        <Ref text="Abu Dawud 12:117" />
+        <p className="text-themed-muted text-sm mt-2 leading-relaxed">
+          This prohibition is agreed upon by the scholars of the four madhhabs. It applies at all times — during menses and outside of it.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.25}>
+        <h4 className="text-gold font-semibold text-sm mb-2">No Harm, No Coercion</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Nothing harmful, degrading, or forced is permitted between spouses. Allah commands: &quot;And live with them in kindness&quot; (Quran 4:19) — and scholars state that this governs the bedroom as much as everything else in marriage. Marriage grants a right; it never grants a license to hurt, humiliate, or compel.
+        </p>
+      </ContentCard>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Quran 2:187", desc: "Spouses are garments for one another" },
+        { ref: "Quran 2:223", desc: "The tilth verse — breadth of manner, one place" },
+        { ref: "Quran 2:222", desc: "Prohibition of intercourse during menstruation" },
+        { ref: "Abu Dawud 12:117", desc: "Prohibition of anal intercourse" },
+        { ref: "Quran 4:19", desc: "And live with them in kindness" },
+      ]} />
+    </div>
+  );
+}
+
+function PrivacyView() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1">
+            <p className="font-arabic text-gold text-lg leading-loose mb-2">
+              إِنَّ مِنْ أَشَرِّ النَّاسِ عِنْدَ اللَّهِ مَنْزِلَةً يَوْمَ الْقِيَامَةِ الرَّجُلَ يُفْضِي إِلَى امْرَأَتِهِ وَتُفْضِي إِلَيْهِ ثُمَّ يَنْشُرُ سِرَّهَا
+            </p>
+            <p className="text-themed font-medium text-sm mb-1 italic">
+              &quot;Among the worst of people in station before Allah on the Day of Judgement is the man who is intimate with his wife and she with him, and he then spreads her secret.&quot;
+            </p>
+            <Ref text="Muslim 16:144" />
+          </div>
+          <BookmarkButton type="hadith" id="marriage-bedroom-secrets" title="Privacy of the Bedroom" subtitle="Marriage" href="/marriage?tab=married-life&sub=privacy" />
+        </div>
+      </ContentCard>
+
+      <ContentCard delay={0.1}>
+        <h4 className="text-gold font-semibold text-sm mb-2">A Trust, Not a Topic</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          What happens between spouses is an amanah (trust). Describing it to friends, joking about it in gatherings, or airing it in group chats and online is a betrayal of that trust — and the hadith places the one who does it among the worst of people before Allah. This applies equally to husbands and wives. Seeking necessary medical or scholarly advice about a genuine problem is not included in the prohibition.
+        </p>
+      </ContentCard>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Muslim 16:144", desc: "The one who spreads the spouse's secret is among the worst of people" },
+      ]} />
+    </div>
+  );
+}
+
+function DuaBeforeIntimacyView() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1">
+            <p className="font-arabic text-gold text-lg leading-loose mb-2">
+              بِسْمِ اللَّهِ اللَّهُمَّ جَنِّبْنَا الشَّيْطَانَ وَجَنِّبِ الشَّيْطَانَ مَا رَزَقْتَنَا
+            </p>
+            <p className="text-themed text-sm leading-relaxed mb-1">
+              Bismillah, Allahumma jannibna ash-Shaytana wa jannib ash-Shaytana ma razaqtana
+            </p>
+            <p className="text-themed-muted text-sm leading-relaxed italic mb-1">
+              &ldquo;In the name of Allah. O Allah, keep Shaytan away from us, and keep Shaytan away from what You provide us.&rdquo;
+            </p>
+            <Ref text="Bukhari 67:100" />
+          </div>
+          <BookmarkButton type="hadith" id="marriage-dua-before-intimacy" title="Du'a Before Intimacy" subtitle="Marriage" href="/marriage?tab=married-life&sub=dua-before-intimacy" />
+        </div>
+      </ContentCard>
+
+      <ContentCard delay={0.1}>
+        <h4 className="text-gold font-semibold text-sm mb-2">The promise</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The Prophet &#xFDFA; said: if a child is decreed for them, Shaytan will never be able to harm that child. A simple sentence before intimacy can shape the spiritual fate of a life not yet conceived.
+        </p>
+        <Ref text="Bukhari 67:100" />
+      </ContentCard>
+
+      <ContentCard delay={0.15}>
+        <h4 className="text-gold font-semibold text-sm mb-2">Trying for a Child?</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The prophets asked Allah for righteous offspring in words the Quran preserves — du&apos;as you can make your own.
+        </p>
+        <Link href="/family?tab=children&sub=conceiving" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+          Du&apos;as of the prophets for offspring →
+        </Link>
+      </ContentCard>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Bukhari 67:100", desc: "Du'a before intimacy — protection of the child from Shaytan" },
+      ]} />
+    </div>
+  );
+}
+
+function PurityView() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="font-arabic text-gold text-lg leading-loose mb-2">
+          إِذَا جَاوَزَ الْخِتَانُ الْخِتَانَ فَقَدْ وَجَبَ الْغُسْلُ
+        </p>
+        <p className="text-themed font-medium text-sm mb-1 italic">
+          Aishah narrated: &quot;When the circumcised meets the circumcised, then indeed ghusl is required. Myself and Allah&apos;s Messenger &#xFDFA; did that, so we performed ghusl.&quot;
+        </p>
+        <Ref text="Tirmidhi 1:108" />
+        <p className="text-themed-muted text-sm mt-2 leading-relaxed">
+          Ghusl (the full ritual bath) becomes obligatory after intercourse <span className="text-gold font-medium">regardless of whether emission occurs</span> — the mere meeting of the private parts obligates it. This was settled by Aishah&apos;s report of the Prophet&apos;s &#xFDFA; own practice.
+        </p>
+        <Ref text="Muslim 3:107" />
+      </ContentCard>
+
+      <ContentCard delay={0.1}>
+        <h4 className="text-gold font-semibold text-sm mb-2">Between Two Acts — Wudu</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The Prophet &#xFDFA; said:
+        </p>
+        <p className="text-themed font-medium text-sm mt-2 italic">
+          &quot;When anyone amongst you has sexual intercourse with his wife and then he intends to repeat it, he should perform ablution.&quot;
+        </p>
+        <Ref text="Muslim 3:29" />
+        <p className="text-themed-muted text-sm mt-2 leading-relaxed">
+          Wudu is likewise recommended before sleeping or eating while in a state of janabah — the ghusl itself can wait until before the next prayer.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.15}>
+        <h4 className="text-gold font-semibold text-sm mb-2">How to Perform Ghusl</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The full step-by-step ghusl guide — what makes it obligatory, its obligatory acts, and the Sunnah method — lives on the Salah page.
+        </p>
+        <Link href="/salah?tab=purification&sub=ghusl" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+          Ghusl guide on the Salah page →
+        </Link>
+      </ContentCard>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Tirmidhi 1:108", desc: "When the circumcised meets the circumcised, ghusl is required" },
+        { ref: "Muslim 3:107", desc: "Ghusl obligatory even without emission — Aishah's report" },
+        { ref: "Muslim 3:29", desc: "Wudu between two acts of intimacy" },
+      ]} />
+    </div>
+  );
+}
+
+function MensesPlanningView() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <h4 className="text-gold font-semibold text-sm mb-2">During Menses — Everything Except Intercourse</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          When the verse on menstruation (Quran 2:222) was revealed, the Jews of Madinah would not even eat with a menstruating woman or share the house with her. The Prophet &#xFDFA; corrected both extremes:
+        </p>
+        <p className="text-themed font-medium text-sm mt-2 italic">
+          &quot;Do everything except intercourse.&quot;
+        </p>
+        <Ref text="Muslim 3:16" />
+        <p className="text-themed-muted text-sm mt-2 leading-relaxed">
+          A menstruating wife is not impure as a person — affection, closeness, sharing the bed, and all intimacy short of intercourse remain permitted. Only intercourse itself is prohibited until the bleeding ends and she purifies.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.1}>
+        <h4 className="text-gold font-semibold text-sm mb-2">&apos;Azl (Withdrawal) Was Practiced</h4>
+        <p className="font-arabic text-gold text-lg leading-loose mb-2">
+          كُنَّا نَعْزِلُ وَالْقُرْآنُ يَنْزِلُ
+        </p>
+        <p className="text-themed font-medium text-sm mb-1 italic">
+          Jabir said: &quot;We used to practice coitus interruptus while the Qur&apos;an was being revealed.&quot;
+        </p>
+        <Ref text="Bukhari 67:142" />
+        <p className="text-themed-muted text-sm mt-2 leading-relaxed">
+          The companions practiced &apos;azl (withdrawal) during the Prophet&apos;s &#xFDFA; lifetime, revelation was still descending, and it was not forbidden. Scholars note that had it been sinful, the Quran or the Prophet &#xFDFA; would have prohibited it. He did describe it as less than ideal — reminding that no soul Allah has decreed will fail to come into existence — but he did not forbid it.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.15}>
+        <h4 className="text-gold font-semibold text-sm mb-2">Modern Contraception</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Contemporary scholars generally treat temporary, reversible contraception (condoms, the pill, and similar) by the same principles as &apos;azl: permissible with the mutual consent of both spouses, for a valid purpose such as spacing children or the mother&apos;s health, and provided the method causes no harm. Neither spouse should impose it on the other unilaterally.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.2}>
+        <h4 className="text-gold font-semibold text-sm mb-2">No Permanent Prevention Without Need</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Permanent sterilization (vasectomy, tubal ligation) without genuine necessity is impermissible according to the great majority of scholars — it cuts off progeny altogether, and children are among the purposes of marriage the Quran celebrates. Scholars allow it where a trustworthy medical need exists, such as real danger to the mother&apos;s life. For any specific situation, consult a knowledgeable scholar.
+        </p>
+      </ContentCard>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Quran 2:222", desc: "The verse on menstruation" },
+        { ref: "Muslim 3:16", desc: "Do everything except intercourse" },
+        { ref: "Bukhari 67:142", desc: "'Azl practiced while the Quran was being revealed" },
+      ]} />
+    </div>
   );
 }
 
@@ -884,24 +1118,67 @@ function DivorceAfter() {
   );
 }
 
-function DivorceTab() {
-  const [activeSub, setActiveSub] = useState<DivorceSub>("last-resort");
-  return (
-    <SubTabLayout subs={divorceSubs} activeSub={activeSub} setActiveSub={setActiveSub}>
-      {activeSub === "last-resort" && <DivorceLastResort />}
-      {activeSub === "three-talaqs" && <DivorceThreeTalaqs />}
-      {activeSub === "khul" && <DivorceKhul />}
-      {activeSub === "after-divorce" && <DivorceAfter />}
-    </SubTabLayout>
-  );
-}
-
 /* ═══════════════════════════════════════════════════════════════════
    MAIN PAGE
    ═══════════════════════════════════════════════════════════════════ */
 
-export default function MarriagePage() {
-  const [activeTab, setActiveTab] = useState<Tab>("finding");
+const subsByTab: Record<Tab, readonly { key: string }[]> = {
+  before: beforeSubs,
+  wedding: weddingSubs,
+  "husband-rights": husbandRightsSubs,
+  "wife-rights": wifeRightsSubs,
+  "married-life": marriedLifeSubs,
+  divorce: divorceSubs,
+};
+
+const defaultSubs: Record<Tab, string> = {
+  before: "what-to-look-for",
+  wedding: "the-nikah",
+  "husband-rights": "status",
+  "wife-rights": "kind-treatment",
+  "married-life": "intimacy",
+  divorce: "last-resort",
+};
+
+function MarriageContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Deep-link support: ?tab= and ?sub= are the source of truth (read on mount,
+  // written on every change), so in-page links and back/forward both work.
+  const tabParam = searchParams.get("tab");
+  const subParam = searchParams.get("sub");
+  const activeTab: Tab = tabs.some((t) => t.key === tabParam) ? (tabParam as Tab) : "before";
+
+  // Last-visited rail pill per tab, so switching tabs restores the selection.
+  const [subMemory, setSubMemory] = useState<Record<Tab, string>>(() => {
+    const memory = { ...defaultSubs };
+    if (subParam && subsByTab[activeTab].some((s) => s.key === subParam)) memory[activeTab] = subParam;
+    return memory;
+  });
+
+  const activeSubOf = (tab: Tab): string =>
+    activeTab === tab && subParam && subsByTab[tab].some((s) => s.key === subParam)
+      ? subParam
+      : subMemory[tab];
+
+  const syncUrl = (tab: Tab, sub: string) =>
+    router.replace(`${pathname}?tab=${tab}&sub=${sub}`, { scroll: false });
+
+  const changeTab = (tab: Tab) => syncUrl(tab, activeSubOf(tab));
+
+  const changeSub = (tab: Tab) => (sub: string) => {
+    setSubMemory((m) => ({ ...m, [tab]: sub }));
+    syncUrl(tab, sub);
+  };
+
+  const activeBefore = activeSubOf("before") as BeforeSub;
+  const activeWedding = activeSubOf("wedding") as WeddingSub;
+  const activeHusband = activeSubOf("husband-rights") as HusbandRightsSub;
+  const activeWife = activeSubOf("wife-rights") as WifeRightsSub;
+  const activeMarried = activeSubOf("married-life") as MarriedLifeSub;
+  const activeDivorce = activeSubOf("divorce") as DivorceSub;
 
   return (
     <div>
@@ -926,7 +1203,7 @@ export default function MarriagePage() {
       <TabBar
         tabs={tabs.map((t) => ({ key: t.key, label: t.label, icon: t.icon }))}
         activeTab={activeTab}
-        onTabChange={(key) => setActiveTab(key as Tab)}
+        onTabChange={(key) => changeTab(key as Tab)}
         mobileThreshold={4}
       />
 
@@ -939,15 +1216,72 @@ export default function MarriagePage() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25 }}
           >
-            {activeTab === "finding" && <FindingTab />}
-            {activeTab === "getting-married" && <GettingMarriedTab />}
-            {activeTab === "wedding" && <WeddingTab />}
-            {activeTab === "husband-rights" && <HusbandRightsTab />}
-            {activeTab === "wife-rights" && <WifeRightsTab />}
-            {activeTab === "divorce" && <DivorceTab />}
+            {activeTab === "before" && (
+              <SubTabLayout subs={beforeSubs} activeSub={activeBefore} setActiveSub={changeSub("before")}>
+                {activeBefore === "what-to-look-for" && <FindingWhatToLookFor />}
+                {activeBefore === "the-halal-way" && <FindingTheHalalWay />}
+                {activeBefore === "marry-timely" && <MarryTimely />}
+                {activeBefore === "trust-in-allah" && <TrustInAllah />}
+              </SubTabLayout>
+            )}
+            {activeTab === "wedding" && (
+              <SubTabLayout subs={weddingSubs} activeSub={activeWedding} setActiveSub={changeSub("wedding")}>
+                {activeWedding === "the-nikah" && <TheNikah />}
+                {activeWedding === "the-walimah" && <TheWalimah />}
+                {activeWedding === "dua-for-newlyweds" && <DuaForNewlyweds />}
+              </SubTabLayout>
+            )}
+            {activeTab === "husband-rights" && (
+              <SubTabLayout subs={husbandRightsSubs} activeSub={activeHusband} setActiveSub={changeSub("husband-rights")}>
+                {activeHusband === "status" && <HusbandStatus />}
+                {activeHusband === "specific-rights" && <HusbandSpecificRights />}
+              </SubTabLayout>
+            )}
+            {activeTab === "wife-rights" && (
+              <SubTabLayout subs={wifeRightsSubs} activeSub={activeWife} setActiveSub={changeSub("wife-rights")}>
+                {activeWife === "kind-treatment" && <WifeKindTreatment />}
+                {activeWife === "specific-rights" && <WifeSpecificRights />}
+              </SubTabLayout>
+            )}
+            {activeTab === "married-life" && (
+              <SubTabLayout subs={marriedLifeSubs} activeSub={activeMarried} setActiveSub={changeSub("married-life")}>
+                {activeMarried === "intimacy" && <IntimacyView />}
+                {activeMarried === "permitted" && <PermittedView />}
+                {activeMarried === "privacy" && <PrivacyView />}
+                {activeMarried === "dua-before-intimacy" && <DuaBeforeIntimacyView />}
+                {activeMarried === "purity" && <PurityView />}
+                {activeMarried === "menses-planning" && <MensesPlanningView />}
+              </SubTabLayout>
+            )}
+            {activeTab === "divorce" && (
+              <SubTabLayout subs={divorceSubs} activeSub={activeDivorce} setActiveSub={changeSub("divorce")}>
+                {activeDivorce === "last-resort" && <DivorceLastResort />}
+                {activeDivorce === "three-talaqs" && <DivorceThreeTalaqs />}
+                {activeDivorce === "khul" && <DivorceKhul />}
+                {activeDivorce === "after-divorce" && <DivorceAfter />}
+              </SubTabLayout>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <ContentCard className="mt-8">
+        <h4 className="text-gold font-semibold text-sm mb-2">Building a Family</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Children, parents, kinship ties, and the rulings around death and inheritance — the next chapter after marriage.
+        </p>
+        <Link href="/family" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+          Continue to the Family page →
+        </Link>
+      </ContentCard>
     </div>
+  );
+}
+
+export default function MarriagePage() {
+  return (
+    <Suspense>
+      <MarriageContent />
+    </Suspense>
   );
 }

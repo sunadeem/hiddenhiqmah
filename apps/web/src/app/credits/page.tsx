@@ -44,8 +44,8 @@ const sections: { heading: string; note?: string; sources: Source[] }[] = [
         detail:
           "Per-word audio segment timings that power the verse/word highlighting.",
         license:
-          "Based on the quran-align dataset (cpfair) — Creative Commons Attribution 4.0 (CC BY 4.0).",
-        href: "https://github.com/cpfair/quran-align",
+          "Sourced from the Quran.com (Quran Foundation) API — used with attribution.",
+        href: "https://quran.com",
       },
     ],
   },

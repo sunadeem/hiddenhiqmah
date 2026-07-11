@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
@@ -19,6 +21,7 @@ import {
   Users,
   Clock,
   Compass,
+  ArrowRight,
 } from "lucide-react";
 
 /* ───────────────────────── data ───────────────────────── */
@@ -583,10 +586,21 @@ function ArticleCard({ article }: { article: Article }) {
 
 function ArticlesOfFaithContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   useScrollToSection();
   const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
-  const [activeArticle, setActiveArticle] = useState("allah");
+  // Deep-link support: ?sub=<article id> (old ?section= accepted as a mount-time alias)
+  const subParam = searchParams.get("sub") ?? searchParams.get("section");
+  const [activeArticle, setActiveArticle] = useState(
+    subParam && articles.some((a) => a.id === subParam) ? subParam : "allah"
+  );
   const [search, setSearch] = useState("");
+
+  // Keep ?tab= / ?sub= in sync so the current view is shareable
+  const syncUrl = (tab: SectionKey, sub?: string) => {
+    router.replace(sub ? `${pathname}?tab=${tab}&sub=${sub}` : `${pathname}?tab=${tab}`, { scroll: false });
+  };
 
   const mattersMatches = (item: { point: string; detail: string; reference: string }) => {
     if (!search || search.length < 2) return true;
@@ -622,22 +636,16 @@ function ArticlesOfFaithContent() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search beliefs, articles, verses..." className="mb-6" />
 
-      {/* Section navigation */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {sections.map((section) => (
-          <button
-            key={section.key}
-            onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-              activeSection === section.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
+      {/* Section navigation (shared TabBar) */}
+      <TabBar
+        tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
+        activeTab={activeSection}
+        onTabChange={(k) => {
+          setActiveSection(k as SectionKey);
+          syncUrl(k as SectionKey);
+        }}
+        className="mb-6"
+      />
 
       <AnimatePresence mode="wait">
         {/* ─── What are the Articles? ─── */}
@@ -722,6 +730,7 @@ function ArticlesOfFaithContent() {
                     onClick={() => {
                       setActiveArticle(article.id);
                       setActiveSection("articles");
+                      syncUrl("articles", article.id);
                     }}
                     className="w-full text-left rounded-lg p-4 border sidebar-border hover:border-gold/30 transition-colors"
                     style={{ backgroundColor: "var(--color-bg)" }}
@@ -828,7 +837,10 @@ function ArticlesOfFaithContent() {
               {filteredArticles.map((article) => (
                 <button
                   key={article.id}
-                  onClick={() => setActiveArticle(article.id)}
+                  onClick={() => {
+                    setActiveArticle(article.id);
+                    syncUrl("articles", article.id);
+                  }}
                   className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                     activeArticle === article.id
                       ? "bg-gold/20 text-gold border border-gold/40"
@@ -859,6 +871,26 @@ function ArticlesOfFaithContent() {
                       transition={{ duration: 0.25 }}
                     >
                       <ArticleCard article={article} />
+
+                      {/* Go deeper — the stages of the Last Day have dedicated pages */}
+                      {article.id === "last-day" && (
+                        <div className="mt-4 space-y-3">
+                          {[
+                            { href: "/barzakh", label: "Go deeper: Barzakh — the grave in detail" },
+                            { href: "/day-of-judgement", label: "Go deeper: Day of Judgement — the signs & events in detail" },
+                            { href: "/jannah", label: "Go deeper: Jannah — Paradise in detail" },
+                          ].map((link) => (
+                            <Link key={link.href} href={link.href} className="block group">
+                              <ContentCard>
+                                <div className="flex items-center justify-between gap-3">
+                                  <span className="text-sm font-medium text-themed">{link.label}</span>
+                                  <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                                </div>
+                              </ContentCard>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Sources */}
                       {article.sources.length > 0 && (

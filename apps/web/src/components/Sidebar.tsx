@@ -5,110 +5,37 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Moon,
-  BookOpen,
-  ScrollText,
-  MessageCircleQuestion,
-  HandHeart,
-  Landmark,
-  Shield,
-  Star,
   X,
   Users,
-  Clock,
-  CalendarDays,
-  Bookmark,
-  BookMarked,
-  WandSparkles,
-  Crown,
   ChevronDown,
   Home,
-  HelpCircle,
-  Languages,
-  GitBranch,
-  Repeat,
+  MessageCircleQuestion,
   PanelLeftClose,
   PanelLeftOpen,
-  Infinity,
-  GraduationCap,
-  Trophy,
-  ListChecks,
-  HeartHandshake,
   LogIn,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { navSections as sharedNavSections } from "@/data/home-content";
 
 type NavItem = { href: string; label: string; labelAr: string; icon: typeof Users };
 type NavSection = { title: string; items: NavItem[] };
 
-const navSections: NavSection[] = [
-  {
-    title: "Foundations",
-    items: [
-      { href: "/tawhid", label: "Tawheed", labelAr: "التوحيد", icon: Shield },
-      { href: "/pillars", label: "Pillars", labelAr: "الأركان", icon: Landmark },
-      { href: "/articles-of-faith", label: "Articles of Faith", labelAr: "أركان الإيمان", icon: Star },
-    ],
-  },
-  {
-    title: "Scripture",
-    items: [
-      { href: "/quran", label: "Quran", labelAr: "القرآن", icon: BookOpen },
-      { href: "/hadith", label: "Hadith", labelAr: "الحديث", icon: ScrollText },
-      { href: "/miracles", label: "Miracles", labelAr: "المعجزات", icon: WandSparkles },
-    ],
-  },
-  {
-    title: "The Big Picture",
-    items: [
-      { href: "/story-of-creation", label: "Story of Creation", labelAr: "قصة الخلق", icon: Infinity},
-    ],
-  },
-  {
-    title: "The Prophets",
-    items: [
-      { href: "/prophets", label: "Prophets", labelAr: "الأنبياء", icon: Users },
-      { href: "/prophet-muhammad", label: "Prophet Muhammad", labelAr: "النبي محمد ﷺ", icon: Crown },
-    ],
-  },
-  {
-    title: "Life",
-    items: [
-      { href: "/muslim-daily", label: "Muslim Daily", labelAr: "يوميات المسلم", icon: ListChecks },
-      { href: "/duas", label: "Duas", labelAr: "الدعاء", icon: HandHeart },
-      { href: "/dhikr", label: "Dhikr", labelAr: "الذكر", icon: Repeat },
-      { href: "/family", label: "Family", labelAr: "الأسرة", icon: Users },
-      { href: "/marriage", label: "Marriage", labelAr: "الزواج", icon: HeartHandshake },
-    ],
-  },
-  {
-    title: "Practice",
-    items: [
-      { href: "/salah", label: "Salah", labelAr: "الصلاة", icon: Clock },
-      { href: "/ramadan", label: "Ramadan", labelAr: "رمضان", icon: Moon },
-      { href: "/kids", label: "Kids Learning", labelAr: "تعليم الأطفال", icon: GraduationCap },
-      { href: "/quiz", label: "Quizzes", labelAr: "اختبارات", icon: Trophy },
-    ],
-  },
-  {
-    title: "Explore",
-    items: [
-      { href: "/why-islam", label: "Why Islam?", labelAr: "لماذا الإسلام؟", icon: HelpCircle },
-      { href: "/learn-arabic", label: "Learn Arabic", labelAr: "تعلم العربية", icon: Languages },
-      { href: "/sects", label: "Islamic Sects", labelAr: "الفرق الإسلامية", icon: GitBranch },
-      { href: "/islamic-calendar", label: "Islamic Calendar", labelAr: "التقويم الهجري", icon: CalendarDays },
-      { href: "/resources", label: "Resources", labelAr: "المصادر", icon: BookMarked },
-    ],
-  },
-  {
-    title: "My Path in Islam",
-    items: [
-      // Circles / Hifz / Streaks / Family Profiles are mobile-only features —
-      // reachable in the app, intentionally not linked on the website.
-      { href: "/bookmarks", label: "Bookmarks", labelAr: "المحفوظات", icon: Bookmark },
-    ],
-  },
-];
+// Single-sourced from home-content.ts (the same list that drives the web home
+// grid and the mobile More menu) — mobileOnly items are app-only features and
+// stay off the website.
+const navSections: NavSection[] = sharedNavSections
+  .map((section) => ({
+    title: section.heading,
+    items: section.items
+      .filter((item) => !item.mobileOnly)
+      .map((item) => ({
+        href: item.href,
+        label: item.title,
+        labelAr: item.titleAr,
+        icon: item.icon,
+      })),
+  }))
+  .filter((section) => section.items.length > 0);
 
 interface SidebarProps {
   mobileOpen: boolean;

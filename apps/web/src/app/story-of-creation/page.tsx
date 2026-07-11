@@ -1,27 +1,16 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
-import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
-
-/* ───────────────────────── types ───────────────────────── */
-
-type Topic = {
-  id: string;
-  name: string;
-  content: {
-    intro: string;
-    points: { title: string; detail: string; note?: string }[];
-    verse?: { arabic: string; text: string; ref: string };
-    source?: string;
-  };
-};
 
 /* ───────────────────────── tabs ───────────────────────── */
 
@@ -1171,78 +1160,45 @@ const tabDataMap: Record<TabKey, { topics: Topic[]; sources: { ref: string; desc
   },
 };
 
-/* ───────────────────────── sub-components ───────────────────────── */
+/* ───────────────────────── go deeper ───────────────────────── */
 
-function TopicInfoCard({ topic }: { topic: Topic }) {
-  const hasVerse = topic.content.verse;
-  return (
-    <ContentCard>
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
-      </div>
-
-      <p className="text-themed-muted text-sm leading-relaxed mb-5">
-        {topic.content.intro}
-      </p>
-
-      {hasVerse && (
-        <div
-          className="rounded-lg p-4 mb-5"
-          style={{ backgroundColor: "var(--color-bg)" }}
-        >
-          <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
-            {topic.content.verse!.arabic}
-          </p>
-          <p className="text-themed text-sm italic">
-            &ldquo;{topic.content.verse!.text}&rdquo;
-          </p>
-          <p className="text-xs text-themed-muted mt-2">
-            <HadithRefText text={topic.content.verse!.ref} />
-          </p>
-        </div>
-      )}
-
-      <div className="space-y-4">
-        {topic.content.points.map((point) => (
-          <div
-            key={point.title}
-            className="rounded-lg p-4 border sidebar-border"
-            style={{ backgroundColor: "var(--color-bg)" }}
-          >
-            <h4 className="text-sm font-semibold text-themed mb-2">
-              {point.title}
-            </h4>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              {point.detail}
-            </p>
-            {point.note && (
-              <p className="text-xs text-gold/60 mt-2">
-                <HadithRefText text={point.note} />
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
-    </ContentCard>
-  );
-}
+/* The four afterlife stages have dedicated pages — link out at the bottom */
+const goDeeperLinks: Partial<Record<TabKey, { href: string; label: string }>> = {
+  "death-grave": { href: "/barzakh", label: "Go deeper: Barzakh — the grave in detail" },
+  "end-times": { href: "/day-of-judgement", label: "Go deeper: Day of Judgement — the signs of the Hour in detail" },
+  "day-of-judgement": { href: "/day-of-judgement", label: "Go deeper: Day of Judgement — the events of the Day in detail" },
+  "jannah-jahannam": { href: "/jannah", label: "Go deeper: Jannah — Paradise in detail" },
+};
 
 /* ───────────────────────── page ───────────────────────── */
 
 function StoryOfCreationContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   useScrollToSection();
   const [activeTab, setActiveTab] = useState<TabKey>(
     (searchParams.get("tab") as TabKey) || "before-creation"
   );
-  const [activeTopicMap, setActiveTopicMap] = useState<Record<string, string>>({});
+  // Deep-link support: ?sub=<topic id> (old ?section= accepted as a mount-time alias)
+  const [activeTopicMap, setActiveTopicMap] = useState<Record<string, string>>(() => {
+    const tab = (searchParams.get("tab") as TabKey) || "before-creation";
+    const sub = searchParams.get("sub") ?? searchParams.get("section");
+    return sub && tabDataMap[tab]?.topics.some((t) => t.id === sub) ? { [tab]: sub } : {};
+  });
 
   const currentData = tabDataMap[activeTab];
   const activeTopic =
     activeTopicMap[activeTab] || currentData.topics[0]?.id || "";
 
+  // Keep ?tab= / ?sub= in sync so the current view is shareable
+  const syncUrl = (tab: TabKey, sub?: string) => {
+    router.replace(sub ? `${pathname}?tab=${tab}&sub=${sub}` : `${pathname}?tab=${tab}`, { scroll: false });
+  };
+
   const setActiveTopic = (id: string) => {
     setActiveTopicMap((prev) => ({ ...prev, [activeTab]: id }));
+    syncUrl(activeTab, id);
   };
 
   // Get tab index for progress indicator
@@ -1263,7 +1219,10 @@ function StoryOfCreationContent() {
           label: `${i + 1}. ${tab.label}`,
         }))}
         activeTab={activeTab}
-        onTabChange={(k) => setActiveTab(k as typeof activeTab)}
+        onTabChange={(k) => {
+          setActiveTab(k as TabKey);
+          syncUrl(k as TabKey);
+        }}
         className="mb-2"
       />
 
@@ -1337,6 +1296,20 @@ function StoryOfCreationContent() {
 
           {/* Sources */}
           <SourcesCard sources={currentData.sources} className="mt-8" />
+
+          {/* Go deeper — dedicated page for this stage */}
+          {goDeeperLinks[activeTab] && (
+            <Link href={goDeeperLinks[activeTab]!.href} className="block mt-4 group">
+              <ContentCard>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-medium text-themed">
+                    {goDeeperLinks[activeTab]!.label}
+                  </span>
+                  <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </ContentCard>
+            </Link>
+          )}
 
         </motion.div>
       </AnimatePresence>

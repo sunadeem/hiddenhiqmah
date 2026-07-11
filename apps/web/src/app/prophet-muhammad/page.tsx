@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, Suspense, Fragment } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
+import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
+import Accordion from "@hidden-hiqmah/ui/components/Accordion";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { BookOpen } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
@@ -17,13 +19,25 @@ import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 const sections = [
   { id: "timeline", label: "Timeline" },
   { id: "character", label: "Character & Virtues" },
-  { id: "names", label: "Names & Titles" },
-  { id: "appearance", label: "Physical Description" },
+  { id: "his-person", label: "His Person" },
   { id: "family", label: "Family & Companions" },
   { id: "prophecies", label: "Prophecies" },
-  { id: "worship", label: "His Worship" },
-  { id: "daily-sunnah", label: "Daily Sunnah" },
+  { id: "worship-sunnah", label: "Worship & Sunnah" },
 ];
+
+/* Old ?tab= keys from the pre-merge 8-tab layout — resolved on mount so
+   saved links and search-index deep links keep working. */
+const legacyTabAliases: Record<string, { tab: string; sub?: string }> = {
+  names: { tab: "his-person", sub: "names" },
+  appearance: { tab: "his-person", sub: "face" },
+  worship: { tab: "worship-sunnah" },
+  "daily-sunnah": { tab: "worship-sunnah", sub: "waking-up" },
+};
+
+/* Stable slug ids — shared by rail selection, ?sub= deep links, and the
+   section-{id} scroll anchors. */
+const slugId = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 /* ───────────────────────── names & titles data ───────────────────────── */
 
@@ -372,6 +386,15 @@ const timeline: TimelineEvent[] = [
   },
 ];
 
+/* Era grouping for the timeline rail. Events are chronological; the slice
+   boundaries are the first revelation (610 CE) and the Hijrah (622 CE). */
+const timelineEvents = timeline.map((e) => ({ ...e, id: slugId(e.title) }));
+const timelineEras = [
+  { id: "before-prophethood", label: "Before Prophethood", events: timelineEvents.slice(0, 6) },
+  { id: "makkah", label: "Makkah", events: timelineEvents.slice(6, 12) },
+  { id: "madinah", label: "Madinah", events: timelineEvents.slice(12) },
+];
+
 /* ───────────────────────── character & virtues ───────────────────────── */
 
 type Virtue = {
@@ -655,15 +678,21 @@ type FamilyMember = {
   name: string;
   nameAr: string;
   relation: string;
+  /** Short badge next to the name — marriage ordinal for the wives ("1st"…), or an honorific. */
+  chip?: string;
   detail: string;
   reference?: string;
 };
 
+/* Listed in marriage-chronological order (Khadijah → Maymunah); the chip is
+   the ordinal in that order. Mariyah is appended last with an honorific chip
+   instead — see the note on her status in her entry. */
 const wives: FamilyMember[] = [
   {
     name: "Khadijah bint Khuwaylid",
     nameAr: "خديجة بنت خويلد",
     relation: "First wife — married ~15 years before prophethood",
+    chip: "1st",
     detail:
       "A noble, wealthy businesswoman of the Quraysh who was impressed by his honesty and character when he led her trading caravan to Syria. She proposed marriage through her friend Nafisah, and he married her when he was 25 and she was 40. She was the first person to accept Islam and his greatest supporter during the most difficult years — spending her entire wealth in the cause of Allah. She bore him all his children except Ibrahim. Jibreel himself brought her greetings of peace from Allah, and the Prophet ﷺ said: 'The best of its women is Maryam bint Imran, and the best of its women is Khadijah bint Khuwaylid.' He loved her so deeply that years after her passing, Aisha said: 'I was never jealous of any wife of the Prophet ﷺ as much as I was of Khadijah, even though I never saw her — because of how often he would mention her.'",
     reference: "Bukhari 60:103; Bukhari 63:41; Bukhari 63:45",
@@ -672,6 +701,7 @@ const wives: FamilyMember[] = [
     name: "Sawdah bint Zam'ah",
     nameAr: "سودة بنت زمعة",
     relation: "Second wife — married after Khadijah's passing",
+    chip: "2nd",
     detail:
       "An early convert to Islam who migrated to Abyssinia with her first husband Sakran ibn Amr. After he passed away upon their return, the Prophet ﷺ married her shortly after Khadijah's death. She was the first woman he married after Khadijah. She cared for the household and raised the Prophet's ﷺ daughters. She was known for her tall stature, kind nature, and sense of humor that would make the Prophet ﷺ smile and laugh.",
     reference: "Bukhari 67:145; Seerah of Ibn Hisham",
@@ -680,6 +710,7 @@ const wives: FamilyMember[] = [
     name: "Aisha bint Abi Bakr",
     nameAr: "عائشة بنت أبي بكر",
     relation: "Daughter of Abu Bakr as-Siddiq",
+    chip: "3rd",
     detail:
       "The daughter of Abu Bakr, the Prophet's ﷺ closest companion. She was the most knowledgeable of the wives in fiqh, hadith, medicine, poetry, and Arab genealogy. She narrated over 2,200 hadiths — more than any other wife. When asked who was the most beloved person to him, the Prophet ﷺ replied: 'Aisha.' Senior companions like Abu Hurayrah, Ibn Abbas, and Abu Musa would consult her on matters of jurisprudence. She corrected the mistakes of other narrators and was recognized as one of the greatest scholars of her generation. The Prophet ﷺ passed away with his head resting against her, and was buried in her room.",
     reference: "Bukhari 62:14; Bukhari 64:466",
@@ -688,6 +719,7 @@ const wives: FamilyMember[] = [
     name: "Hafsah bint Umar",
     nameAr: "حفصة بنت عمر",
     relation: "Daughter of Umar ibn al-Khattab",
+    chip: "4th",
     detail:
       "The daughter of the second caliph, Umar ibn al-Khattab. She was previously married to Khunays ibn Hudhafah, who was martyred after the Battle of Badr. After his death, Umar offered her in marriage to Abu Bakr and Uthman, but both declined — knowing that the Prophet ﷺ had expressed interest. She was literate, knowledgeable, and devoted to worship. After the Quran was compiled into a single manuscript during Abu Bakr's caliphate, it was entrusted to her for safekeeping. It remained with her until Uthman used it as the basis for the standardized copies distributed throughout the Muslim lands.",
     reference: "Bukhari 66:8; Bukhari 66:9",
@@ -696,6 +728,7 @@ const wives: FamilyMember[] = [
     name: "Zaynab bint Khuzaymah",
     nameAr: "زينب بنت خزيمة",
     relation: "Mother of the Poor (Umm al-Masakin)",
+    chip: "5th",
     detail:
       "She was known even before Islam as 'Umm al-Masakin' (Mother of the Poor) for her extraordinary generosity to the needy. Her previous husband Abdullah ibn Jahsh was martyred at the Battle of Uhud. The Prophet ﷺ married her to honor her sacrifice and care for her. She passed away only about two to three months after the marriage — the shortest marriage of any of the Prophet's ﷺ wives. She and Khadijah are the only two wives who passed away during the Prophet's ﷺ lifetime.",
     reference: "Tabaqat Ibn Sa'd 8:115",
@@ -704,6 +737,7 @@ const wives: FamilyMember[] = [
     name: "Umm Salamah (Hind bint Abi Umayyah)",
     nameAr: "أم سلمة",
     relation: "Wife of wisdom and counsel",
+    chip: "6th",
     detail:
       "She was previously married to Abu Salamah (Abdullah ibn Abdul Asad), one of the earliest converts to Islam. When he died from wounds sustained at Uhud, she was devastated and said the dua the Prophet ﷺ had taught her: 'To Allah we belong and to Him we return. O Allah, reward me in my calamity and replace it with something better.' Allah replaced her loss with the Prophet ﷺ himself. She was known for her wisdom and sound judgment. At Hudaybiyyah, when the companions hesitated to shave their heads and sacrifice their animals after the treaty, the Prophet ﷺ consulted her. She advised him to go out and do it himself without speaking to anyone — once the companions saw him act, they all followed. She narrated nearly 400 hadiths and was the last of the Prophet's ﷺ wives to pass away.",
     reference: "Muslim 11:4; Bukhari 54:19",
@@ -712,6 +746,7 @@ const wives: FamilyMember[] = [
     name: "Zaynab bint Jahsh",
     nameAr: "زينب بنت جحش",
     relation: "Cousin of the Prophet ﷺ",
+    chip: "7th",
     detail:
       "She was the Prophet's ﷺ cousin — her mother Umaymah was his paternal aunt. She was previously married to Zayd ibn Harithah, the Prophet's ﷺ adopted son. After their marriage ended, Allah commanded the Prophet ﷺ to marry her in the Quran (33:37) to abolish the pre-Islamic taboo that treated the divorced wives of adopted sons as permanently forbidden. She took great pride that her marriage was ordained by Allah from above the seven heavens. She was known for her exceptional generosity and handiwork — she would tan leather and sew, donating all her earnings to the poor. Aisha said: 'I never saw a woman better in her religion, more God-fearing, more truthful, more generous, and more devoted to charity than Zaynab.' She was the first of the Prophet's ﷺ wives to pass away after him.",
     reference: "Quran 33:37; Bukhari 24:24; Muslim 44:146",
@@ -720,6 +755,7 @@ const wives: FamilyMember[] = [
     name: "Juwayriyah bint al-Harith",
     nameAr: "جويرية بنت الحارث",
     relation: "Daughter of the chief of Banu Mustaliq",
+    chip: "8th",
     detail:
       "She was the daughter of al-Harith ibn Abi Dirar, the chief of the Banu Mustaliq tribe. After the Muslims' encounter with her tribe, she came to the Prophet ﷺ seeking a deal for her freedom. He offered to pay her ransom and marry her, which she accepted. When the companions learned that the Banu Mustaliq were now relatives of the Prophet ﷺ by marriage, they freed all the captives from the tribe — about 100 families. Aisha said: 'I know of no woman who was a greater blessing to her people than Juwayriyah.' She was deeply devoted to worship and dhikr — the Prophet ﷺ once left her in the morning while she was making dhikr and returned hours later to find her still in the same spot.",
     reference: "Abu Dawud 31:6; Muslim 48:106",
@@ -728,6 +764,7 @@ const wives: FamilyMember[] = [
     name: "Umm Habibah (Ramlah bint Abi Sufyan)",
     nameAr: "أم حبيبة",
     relation: "Daughter of Abu Sufyan",
+    chip: "9th",
     detail:
       "The daughter of Abu Sufyan, the leader of the Quraysh and one of the Prophet's ﷺ strongest opponents. She embraced Islam early and migrated to Abyssinia with her husband Ubaydullah ibn Jahsh. There, her husband apostatized and converted to Christianity, eventually dying in that state — yet she remained firm in her Islam despite being alone and far from home. The Negus (An-Najashi) of Abyssinia conducted her marriage to the Prophet ﷺ in absentia and paid her mahr on his behalf. When her father Abu Sufyan visited Medina before his own conversion and tried to sit on the Prophet's ﷺ bedding in her room, she pulled it away, saying she would not let an impure polytheist sit on the Messenger of Allah's ﷺ bedding — choosing her faith over her own father.",
     reference: "Nasai 26:155; Seerah of Ibn Hisham",
@@ -736,6 +773,7 @@ const wives: FamilyMember[] = [
     name: "Safiyyah bint Huyayy",
     nameAr: "صفية بنت حيي",
     relation: "Noble lineage of prophets",
+    chip: "10th",
     detail:
       "She was the daughter of Huyayy ibn Akhtab, the chief of Banu Nadir, and was descended from the lineage of the Prophet Harun (Aaron, peace be upon him). After the Battle of Khaybar, the Prophet ﷺ freed her and proposed marriage, which she accepted, choosing Islam and the Prophet ﷺ over returning to her people. Some of the other wives would occasionally tease her about her Jewish origins. When she came to the Prophet ﷺ in tears about this, he comforted her and said: 'Tell them: My father is Harun, my uncle is Musa, and my husband is Muhammad — so what do you have over me?' She was known for her intelligence, dignity, and forbearance.",
     reference: "Tirmidhi 49:292; Tirmidhi 49:294",
@@ -744,9 +782,19 @@ const wives: FamilyMember[] = [
     name: "Maymunah bint al-Harith",
     nameAr: "ميمونة بنت الحارث",
     relation: "Last wife of the Prophet ﷺ",
+    chip: "11th",
     detail:
       "The last woman the Prophet ﷺ married. She was the maternal aunt of both Khalid ibn al-Walid and Abdullah ibn Abbas. She was known for her deep piety, constant worship, and generosity. Ibn Abbas — one of the greatest scholars among the companions — learned much about the Prophet's ﷺ private worship and night prayers from her accounts. She passed away in Sarif, near Mecca — the same place where her marriage to the Prophet ﷺ had been contracted.",
     reference: "Bukhari 28:17; Muslim 17:66",
+  },
+  {
+    name: "Mariyah al-Qibtiyyah",
+    nameAr: "مارية القبطية",
+    relation: "Mother of his son Ibrahim",
+    chip: "Umm Ibrahim",
+    detail:
+      "A Coptic woman sent to the Prophet ﷺ as a gift by al-Muqawqis, the ruler of Egypt, after the Prophet ﷺ wrote to the rulers of the surrounding lands inviting them to Islam. She accepted Islam, and in 8 AH she bore him his son Ibrahim — his only child after the children of Khadijah — for which she was honored as 'Umm Ibrahim' (Mother of Ibrahim) and held a special, esteemed status in his household. Scholars differ on her formal status: the majority historical position is that she remained an umm walad (a bondwoman who, by bearing her master's child, could never be sold and became free upon his death), while others held that the Prophet ﷺ freed and married her — which is why she is honored alongside the Mothers of the Believers here rather than counted with an ordinal number. When the Prophet ﷺ foretold the conquest of Egypt, he instructed the Muslims to treat its people well because of the ties of kinship and marriage with them — understood by the scholars to refer to Hajar, the mother of Isma'il, and to Mariyah. She passed away during the caliphate of Umar ibn al-Khattab, who led her funeral prayer.",
+    reference: "Muslim 44:323; Tabaqat Ibn Sa'd",
   },
 ];
 
@@ -1366,30 +1414,182 @@ const dailySunnah: SunnahPractice[] = [
   },
 ];
 
+/* ───────────────────────── merged-tab rails ───────────────────────── */
+
+/* His Person — Names & Titles alongside the physical-description groups. */
+type PersonSub = "names" | "face" | "body" | "manner";
+const personSubs: { key: PersonSub; label: string }[] = [
+  { key: "names", label: "Names & Titles" },
+  { key: "face", label: "Face & Features" },
+  { key: "body", label: "Body & Build" },
+  { key: "manner", label: "Manner & Presence" },
+];
+const isPersonSub = (s: string | null): s is PersonSub =>
+  s === "names" || s === "face" || s === "body" || s === "manner";
+
+const familySubs: { key: string; label: string }[] = [
+  { key: "wives", label: "Wives" },
+  { key: "children", label: "Children" },
+  { key: "companions", label: "Companions" },
+];
+
+/* Worship & Sunnah — his worship aspects first, then the daily sunnah
+   categories, as labeled groups in one rail. */
+const worshipRailGroups = [
+  {
+    id: "his-worship",
+    label: "His Worship",
+    items: worshipAspects.map((w) => ({ id: slugId(w.title), label: w.title })),
+  },
+  {
+    id: "daily-sunnah",
+    label: "Daily Sunnah",
+    items: dailySunnah.map((c) => ({ id: slugId(c.category), label: c.category })),
+  },
+];
+
+/* ───────────────────────── grouped rail ───────────────────────── */
+
+/* Grouped variant of the SubTabLayout rail — the same master-detail pills,
+   with small group labels between sections (stacked on desktop, inline in
+   the horizontal strip on mobile). Used by Timeline (eras) and
+   Worship & Sunnah (worship vs sunnah). */
+function GroupedRail({
+  groups,
+  activeId,
+  onSelect,
+  children,
+}: {
+  groups: { id: string; label: string; items: { id: string; content: React.ReactNode }[] }[];
+  activeId: string;
+  onSelect: (id: string) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col md:flex-row gap-4 items-start">
+      <div className="flex flex-row md:flex-col gap-2 shrink-0 items-center md:items-stretch overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
+        {groups
+          .filter((group) => group.items.length > 0)
+          .map((group) => (
+            <Fragment key={group.id}>
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-gold/60 whitespace-nowrap px-1 md:pt-2 md:first:pt-0">
+                {group.label}
+              </span>
+              {group.items.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => onSelect(item.id)}
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    activeId === item.id
+                      ? "bg-gold/20 text-gold border border-gold/40"
+                      : "text-themed-muted hover:text-themed border sidebar-border"
+                  }`}
+                >
+                  {item.content}
+                </button>
+              ))}
+            </Fragment>
+          ))}
+      </div>
+      <div className="flex-1 min-w-0">{children}</div>
+    </div>
+  );
+}
+
 /* ───────────────────────── component ───────────────────────── */
 
 function ProphetMuhammadContent() {
   useScrollToSection();
   const searchParams = useSearchParams();
-  const [activeSection, setActiveSection] = useState(searchParams.get("tab") || "timeline");
-  const [activeTimeline, setActiveTimeline] = useState(0);
-  const [activeVirtue, setActiveVirtue] = useState(0);
-  const [activeAppearance, setActiveAppearance] = useState<"face" | "body" | "manner">("face");
-  const [activeName, setActiveName] = useState(0);
-  const [familyTab, setFamilyTab] = useState("wives");
-  const [sunnahTab, setSunnahTab] = useState(dailySunnah[0].category);
-  const [activeProphecy, setActiveProphecy] = useState(0);
-  const [activeWorship, setActiveWorship] = useState(0);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Resolve ?tab= (mapping pre-merge keys via legacyTabAliases) and ?sub= once on mount.
+  const [initial] = useState(() => {
+    const raw = searchParams.get("tab") || "timeline";
+    const alias = legacyTabAliases[raw];
+    return { tab: alias?.tab ?? raw, sub: searchParams.get("sub") ?? alias?.sub ?? null };
+  });
+
+  const [activeSection, setActiveSection] = useState(initial.tab);
+  // Rail selections are stable slug ids (never list indices — search filtering
+  // shrinks the lists, and indices would silently remap).
+  const [activeTimeline, setActiveTimeline] = useState(
+    (initial.tab === "timeline" && initial.sub) || timelineEvents[0].id
+  );
+  const [activeVirtue, setActiveVirtue] = useState(
+    (initial.tab === "character" && initial.sub) || slugId(virtues[0].name)
+  );
+  const [personSub, setPersonSub] = useState<PersonSub>(
+    initial.tab === "his-person" && isPersonSub(initial.sub) ? initial.sub : "names"
+  );
+  const [familyTab, setFamilyTab] = useState(
+    (initial.tab === "family" && initial.sub) || "wives"
+  );
+  const [activeProphecy, setActiveProphecy] = useState(
+    (initial.tab === "prophecies" && initial.sub) || slugId(prophecies[0].title)
+  );
+  const [worshipSub, setWorshipSub] = useState(
+    (initial.tab === "worship-sunnah" && initial.sub) || worshipRailGroups[0].items[0].id
+  );
   const [search, setSearch] = useState("");
+
+  // Every tab/rail change writes ?tab=/?sub= so any selection is a shareable deep link.
+  const syncUrl = (tab: string, sub?: string) => {
+    router.replace(`${pathname}?tab=${tab}${sub ? `&sub=${sub}` : ""}`, { scroll: false });
+  };
+  const changeSection = (tab: string) => {
+    setActiveSection(tab);
+    syncUrl(tab);
+  };
+  const changeTimeline = (id: string) => {
+    setActiveTimeline(id);
+    syncUrl("timeline", id);
+  };
+  const changeVirtue = (id: string) => {
+    setActiveVirtue(id);
+    syncUrl("character", id);
+  };
+  const changePersonSub = (sub: PersonSub) => {
+    setPersonSub(sub);
+    syncUrl("his-person", sub);
+  };
+  const changeFamilyTab = (sub: string) => {
+    setFamilyTab(sub);
+    syncUrl("family", sub);
+  };
+  const changeProphecy = (id: string) => {
+    setActiveProphecy(id);
+    syncUrl("prophecies", id);
+  };
+  const changeWorshipSub = (id: string) => {
+    setWorshipSub(id);
+    syncUrl("worship-sunnah", id);
+  };
 
   const searchMatch = (...fields: (string | undefined | null)[]) => {
     if (!search || search.length < 2) return true;
     return textMatch(search, ...fields);
   };
 
-  const filteredTimeline = timeline.filter((e) => searchMatch(e.title, e.detail, e.year));
+  const filteredEras = timelineEras.map((era) => ({
+    ...era,
+    events: era.events.filter((e) => searchMatch(e.title, e.detail, e.year)),
+  }));
+  const filteredTimeline = filteredEras.flatMap((era) => era.events);
   const filteredVirtues = virtues.filter((v) => searchMatch(v.name, v.description, v.hadith));
   const filteredProphecies = prophecies.filter((p) => searchMatch(p.title, p.description, p.hadith));
+
+  // Selected rail item, falling back to the first visible one while a search
+  // filter hides the selection (state itself is left untouched).
+  const activeTimelineEvent =
+    filteredTimeline.find((e) => e.id === activeTimeline) ?? filteredTimeline[0];
+  const activeVirtueItem =
+    filteredVirtues.find((v) => slugId(v.name) === activeVirtue) ?? filteredVirtues[0];
+  const activeProphecyItem =
+    filteredProphecies.find((p) => slugId(p.title) === activeProphecy) ?? filteredProphecies[0];
+  const activeWorshipAspect = worshipAspects.find((w) => slugId(w.title) === worshipSub);
+  const activeSunnahCategory = dailySunnah.find((c) => slugId(c.category) === worshipSub);
 
   return (
     <div>
@@ -1418,7 +1618,7 @@ function ProphetMuhammadContent() {
       <TabBar
         tabs={sections.map((s) => ({ key: s.id, label: s.label }))}
         activeTab={activeSection}
-        onTabChange={setActiveSection}
+        onTabChange={changeSection}
         className="mb-6"
       />
 
@@ -1432,57 +1632,49 @@ function ProphetMuhammadContent() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              {/* Left side — vertical timeline pills */}
-              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
-                {filteredTimeline.map((event, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveTimeline(i)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
-                      activeTimeline === i
-                        ? "bg-gold/20 text-gold border border-gold/40"
-                        : "text-themed-muted hover:text-themed border sidebar-border"
-                    }`}
+            <GroupedRail
+              groups={filteredEras.map((era) => ({
+                id: era.id,
+                label: era.label,
+                items: era.events.map((event) => ({
+                  id: event.id,
+                  content: (
+                    <>
+                      <span className="font-bold">{event.year}</span>
+                      <span className="text-xs opacity-70"> — {event.title.split(" — ")[0]}</span>
+                    </>
+                  ),
+                })),
+              }))}
+              activeId={activeTimelineEvent?.id ?? ""}
+              onSelect={changeTimeline}
+            >
+              <AnimatePresence mode="wait">
+                {activeTimelineEvent && (
+                  <motion.div
+                    key={activeTimelineEvent.id}
+                    id={`section-${activeTimelineEvent.id}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25 }}
+                    className="space-y-4"
                   >
-                    <span className="font-bold">{event.year}</span>
-                    <span className="text-xs opacity-70"> — {event.title.split(" — ")[0]}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Right side — content */}
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
-                  {filteredTimeline.map(
-                    (event, i) =>
-                      activeTimeline === i && (
-                        <motion.div
-                          key={i}
-                          id={`section-${event.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.25 }}
-                          className="space-y-4"
-                        >
-                          <ContentCard>
-                            <h2 className="text-lg font-semibold text-themed mb-1">{event.title}</h2>
-                            <p className="text-xs text-gold mb-4">{event.year}{event.hijri ? ` / ${event.hijri}` : ""}</p>
-                            <p className="text-themed-muted text-sm leading-relaxed">{event.detail}</p>
-                            {event.reference && (
-                              <p className="text-xs text-gold/70 flex items-center gap-1 mt-4">
-                                <BookOpen size={12} />
-                                <HadithRefText text={event.reference} />
-                              </p>
-                            )}
-                          </ContentCard>
-                        </motion.div>
-                      )
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
+                    <ContentCard>
+                      <h2 className="text-lg font-semibold text-themed mb-1">{activeTimelineEvent.title}</h2>
+                      <p className="text-xs text-gold mb-4">{activeTimelineEvent.year}{activeTimelineEvent.hijri ? ` / ${activeTimelineEvent.hijri}` : ""}</p>
+                      <p className="text-themed-muted text-sm leading-relaxed">{activeTimelineEvent.detail}</p>
+                      {activeTimelineEvent.reference && (
+                        <p className="text-xs text-gold/70 flex items-center gap-1 mt-4">
+                          <BookOpen size={12} />
+                          <HadithRefText text={activeTimelineEvent.reference} />
+                        </p>
+                      )}
+                    </ContentCard>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </GroupedRail>
           </motion.div>
         )}
 
@@ -1506,12 +1698,12 @@ function ProphetMuhammadContent() {
             <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — virtue pills */}
               <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
-                {filteredVirtues.map((v, i) => (
+                {filteredVirtues.map((v) => (
                   <button
-                    key={i}
-                    onClick={() => setActiveVirtue(i)}
+                    key={slugId(v.name)}
+                    onClick={() => changeVirtue(slugId(v.name))}
                     className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
-                      activeVirtue === i
+                      activeVirtueItem === v
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
                     }`}
@@ -1525,10 +1717,10 @@ function ProphetMuhammadContent() {
               {/* Right side — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {filteredVirtues[activeVirtue] && (
+                  {activeVirtueItem && (
                   <motion.div
-                    key={activeVirtue}
-                    id={`section-${filteredVirtues[activeVirtue].name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}
+                    key={slugId(activeVirtueItem.name)}
+                    id={`section-${slugId(activeVirtueItem.name)}`}
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
@@ -1536,15 +1728,15 @@ function ProphetMuhammadContent() {
                   >
                     <ContentCard>
                       <div className="flex items-baseline gap-3 mb-3">
-                        <h3 className="font-semibold text-themed text-lg">{filteredVirtues[activeVirtue].name}</h3>
-                        <span className="font-arabic text-gold">{filteredVirtues[activeVirtue].nameAr}</span>
+                        <h3 className="font-semibold text-themed text-lg">{activeVirtueItem.name}</h3>
+                        <span className="font-arabic text-gold">{activeVirtueItem.nameAr}</span>
                       </div>
-                      <p className="text-themed-muted text-sm leading-relaxed mb-4">{filteredVirtues[activeVirtue].description}</p>
+                      <p className="text-themed-muted text-sm leading-relaxed mb-4">{activeVirtueItem.description}</p>
                       <div className="border-l-2 border-gold/30 pl-4">
-                        <p className="text-themed text-sm italic leading-relaxed">{filteredVirtues[activeVirtue].hadith}</p>
+                        <p className="text-themed text-sm italic leading-relaxed">{activeVirtueItem.hadith}</p>
                         <p className="text-xs text-gold/70 mt-2 flex items-center gap-1">
                           <BookOpen size={12} />
-                          <HadithRefText text={filteredVirtues[activeVirtue].reference} />
+                          <HadithRefText text={activeVirtueItem.reference} />
                         </p>
                       </div>
                     </ContentCard>
@@ -1556,122 +1748,52 @@ function ProphetMuhammadContent() {
           </motion.div>
         )}
 
-        {/* ─── NAMES & TITLES ─── */}
-        {activeSection === "names" && (
+        {/* ─── HIS PERSON (names & titles + physical description) ─── */}
+        {activeSection === "his-person" && (
           <motion.div
-            key="names"
+            key="his-person"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              {/* Left side — name pills */}
-              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
-                {prophetNames.map((n, i) => (
-                  <button
-                    key={n.name}
-                    onClick={() => setActiveName(i)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
-                      activeName === i
-                        ? "bg-gold/20 text-gold border border-gold/40"
-                        : "text-themed-muted hover:text-themed border sidebar-border"
-                    }`}
-                  >
-                    <span className="font-bold">{n.name}</span>
-                    <span className="text-xs opacity-70 font-arabic ml-1.5">{n.nameAr}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Right side — content */}
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeName}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    <ContentCard>
-                      <div className="flex items-baseline gap-3 mb-1">
-                        <h3 className="font-semibold text-themed text-lg">{prophetNames[activeName].name}</h3>
-                        <span className="font-arabic text-gold text-lg">{prophetNames[activeName].nameAr}</span>
+            <SubTabLayout subs={personSubs} activeSub={personSub} setActiveSub={changePersonSub}>
+              {personSub === "names" ? (
+                <Accordion
+                  defaultOpenId={slugId(prophetNames[0].name)}
+                  items={prophetNames.map((n) => ({
+                    id: slugId(n.name),
+                    title: n.name,
+                    subtitle: n.meaning,
+                    children: (
+                      <div id={`section-${slugId(n.name)}`}>
+                        <p className="font-arabic text-gold text-lg mb-2">{n.nameAr}</p>
+                        <p className="text-themed-muted text-sm leading-relaxed mb-3">{n.description}</p>
+                        <p className="text-xs text-gold/70 flex items-center gap-1">
+                          <BookOpen size={12} />
+                          <HadithRefText text={n.reference} />
+                        </p>
                       </div>
-                      <p className="text-gold text-sm mb-4">{prophetNames[activeName].meaning}</p>
-                      <p className="text-themed-muted text-sm leading-relaxed mb-4">{prophetNames[activeName].description}</p>
-                      <p className="text-xs text-gold/70 flex items-center gap-1">
-                        <BookOpen size={12} />
-                        <HadithRefText text={prophetNames[activeName].reference} />
-                      </p>
-                    </ContentCard>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* ─── PHYSICAL DESCRIPTION ─── */}
-        {activeSection === "appearance" && (
-          <motion.div
-            key="appearance"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-4"
-          >
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              {/* Left side — category pills */}
-              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible w-full md:w-auto pb-2 md:pb-0">
-                {([
-                  { id: "face" as const, label: "Face & Features" },
-                  { id: "body" as const, label: "Body & Build" },
-                  { id: "manner" as const, label: "Manner & Presence" },
-                ]).map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveAppearance(tab.id)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
-                      activeAppearance === tab.id
-                        ? "bg-gold/20 text-gold border border-gold/40"
-                        : "text-themed-muted hover:text-themed border sidebar-border"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Right side — traits */}
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeAppearance}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.25 }}
-                    className="space-y-4"
-                  >
-                    {physicalDescription
-                      .filter((item) => item.group === activeAppearance)
-                      .map((item, i) => (
-                        <ContentCard key={i} delay={Math.min(i * 0.05, 0.25)} id={`section-${item.trait.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
-                          <h3 className="font-semibold text-gold mb-2">{item.trait}</h3>
-                          <p className="text-themed-muted text-sm leading-relaxed mb-2">{item.description}</p>
-                          <p className="text-xs text-gold/70 flex items-center gap-1">
-                            <BookOpen size={12} />
-                            <HadithRefText text={item.reference} />
-                          </p>
-                        </ContentCard>
-                      ))}
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
+                    ),
+                  }))}
+                />
+              ) : (
+                <div className="space-y-4">
+                  {physicalDescription
+                    .filter((item) => item.group === personSub)
+                    .map((item, i) => (
+                      <ContentCard key={item.trait} delay={Math.min(i * 0.05, 0.25)} id={`section-${slugId(item.trait)}`}>
+                        <h3 className="font-semibold text-gold mb-2">{item.trait}</h3>
+                        <p className="text-themed-muted text-sm leading-relaxed mb-2">{item.description}</p>
+                        <p className="text-xs text-gold/70 flex items-center gap-1">
+                          <BookOpen size={12} />
+                          <HadithRefText text={item.reference} />
+                        </p>
+                      </ContentCard>
+                    ))}
+                </div>
+              )}
+            </SubTabLayout>
           </motion.div>
         )}
 
@@ -1684,135 +1806,98 @@ function ProphetMuhammadContent() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              {/* Left side — vertical pills */}
-              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible w-full md:w-auto pb-2 md:pb-0">
-                {[
-                  { id: "wives", label: "Wives" },
-                  { id: "children", label: "Children" },
-                  { id: "companions", label: "Companions" },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setFamilyTab(tab.id)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
-                      familyTab === tab.id
-                        ? "bg-gold/20 text-gold border border-gold/40"
-                        : "text-themed-muted hover:text-themed border sidebar-border"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Right side — content */}
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
-                  {/* Wives */}
-                  {familyTab === "wives" && (
-                    <motion.div
-                      key="wives"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.25 }}
-                      className="space-y-3"
-                    >
-                      <ContentCard>
-                        <p className="text-themed-muted text-sm">
-                          The Mothers of the Believers <span className="font-arabic text-gold">(أمهات المؤمنين)</span> — each marriage served a purpose: strengthening alliances, caring for widows, or fulfilling divine command.
+            <SubTabLayout subs={familySubs} activeSub={familyTab} setActiveSub={changeFamilyTab}>
+              {/* Wives */}
+              {familyTab === "wives" && (
+                <div className="space-y-3">
+                  <ContentCard>
+                    <p className="text-themed-muted text-sm">
+                      The Mothers of the Believers <span className="font-arabic text-gold">(أمهات المؤمنين)</span> — listed below in the order of his marriages. Each marriage served a purpose: strengthening alliances, caring for widows, or fulfilling divine command.
+                    </p>
+                    <div className="border-l-2 border-gold/30 pl-4 mt-4">
+                      <p className="font-arabic text-gold leading-loose">ٱلنَّبِىُّ أَوْلَىٰ بِٱلْمُؤْمِنِينَ مِنْ أَنفُسِهِمْ ۖ وَأَزْوَٰجُهُۥٓ أُمَّهَـٰتُهُمْ</p>
+                      <p className="text-themed-muted text-sm italic mt-1">&ldquo;The Prophet has a greater claim over the believers than their own selves, and his wives are their mothers.&rdquo;</p>
+                      <p className="text-xs text-gold/70 mt-1">Quran 33:6</p>
+                    </div>
+                  </ContentCard>
+                  {wives.map((w, i) => (
+                    <ContentCard key={w.name} delay={Math.min(i * 0.03, 0.2)} id={`section-${slugId(w.name)}`}>
+                      <div className="flex items-center flex-wrap gap-x-2.5 gap-y-1 mb-1">
+                        {w.chip && (
+                          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gold/15 text-gold border border-gold/30 shrink-0">
+                            {w.chip}
+                          </span>
+                        )}
+                        <h3 className="font-semibold text-themed">{w.name}</h3>
+                        <span className="font-arabic text-gold text-sm">{w.nameAr}</span>
+                      </div>
+                      <p className="text-xs text-gold/70 mb-2">{w.relation}</p>
+                      <p className="text-themed-muted text-sm leading-relaxed">{w.detail}</p>
+                      {w.reference && (
+                        <p className="text-xs text-gold/70 flex items-center gap-1 mt-3">
+                          <BookOpen size={12} />
+                          <HadithRefText text={w.reference} />
                         </p>
-                      </ContentCard>
-                      {wives.map((w, i) => (
-                        <ContentCard key={i} delay={Math.min(i * 0.03, 0.2)} id={`section-${w.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
-                          <div className="flex items-baseline gap-3 mb-1">
-                            <h3 className="font-semibold text-themed">{w.name}</h3>
-                            <span className="font-arabic text-gold text-sm">{w.nameAr}</span>
-                          </div>
-                          <p className="text-xs text-gold/70 mb-2">{w.relation}</p>
-                          <p className="text-themed-muted text-sm leading-relaxed">{w.detail}</p>
-                          {w.reference && (
-                            <p className="text-xs text-gold/70 flex items-center gap-1 mt-3">
-                              <BookOpen size={12} />
-                              <HadithRefText text={w.reference} />
-                            </p>
-                          )}
-                        </ContentCard>
-                      ))}
-                    </motion.div>
-                  )}
+                      )}
+                    </ContentCard>
+                  ))}
+                </div>
+              )}
 
-                  {/* Children */}
-                  {familyTab === "children" && (
-                    <motion.div
-                      key="children"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.25 }}
-                      className="space-y-3"
-                    >
-                      <ContentCard>
-                        <p className="text-themed-muted text-sm">
-                          Seven children — four daughters and three sons. All his sons passed away in infancy. His lineage continued through his daughter Fatimah.
+              {/* Children */}
+              {familyTab === "children" && (
+                <div className="space-y-3">
+                  <ContentCard>
+                    <p className="text-themed-muted text-sm">
+                      Seven children — four daughters and three sons. All his sons passed away in infancy. His lineage continued through his daughter Fatimah.
+                    </p>
+                  </ContentCard>
+                  {children.map((c, i) => (
+                    <ContentCard key={c.name} delay={Math.min(i * 0.03, 0.2)} id={`section-${slugId(c.name)}`}>
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <h3 className="font-semibold text-themed">{c.name}</h3>
+                        <span className="font-arabic text-gold text-sm">{c.nameAr}</span>
+                      </div>
+                      <p className="text-xs text-gold/70 mb-2">{c.relation}</p>
+                      <p className="text-themed-muted text-sm leading-relaxed">{c.detail}</p>
+                      {c.reference && (
+                        <p className="text-xs text-gold/70 flex items-center gap-1 mt-3">
+                          <BookOpen size={12} />
+                          <HadithRefText text={c.reference} />
                         </p>
-                      </ContentCard>
-                      {children.map((c, i) => (
-                        <ContentCard key={i} delay={Math.min(i * 0.03, 0.2)} id={`section-${c.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
-                          <div className="flex items-baseline gap-2 mb-1">
-                            <h3 className="font-semibold text-themed">{c.name}</h3>
-                            <span className="font-arabic text-gold text-sm">{c.nameAr}</span>
-                          </div>
-                          <p className="text-xs text-gold/70 mb-2">{c.relation}</p>
-                          <p className="text-themed-muted text-sm leading-relaxed">{c.detail}</p>
-                          {c.reference && (
-                            <p className="text-xs text-gold/70 flex items-center gap-1 mt-3">
-                              <BookOpen size={12} />
-                              <HadithRefText text={c.reference} />
-                            </p>
-                          )}
-                        </ContentCard>
-                      ))}
-                    </motion.div>
-                  )}
+                      )}
+                    </ContentCard>
+                  ))}
+                </div>
+              )}
 
-                  {/* Companions */}
-                  {familyTab === "companions" && (
-                    <motion.div
-                      key="companions"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.25 }}
-                      className="space-y-3"
-                    >
-                      <ContentCard>
-                        <p className="text-themed-muted text-sm">
-                          The companions <span className="font-arabic text-gold">(الصحابة)</span> — those who believed in him, supported him, and sacrificed everything for the sake of Allah.
+              {/* Companions */}
+              {familyTab === "companions" && (
+                <div className="space-y-3">
+                  <ContentCard>
+                    <p className="text-themed-muted text-sm">
+                      The companions <span className="font-arabic text-gold">(الصحابة)</span> — those who believed in him, supported him, and sacrificed everything for the sake of Allah.
+                    </p>
+                  </ContentCard>
+                  {companions.map((c, i) => (
+                    <ContentCard key={c.name} delay={Math.min(i * 0.05, 0.3)} id={`section-${slugId(c.name)}`}>
+                      <div className="flex items-baseline gap-3 mb-1">
+                        <h3 className="font-semibold text-themed">{c.name}</h3>
+                        <span className="font-arabic text-gold text-sm">{c.nameAr}</span>
+                      </div>
+                      <p className="text-xs text-gold/70 mb-2">{c.relation}</p>
+                      <p className="text-themed-muted text-sm leading-relaxed">{c.detail}</p>
+                      {c.reference && (
+                        <p className="text-xs text-gold/70 flex items-center gap-1 mt-3">
+                          <BookOpen size={12} />
+                          <HadithRefText text={c.reference} />
                         </p>
-                      </ContentCard>
-                      {companions.map((c, i) => (
-                        <ContentCard key={i} delay={Math.min(i * 0.05, 0.3)} id={`section-${c.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
-                          <div className="flex items-baseline gap-3 mb-1">
-                            <h3 className="font-semibold text-themed">{c.name}</h3>
-                            <span className="font-arabic text-gold text-sm">{c.nameAr}</span>
-                          </div>
-                          <p className="text-xs text-gold/70 mb-2">{c.relation}</p>
-                          <p className="text-themed-muted text-sm leading-relaxed">{c.detail}</p>
-                          {c.reference && (
-                            <p className="text-xs text-gold/70 flex items-center gap-1 mt-3">
-                              <BookOpen size={12} />
-                              <HadithRefText text={c.reference} />
-                            </p>
-                          )}
-                        </ContentCard>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
+                      )}
+                    </ContentCard>
+                  ))}
+                </div>
+              )}
+            </SubTabLayout>
           </motion.div>
         )}
 
@@ -1828,12 +1913,12 @@ function ProphetMuhammadContent() {
             <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — prophecy pills */}
               <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
-                {filteredProphecies.map((p, i) => (
+                {filteredProphecies.map((p) => (
                   <button
-                    key={i}
-                    onClick={() => setActiveProphecy(i)}
+                    key={slugId(p.title)}
+                    onClick={() => changeProphecy(slugId(p.title))}
                     className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
-                      activeProphecy === i
+                      activeProphecyItem === p
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
                     }`}
@@ -1849,10 +1934,10 @@ function ProphetMuhammadContent() {
               {/* Right side — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {filteredProphecies[activeProphecy] && (
+                  {activeProphecyItem && (
                   <motion.div
-                    key={activeProphecy}
-                    id={`section-${filteredProphecies[activeProphecy].title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}
+                    key={slugId(activeProphecyItem.title)}
+                    id={`section-${slugId(activeProphecyItem.title)}`}
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
@@ -1860,21 +1945,21 @@ function ProphetMuhammadContent() {
                   >
                     <ContentCard>
                       <div className="flex items-center gap-3 mb-3">
-                        <h3 className="font-semibold text-themed text-lg">{filteredProphecies[activeProphecy].title}</h3>
+                        <h3 className="font-semibold text-themed text-lg">{activeProphecyItem.title}</h3>
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          filteredProphecies[activeProphecy].status === "fulfilled"
+                          activeProphecyItem.status === "fulfilled"
                             ? "bg-green-500/20 text-green-400 border border-green-500/30"
                             : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                         }`}>
-                          {filteredProphecies[activeProphecy].status === "fulfilled" ? "Fulfilled" : "Ongoing"}
+                          {activeProphecyItem.status === "fulfilled" ? "Fulfilled" : "Ongoing"}
                         </span>
                       </div>
-                      <p className="text-themed-muted text-sm leading-relaxed mb-4">{filteredProphecies[activeProphecy].description}</p>
+                      <p className="text-themed-muted text-sm leading-relaxed mb-4">{activeProphecyItem.description}</p>
                       <div className="border-l-2 border-gold/30 pl-4">
-                        <p className="text-themed text-sm italic leading-relaxed">{filteredProphecies[activeProphecy].hadith}</p>
+                        <p className="text-themed text-sm italic leading-relaxed">{activeProphecyItem.hadith}</p>
                         <p className="text-xs text-gold/70 mt-2 flex items-center gap-1">
                           <BookOpen size={12} />
-                          <HadithRefText text={filteredProphecies[activeProphecy].reference} />
+                          <HadithRefText text={activeProphecyItem.reference} />
                         </p>
                       </div>
                     </ContentCard>
@@ -1886,118 +1971,69 @@ function ProphetMuhammadContent() {
           </motion.div>
         )}
 
-        {/* ─── HIS WORSHIP ─── */}
-        {activeSection === "worship" && (
+        {/* ─── WORSHIP & SUNNAH (his worship + daily sunnah) ─── */}
+        {activeSection === "worship-sunnah" && (
           <motion.div
-            key="worship"
+            key="worship-sunnah"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              {/* Left side — worship pills */}
-              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
-                {worshipAspects.map((w, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveWorship(i)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
-                      activeWorship === i
-                        ? "bg-gold/20 text-gold border border-gold/40"
-                        : "text-themed-muted hover:text-themed border sidebar-border"
-                    }`}
-                  >
-                    {w.title}
-                  </button>
-                ))}
-              </div>
-
-              {/* Right side — content */}
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
+            <GroupedRail
+              groups={worshipRailGroups.map((group) => ({
+                ...group,
+                items: group.items.map((item) => ({ id: item.id, content: item.label })),
+              }))}
+              activeId={worshipSub}
+              onSelect={changeWorshipSub}
+            >
+              <AnimatePresence mode="wait">
+                {activeWorshipAspect && (
                   <motion.div
-                    key={activeWorship}
-                    id={`section-${worshipAspects[activeWorship].title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}
+                    key={worshipSub}
+                    id={`section-${slugId(activeWorshipAspect.title)}`}
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
                     transition={{ duration: 0.25 }}
                   >
                     <ContentCard>
-                      <h3 className="font-semibold text-themed text-lg mb-3">{worshipAspects[activeWorship].title}</h3>
-                      <p className="text-themed-muted text-sm leading-relaxed mb-4">{worshipAspects[activeWorship].description}</p>
+                      <h3 className="font-semibold text-themed text-lg mb-3">{activeWorshipAspect.title}</h3>
+                      <p className="text-themed-muted text-sm leading-relaxed mb-4">{activeWorshipAspect.description}</p>
                       <div className="border-l-2 border-gold/30 pl-4">
-                        <p className="text-themed text-sm italic leading-relaxed">{worshipAspects[activeWorship].hadith}</p>
+                        <p className="text-themed text-sm italic leading-relaxed">{activeWorshipAspect.hadith}</p>
                         <p className="text-xs text-gold/70 mt-2 flex items-center gap-1">
                           <BookOpen size={12} />
-                          <HadithRefText text={worshipAspects[activeWorship].reference} />
+                          <HadithRefText text={activeWorshipAspect.reference} />
                         </p>
                       </div>
                     </ContentCard>
                   </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* ─── DAILY SUNNAH ─── */}
-        {activeSection === "daily-sunnah" && (
-          <motion.div
-            key="daily-sunnah"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              {/* Left side — vertical pills */}
-              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible w-full md:w-auto pb-2 md:pb-0">
-                {dailySunnah.map((cat) => (
-                  <button
-                    key={cat.category}
-                    onClick={() => setSunnahTab(cat.category)}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
-                      sunnahTab === cat.category
-                        ? "bg-gold/20 text-gold border border-gold/40"
-                        : "text-themed-muted hover:text-themed border sidebar-border"
-                    }`}
+                )}
+                {activeSunnahCategory && (
+                  <motion.div
+                    key={worshipSub}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25 }}
+                    className="space-y-3"
                   >
-                    {cat.category}
-                  </button>
-                ))}
-              </div>
-
-              {/* Right side — content */}
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
-                  {dailySunnah
-                    .filter((cat) => cat.category === sunnahTab)
-                    .map((category) => (
-                      <motion.div
-                        key={category.category}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.25 }}
-                        className="space-y-3"
-                      >
-                        {category.practices.map((p, pi) => (
-                          <ContentCard key={pi} delay={Math.min(pi * 0.05, 0.2)} id={`section-${p.practice.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
-                            <h3 className="font-semibold text-themed mb-2">{p.practice}</h3>
-                            <p className="text-themed-muted text-sm leading-relaxed mb-3 italic">{p.hadith}</p>
-                            <p className="text-xs text-gold/70 flex items-center gap-1">
-                              <BookOpen size={12} />
-                              <HadithRefText text={p.reference} />
-                            </p>
-                          </ContentCard>
-                        ))}
-                      </motion.div>
+                    {activeSunnahCategory.practices.map((p, pi) => (
+                      <ContentCard key={p.practice} delay={Math.min(pi * 0.05, 0.2)} id={`section-${slugId(p.practice)}`}>
+                        <h3 className="font-semibold text-themed mb-2">{p.practice}</h3>
+                        <p className="text-themed-muted text-sm leading-relaxed mb-3 italic">{p.hadith}</p>
+                        <p className="text-xs text-gold/70 flex items-center gap-1">
+                          <BookOpen size={12} />
+                          <HadithRefText text={p.reference} />
+                        </p>
+                      </ContentCard>
                     ))}
-                </AnimatePresence>
-              </div>
-            </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </GroupedRail>
           </motion.div>
         )}
       </AnimatePresence>

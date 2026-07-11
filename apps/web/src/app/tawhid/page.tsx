@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
@@ -555,14 +556,25 @@ function CategoryCard({ cat, index }: { cat: Category; index: number }) {
 
 function TawhidContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   useScrollToSection();
   const nameParam = searchParams.get("name");
   const initialNameIndex = nameParam !== null && !isNaN(Number(nameParam)) && Number(nameParam) >= 0 && Number(nameParam) < namesOfAllah.length
     ? Number(nameParam)
     : null;
   const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
-  const [activeCategory, setActiveCategory] = useState("rububiyyah");
+  // Deep-link support: ?sub=<category id> (old ?section= accepted as a mount-time alias)
+  const subParam = searchParams.get("sub") ?? searchParams.get("section");
+  const [activeCategory, setActiveCategory] = useState(
+    subParam && categories.some((c) => c.id === subParam) ? subParam : "rububiyyah"
+  );
   const [search, setSearch] = useState("");
+
+  // Keep ?tab= / ?sub= in sync so the current view is shareable
+  const syncUrl = (tab: SectionKey, sub?: string) => {
+    router.replace(sub ? `${pathname}?tab=${tab}&sub=${sub}` : `${pathname}?tab=${tab}`, { scroll: false });
+  };
 
   return (
     <div>
@@ -574,22 +586,16 @@ function TawhidContent() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search names, categories, concepts..." className="mb-6" />
 
-      {/* Section navigation */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {sections.map((section) => (
-          <button
-            key={section.key}
-            onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-              activeSection === section.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
+      {/* Section navigation (shared TabBar) */}
+      <TabBar
+        tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
+        activeTab={activeSection}
+        onTabChange={(k) => {
+          setActiveSection(k as SectionKey);
+          syncUrl(k as SectionKey);
+        }}
+        className="mb-6"
+      />
 
       <AnimatePresence mode="wait">
         {/* ─── What is Tawheed ─── */}
@@ -670,7 +676,11 @@ function TawhidContent() {
                   return (
                     <button
                       key={cat.id}
-                      onClick={() => setActiveSection("categories")}
+                      onClick={() => {
+                        setActiveCategory(cat.id);
+                        setActiveSection("categories");
+                        syncUrl("categories", cat.id);
+                      }}
                       className="w-full text-left rounded-lg p-4 border sidebar-border hover:border-gold/30 transition-colors"
                       style={{ backgroundColor: "var(--color-bg)" }}
                     >
@@ -758,7 +768,10 @@ function TawhidContent() {
               {categories.filter((cat) => textMatch(search, cat.title, cat.meaning, cat.description, ...cat.points)).map((cat) => (
                   <button
                     key={cat.id}
-                    onClick={() => setActiveCategory(cat.id)}
+                    onClick={() => {
+                      setActiveCategory(cat.id);
+                      syncUrl("categories", cat.id);
+                    }}
                     className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                       activeCategory === cat.id
                         ? "bg-gold/20 text-gold border border-gold/40"

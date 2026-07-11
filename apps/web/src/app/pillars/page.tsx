@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
@@ -544,10 +545,21 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
 
 function PillarsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   useScrollToSection();
   const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
-  const [activePillar, setActivePillar] = useState("shahada");
+  // Deep-link support: ?sub=<pillar id> (old ?section= accepted as a mount-time alias)
+  const subParam = searchParams.get("sub") ?? searchParams.get("section");
+  const [activePillar, setActivePillar] = useState(
+    subParam && pillars.some((p) => p.id === subParam) ? subParam : "shahada"
+  );
   const [search, setSearch] = useState("");
+
+  // Keep ?tab= / ?sub= in sync so the current view is shareable
+  const syncUrl = (tab: SectionKey, sub?: string) => {
+    router.replace(sub ? `${pathname}?tab=${tab}&sub=${sub}` : `${pathname}?tab=${tab}`, { scroll: false });
+  };
 
   const mattersMatches = (item: { point: string; detail: string; reference: string }) => {
     if (!search || search.length < 2) return true;
@@ -580,22 +592,16 @@ function PillarsContent() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search pillars, practices, verses..." className="mb-6" />
 
-      {/* Section navigation */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {sections.map((section) => (
-          <button
-            key={section.key}
-            onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-              activeSection === section.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
+      {/* Section navigation (shared TabBar) */}
+      <TabBar
+        tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
+        activeTab={activeSection}
+        onTabChange={(k) => {
+          setActiveSection(k as SectionKey);
+          syncUrl(k as SectionKey);
+        }}
+        className="mb-6"
+      />
 
       <AnimatePresence mode="wait">
         {/* ─── What are the Pillars? ─── */}
@@ -677,6 +683,7 @@ function PillarsContent() {
                     onClick={() => {
                       setActivePillar(pillar.id);
                       setActiveSection("pillars");
+                      syncUrl("pillars", pillar.id);
                     }}
                     className="w-full text-left rounded-lg p-4 border sidebar-border hover:border-gold/30 transition-colors"
                     style={{ backgroundColor: "var(--color-bg)" }}
@@ -775,7 +782,10 @@ function PillarsContent() {
               {pillars.filter(pillarMatches).map((pillar) => (
                 <button
                   key={pillar.id}
-                  onClick={() => setActivePillar(pillar.id)}
+                  onClick={() => {
+                    setActivePillar(pillar.id);
+                    syncUrl("pillars", pillar.id);
+                  }}
                   className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                     activePillar === pillar.id
                       ? "bg-gold/20 text-gold border border-gold/40"

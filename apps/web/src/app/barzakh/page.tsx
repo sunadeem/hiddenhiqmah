@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import TopicInfoCard from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
@@ -360,69 +362,28 @@ const sections = [
 
 type SectionKey = (typeof sections)[number]["key"];
 
-/* ───────────────────────── sub-components ───────────────────────── */
-
-function TopicInfoCard({ topic }: { topic: GraveTopic }) {
-  const hasVerse = "verse" in topic.content && topic.content.verse;
-  return (
-    <ContentCard>
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
-      </div>
-
-      <p className="text-themed-muted text-sm leading-relaxed mb-5">
-        {topic.content.intro}
-      </p>
-
-      {hasVerse && (
-        <div
-          className="rounded-lg p-4 mb-5"
-          style={{ backgroundColor: "var(--color-bg)" }}
-        >
-          <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
-            {topic.content.verse!.arabic}
-          </p>
-          <p className="text-themed text-sm italic">
-            &ldquo;{topic.content.verse!.text}&rdquo;
-          </p>
-          <p className="text-xs text-themed-muted mt-2">
-            <HadithRefText text={topic.content.verse!.ref} />
-          </p>
-        </div>
-      )}
-
-      <div className="space-y-4">
-        {topic.content.points.map((point) => (
-          <div
-            key={point.title}
-            className="rounded-lg p-4 border sidebar-border"
-            style={{ backgroundColor: "var(--color-bg)" }}
-          >
-            <h4 className="text-sm font-semibold text-themed mb-2">
-              {point.title}
-            </h4>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              {point.detail}
-            </p>
-            {point.note && (
-              <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
-            )}
-          </div>
-        ))}
-      </div>
-    </ContentCard>
-  );
-}
-
 /* ───────────────────────── page ───────────────────────── */
 
 function TheGraveContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   useScrollToSection();
   const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
-  const [activeWhatHappens, setActiveWhatHappens] = useState("departure-soul");
-  const [activeProtection, setActiveProtection] = useState("deeds-protect");
+  // Deep-link support: ?sub=<topic id> (old ?section= accepted as a mount-time alias)
+  const subParam = searchParams.get("sub") ?? searchParams.get("section");
+  const [activeWhatHappens, setActiveWhatHappens] = useState(
+    subParam && whatHappensTopics.some((t) => t.id === subParam) ? subParam : "departure-soul"
+  );
+  const [activeProtection, setActiveProtection] = useState(
+    subParam && protectionTopics.some((t) => t.id === subParam) ? subParam : "deeds-protect"
+  );
   const [search, setSearch] = useState("");
+
+  // Keep ?tab= / ?sub= in sync so the current view is shareable
+  const syncUrl = (tab: SectionKey, sub?: string) => {
+    router.replace(sub ? `${pathname}?tab=${tab}&sub=${sub}` : `${pathname}?tab=${tab}`, { scroll: false });
+  };
 
   const topicMatches = (t: GraveTopic) => {
     if (!search || search.length < 2) return true;
@@ -448,22 +409,16 @@ function TheGraveContent() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search topics, verses..." className="mb-6" />
 
-      {/* Section navigation */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {sections.map((section) => (
-          <button
-            key={section.key}
-            onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-              activeSection === section.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
+      {/* Section navigation (shared TabBar) */}
+      <TabBar
+        tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
+        activeTab={activeSection}
+        onTabChange={(k) => {
+          setActiveSection(k as SectionKey);
+          syncUrl(k as SectionKey);
+        }}
+        className="mb-6"
+      />
 
       <AnimatePresence mode="wait">
         {/* ─── What is the Barzakh? ─── */}
@@ -643,7 +598,10 @@ function TheGraveContent() {
                 {whatHappensTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
-                      onClick={() => setActiveWhatHappens(topic.id)}
+                      onClick={() => {
+                        setActiveWhatHappens(topic.id);
+                        syncUrl("what-happens", topic.id);
+                      }}
                       className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeWhatHappens === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
@@ -707,7 +665,10 @@ function TheGraveContent() {
                 {protectionTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
-                      onClick={() => setActiveProtection(topic.id)}
+                      onClick={() => {
+                        setActiveProtection(topic.id);
+                        syncUrl("protection", topic.id);
+                      }}
                       className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeProtection === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"

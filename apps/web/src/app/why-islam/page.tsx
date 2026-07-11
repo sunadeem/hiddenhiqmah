@@ -1,31 +1,19 @@
 "use client";
 
-import { useState, useEffect, useMemo, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useMemo, useRef, Suspense } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
+import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
-import { BookOpen } from "lucide-react";
-import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
-/* ───────────────────────── types ───────────────────────── */
-
-type Topic = {
-  id: string;
-  name: string;
-  content: {
-    intro: string;
-    points: { title: string; detail: string; note?: string }[];
-    verse?: { arabic: string; text: string; ref: string };
-    source?: string;
-  };
-};
-
-/* ───────────────────────── Tab 1: Proofs ───────────────────────── */
+/* ───────────────────────── Evidence for Islam ───────────────────────── */
 
 const proofTopics: Topic[] = [
   {
@@ -398,7 +386,7 @@ const proofTopics: Topic[] = [
   },
 ];
 
-/* ───────────────────────── Tab 2: Christianity Deep Dive ───────────────────────── */
+/* ───────────────────────── Worldviews · Christianity ───────────────────────── */
 
 const christianityTopics: Topic[] = [
   {
@@ -729,7 +717,7 @@ const christianityTopics: Topic[] = [
   },
 ];
 
-/* ───────────────────────── Tab 3: Judaism ───────────────────────── */
+/* ───────────────────────── Worldviews · Judaism ───────────────────────── */
 
 const judaismTopics: Topic[] = [
   {
@@ -870,7 +858,7 @@ const judaismTopics: Topic[] = [
   },
 ];
 
-/* ───────────────────────── Tab 4: Hinduism ───────────────────────── */
+/* ───────────────────────── Worldviews · Hinduism ───────────────────────── */
 
 const hinduismTopics: Topic[] = [
   {
@@ -963,7 +951,7 @@ const hinduismTopics: Topic[] = [
   },
 ];
 
-/* ───────────────────────── Tab 5: Buddhism ───────────────────────── */
+/* ───────────────────────── Worldviews · Buddhism ───────────────────────── */
 
 const buddhismTopics: Topic[] = [
   {
@@ -1053,7 +1041,7 @@ const buddhismTopics: Topic[] = [
   },
 ];
 
-/* ───────────────────────── Tab 6: Sikhism ───────────────────────── */
+/* ───────────────────────── Worldviews · Sikhism ───────────────────────── */
 
 const sikhismTopics: Topic[] = [
   {
@@ -1108,7 +1096,7 @@ const sikhismTopics: Topic[] = [
   },
 ];
 
-/* ───────────────────────── Tab 7: Atheism ───────────────────────── */
+/* ───────────────────────── Worldviews · Atheism ───────────────────────── */
 
 const atheismTopics: Topic[] = [
   {
@@ -1205,7 +1193,7 @@ const atheismTopics: Topic[] = [
   },
 ];
 
-/* ───────────────────────── Tab 8: Common Questions ───────────────────────── */
+/* ───────────────────────── Common Questions ───────────────────────── */
 
 const questionTopics: Topic[] = [
   {
@@ -1443,167 +1431,135 @@ const questionTopics: Topic[] = [
 /* ───────────────────────── sections config ───────────────────────── */
 
 const sections = [
+  { key: "start", label: "Start Here" },
   { key: "proofs", label: "Evidence for Islam" },
+  { key: "worldviews", label: "Other Worldviews" },
+  { key: "questions", label: "Common Questions" },
+] as const;
+
+type SectionKey = (typeof sections)[number]["key"];
+
+/* The six religion/worldview sections live inside ONE "Other Worldviews" tab:
+   first-level selection = the worldview (shared SubTabLayout rail),
+   second-level = that worldview's topics as a compact chip row. */
+const worldviews = [
   { key: "christianity", label: "Christianity" },
   { key: "judaism", label: "Judaism" },
   { key: "hinduism", label: "Hinduism" },
   { key: "buddhism", label: "Buddhism" },
   { key: "sikhism", label: "Sikhism" },
   { key: "atheism", label: "Atheism" },
-  { key: "questions", label: "Common Questions" },
 ] as const;
 
-type SectionKey = (typeof sections)[number]["key"];
+type WorldviewKey = (typeof worldviews)[number]["key"];
 
-/* ───────────────────────── sub-components ───────────────────────── */
+/* One keyed map of every topic group — replaces the eight per-group copies of
+   filter/auto-select state that used to live in the page component. */
+const topicGroups = {
+  proofs: proofTopics,
+  christianity: christianityTopics,
+  judaism: judaismTopics,
+  hinduism: hinduismTopics,
+  buddhism: buddhismTopics,
+  sikhism: sikhismTopics,
+  atheism: atheismTopics,
+  questions: questionTopics,
+};
 
-function TopicInfoCard({ topic }: { topic: Topic }) {
-  const hasVerse = topic.content.verse;
-  return (
-    <ContentCard>
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
-      </div>
+type GroupKey = keyof typeof topicGroups;
 
-      <p className="text-themed-muted text-sm leading-relaxed mb-5">
-        {topic.content.intro}
-      </p>
+const defaultTopics = Object.fromEntries(
+  (Object.keys(topicGroups) as GroupKey[]).map((k) => [k, topicGroups[k][0].id])
+) as Record<GroupKey, string>;
 
-      {hasVerse && (
-        <div
-          className="rounded-lg p-4 mb-5"
-          style={{ backgroundColor: "var(--color-bg)" }}
-        >
-          <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
-            {topic.content.verse!.arabic}
-          </p>
-          <p className="text-themed text-sm italic">
-            &ldquo;{topic.content.verse!.text}&rdquo;
-          </p>
-          <p className="text-xs text-themed-muted mt-2">
-            <HadithRefText text={topic.content.verse!.ref} />
-          </p>
-        </div>
-      )}
+/* Legacy deep-link tab keys (pre-restructure, when each religion had its own
+   top tab) — old links resolve into the Worldviews tab. */
+const legacyWorldviewTabs: Record<string, WorldviewKey> = {
+  christianity: "christianity",
+  judaism: "judaism",
+  hinduism: "hinduism",
+  buddhism: "buddhism",
+  sikhism: "sikhism",
+  atheism: "atheism",
+};
 
-      <div className="space-y-4">
-        {topic.content.points.map((point) => (
-          <div
-            key={point.title}
-            className="rounded-lg p-4 border sidebar-border"
-            style={{ backgroundColor: "var(--color-bg)" }}
-          >
-            <h4 className="text-sm font-semibold text-themed mb-2">
-              {point.title}
-            </h4>
-            <p className="text-themed-muted text-sm leading-relaxed">
-              {point.detail}
-            </p>
-            {point.note && (
-              <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {topic.content.source && (
-        <div className="mt-5 pt-4 border-t sidebar-border">
-          <p className="text-xs text-themed-muted flex items-center gap-2">
-            <BookOpen size={12} className="text-gold/60" />
-            <HadithRefText text={topic.content.source} />
-          </p>
-        </div>
-      )}
-    </ContentCard>
-  );
-}
-
-function TopicSection({
-  topics,
-  activeId,
-  setActiveId,
-}: {
-  topics: Topic[];
-  activeId: string;
-  setActiveId: (id: string) => void;
-}) {
-  return (
-    <div className="flex flex-col md:flex-row gap-4 items-start">
-      {/* Left — vertical pills (horizontal scrollable on mobile) */}
-      <div className="flex flex-row md:flex-col gap-2 w-full md:w-48 shrink-0 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 scrollbar-hide">
-        {topics.map((topic) => (
-          <button
-            key={topic.id}
-            onClick={() => setActiveId(topic.id)}
-            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap md:whitespace-normal transition-all text-left ${
-              activeId === topic.id
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {topic.name}
-          </button>
-        ))}
-      </div>
-
-      {/* Right — content */}
-      <div className="min-w-0 flex-1 w-full">
-        <AnimatePresence mode="wait">
-          {topics.map(
-            (topic) =>
-              activeId === topic.id && (
-                <motion.div
-                  key={topic.id}
-                  id={`section-${topic.id}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <TopicInfoCard topic={topic} />
-                </motion.div>
-              )
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-}
+/* Start Here — clickable index of the sections (the /pillars intro pattern) */
+const startIndex: { key: SectionKey; title: string; count: string; description: string }[] = [
+  {
+    key: "proofs",
+    title: "Evidence for Islam",
+    count: `${proofTopics.length} topics`,
+    description:
+      "The positive case — scripture preservation, pure monotheism, fulfilled prophecies, scientific consistency, the linguistic miracle, and more.",
+  },
+  {
+    key: "worldviews",
+    title: "Other Worldviews",
+    count: `${worldviews.length} worldviews`,
+    description:
+      "How the same questions are answered by Christianity, Judaism, Hinduism, Buddhism, Sikhism, and atheism — examined through their own sources.",
+  },
+  {
+    key: "questions",
+    title: "Common Questions",
+    count: `${questionTopics.length} questions`,
+    description:
+      "Direct answers to the objections people raise most — suffering, violence, women in Islam, religious pluralism, and whether religion is man-made.",
+  },
+];
 
 /* ───────────────────────── page ───────────────────────── */
 
 function WhyIslamContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   useScrollToSection();
-  const [activeSection, setActiveSection] = useState<SectionKey>(
-    (searchParams.get("tab") as SectionKey) || "proofs"
-  );
-  const sectionParam = searchParams.get("section");
-  const [activeProof, setActiveProof] = useState(
-    sectionParam && activeSection === "proofs" ? sectionParam : "preservation"
-  );
-  const [activeChristianity, setActiveChristianity] = useState(
-    sectionParam && activeSection === "christianity" ? sectionParam : "trinity"
-  );
-  const [activeJudaism, setActiveJudaism] = useState(
-    sectionParam && activeSection === "judaism" ? sectionParam : judaismTopics[0]?.id ?? ""
-  );
-  const [activeHinduism, setActiveHinduism] = useState(
-    sectionParam && activeSection === "hinduism" ? sectionParam : hinduismTopics[0]?.id ?? ""
-  );
-  const [activeBuddhism, setActiveBuddhism] = useState(
-    sectionParam && activeSection === "buddhism" ? sectionParam : buddhismTopics[0]?.id ?? ""
-  );
-  const [activeSikhism, setActiveSikhism] = useState(
-    sectionParam && activeSection === "sikhism" ? sectionParam : sikhismTopics[0]?.id ?? ""
-  );
-  const [activeAtheism, setActiveAtheism] = useState(
-    sectionParam && activeSection === "atheism" ? sectionParam : atheismTopics[0]?.id ?? ""
-  );
-  const [activeQuestion, setActiveQuestion] = useState(
-    sectionParam && activeSection === "questions" ? sectionParam : "suffering"
-  );
+
+  /* Deep-link resolution (once, on mount). Current vocabulary: ?tab= is the
+     section, ?sub= is the rail/topic selection. Legacy links are honored:
+     ?tab=<religion> (the old per-religion tabs) and ?section= (the old
+     topic param, still used by useScrollToSection for the highlight glow). */
+  const [init] = useState(() => {
+    const rawTab = searchParams.get("tab") ?? "";
+    const rawSub = searchParams.get("sub") ?? searchParams.get("section");
+
+    const tab: SectionKey = sections.some((s) => s.key === rawTab)
+      ? (rawTab as SectionKey)
+      : rawTab in legacyWorldviewTabs
+        ? "worldviews"
+        : "start";
+    let worldview: WorldviewKey = legacyWorldviewTabs[rawTab] ?? "christianity";
+    const topics = { ...defaultTopics };
+
+    if (rawSub) {
+      if (tab === "worldviews") {
+        /* ?sub= may name the worldview itself (rail selection) or one of its
+           topics — topic ids are unique across the six worldviews, so either
+           form resolves. */
+        const asWorldview = worldviews.find((w) => w.key === rawSub);
+        const owner =
+          asWorldview ??
+          worldviews.find((w) => topicGroups[w.key].some((t) => t.id === rawSub));
+        if (owner) {
+          worldview = owner.key;
+          if (!asWorldview) topics[owner.key] = rawSub;
+        }
+      } else if (tab === "proofs" || tab === "questions") {
+        if (topicGroups[tab].some((t) => t.id === rawSub)) topics[tab] = rawSub;
+      }
+    }
+
+    return { tab, worldview, topics };
+  });
+
+  const [activeSection, setActiveSection] = useState<SectionKey>(init.tab);
+  const [activeWorldview, setActiveWorldview] = useState<WorldviewKey>(init.worldview);
+  const [activeTopics, setActiveTopics] = useState<Record<GroupKey, string>>(init.topics);
   const [search, setSearch] = useState("");
+
+  const setTopic = (group: GroupKey, id: string) =>
+    setActiveTopics((prev) => ({ ...prev, [group]: id }));
 
   const topicMatches = (t: Topic) => {
     if (!search || search.length < 2) return true;
@@ -1615,34 +1571,42 @@ function WhyIslamContent() {
     );
   };
 
-  const filteredProofs = useMemo(() => proofTopics.filter(topicMatches), [search]);
-  const filteredChristianity = useMemo(() => christianityTopics.filter(topicMatches), [search]);
-  const filteredJudaism = useMemo(() => judaismTopics.filter(topicMatches), [search]);
-  const filteredHinduism = useMemo(() => hinduismTopics.filter(topicMatches), [search]);
-  const filteredBuddhism = useMemo(() => buddhismTopics.filter(topicMatches), [search]);
-  const filteredSikhism = useMemo(() => sikhismTopics.filter(topicMatches), [search]);
-  const filteredAtheism = useMemo(() => atheismTopics.filter(topicMatches), [search]);
-  const filteredQuestions = useMemo(() => questionTopics.filter(topicMatches), [search]);
+  const filtered = useMemo(
+    () =>
+      Object.fromEntries(
+        (Object.keys(topicGroups) as GroupKey[]).map((k) => [k, topicGroups[k].filter(topicMatches)])
+      ) as Record<GroupKey, Topic[]>,
+    [search]
+  );
 
-  /* auto-select first visible topic when active is filtered out */
+  /* auto-select first visible topic when the active one is filtered out */
   useEffect(() => {
-    if (filteredProofs.length && !filteredProofs.find(t => t.id === activeProof))
-      setActiveProof(filteredProofs[0].id);
-    if (filteredChristianity.length && !filteredChristianity.find(t => t.id === activeChristianity))
-      setActiveChristianity(filteredChristianity[0].id);
-    if (filteredJudaism.length && !filteredJudaism.find(t => t.id === activeJudaism))
-      setActiveJudaism(filteredJudaism[0].id);
-    if (filteredHinduism.length && !filteredHinduism.find(t => t.id === activeHinduism))
-      setActiveHinduism(filteredHinduism[0].id);
-    if (filteredBuddhism.length && !filteredBuddhism.find(t => t.id === activeBuddhism))
-      setActiveBuddhism(filteredBuddhism[0].id);
-    if (filteredSikhism.length && !filteredSikhism.find(t => t.id === activeSikhism))
-      setActiveSikhism(filteredSikhism[0].id);
-    if (filteredAtheism.length && !filteredAtheism.find(t => t.id === activeAtheism))
-      setActiveAtheism(filteredAtheism[0].id);
-    if (filteredQuestions.length && !filteredQuestions.find(t => t.id === activeQuestion))
-      setActiveQuestion(filteredQuestions[0].id);
-  }, [search, filteredProofs, filteredChristianity, filteredJudaism, filteredHinduism, filteredBuddhism, filteredSikhism, filteredAtheism, filteredQuestions]);
+    (Object.keys(filtered) as GroupKey[]).forEach((k) => {
+      if (filtered[k].length && !filtered[k].some((t) => t.id === activeTopics[k]))
+        setActiveTopics((prev) => ({ ...prev, [k]: filtered[k][0].id }));
+    });
+  }, [filtered, activeTopics]);
+
+  /* write the current position back to the URL so every view is linkable */
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    const sub =
+      activeSection === "worldviews"
+        ? activeTopics[activeWorldview]
+        : activeSection === "proofs" || activeSection === "questions"
+          ? activeTopics[activeSection]
+          : "";
+    router.replace(`${pathname}?tab=${activeSection}${sub ? `&sub=${sub}` : ""}`, { scroll: false });
+  }, [activeSection, activeWorldview, activeTopics, pathname, router]);
+
+  const activeProof = filtered.proofs.find((t) => t.id === activeTopics.proofs);
+  const activeQuestion = filtered.questions.find((t) => t.id === activeTopics.questions);
+  const worldviewTopics = filtered[activeWorldview];
+  const activeWorldviewTopic = worldviewTopics.find((t) => t.id === activeTopics[activeWorldview]);
 
   return (
     <div>
@@ -1663,7 +1627,92 @@ function WhyIslamContent() {
       />
 
       <AnimatePresence mode="wait">
-        {/* ─── Proofs ─── */}
+        {/* ─── Start Here ─── */}
+        {activeSection === "start" && (
+          <motion.div
+            key="start"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            {/* Opening verse — Quran 3:19 */}
+            <ContentCard>
+              <div className="text-center py-6">
+                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
+                  Surah Aal Imran
+                </p>
+                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
+                  إِنَّ ٱلدِّينَ عِندَ ٱللَّهِ ٱلْإِسْلَـٰمُ ۗ وَمَا ٱخْتَلَفَ ٱلَّذِينَ أُوتُوا۟ ٱلْكِتَـٰبَ إِلَّا مِنۢ بَعْدِ مَا جَآءَهُمُ ٱلْعِلْمُ بَغْيًۢا بَيْنَهُمْ ۗ وَمَن يَكْفُرْ بِـَٔايَـٰتِ ٱللَّهِ فَإِنَّ ٱللَّهَ سَرِيعُ ٱلْحِسَابِ
+                </p>
+                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
+                  &ldquo;The true religion with Allah is Islam. Those who were given the Scripture did not dispute except after the knowledge had come to them, out of mutual envy and rivalry. But whoever rejects the verses of Allah, then Allah is swift in reckoning.&rdquo;
+                </p>
+                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
+                  Quran 3:19
+                </span>
+              </div>
+            </ContentCard>
+
+            {/* What this page covers */}
+            <ContentCard delay={0.1}>
+              <h2 className="text-xl font-semibold text-themed mb-4">What this page covers</h2>
+              <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  Islam does not ask for blind faith — the Quran repeatedly calls on people to reflect, question, and examine the evidence. This page takes that invitation seriously. It lays out the case for Islam in three parts: the <span className="text-themed font-medium">positive evidence</span> that the Quran is divine revelation, an honest <span className="text-themed font-medium">comparison with other worldviews</span> through their own scriptures and scholarship, and direct answers to the <span className="text-themed font-medium">common questions</span> people ask about Islam.
+                </p>
+                <p>
+                  Read the sections in order for the full argument, or jump straight to whatever you are curious about — each topic stands on its own, and every claim is tied to its sources so you can verify rather than take our word for it. Use the search box above to find a specific topic across all sections.
+                </p>
+              </div>
+            </ContentCard>
+
+            {/* Clickable index of the sections */}
+            <ContentCard delay={0.2}>
+              <h2 className="text-xl font-semibold text-themed mb-4">Explore the sections</h2>
+              <div className="space-y-3">
+                {startIndex.map((entry) => (
+                  <button
+                    key={entry.key}
+                    onClick={() => setActiveSection(entry.key)}
+                    className="w-full text-left rounded-lg p-4 border sidebar-border hover:border-gold/30 transition-colors"
+                    style={{ backgroundColor: "var(--color-bg)" }}
+                  >
+                    <div className="flex items-baseline gap-2">
+                      <h3 className="font-semibold text-themed text-sm">{entry.title}</h3>
+                      <span className="text-xs text-themed-muted">{entry.count}</span>
+                    </div>
+                    <p className="text-xs text-themed-muted mt-0.5">{entry.description}</p>
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-themed-muted mt-4 mb-2">Or jump straight to a worldview:</p>
+              <div className="flex flex-wrap gap-2">
+                {worldviews.map((w) => (
+                  <button
+                    key={w.key}
+                    onClick={() => {
+                      setActiveWorldview(w.key);
+                      setActiveSection("worldviews");
+                    }}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium text-themed-muted hover:text-themed border sidebar-border transition-all"
+                  >
+                    {w.label}
+                  </button>
+                ))}
+              </div>
+            </ContentCard>
+
+            <SourcesCard delay={0.3} sources={[
+              { ref: "Quran 3:19", desc: "“The true religion with Allah is Islam”" },
+              { ref: "Quran 2:256", desc: "“There is no compulsion in religion; the truth has been made distinct from falsehood”" },
+              { ref: "Quran 4:82", desc: "the Quran's open invitation to examine it for contradiction" },
+            ]} />
+          </motion.div>
+        )}
+
+        {/* ─── Evidence for Islam ─── */}
         {activeSection === "proofs" && (
           <motion.div
             key="proofs"
@@ -1672,117 +1721,79 @@ function WhyIslamContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <TopicSection
-              topics={filteredProofs}
-              activeId={activeProof}
-              setActiveId={setActiveProof}
-            />
+            {filtered.proofs.length === 0 ? (
+              <p className="text-sm text-themed-muted text-center py-8">No topics match your search.</p>
+            ) : (
+              <SubTabLayout
+                subs={filtered.proofs.map((t) => ({ key: t.id, label: t.name }))}
+                activeSub={activeTopics.proofs}
+                setActiveSub={(id) => setTopic("proofs", id)}
+              >
+                {activeProof && (
+                  <div id={`section-${activeProof.id}`}>
+                    <TopicInfoCard topic={activeProof} />
+                  </div>
+                )}
+              </SubTabLayout>
+            )}
           </motion.div>
         )}
 
-        {/* ─── Christianity ─── */}
-        {activeSection === "christianity" && (
+        {/* ─── Other Worldviews ─── */}
+        {activeSection === "worldviews" && (
           <motion.div
-            key="christianity"
+            key="worldviews"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <TopicSection
-              topics={filteredChristianity}
-              activeId={activeChristianity}
-              setActiveId={setActiveChristianity}
-            />
+            <SubTabLayout
+              subs={worldviews.map((w) => ({ key: w.key, label: w.label }))}
+              activeSub={activeWorldview}
+              setActiveSub={setActiveWorldview}
+            >
+              {worldviewTopics.length === 0 ? (
+                <p className="text-sm text-themed-muted text-center py-8">No topics match your search.</p>
+              ) : (
+                <div>
+                  {/* second level — this worldview's topics as a compact chip row */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {worldviewTopics.map((t) => (
+                      <button
+                        key={t.id}
+                        onClick={() => setTopic(activeWorldview, t.id)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                          activeWorldviewTopic?.id === t.id
+                            ? "bg-gold/20 text-gold border border-gold/40"
+                            : "text-themed-muted hover:text-themed border sidebar-border"
+                        }`}
+                      >
+                        {t.name}
+                      </button>
+                    ))}
+                  </div>
+                  <AnimatePresence mode="wait">
+                    {activeWorldviewTopic && (
+                      <motion.div
+                        key={activeWorldviewTopic.id}
+                        id={`section-${activeWorldviewTopic.id}`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <TopicInfoCard topic={activeWorldviewTopic} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+            </SubTabLayout>
           </motion.div>
         )}
 
-        {/* ─── Judaism ─── */}
-        {activeSection === "judaism" && (
-          <motion.div
-            key="judaism"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            <TopicSection
-              topics={filteredJudaism}
-              activeId={activeJudaism}
-              setActiveId={setActiveJudaism}
-            />
-          </motion.div>
-        )}
-
-        {/* ─── Hinduism ─── */}
-        {activeSection === "hinduism" && (
-          <motion.div
-            key="hinduism"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            <TopicSection
-              topics={filteredHinduism}
-              activeId={activeHinduism}
-              setActiveId={setActiveHinduism}
-            />
-          </motion.div>
-        )}
-
-        {/* ─── Buddhism ─── */}
-        {activeSection === "buddhism" && (
-          <motion.div
-            key="buddhism"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            <TopicSection
-              topics={filteredBuddhism}
-              activeId={activeBuddhism}
-              setActiveId={setActiveBuddhism}
-            />
-          </motion.div>
-        )}
-
-        {/* ─── Sikhism ─── */}
-        {activeSection === "sikhism" && (
-          <motion.div
-            key="sikhism"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            <TopicSection
-              topics={filteredSikhism}
-              activeId={activeSikhism}
-              setActiveId={setActiveSikhism}
-            />
-          </motion.div>
-        )}
-
-        {/* ─── Atheism ─── */}
-        {activeSection === "atheism" && (
-          <motion.div
-            key="atheism"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            <TopicSection
-              topics={filteredAtheism}
-              activeId={activeAtheism}
-              setActiveId={setActiveAtheism}
-            />
-          </motion.div>
-        )}
-
-        {/* ─── Questions ─── */}
+        {/* ─── Common Questions ─── */}
         {activeSection === "questions" && (
           <motion.div
             key="questions"
@@ -1791,11 +1802,21 @@ function WhyIslamContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <TopicSection
-              topics={filteredQuestions}
-              activeId={activeQuestion}
-              setActiveId={setActiveQuestion}
-            />
+            {filtered.questions.length === 0 ? (
+              <p className="text-sm text-themed-muted text-center py-8">No topics match your search.</p>
+            ) : (
+              <SubTabLayout
+                subs={filtered.questions.map((t) => ({ key: t.id, label: t.name }))}
+                activeSub={activeTopics.questions}
+                setActiveSub={(id) => setTopic("questions", id)}
+              >
+                {activeQuestion && (
+                  <div id={`section-${activeQuestion.id}`}>
+                    <TopicInfoCard topic={activeQuestion} />
+                  </div>
+                )}
+              </SubTabLayout>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

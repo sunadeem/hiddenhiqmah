@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
@@ -536,11 +537,24 @@ function LastTenInfoCard({ topic }: { topic: LastTenTopic }) {
 
 function RamadanContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   useScrollToSection();
   const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
-  const [activeFasting, setActiveFasting] = useState("basics");
-  const [activeLastTen, setActiveLastTen] = useState("laylatul-qadr");
+  // Deep-link support: ?sub=<topic id> (old ?section= accepted as a mount-time alias)
+  const subParam = searchParams.get("sub") ?? searchParams.get("section");
+  const [activeFasting, setActiveFasting] = useState(
+    subParam && fastingTopics.some((t) => t.id === subParam) ? subParam : "basics"
+  );
+  const [activeLastTen, setActiveLastTen] = useState(
+    subParam && lastTenTopics.some((t) => t.id === subParam) ? subParam : "laylatul-qadr"
+  );
   const [search, setSearch] = useState("");
+
+  // Keep ?tab= / ?sub= in sync so the current view is shareable
+  const syncUrl = (tab: SectionKey, sub?: string) => {
+    router.replace(sub ? `${pathname}?tab=${tab}&sub=${sub}` : `${pathname}?tab=${tab}`, { scroll: false });
+  };
 
   const topicMatches = (t: { name: string; content: { intro: string; points: { title: string; detail: string; note?: string }[]; verse?: { text: string }; source?: string } }) => {
     if (!search || search.length < 2) return true;
@@ -566,22 +580,16 @@ function RamadanContent() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search fasting, prayers, virtues..." className="mb-6" />
 
-      {/* Section navigation */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {sections.map((section) => (
-          <button
-            key={section.key}
-            onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-              activeSection === section.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
+      {/* Section navigation (shared TabBar) */}
+      <TabBar
+        tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
+        activeTab={activeSection}
+        onTabChange={(k) => {
+          setActiveSection(k as SectionKey);
+          syncUrl(k as SectionKey);
+        }}
+        className="mb-6"
+      />
 
       <AnimatePresence mode="wait">
         {/* ─── What is Ramadan? ─── */}
@@ -720,7 +728,10 @@ function RamadanContent() {
                 {fastingTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
-                      onClick={() => setActiveFasting(topic.id)}
+                      onClick={() => {
+                        setActiveFasting(topic.id);
+                        syncUrl("fasting", topic.id);
+                      }}
                       className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeFasting === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
@@ -785,7 +796,10 @@ function RamadanContent() {
                 {lastTenTopics.filter(topicMatches).map((topic) => (
                     <button
                       key={topic.id}
-                      onClick={() => setActiveLastTen(topic.id)}
+                      onClick={() => {
+                        setActiveLastTen(topic.id);
+                        syncUrl("last-ten", topic.id);
+                      }}
                       className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
                         activeLastTen === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"

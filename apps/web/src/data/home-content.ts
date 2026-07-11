@@ -5,6 +5,7 @@ import {
   Landmark,
   Users,
   Shield,
+  ShieldCheck,
   Star,
   Clock,
   Moon,
@@ -25,6 +26,11 @@ import {
   Flame,
   Brain,
   Settings as SettingsIcon,
+  Hourglass,
+  Scale,
+  Flower2,
+  Compass,
+  Timer,
 } from "lucide-react";
 
 export const dailyInspirations = [
@@ -401,10 +407,10 @@ export type NavItem = {
 };
 
 /**
- * All content sections. The web home grid shows only items WITHOUT `mobileOnly`;
- * the mobile app (More menu) shows everything. New app-only features are flagged
- * `mobileOnly` so they stay off the website until they're web-ready. The desktop
- * Sidebar (apps/web/src/components/Sidebar.tsx) keeps its own (web-only) copy.
+ * All content sections — the SINGLE source of truth for navigation: the web
+ * home grid and desktop Sidebar show only items WITHOUT `mobileOnly`; the
+ * mobile app (More menu) shows everything. New app-only features are flagged
+ * `mobileOnly` so they stay off the website until they're web-ready.
  */
 export const navSections: { heading: string; items: NavItem[] }[] = [
   {
@@ -427,12 +433,15 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
     heading: "The Big Picture",
     items: [
       { href: "/story-of-creation", icon: InfinityIcon, title: "Story of Creation", titleAr: "قصة الخلق", description: "From before time to the eternal life" },
+      { href: "/barzakh", icon: Hourglass, title: "Barzakh", titleAr: "البرزخ", description: "The grave — between death and resurrection" },
+      { href: "/day-of-judgement", icon: Scale, title: "Day of Judgement", titleAr: "يوم القيامة", description: "The signs, the reckoning, the scale" },
+      { href: "/jannah", icon: Flower2, title: "Jannah & Jahannam", titleAr: "الجنة والنار", description: "Paradise and Hellfire in detail" },
     ],
   },
   {
     heading: "The Prophets",
     items: [
-      { href: "/prophets", icon: Users, title: "Prophets", titleAr: "الأنبياء", description: "Adam to Isa — 25 prophets" },
+      { href: "/prophets", icon: Users, title: "Prophets", titleAr: "الأنبياء", description: "Adam to Muhammad ﷺ — 29 prophets" },
       { href: "/prophet-muhammad", icon: Crown, title: "Prophet Muhammad", titleAr: "النبي محمد ﷺ", description: "His life, character, family" },
     ],
   },
@@ -442,14 +451,17 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
       { href: "/muslim-daily", icon: ListChecks, title: "Muslim Daily", titleAr: "يوميات المسلم", description: "Morning adhkar, evening routines, checklist" },
       { href: "/duas", icon: HandHeart, title: "Duas", titleAr: "الدعاء", description: "Supplications for every situation" },
       { href: "/dhikr", icon: Repeat, title: "Dhikr", titleAr: "الذكر", description: "Tasbeeh and daily remembrance" },
-      { href: "/family", icon: Users, title: "Family", titleAr: "الأسرة", description: "Parents, elders, family ties" },
-      { href: "/marriage", icon: HeartHandshake, title: "Marriage", titleAr: "الزواج", description: "Nikah, rights, divorce" },
+      { href: "/family", icon: Users, title: "Family", titleAr: "الأسرة", description: "Parents, children, kinship, inheritance" },
+      { href: "/marriage", icon: HeartHandshake, title: "Marriage", titleAr: "الزواج", description: "Nikah, rights, married life, divorce" },
+      { href: "/protection", icon: ShieldCheck, title: "Protection & Ruqyah", titleAr: "الرقية والتحصين", description: "Sihr, the evil eye, and daily protection" },
     ],
   },
   {
     heading: "Practice",
     items: [
       { href: "/salah", icon: Clock, title: "Salah", titleAr: "الصلاة", description: "The five daily prayers, step by step" },
+      { href: "/prayer-times", icon: Timer, title: "Prayer Times", titleAr: "مواقيت الصلاة", description: "Today's times for your location" },
+      { href: "/qiblah", icon: Compass, title: "Qiblah", titleAr: "القبلة", description: "Find the direction of prayer" },
       { href: "/ramadan", icon: Moon, title: "Ramadan", titleAr: "رمضان", description: "Fasting, Tarawih, Laylatul Qadr" },
       { href: "/kids", icon: GraduationCap, title: "Kids Learning", titleAr: "تعليم الأطفال", description: "Lessons + stories + quizzes for children" },
       { href: "/quiz", icon: Trophy, title: "Quizzes", titleAr: "اختبارات", description: "Test your Islamic knowledge" },

@@ -411,19 +411,24 @@ WEBSITE DEEP LINKING:
 HADITH: /hadith/{collection}/{bookId}?highlight={hadithId}
 QURAN: /quran/{surah_number}
 PROPHETS: /prophets/{slug}
-PROPHET MUHAMMAD: /prophet-muhammad?tab=timeline|character|appearance|family|prophecies|worship|daily-sunnah
+PROPHET MUHAMMAD: /prophet-muhammad?tab=timeline|character|his-person|family|prophecies|worship-sunnah
 TAWHID: /tawhid?tab=categories
 ARTICLES OF FAITH: /articles-of-faith?tab=articles
 PILLARS: /pillars?tab=pillars
-SALAH: /salah?tab=prayers|voluntary
+SALAH: /salah?tab=prayers|voluntary|wudu (wudu = purification incl. ghusl: ?tab=wudu&sub=ghusl; jumu'ah: ?tab=prayers&sub=jumuah)
+PRAYER TIMES: /prayer-times
+QIBLAH: /qiblah
 DUAS: /duas?tab={category}
 RAMADAN: /ramadan?tab=fasting|last-ten
 BARZAKH: /barzakh?tab=what-happens|protection
 DAY OF JUDGEMENT: /day-of-judgement?tab=signs|events|salvation
 JANNAH: /jannah?tab=descriptions|how-to
+PROTECTION & RUQYAH: /protection?tab=sihr|evil-eye|ruqyah|daily
+MARRIAGE: /marriage?tab=before|wedding|husband-rights|wife-rights|married-life|divorce
+FAMILY: /family?tab=children|parents|elders|kinship|death|inheritance
 MIRACLES: /miracles?tab={category}
 ISLAMIC CALENDAR: /islamic-calendar?tab=months|dates
-WHY ISLAM: /why-islam?tab=proofs|christianity|judaism|hinduism|buddhism|sikhism|atheism|questions
+WHY ISLAM: /why-islam?tab=start|proofs|worldviews|questions
 SECTS: /sects?tab=sunni|shia|other
 OTHER: /hadith, /resources, /learn-arabic`;
 

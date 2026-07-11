@@ -1,7 +1,7 @@
 "use client";
 
 import BottomSheet from "./BottomSheet";
-import { QiblahSection } from "@/app/salah/page";
+import { QiblahSection } from "@/components/QiblahSection";
 
 export default function QiblahSheet({
   open,

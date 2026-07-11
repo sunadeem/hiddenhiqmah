@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useMemo, Suspense } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
@@ -664,14 +665,29 @@ function TopicInfoCard({ topic }: { topic: SectTopic }) {
 
 function SectsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   useScrollToSection();
   const [activeSection, setActiveSection] = useState<SectionKey>(
     (searchParams.get("tab") as SectionKey) || "intro"
   );
-  const [activeSunni, setActiveSunni] = useState("aqeedah");
-  const [activeShia, setActiveShia] = useState("origins");
-  const [activeOther, setActiveOther] = useState("khawarij");
+  // Deep-link support: ?sub=<topic id> (old ?section= accepted as a mount-time alias)
+  const subParam = searchParams.get("sub") ?? searchParams.get("section");
+  const [activeSunni, setActiveSunni] = useState(
+    subParam && sunniTopics.some((t) => t.id === subParam) ? subParam : "aqeedah"
+  );
+  const [activeShia, setActiveShia] = useState(
+    subParam && shiaTopics.some((t) => t.id === subParam) ? subParam : "origins"
+  );
+  const [activeOther, setActiveOther] = useState(
+    subParam && otherSects.some((t) => t.id === subParam) ? subParam : "khawarij"
+  );
   const [search, setSearch] = useState("");
+
+  // Keep ?tab= / ?sub= in sync so the current view is shareable
+  const syncUrl = (tab: SectionKey, sub?: string) => {
+    router.replace(sub ? `${pathname}?tab=${tab}&sub=${sub}` : `${pathname}?tab=${tab}`, { scroll: false });
+  };
 
   const topicMatches = (t: SectTopic) => {
     if (!search || search.length < 2) return true;
@@ -697,37 +713,14 @@ function SectsContent() {
   const filteredMatters = useMemo(() => whyItMatters.filter(mattersMatches), [search]);
 
   // Auto-select first visible topic when active is filtered out
-  if (filteredSunni.length > 0 && !filteredSunni.find((t) => t.id === activeSunni)) {
-    setActiveSunni(filteredSunni[0].id);
-  }
-  if (filteredShia.length > 0 && !filteredShia.find((t) => t.id === activeShia)) {
-    setActiveShia(filteredShia[0].id);
-  }
-  if (filteredOther.length > 0 && !filteredOther.find((t) => t.id === activeOther)) {
-    setActiveOther(filteredOther[0].id);
-  }
-
-  const renderPillNav = (
-    topics: SectTopic[],
-    active: string,
-    setActive: (id: string) => void
-  ) => (
-    <div className="flex md:flex-col flex-row gap-1 overflow-x-auto md:overflow-x-visible md:w-48 w-full shrink-0">
-      {topics.map((topic) => (
-        <button
-          key={topic.id}
-          onClick={() => setActive(topic.id)}
-          className={`text-left px-3 py-2 rounded-lg text-sm whitespace-nowrap md:whitespace-normal transition-all ${
-            active === topic.id
-              ? "bg-gold/15 text-gold font-medium"
-              : "text-themed-muted hover:text-themed hover:bg-[var(--color-bg)]"
-          }`}
-        >
-          {topic.name}
-        </button>
-      ))}
-    </div>
-  );
+  useEffect(() => {
+    if (filteredSunni.length > 0 && !filteredSunni.find((t) => t.id === activeSunni))
+      setActiveSunni(filteredSunni[0].id);
+    if (filteredShia.length > 0 && !filteredShia.find((t) => t.id === activeShia))
+      setActiveShia(filteredShia[0].id);
+    if (filteredOther.length > 0 && !filteredOther.find((t) => t.id === activeOther))
+      setActiveOther(filteredOther[0].id);
+  }, [filteredSunni, filteredShia, filteredOther, activeSunni, activeShia, activeOther]);
 
   const renderTopicWithNav = (
     topics: SectTopic[],
@@ -800,22 +793,16 @@ function SectsContent() {
         className="mb-6"
       />
 
-      {/* Section navigation */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {sections.map((section) => (
-          <button
-            key={section.key}
-            onClick={() => setActiveSection(section.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-              activeSection === section.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
+      {/* Section navigation (shared TabBar) */}
+      <TabBar
+        tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
+        activeTab={activeSection}
+        onTabChange={(k) => {
+          setActiveSection(k as SectionKey);
+          syncUrl(k as SectionKey);
+        }}
+        className="mb-6"
+      />
 
       <AnimatePresence mode="wait">
         {/* ─── Overview ─── */}
@@ -927,7 +914,10 @@ function SectsContent() {
             transition={{ duration: 0.3 }}
           >
             {filteredSunni.length > 0 ? (
-              renderTopicWithNav(filteredSunni, activeSunni, setActiveSunni)
+              renderTopicWithNav(filteredSunni, activeSunni, (id) => {
+                setActiveSunni(id);
+                syncUrl("sunni", id);
+              })
             ) : (
               <ContentCard>
                 <p className="text-themed-muted text-sm text-center py-8">
@@ -948,7 +938,10 @@ function SectsContent() {
             transition={{ duration: 0.3 }}
           >
             {filteredShia.length > 0 ? (
-              renderTopicWithNav(filteredShia, activeShia, setActiveShia)
+              renderTopicWithNav(filteredShia, activeShia, (id) => {
+                setActiveShia(id);
+                syncUrl("shia", id);
+              })
             ) : (
               <ContentCard>
                 <p className="text-themed-muted text-sm text-center py-8">
@@ -969,7 +962,10 @@ function SectsContent() {
             transition={{ duration: 0.3 }}
           >
             {filteredOther.length > 0 ? (
-              renderTopicWithNav(filteredOther, activeOther, setActiveOther)
+              renderTopicWithNav(filteredOther, activeOther, (id) => {
+                setActiveOther(id);
+                syncUrl("other", id);
+              })
             ) : (
               <ContentCard>
                 <p className="text-themed-muted text-sm text-center py-8">

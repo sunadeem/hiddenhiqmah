@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
+import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
@@ -37,16 +40,19 @@ import {
   FileText,
   HelpCircle,
   Coins,
+  HeartHandshake,
+  Unlink,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
    TYPES & TABS
    ═══════════════════════════════════════════════════════════════════ */
 
-type MainTab = "parents" | "elders" | "children" | "death" | "inheritance";
+type MainTab = "parents" | "elders" | "children" | "kinship" | "death" | "inheritance";
 type ParentsSub = "rights" | "quran" | "sunnah" | "duas" | "after";
 type EldersSub = "elderly" | "sick";
 type ChildrenSub = "conceiving" | "pregnancy" | "newborn" | "blessings" | "rights" | "raising" | "daughters";
+type KinshipSub = "why" | "reward" | "severing" | "who" | "cut-off";
 type DeathSub = "preparing" | "dying" | "washing" | "janazah" | "burial" | "grief" | "visiting";
 type InheritanceSub = "foundations" | "verses" | "before" | "shares" | "heirs" | "wasiyyah" | "wisdom";
 
@@ -54,6 +60,7 @@ const mainTabs: { key: MainTab; label: string; icon: React.ReactNode }[] = [
   { key: "children", label: "Children", icon: <Baby size={16} /> },
   { key: "parents", label: "Parents", icon: <Users size={16} /> },
   { key: "elders", label: "Elders & Sick", icon: <HeartPulse size={16} /> },
+  { key: "kinship", label: "Kinship", icon: <HeartHandshake size={16} /> },
   { key: "death", label: "Death", icon: <Sunset size={16} /> },
   { key: "inheritance", label: "Inheritance", icon: <Coins size={16} /> },
 ];
@@ -79,6 +86,14 @@ const childrenSubs: { key: ChildrenSub; label: string; icon: React.ReactNode }[]
   { key: "rights", label: "Rights of Children", icon: <Scale size={16} /> },
   { key: "raising", label: "Raising Them Right", icon: <GraduationCap size={16} /> },
   { key: "daughters", label: "Virtue of Daughters", icon: <Crown size={16} /> },
+];
+
+const kinshipSubs: { key: KinshipSub; label: string; icon: React.ReactNode }[] = [
+  { key: "why", label: "Why Kinship Matters", icon: <Heart size={16} /> },
+  { key: "reward", label: "Reward of Maintaining Ties", icon: <Gift size={16} /> },
+  { key: "severing", label: "Severity of Cutting Ties", icon: <Unlink size={16} /> },
+  { key: "who", label: "Who Counts as Kin", icon: <Users size={16} /> },
+  { key: "cut-off", label: "When They Cut You Off", icon: <HandHeart size={16} /> },
 ];
 
 const deathSubs: { key: DeathSub; label: string; icon: React.ReactNode }[] = [
@@ -148,56 +163,6 @@ function VerseCard({
       <p className="text-themed-muted text-sm leading-relaxed italic mb-1">&ldquo;{english}&rdquo;</p>
       <Ref text={source} />
     </ContentCard>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   SUB-TAB LAYOUT
-   ═══════════════════════════════════════════════════════════════════ */
-
-function SubTabLayout<T extends string>({
-  subs,
-  activeSub,
-  setActiveSub,
-  children,
-}: {
-  subs: { key: T; label: string; icon: React.ReactNode }[];
-  activeSub: T;
-  setActiveSub: (s: T) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col md:flex-row gap-4 items-start">
-      <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-52 w-full shrink-0">
-        {subs.map((sub) => (
-          <button
-            key={sub.key}
-            onClick={() => setActiveSub(sub.key)}
-            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
-              activeSub === sub.key
-                ? "bg-gold/20 text-gold border border-gold/40"
-                : "text-themed-muted hover:text-themed border sidebar-border"
-            }`}
-          >
-            {sub.icon}
-            {sub.label}
-          </button>
-        ))}
-      </div>
-      <div className="flex-1 min-w-0">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeSub}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </div>
   );
 }
 
@@ -486,6 +451,9 @@ function AfterTab() {
             Visit and honor their relatives — aunts, uncles, cousins — even those you do not know well. These ties were precious to them.
           </p>
           <Ref text="Muslim 45:13" />
+          <Link href="/family?tab=kinship&sub=why" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            More on kinship ties →
+          </Link>
         </ContentCard>
       </div>
 
@@ -672,23 +640,15 @@ function ConceivingTab() {
         </p>
       </ContentCard>
 
-      <h3 className="text-lg font-semibold text-themed mt-4 mb-3 px-1">Du&apos;a Before Intimacy</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <VerseCard
-          arabic="بِسْمِ اللَّهِ اللَّهُمَّ جَنِّبْنَا الشَّيْطَانَ وَجَنِّبِ الشَّيْطَانَ مَا رَزَقْتَنَا"
-          transliteration="Bismillah, Allahumma jannibna ash-Shaytana wa jannib ash-Shaytana ma razaqtana"
-          english="In the name of Allah. O Allah, keep Shaytan away from us, and keep Shaytan away from what You provide us."
-          source="Bukhari 67:100"
-          delay={0.08}
-        />
-        <ContentCard delay={0.11}>
-          <h5 className="text-gold font-medium mb-2">The promise</h5>
-          <p className="text-themed-muted text-sm leading-relaxed">
-            The Prophet ﷺ said: if a child is decreed for them, Shaytan will never be able to harm that child. A simple sentence before intimacy can shape the spiritual fate of a life not yet conceived.
-          </p>
-          <Ref text="Bukhari 67:100" />
-        </ContentCard>
-      </div>
+      <ContentCard delay={0.08}>
+        <h5 className="text-gold font-medium mb-2">Du&apos;a before intimacy</h5>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The du&apos;a the Prophet ﷺ taught for before intimacy — &quot;Bismillah, Allahumma jannibna ash-Shaytana...&quot; — and its promise of protection for the child now live with the rest of the married-life guidance.
+        </p>
+        <Link href="/marriage?tab=married-life&sub=dua-before-intimacy" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+          Read it on the Marriage page →
+        </Link>
+      </ContentCard>
 
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Du&apos;as of the Prophets for Righteous Offspring</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -723,7 +683,7 @@ function ConceivingTab() {
       </div>
 
       <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 67:100", desc: "Du'a before intimacy — protection of the child from Shaytan" },
+        { ref: "Bukhari 67:100", desc: "Du'a before intimacy (see Marriage → Married Life)" },
         { ref: "Quran 25:74", desc: "Asking for spouses and offspring as comfort of the eyes" },
         { ref: "Quran 3:38", desc: "Zakariyya's du'a for pure offspring" },
         { ref: "Quran 14:40", desc: "Ibrahim's du'a for prayer in his offspring" },
@@ -1182,6 +1142,248 @@ function DaughtersTab() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   KINSHIP TAB CONTENT (silat al-rahim)
+   ═══════════════════════════════════════════════════════════════════ */
+
+function KinshipWhyTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Silat al-rahim — maintaining the ties of kinship — is not a social nicety in Islam; it is a command Allah pairs with taqwa of Himself in the very first verse of Surah An-Nisa. The word for kinship, <span className="text-gold italic">rahim</span> (womb), is derived from Ar-Rahman — the ties of family carry a share of Allah&apos;s own name.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="يَـٰٓأَيُّهَا ٱلنَّاسُ ٱتَّقُوا۟ رَبَّكُمُ ٱلَّذِى خَلَقَكُم مِّن نَّفْسٍ وَٰحِدَةٍ وَخَلَقَ مِنْهَا زَوْجَهَا وَبَثَّ مِنْهُمَا رِجَالًا كَثِيرًا وَنِسَآءً ۚ وَٱتَّقُوا۟ ٱللَّهَ ٱلَّذِى تَسَآءَلُونَ بِهِۦ وَٱلْأَرْحَامَ ۚ إِنَّ ٱللَّهَ كَانَ عَلَيْكُمْ رَقِيبًا"
+          transliteration="Ya ayyuha an-nasu-ttaqu Rabbakumu alladhi khalaqakum min nafsin wahidatin wa khalaqa minha zawjaha wa baththa minhuma rijalan kathiran wa nisa'a, wattaqu Allaha alladhi tasa'aluna bihi wal-arham, inna Allaha kana 'alaykum raqiba"
+          english="O people, fear your Lord Who created you from a single soul, and created from it its mate, and from both of them created countless men and women. Fear Allah in Whose name you ask one another, and be mindful of your kinship ties, for Allah is ever Watchful over you."
+          source="Quran 4:1"
+          delay={0.08}
+        />
+        <VerseCard
+          arabic="وَٱلَّذِينَ يَصِلُونَ مَآ أَمَرَ ٱللَّهُ بِهِۦٓ أَن يُوصَلَ وَيَخْشَوْنَ رَبَّهُمْ وَيَخَافُونَ سُوٓءَ ٱلْحِسَابِ"
+          transliteration="Walladhina yasiluna ma amara Allahu bihi an yusala wa yakhshawna Rabbahum wa yakhafuna su'a al-hisab"
+          english="And those who maintain [the ties] which Allah has ordered to be maintained, and fear their Lord, and are afraid of a terrible reckoning."
+          source="Quran 13:21"
+          delay={0.11}
+        />
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">The rahim clings to the Throne</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The Prophet ﷺ related that when Allah finished creating, the rahim (kinship) stood and sought refuge with Him from being severed. Allah answered: &quot;Won&apos;t you be pleased that I keep good relations with the one who keeps good relations with you, and sever relations with the one who severs relations with you?&quot; It said: &quot;Yes, O my Lord.&quot; He said: &quot;Then that is for you.&quot;
+          </p>
+          <Ref text="Bukhari 78:18" />
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">A name from Ar-Rahman</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The Prophet ﷺ said that the word rahim derives its name from Ar-Rahman, and that Allah said: &quot;I will keep good relations with the one who keeps good relations with you, and sever the relations with the one who severs the relations with you.&quot;
+          </p>
+          <Ref text="Bukhari 78:19" />
+        </ContentCard>
+      </div>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Quran 4:1", desc: "Fear Allah and be mindful of the wombs (kinship ties)" },
+        { ref: "Quran 13:21", desc: "Those who maintain what Allah ordered to be maintained" },
+        { ref: "Bukhari 78:18", desc: "The rahim seeks refuge with Allah from being severed" },
+        { ref: "Bukhari 78:19", desc: "Rahim derives its name from Ar-Rahman" },
+      ]} />
+    </div>
+  );
+}
+
+function KinshipRewardTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Few deeds come with promises this concrete: more provision and a longer, more blessed life — in exchange for keeping up with your relatives.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="مَنْ سَرَّهُ أَنْ يُبْسَطَ لَهُ فِي رِزْقِهِ، وَأَنْ يُنْسَأَ لَهُ فِي أَثَرِهِ، فَلْيَصِلْ رَحِمَهُ"
+          transliteration="Man sarrahu an yubsata lahu fi rizqihi, wa an yunsa'a lahu fi atharihi, falyasil rahimah"
+          english="Whoever is pleased that he be granted more wealth and that his lease of life be prolonged, then he should keep good relations with his kith and kin."
+          source="Bukhari 78:16"
+          delay={0.08}
+        />
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">Khadijah&apos;s first testimony</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            When the first revelation shook the Prophet ﷺ, Khadijah (RA) comforted him with the deeds Allah would never disgrace him for — and the first she named was: &quot;You keep good relations with your kith and kin.&quot; Silat al-rahim was part of his character before prophethood itself.
+          </p>
+          <Ref text="Bukhari 1:3" />
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">Barakah, not just length</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Scholars explain the &quot;extension of life&quot; as barakah — a life whose hours carry more good, more worship, and a legacy that outlives it — and some held it as a literal extension written in the decree. Either way, the transaction is real: keep the ties, and Allah increases you.
+          </p>
+        </ContentCard>
+      </div>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Bukhari 78:16", desc: "Provision expanded and life extended for maintaining kinship" },
+        { ref: "Bukhari 1:3", desc: "Khadijah: 'You keep good relations with your kith and kin'" },
+      ]} />
+    </div>
+  );
+}
+
+function KinshipSeveringTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Cutting the ties of kinship (qati&apos;at al-rahim) is counted among the major sins. The warnings attached to it are among the most severe in the religion — a barrier at the gate of Paradise, and a curse in the Quran.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="لاَ يَدْخُلُ الْجَنَّةَ قَاطِعٌ"
+          transliteration="La yadkhulu al-jannata qati'"
+          english="The person who severs the bond of kinship will not enter Paradise."
+          source="Bukhari 78:15"
+          delay={0.08}
+        />
+        <VerseCard
+          arabic="فَهَلْ عَسَيْتُمْ إِن تَوَلَّيْتُمْ أَن تُفْسِدُوا۟ فِى ٱلْأَرْضِ وَتُقَطِّعُوٓا۟ أَرْحَامَكُمْ"
+          transliteration="Fahal 'asaytum in tawallaytum an tufsidu fi al-ardi wa tuqatti'u arhamakum"
+          english="Then if you turn away, what else can be expected but that you will spread corruption in the land and sever your ties of kinship?"
+          source="Quran 47:22"
+          delay={0.11}
+        />
+        <VerseCard
+          arabic="أُو۟لَـٰٓئِكَ ٱلَّذِينَ لَعَنَهُمُ ٱللَّهُ فَأَصَمَّهُمْ وَأَعْمَىٰٓ أَبْصَـٰرَهُمْ"
+          transliteration="Ula'ika alladhina la'anahumu Allahu fa-asammahum wa a'ma absarahum"
+          english="These are the ones whom Allah has cursed and has made them deaf and blinded their sight."
+          source="Quran 47:23"
+          delay={0.14}
+        />
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">What counts as severing</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Scholars state that severing is not only open hostility — years of silence, refusing to visit or answer, withholding help a relative needs when you can give it, and nursing grudges across generations all fall under it. The bar for &quot;maintaining&quot; is low: a visit, a call, a greeting, a du&apos;a. The bar for &quot;severing&quot; is simply abandoning even that.
+          </p>
+        </ContentCard>
+      </div>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Bukhari 78:15", desc: "The one who severs kinship will not enter Paradise" },
+        { ref: "Quran 47:22-23", desc: "Severing kinship — corruption and Allah's curse" },
+      ]} />
+    </div>
+  );
+}
+
+function KinshipWhoTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The rahim is everyone joined to you by lineage — with the strength of the duty following the closeness of the tie. Begin with the closest and work outward; a little done consistently outweighs grand gestures once a decade.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.08}>
+          <h5 className="text-gold font-medium mb-2">Parents first</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The greatest of all kinship rights belongs to the mother — three times — then the father. Everything else in silat al-rahim sits beneath this.
+          </p>
+          <Ref text="Bukhari 78:2" />
+          <Link href="/family?tab=parents&sub=rights" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Rights of parents →
+          </Link>
+        </ContentCard>
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">Then the nearest kin</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Grandparents, siblings, then aunts and uncles (the mother&apos;s sister is given a station near the mother herself in the Sunnah), then cousins and their children. Scholars state the duty is strongest toward those who would inherit from you and those forbidden in marriage to you (mahram relatives), then extends outward by closeness.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">Practical upkeep</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Visits when you can, calls and messages when you cannot; gifts — even small ones; checking on the sick and the elderly among them; sadaqah to a poor relative (which scholars describe as both charity and silat); attending their joys and their griefs; and du&apos;a for them by name.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">In-laws are honored too</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Your spouse&apos;s parents and family are not, strictly, your rahim — but honoring them is from the kind treatment Allah commands between spouses, and it is honoring your spouse and your children&apos;s own kinship ties. Scholars encourage treating in-laws with the generosity you would show your own elders.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">Your parents&apos; friends and relatives</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            After a parent passes, keeping ties with their friends and relatives is among the finest acts of birr — the ties they loved become yours to carry.
+          </p>
+          <Ref text="Muslim 45:13" />
+        </ContentCard>
+      </div>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Bukhari 78:2", desc: "Your mother, your mother, your mother, then your father" },
+        { ref: "Muslim 45:13", desc: "Keeping ties with the parents' friends after their death" },
+      ]} />
+    </div>
+  );
+}
+
+function KinshipCutOffTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The hardest test of silat al-rahim is the relative who does not reciprocate. Islam&apos;s answer is direct: your duty was never conditional on theirs.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="لَيْسَ الْوَاصِلُ بِالْمُكَافِئِ، وَلَكِنِ الْوَاصِلُ الَّذِي إِذَا قَطَعَتْ رَحِمُهُ وَصَلَهَا"
+          transliteration="Laysa al-wasilu bil-mukafi', wa lakini al-wasilu alladhi idha qata'at rahimuhu wasalaha"
+          english="The one who maintains ties is not the one who reciprocates; the one who truly maintains ties is the one who, when his relatives cut him off, keeps the ties with them."
+          source="Bukhari 78:22"
+          delay={0.08}
+        />
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">Allah&apos;s support stays with you</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            A man complained to the Prophet ﷺ: &quot;I have relatives with whom I keep ties while they sever them; I treat them well and they treat me badly; I am forbearing and they are harsh.&quot; He ﷺ replied: &quot;If it is as you say, it is as if you are feeding them hot ashes — and there will remain with you a supporter from Allah against them so long as you continue.&quot;
+          </p>
+          <Ref text="Muslim 45:25" />
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">Your reward is not in their hands</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The reward of silat al-rahim is written the moment you reach out — whether or not they answer. A message on Eid, a du&apos;a for them in sujood, a door left open: these keep you on the side of the wasil even if they never walk through it.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">Boundaries where there is harm</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Maintaining ties does not mean accepting abuse. Scholars state that where a relative causes real harm, you may keep the tie at a safe distance — the occasional greeting, du&apos;a from afar, help in genuine need — without exposing yourself or your family to injury. The obligation is to not sever; it is not an obligation to be harmed.
+          </p>
+        </ContentCard>
+      </div>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Bukhari 78:22", desc: "The true wasil keeps ties with those who cut him off" },
+        { ref: "Muslim 45:25", desc: "Feeding them hot ashes — Allah's support for the one who persists" },
+      ]} />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    DEATH TAB CONTENT
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -1443,6 +1645,9 @@ function JanazahTab() {
         <p className="text-themed-muted text-sm leading-relaxed">
           Salat al-Janazah is a fard kifayah — a collective obligation. It has no ruku and no sujood, only four takbirs while standing. It is the final du&apos;a the community makes for the deceased before burial, and the reward of attending is enormous.
         </p>
+        <Link href="/salah?tab=voluntary&sub=janazah" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+          Janazah prayer on the Salah page →
+        </Link>
       </ContentCard>
 
       <h3 className="text-lg font-semibold text-themed mt-4 mb-3 px-1">How to Pray It</h3>
@@ -2524,20 +2729,70 @@ function WisdomInheritanceTab() {
    MAIN PAGE
    ═══════════════════════════════════════════════════════════════════ */
 
-export default function FamilyPage() {
-  const [activeMain, setActiveMain] = useState<MainTab>("children");
-  const [activeParents, setActiveParents] = useState<ParentsSub>("rights");
-  const [activeElders, setActiveElders] = useState<EldersSub>("elderly");
-  const [activeChildren, setActiveChildren] = useState<ChildrenSub>("conceiving");
-  const [activeDeath, setActiveDeath] = useState<DeathSub>("preparing");
-  const [activeInheritance, setActiveInheritance] = useState<InheritanceSub>("foundations");
+const subsByTab: Record<MainTab, readonly { key: string }[]> = {
+  parents: parentsSubs,
+  elders: eldersSubs,
+  children: childrenSubs,
+  kinship: kinshipSubs,
+  death: deathSubs,
+  inheritance: inheritanceSubs,
+};
+
+const defaultSubs: Record<MainTab, string> = {
+  parents: "rights",
+  elders: "elderly",
+  children: "conceiving",
+  kinship: "why",
+  death: "preparing",
+  inheritance: "foundations",
+};
+
+function FamilyContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Deep-link support: ?tab= and ?sub= are the source of truth (read on mount,
+  // written on every change), so in-page links and back/forward both work.
+  const tabParam = searchParams.get("tab");
+  const subParam = searchParams.get("sub");
+  const activeMain: MainTab = mainTabs.some((t) => t.key === tabParam) ? (tabParam as MainTab) : "children";
+
+  // Last-visited rail pill per tab, so switching tabs restores the selection.
+  const [subMemory, setSubMemory] = useState<Record<MainTab, string>>(() => {
+    const memory = { ...defaultSubs };
+    if (subParam && subsByTab[activeMain].some((s) => s.key === subParam)) memory[activeMain] = subParam;
+    return memory;
+  });
+
+  const activeSubOf = (tab: MainTab): string =>
+    activeMain === tab && subParam && subsByTab[tab].some((s) => s.key === subParam)
+      ? subParam
+      : subMemory[tab];
+
+  const syncUrl = (tab: MainTab, sub: string) =>
+    router.replace(`${pathname}?tab=${tab}&sub=${sub}`, { scroll: false });
+
+  const changeTab = (tab: MainTab) => syncUrl(tab, activeSubOf(tab));
+
+  const changeSub = (tab: MainTab) => (sub: string) => {
+    setSubMemory((m) => ({ ...m, [tab]: sub }));
+    syncUrl(tab, sub);
+  };
+
+  const activeParents = activeSubOf("parents") as ParentsSub;
+  const activeElders = activeSubOf("elders") as EldersSub;
+  const activeChildren = activeSubOf("children") as ChildrenSub;
+  const activeKinship = activeSubOf("kinship") as KinshipSub;
+  const activeDeath = activeSubOf("death") as DeathSub;
+  const activeInheritance = activeSubOf("inheritance") as InheritanceSub;
 
   return (
     <div>
       <PageHeader
         title="Family"
         titleAr="الأسرة"
-        subtitle="Rights of parents, honoring elders, visiting the sick — and the duas that bind family together"
+        subtitle="Rights of parents, raising children, kinship ties, honoring elders — and the duas that bind family together"
       />
 
       <ContentCard className="mb-6">
@@ -2555,7 +2810,7 @@ export default function FamilyPage() {
       <TabBar
         tabs={mainTabs}
         activeTab={activeMain}
-        onTabChange={(key) => setActiveMain(key as MainTab)}
+        onTabChange={(key) => changeTab(key as MainTab)}
       />
 
       <div className="mt-6">
@@ -2568,7 +2823,7 @@ export default function FamilyPage() {
             transition={{ duration: 0.25 }}
           >
             {activeMain === "parents" && (
-              <SubTabLayout subs={parentsSubs} activeSub={activeParents} setActiveSub={setActiveParents}>
+              <SubTabLayout subs={parentsSubs} activeSub={activeParents} setActiveSub={changeSub("parents")}>
                 {activeParents === "rights" && <RightsTab />}
                 {activeParents === "quran" && <QuranTab />}
                 {activeParents === "sunnah" && <SunnahTab />}
@@ -2577,13 +2832,13 @@ export default function FamilyPage() {
               </SubTabLayout>
             )}
             {activeMain === "elders" && (
-              <SubTabLayout subs={eldersSubs} activeSub={activeElders} setActiveSub={setActiveElders}>
+              <SubTabLayout subs={eldersSubs} activeSub={activeElders} setActiveSub={changeSub("elders")}>
                 {activeElders === "elderly" && <ElderlyTab />}
                 {activeElders === "sick" && <SickTab />}
               </SubTabLayout>
             )}
             {activeMain === "children" && (
-              <SubTabLayout subs={childrenSubs} activeSub={activeChildren} setActiveSub={setActiveChildren}>
+              <SubTabLayout subs={childrenSubs} activeSub={activeChildren} setActiveSub={changeSub("children")}>
                 {activeChildren === "conceiving" && <ConceivingTab />}
                 {activeChildren === "pregnancy" && <PregnancyTab />}
                 {activeChildren === "newborn" && <NewbornTab />}
@@ -2593,8 +2848,17 @@ export default function FamilyPage() {
                 {activeChildren === "daughters" && <DaughtersTab />}
               </SubTabLayout>
             )}
+            {activeMain === "kinship" && (
+              <SubTabLayout subs={kinshipSubs} activeSub={activeKinship} setActiveSub={changeSub("kinship")}>
+                {activeKinship === "why" && <KinshipWhyTab />}
+                {activeKinship === "reward" && <KinshipRewardTab />}
+                {activeKinship === "severing" && <KinshipSeveringTab />}
+                {activeKinship === "who" && <KinshipWhoTab />}
+                {activeKinship === "cut-off" && <KinshipCutOffTab />}
+              </SubTabLayout>
+            )}
             {activeMain === "death" && (
-              <SubTabLayout subs={deathSubs} activeSub={activeDeath} setActiveSub={setActiveDeath}>
+              <SubTabLayout subs={deathSubs} activeSub={activeDeath} setActiveSub={changeSub("death")}>
                 {activeDeath === "preparing" && <PreparingDeathTab />}
                 {activeDeath === "dying" && <DyingMomentsTab />}
                 {activeDeath === "washing" && <WashingTab />}
@@ -2605,7 +2869,7 @@ export default function FamilyPage() {
               </SubTabLayout>
             )}
             {activeMain === "inheritance" && (
-              <SubTabLayout subs={inheritanceSubs} activeSub={activeInheritance} setActiveSub={setActiveInheritance}>
+              <SubTabLayout subs={inheritanceSubs} activeSub={activeInheritance} setActiveSub={changeSub("inheritance")}>
                 {activeInheritance === "foundations" && <FoundationsInheritanceTab />}
                 {activeInheritance === "verses" && <VersesInheritanceTab />}
                 {activeInheritance === "before" && <BeforeDistributionTab />}
@@ -2618,6 +2882,24 @@ export default function FamilyPage() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <ContentCard className="mt-8">
+        <h4 className="text-gold font-semibold text-sm mb-2">Marriage in Islam</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Every family begins with a nikah — finding a spouse, the wedding, the rights of husband and wife, and married life.
+        </p>
+        <Link href="/marriage" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+          Visit the Marriage page →
+        </Link>
+      </ContentCard>
     </div>
+  );
+}
+
+export default function FamilyPage() {
+  return (
+    <Suspense>
+      <FamilyContent />
+    </Suspense>
   );
 }

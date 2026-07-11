@@ -1,17 +1,19 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
-import { Search, X, Sun, Moon as MoonIcon, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles } from "lucide-react";
-import TabBar from "@hidden-hiqmah/ui/components/TabBar";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import { ArrowLeft, Sun, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
 type Dua = {
+  /** Stable slug — bookmark ids and ?d= deep links depend on it; never renumber. */
+  id: string;
   tags: string[];
   title: string;
   arabic: string;
@@ -24,26 +26,26 @@ type Dua = {
 };
 
 const categories = [
-  { key: "all", label: "All", icon: null },
-  { key: "powerful", label: "Most Powerful", icon: Sparkles },
-  { key: "morning-evening", label: "Morning & Evening", icon: Sun },
-  { key: "prayer", label: "Prayer", icon: HandHeart },
-  { key: "sleep", label: "Sleep", icon: Bed },
-  { key: "eating", label: "Eating & Drinking", icon: Utensils },
-  { key: "travel", label: "Travel", icon: Plane },
-  { key: "home-mosque", label: "Home & Mosque", icon: Home },
-  { key: "protection", label: "Protection", icon: Shield },
-  { key: "forgiveness", label: "Forgiveness", icon: Heart },
-  { key: "distress", label: "Distress & Anxiety", icon: Brain },
-  { key: "illness", label: "Illness & Healing", icon: Stethoscope },
-  { key: "parents-family", label: "Parents & Family", icon: Users },
-  { key: "guidance", label: "Guidance & Knowledge", icon: BookOpen },
-  { key: "rain-weather", label: "Rain & Weather", icon: CloudRain },
+  { key: "powerful", label: "Most Powerful", icon: Sparkles, description: "Duas carrying explicit promises in the Sahih collections" },
+  { key: "morning-evening", label: "Morning & Evening", icon: Sun, description: "Daily adhkar to open and close your day" },
+  { key: "prayer", label: "Prayer", icon: HandHeart, description: "Before, during, and after the prayer" },
+  { key: "sleep", label: "Sleep", icon: Bed, description: "Before sleeping, upon waking, and after bad dreams" },
+  { key: "eating", label: "Eating & Drinking", icon: Utensils, description: "Before and after meals, and when breaking the fast" },
+  { key: "travel", label: "Travel", icon: Plane, description: "Setting out, returning, and bidding farewell" },
+  { key: "home-mosque", label: "Home & Mosque", icon: Home, description: "Entering and leaving the home, mosque, and bathroom" },
+  { key: "protection", label: "Protection", icon: Shield, description: "Seeking refuge from harm, evil, and the evil eye" },
+  { key: "forgiveness", label: "Forgiveness", icon: Heart, description: "Istighfar and turning back to Allah in repentance" },
+  { key: "distress", label: "Distress & Anxiety", icon: Brain, description: "For worry, grief, hardship, and calamity" },
+  { key: "illness", label: "Illness & Healing", icon: Stethoscope, description: "For the sick and those who visit them" },
+  { key: "parents-family", label: "Parents & Family", icon: Users, description: "For parents, spouses, and children" },
+  { key: "guidance", label: "Guidance & Knowledge", icon: BookOpen, description: "Seeking guidance, clarity, and beneficial knowledge" },
+  { key: "rain-weather", label: "Rain & Weather", icon: CloudRain, description: "When it rains and when strong winds blow" },
 ];
 
 const duas: Dua[] = [
   // === MORNING & EVENING ===
   {
+    id: "morning-remembrance",
     tags: ["morning-evening"],
     title: "Morning Remembrance",
     arabic: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
@@ -53,6 +55,7 @@ const duas: Dua[] = [
     when: "Every morning",
   },
   {
+    id: "evening-remembrance",
     tags: ["morning-evening"],
     title: "Evening Remembrance",
     arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
@@ -62,6 +65,7 @@ const duas: Dua[] = [
     when: "Every evening",
   },
   {
+    id: "sayyid-al-istighfar",
     tags: ["morning-evening", "forgiveness", "powerful"],
     title: "Sayyid al-Istighfar (Master of Seeking Forgiveness)",
     arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
@@ -72,6 +76,7 @@ const duas: Dua[] = [
     virtue: "Whoever says this during the day with firm belief and dies that day before evening, he will be among the people of Paradise. Whoever says it at night with firm belief and dies before morning, he will be among the people of Paradise.",
   },
   {
+    id: "protection-from-all-harm",
     tags: ["morning-evening", "protection"],
     title: "Protection from All Harm",
     arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
@@ -83,6 +88,7 @@ const duas: Dua[] = [
     virtue: "Nothing will harm the one who says this three times in the morning and three times in the evening.",
   },
   {
+    id: "contentment-with-allah",
     tags: ["morning-evening"],
     title: "Contentment with Allah",
     arabic: "رَضِيتُ بِاللَّهِ رَبًّا وَبِالْإِسْلَامِ دِينًا وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا",
@@ -94,6 +100,7 @@ const duas: Dua[] = [
     virtue: "It is a right upon Allah to please whoever says this three times every morning and evening.",
   },
   {
+    id: "subhanallah-wa-bihamdihi",
     tags: ["morning-evening", "forgiveness", "powerful"],
     title: "SubhanAllah wa Bihamdihi",
     arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
@@ -105,6 +112,7 @@ const duas: Dua[] = [
     virtue: "Whoever says this one hundred times a day, his sins will be forgiven even if they were as much as the foam of the sea.",
   },
   {
+    id: "tahleel",
     tags: ["morning-evening", "protection", "powerful"],
     title: "Tahleel (Declaration of Oneness)",
     arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
@@ -116,6 +124,7 @@ const duas: Dua[] = [
     virtue: "Equivalent to freeing ten slaves, one hundred good deeds are recorded, one hundred sins are erased, and it is a protection from Shaytan until evening.",
   },
   {
+    id: "seeking-refuge-from-evil-of-creation",
     tags: ["morning-evening", "protection"],
     title: "Seeking Refuge from Evil of Creation",
     arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
@@ -129,6 +138,7 @@ const duas: Dua[] = [
 
   // === PRAYER ===
   {
+    id: "after-the-adhan",
     tags: ["prayer", "powerful"],
     title: "After the Adhan",
     arabic: "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ",
@@ -139,6 +149,7 @@ const duas: Dua[] = [
     virtue: "My intercession will be granted to whoever says this after hearing the adhan.",
   },
   {
+    id: "opening-supplication-in-prayer",
     tags: ["prayer"],
     title: "Opening Supplication in Prayer",
     arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَٰهَ غَيْرُكَ",
@@ -148,6 +159,7 @@ const duas: Dua[] = [
     when: "After opening takbeer in prayer",
   },
   {
+    id: "between-the-two-prostrations",
     tags: ["prayer"],
     title: "Between the Two Prostrations",
     arabic: "رَبِّ اغْفِرْ لِي رَبِّ اغْفِرْ لِي",
@@ -157,6 +169,7 @@ const duas: Dua[] = [
     when: "While sitting between the two prostrations",
   },
   {
+    id: "seeking-refuge-before-salam",
     tags: ["prayer"],
     title: "Seeking Refuge Before Salam",
     arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ جَهَنَّمَ وَمِنْ عَذَابِ الْقَبْرِ وَمِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ وَمِنْ شَرِّ فِتْنَةِ الْمَسِيحِ الدَّجَّالِ",
@@ -167,6 +180,7 @@ const duas: Dua[] = [
     virtue: "The Prophet (peace be upon him) used to seek refuge from these four things before giving salam.",
   },
   {
+    id: "after-completing-prayer",
     tags: ["prayer"],
     title: "After Completing Prayer",
     arabic: "أَسْتَغْفِرُ اللَّهَ أَسْتَغْفِرُ اللَّهَ أَسْتَغْفِرُ اللَّهَ اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ",
@@ -176,6 +190,7 @@ const duas: Dua[] = [
     when: "Immediately after salam",
   },
   {
+    id: "tasbeeh-after-prayer",
     tags: ["prayer", "powerful"],
     title: "Tasbeeh After Prayer",
     arabic: "سُبْحَانَ اللَّهِ (٣٣) الْحَمْدُ لِلَّهِ (٣٣) اللَّهُ أَكْبَرُ (٣٣) لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
@@ -186,6 +201,7 @@ const duas: Dua[] = [
     virtue: "The sins of whoever says this after every prayer will be forgiven, even if they were as much as the foam of the sea.",
   },
   {
+    id: "istikhara",
     tags: ["prayer"],
     title: "Istikhara (Seeking Guidance)",
     arabic: "اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ وَتَعْلَمُ وَلَا أَعْلَمُ وَأَنْتَ عَلَّامُ الْغُيُوبِ",
@@ -197,6 +213,7 @@ const duas: Dua[] = [
 
   // === SLEEP ===
   {
+    id: "before-sleeping",
     tags: ["sleep"],
     title: "Before Sleeping",
     arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
@@ -206,6 +223,7 @@ const duas: Dua[] = [
     when: "Every night before sleep",
   },
   {
+    id: "sleeping-on-your-right-side",
     tags: ["sleep"],
     title: "Sleeping on Your Right Side",
     arabic: "اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ وَفَوَّضْتُ أَمْرِي إِلَيْكَ وَوَجَّهْتُ وَجْهِي إِلَيْكَ وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ رَغْبَةً وَرَهْبَةً إِلَيْكَ لَا مَلْجَأَ وَلَا مَنْجَا مِنْكَ إِلَّا إِلَيْكَ آمَنْتُ بِكِتَابِكَ الَّذِي أَنْزَلْتَ وَبِنَبِيِّكَ الَّذِي أَرْسَلْتَ",
@@ -216,6 +234,7 @@ const duas: Dua[] = [
     virtue: "If you die that night, you will die upon the fitrah (natural disposition of Islam).",
   },
   {
+    id: "upon-waking-up",
     tags: ["sleep"],
     title: "Upon Waking Up",
     arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
@@ -225,6 +244,7 @@ const duas: Dua[] = [
     when: "Upon waking up",
   },
   {
+    id: "after-a-bad-dream",
     tags: ["sleep"],
     title: "After a Bad Dream",
     arabic: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
@@ -237,6 +257,7 @@ const duas: Dua[] = [
 
   // === EATING & DRINKING ===
   {
+    id: "before-eating",
     tags: ["eating"],
     title: "Before Eating",
     arabic: "بِسْمِ اللَّهِ",
@@ -246,6 +267,7 @@ const duas: Dua[] = [
     when: "Before every meal",
   },
   {
+    id: "forgetting-to-say-bismillah",
     tags: ["eating"],
     title: "Forgetting to Say Bismillah",
     arabic: "بِسْمِ اللَّهِ أَوَّلَهُ وَآخِرَهُ",
@@ -255,6 +277,7 @@ const duas: Dua[] = [
     when: "If you forget to say Bismillah before eating",
   },
   {
+    id: "after-eating",
     tags: ["eating"],
     title: "After Eating",
     arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
@@ -265,6 +288,7 @@ const duas: Dua[] = [
     virtue: "Whoever says this after eating, his past sins will be forgiven.",
   },
   {
+    id: "dua-of-a-guest-for-the-host",
     tags: ["eating"],
     title: "Dua of a Guest for the Host",
     arabic: "اللَّهُمَّ بَارِكْ لَهُمْ فِيمَا رَزَقْتَهُمْ وَاغْفِرْ لَهُمْ وَارْحَمْهُمْ",
@@ -274,6 +298,7 @@ const duas: Dua[] = [
     when: "When eating at someone's home",
   },
   {
+    id: "when-breaking-fast",
     tags: ["eating"],
     title: "When Breaking Fast",
     arabic: "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ",
@@ -285,6 +310,7 @@ const duas: Dua[] = [
 
   // === TRAVEL ===
   {
+    id: "dua-for-travel",
     tags: ["travel"],
     title: "Dua for Travel",
     arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
@@ -294,6 +320,7 @@ const duas: Dua[] = [
     when: "When beginning a journey",
   },
   {
+    id: "returning-from-travel",
     tags: ["travel"],
     title: "Returning from Travel",
     arabic: "آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
@@ -303,6 +330,7 @@ const duas: Dua[] = [
     when: "When returning from a journey",
   },
   {
+    id: "bidding-farewell-to-a-traveler",
     tags: ["travel"],
     title: "Bidding Farewell to a Traveler",
     arabic: "أَسْتَوْدِعُ اللَّهَ دِينَكَ وَأَمَانَتَكَ وَخَوَاتِيمَ عَمَلِكَ",
@@ -314,6 +342,7 @@ const duas: Dua[] = [
 
   // === HOME & MOSQUE ===
   {
+    id: "entering-the-home",
     tags: ["home-mosque"],
     title: "Entering the Home",
     arabic: "بِسْمِ اللَّهِ وَلَجْنَا وَبِسْمِ اللَّهِ خَرَجْنَا وَعَلَى رَبِّنَا تَوَكَّلْنَا",
@@ -323,6 +352,7 @@ const duas: Dua[] = [
     when: "When entering your home",
   },
   {
+    id: "leaving-the-home",
     tags: ["home-mosque"],
     title: "Leaving the Home",
     arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
@@ -333,6 +363,7 @@ const duas: Dua[] = [
     virtue: "It will be said to him: You are guided, sufficed, and protected. And the devil will turn away from him.",
   },
   {
+    id: "entering-the-mosque",
     tags: ["home-mosque"],
     title: "Entering the Mosque",
     arabic: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
@@ -342,6 +373,7 @@ const duas: Dua[] = [
     when: "When entering the mosque",
   },
   {
+    id: "leaving-the-mosque",
     tags: ["home-mosque"],
     title: "Leaving the Mosque",
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
@@ -351,6 +383,7 @@ const duas: Dua[] = [
     when: "When leaving the mosque",
   },
   {
+    id: "entering-the-bathroom",
     tags: ["home-mosque"],
     title: "Entering the Bathroom",
     arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
@@ -360,6 +393,7 @@ const duas: Dua[] = [
     when: "Before entering the bathroom",
   },
   {
+    id: "leaving-the-bathroom",
     tags: ["home-mosque"],
     title: "Leaving the Bathroom",
     arabic: "غُفْرَانَكَ",
@@ -371,6 +405,7 @@ const duas: Dua[] = [
 
   // === PROTECTION ===
   {
+    id: "ayatul-kursi",
     tags: ["protection", "sleep", "prayer", "morning-evening", "powerful"],
     title: "Ayatul Kursi (The Verse of the Throne)",
     arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
@@ -381,6 +416,7 @@ const duas: Dua[] = [
     virtue: "Whoever recites Ayatul Kursi after every obligatory prayer, nothing prevents him from entering Paradise except death.",
   },
   {
+    id: "the-three-quls",
     tags: ["protection", "morning-evening", "sleep", "powerful"],
     title: "The Three Quls (Al-Ikhlas, Al-Falaq, An-Nas)",
     arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿٤﴾ · قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِنْ شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾ · قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾",
@@ -392,6 +428,7 @@ const duas: Dua[] = [
     virtue: "These three surahs will suffice you against everything.",
   },
   {
+    id: "protection-for-children",
     tags: ["protection"],
     title: "Protection for Children",
     arabic: "أُعِيذُكُمَا بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ",
@@ -402,6 +439,7 @@ const duas: Dua[] = [
     virtue: "The Prophet (peace be upon him) used to seek protection for Hasan and Husayn with this dua.",
   },
   {
+    id: "when-afraid-or-anxious-at-night",
     tags: ["protection"],
     title: "When Afraid or Anxious at Night",
     arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ غَضَبِهِ وَعِقَابِهِ وَشَرِّ عِبَادِهِ وَمِنْ هَمَزَاتِ الشَّيَاطِينِ وَأَنْ يَحْضُرُونِ",
@@ -413,6 +451,7 @@ const duas: Dua[] = [
 
   // === FORGIVENESS ===
   {
+    id: "seeking-forgiveness",
     tags: ["forgiveness"],
     title: "Seeking Forgiveness",
     arabic: "أَسْتَغْفِرُ اللَّهَ الَّذِي لَا إِلَٰهَ إِلَّا هُوَ الْحَيَّ الْقَيُّومَ وَأَتُوبُ إِلَيْهِ",
@@ -423,6 +462,7 @@ const duas: Dua[] = [
     virtue: "Whoever says this, Allah will forgive him even if he fled from battle.",
   },
   {
+    id: "dua-of-adam",
     tags: ["forgiveness"],
     title: "Dua of Adam (peace be upon him)",
     arabic: "رَبَّنَا ظَلَمْنَا أَنْفُسَنَا وَإِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ",
@@ -432,6 +472,7 @@ const duas: Dua[] = [
     when: "When seeking repentance",
   },
   {
+    id: "kaffaratul-majlis",
     tags: ["forgiveness"],
     title: "Kaffaratul-Majlis (Expiation of the Gathering)",
     arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا أَنْتَ أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
@@ -442,6 +483,7 @@ const duas: Dua[] = [
     virtue: "It serves as an expiation for any shortcomings that may have occurred during the gathering.",
   },
   {
+    id: "comprehensive-istighfar",
     tags: ["forgiveness"],
     title: "Comprehensive Istighfar",
     arabic: "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ وَارْحَمْنِي إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ",
@@ -454,6 +496,7 @@ const duas: Dua[] = [
 
   // === DISTRESS & ANXIETY ===
   {
+    id: "in-times-of-distress",
     tags: ["distress"],
     title: "In Times of Distress",
     arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ",
@@ -463,6 +506,7 @@ const duas: Dua[] = [
     when: "In moments of severe distress or difficulty",
   },
   {
+    id: "dua-of-yunus",
     tags: ["distress", "forgiveness", "powerful"],
     title: "Dua of Yunus (peace be upon him)",
     arabic: "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
@@ -473,6 +517,7 @@ const duas: Dua[] = [
     virtue: "No Muslim supplicates with this except that Allah will answer his prayer.",
   },
   {
+    id: "refuge-from-worry-and-grief",
     tags: ["distress"],
     title: "Refuge from Worry and Grief",
     arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ وَالْعَجْزِ وَالْكَسَلِ وَالْبُخْلِ وَالْجُبْنِ وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ",
@@ -482,6 +527,7 @@ const duas: Dua[] = [
     when: "When feeling overwhelmed, anxious, or burdened",
   },
   {
+    id: "when-a-calamity-strikes",
     tags: ["distress"],
     title: "When a Calamity Strikes",
     arabic: "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا",
@@ -492,6 +538,7 @@ const duas: Dua[] = [
     virtue: "Umm Salamah said this when her husband died, and Allah replaced him with the Prophet (peace be upon him).",
   },
   {
+    id: "trusting-in-allah",
     tags: ["distress", "powerful"],
     title: "Trusting in Allah (Hasbunallah)",
     arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
@@ -502,6 +549,7 @@ const duas: Dua[] = [
     virtue: "This was said by Ibrahim (peace be upon him) when he was thrown into the fire, and by Muhammad (peace be upon him) when told that the people had gathered against him.",
   },
   {
+    id: "do-not-leave-me-to-myself",
     tags: ["distress"],
     title: "Do Not Leave Me to Myself",
     arabic: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ",
@@ -513,6 +561,7 @@ const duas: Dua[] = [
 
   // === ILLNESS & HEALING ===
   {
+    id: "dua-for-healing",
     tags: ["illness"],
     title: "Dua for Healing (Ruqyah)",
     arabic: "أَذْهِبِ الْبَاسَ رَبَّ النَّاسِ اشْفِ أَنْتَ الشَّافِي لَا شِفَاءَ إِلَّا شِفَاؤُكَ شِفَاءً لَا يُغَادِرُ سَقَمًا",
@@ -522,6 +571,7 @@ const duas: Dua[] = [
     when: "When visiting or supplicating for the sick",
   },
   {
+    id: "placing-hand-on-pain",
     tags: ["illness"],
     title: "Placing Hand on Pain",
     arabic: "بِسْمِ اللَّهِ (ثَلاثًا) أَعُوذُ بِاللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ",
@@ -532,6 +582,7 @@ const duas: Dua[] = [
     repeat: "7 times",
   },
   {
+    id: "visiting-the-sick",
     tags: ["illness"],
     title: "Visiting the Sick",
     arabic: "لَا بَأْسَ طَهُورٌ إِنْ شَاءَ اللَّهُ",
@@ -541,6 +592,7 @@ const duas: Dua[] = [
     when: "When visiting someone who is ill",
   },
   {
+    id: "supplication-for-good-health",
     tags: ["illness", "morning-evening"],
     title: "Supplication for Good Health",
     arabic: "اللَّهُمَّ عَافِنِي فِي بَدَنِي اللَّهُمَّ عَافِنِي فِي سَمْعِي اللَّهُمَّ عَافِنِي فِي بَصَرِي لَا إِلَٰهَ إِلَّا أَنْتَ",
@@ -553,6 +605,7 @@ const duas: Dua[] = [
 
   // === PARENTS & FAMILY ===
   {
+    id: "dua-for-parents",
     tags: ["parents-family"],
     title: "Dua for Parents",
     arabic: "رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
@@ -562,6 +615,7 @@ const duas: Dua[] = [
     when: "Anytime, especially in prayer",
   },
   {
+    id: "dua-for-righteous-offspring",
     tags: ["parents-family"],
     title: "Dua for Righteous Offspring",
     arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",
@@ -571,6 +625,7 @@ const duas: Dua[] = [
     when: "Anytime, especially when praying for family",
   },
   {
+    id: "dua-for-establishing-prayer-in-family",
     tags: ["parents-family"],
     title: "Dua for Establishing Prayer in Family",
     arabic: "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي رَبَّنَا وَتَقَبَّلْ دُعَاءِ",
@@ -580,6 +635,7 @@ const duas: Dua[] = [
     when: "Anytime, a dua of Prophet Ibrahim (peace be upon him)",
   },
   {
+    id: "wedding-marriage-dua",
     tags: ["parents-family"],
     title: "Wedding / Marriage Dua",
     arabic: "بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ",
@@ -591,6 +647,7 @@ const duas: Dua[] = [
 
   // === GUIDANCE & KNOWLEDGE ===
   {
+    id: "asking-for-increase-in-knowledge",
     tags: ["guidance"],
     title: "Asking for Increase in Knowledge",
     arabic: "رَبِّ زِدْنِي عِلْمًا",
@@ -600,6 +657,7 @@ const duas: Dua[] = [
     when: "When seeking knowledge, before studying",
   },
   {
+    id: "dua-of-musa",
     tags: ["guidance"],
     title: "Dua of Musa (peace be upon him)",
     arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي يَفْقَهُوا قَوْلِي",
@@ -609,6 +667,7 @@ const duas: Dua[] = [
     when: "Before presentations, teaching, or speaking",
   },
   {
+    id: "seeking-beneficial-knowledge",
     tags: ["guidance"],
     title: "Seeking Beneficial Knowledge",
     arabic: "اللَّهُمَّ انْفَعْنِي بِمَا عَلَّمْتَنِي وَعَلِّمْنِي مَا يَنْفَعُنِي وَزِدْنِي عِلْمًا",
@@ -618,6 +677,7 @@ const duas: Dua[] = [
     when: "After prayer, when studying",
   },
   {
+    id: "dua-for-guidance",
     tags: ["guidance"],
     title: "Dua for Guidance (Hidayah)",
     arabic: "اللَّهُمَّ اهْدِنِي وَسَدِّدْنِي",
@@ -629,6 +689,7 @@ const duas: Dua[] = [
 
   // === RAIN & WEATHER ===
   {
+    id: "when-it-rains",
     tags: ["rain-weather"],
     title: "When It Rains",
     arabic: "اللَّهُمَّ صَيِّبًا نَافِعًا",
@@ -638,6 +699,7 @@ const duas: Dua[] = [
     when: "When it starts raining",
   },
   {
+    id: "after-rain",
     tags: ["rain-weather"],
     title: "After Rain",
     arabic: "مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ",
@@ -647,6 +709,7 @@ const duas: Dua[] = [
     when: "After the rain",
   },
   {
+    id: "during-strong-winds",
     tags: ["rain-weather"],
     title: "During Strong Winds",
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَخَيْرَ مَا فِيهَا وَخَيْرَ مَا أُرْسِلَتْ بِهِ وَأَعُوذُ بِكَ مِنْ شَرِّهَا وَشَرِّ مَا فِيهَا وَشَرِّ مَا أُرْسِلَتْ بِهِ",
@@ -657,11 +720,29 @@ const duas: Dua[] = [
   },
 ];
 
+/** Legacy ?d= deep links used array indexes; map them onto the stable ids. */
+function resolveDuaParam(raw: string | null): string | null {
+  if (!raw) return null;
+  if (/^\d+$/.test(raw)) return duas[Number(raw)]?.id ?? null;
+  return raw;
+}
+
 function DuasContent() {
   useScrollToSection();
   const searchParams = useSearchParams();
-  const scrollToDua = searchParams.get("d");
-  const [activeCategory, setActiveCategory] = useState(searchParams.get("tab") || "all");
+  const router = useRouter();
+  const pathname = usePathname();
+  const scrollToDua = resolveDuaParam(searchParams.get("d"));
+
+  // null = category landing grid; ?tab= deep links (and ?d= links, which need
+  // their dua's card rendered to scroll to) skip the landing.
+  const [activeCategory, setActiveCategory] = useState<string | null>(() => {
+    const tab = searchParams.get("tab");
+    const validTab = tab && categories.some((c) => c.key === tab) ? tab : null;
+    const targetDua = scrollToDua ? duas.find((d) => d.id === scrollToDua) : undefined;
+    if (targetDua && !(validTab && targetDua.tags.includes(validTab))) return targetDua.tags[0];
+    return validTab;
+  });
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -677,28 +758,101 @@ function DuasContent() {
     return () => clearTimeout(timer);
   }, [scrollToDua]);
 
-  const searchLower = search.toLowerCase().trim();
-  const categoryFiltered = activeCategory === "all"
-    ? duas
-    : duas.filter((d) => d.tags.includes(activeCategory));
+  const selectCategory = (key: string | null) => {
+    setActiveCategory(key);
+    router.replace(key ? `${pathname}?tab=${key}` : pathname, { scroll: false });
+  };
 
-  const filtered = searchLower.length < 2
-    ? categoryFiltered
-    : categoryFiltered.filter((d) =>
+  const searchLower = search.toLowerCase().trim();
+  const isSearching = searchLower.length >= 2;
+
+  // Search is global — it matches across every category, landing or not.
+  const filtered = isSearching
+    ? duas.filter((d) =>
         d.title.toLowerCase().includes(searchLower) ||
         d.translation.toLowerCase().includes(searchLower) ||
         d.transliteration.toLowerCase().includes(searchLower) ||
         d.source.toLowerCase().includes(searchLower) ||
         d.when.toLowerCase().includes(searchLower) ||
         (d.virtue && d.virtue.toLowerCase().includes(searchLower))
-      );
+      )
+    : activeCategory
+      ? duas.filter((d) => d.tags.includes(activeCategory))
+      : [];
 
-  const counts: Record<string, number> = { all: duas.length };
+  const counts: Record<string, number> = {};
   categories.forEach((cat) => {
-    if (cat.key !== "all") {
-      counts[cat.key] = duas.filter((d) => d.tags.includes(cat.key)).length;
-    }
+    counts[cat.key] = duas.filter((d) => d.tags.includes(cat.key)).length;
   });
+
+  const activeCat = categories.find((c) => c.key === activeCategory);
+
+  // One dua card — rendered by both the category list and global search results
+  const renderDuaCard = (dua: Dua, i: number) => {
+    const displayTag = !isSearching && activeCategory ? activeCategory : dua.tags[0];
+    const catLabel = categories.find((c) => c.key === displayTag)?.label ?? displayTag;
+
+    return (
+      <ContentCard key={dua.id} delay={Math.min(i * 0.05, 0.4)} id={`dua-${dua.id}`}>
+        {/* Header */}
+        <div className="mb-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <span className="text-xs text-gold font-medium">{catLabel}</span>
+              <h2 className="text-xl font-semibold text-themed mt-1">{dua.title}</h2>
+            </div>
+            <BookmarkButton
+              type="dua"
+              id={dua.id}
+              title={dua.title}
+              subtitle={dua.source}
+              href={`/duas?d=${dua.id}`}
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            {dua.repeat && (
+              <span className="text-[11px] px-2.5 py-1 rounded-full border bg-[var(--color-gold)]/10 text-gold border-[var(--color-gold)]/30">
+                {dua.repeat}
+              </span>
+            )}
+            <span className="text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
+              {dua.when}
+            </span>
+          </div>
+        </div>
+
+        {/* Arabic + Transliteration + Translation */}
+        <div className="rounded-lg p-4 mb-4" style={{ backgroundColor: "var(--color-bg)" }}>
+          <p className="text-2xl font-arabic text-gold text-right leading-loose mb-3">
+            {dua.arabic}
+          </p>
+          <p className="text-themed-muted italic text-sm mb-2">
+            {dua.transliteration}
+          </p>
+          <p className="text-themed text-sm">
+            &ldquo;{dua.translation}&rdquo;
+          </p>
+        </div>
+
+        {/* Virtue */}
+        {dua.virtue && (
+          <div className="rounded-lg p-3 mb-4 border border-emerald-400/30 bg-emerald-400/10">
+            <p className="text-xs font-medium text-emerald-400 mb-1">Virtue</p>
+            <p className="text-emerald-400 text-sm leading-relaxed opacity-90">
+              {dua.virtue}
+            </p>
+          </div>
+        )}
+
+        {/* Source */}
+        <div className="border-t sidebar-border pt-3">
+          <p className="text-xs text-themed-muted">
+            Source: <strong className="text-themed"><HadithRefText text={dua.source} /></strong>
+          </p>
+        </div>
+      </ContentCard>
+    );
+  };
 
   return (
     <div>
@@ -708,148 +862,116 @@ function DuasContent() {
         subtitle="Authentic daily supplications with Arabic, transliteration, translation, and virtues"
       />
 
-      {/* Search bar */}
-      <div className="relative max-w-xl mb-6">
-        <Search
-          size={18}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-themed-muted"
-        />
-        <input
-          type="text"
-          placeholder="Search duas..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-10 py-3 rounded-xl card-bg border sidebar-border text-themed placeholder:text-themed-muted focus:outline-none focus:border-[var(--color-gold)] transition-colors"
-        />
-        {search && (
-          <button
-            onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-themed-muted hover:text-themed transition-colors"
-          >
-            <X size={16} />
-          </button>
-        )}
-      </div>
-
-      {/* Category pills / dropdown */}
-      <TabBar
-        tabs={categories.map((cat) => ({
-          key: cat.key,
-          label: cat.label,
-          icon: cat.icon ? <cat.icon size={15} /> : undefined,
-          count: counts[cat.key],
-        }))}
-        activeTab={activeCategory}
-        onTabChange={setActiveCategory}
-        wrap
+      {/* Search — global across every category, landing or not */}
+      <PageSearch
+        value={search}
+        onChange={setSearch}
+        placeholder="Search all duas..."
         className="mb-6"
       />
 
-      {/* Most Powerful description */}
-      {activeCategory === "powerful" && (
-        <div className="rounded-xl p-5 mb-6 border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/5">
-          <h3 className="text-gold font-semibold mb-2 flex items-center gap-2">
-            <Sparkles size={16} />
-            Why These Duas Are the Most Powerful
-          </h3>
-          <p className="text-sm text-themed-muted leading-relaxed mb-3">
-            These are not opinions or rankings — each of these duas carries an <strong className="text-themed">explicit, extraordinary promise</strong> from the Prophet Muhammad (peace be upon him), narrated in Sahih al-Bukhari and Sahih Muslim, the two most rigorously authenticated hadith collections. Scholars across all schools of thought agree on their virtues.
-          </p>
-          <ul className="text-sm text-themed-muted space-y-1.5 list-disc list-inside">
-            <li><strong className="text-themed">Sayyid al-Istighfar</strong> — The Prophet called it the <em>master</em> of all istighfar; promised Paradise for whoever says it with conviction</li>
-            <li><strong className="text-themed">Ayatul Kursi</strong> — The greatest verse in the Quran; guaranteed protection at night and nothing prevents Paradise except death</li>
-            <li><strong className="text-themed">The Three Quls</strong> — &ldquo;Will suffice you against everything&rdquo; — a comprehensive shield</li>
-            <li><strong className="text-themed">Dua of Yunus</strong> — &ldquo;No Muslim supplicates with this except that Allah answers&rdquo; — a guaranteed response</li>
-            <li><strong className="text-themed">Tahleel (100x)</strong> — Equivalent to freeing ten slaves; a fortress from Shaytan until evening</li>
-            <li><strong className="text-themed">SubhanAllah wa Bihamdihi (100x)</strong> — Sins forgiven even if like the foam of the sea</li>
-            <li><strong className="text-themed">Tasbeeh After Prayer</strong> — Same promise of total sin forgiveness after every obligatory prayer</li>
-            <li><strong className="text-themed">After the Adhan</strong> — The Prophet&rsquo;s intercession on the Day of Judgement granted to the one who says it</li>
-            <li><strong className="text-themed">Hasbunallah</strong> — Said by Ibrahim when thrown into fire and by the Prophet when armies gathered against him</li>
-          </ul>
-        </div>
-      )}
-
-      {/* Duas list */}
       <AnimatePresence mode="wait">
-        <motion.div
-          key={`${activeCategory}-${searchLower}`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-          className="space-y-5"
-        >
-          {filtered.map((dua, i) => {
-            const displayTag = activeCategory !== "all" ? activeCategory : dua.tags[0];
-            const catLabel = categories.find((c) => c.key === displayTag)?.label ?? displayTag;
+        {isSearching ? (
+          /* Global search results */
+          <motion.div
+            key={`search-${searchLower}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-5"
+          >
+            {filtered.map(renderDuaCard)}
+            {filtered.length === 0 && (
+              <p className="text-sm text-themed-muted py-8 text-center">
+                No duas found matching &ldquo;{search}&rdquo;
+              </p>
+            )}
+          </motion.div>
+        ) : activeCategory ? (
+          /* Category dua list */
+          <motion.div
+            key={activeCategory}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <button
+              onClick={() => selectCategory(null)}
+              className="flex items-center gap-1.5 text-sm text-themed-muted hover:text-gold transition-colors mb-4"
+            >
+              <ArrowLeft size={15} />
+              All categories
+            </button>
+            <div className="flex items-center gap-2 mb-5">
+              {activeCat && <activeCat.icon size={18} className="text-gold" />}
+              <h2 className="text-lg font-semibold text-themed">{activeCat?.label}</h2>
+              <span className="text-sm text-themed-muted">({filtered.length})</span>
+            </div>
 
-            return (
-              <ContentCard key={`${dua.title}-${i}`} delay={Math.min(i * 0.05, 0.4)} id={`dua-${duas.indexOf(dua)}`}>
-                {/* Header */}
-                <div className="mb-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <span className="text-xs text-gold font-medium">{catLabel}</span>
-                      <h2 className="text-xl font-semibold text-themed mt-1">{dua.title}</h2>
-                    </div>
-                    <BookmarkButton
-                      type="dua"
-                      id={`dua-${duas.indexOf(dua)}`}
-                      title={dua.title}
-                      subtitle={dua.source}
-                      href={`/duas?d=${duas.indexOf(dua)}`}
-                    />
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2 mt-2">
-                    {dua.repeat && (
-                      <span className="text-[11px] px-2.5 py-1 rounded-full border bg-[var(--color-gold)]/10 text-gold border-[var(--color-gold)]/30">
-                        {dua.repeat}
-                      </span>
-                    )}
-                    <span className="text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                      {dua.when}
+            {/* Most Powerful description */}
+            {activeCategory === "powerful" && (
+              <div className="rounded-xl p-5 mb-6 border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/5">
+                <h3 className="text-gold font-semibold mb-2 flex items-center gap-2">
+                  <Sparkles size={16} />
+                  Why These Duas Are the Most Powerful
+                </h3>
+                <p className="text-sm text-themed-muted leading-relaxed mb-3">
+                  These are not opinions or rankings — each of these duas carries an <strong className="text-themed">explicit, extraordinary promise</strong> from the Prophet Muhammad (peace be upon him), narrated in Sahih al-Bukhari and Sahih Muslim, the two most rigorously authenticated hadith collections. Scholars across all schools of thought agree on their virtues.
+                </p>
+                <ul className="text-sm text-themed-muted space-y-1.5 list-disc list-inside">
+                  <li><strong className="text-themed">Sayyid al-Istighfar</strong> — The Prophet called it the <em>master</em> of all istighfar; promised Paradise for whoever says it with conviction</li>
+                  <li><strong className="text-themed">Ayatul Kursi</strong> — The greatest verse in the Quran; guaranteed protection at night and nothing prevents Paradise except death</li>
+                  <li><strong className="text-themed">The Three Quls</strong> — &ldquo;Will suffice you against everything&rdquo; — a comprehensive shield</li>
+                  <li><strong className="text-themed">Dua of Yunus</strong> — &ldquo;No Muslim supplicates with this except that Allah answers&rdquo; — a guaranteed response</li>
+                  <li><strong className="text-themed">Tahleel (100x)</strong> — Equivalent to freeing ten slaves; a fortress from Shaytan until evening</li>
+                  <li><strong className="text-themed">SubhanAllah wa Bihamdihi (100x)</strong> — Sins forgiven even if like the foam of the sea</li>
+                  <li><strong className="text-themed">Tasbeeh After Prayer</strong> — Same promise of total sin forgiveness after every obligatory prayer</li>
+                  <li><strong className="text-themed">After the Adhan</strong> — The Prophet&rsquo;s intercession on the Day of Judgement granted to the one who says it</li>
+                  <li><strong className="text-themed">Hasbunallah</strong> — Said by Ibrahim when thrown into fire and by the Prophet when armies gathered against him</li>
+                </ul>
+              </div>
+            )}
+
+            <div className="space-y-5">
+              {filtered.map(renderDuaCard)}
+            </div>
+          </motion.div>
+        ) : (
+          /* Category landing grid */
+          <motion.div
+            key="landing"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {categories.map((cat) => (
+              <button
+                key={cat.key}
+                onClick={() => selectCategory(cat.key)}
+                className={`card-bg border rounded-xl p-4 text-left transition-colors hover:border-[var(--color-gold)]/50 ${
+                  cat.key === "powerful" ? "border-[var(--color-gold)]/40" : "sidebar-border"
+                }`}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-gold bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/20">
+                    <cat.icon size={16} />
+                  </span>
+                  <span>
+                    <span className="block font-medium text-themed">{cat.label}</span>
+                    <span className="text-xs text-themed-muted">
+                      {counts[cat.key]} {counts[cat.key] === 1 ? "dua" : "duas"}
                     </span>
-                  </div>
+                  </span>
                 </div>
-
-                {/* Arabic + Transliteration + Translation */}
-                <div className="rounded-lg p-4 mb-4" style={{ backgroundColor: "var(--color-bg)" }}>
-                  <p className="text-2xl font-arabic text-gold text-right leading-loose mb-3">
-                    {dua.arabic}
-                  </p>
-                  <p className="text-themed-muted italic text-sm mb-2">
-                    {dua.transliteration}
-                  </p>
-                  <p className="text-themed text-sm">
-                    &ldquo;{dua.translation}&rdquo;
-                  </p>
-                </div>
-
-                {/* Virtue */}
-                {dua.virtue && (
-                  <div className="rounded-lg p-3 mb-4 border border-emerald-400/30 bg-emerald-400/10">
-                    <p className="text-xs font-medium text-emerald-400 mb-1">Virtue</p>
-                    <p className="text-emerald-400 text-sm leading-relaxed opacity-90">
-                      {dua.virtue}
-                    </p>
-                  </div>
-                )}
-
-                {/* Source */}
-                <div className="border-t sidebar-border pt-3">
-                  <p className="text-xs text-themed-muted">
-                    Source: <strong className="text-themed"><HadithRefText text={dua.source} /></strong>
-                  </p>
-                </div>
-              </ContentCard>
-            );
-          })}
-          {filtered.length === 0 && (
-            <p className="text-sm text-themed-muted py-8 text-center">
-              No duas found matching &ldquo;{search}&rdquo;
-            </p>
-          )}
-        </motion.div>
+                <p className="text-xs text-themed-muted leading-relaxed">{cat.description}</p>
+              </button>
+            ))}
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );

@@ -1,53 +1,34 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useCallback, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
-import { Capacitor } from "@capacitor/core";
-import { Motion } from "@capacitor/motion";
 import { useIsNative } from "@/lib/mobile/platform";
-import { computePrayerTimes } from "@/lib/prayer-times";
-import { getPrayerSettings, setPrayerSettings, type PrayerCalcMethod } from "@hidden-hiqmah/ui/lib/storage";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
-import PageTip from "@/components/mobile/PageTip";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
+import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
+import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import Accordion from "@hidden-hiqmah/ui/components/Accordion";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import PrayerFigure, { type Position } from "@hidden-hiqmah/ui/components/PrayerFigure";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import {
-  AlertTriangle,
   Clock,
   ChevronLeft,
   ChevronRight,
   ArrowLeft,
   User,
-  Sunrise,
-  Sun,
-  CloudSun,
-  Sunset,
-  Moon,
-  Search,
-  MapPin,
-  LocateFixed,
   Volume2,
   Play,
   StopCircle,
   Compass,
-  Navigation,
-  Settings2,
 } from "lucide-react";
 import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
-import { formatLocation, reverseGeocode } from "@hidden-hiqmah/ui/lib/location";
-import {
-  getFreshCachedLocation,
-  setCachedLocation,
-  getLocationState,
-  setLocationState,
-} from "@hidden-hiqmah/ui/lib/location-cache";
 
 /* ───────────────────────── prayer step data ───────────────────────── */
 
@@ -251,7 +232,7 @@ const prayers: Prayer[] = [
     sunnahBefore: 4,
     sunnahAfter: 2,
     additionalNote:
-      "On Friday, Dhuhr is replaced by the Jumu'ah (Friday) prayer for men, which is 2 rak'at preceded by a khutbah (sermon). The Prophet (peace be upon him) said: 'Whoever leaves three Jumu'ah prayers out of negligence, Allah will seal his heart' (Nasai 14:6). Recitation in Dhuhr is silent.",
+      "On Friday, Dhuhr is replaced by the Jumu'ah (Friday) prayer for men, which is 2 rak'at preceded by a khutbah (sermon) — see the Jumu'ah section in this list. The Prophet (peace be upon him) warned about neglecting Jumu'ah (Nasai 14:6). Recitation in Dhuhr is silent.",
     description:
       "The noon prayer — prayed after the sun has passed its highest point (zenith) and begins to decline. It is the prayer at the middle of the day.",
     hadith: {
@@ -549,252 +530,9 @@ const whyItMatters = [
   },
 ];
 
-/* ───────────────────────── prayer times data ───────────────────────── */
+/* ───────────────────────── purification (taharah) data ───────────────────────── */
 
-interface PrayerTimings {
-  Fajr: string;
-  Sunrise: string;
-  Dhuhr: string;
-  Asr: string;
-  Maghrib: string;
-  Isha: string;
-}
-
-interface HijriDate {
-  day: string;
-  month: { en: string; ar: string };
-  year: string;
-  designation: { abbreviated: string };
-}
-
-// Local Hijri date (Umm al-Qura) for the on-device path — no network.
-function localHijriDate(date: Date): HijriDate {
-  const get = (parts: Intl.DateTimeFormatPart[], type: string) =>
-    parts.find((p) => p.type === type)?.value ?? "";
-  try {
-    const en = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).formatToParts(date);
-    const ar = new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
-      month: "long",
-    }).formatToParts(date);
-    return {
-      day: get(en, "day"),
-      month: { en: get(en, "month"), ar: get(ar, "month") },
-      year: get(en, "year"),
-      designation: { abbreviated: "AH" },
-    };
-  } catch {
-    return { day: "", month: { en: "", ar: "" }, year: "", designation: { abbreviated: "AH" } };
-  }
-}
-
-interface AladhanResponse {
-  data: {
-    timings: PrayerTimings;
-    date: {
-      hijri: HijriDate;
-    };
-    meta?: {
-      timezone?: string;
-    };
-  };
-}
-
-const PRAYER_TIME_LIST = [
-  { key: "Fajr", english: "Fajr", arabic: "الفجر", icon: Sunrise, isPrayer: true },
-  { key: "Sunrise", english: "Sunrise", arabic: "الشروق", icon: Sun, isPrayer: false },
-  { key: "Dhuhr", english: "Dhuhr", arabic: "الظهر", icon: CloudSun, isPrayer: true },
-  { key: "Asr", english: "Asr", arabic: "العصر", icon: CloudSun, isPrayer: true },
-  { key: "Maghrib", english: "Maghrib", arabic: "المغرب", icon: Sunset, isPrayer: true },
-  { key: "Isha", english: "Isha", arabic: "العشاء", icon: Moon, isPrayer: true },
-] as const;
-
-// Values MUST match the shared PrayerCalcMethod codes (packages/ui storage) and
-// the Settings screen's CALC_METHODS, so the Salah tab, Home card, and scheduled
-// adhan all resolve to the SAME method. (Gulf/Dubai is code 8 — code 16 has no
-// mapping in prayer-times.ts and would silently fall back to Muslim World League.)
-const CALCULATION_METHODS = [
-  { value: 2, label: "ISNA" },
-  { value: 3, label: "Muslim World League" },
-  { value: 4, label: "Umm Al-Qura, Makkah" },
-  { value: 5, label: "Egyptian General Authority" },
-  { value: 1, label: "Karachi" },
-  { value: 7, label: "Tehran" },
-  { value: 8, label: "Gulf Region" },
-  { value: 9, label: "Kuwait" },
-  { value: 10, label: "Qatar" },
-  { value: 11, label: "Singapore" },
-  { value: 13, label: "Diyanet (Turkey)" },
-  { value: 15, label: "Moonsighting Committee" },
-];
-
-function parseTime(timeStr: string): Date {
-  const [h, m] = timeStr.split(":").map(Number);
-  const d = new Date();
-  d.setHours(h, m, 0, 0);
-  return d;
-}
-
-function formatCountdown(ms: number): string {
-  if (ms <= 0) return "00:00:00";
-  const totalSec = Math.floor(ms / 1000);
-  const hrs = Math.floor(totalSec / 3600);
-  const mins = Math.floor((totalSec % 3600) / 60);
-  const secs = totalSec % 60;
-  return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-}
-
-// Get the current time (hours/minutes/seconds + total seconds since midnight) in a specific timezone.
-// If timezone is undefined, uses the browser's local timezone.
-function getNowParts(timezone?: string): {
-  hours: number;
-  minutes: number;
-  seconds: number;
-  totalSeconds: number;
-} {
-  const date = new Date();
-  if (!timezone) {
-    const h = date.getHours();
-    const m = date.getMinutes();
-    const s = date.getSeconds();
-    return { hours: h, minutes: m, seconds: s, totalSeconds: h * 3600 + m * 60 + s };
-  }
-  try {
-    const fmt = new Intl.DateTimeFormat("en-US", {
-      timeZone: timezone,
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: false,
-    });
-    const parts = fmt.formatToParts(date);
-    let h = 0;
-    let m = 0;
-    let s = 0;
-    for (const p of parts) {
-      if (p.type === "hour") h = parseInt(p.value, 10) % 24;
-      else if (p.type === "minute") m = parseInt(p.value, 10);
-      else if (p.type === "second") s = parseInt(p.value, 10);
-    }
-    return { hours: h, minutes: m, seconds: s, totalSeconds: h * 3600 + m * 60 + s };
-  } catch {
-    const h = date.getHours();
-    const m = date.getMinutes();
-    const s = date.getSeconds();
-    return { hours: h, minutes: m, seconds: s, totalSeconds: h * 3600 + m * 60 + s };
-  }
-}
-
-function getNextPrayerInfo(timings: PrayerTimings, timezone?: string): { key: string; timeUntil: number } | null {
-  const nowSec = getNowParts(timezone).totalSeconds;
-  const prayerKeys = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"] as const;
-  for (const key of prayerKeys) {
-    const raw = timings[key];
-    if (!raw) continue;
-    const clean = raw.replace(/\s*\(.*\)/, "");
-    const [h, m] = clean.split(":").map(Number);
-    const prayerSec = h * 3600 + m * 60;
-    if (prayerSec > nowSec) {
-      return { key, timeUntil: (prayerSec - nowSec) * 1000 };
-    }
-  }
-  // Wrap to next day's Fajr
-  const fajrRaw = timings.Fajr;
-  if (!fajrRaw) return null;
-  const clean = fajrRaw.replace(/\s*\(.*\)/, "");
-  const [h, m] = clean.split(":").map(Number);
-  const fajrSec = h * 3600 + m * 60;
-  return { key: "Fajr", timeUntil: ((24 * 3600 - nowSec) + fajrSec) * 1000 };
-}
-
-function formatDisplayTime(raw: string) {
-  const clean = raw.replace(/\s*\(.*\)/, "");
-  const [h, m] = clean.split(":").map(Number);
-  const ampm = h >= 12 ? "PM" : "AM";
-  const h12 = h % 12 || 12;
-  return `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
-}
-
-// Minutes since midnight for a "HH:MM" or "HH:MM (TZ)" string
-function timeStringToMinutes(raw: string): number {
-  const clean = raw.replace(/\s*\(.*\)/, "");
-  const [h, m] = clean.split(":").map(Number);
-  return h * 60 + m;
-}
-
-interface WindowProgress {
-  prevKey: string;
-  prevTime: string;
-  nextKey: string;
-  nextTime: string;
-  progress: number; // 0..1, current position within the [prev, next] window
-}
-
-// Determine the current "window" — the prayer just past and the prayer coming up —
-// and what fraction of that window has elapsed. Timezone-aware.
-function getWindowProgress(timings: PrayerTimings, nextKey: string, timezone?: string): WindowProgress | null {
-  const order: (keyof PrayerTimings)[] = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
-  const idx = order.indexOf(nextKey as keyof PrayerTimings);
-  if (idx === -1) return null;
-
-  const nowParts = getNowParts(timezone);
-  const nowMin = nowParts.hours * 60 + nowParts.minutes + nowParts.seconds / 60;
-
-  let prevKey: string;
-  let prevMin: number;
-
-  if (idx === 0) {
-    // Before Fajr — previous "window start" is yesterday's Isha (approximated as Isha - 24h)
-    const ishaRaw = timings.Isha;
-    if (!ishaRaw) return null;
-    prevKey = "Isha";
-    prevMin = timeStringToMinutes(ishaRaw) - 24 * 60;
-  } else {
-    const prevKeyTyped = order[idx - 1];
-    const prevRaw = timings[prevKeyTyped];
-    if (!prevRaw) return null;
-    prevKey = prevKeyTyped;
-    prevMin = timeStringToMinutes(prevRaw);
-  }
-
-  const nextRaw = timings[nextKey as keyof PrayerTimings];
-  if (!nextRaw) return null;
-  let nextMin = timeStringToMinutes(nextRaw);
-
-  // If next prayer time has already passed today (only happens for Fajr-next-day),
-  // shift it forward by 24h
-  if (nextMin < nowMin && idx === 0) nextMin += 24 * 60;
-
-  const total = nextMin - prevMin;
-  const elapsed = nowMin - prevMin;
-  const progress = total > 0 ? Math.max(0, Math.min(1, elapsed / total)) : 0;
-
-  return {
-    prevKey,
-    prevTime: formatDisplayTime(timings[prevKey as keyof PrayerTimings] || ""),
-    nextKey,
-    nextTime: formatDisplayTime(nextRaw),
-    progress,
-  };
-}
-
-/* ───────────────────────── wudu data ───────────────────────── */
-
-type WuduTopic = {
-  id: string;
-  name: string;
-  content: {
-    intro: string;
-    verse?: { arabic: string; text: string; ref: string };
-    points: { title: string; detail: string; note?: string }[];
-    source?: string;
-  };
-};
-
-const wuduTopics: WuduTopic[] = [
+const purificationTopics: Topic[] = [
   {
     id: "overview",
     name: "What is Wudu?",
@@ -1012,7 +750,7 @@ const wuduTopics: WuduTopic[] = [
     name: "Nullifiers",
     content: {
       intro:
-        "Certain actions or occurrences break the state of wudu, requiring a person to perform it again before praying. The scholars derived these nullifiers from the Quran and Sunnah.",
+        "Certain actions or occurrences break the state of wudu, requiring a person to perform it again before praying. The scholars derived these nullifiers from the Quran and Sunnah. Note that everything listed here requires only a fresh wudu — for the things that require a full bath (ghusl) instead, see the Ghusl section.",
       points: [
         {
           title: "Anything that exits from the two passages",
@@ -1054,18 +792,236 @@ const wuduTopics: WuduTopic[] = [
       source: "Bukhari 4:1, 4:3; Muslim 3:123; Abu Dawud 1:60, 1:200; Tirmidhi 1:82",
     },
   },
+  {
+    id: "ghusl",
+    name: "Ghusl",
+    content: {
+      intro:
+        "Ghusl (الغُسْل) is the full ritual bath — washing the entire body with water to remove major ritual impurity (janabah). While the nullifiers of wudu only require a fresh wudu, the states below require ghusl: prayer, tawaf, and touching the mushaf are not valid while in janabah until ghusl is performed.",
+      verse: {
+        arabic: "وَإِن كُنتُمْ جُنُبًا فَٱطَّهَّرُوا۟",
+        text: "If you are in a state of major impurity, cleanse yourselves [by taking a bath].",
+        ref: "Quran 5:6",
+      },
+      points: [
+        {
+          title: "When ghusl is obligatory",
+          detail:
+            "1) Sexual intercourse — even without emission. The Prophet ﷺ said: 'When a man sits in between the four parts of a woman and did the sexual intercourse with her, bath becomes compulsory' (Bukhari 5:43). 2) Any emission of semen with desire, whether awake or asleep. When Umm Sulaym asked about a woman who sees in a dream what a man sees, the Prophet ﷺ said: 'In case a woman sees that, she must take a bath' (Muslim 3:32). 3) The end of menstruation or post-natal bleeding (nifas). The Prophet ﷺ said: 'Give up the prayer when your menses begin and when it has finished, wash the blood off your body (take a bath) and start praying' (Bukhari 6:35).",
+          note: "Bukhari 5:43, 6:35; Muslim 3:32",
+        },
+        {
+          title: "The deceased are also washed",
+          detail:
+            "Mainstream scholarship holds that washing the deceased Muslim is a communal obligation (fard kifayah) on the living, not a duty of the deceased. When the Prophet's ﷺ daughter passed away, he told the women washing her: 'Wash her three times, five times or more, if you think it necessary, with water and Sidr (lote leaves), and last of all put camphor.'",
+          note: "Bukhari 23:22",
+        },
+        {
+          title: "Ghusl before Jumu'ah",
+          detail:
+            "The Prophet ﷺ said: 'The taking of a bath on Friday is compulsory for every male Muslim who has attained the age of puberty' (Bukhari 11:5). Because of this emphatic wording, some scholars held it to be obligatory; the majority hold it is an emphasized sunnah — but all agree it should not be neglected. It is part of preparing for the best day of the week: ghusl, clean clothes, and perfume before heading to the Friday prayer.",
+          note: "Bukhari 11:5",
+        },
+        {
+          title: "The obligatory acts of ghusl",
+          detail:
+            "The essence of ghusl is: 1) the intention (niyyah) to remove major impurity, and 2) water reaching the entire body — every part of the skin and the roots of the hair. The Hanafi school additionally counts rinsing the mouth and the nostrils as obligatory parts of ghusl (they are emphasized sunnah in the Shafi'i and Maliki schools) — since the Prophet ﷺ consistently included them, everyone should simply do them. If these essentials are fulfilled, the ghusl is valid even without the full sunnah sequence.",
+          note: "Quran 5:6; Bukhari 5:26",
+        },
+        {
+          title: "The Prophet's ﷺ method — step by step",
+          detail:
+            "From the narrations of Aisha and Maymunah (may Allah be pleased with them): 1) Wash both hands. 2) Wash the private parts with the left hand. 3) Perform wudu as for prayer. 4) Put your fingers in water and run them through the roots of the hair. 5) Pour water over the head three times. 6) Pour water over the entire body, right side then left. 7) Finally, step aside and wash the feet. Aisha narrated: 'Whenever the Prophet ﷺ took a bath after Janaba he started by washing his hands and then performed ablution like that for the prayer. After that he would put his fingers in water and move the roots of his hair with them, and then pour three handfuls of water over his head and then pour water all over his body.'",
+          note: "Bukhari 5:1 (Aisha), 5:26 (Maymunah)",
+        },
+        {
+          title: "What does NOT require ghusl",
+          detail:
+            "Madhy (pre-seminal fluid released without climax) does not require ghusl — Ali (may Allah be pleased with him) asked through al-Miqdad, and the Prophet ﷺ said: 'He should wash his male organ and perform ablution' (Muslim 3:17). Likewise urine, stool, passing wind, deep sleep, and vomiting only break wudu, not the state of purity from janabah. Ordinary contact between spouses without intercourse does not require ghusl.",
+          note: "Muslim 3:17",
+        },
+        {
+          title: "Common mistakes",
+          detail:
+            "1) Leaving dry spots — behind the ears, under rings or nail polish, the armpits, between the toes, or the roots of thick hair; water must reach the whole body. 2) Thinking a separate wudu is required afterwards — a complete ghusl with the intention of purification suffices for prayer. 3) Delaying ghusl until a prayer window passes — janabah does not excuse missing a prayer. 4) Wastefulness with water — the Prophet ﷺ bathed with modest amounts, and moderation is the sunnah.",
+          note: "Bukhari 5:1, 5:26",
+        },
+      ],
+      source: "Quran 5:6; Bukhari 5:1, 5:26, 5:43, 6:35, 11:5, 23:22; Muslim 3:17, 3:32",
+    },
+  },
 ];
+
+/* ───────────────────────── jumu'ah (friday prayer) data ───────────────────────── */
+
+const jumuahAccordion = [
+  {
+    id: "who",
+    title: "Who must attend",
+    subtitle: "Obligatory for men; others may attend",
+    body: (
+      <div className="space-y-3 text-sm text-themed-muted leading-relaxed">
+        <p>
+          Jumu&apos;ah is an individual obligation upon every adult male Muslim who is resident and able to attend. The Prophet ﷺ said:
+        </p>
+        <div className="rounded-lg p-3 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+          <p className="italic text-themed">
+            &ldquo;The Friday prayer in congregation is a necessary duty for every Muslim, with four exceptions; a slave, a woman, a boy, and a sick person.&rdquo;
+          </p>
+          <p className="text-xs text-gold/60 mt-2"><HadithRefText text="Abu Dawud 2:678" /></p>
+        </div>
+        <p>
+          Scholars likewise exempt the traveler, based on the Prophet&apos;s ﷺ practice. Those who are exempt — women, children, travelers, and the ill — are welcome to attend, and if they pray Jumu&apos;ah it counts in place of Dhuhr. If they do not attend, they simply pray Dhuhr as normal.
+        </p>
+      </div>
+    ),
+  },
+  {
+    id: "how",
+    title: "How it is prayed",
+    subtitle: "Khutbah etiquette + 2 rak'ah in congregation",
+    body: (
+      <div className="space-y-3 text-sm text-themed-muted leading-relaxed">
+        <p>
+          Jumu&apos;ah replaces Dhuhr and is only prayed in congregation. It has two parts: the <span className="text-gold">khutbah</span> (two sermons with a brief sitting between them), then <span className="text-gold">2 rak&apos;ah</span> prayed aloud behind the imam. Umar (may Allah be pleased with him) said: &ldquo;The prayer while traveling is two Rak&apos;ah, and Friday is two Rak&apos;ah, and &apos;Eid is two Rak&apos;ah. They are complete and are not shortened, as told by Muhammad ﷺ&rdquo; (<HadithRefText text="Ibn Majah 5:261" className="inline" />).
+        </p>
+        <p>
+          Listening to the khutbah is part of the worship — total silence is required, to the point that even shushing someone else counts as idle talk:
+        </p>
+        <div className="rounded-lg p-3 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+          <p className="italic text-themed">
+            &ldquo;If you (even) ask your companion to be quiet on Friday while the Imam is delivering the sermon, you have in fact talked irrelevance.&rdquo;
+          </p>
+          <p className="text-xs text-gold/60 mt-2"><HadithRefText text="Muslim 7:15; Bukhari 11:58" /></p>
+        </div>
+        <p>
+          If you arrive while the imam is already delivering the khutbah, pray two brief rak&apos;ah before sitting — the Prophet ﷺ said: &ldquo;When any one of you comes on Friday, while the Imam delivers the sermon, he should observe two rak&apos;ahs and should make them short&rdquo; (<HadithRefText text="Muslim 7:74" className="inline" />). After Jumu&apos;ah, it is sunnah to pray voluntary rak&apos;ah — Ibn Umar related that the Prophet ﷺ used to pray two rak&apos;ah in his house after Friday prayer (<HadithRefText text="Ibn Majah 5:328" className="inline" />).
+        </p>
+      </div>
+    ),
+  },
+  {
+    id: "sunnahs",
+    title: "The Friday sunnahs",
+    subtitle: "Ghusl, early arrival, al-Kahf, salawat, the hour of du'a",
+    body: (
+      <div className="space-y-3 text-sm text-themed-muted leading-relaxed">
+        <p>
+          <span className="text-gold font-medium">Ghusl, best clothes, and perfume.</span> The Prophet ﷺ said: &ldquo;The taking of a bath on Friday is compulsory for every male Muslim who has attained the age of puberty&rdquo; (<HadithRefText text="Bukhari 11:5" className="inline" />). Bathing, wearing your best clothes, wearing perfume, and not stepping over people at the masjid together atone for the sins of the week (<HadithRefText text="Abu Dawud 1:343" className="inline" />). See the ghusl guide under Purification.
+        </p>
+        <p>
+          <span className="text-gold font-medium">Going early.</span> &ldquo;He who takes a bath on Friday, the bath which is obligatory after the sexual discharge and then goes (to the mosque), he is like one who offers a she-camel as a sacrifice, and he who comes at the second hour would be like one who offers a cow, and he who comes at the third hour is like one who offers a ram with horns…&rdquo; (<HadithRefText text="Muslim 7:14" className="inline" />).
+        </p>
+        <p>
+          <span className="text-gold font-medium">Surah al-Kahf.</span> Reciting Surah al-Kahf on Friday is a widely practiced sunnah reported in narrations that many scholars graded authentic. Related and authentically established: whoever memorizes ten verses from the beginning of Surah al-Kahf will be protected from the trial of the Dajjal (<HadithRefText text="Abu Dawud 39:33" className="inline" />).
+        </p>
+        <p>
+          <span className="text-gold font-medium">Abundant salawat.</span> The Prophet ﷺ said: &ldquo;Among the most excellent of your days is Friday; on it Adam was created, on it he died, on it the last trumpet will be blown… so invoke more blessings on me that day, for your blessings will be submitted to me&rdquo; (<HadithRefText text="Abu Dawud 2:658" className="inline" />).
+        </p>
+        <p>
+          <span className="text-gold font-medium">The hour of accepted du&apos;a.</span> &ldquo;There is an hour (opportune time) on Friday and if a Muslim gets it while praying and asks something from Allah, then Allah will definitely meet his demand&rdquo; (<HadithRefText text="Bukhari 11:59" className="inline" />). Many scholars considered the last hour before Maghrib the most likely time — make du&apos;a generously throughout the day.
+        </p>
+      </div>
+    ),
+  },
+  {
+    id: "missed",
+    title: "If you miss it or cannot attend",
+    subtitle: "Praying Dhuhr instead + the latecomer rule",
+    body: (
+      <div className="space-y-3 text-sm text-themed-muted leading-relaxed">
+        <p>
+          <span className="text-gold font-medium">Jumu&apos;ah cannot be prayed alone.</span> It is only valid in congregation. If you miss it — or you are exempt (traveling, ill, a woman who chooses not to attend) — you pray <span className="text-gold">Dhuhr, 4 rak&apos;ah</span>, as on any other day. This is the mainstream position of all the schools of fiqh. Missing Jumu&apos;ah without excuse is a serious matter: the Prophet ﷺ warned, &ldquo;People should stop neglecting Jumu&apos;ah or Allah will place a seal on their hearts and they will be deemed as being among the negligent&rdquo; (<HadithRefText text="Nasai 14:6" className="inline" />).
+        </p>
+        <p>
+          <span className="text-gold font-medium">The latecomer rule.</span> The Prophet ﷺ said: &ldquo;Whoever catches one Rak&apos;ah of Friday prayer or other than it, then he has caught the prayer&rdquo; (<HadithRefText text="Ibn Majah 5:321" className="inline" />). So if you join the imam before he rises from the ruku&apos; of the second rak&apos;ah, you have caught Jumu&apos;ah — stand after his taslim and complete the remaining rak&apos;ah. If you join after that, the majority of scholars hold you should complete the prayer as Dhuhr (4 rak&apos;ah).
+        </p>
+      </div>
+    ),
+  },
+];
+
+function JumuahSection({
+  onOpenGhusl,
+}: {
+  onOpenGhusl: () => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <ContentCard>
+        <div className="mb-4">
+          <div className="flex items-baseline gap-3 flex-wrap">
+            <h2 className="text-xl font-semibold text-themed">Jumu&apos;ah</h2>
+            <span className="text-lg font-arabic text-gold">الجمعة</span>
+          </div>
+        </div>
+
+        <p className="text-themed-muted text-sm leading-relaxed mb-4">
+          The Friday prayer — the weekly congregational prayer that replaces Dhuhr on Friday. It is 2 rak&apos;ah preceded by a khutbah (sermon), and Friday itself is the best day of the week: the day Adam was created and the day carrying an hour in which du&apos;a is answered. Allah commands the believers to leave their trade and gather for it:
+        </p>
+
+        {/* Verse */}
+        <div className="rounded-lg p-4 mb-4" style={{ backgroundColor: "var(--color-bg)" }}>
+          <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
+            يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓا۟ إِذَا نُودِىَ لِلصَّلَوٰةِ مِن يَوْمِ ٱلْجُمُعَةِ فَٱسْعَوْا۟ إِلَىٰ ذِكْرِ ٱللَّهِ وَذَرُوا۟ ٱلْبَيْعَ ۚ ذَٰلِكُمْ خَيْرٌ لَّكُمْ إِن كُنتُمْ تَعْلَمُونَ
+          </p>
+          <p className="text-themed text-sm italic">
+            &ldquo;O you who believe, when the call for prayer is made on Friday, then hasten to the remembrance of Allah and leave off trading. That is better for you, if only you knew.&rdquo;
+          </p>
+          <p className="text-xs text-themed-muted mt-2"><HadithRefText text="Quran 62:9" /></p>
+        </div>
+
+        {/* Time and rak'at info */}
+        <div className="rounded-lg p-3 sm:p-4 mb-4 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div>
+              <p className="text-xs text-themed-muted uppercase tracking-wider mb-1">Time</p>
+              <p className="text-sm text-themed">Friday, in the time of Dhuhr (which it replaces)</p>
+            </div>
+            <div>
+              <p className="text-xs text-themed-muted uppercase tracking-wider mb-1">Fard Rak&apos;at</p>
+              <p className="text-sm text-themed font-semibold">2 (after the khutbah, in congregation)</p>
+            </div>
+          </div>
+        </div>
+      </ContentCard>
+
+      <Accordion
+        items={jumuahAccordion.map((item) => ({
+          id: item.id,
+          title: item.title,
+          subtitle: item.subtitle,
+          children: item.body,
+        }))}
+        defaultOpenId="who"
+      />
+
+      {/* Cross-link: ghusl guide lives under Purification */}
+      <button
+        onClick={onOpenGhusl}
+        className="w-full text-left rounded-xl p-4 card-bg border sidebar-border hover:border-gold/40 transition-colors flex items-center justify-between gap-3"
+      >
+        <div>
+          <p className="text-sm font-medium text-themed">How to perform ghusl for Jumu&apos;ah</p>
+          <p className="text-xs text-themed-muted mt-0.5">Step-by-step guide under Purification → Ghusl</p>
+        </div>
+        <ChevronRight size={16} className="text-gold shrink-0" />
+      </button>
+    </div>
+  );
+}
 
 /* ───────────────────────── sections ───────────────────────── */
 
+// Keys 'adhan' and 'voluntary' are deep-linked from Settings + the Ramadan home
+// (?sub=tarawih) — do not rename them. The old 'times'/'qiblah' tabs redirect to
+// the standalone /prayer-times and /qiblah pages (handled on mount below).
 const sections = [
-  { key: "times", label: "Prayer Times" },
-  { key: "qiblah", label: "Qiblah" },
   { key: "intro", label: "Salah" },
   { key: "importance", label: "Why It Matters" },
-  { key: "wudu", label: "Wudu" },
+  { key: "wudu", label: "Purification" },
   { key: "adhan", label: "Adhan & Iqamah" },
-  { key: "prayers", label: "The Five Prayers" },
+  { key: "prayers", label: "The Prayers" },
   { key: "voluntary", label: "Voluntary & Special" },
 ] as const;
 
@@ -1437,459 +1393,6 @@ function PrayerInfoCard({
   );
 }
 
-/* ───────────────────────── Qiblah section ───────────────────────── */
-
-const KAABA_LAT = 21.4225;
-const KAABA_LNG = 39.8262;
-
-function calcQiblahBearing(lat: number, lng: number): number {
-  const toRad = (d: number) => (d * Math.PI) / 180;
-  const toDeg = (r: number) => (r * 180) / Math.PI;
-  const lat1 = toRad(lat);
-  const lng1 = toRad(lng);
-  const lat2 = toRad(KAABA_LAT);
-  const lng2 = toRad(KAABA_LNG);
-  const y = Math.sin(lng2 - lng1) * Math.cos(lat2);
-  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1);
-  const bearing = (toDeg(Math.atan2(y, x)) + 360) % 360;
-  return bearing;
-}
-
-function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const toRad = (d: number) => (d * Math.PI) / 180;
-  const R = 6371;
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(a));
-}
-
-function compassDirection(degrees: number): string {
-  const dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
-  return dirs[Math.round(degrees / 22.5) % 16];
-}
-
-type QiblahState = {
-  lat: number;
-  lng: number;
-  city: string;
-};
-
-interface DeviceOrientationEventWithPermission {
-  requestPermission?: () => Promise<"granted" | "denied">;
-}
-
-export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
-  const [loc, setLoc] = useState<QiblahState | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [heading, setHeading] = useState<number | null>(null);
-  // Continuous rotation value that never wraps (e.g. can be 720°), so CSS rotation
-  // always takes the shortest path and doesn't spin backwards when 359° → 1°.
-  const [displayHeading, setDisplayHeading] = useState<number | null>(null);
-  const continuousHeadingRef = useRef<number | null>(null);
-  const [needsPermission, setNeedsPermission] = useState(false);
-
-  const applyHeading = useCallback((newHeading: number) => {
-    setHeading(newHeading);
-    if (continuousHeadingRef.current === null) {
-      continuousHeadingRef.current = newHeading;
-      setDisplayHeading(newHeading);
-      return;
-    }
-    const current = continuousHeadingRef.current;
-    const wrappedCurrent = ((current % 360) + 360) % 360;
-    let delta = newHeading - wrappedCurrent;
-    if (delta > 180) delta -= 360;
-    if (delta < -180) delta += 360;
-    const next = current + delta;
-    continuousHeadingRef.current = next;
-    setDisplayHeading(next);
-  }, []);
-
-  const fetchLocation = useCallback(() => {
-    // Prefer a recently-cached location set by NextPrayerCard or a prior visit.
-    const fresh = getFreshCachedLocation();
-    if (fresh) {
-      setLoc({ lat: fresh.lat, lng: fresh.lng, city: fresh.display });
-      setLoading(false);
-      setError(null);
-      return;
-    }
-
-    // Honor a previous "denied" — don't auto-trigger another prompt.
-    if (getLocationState() === "denied") {
-      setError("Location access is off. Enable it in Settings to use the compass.");
-      setLoading(false);
-      return;
-    }
-
-    if (!navigator.geolocation) {
-      setError("Your browser does not support geolocation.");
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        let city = "Your location";
-        const geo = await reverseGeocode(latitude, longitude);
-        if (geo) city = formatLocation(geo) || "Unknown";
-        setLoc({ lat: latitude, lng: longitude, city });
-        setLoading(false);
-        setError(null);
-        setLocationState("granted");
-        setCachedLocation({
-          lat: latitude,
-          lng: longitude,
-          city: geo?.city || "Your location",
-          country: geo?.countryName || "",
-          display: city,
-        });
-      },
-      () => {
-        setError("Couldn't get your location. Allow location access and try again.");
-        setLoading(false);
-        setLocationState("denied");
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
-  }, []);
-
-  useEffect(() => {
-    fetchLocation();
-  }, [fetchLocation]);
-
-  // Device orientation (compass) — sets up listener and handles iOS permission
-  useEffect(() => {
-    const isNative = Capacitor.isNativePlatform();
-    const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
-      .DeviceOrientationEvent;
-
-    const handler = (e: DeviceOrientationEvent) => {
-      const webkitHeading = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
-      if (typeof webkitHeading === "number") {
-        applyHeading(webkitHeading);
-      } else if (typeof e.alpha === "number") {
-        applyHeading((360 - e.alpha) % 360);
-      }
-    };
-
-    const attach = () => {
-      window.addEventListener("deviceorientationabsolute", handler as EventListener);
-      window.addEventListener("deviceorientation", handler);
-    };
-
-    // ── Native app: auto-start the compass, no permission button ──
-    if (isNative) {
-      let motionRemove: (() => void) | undefined;
-      (async () => {
-        // In the WKWebView the Safari-style requestPermission gesture isn't
-        // required; attach the orientation listener directly (delivers
-        // webkitCompassHeading on iOS). Also start @capacitor/motion as a
-        // native fallback source.
-        try {
-          if (typeof DeviceOrientationEventCls?.requestPermission === "function") {
-            await DeviceOrientationEventCls.requestPermission().catch(() => {});
-          }
-        } catch {
-          /* ignore */
-        }
-        attach();
-        try {
-          const l = await Motion.addListener("orientation", (e) => {
-            const wk = (e as { webkitCompassHeading?: number }).webkitCompassHeading;
-            if (typeof wk === "number") applyHeading(wk);
-            else if (typeof e.alpha === "number") applyHeading((360 - e.alpha) % 360);
-          });
-          motionRemove = () => l.remove();
-        } catch {
-          /* motion unavailable */
-        }
-      })();
-      return () => {
-        window.removeEventListener("deviceorientationabsolute", handler as EventListener);
-        window.removeEventListener("deviceorientation", handler);
-        motionRemove?.();
-      };
-    }
-
-    // ── Web ──
-    if (!DeviceOrientationEventCls) return;
-    if (typeof DeviceOrientationEventCls.requestPermission === "function") {
-      // iOS Safari requires a user gesture → show the enable button.
-      setNeedsPermission(true);
-      return;
-    }
-    attach();
-    return () => {
-      window.removeEventListener("deviceorientationabsolute", handler as EventListener);
-      window.removeEventListener("deviceorientation", handler);
-    };
-  }, [applyHeading]);
-
-  const requestCompassPermission = async () => {
-    const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
-      .DeviceOrientationEvent;
-    if (!DeviceOrientationEventCls?.requestPermission) return;
-    const res = await DeviceOrientationEventCls.requestPermission();
-    if (res === "granted") {
-      setNeedsPermission(false);
-      const handler = (e: DeviceOrientationEvent) => {
-        const webkitHeading = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
-        if (typeof webkitHeading === "number") {
-          applyHeading(webkitHeading);
-        } else if (typeof e.alpha === "number") {
-          applyHeading((360 - e.alpha) % 360);
-        }
-      };
-      window.addEventListener("deviceorientation", handler);
-    }
-  };
-
-  const qiblahBearing = loc ? calcQiblahBearing(loc.lat, loc.lng) : null;
-  const distanceKm = loc ? haversineKm(loc.lat, loc.lng, KAABA_LAT, KAABA_LNG) : null;
-  // If we have a live device heading, the arrow rotates relative to it
-
-  return (
-    <div className="space-y-6">
-      {/* Intro */}
-      {!compact && <ContentCard delay={0.05}>
-        <h3 className="text-gold font-semibold text-lg mb-3">What is the Qiblah?</h3>
-        <p className="text-themed-muted text-sm leading-relaxed mb-3">
-          The <span className="text-gold">qiblah</span> is the direction Muslims face during salah — toward the <span className="text-gold">Ka&apos;bah</span> in Makkah. It unites the entire ummah: at any moment of day or night, somewhere on earth a Muslim is praying, and they are all facing the same point.
-        </p>
-        <p className="text-themed-muted text-sm leading-relaxed mb-3">
-          For the first 16-17 months in Madinah, the Prophet ﷺ and the believers faced <span className="text-gold">Jerusalem</span> during prayer. Then Allah revealed:
-        </p>
-        <div className="my-3">
-          <p className="font-arabic text-gold text-lg leading-loose mb-1">
-            فَوَلِّ وَجْهَكَ شَطْرَ الْمَسْجِدِ الْحَرَامِ ۚ وَحَيْثُ مَا كُنتُمْ فَوَلُّوا وُجُوهَكُمْ شَطْرَهُ
-          </p>
-          <p className="text-themed text-sm leading-relaxed mb-1">Fawalli wajhaka shatra al-masjidi al-haram, wa haythu ma kuntum fawallu wujuhakum shatrah</p>
-          <p className="text-themed-muted text-sm leading-relaxed italic">&ldquo;Turn your face toward al-Masjid al-Haram. And wherever you are, turn your faces toward it.&rdquo;</p>
-          <p className="text-xs text-gold/80 mt-1">Quran 2:144</p>
-        </div>
-        <p className="text-themed-muted text-sm leading-relaxed">
-          From that moment, every Muslim has faced Makkah in prayer.
-        </p>
-      </ContentCard>}
-
-      {/* Compass */}
-      <ContentCard delay={0.08}>
-        <h3 className="text-gold font-semibold text-lg mb-3 flex items-center gap-2">
-          <Compass size={18} /> Qiblah Direction From Your Location
-        </h3>
-
-        {loading && <p className="text-themed-muted text-sm">Detecting your location…</p>}
-
-        {error && (
-          <div>
-            <p className="text-themed-muted text-sm mb-3">{error}</p>
-            <button
-              onClick={fetchLocation}
-              className="px-4 py-2 rounded-lg card-bg border sidebar-border text-themed hover:border-gold/40 hover:text-gold transition-colors text-sm font-medium"
-            >
-              Try again
-            </button>
-          </div>
-        )}
-
-        {loc && qiblahBearing !== null && (
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            {/* Compass visual — dial is fixed (N stays at top, Ka'bah stays at qibla bearing);
-                only the "you are facing" arrow rotates with device heading. */}
-            <div className="relative w-56 h-56 shrink-0">
-              {/* Rotating dial — the arrow stays fixed pointing up; N/E/S/W cardinals and the
-                  Ka'bah marker rotate to match the real-world bearing relative to where you're
-                  facing. When the Ka'bah marker arrives at the top, you're facing the qiblah. */}
-              <div className="absolute inset-0 rounded-full border-2 border-gold/30 bg-gold/[0.03]">
-                {/* Cardinal markers — positioned at (cardinal - displayHeading) */}
-                {[
-                  { label: "N", deg: 0, color: "text-gold" },
-                  { label: "E", deg: 90 },
-                  { label: "S", deg: 180 },
-                  { label: "W", deg: 270 },
-                ].map(({ label, deg, color }) => {
-                  const screenAngle = deg - (displayHeading ?? 0);
-                  return (
-                    <div
-                      key={label}
-                      className="absolute inset-0 flex items-start justify-center"
-                      style={{
-                        transform: `rotate(${screenAngle}deg)`,
-                        transition: "transform 80ms linear",
-                      }}
-                    >
-                      <span
-                        className={`text-xs font-semibold mt-1 ${color ?? "text-themed-muted"}`}
-                        style={{
-                          transform: `rotate(${-screenAngle}deg)`,
-                          transition: "transform 80ms linear",
-                        }}
-                      >
-                        {label}
-                      </span>
-                    </div>
-                  );
-                })}
-
-                {/* Tick marks — rotate with the dial */}
-                {Array.from({ length: 24 }).map((_, i) => {
-                  const screenAngle = i * 15 - (displayHeading ?? 0);
-                  return (
-                    <div
-                      key={i}
-                      className="absolute left-1/2 top-0 h-2 w-px bg-themed-muted/30"
-                      style={{
-                        transform: `translateX(-50%) rotate(${screenAngle}deg)`,
-                        transformOrigin: "bottom center",
-                        top: 6,
-                        transition: "transform 80ms linear",
-                      }}
-                    />
-                  );
-                })}
-
-                {/* Ka'bah marker — positioned at (qiblahBearing - displayHeading) */}
-                {(() => {
-                  const screenAngle = qiblahBearing - (displayHeading ?? 0);
-                  return (
-                    <div
-                      className="absolute inset-0 flex items-start justify-center"
-                      style={{
-                        transform: `rotate(${screenAngle}deg)`,
-                        transition: "transform 80ms linear",
-                      }}
-                    >
-                      <div
-                        className="flex flex-col items-center"
-                        style={{
-                          marginTop: "12px",
-                          transform: `rotate(${-screenAngle}deg)`,
-                          transition: "transform 80ms linear",
-                        }}
-                      >
-                        <div className="w-5 h-5 rounded-sm bg-gold border border-gold/60 shadow-[0_0_10px_rgba(212,168,67,0.6)]" />
-                        <span className="text-[9px] font-semibold uppercase tracking-wider text-gold mt-1">Ka&apos;bah</span>
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-
-              {/* Fixed user-facing arrow — only shown when a device compass is available.
-                  Centered inside the dial, always points straight up. When the Ka'bah marker
-                  rotates so it sits at the top, the user is facing the qiblah. */}
-              {heading !== null && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <svg
-                    width="56"
-                    height="56"
-                    viewBox="0 0 24 24"
-                    className={
-                      Math.abs(((heading - qiblahBearing + 540) % 360) - 180) < 5
-                        ? "text-gold drop-shadow-[0_0_12px_rgba(212,168,67,0.9)]"
-                        : "text-themed drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]"
-                    }
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeLinejoin="round"
-                    strokeWidth="1"
-                  >
-                    {/* Dart/arrow pointing straight up: tip at top-center, notch at bottom-center */}
-                    <path d="M12 2 L20 21 L12 17 L4 21 Z" />
-                  </svg>
-                </div>
-              )}
-
-              {/* Center bearing label — only shown when the arrow isn't (desktop / no sensor) */}
-              {heading === null && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="text-center">
-                    <p className="text-2xl font-semibold text-gold font-mono">{Math.round(qiblahBearing)}°</p>
-                    <p className="text-[10px] uppercase tracking-wider text-themed-muted">
-                      {compassDirection(qiblahBearing)}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Details */}
-            <div className="flex-1 space-y-2 text-sm">
-              <p className="text-themed-muted">From <span className="text-themed">{loc.city}</span></p>
-              <p className="text-themed-muted">
-                Bearing: <span className="text-gold font-mono">{qiblahBearing.toFixed(1)}°</span> from true North ({compassDirection(qiblahBearing)})
-              </p>
-              {distanceKm && (
-                <p className="text-themed-muted">
-                  Distance to Ka&apos;bah: <span className="text-themed font-mono">{Math.round(distanceKm).toLocaleString()} km</span> <span className="text-themed-muted">/</span> <span className="text-themed font-mono">{Math.round(distanceKm * 0.621371).toLocaleString()} mi</span>
-                </p>
-              )}
-              {needsPermission && (
-                <button
-                  onClick={requestCompassPermission}
-                  className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg bg-gold/20 text-gold border border-gold/40 hover:bg-gold/30 transition-colors text-sm font-medium"
-                >
-                  <Compass size={16} /> Enable live compass
-                </button>
-              )}
-              {heading === null && !needsPermission && (
-                <>
-                  <p className="text-xs text-themed-muted mt-3">
-                    Hold a compass (or use a compass app) and align it so the needle points to <span className="text-gold font-mono">{Math.round(qiblahBearing)}°</span>. That direction is the qiblah from where you are standing.
-                  </p>
-                  <p className="text-xs text-gold/80 mt-2">
-                    Tip: Visit this page on your phone for a live qiblah direction using its built-in compass.
-                  </p>
-                </>
-              )}
-              {heading !== null && (
-                <p className="text-xs text-themed-muted mt-3">
-                  The dial rotates as you turn — keep turning until the Ka&apos;bah marker arrives at the top, right under the arrow. That direction is the qiblah. Hold your phone flat for the most accurate reading.
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-      </ContentCard>
-
-      {/* If you're not sure */}
-      {!compact && <ContentCard delay={0.11}>
-        <h3 className="text-gold font-semibold text-lg mb-3">What if I&apos;m not sure which way to face?</h3>
-        <p className="text-themed-muted text-sm leading-relaxed mb-3">
-          Do your best. If you genuinely tried to determine the qiblah and prayed in good faith, your prayer is valid even if you later discover you were facing the wrong direction. The Prophet ﷺ said:
-        </p>
-        <div className="my-3">
-          <p className="text-themed-muted text-sm leading-relaxed italic">
-            &ldquo;What is between the east and the west is qiblah.&rdquo;
-          </p>
-          <p className="text-xs text-gold/80 mt-1">
-            <HadithRefText text="Tirmidhi 2:194" className="inline" />
-          </p>
-        </div>
-        <p className="text-themed-muted text-sm leading-relaxed mb-3">
-          This was the Prophet&apos;s ﷺ guidance for the people of Madinah (north of Makkah), meaning the entire southern arc was acceptable when precise direction was unknown. The principle generalizes: when in doubt, face the most likely direction with sincerity. If you can use a compass or compass app, do so. If not, ask a Muslim local or use the sun.
-        </p>
-        <p className="text-themed-muted text-sm leading-relaxed">
-          For travelers on planes, trains, or in cars where exact direction is impossible, face whatever direction you can and pray — Allah does not burden a soul beyond its capacity (Quran 2:286).
-        </p>
-      </ContentCard>}
-
-      {!compact && <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 2:142-145", desc: "The change of qiblah from Jerusalem to the Ka'bah" },
-        { ref: "Quran 2:144", desc: "Turn your face toward al-Masjid al-Haram" },
-        { ref: "Tirmidhi 2:194", desc: "What is between east and west is qiblah" },
-        { ref: "Quran 2:286", desc: "Allah does not burden a soul beyond its capacity" },
-      ]} />}
-    </div>
-  );
-}
-
 /* ───────────────────────── Adhan & Iqamah section ───────────────────────── */
 
 function AdhanSection() {
@@ -2093,290 +1596,56 @@ function AdhanLine({
 function SalahContent() {
   useScrollToSection();
   const searchParams = useSearchParams();
-  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "times");
-  const [activePrayer, setActivePrayer] = useState("types");
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const [activeSection, setActiveSection] = useState<SectionKey>(() => {
+    const tab = searchParams.get("tab");
+    return tab && sections.some((s) => s.key === tab) ? (tab as SectionKey) : "intro";
+  });
+  const [activePrayer, setActivePrayer] = useState(() => {
+    // Deep-link support: ?tab=prayers&sub=<id> — 'jumuah' is a valid rail pill too.
+    const sub = searchParams.get("sub");
+    return sub && (sub === "jumuah" || prayers.some((p) => p.id === sub)) ? sub : "fajr";
+  });
   const [activeVoluntary, setActiveVoluntary] = useState(() => {
     // Deep-link support: ?sub=<id> (e.g. /salah?tab=voluntary&sub=tarawih).
     // Validate against real prayer ids — currentPrayer uses .find(...)! below.
     const sub = searchParams.get("sub");
     return sub && voluntaryPrayers.some((p) => p.id === sub) ? sub : "tahajjud";
   });
-  const [activeWudu, setActiveWudu] = useState("overview");
+  const [activeWudu, setActiveWudu] = useState(() => {
+    // Deep-link support: ?tab=wudu&sub=<id> (e.g. /salah?tab=wudu&sub=ghusl).
+    const sub = searchParams.get("sub");
+    return sub && purificationTopics.some((t) => t.id === sub) ? sub : "overview";
+  });
   const [showGuide, setShowGuide] = useState(false);
   const [search, setSearch] = useState("");
 
-  /* ── Adhan audio context ── */
-  const adhan = useAdhanAudio();
-
-  /* ── Prayer Times state ── */
-  const [ptTimings, setPtTimings] = useState<PrayerTimings | null>(null);
-  const [ptTimezone, setPtTimezone] = useState<string | undefined>(undefined);
-  const [ptHijri, setPtHijri] = useState<HijriDate | null>(null);
-  const [ptCity, setPtCity] = useState("");
-  const [ptCountry, setPtCountry] = useState("");
-  const [ptDisplayLocation, setPtDisplayLocation] = useState("");
-  const [ptMethod, setPtMethod] = useState<number>(() => getPrayerSettings().calcMethod);
-  // The coordinates currently driving the displayed times (device GPS or a
-  // picked city). `onDevice` = compute locally (offline-capable). Used so a
-  // calc-method change re-computes from the same location instead of falling
-  // back to a network city lookup that drops the Asr madhab and exact coords.
-  const [ptCoords, setPtCoords] = useState<{ lat: number; lng: number; onDevice: boolean } | null>(null);
-  const [ptLoading, setPtLoading] = useState(true);
-  const [ptError, setPtError] = useState("");
-  const [ptCountdown, setPtCountdown] = useState("");
-  const [ptNextPrayerKey, setPtNextPrayerKey] = useState("");
-  const [ptSearchQuery, setPtSearchQuery] = useState("");
-  const [ptSuggestions, setPtSuggestions] = useState<Array<{ display: string; lat: number; lon: number }>>([]);
-  const [ptShowSuggestions, setPtShowSuggestions] = useState(false);
-  const [ptSearching, setPtSearching] = useState(false);
-  const [ptShowManualInput, setPtShowManualInput] = useState(false);
-  const [ptShowMethodMenu, setPtShowMethodMenu] = useState(false);
-  const [ptLocating, setPtLocating] = useState(false);
-  const ptIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const ptFetched = useRef(false);
-  const ptDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const ptInputRef = useRef<HTMLInputElement>(null);
-
-  const ptFetchTimesByCity = useCallback(
-    async (c: string, co: string, m: number) => {
-      setPtLoading(true);
-      setPtError("");
-      try {
-        const res = await fetch(
-          `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(c)}&country=${encodeURIComponent(co)}&method=${m}&school=${getPrayerSettings().asrMethod === "hanafi" ? 1 : 0}`
-        );
-        if (!res.ok) throw new Error("Failed to fetch prayer times");
-        const data: AladhanResponse = await res.json();
-        setPtTimings(data.data.timings);
-        setPtHijri(data.data.date.hijri);
-        setPtTimezone(data.data.meta?.timezone);
-        setPtCity(c);
-        setPtCountry(co);
-        setPtDisplayLocation(`${c}, ${co}`);
-      } catch {
-        setPtError("Could not load prayer times. Please try a different city.");
-      } finally {
-        setPtLoading(false);
-      }
-    },
-    []
-  );
-
-  const ptFetchTimesByCoords = useCallback(
-    // `onDevice` = these are the user's OWN device coordinates → compute locally
-    // (device tz === location tz) so the GPS location never leaves the phone and
-    // it works offline. Remote city-suggestion coords keep using aladhan (it
-    // returns that city's timezone, which on-device computation can't know).
-    async (lat: number, lng: number, m: number, onDevice = false) => {
-      setPtLoading(true);
-      setPtError("");
-      setPtCoords({ lat, lng, onDevice });
-      if (onDevice) {
-        try {
-          const timings = computePrayerTimes(lat, lng, {
-            method: m,
-            asrHanafi: getPrayerSettings().asrMethod === "hanafi",
-          });
-          setPtTimings(timings);
-          setPtHijri(localHijriDate(new Date()));
-          setPtTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
-        } catch {
-          setPtError("Could not compute prayer times.");
-        } finally {
-          setPtLoading(false);
-        }
-        return;
-      }
-      try {
-        const res = await fetch(
-          `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=${m}&school=${getPrayerSettings().asrMethod === "hanafi" ? 1 : 0}`
-        );
-        if (!res.ok) throw new Error("Failed to fetch prayer times");
-        const data: AladhanResponse = await res.json();
-        setPtTimings(data.data.timings);
-        setPtHijri(data.data.date.hijri);
-        setPtTimezone(data.data.meta?.timezone);
-      } catch {
-        setPtError("Could not load prayer times.");
-      } finally {
-        setPtLoading(false);
-      }
-    },
-    []
-  );
-
-  const ptAutoLocate = useCallback(async () => {
-    // Prefer cached location — no prompt, instant
-    const fresh = getFreshCachedLocation();
-    if (fresh) {
-      setPtCity(fresh.city);
-      setPtCountry(fresh.country);
-      setPtDisplayLocation(fresh.display);
-      ptFetchTimesByCoords(fresh.lat, fresh.lng, ptMethod, true); // device location → on-device
-      return;
-    }
-
-    // Honor prior denial — fall back to Makkah without prompting
-    if (getLocationState() === "denied") {
-      setPtCity("Makkah");
-      setPtCountry("Saudi Arabia");
-      setPtDisplayLocation("Makkah, Saudi Arabia");
-      setPtShowManualInput(true);
-      ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
-      return;
-    }
-
-    if (!navigator.geolocation) return;
-    setPtLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        // Device GPS → compute on-device (location never leaves the phone).
-        ptFetchTimesByCoords(latitude, longitude, ptMethod, true);
-        setLocationState("granted");
-        // Resolve display name in parallel
-        const geo = await reverseGeocode(latitude, longitude);
-        if (geo) {
-          const city = geo.city || geo.principalSubdivision || "";
-          const country = geo.countryName || "";
-          const display = formatLocation(geo);
-          if (display) {
-            setPtCity(city);
-            setPtCountry(country);
-            setPtDisplayLocation(display);
-            setCachedLocation({ lat: latitude, lng: longitude, city, country, display });
-          } else {
-            setPtDisplayLocation(`${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`);
-          }
-        } else {
-          setPtDisplayLocation(`${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`);
-        }
-        setPtLocating(false);
-      },
-      () => {
-        setPtCity("Makkah");
-        setPtCountry("Saudi Arabia");
-        setPtDisplayLocation("Makkah, Saudi Arabia");
-        setPtShowManualInput(true);
-        ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
-        setPtLocating(false);
-        setLocationState("denied");
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ptFetchTimesByCoords, ptFetchTimesByCity]);
-
+  // Legacy deep links: the Prayer Times widget and Qiblah compass now live on
+  // their own pages. Old links (Home cards, notifications) must keep working.
   useEffect(() => {
-    if (ptFetched.current) return;
-    ptFetched.current = true;
-    if (!navigator.geolocation) {
-      setPtCity("Makkah");
-      setPtCountry("Saudi Arabia");
-      setPtDisplayLocation("Makkah, Saudi Arabia");
-      setPtShowManualInput(true);
-      ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
-      return;
-    }
-    ptAutoLocate();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const tab = searchParams.get("tab");
+    if (tab === "times") router.replace("/prayer-times");
+    else if (tab === "qiblah") router.replace("/qiblah");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (!ptTimings) return;
-    function tick() {
-      if (!ptTimings) return;
-      const next = getNextPrayerInfo(ptTimings, ptTimezone);
-      if (next) {
-        setPtNextPrayerKey(next.key);
-        setPtCountdown(formatCountdown(next.timeUntil));
-      }
-    }
-    tick();
-    ptIntervalRef.current = setInterval(tick, 1000);
-    return () => {
-      if (ptIntervalRef.current) clearInterval(ptIntervalRef.current);
-    };
-  }, [ptTimings, ptTimezone]);
+  // Write ?tab= (and ?sub= for rail selections) so every view is deep-linkable.
+  const syncUrl = useCallback(
+    (tab: SectionKey, sub?: string) => {
+      router.replace(`${pathname}?tab=${tab}${sub ? `&sub=${sub}` : ""}`, { scroll: false });
+    },
+    [router, pathname]
+  );
 
-  // Push prayer timings into the adhan audio context (which handles scheduling globally)
-  useEffect(() => {
-    if (ptTimings) adhan.setTimings(ptTimings);
-  }, [ptTimings, adhan]);
-
-  const ptHandleMethodChange = (newMethod: number) => {
-    setPtMethod(newMethod);
-    // Persist so the Home card + scheduled adhan use the same method.
-    setPrayerSettings({ calcMethod: newMethod as PrayerCalcMethod });
-    // Re-fetch from the active coordinates when we have them: preserves the
-    // Hanafi Asr madhab + exact location and keeps working offline (on-device
-    // path). Only the manual-city fallback (no coords) uses the network API.
-    if (ptCoords) {
-      ptFetchTimesByCoords(ptCoords.lat, ptCoords.lng, newMethod, ptCoords.onDevice);
-    } else if (ptCity && ptCountry) {
-      ptFetchTimesByCity(ptCity, ptCountry, newMethod);
-    }
-  };
-
-  const ptSearchLocation = useCallback(async (query: string) => {
-    if (query.length < 2) { setPtSuggestions([]); return; }
-    setPtSearching(true);
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=1`,
-        { headers: { "Accept-Language": "en" } }
-      );
-      const data = await res.json();
-      setPtSuggestions(
-        data.map((r: { display_name: string; lat: string; lon: string; address?: { city?: string; town?: string; village?: string; state?: string; country?: string } }) => {
-          const addr = r.address || {};
-          const city = addr.city || addr.town || addr.village || "";
-          const parts = [city, addr.state, addr.country].filter(Boolean);
-          return {
-            display: parts.length > 0 ? parts.join(", ") : r.display_name.split(",").slice(0, 3).join(","),
-            lat: parseFloat(r.lat),
-            lon: parseFloat(r.lon),
-          };
-        })
-      );
-      setPtShowSuggestions(true);
-    } catch {
-      setPtSuggestions([]);
-    } finally {
-      setPtSearching(false);
-    }
-  }, []);
-
-  const ptHandleQueryChange = (value: string) => {
-    setPtSearchQuery(value);
-    if (ptDebounceRef.current) clearTimeout(ptDebounceRef.current);
-    ptDebounceRef.current = setTimeout(() => ptSearchLocation(value), 300);
-  };
-
-  const ptSelectSuggestion = (s: { display: string; lat: number; lon: number }) => {
-    setPtSearchQuery(s.display);
-    setPtShowSuggestions(false);
-    setPtSuggestions([]);
-    setPtDisplayLocation(s.display);
-    const parts = s.display.split(", ");
-    setPtCity(parts[0] || "");
-    setPtCountry(parts[parts.length - 1] || "");
-    ptFetchTimesByCoords(s.lat, s.lon, ptMethod);
-    setPtShowManualInput(false);
-  };
-
-  const ptHandleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!ptSearchQuery.trim()) return;
-    // If there are suggestions, pick the first one
-    if (ptSuggestions.length > 0) {
-      ptSelectSuggestion(ptSuggestions[0]);
-    } else {
-      // Fallback: try city-based fetch
-      const q = ptSearchQuery.trim();
-      ptFetchTimesByCity(q, "auto", ptMethod);
-      setPtShowManualInput(false);
-    }
+  const selectSection = (k: SectionKey) => {
+    setActiveSection(k);
+    setShowGuide(false);
+    if (k === "wudu") syncUrl(k, activeWudu);
+    else if (k === "prayers") syncUrl(k, activePrayer);
+    else if (k === "voluntary") syncUrl(k, activeVoluntary);
+    else syncUrl(k);
   };
 
   /* ── search matchers ── */
@@ -2407,10 +1676,27 @@ function SalahContent() {
     if (!search) return true;
     return textMatch(search, t.name, t.nameAr, t.detail, t.examples, t.ruling, t.ref);
   });
-  const showTypesTab = !search || filteredPrayerTypes.length > 0;
+  const showTypes = !search || filteredPrayerTypes.length > 0;
   const filteredMatters = whyItMatters.filter(mattersMatches);
 
-  const wuduTopicMatches = (t: WuduTopic) => {
+  const jumuahMatches =
+    !search ||
+    search.length < 2 ||
+    textMatch(
+      search,
+      "Jumu'ah",
+      "الجمعة",
+      "Friday prayer",
+      "khutbah",
+      "sermon",
+      "congregation",
+      "ghusl",
+      "Surah al-Kahf",
+      "salawat",
+      "hour of du'a",
+    );
+
+  const wuduTopicMatches = (t: Topic) => {
     if (!search) return true;
     return textMatch(
       search,
@@ -2420,22 +1706,38 @@ function SalahContent() {
       ...t.content.points.map((p) => p.detail),
     );
   };
+  const filteredPurification = purificationTopics.filter(wuduTopicMatches);
+  const activePurificationTopic =
+    purificationTopics.find((t) => t.id === activeWudu) || purificationTopics[0];
 
   const currentPrayer = activeSection === "voluntary"
     ? voluntaryPrayers.find((p) => p.id === activeVoluntary)!
     : prayers.find((p) => p.id === activePrayer) || prayers[0];
 
+  /* ── rail pills (shared SubTabLayout) ── */
+  const prayerSubs = [
+    ...filteredPrayers.map((p) => ({ key: p.id, label: p.name })),
+    ...(jumuahMatches ? [{ key: "jumuah", label: "Jumu'ah" }] : []),
+  ];
+  const voluntarySubs = filteredVoluntary.map((p) => ({ key: p.id, label: p.name }));
+  const purificationSubs = filteredPurification.map((t) => ({ key: t.id, label: t.name }));
+
+  const openGhusl = () => {
+    setActiveSection("wudu");
+    setActiveWudu("ghusl");
+    setShowGuide(false);
+    syncUrl("wudu", "ghusl");
+  };
+
+  const openJumuah = () => {
+    setActiveSection("prayers");
+    setActivePrayer("jumuah");
+    setShowGuide(false);
+    syncUrl("prayers", "jumuah");
+  };
+
   return (
     <div>
-      <PageTip
-        tips={[
-          {
-            key: "salah-guide-v2",
-            title: "More than prayer times",
-            body: "Use the section menu for a live qiblah compass, a full wudu guide, and a step-by-step walkthrough that shows you every position of the prayer.",
-          },
-        ]}
-      />
       <PageHeader
         title="Salah"
         titleAr="الصلاة"
@@ -2454,415 +1756,15 @@ function SalahContent() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search prayers, steps, duas..." className="mb-6" />
 
-      {/* Section navigation (shared TabBar — picker on mobile when >6 tabs) */}
+      {/* Section navigation (shared TabBar — 6 tabs, so pills stay visible on mobile) */}
       <TabBar
         tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
         activeTab={activeSection}
-        onTabChange={(k) => {
-          setActiveSection(k as SectionKey);
-          setShowGuide(false);
-        }}
+        onTabChange={(k) => selectSection(k as SectionKey)}
         className="mb-6"
       />
 
       <AnimatePresence mode="wait">
-        {/* ─── Prayer Times ─── */}
-        {activeSection === "times" && (
-          <motion.div
-            key="times"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-6 max-w-4xl mx-auto"
-          >
-            {/* Location & Hijri Date */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-3 sm:gap-4"
-            >
-              <div>
-                {ptDisplayLocation && (
-                  <div className="flex items-center gap-1.5">
-                    <MapPin size={14} className="text-gold" />
-                    <p className="text-themed text-sm font-medium">{ptDisplayLocation}</p>
-                  </div>
-                )}
-                {ptHijri && (
-                  <p className="text-themed-muted text-xs mt-1">
-                    {ptHijri.day} {ptHijri.month.en} {ptHijri.year} {ptHijri.designation.abbreviated}
-                    <span className="font-arabic ml-2 text-gold/60">
-                      {ptHijri.month.ar}
-                    </span>
-                  </p>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    ptAutoLocate();
-                    setPtShowManualInput(false);
-                  }}
-                  disabled={ptLocating}
-                  className="flex items-center gap-1.5 text-xs text-themed-muted hover:text-gold transition-colors disabled:opacity-50"
-                  title="Auto-detect location"
-                >
-                  <LocateFixed size={14} className={ptLocating ? "animate-spin" : ""} />
-                  Auto-locate
-                </button>
-                <button
-                  onClick={() => setPtShowManualInput((v) => !v)}
-                  className="flex items-center gap-1.5 text-xs text-themed-muted hover:text-gold transition-colors"
-                >
-                  <Search size={14} />
-                  Change Location
-                </button>
-                <div className="relative">
-                  <button
-                    onClick={() => setPtShowMethodMenu((v) => !v)}
-                    className="flex items-center gap-1.5 text-xs text-themed-muted hover:text-gold transition-colors"
-                    title="Calculation method"
-                  >
-                    <Settings2 size={14} />
-                    <span className="hidden sm:inline">{CALCULATION_METHODS.find((m) => m.value === ptMethod)?.label}</span>
-                  </button>
-                  {ptShowMethodMenu && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-40"
-                        onClick={() => setPtShowMethodMenu(false)}
-                      />
-                      <div className="absolute right-0 top-full mt-2 z-50 rounded-lg border sidebar-border card-bg shadow-lg overflow-hidden min-w-[200px]">
-                        <p className="text-[10px] text-themed-muted uppercase tracking-wider px-3 pt-2.5 pb-1">Calculation method</p>
-                        {CALCULATION_METHODS.map((m) => (
-                          <button
-                            key={m.value}
-                            onClick={() => {
-                              ptHandleMethodChange(m.value);
-                              setPtShowMethodMenu(false);
-                            }}
-                            className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center justify-between ${
-                              ptMethod === m.value
-                                ? "text-gold bg-gold/10"
-                                : "text-themed hover:bg-gold/5"
-                            }`}
-                          >
-                            <span>{m.label}</span>
-                            {ptMethod === m.value && <span className="text-gold text-xs">✓</span>}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Location Search */}
-            {ptShowManualInput && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
-              >
-                <form onSubmit={ptHandleSearch} className="relative">
-                  <div className="flex gap-2">
-                    <div className="relative flex-1 min-w-0">
-                      <input
-                        ref={ptInputRef}
-                        type="text"
-                        placeholder="Search city, state, or country..."
-                        value={ptSearchQuery}
-                        onChange={(e) => ptHandleQueryChange(e.target.value)}
-                        onFocus={() => ptSuggestions.length > 0 && setPtShowSuggestions(true)}
-                        onBlur={() => setTimeout(() => setPtShowSuggestions(false), 200)}
-                        autoComplete="off"
-                        className="w-full px-3 py-2 rounded-lg text-sm card-bg border sidebar-border text-themed placeholder:text-themed-muted/50 focus:outline-none focus:border-[var(--color-gold)]/50"
-                      />
-                      {ptSearching && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                          <div className="w-4 h-4 border-2 border-[var(--color-gold)]/30 border-t-[var(--color-gold)] rounded-full animate-spin" />
-                        </div>
-                      )}
-                      {ptShowSuggestions && ptSuggestions.length > 0 && (
-                        <div className="absolute z-50 top-full left-0 right-0 mt-1 rounded-lg border sidebar-border card-bg shadow-lg overflow-hidden">
-                          {ptSuggestions.map((s, i) => (
-                            <button
-                              key={i}
-                              type="button"
-                              onMouseDown={(e) => e.preventDefault()}
-                              onClick={() => ptSelectSuggestion(s)}
-                              className="w-full text-left px-3 py-2.5 text-sm text-themed hover:bg-[var(--color-gold)]/10 transition-colors flex items-center gap-2 border-b sidebar-border last:border-b-0"
-                            >
-                              <MapPin size={12} className="text-gold/60 shrink-0" />
-                              <span className="truncate">{s.display}</span>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30 hover:bg-[var(--color-gold)]/30 transition-colors shrink-0"
-                    >
-                      Search
-                    </button>
-                  </div>
-                </form>
-              </motion.div>
-            )}
-
-            {/* Next Prayer — Hero Countdown */}
-            {ptTimings && ptNextPrayerKey && !ptLoading && (() => {
-              const win = getWindowProgress(ptTimings, ptNextPrayerKey, ptTimezone);
-              return (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.15 }}
-                >
-                  <div className="card-bg rounded-2xl border sidebar-border p-6 sm:p-8 relative overflow-hidden">
-                    {/* Atmospheric gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-gold/[0.08] via-gold/[0.02] to-transparent pointer-events-none" />
-                    <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-gold/[0.04] blur-3xl pointer-events-none" />
-
-                    <div className="relative">
-                      <div className="text-center">
-                        <p className="text-[11px] text-themed-muted uppercase tracking-[0.2em] mb-3">Up Next</p>
-                        <div className="flex items-baseline justify-center gap-3 mb-1">
-                          <p className="text-gold text-3xl sm:text-4xl font-semibold">{ptNextPrayerKey}</p>
-                          <p className="text-themed-muted text-sm">at {win ? win.nextTime : ""}</p>
-                        </div>
-                        <p className="font-mono text-4xl sm:text-5xl md:text-6xl text-themed tracking-wider mt-4 mb-6 sm:mb-8 tabular-nums">
-                          {ptCountdown}
-                        </p>
-                      </div>
-
-                      {win && (
-                        <div>
-                          <div className="h-1.5 rounded-full bg-gold/10 overflow-hidden">
-                            <motion.div
-                              className="h-full bg-gradient-to-r from-gold/50 to-gold rounded-full"
-                              initial={{ width: 0 }}
-                              animate={{ width: `${win.progress * 100}%` }}
-                              transition={{ duration: 0.8, ease: "easeOut" }}
-                            />
-                          </div>
-                          <div className="flex justify-between text-[10px] text-themed-muted mt-2 uppercase tracking-wider">
-                            <span>{win.prevKey} <span className="font-mono normal-case tracking-normal text-themed-muted/70">{win.prevTime}</span></span>
-                            <span>{win.nextKey} <span className="font-mono normal-case tracking-normal text-themed-muted/70">{win.nextTime}</span></span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })()}
-
-            {/* Day Timeline Strip */}
-            {ptTimings && !ptLoading && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-              >
-                <div className="card-bg rounded-xl border sidebar-border p-4 sm:p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-[11px] text-themed-muted uppercase tracking-[0.2em]">Today</p>
-                  </div>
-                  {(() => {
-                    const nowParts = getNowParts(ptTimezone);
-                    const nowMin = nowParts.hours * 60 + nowParts.minutes + nowParts.seconds / 60;
-                    const nowPos = nowMin / (24 * 60);
-                    // Only the 5 daily prayers on the timeline (Sunrise stays in the detail grid below)
-                    const stops = PRAYER_TIME_LIST.filter((p) => p.isPrayer)
-                      .map((p) => {
-                        const raw = ptTimings[p.key as keyof PrayerTimings];
-                        if (!raw) return null;
-                        const min = timeStringToMinutes(raw);
-                        return { ...p, pos: min / (24 * 60), time: formatDisplayTime(raw) };
-                      })
-                      .filter((v): v is NonNullable<typeof v> => v !== null);
-                    const nowTimeStr = ptTimezone
-                      ? new Intl.DateTimeFormat("en-US", {
-                          timeZone: ptTimezone,
-                          hour: "numeric",
-                          minute: "2-digit",
-                          second: "2-digit",
-                          hour12: true,
-                        }).format(new Date())
-                      : new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
-
-                    // Vertical layout reference (px from container top):
-                    //   0–18  : time pill at the current position
-                    //   22–44 : prayer name labels
-                    //   54    : horizontal day line
-                    //   48–60 : tick marks at each prayer's position (cross the line)
-                    //   66+   : 12 AM end labels
-                    return (
-                      <div className="relative h-24 mx-2">
-                        {/* Prayer name labels */}
-                        {stops.map((s) => {
-                          const isNext = s.key === ptNextPrayerKey;
-                          return (
-                            <div
-                              key={s.key}
-                              className="absolute -translate-x-1/2 top-[26px] text-center whitespace-nowrap"
-                              style={{ left: `${s.pos * 100}%` }}
-                            >
-                              <p
-                                className={`text-[10px] uppercase tracking-wider ${
-                                  isNext ? "text-gold font-semibold" : "text-themed-muted"
-                                }`}
-                              >
-                                {s.english}
-                              </p>
-                            </div>
-                          );
-                        })}
-
-                        {/* Horizontal day line (below names) */}
-                        <div
-                          className="absolute left-0 right-0 top-[54px] rounded-full"
-                          style={{ height: "2px", background: "rgba(212, 168, 67, 0.55)" }}
-                        />
-                        {/* End caps */}
-                        <div
-                          className="absolute left-0 top-[48px] rounded-full"
-                          style={{ width: "2px", height: "14px", background: "rgba(212, 168, 67, 0.7)" }}
-                        />
-                        <div
-                          className="absolute right-0 top-[48px] rounded-full"
-                          style={{ width: "2px", height: "14px", background: "rgba(212, 168, 67, 0.7)" }}
-                        />
-                        {/* Tick marks at each prayer's position */}
-                        {stops.map((s) => (
-                          <div
-                            key={`tick-${s.key}`}
-                            className="absolute top-[49px]"
-                            style={{
-                              left: `${s.pos * 100}%`,
-                              transform: "translateX(-50%)",
-                              width: "2px",
-                              height: "12px",
-                              background: "rgba(212, 168, 67, 0.7)",
-                            }}
-                          />
-                        ))}
-                        {/* 12 AM end labels */}
-                        <p className="absolute left-0 top-[66px] text-[9px] font-mono text-themed-muted/40">12 AM</p>
-                        <p className="absolute right-0 top-[66px] text-[9px] font-mono text-themed-muted/40 text-right">12 AM</p>
-
-                        {/* Now marker — time pill at top, vertical line, dot sitting on the day line */}
-                        <div
-                          className="absolute top-0 bottom-0 pointer-events-none"
-                          style={{ left: `${nowPos * 100}%` }}
-                        >
-                          <div className="absolute -translate-x-1/2 top-0 px-2 py-0.5 rounded-md bg-gold/15 border border-gold/30 whitespace-nowrap">
-                            <p className="text-[10px] font-mono text-gold tabular-nums">{nowTimeStr}</p>
-                          </div>
-                          <div className="absolute top-[20px] w-px bg-gold" style={{ height: "35px" }} />
-                          <div className="absolute top-[55px] -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-gold animate-pulse shadow-[0_0_8px_rgba(212,168,67,0.7)]" />
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Loading / Error */}
-            {ptLoading && (
-              <div className="text-center py-12">
-                <div className="inline-block w-8 h-8 border-2 border-[var(--color-gold)]/30 border-t-[var(--color-gold)] rounded-full animate-spin" />
-                <p className="text-themed-muted text-sm mt-3">Loading prayer times...</p>
-              </div>
-            )}
-            {ptError && (
-              <div className="text-center py-8">
-                <p className="text-red-400 text-sm">{ptError}</p>
-              </div>
-            )}
-
-            {/* Prayer Time Cards */}
-            {ptTimings && !ptLoading && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {PRAYER_TIME_LIST.map((prayer, i) => {
-                  const raw = ptTimings[prayer.key as keyof PrayerTimings];
-                  if (!raw) return null;
-                  const isNext = prayer.isPrayer && prayer.key === ptNextPrayerKey;
-                  const Icon = prayer.icon;
-                  return (
-                    <ContentCard
-                      key={prayer.key}
-                      delay={0.25 + i * 0.06}
-                      className={
-                        isNext
-                          ? "!border-[var(--color-gold)]/60 shadow-[0_0_20px_rgba(212,175,55,0.15)]"
-                          : !prayer.isPrayer
-                          ? "opacity-60"
-                          : ""
-                      }
-                    >
-                      <div className="flex items-center gap-4">
-                        <div
-                          className={`p-2.5 rounded-lg shrink-0 ${
-                            isNext
-                              ? "bg-[var(--color-gold)]/20"
-                              : "bg-[var(--color-gold)]/10"
-                          }`}
-                        >
-                          <Icon
-                            size={22}
-                            className={isNext ? "text-gold" : "text-gold/70"}
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-baseline gap-2">
-                            <h3
-                              className={`font-semibold text-sm ${
-                                isNext ? "text-gold" : "text-themed"
-                              }`}
-                            >
-                              {prayer.english}
-                            </h3>
-                            <span className="text-xs font-arabic text-gold/50">
-                              {prayer.arabic}
-                            </span>
-                          </div>
-                          {!prayer.isPrayer && (
-                            <span className="text-[10px] text-themed-muted uppercase tracking-wide">
-                              Not a prayer
-                            </span>
-                          )}
-                        </div>
-                        <p
-                          className={`text-lg font-mono font-semibold shrink-0 ${
-                            isNext ? "text-gold" : "text-themed"
-                          }`}
-                        >
-                          {formatDisplayTime(raw)}
-                        </p>
-                      </div>
-                      {isNext && (
-                        <motion.div
-                          initial={{ scaleX: 0 }}
-                          animate={{ scaleX: 1 }}
-                          className="mt-3 h-[2px] rounded-full bg-gradient-to-r from-[var(--color-gold)] to-transparent origin-left"
-                        />
-                      )}
-                    </ContentCard>
-                  );
-                })}
-              </div>
-            )}
-          </motion.div>
-        )}
-
         {/* ─── What is Salah? ─── */}
         {activeSection === "intro" && (
           <motion.div
@@ -2873,6 +1775,36 @@ function SalahContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
+            {/* Utility links — the live widgets now live on their own pages */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Link
+                href="/prayer-times"
+                className="rounded-xl p-4 card-bg border sidebar-border hover:border-gold/40 transition-colors flex items-center gap-3"
+              >
+                <div className="p-2.5 rounded-lg bg-gold/10 shrink-0">
+                  <Clock size={20} className="text-gold" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-themed">Prayer times</p>
+                  <p className="text-xs text-themed-muted mt-0.5">Today&apos;s times + live countdown</p>
+                </div>
+                <ChevronRight size={16} className="text-gold shrink-0" />
+              </Link>
+              <Link
+                href="/qiblah"
+                className="rounded-xl p-4 card-bg border sidebar-border hover:border-gold/40 transition-colors flex items-center gap-3"
+              >
+                <div className="p-2.5 rounded-lg bg-gold/10 shrink-0">
+                  <Compass size={20} className="text-gold" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-themed">Qiblah</p>
+                  <p className="text-xs text-themed-muted mt-0.5">Live compass toward the Ka&apos;bah</p>
+                </div>
+                <ChevronRight size={16} className="text-gold shrink-0" />
+              </Link>
+            </div>
+
             <ContentCard>
               <h2 className="text-xl font-semibold text-themed mb-4">What is Salah?</h2>
               <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
@@ -2923,6 +1855,7 @@ function SalahContent() {
                       setActivePrayer(prayer.id);
                       setActiveSection("prayers");
                       setShowGuide(false);
+                      syncUrl("prayers", prayer.id);
                     }}
                     className="w-full text-left rounded-lg p-4 border sidebar-border hover:border-gold/30 transition-colors"
                     style={{ backgroundColor: "var(--color-bg)" }}
@@ -2945,10 +1878,48 @@ function SalahContent() {
               </div>
             </ContentCard>
 
+            {/* Types of Prayer (folded in from the old "Types" pseudo-pill) */}
+            {showTypes && (
+              <div>
+                <h2 className="text-xl font-semibold text-themed mb-1">Types of Prayer</h2>
+                <p className="text-sm text-themed-muted mb-4">
+                  Islamic prayers are categorized by their obligation level — from the five
+                  compulsory daily prayers to voluntary acts of devotion.
+                </p>
+                <Accordion
+                  items={filteredPrayerTypes.map((type) => ({
+                    id: type.id,
+                    title: type.name,
+                    subtitle: type.ruling,
+                    children: (
+                      <div>
+                        <p className="text-xs font-arabic text-gold/60 mb-2">{type.nameAr}</p>
+                        <p className="text-sm text-themed-muted leading-relaxed mb-3">{type.detail}</p>
+                        <div className="flex flex-col sm:flex-row gap-3 text-xs">
+                          <div className="flex-1 rounded-md p-2.5 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+                            <span className="text-themed-muted uppercase tracking-wider text-[10px]">Examples</span>
+                            <p className="text-themed mt-1">{type.examples}</p>
+                          </div>
+                          <div className="sm:w-48 rounded-md p-2.5 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+                            <span className="text-themed-muted uppercase tracking-wider text-[10px]">Ruling</span>
+                            <p className="text-themed mt-1">{type.ruling}</p>
+                          </div>
+                        </div>
+                        <p className="text-xs text-gold/60 mt-2">
+                          <HadithRefText text={type.ref} />
+                        </p>
+                      </div>
+                    ),
+                  }))}
+                />
+              </div>
+            )}
+
             {/* Sources */}
             <SourcesCard delay={0.35} sources={[
               { ref: "Bukhari 63:112, Muslim 1:321", desc: "The prescription of prayer during al-Isra wal-Mi'raj" },
               { ref: "Muslim 4:41", desc: "Allah's response to Al-Fatihah" },
+              { ref: "Muslim 6:124; Tirmidhi 2:283", desc: "The rawatib (confirmed sunnah) prayers" },
               { ref: "Sifat Salat an-Nabi, al-Albani", desc: "The Prophet's prayer described" },
               { ref: "Sharh Umdatul Ahkam, Ibn Uthaymeen", desc: "Rulings on prayer" },
             ]} />
@@ -3003,7 +1974,7 @@ function SalahContent() {
           </motion.div>
         )}
 
-        {/* ─── Wudu ─── */}
+        {/* ─── Purification (Taharah): wudu + ghusl ─── */}
         {activeSection === "wudu" && (
           <motion.div
             key="wudu"
@@ -3012,114 +1983,72 @@ function SalahContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              {/* Left side — topic pills */}
-              <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
-                {wuduTopics.filter(wuduTopicMatches).map((topic) => (
+            <SubTabLayout
+              subs={purificationSubs}
+              activeSub={activeWudu}
+              setActiveSub={(k) => {
+                setActiveWudu(k);
+                syncUrl("wudu", k);
+              }}
+            >
+              <div className="space-y-4">
+                <TopicInfoCard topic={activePurificationTopic} />
+
+                {/* Ghusl cross-links */}
+                {activePurificationTopic.id === "ghusl" && (
+                  <>
+                    <button
+                      onClick={openJumuah}
+                      className="w-full text-left rounded-xl p-4 card-bg border sidebar-border hover:border-gold/40 transition-colors flex items-center justify-between gap-3"
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-themed">The Friday sunnahs — Jumu&apos;ah</p>
+                        <p className="text-xs text-themed-muted mt-0.5">Ghusl is the first of the Friday preparations — see The Prayers → Jumu&apos;ah</p>
+                      </div>
+                      <ChevronRight size={16} className="text-gold shrink-0" />
+                    </button>
+                    <Link
+                      href="/marriage?tab=married-life"
+                      className="w-full text-left rounded-xl p-4 card-bg border sidebar-border hover:border-gold/40 transition-colors flex items-center justify-between gap-3"
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-themed">Intimacy and purity for spouses</p>
+                        <p className="text-xs text-themed-muted mt-0.5">Related rulings in Marriage → Married Life</p>
+                      </div>
+                      <ChevronRight size={16} className="text-gold shrink-0" />
+                    </Link>
+                  </>
+                )}
+
+                {/* Nullifiers → ghusl cross-link ("what requires ghusl vs wudu") */}
+                {activePurificationTopic.id === "nullifiers" && (
                   <button
-                    key={topic.id}
-                    onClick={() => setActiveWudu(topic.id)}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
-                      activeWudu === topic.id
-                        ? "bg-gold/20 text-gold border border-gold/40"
-                        : "text-themed-muted hover:text-themed border sidebar-border"
-                    }`}
+                    onClick={() => {
+                      setActiveWudu("ghusl");
+                      syncUrl("wudu", "ghusl");
+                    }}
+                    className="w-full text-left rounded-xl p-4 card-bg border sidebar-border hover:border-gold/40 transition-colors flex items-center justify-between gap-3"
                   >
-                    {topic.name}
+                    <div>
+                      <p className="text-sm font-medium text-themed">What requires ghusl instead of wudu?</p>
+                      <p className="text-xs text-themed-muted mt-0.5">Janabah, the end of menstruation, and more — see the Ghusl guide</p>
+                    </div>
+                    <ChevronRight size={16} className="text-gold shrink-0" />
                   </button>
-                ))}
+                )}
               </div>
-
-              {/* Right side — content */}
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
-                  {wuduTopics.map(
-                    (topic) =>
-                      activeWudu === topic.id && (
-                        <motion.div
-                          key={topic.id}
-                          id={`section-${topic.id}`}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.25 }}
-                        >
-                          <ContentCard>
-                            <div className="mb-4">
-                              <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
-                            </div>
-
-                            <p className="text-themed-muted text-sm leading-relaxed mb-5">
-                              {topic.content.intro}
-                            </p>
-
-                            {topic.content.verse && (
-                              <div
-                                className="rounded-lg p-4 mb-5"
-                                style={{ backgroundColor: "var(--color-bg)" }}
-                              >
-                                <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
-                                  {topic.content.verse.arabic}
-                                </p>
-                                <p className="text-themed text-sm italic">
-                                  &ldquo;{topic.content.verse.text}&rdquo;
-                                </p>
-                                <p className="text-xs text-themed-muted mt-2">
-                                  <HadithRefText text={topic.content.verse.ref} />
-                                </p>
-                              </div>
-                            )}
-
-                            <div className="space-y-4">
-                              {topic.content.points.map((point) => (
-                                <div
-                                  key={point.title}
-                                  className="rounded-lg p-4 border sidebar-border"
-                                  style={{ backgroundColor: "var(--color-bg)" }}
-                                >
-                                  <h4 className="text-sm font-semibold text-themed mb-2">
-                                    {point.title}
-                                  </h4>
-                                  <p className="text-themed-muted text-sm leading-relaxed">
-                                    {point.detail}
-                                  </p>
-                                  {point.note && (
-                                    <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </ContentCard>
-                        </motion.div>
-                      )
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
+            </SubTabLayout>
 
             {/* Sources */}
             <SourcesCard delay={0.3} className="mt-8" sources={[
-              { ref: "Quran 5:6", desc: "The verse of wudu, detailing the obligatory acts of purification" },
+              { ref: "Quran 5:6", desc: "The verse of purification — wudu, and ghusl for janabah" },
               { ref: "Bukhari 1:1, 4:1, 4:25, 11:12", desc: "Niyyah, nullifiers, the Prophet's ﷺ wudu, right-side preference, miswak" },
-              { ref: "Muslim 2:1, 2:20, 2:44, 2:46, 3:123", desc: "Cleanliness, two rak'at after wudu, dua, sins washed away, ghurr and muhajjalin, camel meat" },
+              { ref: "Bukhari 5:1, 5:26, 5:43, 6:35, 11:5, 23:22", desc: "The Prophet's ﷺ ghusl (Aisha and Maymunah), when ghusl is obligatory, ghusl for Jumu'ah, washing the deceased" },
+              { ref: "Muslim 2:1, 2:20, 2:44, 2:46, 3:17, 3:32, 3:123", desc: "Cleanliness, dua after wudu, sins washed away, madhy requires only wudu, emission requires ghusl, camel meat" },
               { ref: "Abu Dawud 1:60, 1:101, 1:200", desc: "Passing wind, Bismillah, ears, washing three times, interlacing fingers, deep sleep" },
               { ref: "Tirmidhi 1:31, 1:82", desc: "Beard, ears are part of head, interlacing toes, dua after wudu, touching private parts" },
               { ref: "Ibn Majah 1:133, 1:159", desc: "Bismillah obligation discussion, moderation with water" },
             ]} />
-          </motion.div>
-        )}
-
-        {/* ─── Qiblah ─── */}
-        {activeSection === "qiblah" && (
-          <motion.div
-            key="qiblah"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-6"
-          >
-            <QiblahSection />
           </motion.div>
         )}
 
@@ -3137,7 +2066,7 @@ function SalahContent() {
           </motion.div>
         )}
 
-        {/* ─── The Five Prayers ─── */}
+        {/* ─── The Prayers (five daily + Jumu'ah) ─── */}
         {activeSection === "prayers" && (
           <motion.div
             key="prayers"
@@ -3147,117 +2076,24 @@ function SalahContent() {
             transition={{ duration: 0.3 }}
           >
             {!showGuide && (
-              <div className="flex flex-col md:flex-row gap-4 items-start">
-                {/* Left side — prayer pills (horizontal scroll on mobile, vertical on md+) */}
-                <div className="flex md:flex-col gap-2 shrink-0 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-                  {showTypesTab && (
-                    <button
-                      onClick={() => {
-                        setActivePrayer("types");
-                        setShowGuide(false);
-                      }}
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
-                        activePrayer === "types"
-                          ? "bg-gold/20 text-gold border border-gold/40"
-                          : "text-themed-muted hover:text-themed border sidebar-border"
-                      }`}
-                    >
-                      <span>Types</span>
-                      <span className={`text-[10px] font-arabic ${
-                        activePrayer === "types" ? "text-gold/60" : "text-themed-muted/50"
-                      }`}>أنواع</span>
-                    </button>
-                  )}
-                  {filteredPrayers.map((prayer) => (
-                    <button
-                      key={prayer.id}
-                      onClick={() => {
-                        setActivePrayer(prayer.id);
-                        setShowGuide(false);
-                      }}
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
-                        activePrayer === prayer.id
-                          ? "bg-gold/20 text-gold border border-gold/40"
-                          : "text-themed-muted hover:text-themed border sidebar-border"
-                      }`}
-                    >
-                      <span>{prayer.name}</span>
-                      <span className={`text-[10px] font-arabic ${
-                        activePrayer === prayer.id ? "text-gold/60" : "text-themed-muted/50"
-                      }`}>{prayer.nameAr}</span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Right side — prayer content */}
-                <div className="flex-1 min-w-0 w-full">
-                  <AnimatePresence mode="wait">
-                    {activePrayer === "types" && (
-                      <motion.div
-                        key="types"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.25 }}
-                      >
-                        <ContentCard>
-                          <h3 className="text-lg font-semibold text-themed mb-1">Types of Prayer</h3>
-                          <p className="text-sm text-themed-muted mb-5">
-                            Islamic prayers are categorized by their obligation level — from the five
-                            compulsory daily prayers to voluntary acts of devotion.
-                          </p>
-                          <div className="space-y-4">
-                            {filteredPrayerTypes.map((type) => (
-                              <div
-                                key={type.id}
-                                className="rounded-lg p-4 border sidebar-border"
-                                style={{ backgroundColor: "var(--color-bg)" }}
-                              >
-                                <div className="flex items-baseline gap-2 mb-2">
-                                  <h4 className="text-sm font-semibold text-themed">{type.name}</h4>
-                                  <span className="text-xs font-arabic text-gold/60">{type.nameAr}</span>
-                                </div>
-                                <p className="text-sm text-themed-muted leading-relaxed mb-3">{type.detail}</p>
-                                <div className="flex flex-col sm:flex-row gap-3 text-xs">
-                                  <div className="flex-1 rounded-md p-2.5 border sidebar-border" style={{ backgroundColor: "var(--color-bg-secondary)" }}>
-                                    <span className="text-themed-muted uppercase tracking-wider text-[10px]">Examples</span>
-                                    <p className="text-themed mt-1">{type.examples}</p>
-                                  </div>
-                                  <div className="sm:w-48 rounded-md p-2.5 border sidebar-border" style={{ backgroundColor: "var(--color-bg-secondary)" }}>
-                                    <span className="text-themed-muted uppercase tracking-wider text-[10px]">Ruling</span>
-                                    <p className="text-themed mt-1">{type.ruling}</p>
-                                  </div>
-                                </div>
-                                <p className="text-xs text-gold/60 mt-2">
-                                  <HadithRefText text={type.ref} />
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </ContentCard>
-                      </motion.div>
-                    )}
-                    {filteredPrayers.map(
-                      (prayer) =>
-                        activePrayer === prayer.id && (
-                          <motion.div
-                            key={prayer.id}
-                            id={`section-${prayer.id}`}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.25 }}
-                          >
-                            <PrayerInfoCard
-                              prayer={prayer}
-                              onHowToPray={() => setShowGuide(true)}
-                            />
-                          </motion.div>
-                        )
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
+              <SubTabLayout
+                subs={prayerSubs}
+                activeSub={activePrayer}
+                setActiveSub={(k) => {
+                  setActivePrayer(k);
+                  setShowGuide(false);
+                  syncUrl("prayers", k);
+                }}
+              >
+                {activePrayer === "jumuah" ? (
+                  <JumuahSection onOpenGhusl={openGhusl} />
+                ) : (
+                  <PrayerInfoCard
+                    prayer={prayers.find((p) => p.id === activePrayer) || prayers[0]}
+                    onHowToPray={() => setShowGuide(true)}
+                  />
+                )}
+              </SubTabLayout>
             )}
 
             {showGuide && (
@@ -3270,18 +2106,24 @@ function SalahContent() {
               </AnimatePresence>
             )}
 
-            {/* Sources & References for Five Prayers */}
+            {/* Sources & References for the Prayers */}
             {!showGuide && (
               <SourcesCard delay={0.3} className="mt-8" sources={[
                 { ref: "Bukhari 9:50", desc: "Fajr & Asr: whoever prays the two cool prayers will enter Paradise" },
                 { ref: "Muslim 6:118", desc: "Fajr sunnah: better than the world and everything in it" },
                 { ref: "Tirmidhi 2:281", desc: "Dhuhr: reward for praying four rak'at before and after" },
-                { ref: "Nasai 14:6", desc: "Jumu'ah: warning about missing three consecutive Friday prayers" },
                 { ref: "Bukhari 9:29", desc: "Asr: missing it is like losing family and property" },
                 { ref: "Muslim 5:223", desc: "Maghrib: timing of the sunset prayer" },
                 { ref: "Muslim 6:124", desc: "Rawatib sunnah: the 12 confirmed sunnah prayers" },
                 { ref: "Bukhari 10:51", desc: "Isha & Fajr: reward for attending them in congregation" },
                 { ref: "Bukhari 14:9", desc: "Witr: make the last of your night prayer Witr" },
+                { ref: "Quran 62:9", desc: "Jumu'ah: hasten to the remembrance of Allah and leave off trading" },
+                { ref: "Abu Dawud 2:678", desc: "Jumu'ah: a duty upon every Muslim in congregation, with four exceptions" },
+                { ref: "Muslim 7:14, 7:15", desc: "Jumu'ah: reward of going early; silence during the khutbah" },
+                { ref: "Bukhari 11:5, 11:59", desc: "Jumu'ah: the Friday ghusl; the hour of accepted du'a" },
+                { ref: "Abu Dawud 2:658", desc: "Jumu'ah: invoke abundant blessings on the Prophet ﷺ on Friday" },
+                { ref: "Ibn Majah 5:261, 5:321", desc: "Jumu'ah: two rak'ah complete not shortened; catching a rak'ah" },
+                { ref: "Nasai 14:6", desc: "Jumu'ah: warning about neglecting the Friday prayer" },
                 { ref: "Quran 17:78", desc: "Establish prayer from the decline of the sun until the darkness of night" },
                 { ref: "Quran 2:238", desc: "Guard the prayers, especially the middle prayer (Asr)" },
                 { ref: "Sifat Salat an-Nabi by Shaykh al-Albani", desc: "Description of the Prophet's prayer" },
@@ -3300,54 +2142,25 @@ function SalahContent() {
             transition={{ duration: 0.3 }}
           >
             {!showGuide && (
-              <div className="flex flex-col md:flex-row gap-4 items-start">
-                {/* Left side — prayer pills (horizontal scroll on mobile, vertical on md+) */}
-                <div className="flex md:flex-col gap-2 shrink-0 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-                  {filteredVoluntary.map((prayer) => (
-                    <button
-                      key={prayer.id}
-                      onClick={() => {
-                        setActiveVoluntary(prayer.id);
-                        setShowGuide(false);
-                      }}
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center justify-between gap-3 ${
-                        activeVoluntary === prayer.id
-                          ? "bg-sky-500/20 text-sky-400 border border-sky-400/40"
-                          : "text-sky-400/60 hover:text-sky-400 border border-sky-400/20"
-                      }`}
-                    >
-                      <span>{prayer.name}</span>
-                      <span className={`text-[10px] font-arabic ${
-                        activeVoluntary === prayer.id ? "text-sky-400/60" : "text-sky-400/30"
-                      }`}>{prayer.nameAr}</span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Right side — prayer content */}
-                <div className="flex-1 min-w-0 w-full">
-                  <AnimatePresence mode="wait">
-                    {filteredVoluntary.map(
-                      (prayer) =>
-                        activeVoluntary === prayer.id && (
-                          <motion.div
-                            key={prayer.id}
-                            id={`section-${prayer.id}`}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.25 }}
-                          >
-                            <PrayerInfoCard
-                              prayer={prayer}
-                              onHowToPray={() => setShowGuide(true)}
-                            />
-                          </motion.div>
-                        )
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
+              <SubTabLayout
+                subs={voluntarySubs}
+                activeSub={activeVoluntary}
+                setActiveSub={(k) => {
+                  setActiveVoluntary(k);
+                  setShowGuide(false);
+                  syncUrl("voluntary", k);
+                }}
+              >
+                {(() => {
+                  const prayer = voluntaryPrayers.find((p) => p.id === activeVoluntary);
+                  return prayer ? (
+                    <PrayerInfoCard
+                      prayer={prayer}
+                      onHowToPray={() => setShowGuide(true)}
+                    />
+                  ) : null;
+                })()}
+              </SubTabLayout>
             )}
 
             {showGuide && (
