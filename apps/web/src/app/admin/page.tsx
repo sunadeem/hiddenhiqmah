@@ -14,6 +14,7 @@ import {
   Lock,
   Megaphone,
   UserCog,
+  ShieldAlert,
 } from "lucide-react";
 
 // ── Response shape (mirrors /api/admin/stats) ───────────────────────────────
@@ -343,6 +344,9 @@ export default function AdminPage() {
   const { users, ask, cost, engagement, recent, userTable } = stats;
   const topMax = Math.max(1, ...ask.topUsers.map((u) => u.count));
   const suspendedCount = userTable.filter((u) => u.suspended).length;
+  const flaggedUsers = userTable
+    .filter((u) => u.suspended || u.strikes > 0)
+    .sort((a, b) => Number(b.suspended) - Number(a.suspended) || b.strikes - a.strikes);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 pb-24">
@@ -374,6 +378,54 @@ export default function AdminPage() {
             <StatTile label="New · 30d" value={fmt(users.last30d)} />
           </div>
           <BarChart series={users.series} caption={`${fmt(users.last30d)} signups · 30d`} />
+        </Section>
+
+        {/* 1a. Moderation review — flagged & suspended accounts */}
+        <Section
+          icon={<ShieldAlert size={18} />}
+          title={`Flagged & suspended · ${fmt(flaggedUsers.length)}`}
+        >
+          <div className="card-bg rounded-2xl border sidebar-border p-4">
+            {flaggedUsers.length === 0 ? (
+              <p className="text-sm text-themed-muted/70">
+                No flagged or suspended accounts.
+              </p>
+            ) : (
+              <ul className="divide-y divide-[var(--overlay-subtle)]">
+                {flaggedUsers.map((u) => (
+                  <li key={u.id} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-themed text-sm truncate">
+                        {u.name || u.email || u.id.slice(0, 8) + "…"}
+                      </div>
+                      {u.name && u.email && (
+                        <div className="text-themed-muted/60 text-xs truncate">{u.email}</div>
+                      )}
+                    </div>
+                    <span
+                      className={`text-xs shrink-0 ${
+                        u.suspended ? "text-red-300" : "text-amber-400"
+                      }`}
+                    >
+                      {u.suspended
+                        ? "Suspended"
+                        : `${u.strikes} strike${u.strikes > 1 ? "s" : ""}`}
+                    </span>
+                    {u.suspended && (
+                      <button
+                        type="button"
+                        onClick={() => clearSuspension(u.id)}
+                        disabled={busyUser === u.id}
+                        className="shrink-0 text-xs rounded-lg bg-red-500/15 text-red-300 border border-red-400/30 px-2.5 py-1.5 disabled:opacity-50 hover:bg-red-500/25 transition-colors"
+                      >
+                        {busyUser === u.id ? "…" : "Clear"}
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </Section>
 
         {/* 1b. All users table */}
