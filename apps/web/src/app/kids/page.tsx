@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
-import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import namesOfAllah from "@hidden-hiqmah/content/names-of-allah";
 import { prophetStories } from "@hidden-hiqmah/content/prophet-stories";
@@ -33,6 +33,13 @@ import {
   Sparkles,
   Trophy,
   Lightbulb,
+  ArrowLeft,
+  Landmark,
+  MessageCircle,
+  ScrollText,
+  BookOpen,
+  ListChecks,
+  type LucideIcon,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -150,20 +157,104 @@ function Confetti({ show, onDone }: { show: boolean; onDone: () => void }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TABS
+   LESSONS (card-grid landing)
+   Keys are stable — old ?tab= deep links depend on them; never rename.
    ═══════════════════════════════════════════════════════════════════ */
 
-const tabs = [
-  { key: "who-is-allah", label: "Who is Allah?" },
-  { key: "five-pillars", label: "The 5 Pillars" },
-  { key: "daily-words", label: "Daily Words" },
-  { key: "prophet-stories", label: "Prophet Stories" },
-  { key: "quran-corner", label: "Quran Corner" },
-  { key: "good-deeds", label: "Good Deeds" },
-  { key: "challenges", label: "Challenges" },
-] as const;
+type TabKey =
+  | "who-is-allah"
+  | "five-pillars"
+  | "daily-words"
+  | "prophet-stories"
+  | "quran-corner"
+  | "good-deeds"
+  | "challenges";
 
-type TabKey = (typeof tabs)[number]["key"];
+type LessonDef = {
+  key: TabKey;
+  label: string;
+  description: string;
+  icon: LucideIcon;
+  /** Full literal Tailwind classes — never assemble these dynamically (JIT scan). */
+  chipClass: string;
+  /** Cheap progress hint shown on the landing card; null = no hint. */
+  hint: (p: KidsProgress, age: AgeGroup) => string | null;
+};
+
+const lessons: LessonDef[] = [
+  {
+    key: "who-is-allah",
+    label: "Who is Allah?",
+    description: "Flip the cards to learn Allah's beautiful names",
+    icon: Sparkles,
+    chipClass: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+    hint: (_p, age) => `${getNamesByAge(age).length} names to explore`,
+  },
+  {
+    key: "five-pillars",
+    label: "The 5 Pillars",
+    description: "Discover the five pillars of Islam, then take the quiz",
+    icon: Landmark,
+    chipClass: "bg-sky-500/15 text-sky-400 border-sky-500/30",
+    hint: (p) => {
+      const done = pillarsData.filter((pl) => p.completedLessons.includes(`pillar-${pl.id}`)).length;
+      return `${done} of ${pillarsData.length} complete`;
+    },
+  },
+  {
+    key: "daily-words",
+    label: "Daily Words",
+    description: "Everyday Islamic words and phrases to practice",
+    icon: MessageCircle,
+    chipClass: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+    hint: (p) => {
+      const mastered = Object.values(p.flashcardBuckets).filter((b) => b === 2).length;
+      return `${mastered} mastered`;
+    },
+  },
+  {
+    key: "prophet-stories",
+    label: "Prophet Stories",
+    description: "Read the amazing stories of the prophets",
+    icon: ScrollText,
+    chipClass: "bg-violet-500/15 text-violet-400 border-violet-500/30",
+    hint: (p, age) => {
+      const total = getProphetsByAge(age).length;
+      const done = Math.min(total, p.completedLessons.filter((l) => l.startsWith("story-")).length);
+      return `${done} of ${total} stories`;
+    },
+  },
+  {
+    key: "quran-corner",
+    label: "Quran Corner",
+    description: "Memorize short surahs, verse by verse",
+    icon: BookOpen,
+    chipClass: "bg-rose-500/15 text-rose-400 border-rose-500/30",
+    hint: (p) => `${p.memorizedSurahs.length} of ${miniSurahs.length} memorized`,
+  },
+  {
+    key: "good-deeds",
+    label: "Good Deeds",
+    description: "Check off your good deeds and grow your streak",
+    icon: ListChecks,
+    chipClass: "bg-orange-500/15 text-orange-400 border-orange-500/30",
+    hint: (p) => {
+      const today = new Date().toISOString().split("T")[0];
+      const doneToday = Object.entries(p.dailyChecklist).filter(
+        ([k, v]) => v && k.startsWith(`${today}:`)
+      ).length;
+      return doneToday > 0 ? `${doneToday} deeds today` : `${p.streak} day streak`;
+    },
+  },
+  {
+    key: "challenges",
+    label: "Challenges",
+    description: "Test your knowledge — perfect scores earn bonus stars",
+    icon: Trophy,
+    chipClass: "bg-fuchsia-500/15 text-fuchsia-400 border-fuchsia-500/30",
+    hint: () => null,
+  },
+];
 
 /* ═══════════════════════════════════════════════════════════════════
    AGE GROUP SELECTOR
@@ -183,7 +274,7 @@ function AgeGroupSelector({
   onChange: (g: AgeGroup) => void;
 }) {
   return (
-    <div className="flex mb-4">
+    <div className="flex">
       <div className="relative inline-block">
         <select
           value={value}
@@ -1670,8 +1761,16 @@ function checkBadges(p: KidsProgress): string[] {
    MAIN PAGE
    ═══════════════════════════════════════════════════════════════════ */
 
-export default function KidsLearningPage() {
-  const [activeTab, setActiveTab] = useState<TabKey>("who-is-allah");
+function KidsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // null = lesson-card landing grid; ?tab= deep links open that lesson directly.
+  const [activeLesson, setActiveLesson] = useState<TabKey | null>(() => {
+    const tab = searchParams.get("tab");
+    return tab && lessons.some((l) => l.key === tab) ? (tab as TabKey) : null;
+  });
   const [progress, setProgress] = useState<KidsProgress | null>(null);
   const [showStarBurst, setShowStarBurst] = useState(false);
   const [showBadgePopup, setShowBadgePopup] = useState<string | null>(null);
@@ -1721,7 +1820,17 @@ export default function KidsLearningPage() {
     [refreshProgress]
   );
 
+  const selectLesson = useCallback(
+    (key: TabKey | null) => {
+      setActiveLesson(key);
+      router.replace(key ? `${pathname}?tab=${key}` : pathname, { scroll: false });
+    },
+    [router, pathname]
+  );
+
   if (!progress) return null;
+
+  const lesson = activeLesson ? lessons.find((l) => l.key === activeLesson) : undefined;
 
   return (
     <div className="pb-24">
@@ -1731,61 +1840,117 @@ export default function KidsLearningPage() {
         subtitle="A fun way for parents and children to learn Islam together"
       />
 
-      <ContentCard className="mb-6">
-        <div className="text-center py-4">
-          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-            رَبَّنَا هَبْ لَنَا مِنْ أَزْوَٰجِنَا وَذُرِّيَّـٰتِنَا قُرَّةَ أَعْيُنٍۢ وَٱجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا
-          </p>
-          <p className="text-themed-muted italic">&ldquo;Our Lord, grant us from our spouses and offspring comfort to our eyes, and make us a leader for the righteous.&rdquo;</p>
-          <p className="text-xs text-themed-muted mt-1">Quran 25:74</p>
-        </div>
-      </ContentCard>
+      {!lesson && (
+        <ContentCard className="mb-6">
+          <div className="text-center py-4">
+            <p className="text-2xl font-arabic text-gold leading-loose mb-3">
+              رَبَّنَا هَبْ لَنَا مِنْ أَزْوَٰجِنَا وَذُرِّيَّـٰتِنَا قُرَّةَ أَعْيُنٍۢ وَٱجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا
+            </p>
+            <p className="text-themed-muted italic">&ldquo;Our Lord, grant us from our spouses and offspring comfort to our eyes, and make us a leader for the righteous.&rdquo;</p>
+            <p className="text-xs text-themed-muted mt-1">Quran 25:74</p>
+          </div>
+        </ContentCard>
+      )}
 
       <div className="max-w-5xl mx-auto px-4">
 
-      <AgeGroupSelector value={progress.ageGroup} onChange={handleAgeChange} />
-      <ProgressDashboard progress={progress} />
-
-      <TabBar
-        tabs={tabs.map((t) => ({ key: t.key, label: t.label }))}
-        activeTab={activeTab}
-        onTabChange={(key) => setActiveTab(key as TabKey)}
-        mobileThreshold={5}
-      />
-
-      <div className="mt-6">
-        <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait">
+        {lesson ? (
+          /* ── Lesson full-view ── */
           <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
+            key={lesson.key}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
           >
-            {activeTab === "who-is-allah" && (
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <button
+                onClick={() => selectLesson(null)}
+                className="flex items-center gap-1.5 text-sm text-themed-muted hover:text-gold transition-colors"
+              >
+                <ArrowLeft size={15} />
+                All lessons
+              </button>
+              <AgeGroupSelector value={progress.ageGroup} onChange={handleAgeChange} />
+            </div>
+
+            <div className="flex items-center gap-2.5 mb-5">
+              <span className={`w-9 h-9 rounded-lg flex items-center justify-center border shrink-0 ${lesson.chipClass}`}>
+                <lesson.icon size={16} />
+              </span>
+              <h2 className="text-lg font-semibold text-themed">{lesson.label}</h2>
+            </div>
+
+            {lesson.key === "who-is-allah" && (
               <WhoIsAllahTab age={progress.ageGroup} progress={progress} onStar={handleStar} />
             )}
-            {activeTab === "five-pillars" && (
+            {lesson.key === "five-pillars" && (
               <FivePillarsTab age={progress.ageGroup} progress={progress} onStar={handleStar} onLessonComplete={handleLessonComplete} />
             )}
-            {activeTab === "daily-words" && (
+            {lesson.key === "daily-words" && (
               <DailyWordsTab age={progress.ageGroup} progress={progress} onStar={handleStar} />
             )}
-            {activeTab === "prophet-stories" && (
+            {lesson.key === "prophet-stories" && (
               <ProphetStoriesTab age={progress.ageGroup} progress={progress} onStar={handleStar} onLessonComplete={handleLessonComplete} />
             )}
-            {activeTab === "quran-corner" && (
+            {lesson.key === "quran-corner" && (
               <QuranCornerTab progress={progress} onStar={handleStar} />
             )}
-            {activeTab === "good-deeds" && (
+            {lesson.key === "good-deeds" && (
               <GoodDeedsTab age={progress.ageGroup} progress={progress} />
             )}
-            {activeTab === "challenges" && (
+            {lesson.key === "challenges" && (
               <ChallengesTab age={progress.ageGroup} progress={progress} onStar={handleStar} />
             )}
           </motion.div>
-        </AnimatePresence>
-      </div>
+        ) : (
+          /* ── Lesson-card landing grid ── */
+          <motion.div
+            key="landing"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="mb-4">
+              <AgeGroupSelector value={progress.ageGroup} onChange={handleAgeChange} />
+            </div>
+            <ProgressDashboard progress={progress} />
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {lessons.map((l, i) => {
+                const hint = l.hint(progress, progress.ageGroup);
+                return (
+                  <motion.button
+                    key={l.key}
+                    onClick={() => selectLesson(l.key)}
+                    className="card-bg border sidebar-border rounded-2xl p-4 w-full text-left flex items-center gap-4 transition-colors hover:border-[var(--color-gold)]/50"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 + i * 0.04 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <span className={`w-14 h-14 rounded-2xl flex items-center justify-center border shrink-0 ${l.chipClass}`}>
+                      <l.icon size={24} />
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block font-semibold text-themed">{l.label}</span>
+                      <span className="block text-xs text-themed-muted mt-0.5 leading-relaxed">{l.description}</span>
+                      {hint && (
+                        <span className="flex items-center gap-1 text-[11px] text-gold mt-1.5">
+                          <Star size={10} fill="currentColor" /> {hint}
+                        </span>
+                      )}
+                    </span>
+                    <ChevronRight size={18} className="text-themed-muted shrink-0" />
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* StarBurst celebration overlay */}
       <AnimatePresence>
@@ -1814,5 +1979,13 @@ export default function KidsLearningPage() {
       </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+export default function KidsLearningPage() {
+  return (
+    <Suspense>
+      <KidsContent />
+    </Suspense>
   );
 }

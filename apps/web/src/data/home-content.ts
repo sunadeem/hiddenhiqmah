@@ -451,9 +451,11 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
       { href: "/muslim-daily", icon: ListChecks, title: "Muslim Daily", titleAr: "يوميات المسلم", description: "Morning adhkar, evening routines, checklist" },
       { href: "/duas", icon: HandHeart, title: "Duas", titleAr: "الدعاء", description: "Supplications for every situation" },
       { href: "/dhikr", icon: Repeat, title: "Dhikr", titleAr: "الذكر", description: "Tasbeeh and daily remembrance" },
-      { href: "/family", icon: Users, title: "Family", titleAr: "الأسرة", description: "Parents, children, kinship, inheritance" },
+      { href: "/family", icon: Users, title: "Family", titleAr: "الأسرة", description: "Parents, children, elders, kinship" },
       { href: "/marriage", icon: HeartHandshake, title: "Marriage", titleAr: "الزواج", description: "Nikah, rights, married life, divorce" },
       { href: "/protection", icon: ShieldCheck, title: "Protection & Ruqyah", titleAr: "الرقية والتحصين", description: "Sihr, the evil eye, and daily protection" },
+      { href: "/death-rites", icon: HandHeart, title: "Death & Janazah", titleAr: "الموت والجنازة", description: "Preparing, washing, janazah, burial, grief" },
+      { href: "/inheritance", icon: Scale, title: "Inheritance", titleAr: "الميراث", description: "Quranic shares, heirs, and wasiyyah" },
     ],
   },
   {

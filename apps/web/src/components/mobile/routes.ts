@@ -45,6 +45,8 @@ const SECTION_TITLES: Record<string, string> = {
   "/prayer-times": "Prayer Times",
   "/qiblah": "Qiblah",
   "/protection": "Protection & Ruqyah",
+  "/death-rites": "Death & Janazah",
+  "/inheritance": "Inheritance",
 };
 
 export function getSectionTitle(pathname: string): string {

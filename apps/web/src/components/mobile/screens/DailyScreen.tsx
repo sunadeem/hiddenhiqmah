@@ -36,6 +36,7 @@ import {
   MidnightTab,
   SunnahContent,
   sunnahSubs,
+  resolveMainTab,
   type SunnahSub,
 } from "@/app/muslim-daily/page";
 
@@ -51,14 +52,15 @@ const TABS: { key: TabKey; label: string }[] = [
 export default function DailyScreen() {
   const searchParams = useSearchParams();
   const paramTab = searchParams.get("tab");
-  const [tab, setTab] = useState<TabKey>(
-    TABS.some((t) => t.key === paramTab) ? (paramTab as TabKey) : "checklist"
-  );
+  // resolveMainTab is shared with the web page, so ?tab= deep links (including
+  // the legacy "remember" alias) resolve identically on both platforms.
+  const [tab, setTab] = useState<TabKey>(resolveMainTab(paramTab) ?? "checklist");
 
   // Re-sync when a deep-link changes ?tab while Daily is already mounted
   // (e.g. tapping the Today's Reminder notification with the app open on Daily).
   useEffect(() => {
-    if (paramTab && TABS.some((t) => t.key === paramTab)) setTab(paramTab as TabKey);
+    const resolved = resolveMainTab(paramTab);
+    if (resolved) setTab(resolved);
   }, [paramTab]);
 
   return (
@@ -365,18 +367,6 @@ function ChecklistSkeleton() {
       </div>
       <Skeleton className="h-16 rounded-2xl" />
       <Skeleton className="h-72 rounded-2xl" />
-    </div>
-  );
-}
-
-function ComingSoon({ label }: { label: string }) {
-  return (
-    <div className="card-bg rounded-2xl border sidebar-border p-8 text-center">
-      <div className="text-[10px] uppercase tracking-[0.2em] text-themed-muted mb-2">
-        {label}
-      </div>
-      <p className="text-themed font-semibold">Coming in this update</p>
-      <p className="text-themed-muted text-sm mt-1">Being rebuilt in the new design.</p>
     </div>
   );
 }

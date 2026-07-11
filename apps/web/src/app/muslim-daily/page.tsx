@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useMemo, useRef, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -11,6 +11,20 @@ import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import { useIsNative } from "@/lib/mobile/platform";
 import DailyScreen from "@/components/mobile/screens/DailyScreen";
+import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
+import { useChecklist } from "@hidden-hiqmah/ui/lib/daily/useChecklist";
+import {
+  mondayOf,
+  todayLocalDate,
+  type DailyAdapter,
+  type DayRollup,
+} from "@hidden-hiqmah/ui/lib/daily/types";
+import { Checklist } from "@hidden-hiqmah/ui/components/daily/Checklist";
+import { ChecklistEditor } from "@hidden-hiqmah/ui/components/daily/ChecklistEditor";
+import { StreakBadges } from "@hidden-hiqmah/ui/components/daily/StreakBadges";
+import { StreakWeekStrip } from "@hidden-hiqmah/ui/components/daily/StreakWeekStrip";
+import { StreakCalendar } from "@hidden-hiqmah/ui/components/daily/StreakCalendar";
+import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
 import {
   BookOpen,
   Sun,
@@ -33,13 +47,23 @@ import {
   Scale,
   Sparkles,
   HeartHandshake,
+  Pencil,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
    TYPES & DATA
    ═══════════════════════════════════════════════════════════════════ */
 
-type MainTab = "worship" | "sunnah" | "checklist" | "remember";
+// Canonical tab keys, shared with the native DailyScreen. "remember" is
+// accepted as a legacy alias for "reminders" in old ?tab= deep links.
+type MainTab = "worship" | "sunnah" | "checklist" | "reminders";
+
+export function resolveMainTab(param: string | null): MainTab | null {
+  const key = param === "remember" ? "reminders" : param;
+  if (key === "worship" || key === "sunnah" || key === "checklist" || key === "reminders")
+    return key;
+  return null;
+}
 type WorshipSub = "morning" | "afternoon" | "evening" | "sleep" | "midnight";
 export type SunnahSub = "eating" | "greeting" | "entering" | "dress" | "speech" | "sleeping";
 type RememberSub = "dunya" | "death" | "grave" | "judgement" | "paradise" | "mercy";
@@ -47,7 +71,7 @@ type RememberSub = "dunya" | "death" | "grave" | "judgement" | "paradise" | "mer
 const mainTabs: { key: MainTab; label: string; icon: React.ReactNode; highlight?: boolean }[] = [
   { key: "worship", label: "Worship", icon: <BookOpen size={16} /> },
   { key: "sunnah", label: "Sunnah Acts", icon: <Heart size={16} /> },
-  { key: "remember", label: "Reminders", icon: <Flame size={16} /> },
+  { key: "reminders", label: "Reminders", icon: <Flame size={16} /> },
   { key: "checklist", label: "Daily Checklist", icon: <CheckSquare size={16} />, highlight: true },
 ];
 
@@ -75,21 +99,6 @@ const rememberSubs: { key: RememberSub; label: string; icon: React.ReactNode }[]
   { key: "judgement", label: "Day of Judgement", icon: <Scale size={16} /> },
   { key: "paradise", label: "Paradise Awaits", icon: <Sparkles size={16} /> },
   { key: "mercy", label: "Hope & Mercy", icon: <HeartHandshake size={16} /> },
-];
-
-const checklistItems = [
-  { id: "pray5", label: "Prayed all 5 prayers" },
-  { id: "quran", label: "Read Quran (even 1 page)" },
-  { id: "morning-adhkar", label: "Morning adhkar" },
-  { id: "evening-adhkar", label: "Evening adhkar" },
-  { id: "dhikr", label: "Made dhikr (SubhanAllah, Alhamdulillah, Allahu Akbar)" },
-  { id: "salawat", label: "Sent salawat on the Prophet \uFDFA" },
-  { id: "charity", label: "Gave charity (even a smile)" },
-  { id: "kindness", label: "Was kind / helped someone" },
-  { id: "dua-others", label: "Made dua for others" },
-  { id: "istighfar", label: "Sought forgiveness (istighfar)" },
-  { id: "avoid-sin", label: "Avoided a sin / lowered gaze" },
-  { id: "learn-deen", label: "Learned something about the deen" },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -212,7 +221,7 @@ export function MorningTab() {
               id="daily-waking-up"
               title="Waking Up Sunnahs"
               subtitle="Muslim Daily"
-              href="/muslim-daily?tab=morning"
+              href="/muslim-daily?tab=worship&sub=morning"
             />
           </div>
         </ContentCard>
@@ -242,7 +251,7 @@ export function MorningTab() {
               id="daily-fajr"
               title="Fajr Prayer"
               subtitle="Muslim Daily"
-              href="/muslim-daily?tab=morning"
+              href="/muslim-daily?tab=worship&sub=morning"
             />
           </div>
         </ContentCard>
@@ -329,7 +338,7 @@ export function MorningTab() {
               id="daily-quran-time"
               title="Quran Time (after Fajr)"
               subtitle="Muslim Daily"
-              href="/muslim-daily?tab=morning"
+              href="/muslim-daily?tab=worship&sub=morning"
             />
           </div>
         </ContentCard>
@@ -358,7 +367,7 @@ export function MorningTab() {
               id="daily-duha"
               title="Duha Prayer"
               subtitle="Muslim Daily"
-              href="/muslim-daily?tab=morning"
+              href="/muslim-daily?tab=worship&sub=morning"
             />
           </div>
         </ContentCard>
@@ -719,199 +728,187 @@ export function SleepTab() {
    TAB: Daily Checklist
    ═══════════════════════════════════════════════════════════════════ */
 
-function getToday() {
-  return new Date().toISOString().slice(0, 10);
+/* The checklist is driven by the SAME daily adapter as the native app:
+   local (device-only) when signed out, Supabase-synced when signed in.
+   One-time migration: if the legacy fixed-12 localStorage checklist has data
+   and the adapter's day is still untouched, carry today's ticks over once,
+   then delete the legacy keys. */
+
+const LEGACY_CHECKLIST_KEY = "hiqmah-daily-checklist";
+const LEGACY_STREAK_KEY = "hiqmah-daily-streak";
+
+// legacy fixed item id → adapter default sourceKey(s) (unmapped ids are dropped)
+const LEGACY_TO_SOURCE_KEYS: Record<string, string[]> = {
+  pray5: ["fajr", "dhuhr", "asr", "maghrib", "isha"],
+  quran: ["quran_page"],
+  "morning-adhkar": ["morning_adhkar"],
+  "evening-adhkar": ["evening_adhkar"],
+  salawat: ["salawat"],
+  istighfar: ["istighfar"],
+  charity: ["sadaqah"],
+};
+
+async function migrateLegacyChecklist(adapter: DailyAdapter, today: string): Promise<boolean> {
+  let raw: string | null = null;
+  try {
+    raw = localStorage.getItem(LEGACY_CHECKLIST_KEY);
+  } catch {
+    return false;
+  }
+  if (!raw) return false;
+  let migrated = false;
+  try {
+    const legacy: Record<string, string[]> = JSON.parse(raw);
+    const checkedToday = new Set(legacy[today] ?? []);
+    await adapter.ensureSeeded();
+    const { rollup } = await adapter.getDay(today);
+    if (rollup.doneItems === 0 && checkedToday.size > 0) {
+      const items = await adapter.getUserItems();
+      const bySource = new Map(
+        items.filter((i) => i.sourceKey).map((i) => [i.sourceKey as string, i])
+      );
+      for (const legacyId of checkedToday) {
+        for (const key of LEGACY_TO_SOURCE_KEYS[legacyId] ?? []) {
+          const it = bySource.get(key);
+          if (!it) continue;
+          if (it.dhikrKey && it.goalCount != null) {
+            await adapter.setDhikrCount(it.dhikrKey, today, it.goalCount);
+          } else if (it.goalCount != null) {
+            await adapter.setCount(today, it.id, it.goalCount);
+          } else {
+            await adapter.setDone(today, it.id, true);
+          }
+          migrated = true;
+        }
+      }
+    }
+  } catch {
+    /* corrupt legacy data — just drop it below */
+  }
+  try {
+    localStorage.removeItem(LEGACY_CHECKLIST_KEY);
+    localStorage.removeItem(LEGACY_STREAK_KEY);
+  } catch {
+    /* ignore */
+  }
+  return migrated;
 }
 
 function ChecklistTab() {
-  const [checked, setChecked] = useState<string[]>([]);
-  const [streak, setStreak] = useState({ current: 0, best: 0, lastDate: "" });
-  const [weekData, setWeekData] = useState<boolean[]>([]);
+  const router = useRouter();
+  const { adapter, signedIn, authLoading } = useDailyAdapter();
+  const today = useMemo(() => todayLocalDate(), []);
+  const list = useChecklist(adapter, today);
+  const [calOpen, setCalOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [week, setWeek] = useState<DayRollup[]>([]);
 
-  // Load from localStorage
   useEffect(() => {
-    try {
-      const today = getToday();
+    adapter.getDayRollups(mondayOf(today), today).then(setWeek).catch(() => setWeek([]));
+  }, [adapter, today, list.rollup]);
 
-      // Load checklist
-      const raw = localStorage.getItem("hiqmah-daily-checklist");
-      const all: Record<string, string[]> = raw ? JSON.parse(raw) : {};
-      setChecked(all[today] || []);
+  // One-time seed from the legacy fixed checklist (keys removed afterwards).
+  const migrationRan = useRef(false);
+  const { loading: listLoading, reload } = list;
+  useEffect(() => {
+    if (authLoading || listLoading || migrationRan.current) return;
+    migrationRan.current = true;
+    migrateLegacyChecklist(adapter, today)
+      .then((did) => (did ? reload() : undefined))
+      .catch(() => undefined);
+  }, [authLoading, listLoading, adapter, today, reload]);
 
-      // Load streak
-      const sRaw = localStorage.getItem("hiqmah-daily-streak");
-      const s = sRaw ? JSON.parse(sRaw) : { current: 0, best: 0, lastDate: "" };
-      setStreak(s);
+  const weekMerged = useMemo(() => {
+    const map = new Map(week.map((r) => [r.localDate, r]));
+    if (list.rollup) map.set(today, list.rollup);
+    return [...map.values()];
+  }, [week, list.rollup, today]);
 
-      // Build week data (last 7 days)
-      const week: boolean[] = [];
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        const key = d.toISOString().slice(0, 10);
-        week.push((all[key] || []).length >= 5);
-      }
-      setWeekData(week);
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  const toggle = (id: string) => {
-    const today = getToday();
-    let next: string[];
-    if (checked.includes(id)) {
-      next = checked.filter((c) => c !== id);
-    } else {
-      next = [...checked, id];
-    }
-    setChecked(next);
-
-    // Save checklist
-    try {
-      const raw = localStorage.getItem("hiqmah-daily-checklist");
-      const all: Record<string, string[]> = raw ? JSON.parse(raw) : {};
-      all[today] = next;
-      localStorage.setItem("hiqmah-daily-checklist", JSON.stringify(all));
-    } catch {
-      // ignore
-    }
-
-    // Update streak
-    try {
-      const sRaw = localStorage.getItem("hiqmah-daily-streak");
-      const s = sRaw ? JSON.parse(sRaw) : { current: 0, best: 0, lastDate: "" };
-
-      if (next.length >= 5) {
-        if (s.lastDate !== today) {
-          // Check if yesterday was completed
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          const yKey = yesterday.toISOString().slice(0, 10);
-
-          if (s.lastDate === yKey) {
-            s.current += 1;
-          } else {
-            s.current = 1;
-          }
-          s.lastDate = today;
-          s.best = Math.max(s.best, s.current);
-        }
-      }
-      setStreak(s);
-      localStorage.setItem("hiqmah-daily-streak", JSON.stringify(s));
-    } catch {
-      // ignore
-    }
-
-    // Update week data
-    setWeekData((prev) => {
-      const copy = [...prev];
-      copy[6] = next.length >= 5;
-      return copy;
-    });
-  };
-
-  const completed = checked.length;
-  const pct = Math.round((completed / checklistItems.length) * 100);
+  if (authLoading || list.loading) {
+    return (
+      <div className="space-y-4">
+        <div className="flex gap-3">
+          <Skeleton className="h-24 flex-1 rounded-2xl" />
+          <Skeleton className="h-24 w-[42%] rounded-2xl" />
+        </div>
+        <Skeleton className="h-16 rounded-2xl" />
+        <Skeleton className="h-72 rounded-2xl" />
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-5">
-      {/* Progress Banner */}
-      <ContentCard delay={0.05}>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold text-themed">
-            {completed} / {checklistItems.length} completed today
-          </h3>
-          <div className="flex items-center gap-2 text-sm">
-            <Flame size={16} className="text-gold" />
-            <span className="text-gold font-semibold">{streak.current} day streak</span>
-            <span className="text-themed-muted text-xs">Best: {streak.best}</span>
-            <BookmarkButton
-              type="page"
-              id="/muslim-daily?tab=checklist"
-              title="Daily Checklist"
-              subtitle="Muslim Daily"
-              href="/muslim-daily?tab=checklist"
-            />
-          </div>
-        </div>
+    <div className="space-y-4">
+      {!signedIn && (
+        <Link
+          href="/signin"
+          className="block card-bg rounded-2xl border sidebar-border px-4 py-3 text-sm text-themed-muted card-hover"
+        >
+          <span className="text-gold font-semibold">Sign in</span> to sync your checklist
+          and keep your streak across devices.
+        </Link>
+      )}
 
-        {/* Progress bar */}
-        <div className="w-full h-2.5 rounded-full bg-themed-muted/10 overflow-hidden">
-          <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-gold/80 to-gold"
-            initial={{ width: 0 }}
-            animate={{ width: `${pct}%` }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+      {/* Streak + prayer badges → the Humane Streaks page */}
+      <StreakBadges streaks={list.streaks} onOpen={() => router.push("/streaks")} />
+
+      <StreakWeekStrip rollups={weekMerged} today={today} onOpen={() => setCalOpen(true)} />
+
+      <div className="flex items-center justify-between px-1">
+        <span className="text-sm text-themed-muted">
+          {list.rollup && list.rollup.totalItems > 0
+            ? `${list.rollup.doneItems} of ${list.rollup.totalItems} today`
+            : "Today"}
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setEditOpen(true)}
+            className="inline-flex items-center gap-1.5 text-sm text-themed-muted hover:text-themed transition-colors"
+          >
+            <Pencil size={14} /> Edit
+          </button>
+          <BookmarkButton
+            type="page"
+            id="/muslim-daily?tab=checklist"
+            title="Daily Checklist"
+            subtitle="Muslim Daily"
+            href="/muslim-daily?tab=checklist"
           />
         </div>
-
-        {/* Weekly summary */}
-        <div className="flex items-center gap-2 mt-4">
-          <span className="text-themed-muted text-xs mr-1">Last 7 days:</span>
-          {weekData.map((done, i) => (
-            <div
-              key={i}
-              className={`w-5 h-5 rounded-full border-2 transition-colors ${
-                done
-                  ? "bg-gold border-gold"
-                  : "bg-transparent border-themed-muted/20"
-              }`}
-            />
-          ))}
-        </div>
-      </ContentCard>
-
-      {/* Checklist Items */}
-      <div className="space-y-2">
-        {checklistItems.map((item, i) => {
-          const isChecked = checked.includes(item.id);
-          return (
-            <motion.button
-              key={item.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 + i * 0.03 }}
-              onClick={() => toggle(item.id)}
-              className="w-full flex items-center gap-3 card-bg rounded-xl border sidebar-border p-4 card-hover text-left"
-            >
-              <motion.div
-                animate={isChecked ? { scale: [1, 1.3, 1] } : { scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition-colors ${
-                  isChecked
-                    ? "bg-gold border-gold"
-                    : "border-themed-muted/30 bg-transparent"
-                }`}
-              >
-                {isChecked && (
-                  <motion.svg
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="w-4 h-4 text-black"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={3}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </motion.svg>
-                )}
-              </motion.div>
-              <span
-                className={`text-sm transition-colors ${
-                  isChecked ? "text-themed-muted line-through" : "text-themed"
-                }`}
-              >
-                {item.label}
-              </span>
-            </motion.button>
-          );
-        })}
       </div>
+
+      <Checklist rows={list.rows} onCheck={list.check} onBump={list.bump} />
+
+      {calOpen && (
+        <StreakCalendar
+          adapter={adapter}
+          today={today}
+          onClose={() => {
+            setCalOpen(false);
+            void list.reload(); // reflect any retro-completed past days
+          }}
+        />
+      )}
+
+      {editOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-[70] bg-themed overflow-y-auto py-10"
+          style={{ overscrollBehavior: "contain" }}
+        >
+          <div className="max-w-xl mx-auto px-4">
+            <ChecklistEditor
+              adapter={adapter}
+              onClose={() => {
+                setEditOpen(false);
+                void list.reload();
+              }}
+            />
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
@@ -1278,7 +1275,7 @@ function ReminderCard({
           type="hadith"
           id={`remember-${source.replace(/\s+/g, "-").toLowerCase()}`}
           title={english.slice(0, 60) + "..."}
-          href="/muslim-daily?tab=remember"
+          href="/muslim-daily?tab=reminders"
         />
       </div>
       <p className="text-themed-muted text-sm leading-relaxed italic mb-2">&ldquo;{english}&rdquo;</p>
@@ -1551,12 +1548,11 @@ function WorshipContent({ activeSub, setActiveSub }: { activeSub: WorshipSub; se
 
 function MuslimDailyContent() {
   const isNative = useIsNative();
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<MainTab>(() => {
-    const tab = searchParams.get("tab");
-    if (tab === "worship" || tab === "sunnah" || tab === "checklist" || tab === "remember") return tab;
-    return "worship";
-  });
+  const [activeTab, setActiveTab] = useState<MainTab>(
+    () => resolveMainTab(searchParams.get("tab")) ?? "worship"
+  );
   const [worshipSub, setWorshipSub] = useState<WorshipSub>(() => {
     const sub = searchParams.get("sub");
     if (sub === "morning" || sub === "afternoon" || sub === "evening" || sub === "sleep" || sub === "midnight") return sub;
@@ -1564,6 +1560,16 @@ function MuslimDailyContent() {
   });
   const [sunnahSub, setSunnahSub] = useState<SunnahSub>("eating");
   const [rememberSub, setRememberSub] = useState<RememberSub>("dunya");
+
+  const changeTab = (tab: MainTab) => {
+    setActiveTab(tab);
+    const qs = tab === "worship" ? `tab=worship&sub=${worshipSub}` : `tab=${tab}`;
+    router.replace(`/muslim-daily?${qs}`, { scroll: false });
+  };
+  const changeWorshipSub = (sub: WorshipSub) => {
+    setWorshipSub(sub);
+    router.replace(`/muslim-daily?tab=worship&sub=${sub}`, { scroll: false });
+  };
 
   return (
     <div>
@@ -1594,7 +1600,7 @@ function MuslimDailyContent() {
         <TabBar
           tabs={mainTabs.map((t) => ({ key: t.key, label: t.label, icon: t.icon, highlight: t.highlight }))}
           activeTab={activeTab}
-          onTabChange={(key) => setActiveTab(key as MainTab)}
+          onTabChange={(key) => changeTab(key as MainTab)}
           mobileThreshold={4}
           wrap={isNative}
         />
@@ -1608,10 +1614,10 @@ function MuslimDailyContent() {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.25 }}
             >
-              {activeTab === "worship" && <WorshipContent activeSub={worshipSub} setActiveSub={setWorshipSub} />}
+              {activeTab === "worship" && <WorshipContent activeSub={worshipSub} setActiveSub={changeWorshipSub} />}
               {activeTab === "sunnah" && <SunnahContent activeSub={sunnahSub} setActiveSub={setSunnahSub} />}
               {activeTab === "checklist" && <ChecklistTab />}
-              {activeTab === "remember" && <RememberContent activeSub={rememberSub} setActiveSub={setRememberSub} />}
+              {activeTab === "reminders" && <RememberContent activeSub={rememberSub} setActiveSub={setRememberSub} />}
             </motion.div>
           </AnimatePresence>
         </div>

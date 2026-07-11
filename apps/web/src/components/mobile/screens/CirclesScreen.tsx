@@ -22,6 +22,8 @@ import {
   Settings2,
   Crown,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -79,6 +81,33 @@ function Ring({ total, target, unit }: { total: number; target: number; unit: st
   );
 }
 
+// Compact ring for the circle list — arc + percent only (the list card's text
+// carries the "X / Y unit" detail).
+const MINI_R = 16;
+const MINI_C = 2 * Math.PI * MINI_R;
+
+function MiniRing({ pct }: { pct: number }) {
+  return (
+    <svg width="44" height="44" viewBox="0 0 44 44" className="shrink-0">
+      <circle cx="22" cy="22" r={MINI_R} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="5" />
+      <circle
+        cx="22"
+        cy="22"
+        r={MINI_R}
+        fill="none"
+        stroke="var(--color-gold)"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeDasharray={`${pct * MINI_C} ${MINI_C}`}
+        transform="rotate(-90 22 22)"
+      />
+      <text x="22" y="25.5" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="800">
+        {Math.round(pct * 100)}%
+      </text>
+    </svg>
+  );
+}
+
 function Avatar({ name, avatar, accent }: { name: string; avatar: string | null; accent?: boolean }) {
   return (
     <div
@@ -87,6 +116,39 @@ function Avatar({ name, avatar, accent }: { name: string; avatar: string | null;
       }`}
     >
       {avatar || (name?.[0]?.toUpperCase() ?? "?")}
+    </div>
+  );
+}
+
+// Compact landing card — one per circle. Tapping opens the per-circle detail
+// view; the right rail jumps straight into that circle's chat.
+function CircleListCard({ d, onOpen, onChat }: { d: CircleDetail; onOpen: () => void; onChat: () => void }) {
+  const pct = d.circle.goal_target > 0 ? Math.min(d.total / d.circle.goal_target, 1) : 0;
+  return (
+    <div className="relative card-bg rounded-2xl border sidebar-border overflow-hidden flex items-stretch">
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
+      <button
+        type="button"
+        onClick={onOpen}
+        className="relative flex-1 min-w-0 flex items-center gap-3 p-4 text-left touch-manipulation active:bg-[var(--overlay-subtle)]"
+      >
+        <MiniRing pct={pct} />
+        <span className="flex-1 min-w-0">
+          <span className="block text-themed font-bold text-[15px] leading-tight truncate">{d.circle.name}</span>
+          <span className="block text-themed-muted text-xs mt-0.5 truncate">
+            {d.total} / {d.circle.goal_target} {d.circle.goal_unit} · {d.members.length} member{d.members.length === 1 ? "" : "s"}
+          </span>
+        </span>
+        <ChevronRight size={17} className="text-themed-muted/60 shrink-0" />
+      </button>
+      <button
+        type="button"
+        onClick={onChat}
+        aria-label={`Open chat in ${d.circle.name}`}
+        className="relative shrink-0 px-3.5 border-l sidebar-border flex items-center justify-center text-gold touch-manipulation active:bg-[var(--overlay-subtle)]"
+      >
+        <MessageSquare size={17} />
+      </button>
     </div>
   );
 }
@@ -115,6 +177,27 @@ export default function CirclesScreen() {
   const [showNotifs, setShowNotifs] = useState(false);
   const [chat, setChat] = useState<{ id: string; tab: "chat" | "activity" } | null>(null);
   const [manageId, setManageId] = useState<string | null>(null);
+  // In-screen view state (like HifzScreen): null = compact list, id = that
+  // circle's detail view. With exactly one circle the detail shows directly.
+  const [openId, setOpenId] = useState<string | null>(null);
+  // Inline-confirm arming (admin-console idiom — button swaps to "…?"):
+  // circle id armed to leave / circleId+userId armed to remove a member.
+  const [confirmLeave, setConfirmLeave] = useState<string | null>(null);
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+
+  const openCircle = (id: string) => {
+    hapticSelection();
+    setOpenId(id);
+    setConfirmLeave(null);
+    setConfirmRemove(null);
+  };
+
+  const backToList = () => {
+    hapticSelection();
+    setOpenId(null);
+    setConfirmLeave(null);
+    setConfirmRemove(null);
+  };
 
   const copyCode = (id: string, code: string) => {
     try {
@@ -203,7 +286,8 @@ export default function CirclesScreen() {
       setBusy(true);
       setErr("");
       try {
-        await joinCircle(code.trim());
+        const id = await joinCircle(code.trim());
+        setOpenId(id); // land directly in the circle you just joined
       } catch (e) {
         setErr(errMsg(e));
       } finally {
@@ -325,6 +409,34 @@ export default function CirclesScreen() {
   const activeChat = chat ? circles.find((c) => c.circle.id === chat.id) ?? null : null;
   const manageCircle = manageId ? circles.find((c) => c.circle.id === manageId) ?? null : null;
 
+  // Which circle (if any) is shown as the full detail view. With exactly one
+  // circle the list would be a pointless hop, so the detail shows directly.
+  const d =
+    circles.length === 1
+      ? circles[0]
+      : openId
+        ? circles.find((c) => c.circle.id === openId) ?? null
+        : null;
+  const showBack = d !== null && circles.length > 1;
+
+  const meIsOwner = d != null && d.myId != null && d.circle.owner_id === d.myId;
+  // Competitive ranking is opt-in per circle (owner toggle, migration 017).
+  // Default OFF = a gentle "Members" view (no crown, no rank numbers) using
+  // the lib's owner → you → value order — matches "Private · no public
+  // leaderboards". An absent column (pre-017) reads as off.
+  const showRank = d?.circle.ranking_enabled === true;
+  const ordered = d
+    ? showRank
+      ? [...d.members].sort(
+          (a, b) =>
+            b.value - a.value ||
+            (a.role === "owner" ? -1 : b.role === "owner" ? 1 : 0) ||
+            (a.isMe ? -1 : b.isMe ? 1 : 0)
+        )
+      : d.members
+    : [];
+  const topValue = showRank && ordered.length ? ordered[0].value : 0;
+
   return (
     <div className="space-y-4 pb-4">
       <PageTip
@@ -336,12 +448,24 @@ export default function CirclesScreen() {
           },
         ]}
       />
-      {/* Header with bell */}
+      {/* Header with bell (left side becomes a back control inside a detail view) */}
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-[11px] text-themed-muted min-w-0">
-          <Shield size={13} className="text-gold shrink-0" />
-          <span className="truncate">Private circles · encouragement only</span>
-        </div>
+        {showBack ? (
+          <button
+            type="button"
+            onClick={backToList}
+            aria-label="Back to all circles"
+            className="-ml-2 flex items-center gap-0.5 text-themed-muted text-[13px] font-semibold min-w-0 py-2 pr-2 touch-manipulation active:opacity-70"
+          >
+            <ChevronLeft size={20} className="shrink-0" />
+            <span className="truncate">All circles</span>
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 text-[11px] text-themed-muted min-w-0">
+            <Shield size={13} className="text-gold shrink-0" />
+            <span className="truncate">Private circles · encouragement only</span>
+          </div>
+        )}
         <button
           type="button"
           onClick={() => setShowNotifs(true)}
@@ -363,23 +487,25 @@ export default function CirclesScreen() {
         </div>
       )}
 
-      {/* Actions */}
-      <div className="grid grid-cols-2 gap-2.5">
-        <button
-          onClick={() => { setShowCreate((v) => !v); setShowJoin(false); }}
-          className="flex items-center justify-center gap-2 rounded-xl border sidebar-border card-bg py-3 text-sm font-semibold text-themed touch-manipulation active:bg-[var(--overlay-subtle)]"
-        >
-          <Plus size={16} className="text-gold" /> New circle
-        </button>
-        <button
-          onClick={() => { setShowJoin((v) => !v); setShowCreate(false); }}
-          className="flex items-center justify-center gap-2 rounded-xl border sidebar-border card-bg py-3 text-sm font-semibold text-themed touch-manipulation active:bg-[var(--overlay-subtle)]"
-        >
-          <UserPlus size={16} className="text-gold" /> Join with code
-        </button>
-      </div>
+      {/* Actions — list mode + the single-circle direct detail (which has no list to house them) */}
+      {!showBack && (
+        <div className="grid grid-cols-2 gap-2.5">
+          <button
+            onClick={() => { setShowCreate((v) => !v); setShowJoin(false); }}
+            className="flex items-center justify-center gap-2 rounded-xl border sidebar-border card-bg py-3 text-sm font-semibold text-themed touch-manipulation active:bg-[var(--overlay-subtle)]"
+          >
+            <Plus size={16} className="text-gold" /> New circle
+          </button>
+          <button
+            onClick={() => { setShowJoin((v) => !v); setShowCreate(false); }}
+            className="flex items-center justify-center gap-2 rounded-xl border sidebar-border card-bg py-3 text-sm font-semibold text-themed touch-manipulation active:bg-[var(--overlay-subtle)]"
+          >
+            <UserPlus size={16} className="text-gold" /> Join with code
+          </button>
+        </div>
+      )}
 
-      {showCreate && (
+      {!showBack && showCreate && (
         <div className="card-bg rounded-2xl border sidebar-border p-4 space-y-3">
           <input
             type="text"
@@ -392,7 +518,12 @@ export default function CirclesScreen() {
           <p className="text-[11px] text-themed-muted">Goal: complete a 30-juz khatmah together.</p>
           <button
             disabled={busy}
-            onClick={() => run(async () => { await createCircle(newName || "My Circle", 30); setNewName(""); setShowCreate(false); })}
+            onClick={() => run(async () => {
+              const id = await createCircle(newName || "My Circle", 30);
+              setNewName("");
+              setShowCreate(false);
+              setOpenId(id); // land in the new circle
+            })}
             className="w-full rounded-xl bg-gold text-[#0a1628] font-bold py-3 disabled:opacity-60"
           >
             Create circle
@@ -400,7 +531,7 @@ export default function CirclesScreen() {
         </div>
       )}
 
-      {showJoin && (
+      {!showBack && showJoin && (
         <div className="card-bg rounded-2xl border sidebar-border p-4 space-y-3">
           <input
             type="text"
@@ -412,7 +543,12 @@ export default function CirclesScreen() {
           />
           <button
             disabled={busy || !joinCode.trim()}
-            onClick={() => run(async () => { await joinCircle(joinCode.trim()); setJoinCode(""); setShowJoin(false); })}
+            onClick={() => run(async () => {
+              const id = await joinCircle(joinCode.trim());
+              setJoinCode("");
+              setShowJoin(false);
+              setOpenId(id); // land in the joined circle
+            })}
             className="w-full rounded-xl bg-gold text-[#0a1628] font-bold py-3 disabled:opacity-60"
           >
             Join circle
@@ -462,25 +598,19 @@ export default function CirclesScreen() {
         </div>
       )}
 
-      {/* Circles */}
-      {circles.map((d) => {
-        const meIsOwner = d.myId != null && d.circle.owner_id === d.myId;
-        // Competitive ranking is opt-in per circle (owner toggle, migration 017).
-        // Default OFF = a gentle "Members" view (no crown, no rank numbers) using
-        // the lib's owner → you → value order — matches "Private · no public
-        // leaderboards". An absent column (pre-017) reads as off.
-        const showRank = d.circle.ranking_enabled === true;
-        const ordered = showRank
-          ? [...d.members].sort(
-              (a, b) =>
-                b.value - a.value ||
-                (a.role === "owner" ? -1 : b.role === "owner" ? 1 : 0) ||
-                (a.isMe ? -1 : b.isMe ? 1 : 0)
-            )
-          : d.members;
-        const topValue = showRank && ordered.length ? ordered[0].value : 0;
+      {/* Circle list — one compact card per circle; tap to open its detail view */}
+      {d === null &&
+        circles.map((c) => (
+          <CircleListCard
+            key={c.circle.id}
+            d={c}
+            onOpen={() => openCircle(c.circle.id)}
+            onChat={() => setChat({ id: c.circle.id, tab: "chat" })}
+          />
+        ))}
 
-        return (
+      {/* Per-circle detail view */}
+      {d && (
           <div key={d.circle.id} className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
             <div className="relative flex items-center gap-4">
@@ -549,11 +679,19 @@ export default function CirclesScreen() {
                         setDuaSent((s) => new Set(s).add(d.circle.id + m.user_id));
                       })
                     }
+                    confirmingRemove={confirmRemove === d.circle.id + m.user_id}
                     onRemove={() => {
-                      if (confirm(`Remove ${m.display_name} from this circle?`)) {
+                      // Inline confirm (no window.confirm): first tap arms the
+                      // button ("Remove?"), the second executes.
+                      if (confirmRemove === d.circle.id + m.user_id) {
+                        setConfirmRemove(null);
                         run(() => removeCircleMember(d.circle.id, m.user_id));
+                      } else {
+                        hapticSelection();
+                        setConfirmRemove(d.circle.id + m.user_id);
                       }
                     }}
+                    onCancelRemove={() => setConfirmRemove(null)}
                   />
                 ))}
               </div>
@@ -619,22 +757,47 @@ export default function CirclesScreen() {
               <button
                 disabled={busy}
                 onClick={() => {
-                  const owner = d.myId != null && d.circle.owner_id === d.myId;
-                  const msg = owner
-                    ? d.members.length > 1
-                      ? "Leave this circle? Ownership passes to the longest-standing member."
-                      : "Leave this circle? You're the last member, so it will be closed."
-                    : "Leave this circle?";
-                  if (confirm(msg)) run(() => leaveCircle(d.circle.id));
+                  // Inline confirm (no window.confirm): first tap arms the
+                  // button ("Leave?") + shows the consequence note below.
+                  if (confirmLeave === d.circle.id) {
+                    setConfirmLeave(null);
+                    run(() => leaveCircle(d.circle.id));
+                  } else {
+                    hapticSelection();
+                    setConfirmLeave(d.circle.id);
+                  }
                 }}
-                className="inline-flex items-center justify-center gap-1.5 text-sm text-themed-muted rounded-xl border sidebar-border px-3 py-2.5 active:bg-[var(--overlay-subtle)]"
+                aria-label={confirmLeave === d.circle.id ? "Confirm leave circle" : "Leave circle"}
+                className={
+                  confirmLeave === d.circle.id
+                    ? "inline-flex items-center justify-center gap-1.5 text-sm font-bold text-red-300 bg-red-500/15 border border-red-400/30 rounded-xl px-3 py-2.5 disabled:opacity-60"
+                    : "inline-flex items-center justify-center gap-1.5 text-sm text-themed-muted rounded-xl border sidebar-border px-3 py-2.5 active:bg-[var(--overlay-subtle)]"
+                }
               >
-                <LogOut size={14} />
+                {confirmLeave === d.circle.id ? "Leave?" : <LogOut size={14} />}
               </button>
             </div>
+
+            {confirmLeave === d.circle.id && (
+              <div className="relative mt-2 flex items-center gap-2 rounded-xl border border-red-400/30 bg-red-400/10 px-3 py-2">
+                <p className="flex-1 text-[11.5px] text-red-300/90 leading-snug">
+                  {meIsOwner
+                    ? d.members.length > 1
+                      ? "Ownership passes to the longest-standing member."
+                      : "You're the last member, so the circle will be closed."
+                    : "You'll need an invite code to rejoin."}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setConfirmLeave(null)}
+                  className="shrink-0 text-[11.5px] font-semibold text-themed-muted px-1 touch-manipulation active:opacity-70"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
-        );
-      })}
+      )}
 
       {/* Sheets */}
       <CircleChatSheet
@@ -687,7 +850,9 @@ function LeaderRow({
   duaSent,
   busy,
   onDua,
+  confirmingRemove,
   onRemove,
+  onCancelRemove,
 }: {
   m: CircleMember;
   rank: number;
@@ -699,7 +864,10 @@ function LeaderRow({
   duaSent: boolean;
   busy: boolean;
   onDua: () => void;
+  /** True when the remove button is armed ("Remove?") awaiting a second tap. */
+  confirmingRemove: boolean;
   onRemove: () => void;
+  onCancelRemove: () => void;
 }) {
   const pct = target > 0 ? Math.min(m.value / target, 1) * 100 : 0;
   return (
@@ -736,6 +904,7 @@ function LeaderRow({
         </div>
       </div>
       {!m.isMe &&
+        !confirmingRemove &&
         (duaSent ? (
           <span className="shrink-0 text-gold" title="Du'ā sent">
             <Check size={15} />
@@ -750,17 +919,38 @@ function LeaderRow({
             <Heart size={13} />
           </button>
         ))}
-      {canRemove && (
-        <button
-          onClick={onRemove}
-          disabled={busy}
-          aria-label={`Remove ${m.display_name}`}
-          title="Remove member"
-          className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full border sidebar-border text-themed-muted/70 hover:text-red-400 touch-manipulation active:bg-[var(--overlay-subtle)] disabled:opacity-40"
-        >
-          <X size={13} />
-        </button>
-      )}
+      {canRemove &&
+        (confirmingRemove ? (
+          // Inline confirm (admin-console idiom): armed "Remove?" + cancel.
+          <span className="shrink-0 inline-flex items-center gap-1">
+            <button
+              onClick={onRemove}
+              disabled={busy}
+              aria-label={`Confirm removing ${m.display_name}`}
+              className="h-8 px-2.5 rounded-full bg-red-500/15 border border-red-400/30 text-red-300 text-[11px] font-bold touch-manipulation active:bg-red-500/25 disabled:opacity-40"
+            >
+              Remove?
+            </button>
+            <button
+              onClick={onCancelRemove}
+              aria-label="Cancel remove"
+              title="Cancel"
+              className="inline-flex items-center justify-center w-8 h-8 rounded-full border sidebar-border text-themed-muted/70 touch-manipulation active:bg-[var(--overlay-subtle)]"
+            >
+              <X size={13} />
+            </button>
+          </span>
+        ) : (
+          <button
+            onClick={onRemove}
+            disabled={busy}
+            aria-label={`Remove ${m.display_name}`}
+            title="Remove member"
+            className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full border sidebar-border text-themed-muted/70 hover:text-red-400 touch-manipulation active:bg-[var(--overlay-subtle)] disabled:opacity-40"
+          >
+            <X size={13} />
+          </button>
+        ))}
     </div>
   );
 }

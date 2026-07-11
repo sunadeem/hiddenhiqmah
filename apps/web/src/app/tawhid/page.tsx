@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect, Suspense } from "react";
+import { Fragment, useState, useRef, useCallback, useEffect, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -299,126 +299,76 @@ type SectionKey = (typeof sections)[number]["key"];
 
 /* ───────────────────────── components ───────────────────────── */
 
-function NamesGrid({ search, initialNameIndex }: { search: string; initialNameIndex: number | null }) {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(initialNameIndex);
-  const selected = selectedIndex !== null ? namesOfAllah[selectedIndex] : null;
-  const panelRef = useRef<HTMLDivElement>(null);
+// Jump-index ranges (1–20, 21–40, ...) over the canonical order
+const NAME_RANGES: { label: string; start: number }[] = (() => {
+  const ranges: { label: string; start: number }[] = [];
+  for (let i = 0; i < namesOfAllah.length; i += 20) {
+    ranges.push({ label: `${i + 1}–${Math.min(i + 20, namesOfAllah.length)}`, start: i });
+  }
+  return ranges;
+})();
+
+function NamesGrid({ search, initialNameKey }: { search: string; initialNameKey: string | null }) {
+  // Selection is keyed by the name itself (unique + stable), not a filtered-array index
+  const [selectedName, setSelectedName] = useState<string | null>(initialNameKey);
+  const detailRef = useRef<HTMLDivElement>(null);
   const gridItemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const hasScrolledToInitial = useRef(false);
+
+  const selectedIndex = selectedName !== null ? namesOfAllah.findIndex((n) => n.name === selectedName) : -1;
+  const selected = selectedIndex >= 0 ? namesOfAllah[selectedIndex] : null;
 
   const filteredNames = namesOfAllah
     .map((name, i) => ({ ...name, originalIndex: i }))
     .filter((name) => textMatch(search, name.name, name.meaning, name.explanation));
+  const searching = search.trim().length >= 2;
 
   // Auto-scroll to the initial name from URL param
   useEffect(() => {
-    if (initialNameIndex !== null && !hasScrolledToInitial.current) {
+    if (initialNameKey !== null && !hasScrolledToInitial.current) {
       hasScrolledToInitial.current = true;
+      const idx = namesOfAllah.findIndex((n) => n.name === initialNameKey);
+      if (idx < 0) return;
       setTimeout(() => {
-        const gridItem = gridItemRefs.current.get(initialNameIndex);
-        if (gridItem) {
-          gridItem.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-        // Also scroll the detail panel into view after the grid item
-        setTimeout(() => {
-          panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }, 300);
+        gridItemRefs.current.get(idx)?.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 100);
     }
-  }, [initialNameIndex]);
+  }, [initialNameKey]);
 
-  const selectName = useCallback((i: number | null) => {
-    setSelectedIndex(i);
-    if (i !== null) {
+  const selectName = useCallback((key: string | null) => {
+    setSelectedName(key);
+    if (key !== null) {
       setTimeout(() => {
-        panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }, 50);
+        detailRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 60);
     }
   }, []);
 
+  const jumpTo = useCallback((start: number) => {
+    gridItemRefs.current.get(start)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  // Prev/next moves within the currently visible (filtered) list
+  const filteredPos = selectedName !== null ? filteredNames.findIndex((n) => n.name === selectedName) : -1;
+  const prevName = filteredPos >= 0 ? filteredNames[(filteredPos - 1 + filteredNames.length) % filteredNames.length] : null;
+  const nextName = filteredPos >= 0 ? filteredNames[(filteredPos + 1) % filteredNames.length] : null;
+
   return (
     <div className="mt-4">
-      {/* Detail panel */}
-      <AnimatePresence mode="wait">
-        {selected && selectedIndex !== null && (
-          <motion.div
-            key={selectedIndex}
-            ref={panelRef}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            className="mb-4"
-          >
-            <div className="card-bg rounded-xl border border-gold/30 p-4 sm:p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="text-center shrink-0">
-                    <p className="text-4xl font-arabic text-gold">{selected.nameAr}</p>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-themed">{selected.name}</h3>
-                    <p className="text-gold text-sm">{selected.meaning}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0 mt-1">
-                  <BookmarkButton
-                    type="name"
-                    id={`name-${selectedIndex + 1}`}
-                    title={selected.name}
-                    subtitle={selected.nameAr}
-                    href={`/tawhid?tab=names&name=${selectedIndex}`}
-                  />
-                  <button
-                    onClick={() => selectName(null)}
-                    className="text-themed-muted hover:text-themed transition-colors"
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
-              </div>
-
-              <p className="text-themed-muted text-sm leading-relaxed mt-4">
-                {selected.explanation}
-              </p>
-
-              {selected.verse && (
-                <div
-                  className="rounded-lg p-4 mt-4"
-                  style={{ backgroundColor: "var(--color-bg)" }}
-                >
-                  <p className="text-base font-arabic text-gold leading-loose mb-2 text-right">
-                    {selected.verse.arabic}
-                  </p>
-                  <p className="text-themed text-sm italic">
-                    &ldquo;{selected.verse.text}&rdquo;
-                  </p>
-                  <p className="text-xs text-themed-muted mt-2">
-                    <HadithRefText text={selected.verse.ref} />
-                  </p>
-                </div>
-              )}
-
-              {/* Prev / Next */}
-              <div className="flex justify-between mt-4 pt-3 border-t sidebar-border">
-                <button
-                  onClick={() => selectName(selectedIndex > 0 ? selectedIndex - 1 : namesOfAllah.length - 1)}
-                  className="text-xs text-themed-muted hover:text-gold transition-colors"
-                >
-                  &larr; {namesOfAllah[selectedIndex > 0 ? selectedIndex - 1 : namesOfAllah.length - 1].name}
-                </button>
-                <span className="text-[10px] text-themed-muted/40">{selectedIndex + 1} / {namesOfAllah.length}</span>
-                <button
-                  onClick={() => selectName(selectedIndex < namesOfAllah.length - 1 ? selectedIndex + 1 : 0)}
-                  className="text-xs text-themed-muted hover:text-gold transition-colors"
-                >
-                  {namesOfAllah[selectedIndex < namesOfAllah.length - 1 ? selectedIndex + 1 : 0].name} &rarr;
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Jump index */}
+      {!searching && (
+        <div className="flex flex-wrap justify-center gap-2 mb-4">
+          {NAME_RANGES.map((r) => (
+            <button
+              key={r.label}
+              onClick={() => jumpTo(r.start)}
+              className="px-3 py-1.5 rounded-full text-xs font-medium text-themed-muted hover:text-gold border sidebar-border card-bg transition-colors"
+            >
+              {r.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Grid */}
       {filteredNames.length === 0 && search.length >= 2 && (
@@ -426,27 +376,109 @@ function NamesGrid({ search, initialNameIndex }: { search: string; initialNameIn
       )}
       <div className="flex flex-wrap justify-center gap-3">
         {filteredNames.map((name) => (
-          <div
-            key={name.name + name.originalIndex}
-            ref={(el) => { if (el) gridItemRefs.current.set(name.originalIndex, el); }}
-            className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] md:w-[calc(25%-9px)] lg:w-[calc(16.666%-10px)]"
-          >
+          <Fragment key={name.name}>
             <div
-              className={`card-bg rounded-xl border p-5 md:p-6 cursor-pointer transition-colors duration-200 ${
-                selectedIndex === name.originalIndex
-                  ? "border-gold/50 bg-gold/5"
-                  : "sidebar-border card-hover"
-              }`}
-              onClick={() => selectName(selectedIndex === name.originalIndex ? null : name.originalIndex)}
+              ref={(el) => { if (el) gridItemRefs.current.set(name.originalIndex, el); }}
+              className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] md:w-[calc(25%-9px)] lg:w-[calc(16.666%-10px)] scroll-mt-24"
             >
-              <div className="text-center py-3">
-                <p className="text-3xl font-arabic text-gold mb-2">{name.nameAr}</p>
-                <p className="text-themed font-medium text-base">{name.name}</p>
-                <p className="text-themed-muted text-sm mt-1">{name.meaning}</p>
-                <p className="text-[10px] text-themed-muted/30 mt-2">{name.originalIndex + 1}</p>
+              <div
+                className={`card-bg rounded-xl border p-5 md:p-6 cursor-pointer transition-colors duration-200 ${
+                  selectedName === name.name
+                    ? "border-gold/50 bg-gold/5"
+                    : "sidebar-border card-hover"
+                }`}
+                onClick={() => selectName(selectedName === name.name ? null : name.name)}
+              >
+                <div className="text-center py-3">
+                  <p className="text-3xl font-arabic text-gold mb-2">{name.nameAr}</p>
+                  <p className="text-themed font-medium text-base">{name.name}</p>
+                  <p className="text-themed-muted text-sm mt-1">{name.meaning}</p>
+                  <p className="text-[10px] text-themed-muted/30 mt-2">{name.originalIndex + 1}</p>
+                </div>
               </div>
             </div>
-          </div>
+
+            {/* Inline detail — expands in place, right after the tapped card */}
+            {selected && selectedName === name.name && (
+              <motion.div
+                ref={detailRef}
+                key={`detail-${name.name}`}
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                className="w-full"
+              >
+                <div className="card-bg rounded-xl border border-gold/30 p-4 sm:p-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="text-center shrink-0">
+                        <p className="text-4xl font-arabic text-gold">{selected.nameAr}</p>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-themed">{selected.name}</h3>
+                        <p className="text-gold text-sm">{selected.meaning}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 mt-1">
+                      <BookmarkButton
+                        type="name"
+                        id={`name-${selectedIndex + 1}`}
+                        title={selected.name}
+                        subtitle={selected.nameAr}
+                        href={`/tawhid?tab=names&name=${selectedIndex}`}
+                      />
+                      <button
+                        onClick={() => selectName(null)}
+                        className="text-themed-muted hover:text-themed transition-colors"
+                      >
+                        <X size={18} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <p className="text-themed-muted text-sm leading-relaxed mt-4">
+                    {selected.explanation}
+                  </p>
+
+                  {selected.verse && (
+                    <div
+                      className="rounded-lg p-4 mt-4"
+                      style={{ backgroundColor: "var(--color-bg)" }}
+                    >
+                      <p className="text-base font-arabic text-gold leading-loose mb-2 text-right">
+                        {selected.verse.arabic}
+                      </p>
+                      <p className="text-themed text-sm italic">
+                        &ldquo;{selected.verse.text}&rdquo;
+                      </p>
+                      <p className="text-xs text-themed-muted mt-2">
+                        <HadithRefText text={selected.verse.ref} />
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Prev / Next */}
+                  {prevName && nextName && (
+                    <div className="flex justify-between mt-4 pt-3 border-t sidebar-border">
+                      <button
+                        onClick={() => selectName(prevName.name)}
+                        className="text-xs text-themed-muted hover:text-gold transition-colors"
+                      >
+                        &larr; {prevName.name}
+                      </button>
+                      <span className="text-[10px] text-themed-muted/40">{selectedIndex + 1} / {namesOfAllah.length}</span>
+                      <button
+                        onClick={() => selectName(nextName.name)}
+                        className="text-xs text-themed-muted hover:text-gold transition-colors"
+                      >
+                        {nextName.name} &rarr;
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </Fragment>
         ))}
       </div>
     </div>
@@ -559,10 +591,18 @@ function TawhidContent() {
   const router = useRouter();
   const pathname = usePathname();
   useScrollToSection();
+  // ?name= accepts the legacy numeric index (stable — canonical order is fixed) or a name string
   const nameParam = searchParams.get("name");
-  const initialNameIndex = nameParam !== null && !isNaN(Number(nameParam)) && Number(nameParam) >= 0 && Number(nameParam) < namesOfAllah.length
-    ? Number(nameParam)
-    : null;
+  let initialNameKey: string | null = null;
+  if (nameParam !== null) {
+    const n = Number(nameParam);
+    if (Number.isInteger(n) && n >= 0 && n < namesOfAllah.length) {
+      initialNameKey = namesOfAllah[n].name;
+    } else {
+      const match = namesOfAllah.find((x) => x.name.toLowerCase() === nameParam.toLowerCase());
+      if (match) initialNameKey = match.name;
+    }
+  }
   const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
   // Deep-link support: ?sub=<category id> (old ?section= accepted as a mount-time alias)
   const subParam = searchParams.get("sub") ?? searchParams.get("section");
@@ -838,7 +878,7 @@ function TawhidContent() {
               </div>
             </ContentCard>
 
-            <NamesGrid search={search} initialNameIndex={initialNameIndex} />
+            <NamesGrid search={search} initialNameKey={initialNameKey} />
 
           </motion.div>
         )}

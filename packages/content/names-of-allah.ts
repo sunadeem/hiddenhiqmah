@@ -773,7 +773,7 @@ const namesOfAllah: NameOfAllah[] = [
       "The One who finds whatever He wishes and nothing is ever lost to Him. He is self-sufficient, lacking nothing, and possessing everything in abundance.",
   },
   {
-    name: "Al-Majid",
+    name: "Al-Maajid",
     nameAr: "الماجد",
     meaning: "The Noble",
     explanation:
