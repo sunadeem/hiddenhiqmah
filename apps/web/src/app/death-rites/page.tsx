@@ -344,6 +344,31 @@ function TypesGoodEndSub() {
         </p>
       </ContentCard>
 
+      <ContentCard delay={0.1}>
+        <h5 className="text-gold font-medium mb-2">The martyrs at a glance</h5>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          The Prophet ﷺ named those who die in these ways as martyrs — the one killed in battle
+          receives the rank in this world and the next; the rest are granted the martyr&apos;s
+          reward in the Hereafter:
+        </p>
+        <ul className="text-themed-muted text-sm leading-relaxed space-y-1.5 list-none">
+          <li><span className="text-gold">◆</span> Killed in battle in the cause of Allah — the battlefield shahid</li>
+          <li><span className="text-gold">◆</span> The one who dies of the plague</li>
+          <li><span className="text-gold">◆</span> The one who dies of an abdominal illness</li>
+          <li><span className="text-gold">◆</span> The one who drowns</li>
+          <li><span className="text-gold">◆</span> The one crushed beneath a collapsing structure</li>
+          <li><span className="text-gold">◆</span> The one who dies by burning</li>
+          <li><span className="text-gold">◆</span> The woman who dies pregnant or in childbirth</li>
+          <li><span className="text-gold">◆</span> The one killed defending their property</li>
+          <li><span className="text-gold">◆</span> The one killed defending their family, blood, or religion</li>
+        </ul>
+        <p className="text-themed-muted/70 text-xs leading-relaxed mt-3">
+          Each is detailed on the next sub-tabs — and children who die young hold their own
+          honored place, on the last one.
+        </p>
+        <Ref text="Bukhari 56:45; Muslim 33:235; Abu Dawud 21:23; Nasai 21:237; Bukhari 46:41; Abu Dawud 42:177" />
+      </ContentCard>
+
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Good Endings Beyond Martyrdom</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ContentCard delay={0.38}>
@@ -1045,6 +1070,9 @@ const dyingSources: Record<DyingSub, SourceRef[]> = {
 
 const typesOfDeathSources: Record<TypesOfDeathSub, SourceRef[]> = {
   "good-end": [
+    { ref: "Bukhari 56:45; Muslim 33:235", desc: "The five martyrs — plague, abdominal illness, drowning, collapsed structure, and the shahid in Allah's cause" },
+    { ref: "Abu Dawud 21:23; Nasai 21:237", desc: "The expanded categories — incl. burning and the woman who dies pregnant/in childbirth" },
+    { ref: "Bukhari 46:41; Abu Dawud 42:177", desc: "Killed defending property, family, blood, or religion" },
     { ref: "Abu Dawud 21:28", desc: "Last words 'La ilaha illa Allah' → Paradise" },
   ],
   "battlefield-martyr": [
