@@ -215,8 +215,8 @@ const pillars: Pillar[] = [
       "Sifat Salat an-Nabi, al-Albani — Detailed description of the Prophet's prayer",
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Rulings on prayer",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — On the obligation of salah",
-      "Bukhari 9:6, 10:42; Muslim 1:159, 4:245 — Hadith on prayer",
-      "Tafsir Ibn Kathir — Commentary on Quran 4:103, 29:45, 2:238",
+      "Bukhari 9:6; Bukhari 10:42; Muslim 1:159; Muslim 4:245 — Hadith on prayer",
+      "Tafsir Ibn Kathir — Commentary on Quran 4:103; Quran 29:45; Quran 2:238",
     ],
   },
   {
@@ -283,8 +283,8 @@ const pillars: Pillar[] = [
       "Fiqh az-Zakat, Yusuf al-Qaradawi — Comprehensive jurisprudence of zakat",
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on zakat",
       "Al-Mughni, Ibn Qudamah — Section on zakat rulings",
-      "Bukhari 24:1, 24:103; Muslim 12:28 — Hadith on zakat",
-      "Tafsir Ibn Kathir — Commentary on Quran 9:60, 9:103",
+      "Bukhari 24:1; Bukhari 24:103; Muslim 12:28 — Hadith on zakat",
+      "Tafsir Ibn Kathir — Commentary on Quran 9:60; Quran 9:103",
     ],
   },
   {
@@ -355,7 +355,7 @@ const pillars: Pillar[] = [
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on fasting",
       "Al-Mughni, Ibn Qudamah — Section on the rulings of sawm",
       "Majalis Shahr Ramadan, Ibn Uthaymeen — Lessons on fasting and Ramadan",
-      "Bukhari 30:4, 32:11 — Hadith on fasting",
+      "Bukhari 30:4; Bukhari 32:11 — Hadith on fasting",
       "Tafsir Ibn Kathir — Commentary on Quran 2:183-185, Surah al-Qadr (97)",
     ],
   },
@@ -428,8 +428,8 @@ const pillars: Pillar[] = [
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on Hajj",
       "Al-Mughni, Ibn Qudamah — Section on the rites and rulings of Hajj",
       "Sifat Hajjat an-Nabi, Ibn al-Qayyim (from Zad al-Ma'ad) — Description of the Prophet's Hajj",
-      "Bukhari 25:9, 26:1; Muslim 15:159, 15:495 — Hadith on Hajj",
-      "Tafsir Ibn Kathir — Commentary on Quran 2:127, 2:197, 3:97, 22:27",
+      "Bukhari 25:9; Bukhari 26:1; Muslim 15:159; Muslim 15:495 — Hadith on Hajj",
+      "Tafsir Ibn Kathir — Commentary on Quran 2:127; Quran 2:197; Quran 3:97; Quran 22:27",
     ],
   },
 ];
@@ -763,7 +763,7 @@ function PillarsContent() {
               { ref: "Bukhari 2:1, Muslim 1:21", desc: "The five pillars hadith" },
               { ref: "Muslim 2:19", desc: "On the five prayers as expiation for sins" },
               { ref: "Sharh Usul al-Iman, Ibn Uthaymeen", desc: "On the importance of the pillars" },
-              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 2:177, 3:103, 98:5" },
+              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 2:177; Quran 3:103; Quran 98:5" },
             ]} />
           </motion.div>
         )}

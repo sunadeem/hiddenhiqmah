@@ -130,7 +130,7 @@ const whatHappensTopics: GraveTopic[] = [
         },
       ],
       source:
-        "Bukhari 23:72, 23:93; Muslim 4:106, 15:80; Nasai 21:238",
+        "Bukhari 23:72; Bukhari 23:93; Muslim 4:106; Muslim 15:80; Nasai 21:238",
     },
   },
   {
@@ -283,7 +283,7 @@ const protectionTopics: GraveTopic[] = [
         },
       ],
       source:
-        "Tirmidhi 45:17, 10:100; Abu Dawud 6:30; Ibn Majah 24:47",
+        "Tirmidhi 45:17; Tirmidhi 10:100; Abu Dawud 6:30; Ibn Majah 24:47",
     },
   },
   {
@@ -313,7 +313,7 @@ const protectionTopics: GraveTopic[] = [
         },
       ],
       source:
-        "Bukhari 23:129; Muslim 10:9, 2:56; Abu Dawud 21:133",
+        "Bukhari 23:129; Muslim 10:9; Muslim 2:56; Abu Dawud 21:133",
     },
   },
   {
@@ -348,7 +348,7 @@ const protectionTopics: GraveTopic[] = [
         },
       ],
       source:
-        "Abu Dawud 21:28; Tirmidhi 10:18, 32:10; Nasai 21:11",
+        "Abu Dawud 21:28; Tirmidhi 10:18; Tirmidhi 32:10; Nasai 21:11",
     },
   },
 ];
@@ -627,7 +627,7 @@ function TheGraveContent() {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.25 }}
                         >
-                          <TopicInfoCard topic={topic} />
+                          <TopicInfoCard topic={topic} showSource={false} />
                         </motion.div>
                       )
                   )}
@@ -694,7 +694,7 @@ function TheGraveContent() {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.25 }}
                         >
-                          <TopicInfoCard topic={topic} />
+                          <TopicInfoCard topic={topic} showSource={false} />
                         </motion.div>
                       )
                   )}
@@ -704,7 +704,7 @@ function TheGraveContent() {
 
             {/* Sources */}
             <SourcesCard className="mt-8" sources={[
-              { ref: "Bukhari 23:129; Muslim 10:9, 2:56", desc: "Seeking refuge from the punishment of the grave in prayer" },
+              { ref: "Bukhari 23:129; Muslim 10:9; Muslim 2:56", desc: "Seeking refuge from the punishment of the grave in prayer" },
               { ref: "Abu Dawud 21:28", desc: "Dying with La ilaha illallah on one's lips" },
               { ref: "Abu Dawud 21:133", desc: "Supplication after burial for firmness" },
               { ref: "Tirmidhi 10:18; Nasai 21:11", desc: "Sweat on the forehead at death" },

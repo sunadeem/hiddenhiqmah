@@ -202,8 +202,8 @@ const articles: Article[] = [
     sources: [
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on belief in the angels",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on angels",
-      "Tafsir Ibn Kathir — Commentary on Quran 2:285, 35:1, 66:6",
-      "Muslim 55:78, 53:33 — On the creation of angels and their immense number",
+      "Tafsir Ibn Kathir — Commentary on Quran 2:285; Quran 35:1; Quran 66:6",
+      "Muslim 55:78; Muslim 53:33 — On the creation of angels and their immense number",
     ],
   },
   {
@@ -262,7 +262,7 @@ const articles: Article[] = [
     sources: [
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on belief in the books",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on divine books",
-      "Tafsir Ibn Kathir — Commentary on Quran 2:4, 15:9, 5:48",
+      "Tafsir Ibn Kathir — Commentary on Quran 2:4; Quran 15:9; Quran 5:48",
       "Bukhari 65:12 — On the approach to previous scriptures",
     ],
   },
@@ -327,7 +327,7 @@ const articles: Article[] = [
     sources: [
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on belief in the messengers",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on prophets and messengers",
-      "Tafsir Ibn Kathir — Commentary on Quran 16:36, 33:40, 4:164",
+      "Tafsir Ibn Kathir — Commentary on Quran 16:36; Quran 33:40; Quran 4:164",
       "Qasas al-Anbiya, Ibn Kathir — Stories of the Prophets",
     ],
   },
@@ -403,7 +403,7 @@ const articles: Article[] = [
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on belief in the Last Day",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on the Last Day",
       "Kitab ar-Ruh, Ibn al-Qayyim — On the soul and the afterlife",
-      "Tafsir Ibn Kathir — Commentary on Quran 3:185, 99:7-8, 83:6",
+      "Tafsir Ibn Kathir — Commentary on Quran 3:185; Quran 99:7-8; Quran 83:6",
       "An-Nihayah fil-Fitan wal-Malahim, Ibn Kathir — On the signs of the Hour",
     ],
   },
@@ -469,7 +469,7 @@ const articles: Article[] = [
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on belief in divine decree",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on qadr",
       "Shifa al-Alil fi Masa'il al-Qada wal-Qadr, Ibn al-Qayyim",
-      "Tafsir Ibn Kathir — Commentary on Quran 54:49, 57:22, 76:30",
+      "Tafsir Ibn Kathir — Commentary on Quran 54:49; Quran 57:22; Quran 76:30",
       "Muslim 46:11, Bukhari 59:19 — Hadith on writing of decree",
     ],
   },
@@ -818,7 +818,7 @@ function ArticlesOfFaithContent() {
               { ref: "Muslim 1:1", desc: "The Hadith of Jibril" },
               { ref: "Muslim 55:82", desc: "On the affair of the believer being entirely good" },
               { ref: "Sharh Usul al-Iman, Ibn Uthaymeen", desc: "On the importance and implications of Iman" },
-              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 2:285, 4:136, 67:2" },
+              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 2:285; Quran 4:136; Quran 67:2" },
             ]} />
           </motion.div>
         )}

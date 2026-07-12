@@ -26,7 +26,7 @@ const whyItMatters = [
     point: "It is mentioned over 1,000 times in the Quran",
     detail:
       "The Day of Judgement is referred to by many names in the Quran — Yawm al-Qiyamah (Day of Resurrection), Yawm ad-Din (Day of Recompense), al-Haqqah (The Inevitable Reality), al-Qari'ah (The Striking Calamity), as-Sa'ah (The Hour), and more. Its constant mention shows its centrality in the Islamic worldview.",
-    reference: "Quran 1:4, 69:1, 101:1, 75:1",
+    reference: "Quran 1:4; Quran 69:1; Quran 101:1; Quran 75:1",
   },
   {
     point: "It gives meaning to our actions",
@@ -123,7 +123,7 @@ const signsTopics: Topic[] = [
         },
       ],
       source:
-        "Bukhari 3:22, 92:65; Muslim 1:1, 0:15:159; Tirmidhi 36:29",
+        "Bukhari 3:22; Bukhari 92:65; Muslim 1:1; Muslim 0:15:159; Tirmidhi 36:29",
     },
   },
   {
@@ -143,7 +143,7 @@ const signsTopics: Topic[] = [
           title: "The emergence of al-Masih al-Dajjal (the False Messiah)",
           detail:
             "The greatest trial to face humanity. The Prophet (peace be upon him) said: 'Between the creation of Adam and the Hour, there is no greater trial than the Dajjal.' He will claim to be God, perform extraordinary feats, and lead many astray. He is one-eyed, and between his eyes is written 'kafir' (disbeliever), which every believer will be able to read.",
-          note: "Muslim 54:134, 15:142",
+          note: "Muslim 54:134; Muslim 15:142",
         },
         {
           title: "The descent of 'Isa ibn Maryam (Jesus, peace be upon him)",
@@ -189,7 +189,7 @@ const signsTopics: Topic[] = [
         },
       ],
       source:
-        "Bukhari 60:118, 65:157; Muslim 54:23, 15:146; Abu Dawud 38:6; Quran 6:158, 18:94-99, 21:96, 27:82, 44:10-11",
+        "Bukhari 60:118; Bukhari 65:157; Muslim 54:23; Muslim 15:146; Abu Dawud 38:6; Quran 6:158; Quran 18:94-99; Quran 21:96; Quran 27:82; Quran 44:10-11",
     },
   },
 ];
@@ -228,7 +228,7 @@ const eventsTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 14:48, 39:68; Bukhari 65:456; Muslim 52:13, 54:175",
+        "Quran 14:48; Quran 39:68; Bukhari 65:456; Muslim 52:13; Muslim 54:175",
     },
   },
   {
@@ -264,7 +264,7 @@ const eventsTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 70:43; Bukhari 81:115, 81:116; Muslim 53:67, 53:69",
+        "Quran 70:43; Bukhari 81:115; Bukhari 81:116; Muslim 53:67; Muslim 53:69",
     },
   },
   {
@@ -300,7 +300,7 @@ const eventsTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 70:4, 83:6; Bukhari 24:27; Muslim 4:193, 15:74",
+        "Quran 70:4; Quran 83:6; Bukhari 24:27; Muslim 4:193; Muslim 15:74",
     },
   },
   {
@@ -326,7 +326,7 @@ const eventsTopics: Topic[] = [
           title: "The record of deeds (right or left hand)",
           detail:
             "Those who receive their record in their right hand will have an easy reckoning. Allah says: 'As for he who is given his record in his right hand, he will say: Here, read my record! Indeed, I was certain that I would meet my account.' Those who receive it in their left hand or behind their back will say: 'I wish I had not been given my record.'",
-          note: "Quran 69:19-20, 69:25-26; Quran 84:7-9",
+          note: "Quran 69:19-20; Quran 69:25-26; Quran 84:7-9",
         },
         {
           title: "The private reckoning of the believer",
@@ -342,7 +342,7 @@ const eventsTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 17:13, 24:24, 69:19-26, 84:7-9; Bukhari 81:125; Muslim 53:94, 55:23; Tirmidhi 37:3",
+        "Quran 17:13; Quran 24:24; Quran 69:19-26; Quran 84:7-9; Bukhari 81:125; Muslim 53:94; Muslim 55:23; Tirmidhi 37:3",
     },
   },
   {
@@ -384,7 +384,7 @@ const eventsTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 21:47; Bukhari 80:101; Muslim 2:1, 48:41; Tirmidhi 27:108, 40:34",
+        "Quran 21:47; Bukhari 80:101; Muslim 2:1; Muslim 48:41; Tirmidhi 27:108; Tirmidhi 40:34",
     },
   },
   {
@@ -459,7 +459,7 @@ const salvationTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 2:255, 17:79; Bukhari 65:234; Muslim 1:90, 1:101",
+        "Quran 2:255; Quran 17:79; Bukhari 65:234; Muslim 1:90; Muslim 1:101",
     },
   },
   {
@@ -489,7 +489,7 @@ const salvationTopics: Topic[] = [
         },
       ],
       source:
-        "Bukhari 81:167, 81:172; Muslim 43:33",
+        "Bukhari 81:167; Bukhari 81:172; Muslim 43:33",
     },
   },
   {
@@ -766,7 +766,7 @@ function DayOfJudgementContent() {
 
             {/* Sources */}
             <SourcesCard delay={0.4} sources={[
-              { ref: "Quran 1:4, 23:115, 69:1, 75:1, 99:7-8, 101:1", desc: "Names and reality of the Day of Judgement" },
+              { ref: "Quran 1:4; Quran 23:115; Quran 69:1; Quran 75:1; Quran 99:7-8; Quran 101:1", desc: "Names and reality of the Day of Judgement" },
               { ref: "Quran 21:47", desc: "The scales of justice on the Day of Resurrection" },
               { ref: "Muslim 1:1", desc: "Hadith of Jibril on the pillars of faith" },
               { ref: "Muslim 53:75", desc: "The sun being brought close on the Day of Judgement" },
@@ -820,7 +820,7 @@ function DayOfJudgementContent() {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.25 }}
                         >
-                          <TopicInfoCard topic={topic} />
+                          <TopicInfoCard topic={topic} showSource={false} />
                         </motion.div>
                       )
                   )}
@@ -837,11 +837,11 @@ function DayOfJudgementContent() {
               { ref: "Muslim 1:1", desc: "Hadith of Jibril: slave woman, tall buildings" },
               { ref: "Muslim 54:23", desc: "Widespread killing (al-harj)" },
               { ref: "Muslim 54:51", desc: "Ten major signs mentioned together" },
-              { ref: "Muslim 54:134, 15:146", desc: "The Dajjal, descent of 'Isa, Ya'juj and Ma'juj" },
+              { ref: "Muslim 54:134; Muslim 15:146", desc: "The Dajjal, descent of 'Isa, Ya'juj and Ma'juj" },
               { ref: "Bukhari 60:118", desc: "The descent of 'Isa ibn Maryam" },
               { ref: "Bukhari 65:157", desc: "The sun rising from the west" },
               { ref: "Abu Dawud 38:6", desc: "The Mahdi from the descendants of Fatimah" },
-              { ref: "Quran 6:158, 18:94-99, 21:96, 27:82, 44:10-11", desc: "Major signs in the Quran" },
+              { ref: "Quran 6:158; Quran 18:94-99; Quran 21:96; Quran 27:82; Quran 44:10-11", desc: "Major signs in the Quran" },
             ]} />
           </motion.div>
         )}
@@ -890,7 +890,7 @@ function DayOfJudgementContent() {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.25 }}
                         >
-                          <TopicInfoCard topic={topic} />
+                          <TopicInfoCard topic={topic} showSource={false} />
                         </motion.div>
                       )
                   )}
@@ -900,10 +900,10 @@ function DayOfJudgementContent() {
 
             {/* Sources */}
             <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 14:48, 17:13, 21:47, 24:24, 39:68, 57:12-13, 69:19-26, 70:4, 70:43, 83:6, 84:7-9", desc: "Quranic verses on the events of the Day" },
-              { ref: "Bukhari 46:8, 97:65", desc: "Resurrection, reckoning, scale, bridge" },
-              { ref: "Muslim 1:102, 55:23", desc: "Events of the Day" },
-              { ref: "Tirmidhi 27:108, 40:34", desc: "Good character, four questions, the card hadith" },
+              { ref: "Quran 14:48; Quran 17:13; Quran 21:47; Quran 24:24; Quran 39:68; Quran 57:12-13; Quran 69:19-26; Quran 70:4; Quran 70:43; Quran 83:6; Quran 84:7-9", desc: "Quranic verses on the events of the Day" },
+              { ref: "Bukhari 46:8; Bukhari 97:65", desc: "Resurrection, reckoning, scale, bridge" },
+              { ref: "Muslim 1:102; Muslim 55:23", desc: "Events of the Day" },
+              { ref: "Tirmidhi 27:108; Tirmidhi 40:34", desc: "Good character, four questions, the card hadith" },
               { ref: "Tirmidhi 37:3", desc: "Five questions on the Day of Judgement" },
             ]} />
           </motion.div>
@@ -953,7 +953,7 @@ function DayOfJudgementContent() {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.25 }}
                         >
-                          <TopicInfoCard topic={topic} />
+                          <TopicInfoCard topic={topic} showSource={false} />
                         </motion.div>
                       )
                   )}
@@ -967,7 +967,7 @@ function DayOfJudgementContent() {
               { ref: "Quran 17:79", desc: "The Praised Station (al-Maqam al-Mahmud)" },
               { ref: "Quran 108:1-3", desc: "Surah al-Kawthar" },
               { ref: "Bukhari 65:234; Muslim 1:381", desc: "The great intercession" },
-              { ref: "Bukhari 81:167, 81:172; Muslim 43:33", desc: "The Hawd (Pool) of the Prophet" },
+              { ref: "Bukhari 81:167; Bukhari 81:172; Muslim 43:33", desc: "The Hawd (Pool) of the Prophet" },
               { ref: "Bukhari 81:169", desc: "The Prophet seeing al-Kawthar during the Night Journey" },
               { ref: "Muslim 1:90", desc: "Others permitted to intercede by Allah's leave" },
               { ref: "Tirmidhi 47:413; Ibn Majah 37:235", desc: "Description of al-Kawthar" },

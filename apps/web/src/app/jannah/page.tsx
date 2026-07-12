@@ -105,7 +105,7 @@ const descriptionTopics: DescriptionTopic[] = [
         },
       ],
       source:
-        "Quran 47:15; Quran 56:28-34; Bukhari 59:62, 81:169; Muslim 4:56, 53:7; Tirmidhi 38:4, 38:49",
+        "Quran 47:15; Quran 56:28-34; Bukhari 59:62; Bukhari 81:169; Muslim 4:56; Muslim 53:7; Tirmidhi 38:4; Tirmidhi 38:49",
     },
   },
   {
@@ -141,7 +141,7 @@ const descriptionTopics: DescriptionTopic[] = [
         },
       ],
       source:
-        "Quran 39:20; Bukhari 59:66, 81:159; Muslim 1:95, 15:48; Tirmidhi 38:4",
+        "Quran 39:20; Bukhari 59:66; Bukhari 81:159; Muslim 1:95; Muslim 15:48; Tirmidhi 38:4",
     },
   },
   {
@@ -155,7 +155,7 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "Fruits in pairs",
           detail:
             "Allah describes fruits of every kind, presented in pairs, and fruits that are familiar yet entirely different from what exists in this world. Ibn Abbas said: 'Nothing in Paradise resembles anything in this world except in name.' The fruits are always in season and never out of reach.",
-          note: "Quran 55:52, 56:20-21, 2:25",
+          note: "Quran 55:52; Quran 56:20-21; Quran 2:25",
         },
         {
           title: "Meat of any kind they desire",
@@ -167,7 +167,7 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "Wine without intoxication",
           detail:
             "The wine of Paradise is pure — it does not cause intoxication, headache, or loss of reason. It is 'white, delicious to the drinkers; no bad effect is there in it, nor from it will they be intoxicated.' It is served in cups by immortal youths.",
-          note: "Quran 37:45-47, 56:17-19, 76:15-17",
+          note: "Quran 37:45-47; Quran 56:17-19; Quran 76:15-17",
         },
         {
           title: "Springs of Tasnim and Salsabil",
@@ -177,7 +177,7 @@ const descriptionTopics: DescriptionTopic[] = [
         },
       ],
       source:
-        "Quran 2:25, 37:45-47, 55:52, 56:17-21, 76:5-18, 83:27-28",
+        "Quran 2:25; Quran 37:45-47; Quran 55:52; Quran 56:17-21; Quran 76:5-18; Quran 83:27-28",
     },
   },
   {
@@ -197,7 +197,7 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "Spouses of Jannah",
           detail:
             "Believing spouses who enter Jannah together will be reunited in a state of perfect love, beauty, and youth. There will be no jealousy, no arguments, no ill feelings — only pure affection. Allah also describes the Hur al-'Ayn — companions of Paradise with beautiful eyes, created specifically for the people of Jannah.",
-          note: "Quran 44:54, 55:70-74, 56:35-37; Muslim 53:16",
+          note: "Quran 44:54; Quran 55:70-74; Quran 56:35-37; Muslim 53:16",
         },
         {
           title: "No envy, no ill will",
@@ -213,7 +213,7 @@ const descriptionTopics: DescriptionTopic[] = [
         },
       ],
       source:
-        "Quran 4:69, 13:23, 15:47, 44:54, 52:21, 55:70-74; Bukhari 59:56, 62:38; Muslim 45:208, 53:50",
+        "Quran 4:69; Quran 13:23; Quran 15:47; Quran 44:54; Quran 52:21; Quran 55:70-74; Bukhari 59:56; Bukhari 62:38; Muslim 45:208; Muslim 53:50",
     },
   },
   {
@@ -254,7 +254,7 @@ const descriptionTopics: DescriptionTopic[] = [
         },
       ],
       source:
-        "Quran 10:26, 75:22-23; Bukhari 23:138, 97:61; Muslim 1:88, 15:39; Tirmidhi 38:30, 38:31",
+        "Quran 10:26; Quran 75:22-23; Bukhari 23:138; Bukhari 97:61; Muslim 1:88; Muslim 15:39; Tirmidhi 38:30; Tirmidhi 38:31",
     },
   },
 ];
@@ -303,7 +303,7 @@ const howToTopics: HowToTopic[] = [
         },
       ],
       source:
-        "Quran 2:82, 4:48, 4:124; Bukhari 1:1, 81:52; Muslim 1:178, 0:6:335",
+        "Quran 2:82; Quran 4:48; Quran 4:124; Bukhari 1:1; Bukhari 81:52; Muslim 1:178; Muslim 0:6:335",
     },
   },
   {
@@ -329,7 +329,7 @@ const howToTopics: HowToTopic[] = [
           title: "Saying SubhanAllah, Alhamdulillah, and La ilaha illallah",
           detail:
             "The Prophet (peace be upon him) said: 'Whoever says SubhanAllahi wa bihamdihi (Glory and praise be to Allah) 100 times a day will have his sins forgiven even if they were like the foam of the sea.' He also said: 'There are two statements that are light on the tongue, heavy on the scale, and beloved to the Most Merciful: SubhanAllahi wa bihamdihi, SubhanAllahil-Azeem.'",
-          note: "Bukhari 80:100, 80:101; Muslim 5:99",
+          note: "Bukhari 80:100; Bukhari 80:101; Muslim 5:99",
         },
         {
           title: "Caring for orphans",
@@ -357,7 +357,7 @@ const howToTopics: HowToTopic[] = [
         },
       ],
       source:
-        "Bukhari 8:99, 80:100; Muslim 1:14, 6:124; Tirmidhi 2:268, 27:110",
+        "Bukhari 8:99; Bukhari 80:100; Muslim 1:14; Muslim 6:124; Tirmidhi 2:268; Tirmidhi 27:110",
     },
   },
   {
@@ -377,7 +377,7 @@ const howToTopics: HowToTopic[] = [
           title: "The Quranic names of Paradise",
           detail:
             "The Quran refers to Paradise by several names, each highlighting a different quality. Jannat al-Firdaws (الفردوس) — the highest garden, beneath the Throne of Allah. Jannat al-Adn (جنات عدن) — the Gardens of Perpetual Residence, mentioned 11 times in the Quran, described with flowing rivers, gold adornments, and reunion with righteous family. Jannat an-Na'im (جنات النعيم) — the Gardens of Delight, a life of complete happiness and peace. Jannat al-Ma'wa (جنة المأوى) — the Garden of Refuge, an eternal shelter for the pious. Dar as-Salam (دار السلام) — the Abode of Peace, where all trials end and Allah's peace is guaranteed. Dar al-Khuld (دار الخلد) — the Abode of Immortality, where its people live forever. Illiyyun (عليّون) — the Highest Place, where the record of the righteous is kept and the angels bear witness to it. Whether these are names for distinct levels or different descriptions of the same Paradise is discussed among scholars — what is certain is that each name is from the Quran itself.",
-          note: "Quran 18:107, 23:11 (Firdaws); 9:72, 13:23, 18:31, 61:12, 98:8 (Adn); 10:9, 56:12, 68:34 (Na'im); 32:19, 53:15 (Ma'wa); 6:127, 10:25 (Dar as-Salam); 41:28 (Dar al-Khuld); 83:18-21 (Illiyyun)",
+          note: "Quran 18:107; Quran 23:11 (Firdaws); 9:72, 13:23, 18:31, 61:12, 98:8 (Adn); 10:9, 56:12, 68:34 (Na'im); 32:19, 53:15 (Ma'wa); 6:127, 10:25 (Dar as-Salam); 41:28 (Dar al-Khuld); 83:18-21 (Illiyyun)",
         },
         {
           title: "Jannatul Firdaus — the highest level",
@@ -405,7 +405,7 @@ const howToTopics: HowToTopic[] = [
         },
       ],
       source:
-        "Quran 6:127, 9:72, 10:9, 10:25, 13:23, 18:31, 18:107, 23:11, 32:19, 41:28, 53:15, 56:12, 61:12, 68:34, 83:18-21, 83:26, 98:8; Bukhari 59:66, 97:51; Muslim 53:11; Abu Dawud 8:49; Tirmidhi 45:40",
+        "Quran 6:127; Quran 9:72; Quran 10:9; Quran 10:25; Quran 13:23; Quran 18:31; Quran 18:107; Quran 23:11; Quran 32:19; Quran 41:28; Quran 53:15; Quran 56:12; Quran 61:12; Quran 68:34; Quran 83:18-21; Quran 83:26; Quran 98:8; Bukhari 59:66; Bukhari 97:51; Muslim 53:11; Abu Dawud 8:49; Tirmidhi 45:40",
     },
   },
   {
@@ -441,7 +441,7 @@ const howToTopics: HowToTopic[] = [
         },
       ],
       source:
-        "Quran 39:53; Bukhari 81:159; Muslim 1:93, 1:95",
+        "Quran 39:53; Bukhari 81:159; Muslim 1:93; Muslim 1:95",
     },
   },
 ];
@@ -743,7 +743,7 @@ function JannahContent() {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.25 }}
                         >
-                          <TopicInfoCard topic={topic} />
+                          <TopicInfoCard topic={topic} showSource={false} />
                         </motion.div>
                       )
                   )}
@@ -811,7 +811,7 @@ function JannahContent() {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.25 }}
                         >
-                          <TopicInfoCard topic={topic} />
+                          <TopicInfoCard topic={topic} showSource={false} />
                         </motion.div>
                       )
                   )}

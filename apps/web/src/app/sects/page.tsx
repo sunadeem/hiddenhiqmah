@@ -208,7 +208,7 @@ const sunniTopics: SectTopic[] = [
           note: "Quran 42:23; Muslim 44:55",
         },
       ],
-      source: "Al-Aqidah at-Tahawiyyah; Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah; Bukhari 52:16, 62:7-3671",
+      source: "Al-Aqidah at-Tahawiyyah; Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah; Bukhari 52:16; Bukhari 62:7-3671",
     },
   },
 ];
@@ -328,7 +328,7 @@ const shiaTopics: SectTopic[] = [
           note: "Quran 39:3; Quran 72:18",
         },
       ],
-      source: "Bukhari 67:52; Muslim 16:29; Al-Kafi, al-Kulayni; Quran 4:29, 39:3",
+      source: "Bukhari 67:52; Muslim 16:29; Al-Kafi, al-Kulayni; Quran 4:29; Quran 39:3",
     },
   },
   {
@@ -361,7 +361,7 @@ const shiaTopics: SectTopic[] = [
             "Sunni and Shia Muslims share the testimony of faith, belief in the Quran, the five pillars of Islam (though with differences in practice), and belief in the Prophet Muhammad ﷺ. These shared foundations mean we can engage in dialogue and coexist, while being honest about real theological differences.",
         },
       ],
-      source: "Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah; Quran 5:8, 16:125",
+      source: "Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah; Quran 5:8; Quran 16:125",
     },
   },
 ];
@@ -583,7 +583,7 @@ const otherSects: SectTopic[] = [
           note: "The Autobiography of Malcolm X, Chapter 18 — El-Hajj Malik El-Shabazz",
         },
       ],
-      source: "Quran 33:40, 49:13; Ahmad 23489; The Autobiography of Malcolm X",
+      source: "Quran 33:40; Quran 49:13; Ahmad 23489; The Autobiography of Malcolm X",
     },
   },
 ];

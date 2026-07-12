@@ -20,7 +20,15 @@ export type Topic = {
   };
 };
 
-export default function TopicInfoCard({ topic }: { topic: Topic }) {
+export default function TopicInfoCard({
+  topic,
+  showSource = true,
+}: {
+  topic: Topic;
+  /** Hide the aggregated source footer when every point already carries its
+   *  own ref (it would just duplicate them). */
+  showSource?: boolean;
+}) {
   const verse = topic.content.verse;
   return (
     <ContentCard>
@@ -29,7 +37,7 @@ export default function TopicInfoCard({ topic }: { topic: Topic }) {
       </div>
 
       <p className="text-themed-muted text-sm leading-relaxed mb-5">
-        {topic.content.intro}
+        <HadithRefText text={topic.content.intro} />
       </p>
 
       {verse && (
@@ -55,7 +63,9 @@ export default function TopicInfoCard({ topic }: { topic: Topic }) {
             style={{ backgroundColor: "var(--color-bg)" }}
           >
             <h4 className="text-sm font-semibold text-themed mb-2">{point.title}</h4>
-            <p className="text-themed-muted text-sm leading-relaxed">{point.detail}</p>
+            <p className="text-themed-muted text-sm leading-relaxed">
+              <HadithRefText text={point.detail} />
+            </p>
             {point.note && (
               <p className="text-xs text-gold/60 mt-2">
                 <HadithRefText text={point.note} />
@@ -65,7 +75,7 @@ export default function TopicInfoCard({ topic }: { topic: Topic }) {
         ))}
       </div>
 
-      {topic.content.source && (
+      {showSource && topic.content.source && (
         <p className="text-xs text-themed-muted mt-5">
           <HadithRefText text={topic.content.source} />
         </p>

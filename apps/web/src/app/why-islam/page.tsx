@@ -176,7 +176,7 @@ const proofTopics: Topic[] = [
             "Biblical prophecies are often vague, retroactively interpreted, or unfulfilled. Nostradamus's quatrains are deliberately ambiguous. Hindu and Buddhist texts do not contain specific, dated, verifiable predictions. Muhammad's prophecies are specific, recorded in authenticated chains of transmission, and verifiably fulfilled.",
         },
       ],
-      source: "Muslim 1:1, 0:15:121; Bukhari 2:43, 92:65; Tirmidhi 33:82, 36:29; Nasai 44:7; Abu Dawud 39:7",
+      source: "Muslim 1:1; Muslim 0:15:121; Bukhari 2:43; Bukhari 92:65; Tirmidhi 33:82; Tirmidhi 36:29; Nasai 44:7; Abu Dawud 39:7",
     },
   },
   {
@@ -336,7 +336,7 @@ const proofTopics: Topic[] = [
             "Unlike religions that address only spiritual matters, Islam provides guidance for every aspect of life: personal hygiene, diet, business ethics, criminal justice, international relations, environmental stewardship, and treatment of animals. No other religion offers such a comprehensive and integrated system of life.",
         },
       ],
-      source: "Quran 49:13; Quran 4:7, 4:19; Ahmad 23489",
+      source: "Quran 49:13; Quran 4:7; Quran 4:19; Ahmad 23489",
     },
   },
   {
@@ -1272,7 +1272,7 @@ const questionTopics: Topic[] = [
           note: "Bukhari 64:314",
         },
       ],
-      source: "Quran 2:190, 256; Quran 9:5-6; Bukhari 56:224, 64:314-4281; Abu Dawud 15:138",
+      source: "Quran 2:190, 256; Quran 9:5-6; Bukhari 56:224; Bukhari 64:314-4281; Abu Dawud 15:138",
     },
   },
   {

@@ -88,7 +88,7 @@ const prophetNames = [
     meaning: "The Messenger",
     description:
       "A Rasul (Messenger) is a prophet who receives a new divinely revealed scripture or law. Muhammad ﷺ is the Messenger of Allah to all of mankind and jinn — not to one nation, but to every living being until the Day of Judgment. 'We have not sent you except as a bringer of glad tidings and a warner to all of mankind.' He is referred to as 'Ar-Rasul' over 300 times in the Quran. Obedience to the Messenger is equated with obedience to Allah: 'Whoever obeys the Messenger has obeyed Allah.'",
-    reference: "Quran 34:28, 4:80, 7:158",
+    reference: "Quran 34:28; Quran 4:80; Quran 7:158",
   },
   {
     name: "An-Nabi",
@@ -96,7 +96,7 @@ const prophetNames = [
     meaning: "The Prophet",
     description:
       "From naba' (نبأ) meaning news/information — he who receives news from Allah through revelation. Every Rasul is a Nabi, but not every Nabi is a Rasul. He is called 'An-Nabi al-Ummi' — the unlettered Prophet — who could neither read nor write, yet brought the most eloquent book ever known to mankind. This was itself a proof of his prophethood, for no unlettered man could produce such a work. Allah sealed prophethood with him: 'Muhammad is not the father of any of your men, but he is the Messenger of Allah and the seal of the prophets.'",
-    reference: "Quran 33:40, 7:157-158",
+    reference: "Quran 33:40; Quran 7:157-158",
   },
   {
     name: "Al-Mahi",

@@ -69,7 +69,6 @@ const sihrTopics: Topic[] = [
           note: "Quran 113:4; Muslim 6:319",
         },
       ],
-      source: "Quran 2:102; Quran 113:1-5; Muslim 6:319",
     },
   },
   {
@@ -98,7 +97,6 @@ const sihrTopics: Topic[] = [
           note: "Quran 2:102",
         },
       ],
-      source: "Bukhari 55:29; Nasai 37:114; Quran 2:102",
     },
   },
   {
@@ -126,7 +124,6 @@ const sihrTopics: Topic[] = [
             "Recite al-Fatiha, Ayat al-Kursi, and the three Quls over yourself; keep the morning and evening adhkar; and if needed, ask a person known for sound belief and righteousness to recite over you. The Ruqyah tab of this page walks through each step.",
         },
       ],
-      source: "Muslim 39:173; Abu Dawud 29:29",
     },
   },
   {
@@ -158,7 +155,6 @@ const sihrTopics: Topic[] = [
             "The person who keeps the daily adhkar, prays on time, and recites the Quran regularly has done what the Prophet (peace be upon him) prescribed. After that, fear of sihr should have no grip on the heart: nothing occurs except by Allah's permission, and He is sufficient for those who rely on Him.",
         },
       ],
-      source: "Bukhari 76:27",
     },
   },
 ];
@@ -190,7 +186,6 @@ const evilEyeTopics: Topic[] = [
           note: "Quran 114:6; Muslim 6:319",
         },
       ],
-      source: "Bukhari 76:55; Muslim 39:55, 39:56; Quran 114:1-6",
     },
   },
   {
@@ -223,7 +218,6 @@ const evilEyeTopics: Topic[] = [
           note: "Quran 113:5",
         },
       ],
-      source: "Quran 18:39; Bukhari 23:138",
     },
   },
   {
@@ -252,7 +246,6 @@ const evilEyeTopics: Topic[] = [
           note: "Bukhari 66:38",
         },
       ],
-      source: "Bukhari 76:53, 76:54, 66:38; Muslim 39:56",
     },
   },
   {
@@ -285,7 +278,6 @@ const evilEyeTopics: Topic[] = [
             "The practical cure scholars prescribe for envy in one's own heart: make du'a for the person you envy, congratulate them sincerely, and remember that Allah's giving follows His wisdom. What He allotted you was never diminished by what He gave another.",
         },
       ],
-      source: "Quran 113:5; Abu Dawud 43:131",
     },
   },
 ];
@@ -316,7 +308,6 @@ const ruqyahTopics: Topic[] = [
           note: "Nasai 37:114",
         },
       ],
-      source: "Muslim 39:86; Abu Dawud 29:32; Nasai 37:114",
     },
   },
   {
@@ -345,7 +336,6 @@ const ruqyahTopics: Topic[] = [
           note: "Bukhari 76:52",
         },
       ],
-      source: "Bukhari 66:28, 66:29, 76:52",
     },
   },
   {
@@ -397,7 +387,6 @@ const ruqyahTopics: Topic[] = [
           note: "Bukhari 66:38",
         },
       ],
-      source: "Quran 2:255; Bukhari 66:29, 66:32, 66:38, 66:39, 76:58",
     },
   },
   {
@@ -424,7 +413,6 @@ const ruqyahTopics: Topic[] = [
           note: "Muslim 39:173",
         },
       ],
-      source: "Muslim 39:173; Bukhari 76:53",
     },
   },
 ];
@@ -455,7 +443,6 @@ const dailyTopics: Topic[] = [
             "The full morning and evening routine — with these and the other authentic adhkar — is laid out step by step in the daily worship guide on this app.",
         },
       ],
-      source: "Abu Dawud 43:310, 43:316",
     },
   },
   {
@@ -483,7 +470,6 @@ const dailyTopics: Topic[] = [
             "In a narration graded authentic by scholars, reciting Ayat al-Kursi after every obligatory prayer is singled out with immense reward. Many Muslims keep it as a fixed habit at the end of each salah alongside the tasbih.",
         },
       ],
-      source: "Bukhari 66:32, 66:39; Quran 2:255",
     },
   },
   {
@@ -511,7 +497,6 @@ const dailyTopics: Topic[] = [
             "None of these takes more than a few seconds. Together they mean a believer's day is bracketed by Allah's name at every threshold — food, home, road, and bed. Protection in Islam is not an emergency measure; it is a lifestyle of remembrance.",
         },
       ],
-      source: "Muslim 36:136; Abu Dawud 43:323; Tirmidhi 48:57",
     },
   },
 ];

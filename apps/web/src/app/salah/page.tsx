@@ -571,7 +571,6 @@ const purificationTopics: Topic[] = [
           note: "Muslim 2:46",
         },
       ],
-      source: "Quran 5:6; Bukhari 4:1; Muslim 2:1, 2:46",
     },
   },
   {
@@ -642,7 +641,6 @@ const purificationTopics: Topic[] = [
           note: "Quran 5:6; Bukhari 4:31; Muslim 1:148",
         },
       ],
-      source: "Quran 5:6; Bukhari 1:1, 4:31; Muslim 1:148; Abu Dawud 1:101, 1:134",
     },
   },
   {
@@ -683,7 +681,6 @@ const purificationTopics: Topic[] = [
           note: "Bukhari 4:25; Muslim 2:20",
         },
       ],
-      source: "Bukhari 4:25; Muslim 2:20; Abu Dawud 1:101; Tirmidhi 1:55",
     },
   },
   {
@@ -742,7 +739,6 @@ const purificationTopics: Topic[] = [
           note: "Quran 5:6",
         },
       ],
-      source: "Bukhari 4:25, 4:34, 4:67, 11:12; Muslim 2:59, 2:83; Abu Dawud 1:101, 1:135, 1:142; Tirmidhi 1:31, 1:38; Ibn Majah 1:133, 1:159",
     },
   },
   {
@@ -789,7 +785,6 @@ const purificationTopics: Topic[] = [
           note: "Muslim 3:123",
         },
       ],
-      source: "Bukhari 4:1, 4:3; Muslim 3:123; Abu Dawud 1:60, 1:200; Tirmidhi 1:82",
     },
   },
   {
@@ -808,7 +803,7 @@ const purificationTopics: Topic[] = [
           title: "When ghusl is obligatory",
           detail:
             "1) Sexual intercourse — even without emission. The Prophet ﷺ said: 'When a man sits in between the four parts of a woman and did the sexual intercourse with her, bath becomes compulsory' (Bukhari 5:43). 2) Any emission of semen with desire, whether awake or asleep. When Umm Sulaym asked about a woman who sees in a dream what a man sees, the Prophet ﷺ said: 'In case a woman sees that, she must take a bath' (Muslim 3:32). 3) The end of menstruation or post-natal bleeding (nifas). The Prophet ﷺ said: 'Give up the prayer when your menses begin and when it has finished, wash the blood off your body (take a bath) and start praying' (Bukhari 6:35).",
-          note: "Bukhari 5:43, 6:35; Muslim 3:32",
+          note: "Bukhari 5:43; Bukhari 6:35; Muslim 3:32",
         },
         {
           title: "The deceased are also washed",
@@ -844,10 +839,9 @@ const purificationTopics: Topic[] = [
           title: "Common mistakes",
           detail:
             "1) Leaving dry spots — behind the ears, under rings or nail polish, the armpits, between the toes, or the roots of thick hair; water must reach the whole body. 2) Thinking a separate wudu is required afterwards — a complete ghusl with the intention of purification suffices for prayer. 3) Delaying ghusl until a prayer window passes — janabah does not excuse missing a prayer. 4) Wastefulness with water — the Prophet ﷺ bathed with modest amounts, and moderation is the sunnah.",
-          note: "Bukhari 5:1, 5:26",
+          note: "Bukhari 5:1; Bukhari 5:26",
         },
       ],
-      source: "Quran 5:6; Bukhari 5:1, 5:26, 5:43, 6:35, 11:5, 23:22; Muslim 3:17, 3:32",
     },
   },
 ];
@@ -1972,7 +1966,7 @@ function SalahContent() {
               { ref: "Muslim 4:41", desc: "Allah responds to Al-Fatihah" },
               { ref: "Tirmidhi 40:16; Muslim 1:12", desc: "The covenant between us and them is prayer" },
               { ref: "Bukhari 9:7, Muslim 5:356", desc: "The likeness of the five prayers" },
-              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 29:45, 20:132" },
+              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 29:45; Quran 20:132" },
             ]} />
           </motion.div>
         )}
@@ -2045,12 +2039,12 @@ function SalahContent() {
             {/* Sources */}
             <SourcesCard delay={0.3} className="mt-8" sources={[
               { ref: "Quran 5:6", desc: "The verse of purification — wudu, and ghusl for janabah" },
-              { ref: "Bukhari 1:1, 4:1, 4:25, 11:12", desc: "Niyyah, nullifiers, the Prophet's ﷺ wudu, right-side preference, miswak" },
-              { ref: "Bukhari 5:1, 5:26, 5:43, 6:35, 11:5, 23:22", desc: "The Prophet's ﷺ ghusl (Aisha and Maymunah), when ghusl is obligatory, ghusl for Jumu'ah, washing the deceased" },
-              { ref: "Muslim 2:1, 2:20, 2:44, 2:46, 3:17, 3:32, 3:123", desc: "Cleanliness, dua after wudu, sins washed away, madhy requires only wudu, emission requires ghusl, camel meat" },
-              { ref: "Abu Dawud 1:60, 1:101, 1:200", desc: "Passing wind, Bismillah, ears, washing three times, interlacing fingers, deep sleep" },
-              { ref: "Tirmidhi 1:31, 1:82", desc: "Beard, ears are part of head, interlacing toes, dua after wudu, touching private parts" },
-              { ref: "Ibn Majah 1:133, 1:159", desc: "Bismillah obligation discussion, moderation with water" },
+              { ref: "Bukhari 1:1; Bukhari 4:1; Bukhari 4:25; Bukhari 11:12", desc: "Niyyah, nullifiers, the Prophet's ﷺ wudu, right-side preference, miswak" },
+              { ref: "Bukhari 5:1; Bukhari 5:26; Bukhari 5:43; Bukhari 6:35; Bukhari 11:5; Bukhari 23:22", desc: "The Prophet's ﷺ ghusl (Aisha and Maymunah), when ghusl is obligatory, ghusl for Jumu'ah, washing the deceased" },
+              { ref: "Muslim 2:1; Muslim 2:20; Muslim 2:44; Muslim 2:46; Muslim 3:17; Muslim 3:32; Muslim 3:123", desc: "Cleanliness, dua after wudu, sins washed away, madhy requires only wudu, emission requires ghusl, camel meat" },
+              { ref: "Abu Dawud 1:60; Abu Dawud 1:101; Abu Dawud 1:200", desc: "Passing wind, Bismillah, ears, washing three times, interlacing fingers, deep sleep" },
+              { ref: "Tirmidhi 1:31; Tirmidhi 1:82", desc: "Beard, ears are part of head, interlacing toes, dua after wudu, touching private parts" },
+              { ref: "Ibn Majah 1:133; Ibn Majah 1:159", desc: "Bismillah obligation discussion, moderation with water" },
             ]} />
           </motion.div>
         )}
@@ -2122,10 +2116,10 @@ function SalahContent() {
                 { ref: "Bukhari 14:9", desc: "Witr: make the last of your night prayer Witr" },
                 { ref: "Quran 62:9", desc: "Jumu'ah: hasten to the remembrance of Allah and leave off trading" },
                 { ref: "Abu Dawud 2:678", desc: "Jumu'ah: a duty upon every Muslim in congregation, with four exceptions" },
-                { ref: "Muslim 7:14, 7:15", desc: "Jumu'ah: reward of going early; silence during the khutbah" },
-                { ref: "Bukhari 11:5, 11:59", desc: "Jumu'ah: the Friday ghusl; the hour of accepted du'a" },
+                { ref: "Muslim 7:14; Muslim 7:15", desc: "Jumu'ah: reward of going early; silence during the khutbah" },
+                { ref: "Bukhari 11:5; Bukhari 11:59", desc: "Jumu'ah: the Friday ghusl; the hour of accepted du'a" },
                 { ref: "Abu Dawud 2:658", desc: "Jumu'ah: invoke abundant blessings on the Prophet ﷺ on Friday" },
-                { ref: "Ibn Majah 5:261, 5:321", desc: "Jumu'ah: two rak'ah complete not shortened; catching a rak'ah" },
+                { ref: "Ibn Majah 5:261; Ibn Majah 5:321", desc: "Jumu'ah: two rak'ah complete not shortened; catching a rak'ah" },
                 { ref: "Nasai 14:6", desc: "Jumu'ah: warning about neglecting the Friday prayer" },
                 { ref: "Quran 17:78", desc: "Establish prayer from the decline of the sun until the darkness of night" },
                 { ref: "Quran 2:238", desc: "Guard the prayers, especially the middle prayer (Asr)" },
@@ -2179,7 +2173,7 @@ function SalahContent() {
             {/* Sources & References for Voluntary Prayers */}
             {!showGuide && (
               <SourcesCard delay={0.3} className="mt-8" sources={[
-                { ref: "Bukhari 19:26, 19:28", desc: "Tahajjud: Allah descends to the lowest heaven; the Prophet's night prayer practice" },
+                { ref: "Bukhari 19:26; Bukhari 19:28", desc: "Tahajjud: Allah descends to the lowest heaven; the Prophet's night prayer practice" },
                 { ref: "Muslim 13:261", desc: "Tahajjud: night prayer is the best prayer after the obligatory ones" },
                 { ref: "Muslim 6:101", desc: "Duha: two rak'at of Duha suffice as charity for every joint" },
                 { ref: "Tirmidhi 6:43", desc: "Duha/Ishraq: reward like Hajj and Umrah for praying after sunrise (graded da'if by some; widely practiced)" },

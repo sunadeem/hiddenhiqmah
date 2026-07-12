@@ -137,7 +137,7 @@ const categories: Category[] = [
       "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — Chapter 1: The Virtue of Tawheed and What It Expiates of Sins",
       "Al-Qawa'id al-Muthla, Ibn Uthaymeen — Introduction on the categories of Tawheed",
       "Sharh al-Aqidah al-Wasitiyyah, Ibn Uthaymeen",
-      "Tafsir Ibn Kathir — Commentary on Quran 39:62, 35:3, 10:31",
+      "Tafsir Ibn Kathir — Commentary on Quran 39:62; Quran 35:3; Quran 10:31",
     ],
   },
   {
@@ -211,7 +211,7 @@ const categories: Category[] = [
       "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — Chapters on the meaning of La ilaha illallah, types of shirk, and intercession",
       "Al-Qawa'id al-Muthla, Ibn Uthaymeen — Section on Tawhid al-Uluhiyyah",
       "Majmu al-Fatawa, Ibn Taymiyyah — Vol. 1, on the distinction between Rububiyyah and Uluhiyyah",
-      "Tafsir Ibn Kathir — Commentary on Quran 21:25, 1:5, 6:162-163",
+      "Tafsir Ibn Kathir — Commentary on Quran 21:25; Quran 1:5; Quran 6:162-163",
     ],
   },
   {
@@ -281,7 +281,7 @@ const categories: Category[] = [
       "Al-Qawa'id al-Muthla fi Sifat Allahi wa Asma'ihi al-Husna, Ibn Uthaymeen — The foundational text for this category's methodology",
       "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — Chapters on names and attributes",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Detailed creed on Allah's names and attributes",
-      "Tafsir Ibn Kathir — Commentary on Quran 42:11, 7:180, 59:24",
+      "Tafsir Ibn Kathir — Commentary on Quran 42:11; Quran 7:180; Quran 59:24",
     ],
   },
 ];
@@ -790,7 +790,7 @@ function TawhidContent() {
               { ref: "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab", desc: "Chapters on the purpose of creation and the danger of shirk" },
               { ref: "Muslim 1:178", desc: "Hadith on the condition for entering Paradise" },
               { ref: "Bukhari 56:72", desc: "Hadith of Mu'adh ibn Jabal on the right of Allah" },
-              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 51:56, 21:25, 4:48" },
+              { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 51:56; Quran 21:25; Quran 4:48" },
             ]} />
           </motion.div>
         )}

@@ -339,7 +339,7 @@ const angelsTopics: Topic[] = [
           note: "Ibn Majah 37:91; Bukhari 59:10",
         },
       ],
-      source: "Quran 35:1; Quran 66:6; Muslim 55:78; Bukhari 59:10, 59:17; Ibn Majah 37:91",
+      source: "Quran 35:1; Quran 66:6; Muslim 55:78; Bukhari 59:10; Bukhari 59:17; Ibn Majah 37:91",
     },
   },
   {
@@ -718,7 +718,7 @@ const deathGraveTopics: Topic[] = [
           note: "Muslim 10:9; Tirmidhi 45:17; Tirmidhi 10:110",
         },
       ],
-      source: "Quran 23:100; Quran 40:46; Abu Dawud 42:158; Muslim 10:9; Tirmidhi 10:107, 45:17",
+      source: "Quran 23:100; Quran 40:46; Abu Dawud 42:158; Muslim 10:9; Tirmidhi 10:107; Tirmidhi 45:17",
     },
   },
 ];
@@ -758,7 +758,7 @@ const endTimesTopics: Topic[] = [
           note: "Tirmidhi 36:29",
         },
       ],
-      source: "Bukhari 3:22, 81:92; Muslim 1:1, 47:11; Tirmidhi 36:29",
+      source: "Bukhari 3:22; Bukhari 81:92; Muslim 1:1; Muslim 47:11; Tirmidhi 36:29",
     },
   },
   {
@@ -799,7 +799,7 @@ const endTimesTopics: Topic[] = [
           note: "Quran 39:68",
         },
       ],
-      source: "Quran 18:94-98; Quran 39:68; Bukhari 60:118, 65:234; Muslim 1:375, 54:1, 54:134",
+      source: "Quran 18:94-98; Quran 39:68; Bukhari 60:118; Bukhari 65:234; Muslim 1:375; Muslim 54:1; Muslim 54:134",
     },
   },
 ];
@@ -839,7 +839,7 @@ const dayOfJudgementTopics: Topic[] = [
           note: "Bukhari 65:349; Muslim 1:378",
         },
       ],
-      source: "Quran 70:4; Quran 83:6; Bukhari 60:103, 65:349; Muslim 1:378, 53:75",
+      source: "Quran 70:4; Quran 83:6; Bukhari 60:103; Bukhari 65:349; Muslim 1:378; Muslim 53:75",
     },
   },
   {
@@ -920,7 +920,7 @@ const jannahJahannamTopics: Topic[] = [
           note: "Muslim 1:88; Quran 75:22-23",
         },
       ],
-      source: "Quran 3:185; Quran 47:15; Quran 75:22-23; Bukhari 56:20, 59:55; Muslim 1:88, 53:3",
+      source: "Quran 3:185; Quran 47:15; Quran 75:22-23; Bukhari 56:20; Bukhari 59:55; Muslim 1:88; Muslim 53:3",
     },
   },
   {
@@ -961,7 +961,7 @@ const jannahJahannamTopics: Topic[] = [
           note: "Bukhari 2:30; Muslim 1:377",
         },
       ],
-      source: "Quran 4:145; Quran 11:119; Quran 66:6; Bukhari 2:30, 65:355; Muslim 1:377, 53:68",
+      source: "Quran 4:145; Quran 11:119; Quran 66:6; Bukhari 2:30; Bukhari 65:355; Muslim 1:377; Muslim 53:68",
     },
   },
   {
@@ -1060,7 +1060,7 @@ const tabDataMap: Record<TabKey, { topics: Topic[]; sources: { ref: string; desc
       { ref: "Quran 50:17-18", desc: "The two recording angels" },
       { ref: "Quran 66:6", desc: "They do not disobey Allah" },
       { ref: "Muslim 55:78", desc: "Angels were created from light" },
-      { ref: "Bukhari 59:10, 59:17", desc: "Angels in the heavens; Jibril's six hundred wings" },
+      { ref: "Bukhari 59:10; Bukhari 59:17", desc: "Angels in the heavens; Jibril's six hundred wings" },
       { ref: "Ibn Majah 37:91", desc: "The heavens are creaking with angels" },
     ],
   },
@@ -1138,7 +1138,7 @@ const tabDataMap: Record<TabKey, { topics: Topic[]; sources: { ref: string; desc
       { ref: "Quran 83:6", desc: "The Day mankind stands before the Lord" },
       { ref: "Bukhari 60:103", desc: "Resurrected barefoot, naked, uncircumcised" },
       { ref: "Bukhari 65:349", desc: "The great intercession" },
-      { ref: "Muslim 1:378, 1:382", desc: "Intercession; the Sirat" },
+      { ref: "Muslim 1:378; Muslim 1:382", desc: "Intercession; the Sirat" },
       { ref: "Tirmidhi 40:22", desc: "The card of La ilaha illallah" },
     ],
   },
@@ -1282,7 +1282,7 @@ function StoryOfCreationContent() {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.25 }}
                         >
-                          <TopicInfoCard topic={topic} />
+                          <TopicInfoCard topic={topic} showSource={false} />
                         </motion.div>
                       )
                   )}
