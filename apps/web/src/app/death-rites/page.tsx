@@ -24,6 +24,15 @@ import {
   CloudRain,
   Footprints,
   Award,
+  ScrollText,
+  Sparkles,
+  Moon,
+  Star,
+  Swords,
+  Medal,
+  Heart,
+  ArrowDown,
+  Users,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -31,8 +40,12 @@ import {
    ═══════════════════════════════════════════════════════════════════ */
 
 type MainTab = "preparing" | "dying" | "types-of-death" | "washing-janazah" | "burial" | "grief-visiting";
-type RailTab = "washing-janazah" | "grief-visiting";
+type RailTab = MainTab;
+type PreparingSub = "reality" | "affairs" | "good-ending";
+type DyingSub = "bedside" | "words-dua" | "departure";
+type TypesOfDeathSub = "good-end" | "battlefield-martyr" | "martyrs-of-reward" | "seeking-martyrdom";
 type WashingJanazahSub = "washing" | "janazah";
+type BurialSub = "grave" | "lowering" | "after-burial" | "women";
 type GriefVisitingSub = "grief" | "visiting";
 
 const mainTabs: { key: MainTab; label: string; icon: React.ReactNode }[] = [
@@ -42,6 +55,32 @@ const mainTabs: { key: MainTab; label: string; icon: React.ReactNode }[] = [
   { key: "washing-janazah", label: "Washing & Janazah", icon: <Droplets size={16} /> },
   { key: "burial", label: "Burial", icon: <Mountain size={16} /> },
   { key: "grief-visiting", label: "Grief & Visiting", icon: <CloudRain size={16} /> },
+];
+
+const preparingSubs: { key: PreparingSub; label: string; icon: React.ReactNode }[] = [
+  { key: "reality", label: "Reality of Death", icon: <Hourglass size={16} /> },
+  { key: "affairs", label: "Set Your Affairs", icon: <ScrollText size={16} /> },
+  { key: "good-ending", label: "A Good Ending", icon: <Sparkles size={16} /> },
+];
+
+const dyingSubs: { key: DyingSub; label: string; icon: React.ReactNode }[] = [
+  { key: "bedside", label: "At the Bedside", icon: <Bed size={16} /> },
+  { key: "words-dua", label: "Words & Du'a", icon: <HandHeart size={16} /> },
+  { key: "departure", label: "The Soul Departs", icon: <Moon size={16} /> },
+];
+
+const typesOfDeathSubs: { key: TypesOfDeathSub; label: string; icon: React.ReactNode }[] = [
+  { key: "good-end", label: "The Good End", icon: <Star size={16} /> },
+  { key: "battlefield-martyr", label: "Battlefield Martyr", icon: <Swords size={16} /> },
+  { key: "martyrs-of-reward", label: "Martyrs of Reward", icon: <Medal size={16} /> },
+  { key: "seeking-martyrdom", label: "Seeking Martyrdom", icon: <Heart size={16} /> },
+];
+
+const burialSubs: { key: BurialSub; label: string; icon: React.ReactNode }[] = [
+  { key: "grave", label: "The Grave", icon: <Mountain size={16} /> },
+  { key: "lowering", label: "Lowering & Closing", icon: <ArrowDown size={16} /> },
+  { key: "after-burial", label: "After Burial", icon: <HandHeart size={16} /> },
+  { key: "women", label: "Women & Burial", icon: <Users size={16} /> },
 ];
 
 const washingJanazahSubs: { key: WashingJanazahSub; label: string; icon: React.ReactNode }[] = [
@@ -108,7 +147,7 @@ function VerseCard({
    TAB CONTENT (moved verbatim from /family → Death)
    ═══════════════════════════════════════════════════════════════════ */
 
-function PreparingDeathTab() {
+function PreparingRealitySub() {
   return (
     <div className="space-y-4">
       <ContentCard delay={0.05}>
@@ -141,7 +180,13 @@ function PreparingDeathTab() {
           delay={0.14}
         />
       </div>
+    </div>
+  );
+}
 
+function PreparingAffairsSub() {
+  return (
+    <div className="space-y-4">
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Practical Preparation</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ContentCard delay={0.17}>
@@ -165,6 +210,15 @@ function PreparingDeathTab() {
           </p>
           <Ref text="Tirmidhi 48:168" />
         </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function PreparingGoodEndingSub() {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <VerseCard
           arabic="يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ حَقَّ تُقَاتِهِ وَلَا تَمُوتُنَّ إِلَّا وَأَنتُم مُّسْلِمُونَ"
           transliteration="Ya ayyuhal-ladhina amanu-ttaqu Allaha haqqa tuqatihi wa la tamutunna illa wa antum muslimun"
@@ -194,19 +248,11 @@ function PreparingDeathTab() {
           <Ref text="Bukhari 81:5" />
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 3:185", desc: "Every soul will taste death" },
-        { ref: "Quran 3:102", desc: "Do not die except in a state of Islam" },
-        { ref: "Bukhari 55:1", desc: "A Muslim should not sleep without his wasiyyah" },
-        { ref: "Tirmidhi 36:4", desc: "Remember often the destroyer of pleasures" },
-        { ref: "Muslim 11:136", desc: "Visit graves — they remind you of the Hereafter" },
-      ]} />
     </div>
   );
 }
 
-function DyingMomentsTab() {
+function DyingBedsideSub() {
   return (
     <div className="space-y-4">
       <ContentCard delay={0.05}>
@@ -230,6 +276,15 @@ function DyingMomentsTab() {
           source="Abu Dawud 21:28"
           delay={0.11}
         />
+      </div>
+    </div>
+  );
+}
+
+function DyingWordsDuaSub() {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ContentCard delay={0.14}>
           <h5 className="text-gold font-medium mb-2">Speak only good</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
@@ -250,6 +305,15 @@ function DyingMomentsTab() {
             Ask Allah for mercy on them, for an easy passing, for forgiveness of their sins, for safety from the trials of the grave. Be present, not panicked.
           </p>
         </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function DyingDepartureSub() {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ContentCard delay={0.23}>
           <h5 className="text-gold font-medium mb-2">When the soul departs</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
@@ -265,19 +329,11 @@ function DyingMomentsTab() {
           <Ref text="Quran 2:156" />
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Muslim 11:1", desc: "Prompt the dying with the shahada" },
-        { ref: "Abu Dawud 21:28", desc: "Last words 'La ilaha illa Allah' → Paradise" },
-        { ref: "Muslim 11:7", desc: "Speak only good around the sick and dying" },
-        { ref: "Muslim 11:8", desc: "Closing the eyes of the deceased" },
-        { ref: "Quran 2:156", desc: "Inna lillahi wa inna ilayhi raji'un" },
-      ]} />
     </div>
   );
 }
 
-function TypesOfDeathTab() {
+function TypesGoodEndSub() {
   return (
     <div className="space-y-4">
       <ContentCard delay={0.05}>
@@ -286,6 +342,26 @@ function TypesOfDeathTab() {
         </p>
       </ContentCard>
 
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Good Endings Beyond Martyrdom</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.38}>
+          <h5 className="text-gold font-medium mb-2">Husn al-khatimah takes many forms</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            A good ending is not reserved for martyrs. Dying with the shahada as one&apos;s last words — &quot;If anyone&apos;s last words are &apos;There is no god but Allah,&apos; he will enter Paradise&quot; — or being taken while on a righteous deed are endings the Prophet ﷺ gave glad tidings for. Live in the state you hope to die in.
+          </p>
+          <Ref text="Abu Dawud 21:28" />
+          <Link href="/barzakh?tab=protection" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Signs of a good ending and deeds that protect in the grave →
+          </Link>
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function TypesBattlefieldSub() {
+  return (
+    <div className="space-y-4">
       <VerseCard
         arabic="وَلَا تَحْسَبَنَّ ٱلَّذِينَ قُتِلُوا۟ فِى سَبِيلِ ٱللَّهِ أَمْوَٰتًۢا ۚ بَلْ أَحْيَآءٌ عِندَ رَبِّهِمْ يُرْزَقُونَ"
         transliteration="Wa laa tahsabannal lazeena qutiloo fee sabeelillaahi amwaata; bal ahyaaa'un 'inda Rabbihim yurzaqoon"
@@ -327,7 +403,13 @@ function TypesOfDeathTab() {
           </p>
         </ContentCard>
       </div>
+    </div>
+  );
+}
 
+function TypesRewardSub() {
+  return (
+    <div className="space-y-4">
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Martyrs of the Hereafter&apos;s Reward</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ContentCard delay={0.23}>
@@ -359,7 +441,13 @@ function TypesOfDeathTab() {
           <Ref text="Bukhari 46:41; Muslim 1:268; Abu Dawud 42:177" />
         </ContentCard>
       </div>
+    </div>
+  );
+}
 
+function TypesSeekingSub() {
+  return (
+    <div className="space-y-4">
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Asking Allah for Martyrdom</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ContentCard delay={0.35}>
@@ -370,33 +458,6 @@ function TypesOfDeathTab() {
           <Ref text="Muslim 33:225; Abu Dawud 8:105" />
         </ContentCard>
       </div>
-
-      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Good Endings Beyond Martyrdom</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <ContentCard delay={0.38}>
-          <h5 className="text-gold font-medium mb-2">Husn al-khatimah takes many forms</h5>
-          <p className="text-themed-muted text-sm leading-relaxed">
-            A good ending is not reserved for martyrs. Dying with the shahada as one&apos;s last words — &quot;If anyone&apos;s last words are &apos;There is no god but Allah,&apos; he will enter Paradise&quot; — or being taken while on a righteous deed are endings the Prophet ﷺ gave glad tidings for. Live in the state you hope to die in.
-          </p>
-          <Ref text="Abu Dawud 21:28" />
-          <Link href="/barzakh?tab=protection" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
-            Signs of a good ending and deeds that protect in the grave →
-          </Link>
-        </ContentCard>
-      </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 3:169", desc: "The martyrs are alive with their Lord, receiving provision" },
-        { ref: "Bukhari 56:20; Muslim 33:159", desc: "The martyr's wound — color of blood, scent of musk" },
-        { ref: "Tirmidhi 22:46", desc: "Six blessings with Allah for the martyr" },
-        { ref: "Bukhari 23:101; Bukhari 23:98", desc: "Uhud martyrs buried in their blood, not washed" },
-        { ref: "Bukhari 56:45; Muslim 33:235", desc: "The five who are regarded as martyrs" },
-        { ref: "Muslim 33:236", desc: "'Then the martyrs of my Umma will be small in number'" },
-        { ref: "Abu Dawud 21:23; Nasai 21:237", desc: "Seven types of martyrdom — including burning and childbirth" },
-        { ref: "Bukhari 46:41; Muslim 1:268; Abu Dawud 42:177", desc: "Killed defending property, family, blood, or religion" },
-        { ref: "Muslim 33:225; Abu Dawud 8:105", desc: "Sincerely asking for martyrdom — ranked among martyrs even in bed" },
-        { ref: "Abu Dawud 21:28", desc: "Last words 'La ilaha illa Allah' → Paradise" },
-      ]} />
     </div>
   );
 }
@@ -565,7 +626,7 @@ function JanazahTab() {
   );
 }
 
-function BurialTab() {
+function BurialGraveSub() {
   return (
     <div className="space-y-4">
       <ContentCard delay={0.05}>
@@ -588,6 +649,15 @@ function BurialTab() {
             The grave should be dug deep enough to contain the body and protect it (traditionally chest-to-shoulder depth of a standing man). A lahd (side-niche) carved into the qibla wall, or a shaqq (straight pit) — both are valid; the lahd is preferred.
           </p>
         </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function BurialLoweringSub() {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ContentCard delay={0.14}>
           <h5 className="text-gold font-medium mb-2">Lower into the grave</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
@@ -613,6 +683,15 @@ function BurialTab() {
             The Prophet ﷺ would throw three handfuls of soil into the grave from the head side after the body was placed. Each attendee may do the same — the first symbolizes &quot;from it We created you,&quot; the second &quot;into it We return you,&quot; the third &quot;from it We will bring you forth again&quot; (Quran 20:55).
           </p>
         </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function BurialAfterSub() {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ContentCard delay={0.26}>
           <h5 className="text-gold font-medium mb-2">Raise the grave only slightly</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
@@ -627,6 +706,15 @@ function BurialTab() {
           </p>
           <Ref text="Abu Dawud 21:133" />
         </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function BurialWomenSub() {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <VerseCard
           arabic="كُنَّا نُنْهَى عَنِ اتِّبَاعِ الْجَنَائِزِ وَلَمْ يُعْزَمْ عَلَيْنَا"
           transliteration="Kunna nunha 'ani-ttiba'i al-jana'izi wa lam yu'zam 'alayna"
@@ -648,14 +736,6 @@ function BurialTab() {
           </p>
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 23:73", desc: "Hasten the burial" },
-        { ref: "Abu Dawud 21:125", desc: "Bismillahi wa 'ala millati Rasulillah — when lowering" },
-        { ref: "Abu Dawud 21:133", desc: "Stand and pray for firmness for the deceased" },
-        { ref: "Muslim 11:44", desc: "Women discouraged but not forbidden from following the funeral" },
-        { ref: "Muslim 11:121", desc: "Prohibition of building over and decorating graves" },
-      ]} />
     </div>
   );
 }
@@ -831,6 +911,71 @@ function VisitingGravesTab() {
 /* Per-sub-view sources, rendered full-width BELOW the rail layout so the
    Sources card lines up with the rest of the page instead of the rail's
    right column. */
+const preparingSources: Record<PreparingSub, SourceRef[]> = {
+  reality: [
+    { ref: "Quran 3:185", desc: "Every soul will taste death" },
+    { ref: "Tirmidhi 36:4", desc: "Remember often the destroyer of pleasures" },
+  ],
+  affairs: [
+    { ref: "Bukhari 55:1", desc: "A Muslim should not sleep without his wasiyyah" },
+  ],
+  "good-ending": [
+    { ref: "Quran 3:102", desc: "Do not die except in a state of Islam" },
+    { ref: "Muslim 11:136", desc: "Visit graves — they remind you of the Hereafter" },
+  ],
+};
+
+const dyingSources: Record<DyingSub, SourceRef[]> = {
+  bedside: [
+    { ref: "Muslim 11:1", desc: "Prompt the dying with the shahada" },
+    { ref: "Abu Dawud 21:28", desc: "Last words 'La ilaha illa Allah' → Paradise" },
+  ],
+  "words-dua": [
+    { ref: "Muslim 11:7", desc: "Speak only good around the sick and dying" },
+  ],
+  departure: [
+    { ref: "Muslim 11:8", desc: "Closing the eyes of the deceased" },
+    { ref: "Quran 2:156", desc: "Inna lillahi wa inna ilayhi raji'un" },
+  ],
+};
+
+const typesOfDeathSources: Record<TypesOfDeathSub, SourceRef[]> = {
+  "good-end": [
+    { ref: "Abu Dawud 21:28", desc: "Last words 'La ilaha illa Allah' → Paradise" },
+  ],
+  "battlefield-martyr": [
+    { ref: "Quran 3:169", desc: "The martyrs are alive with their Lord, receiving provision" },
+    { ref: "Bukhari 56:20; Muslim 33:159", desc: "The martyr's wound — color of blood, scent of musk" },
+    { ref: "Tirmidhi 22:46", desc: "Six blessings with Allah for the martyr" },
+    { ref: "Bukhari 23:101; Bukhari 23:98", desc: "Uhud martyrs buried in their blood, not washed" },
+  ],
+  "martyrs-of-reward": [
+    { ref: "Bukhari 56:45; Muslim 33:235", desc: "The five who are regarded as martyrs" },
+    { ref: "Muslim 33:236", desc: "'Then the martyrs of my Umma will be small in number'" },
+    { ref: "Abu Dawud 21:23; Nasai 21:237", desc: "Seven types of martyrdom — including burning and childbirth" },
+    { ref: "Bukhari 46:41; Muslim 1:268; Abu Dawud 42:177", desc: "Killed defending property, family, blood, or religion" },
+  ],
+  "seeking-martyrdom": [
+    { ref: "Muslim 33:225; Abu Dawud 8:105", desc: "Sincerely asking for martyrdom — ranked among martyrs even in bed" },
+  ],
+};
+
+const burialSources: Record<BurialSub, SourceRef[]> = {
+  grave: [
+    { ref: "Bukhari 23:73", desc: "Hasten the burial" },
+  ],
+  lowering: [
+    { ref: "Abu Dawud 21:125", desc: "Bismillahi wa 'ala millati Rasulillah — when lowering" },
+  ],
+  "after-burial": [
+    { ref: "Abu Dawud 21:133", desc: "Stand and pray for firmness for the deceased" },
+    { ref: "Muslim 11:121", desc: "Prohibition of building over and decorating graves" },
+  ],
+  women: [
+    { ref: "Muslim 11:44", desc: "Women discouraged but not forbidden from following the funeral" },
+  ],
+};
+
 const washingJanazahSources: Record<WashingJanazahSub, SourceRef[]> = {
   washing: [
     { ref: "Bukhari 23:15", desc: "Wash an odd number of times with sidr and camphor" },
@@ -867,33 +1012,48 @@ const griefVisitingSources: Record<GriefVisitingSub, SourceRef[]> = {
 };
 
 const subsByTab: Record<RailTab, readonly { key: string }[]> = {
+  preparing: preparingSubs,
+  dying: dyingSubs,
+  "types-of-death": typesOfDeathSubs,
   "washing-janazah": washingJanazahSubs,
+  burial: burialSubs,
   "grief-visiting": griefVisitingSubs,
 };
 
 const defaultSubs: Record<RailTab, string> = {
+  preparing: "reality",
+  dying: "bedside",
+  "types-of-death": "good-end",
   "washing-janazah": "washing",
+  burial: "grave",
   "grief-visiting": "grief",
 };
 
 /* ── Page search (Rule 2): the tab strip + rail are filtered by label +
    per-view keywords; matching pills stay visible, non-matching hide, and the
    first match is auto-selected. Empty query restores everything. ── */
-type SearchEntry = { tab: MainTab; sub?: string; label: string; keywords: string };
+type SearchEntry = { tab: MainTab; sub: string; label: string; keywords: string };
 
 const searchIndex: SearchEntry[] = [
-  { tab: "preparing", label: "Preparing", keywords: "reality of death remember often wasiyyah will debts settle tawbah repentance husn al-khatimah good ending visit graves live as if today" },
-  { tab: "dying", label: "The Dying", keywords: "dying moments shahada la ilaha illallah prompt talqin speak only good yasin dua soul departs inna lillahi" },
-  { tab: "types-of-death", label: "Types of Death", keywords: "shaheed shahid martyr martyrdom battlefield uhud musk wounds six blessings buried in blood plague drowning childbirth burning collapsed building defending property good end good ending husn al-khatimah asking allah for martyrdom" },
+  { tab: "preparing", sub: "reality", label: "Reality of Death", keywords: "reality of death remember often destroyer of pleasures every soul will taste death" },
+  { tab: "preparing", sub: "affairs", label: "Set Your Affairs", keywords: "wasiyyah will debts settle tawbah repentance" },
+  { tab: "preparing", sub: "good-ending", label: "A Good Ending", keywords: "husn al-khatimah good ending visit graves live as if today" },
+  { tab: "dying", sub: "bedside", label: "At the Bedside", keywords: "dying moments shahada la ilaha illallah prompt talqin" },
+  { tab: "dying", sub: "words-dua", label: "Words & Du'a", keywords: "speak only good yasin dua for the dying" },
+  { tab: "dying", sub: "departure", label: "The Soul Departs", keywords: "soul departs inna lillahi close the eyes" },
+  { tab: "types-of-death", sub: "good-end", label: "The Good End", keywords: "good end good ending husn al-khatimah last words" },
+  { tab: "types-of-death", sub: "battlefield-martyr", label: "Battlefield Martyr", keywords: "shaheed shahid martyr martyrdom battlefield uhud musk wounds six blessings buried in blood" },
+  { tab: "types-of-death", sub: "martyrs-of-reward", label: "Martyrs of Reward", keywords: "martyrs of reward plague drowning childbirth burning collapsed building defending property" },
+  { tab: "types-of-death", sub: "seeking-martyrdom", label: "Seeking Martyrdom", keywords: "asking allah for martyrdom sincerity dies on his bed" },
   { tab: "washing-janazah", sub: "washing", label: "Washing & Shrouding", keywords: "ghusl wash the body who washes odd number sidr camphor kafan shroud white sheets fragrance hasten" },
   { tab: "washing-janazah", sub: "janazah", label: "Janazah Prayer", keywords: "funeral prayer takbir fatihah salawat dua for the deceased salam reward qirat standing" },
-  { tab: "burial", label: "Burial", keywords: "grave lower lahd depth untie shroud three handfuls of earth raise slightly dua after burial women" },
+  { tab: "burial", sub: "grave", label: "The Grave", keywords: "grave hasten depth lahd shaqq" },
+  { tab: "burial", sub: "lowering", label: "Lowering & Closing", keywords: "lower into the grave bismillah untie shroud three handfuls of earth" },
+  { tab: "burial", sub: "after-burial", label: "After Burial", keywords: "raise slightly dua after burial questioning firmness" },
+  { tab: "burial", sub: "women", label: "Women & Burial", keywords: "women funeral procession burial site" },
   { tab: "grief-visiting", sub: "grief", label: "Grief & Patience", keywords: "mourning loss patience first shock tears wailing permitted iddah widow four months cooking for the bereaved" },
   { tab: "grief-visiting", sub: "visiting", label: "Visiting Graves", keywords: "graveyard salam dua reminder of the hereafter don't sit on graves don't pray at graves respect reflect" },
 ];
-
-const isRailTab = (tab: MainTab): tab is RailTab =>
-  tab === "washing-janazah" || tab === "grief-visiting";
 
 function DeathRitesContent() {
   const searchParams = useSearchParams();
@@ -909,7 +1069,7 @@ function DeathRitesContent() {
   // Last-visited rail pill per grouped tab, so switching tabs restores the selection.
   const [subMemory, setSubMemory] = useState<Record<RailTab, string>>(() => {
     const memory = { ...defaultSubs };
-    if (subParam && isRailTab(activeMain) && subsByTab[activeMain].some((s) => s.key === subParam)) {
+    if (subParam && subsByTab[activeMain].some((s) => s.key === subParam)) {
       memory[activeMain] = subParam;
     }
     return memory;
@@ -923,14 +1083,18 @@ function DeathRitesContent() {
   const syncUrl = (tab: MainTab, sub?: string) =>
     router.replace(`${pathname}?tab=${tab}${sub ? `&sub=${sub}` : ""}`, { scroll: false });
 
-  const changeTab = (tab: MainTab) => syncUrl(tab, isRailTab(tab) ? activeSubOf(tab) : undefined);
+  const changeTab = (tab: MainTab) => syncUrl(tab, activeSubOf(tab));
 
   const changeSub = (tab: RailTab) => (sub: string) => {
     setSubMemory((m) => ({ ...m, [tab]: sub }));
     syncUrl(tab, sub);
   };
 
+  const activePreparing = activeSubOf("preparing") as PreparingSub;
+  const activeDying = activeSubOf("dying") as DyingSub;
+  const activeTypes = activeSubOf("types-of-death") as TypesOfDeathSub;
   const activeWashing = activeSubOf("washing-janazah") as WashingJanazahSub;
+  const activeBurial = activeSubOf("burial") as BurialSub;
   const activeGrief = activeSubOf("grief-visiting") as GriefVisitingSub;
 
   // Page search over the searchIndex rail entries (Rule 2).
@@ -949,15 +1113,12 @@ function DeathRitesContent() {
   useEffect(() => {
     if (!searching || !hasMatches) return;
     const currentVisible = matches.some(
-      (e) => e.tab === activeMain && (!isRailTab(activeMain) || e.sub === activeSubOf(activeMain))
+      (e) => e.tab === activeMain && e.sub === activeSubOf(activeMain)
     );
     if (currentVisible) return;
     const target = matches.find((e) => e.tab === activeMain) ?? matches[0];
-    if (isRailTab(target.tab) && target.sub) {
-      const sub = target.sub;
-      setSubMemory((m) => ({ ...m, [target.tab]: sub }));
-    }
-    syncUrl(target.tab, isRailTab(target.tab) ? target.sub : undefined);
+    setSubMemory((m) => ({ ...m, [target.tab]: target.sub }));
+    syncUrl(target.tab, target.sub);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
@@ -992,9 +1153,40 @@ function DeathRitesContent() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.25 }}
           >
-            {activeMain === "preparing" && <PreparingDeathTab />}
-            {activeMain === "dying" && <DyingMomentsTab />}
-            {activeMain === "types-of-death" && <TypesOfDeathTab />}
+            {activeMain === "preparing" && (
+              <>
+                <SubTabLayout subs={preparingSubs.filter((s) => subMatches("preparing", s.key))} activeSub={activePreparing} setActiveSub={changeSub("preparing")}>
+                  {activePreparing === "reality" && <PreparingRealitySub />}
+                  {activePreparing === "affairs" && <PreparingAffairsSub />}
+                  {activePreparing === "good-ending" && <PreparingGoodEndingSub />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={preparingSources[activePreparing]} />
+              </>
+            )}
+            {activeMain === "dying" && (
+              <>
+                <SubTabLayout subs={dyingSubs.filter((s) => subMatches("dying", s.key))} activeSub={activeDying} setActiveSub={changeSub("dying")}>
+                  {activeDying === "bedside" && <DyingBedsideSub />}
+                  {activeDying === "words-dua" && <DyingWordsDuaSub />}
+                  {activeDying === "departure" && <DyingDepartureSub />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={dyingSources[activeDying]} />
+              </>
+            )}
+            {activeMain === "types-of-death" && (
+              <>
+                <SubTabLayout subs={typesOfDeathSubs.filter((s) => subMatches("types-of-death", s.key))} activeSub={activeTypes} setActiveSub={changeSub("types-of-death")}>
+                  {activeTypes === "good-end" && <TypesGoodEndSub />}
+                  {activeTypes === "battlefield-martyr" && <TypesBattlefieldSub />}
+                  {activeTypes === "martyrs-of-reward" && <TypesRewardSub />}
+                  {activeTypes === "seeking-martyrdom" && <TypesSeekingSub />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={typesOfDeathSources[activeTypes]} />
+              </>
+            )}
             {activeMain === "washing-janazah" && (
               <>
                 <SubTabLayout subs={washingJanazahSubs.filter((s) => subMatches("washing-janazah", s.key))} activeSub={activeWashing} setActiveSub={changeSub("washing-janazah")}>
@@ -1005,7 +1197,18 @@ function DeathRitesContent() {
                 <SourcesCard className="mt-6" sources={washingJanazahSources[activeWashing]} />
               </>
             )}
-            {activeMain === "burial" && <BurialTab />}
+            {activeMain === "burial" && (
+              <>
+                <SubTabLayout subs={burialSubs.filter((s) => subMatches("burial", s.key))} activeSub={activeBurial} setActiveSub={changeSub("burial")}>
+                  {activeBurial === "grave" && <BurialGraveSub />}
+                  {activeBurial === "lowering" && <BurialLoweringSub />}
+                  {activeBurial === "after-burial" && <BurialAfterSub />}
+                  {activeBurial === "women" && <BurialWomenSub />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={burialSources[activeBurial]} />
+              </>
+            )}
             {activeMain === "grief-visiting" && (
               <>
                 <SubTabLayout subs={griefVisitingSubs.filter((s) => subMatches("grief-visiting", s.key))} activeSub={activeGrief} setActiveSub={changeSub("grief-visiting")}>
