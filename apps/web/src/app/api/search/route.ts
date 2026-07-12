@@ -423,10 +423,10 @@ RAMADAN: /ramadan?tab=fasting|last-ten
 BARZAKH: /barzakh?tab=what-happens|protection
 DAY OF JUDGEMENT: /day-of-judgement?tab=signs|events|salvation
 JANNAH: /jannah?tab=descriptions|how-to
-PROTECTION & RUQYAH: /protection?tab=sihr|evil-eye|ruqyah|daily
-MARRIAGE: /marriage?tab=before|wedding|husband-rights|wife-rights|married-life|divorce
-FAMILY: /family?tab=children|parents|elders|kinship
-DEATH & JANAZAH: /death-rites?tab=preparing|dying|washing-janazah|burial|grief-visiting
+PROTECTION & RUQYAH: /protection?tab=sihr|evil-eye|ruqyah|daily (sihr/magic, evil eye, self-ruqyah how-to, daily protection adhkar)
+MARRIAGE: /marriage?tab=before|wedding|husband-rights|wife-rights|married-life|divorce (married-life = intimacy, menses, family planning)
+FAMILY: /family?tab=children|parents|elders|kinship (kinship = silat al-rahim)
+DEATH & JANAZAH: /death-rites?tab=preparing|dying|types-of-death|washing-janazah|burial|grief-visiting (types-of-death = martyrdom/shaheed categories, dying in childbirth/plague, husn al-khatimah)
 INHERITANCE: /inheritance?tab=foundations|shares|heirs|wasiyyah-faqs
 MIRACLES: /miracles?tab={category}
 ISLAMIC CALENDAR: /islamic-calendar?tab=months|dates
