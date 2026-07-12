@@ -1212,7 +1212,9 @@ function StoryOfCreationContent() {
         subtitle="The complete journey — from before anything existed, to the eternal life that awaits."
       />
 
-      {/* Tab navigation (shared TabBar — dropdown picker on mobile for 12 stages) */}
+      {/* Tab navigation — the 12 numbered stages WRAP into rows (no horizontal
+          scroll, no mobile dropdown): the whole journey map stays visible,
+          which is the point of this page. */}
       <TabBar
         tabs={tabs.map((tab, i) => ({
           key: tab.key,
@@ -1223,6 +1225,8 @@ function StoryOfCreationContent() {
           setActiveTab(k as TabKey);
           syncUrl(k as TabKey);
         }}
+        wrap
+        mobileThreshold={12}
         className="mb-2"
       />
 
