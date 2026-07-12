@@ -644,6 +644,22 @@ function ProtectionContent() {
         subtitle="Sihr, the evil eye, and the prophetic means of protection — refuge is with Allah alone."
       />
 
+      {/* Opening verse — above search + tabs, matching every other content page. */}
+      <ContentCard className="mb-6">
+        <div className="text-center py-6">
+          <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">The Quran</p>
+          <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
+            قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ
+          </p>
+          <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
+            Say, &ldquo;I seek refuge with the Lord of the daybreak&hellip;&rdquo;
+          </p>
+          <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
+            Quran 113:1
+          </span>
+        </div>
+      </ContentCard>
+
       <PageSearch value={search} onChange={setSearch} placeholder="Search topics, verses..." className="mb-6" />
 
       <TabBar tabs={[...tabs]} activeTab={activeTab} onTabChange={handleTabChange} className="mb-6" />
@@ -659,22 +675,6 @@ function ProtectionContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            {/* Opening verse */}
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">The Quran</p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  Say, &ldquo;I seek refuge with the Lord of the daybreak&hellip;&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 113:1
-                </span>
-              </div>
-            </ContentCard>
-
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">
                 Protection comes from Allah alone
