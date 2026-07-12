@@ -576,8 +576,14 @@ function TypesChildrenSub() {
         <ContentCard delay={0.32}>
           <h5 className="text-gold font-medium mb-2">They will not let go</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            Authentic narrations describe the young children of the believers roaming freely in Paradise; when one of them meets his parent, he takes hold of their garment — or their hand — and does not let go until Allah admits him and his parent into Paradise together. The child you lost is not waiting to be found — they are waiting to bring you in.
+            A man told Abu Huraira his two children had died and asked for a hadith to soothe
+            their hearts. He answered: &quot;Yes. Small children are the fowls of Paradise. If one
+            of them meets his father — or he said his parents — he would take hold of his cloth,
+            or he said with his hand, as I take hold of the hem of your cloth. And he would not
+            take off (his hand) from it until Allah causes his father to enter Paradise.&quot;
+            The child you lost is not waiting to be found — they are waiting to bring you in.
           </p>
+          <Ref text="Muslim 45:198" />
         </ContentCard>
       </div>
 
@@ -1104,6 +1110,7 @@ const typesOfDeathSources: Record<TypesOfDeathSub, SourceRef[]> = {
     { ref: "Quran 19:71", desc: "There is none among you except that he will pass over it" },
     { ref: "Ibn Majah 6:177; Ibn Majah 6:176", desc: "The miscarried child draws his mother to Paradise by his umbilical cord" },
     { ref: "Ibn Majah 6:175", desc: "A miscarried fetus sent before me is dearer to me than a horseman left behind" },
+    { ref: "Muslim 45:198", desc: "Small children of Paradise take hold of the parent's garment and do not let go" },
   ],
 };
 
