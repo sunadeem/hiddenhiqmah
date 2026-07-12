@@ -23,13 +23,14 @@ import {
   Mountain,
   CloudRain,
   Footprints,
+  Award,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
    TYPES & TABS
    ═══════════════════════════════════════════════════════════════════ */
 
-type MainTab = "preparing" | "dying" | "washing-janazah" | "burial" | "grief-visiting";
+type MainTab = "preparing" | "dying" | "types-of-death" | "washing-janazah" | "burial" | "grief-visiting";
 type RailTab = "washing-janazah" | "grief-visiting";
 type WashingJanazahSub = "washing" | "janazah";
 type GriefVisitingSub = "grief" | "visiting";
@@ -37,6 +38,7 @@ type GriefVisitingSub = "grief" | "visiting";
 const mainTabs: { key: MainTab; label: string; icon: React.ReactNode }[] = [
   { key: "preparing", label: "Preparing", icon: <Hourglass size={16} /> },
   { key: "dying", label: "The Dying", icon: <Bed size={16} /> },
+  { key: "types-of-death", label: "Types of Death", icon: <Award size={16} /> },
   { key: "washing-janazah", label: "Washing & Janazah", icon: <Droplets size={16} /> },
   { key: "burial", label: "Burial", icon: <Mountain size={16} /> },
   { key: "grief-visiting", label: "Grief & Visiting", icon: <CloudRain size={16} /> },
@@ -270,6 +272,130 @@ function DyingMomentsTab() {
         { ref: "Muslim 11:7", desc: "Speak only good around the sick and dying" },
         { ref: "Muslim 11:8", desc: "Closing the eyes of the deceased" },
         { ref: "Quran 2:156", desc: "Inna lillahi wa inna ilayhi raji'un" },
+      ]} />
+    </div>
+  );
+}
+
+function TypesOfDeathTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Islam speaks less about <span className="italic">how</span> a person dies than about the state they die in. What a believer hopes for is <span className="text-gold">husn al-khatimah</span> — a good ending: leaving this world upon iman, on a good deed, with Allah pleased. Among good endings, the Quran and Sunnah single out certain deaths for a special rank — above all <span className="text-gold">shahadah</span> (martyrdom). It is an honor Allah grants to whom He wills; it is never something a person may seize by harming themselves or others. The believer&apos;s part is to ask Allah for the rank and live sincerely — the ending belongs to Allah alone.
+        </p>
+      </ContentCard>
+
+      <VerseCard
+        arabic="وَلَا تَحْسَبَنَّ ٱلَّذِينَ قُتِلُوا۟ فِى سَبِيلِ ٱللَّهِ أَمْوَٰتًۢا ۚ بَلْ أَحْيَآءٌ عِندَ رَبِّهِمْ يُرْزَقُونَ"
+        transliteration="Wa laa tahsabannal lazeena qutiloo fee sabeelillaahi amwaata; bal ahyaaa'un 'inda Rabbihim yurzaqoon"
+        english="Never think of those who are killed in Allah’s way as dead; rather, they are alive with their Lord, receiving provision,"
+        source="Quran 3:169"
+        delay={0.08}
+      />
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">The Battlefield Martyr (Shahid al-Ma&apos;rakah)</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">Wounds with the scent of musk</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;By Him in Whose Hands my soul is! Whoever is wounded in Allah&apos;s Cause — and Allah knows well who gets wounded in His Cause — will come on the Day of Resurrection with his wound having the color of blood but the scent of musk.&quot;
+          </p>
+          <Ref text="Bukhari 56:20; Muslim 33:159" />
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">Six blessings of the shahid</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;There are six things with Allah for the martyr: he is forgiven with the first flow of his blood; he is shown his place in Paradise; he is protected from the punishment of the grave; he is secured from the greatest terror; the crown of dignity is placed upon his head — and its gems are better than the world and what is in it; he is married to seventy-two wives among al-Hur al-&apos;Ayn of Paradise; and he may intercede for seventy of his close relatives.&quot;
+          </p>
+          <Ref text="Tirmidhi 22:46" />
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">Buried in their blood — the exception to washing</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Jabir (RA) narrated that on the day of Uhud the Prophet ﷺ said: &quot;Bury them with their blood&quot; — he did not have the martyrs washed. He ordered them buried with their blood on their bodies, and Jabir&apos;s narration adds that they were neither washed nor was a funeral prayer offered for them. The battle martyr is buried as he fell — his wounds are his witness. This is the one exception to the normal ghusl of the deceased.
+          </p>
+          <Ref text="Bukhari 23:101; Bukhari 23:98" />
+          <Link href="/death-rites?tab=washing-janazah" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Normal washing &amp; janazah rules →
+          </Link>
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">Is the janazah prayer offered for him?</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Schools differ. Based on the Uhud narrations, most scholars hold that the battle martyr is not prayed over — his rank makes intercession unneeded — while others hold the janazah prayer is still offered for him. Both positions rest on authentic reports, and communities follow their local scholarship. All agree he is not washed.
+          </p>
+        </ContentCard>
+      </div>
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Martyrs of the Hereafter&apos;s Reward</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.23}>
+          <h5 className="text-gold font-medium mb-2">A wider mercy — with a practical difference</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The Prophet ﷺ asked his companions: &quot;Whom do you consider to be a martyr among you?&quot; They said: one who is slain in the way of Allah. He replied: &quot;Then the martyrs of my Umma will be small in number&quot; — and named others. These are granted a <span className="text-gold">martyr&apos;s reward</span> in the Hereafter, but in this world they are washed, shrouded, and prayed over normally — the battlefield martyr&apos;s burial rulings do not apply to them.
+          </p>
+          <Ref text="Muslim 33:236" />
+        </ContentCard>
+        <ContentCard delay={0.26}>
+          <h5 className="text-gold font-medium mb-2">The five martyrs</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;Five are regarded as martyrs: those who die because of plague, abdominal disease, drowning, or a falling building, and the martyrs in Allah&apos;s Cause.&quot;
+          </p>
+          <Ref text="Bukhari 56:45; Muslim 33:235" />
+        </ContentCard>
+        <ContentCard delay={0.29}>
+          <h5 className="text-gold font-medium mb-2">The expanded seven</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;There are seven types of martyrdom in addition to being killed in Allah&apos;s cause: one who dies of plague is a martyr; one who is drowned is a martyr; one who dies of pleurisy is a martyr; one who dies of an internal complaint is a martyr; one who is burnt to death is a martyr; one who is killed by a building falling on him is a martyr; and a woman who dies while pregnant is a martyr.&quot; Nasai&apos;s narration counts the woman who dies in childbirth among the martyrs.
+          </p>
+          <Ref text="Abu Dawud 21:23; Nasai 21:237" />
+        </ContentCard>
+        <ContentCard delay={0.32}>
+          <h5 className="text-gold font-medium mb-2">Killed defending what is yours</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;Whoever is killed while protecting his property, then he is a martyr.&quot; And in Abu Dawud&apos;s narration: &quot;He who is killed while protecting his property is a martyr, and he who is killed while defending his family, or his blood, or his religion is a martyr.&quot;
+          </p>
+          <Ref text="Bukhari 46:41; Muslim 1:268; Abu Dawud 42:177" />
+        </ContentCard>
+      </div>
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Asking Allah for Martyrdom</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.35}>
+          <h5 className="text-gold font-medium mb-2">A du&apos;a, not a death wish</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;Whoever seeks martyrdom with sincerity will be ranked by Allah among the martyrs, even if he dies on his bed.&quot; The door to this rank is the heart&apos;s sincerity, not recklessness with the life Allah entrusted to you. Ask Allah for it — and let Him choose the ending.
+          </p>
+          <Ref text="Muslim 33:225; Abu Dawud 8:105" />
+        </ContentCard>
+      </div>
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Good Endings Beyond Martyrdom</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.38}>
+          <h5 className="text-gold font-medium mb-2">Husn al-khatimah takes many forms</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            A good ending is not reserved for martyrs. Dying with the shahada as one&apos;s last words — &quot;If anyone&apos;s last words are &apos;There is no god but Allah,&apos; he will enter Paradise&quot; — or being taken while on a righteous deed are endings the Prophet ﷺ gave glad tidings for. Live in the state you hope to die in.
+          </p>
+          <Ref text="Abu Dawud 21:28" />
+          <Link href="/barzakh?tab=protection" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Signs of a good ending and deeds that protect in the grave →
+          </Link>
+        </ContentCard>
+      </div>
+
+      <SourcesCard className="mt-6" sources={[
+        { ref: "Quran 3:169", desc: "The martyrs are alive with their Lord, receiving provision" },
+        { ref: "Bukhari 56:20; Muslim 33:159", desc: "The martyr's wound — color of blood, scent of musk" },
+        { ref: "Tirmidhi 22:46", desc: "Six blessings with Allah for the martyr" },
+        { ref: "Bukhari 23:101; Bukhari 23:98", desc: "Uhud martyrs buried in their blood, not washed" },
+        { ref: "Bukhari 56:45; Muslim 33:235", desc: "The five who are regarded as martyrs" },
+        { ref: "Muslim 33:236", desc: "'Then the martyrs of my Umma will be small in number'" },
+        { ref: "Abu Dawud 21:23; Nasai 21:237", desc: "Seven types of martyrdom — including burning and childbirth" },
+        { ref: "Bukhari 46:41; Muslim 1:268; Abu Dawud 42:177", desc: "Killed defending property, family, blood, or religion" },
+        { ref: "Muslim 33:225; Abu Dawud 8:105", desc: "Sincerely asking for martyrdom — ranked among martyrs even in bed" },
+        { ref: "Abu Dawud 21:28", desc: "Last words 'La ilaha illa Allah' → Paradise" },
       ]} />
     </div>
   );
@@ -758,6 +884,7 @@ type SearchEntry = { tab: MainTab; sub?: string; label: string; keywords: string
 const searchIndex: SearchEntry[] = [
   { tab: "preparing", label: "Preparing", keywords: "reality of death remember often wasiyyah will debts settle tawbah repentance husn al-khatimah good ending visit graves live as if today" },
   { tab: "dying", label: "The Dying", keywords: "dying moments shahada la ilaha illallah prompt talqin speak only good yasin dua soul departs inna lillahi" },
+  { tab: "types-of-death", label: "Types of Death", keywords: "shaheed shahid martyr martyrdom battlefield uhud musk wounds six blessings buried in blood plague drowning childbirth burning collapsed building defending property good end good ending husn al-khatimah asking allah for martyrdom" },
   { tab: "washing-janazah", sub: "washing", label: "Washing & Shrouding", keywords: "ghusl wash the body who washes odd number sidr camphor kafan shroud white sheets fragrance hasten" },
   { tab: "washing-janazah", sub: "janazah", label: "Janazah Prayer", keywords: "funeral prayer takbir fatihah salawat dua for the deceased salam reward qirat standing" },
   { tab: "burial", label: "Burial", keywords: "grave lower lahd depth untie shroud three handfuls of earth raise slightly dua after burial women" },
@@ -839,7 +966,7 @@ function DeathRitesContent() {
       <PageHeader
         title="Death & Janazah"
         titleAr="الموت والجنازة"
-        subtitle="Preparing for death, the dying moments, washing and shrouding, the janazah prayer, burial, grief, and visiting graves"
+        subtitle="Preparing for death, the dying moments, types of death and martyrdom, washing and shrouding, the janazah prayer, burial, grief, and visiting graves"
       />
 
       <VerseHero
@@ -867,6 +994,7 @@ function DeathRitesContent() {
           >
             {activeMain === "preparing" && <PreparingDeathTab />}
             {activeMain === "dying" && <DyingMomentsTab />}
+            {activeMain === "types-of-death" && <TypesOfDeathTab />}
             {activeMain === "washing-janazah" && (
               <>
                 <SubTabLayout subs={washingJanazahSubs.filter((s) => subMatches("washing-janazah", s.key))} activeSub={activeWashing} setActiveSub={changeSub("washing-janazah")}>

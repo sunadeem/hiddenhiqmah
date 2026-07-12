@@ -56,3 +56,8 @@ citation you trust, or remove._
 
 ## Timeline reference completions (2026-07-12)
 34. Grandfather's passing + Hilf al-Fudul now attributed to "Seerah — Ibn Hisham; Ibn Sa'd" (plain-text source rows, no hadith-collection citation exists). The other formerly ref-less events got verified local refs: Abyssinia (Bukhari 39:8; 62:46), Ka'bah rebuilding (Bukhari 63:54), Boycott (Bukhari 25:76; 63:107).
+
+## Types of Death tab (/death-rites, 2026-07-12)
+35. Madhhab difference on the janazah prayer for the battlefield martyr — generic attribution (Bukhari 23:98 locally supports "neither washed nor prayed over"; the per-school positions aren't citable from local data).
+36. Reward-category martyrs (plague/drowning/childbirth…) "washed and prayed over normally" — standard fiqh inference stated as the practical distinction, no single quotable text.
+37. Husn al-khatimah intro framing — summary consistent with existing content, no single citation.
