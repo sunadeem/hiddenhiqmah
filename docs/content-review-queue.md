@@ -61,3 +61,6 @@ citation you trust, or remove._
 35. Madhhab difference on the janazah prayer for the battlefield martyr — generic attribution (Bukhari 23:98 locally supports "neither washed nor prayed over"; the per-school positions aren't citable from local data).
 36. Reward-category martyrs (plague/drowning/childbirth…) "washed and prayed over normally" — standard fiqh inference stated as the practical distinction, no single quotable text.
 37. Husn al-khatimah intro framing — summary consistent with existing content, no single citation.
+
+## Children Who Die Young sub-view (2026-07-12)
+38. The "children take hold of the parent's garment and will not let go until Allah admits them" narration (Sahih Muslim 2635, the da'amis hadith) is genuinely absent from local data (muslim/45.json gap between 45:197 and 45:199) — presented with generic attribution, no citation. Everything else on the sub-view is locally verified (incl. Ibn Majah 6:175-177 umbilical-cord set and Bukhari 91:61 Samura dream).

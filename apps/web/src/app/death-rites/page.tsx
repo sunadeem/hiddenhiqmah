@@ -33,6 +33,7 @@ import {
   Heart,
   ArrowDown,
   Users,
+  Baby,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -43,7 +44,7 @@ type MainTab = "preparing" | "dying" | "types-of-death" | "washing-janazah" | "b
 type RailTab = MainTab;
 type PreparingSub = "reality" | "affairs" | "good-ending";
 type DyingSub = "bedside" | "words-dua" | "departure";
-type TypesOfDeathSub = "good-end" | "battlefield-martyr" | "martyrs-of-reward" | "seeking-martyrdom";
+type TypesOfDeathSub = "good-end" | "battlefield-martyr" | "martyrs-of-reward" | "seeking-martyrdom" | "children";
 type WashingJanazahSub = "washing" | "janazah";
 type BurialSub = "grave" | "lowering" | "after-burial" | "women";
 type GriefVisitingSub = "grief" | "visiting";
@@ -74,6 +75,7 @@ const typesOfDeathSubs: { key: TypesOfDeathSub; label: string; icon: React.React
   { key: "battlefield-martyr", label: "Battlefield Martyr", icon: <Swords size={16} /> },
   { key: "martyrs-of-reward", label: "Martyrs of Reward", icon: <Medal size={16} /> },
   { key: "seeking-martyrdom", label: "Seeking Martyrdom", icon: <Heart size={16} /> },
+  { key: "children", label: "Children Who Die Young", icon: <Baby size={16} /> },
 ];
 
 const burialSubs: { key: BurialSub; label: string; icon: React.ReactNode }[] = [
@@ -456,6 +458,108 @@ function TypesSeekingSub() {
             &quot;Whoever seeks martyrdom with sincerity will be ranked by Allah among the martyrs, even if he dies on his bed.&quot; The door to this rank is the heart&apos;s sincerity, not recklessness with the life Allah entrusted to you. Ask Allah for it — and let Him choose the ending.
           </p>
           <Ref text="Muslim 33:225; Abu Dawud 8:105" />
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function TypesChildrenSub() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          If you are reading this while grieving a child — or a pregnancy that ended before you ever held them — know that Islam does not leave you alone in that grief. The texts about children who die young are among the most tender in the whole Sunnah: no reckoning awaits them, Paradise holds them, and their short lives are made a shield and an outstretched hand for the parents who lost them.
+        </p>
+      </ContentCard>
+
+      <h3 className="text-lg font-semibold text-themed mt-4 mb-3 px-1">No Reckoning Awaits Them</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.08}>
+          <h5 className="text-gold font-medium mb-2">The Pen never touched them</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;The Pen has been lifted from three: from the child until he reaches puberty, from the sleeper until he wakes up and from the insane until he regains his sanity.&quot; A child who dies before puberty was never under the Pen at all — nothing was recorded against them, and there is nothing to answer for. They stand before Allah with a clean page.
+          </p>
+          <Ref text="Musnad Ahmad 940" />
+        </ContentCard>
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">Born upon the fitrah</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;The funeral prayer should be offered for every child&quot; — because, as the Prophet ﷺ said, &quot;Every child is born with a true faith,&quot; the pure fitrah with which Allah created human beings. The community honors every child with a janazah because every child leaves this world upon that original purity.
+          </p>
+          <Ref text="Bukhari 23:111" />
+        </ContentCard>
+      </div>
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">They Are in Paradise</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">In the garden with Ibrahim عليه السلام</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            In the long dream shown to the Prophet ﷺ, the two angels brought him to &quot;a garden of deep green dense vegetation, having all sorts of spring colors&quot; — and in its midst a man so tall his head could hardly be seen, &quot;and around him there were children in such a large number as I have never seen.&quot; The angels explained: &quot;The tall man whom you saw in the garden is Abraham, and the children around him are those children who die with al-Fitra.&quot; When some Muslims asked about the children of the pagans, he replied: &quot;And also the children of pagans.&quot; A child who dies young is not lost and not waiting in darkness — they are in a garden, in the care of Ibrahim, the father of the prophets.
+          </p>
+          <Ref text="Bukhari 91:61" />
+        </ContentCard>
+      </div>
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">A Shield for Their Parents</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">&quot;Even two&quot;</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            When the women asked the Prophet ﷺ for a day of teaching of their own, he taught them and said: &quot;A woman whose three children died would be screened from the Hell Fire by them.&quot; Hearing that, a woman asked, &quot;If two died?&quot; He replied: &quot;Even two.&quot; The loss you carry is not wasted — Allah makes the very children you grieve a screen between you and the Fire.
+          </p>
+          <Ref text="Bukhari 23:12; Muslim 45:196" />
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">&quot;Except for Allah&apos;s oath&quot; — what it means</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;No Muslim whose three children died will go to the Fire except for Allah&apos;s oath&quot; — and in the parallel narration, he &quot;will not be touched by the Fire except that which will render Allah&apos;s oath fulfilled.&quot; The &quot;oath&quot; is the crossing described in Quran 19:71 (below) — the pass over the Fire that no one, righteous or otherwise, is exempted from. It does not mean punishment awaits such parents; the texts promise they are screened from the Fire, and their children go before them into Paradise. It is a promise of protection, not of exemption from standing before Allah.
+          </p>
+          <Ref text="Bukhari 23:13; Bukhari 83:35; Muslim 45:193" />
+        </ContentCard>
+        <VerseCard
+          arabic="وَإِن مِّنكُمْ إِلَّا وَارِدُهَا ۚ كَانَ عَلَىٰ رَبِّكَ حَتْمًا مَّقْضِيًّا"
+          transliteration="Wa im minkum illaa waa riduhaa; kaana 'alaa Rabbika hatmam maqdiyyaa"
+          english="There is none among you except that he will pass over it; a decree from your Lord that must be fulfilled."
+          source="Quran 19:71"
+          delay={0.23}
+        />
+      </div>
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">The Miscarried Child (as-Siqt)</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.26}>
+          <h5 className="text-gold font-medium mb-2">By the cord that joined you</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;By the One in Whose Hand is my soul! The miscarried fetus will drag his mother by his umbilical cord to Paradise, if she (was patient and) sought reward (for her loss).&quot; And in the companion narration: the miscarried child &quot;will plead with his Lord if his parents are admitted to Hell&quot; — and it will be said: &quot;O fetus who pleads with your Lord! Admit your parents to Paradise. So he will drag them out with his umbilical cord until he admits them to Paradise.&quot; Even a child who never drew breath is not nothing in Allah&apos;s sight — the very cord that joined you becomes the rope by which they pull you to safety.
+          </p>
+          <Ref text="Ibn Majah 6:177; Ibn Majah 6:176" />
+        </ContentCard>
+        <ContentCard delay={0.29}>
+          <h5 className="text-gold font-medium mb-2">Dearer than a horseman left behind</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;A miscarried fetus sent before me is dearer to me than a horseman whom I leave behind.&quot; A life the world never counted is counted by the Prophet ﷺ himself — sent ahead, waiting, not left behind.
+          </p>
+          <Ref text="Ibn Majah 6:175" />
+        </ContentCard>
+        <ContentCard delay={0.32}>
+          <h5 className="text-gold font-medium mb-2">They will not let go</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Authentic narrations describe the young children of the believers roaming freely in Paradise; when one of them meets his parent, he takes hold of their garment — or their hand — and does not let go until Allah admits him and his parent into Paradise together. The child you lost is not waiting to be found — they are waiting to bring you in.
+          </p>
+        </ContentCard>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 mt-4">
+        <ContentCard delay={0.35}>
+          <h5 className="text-gold font-medium mb-2">Patience with hope of reward</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Notice how these promises are worded: the mother is drawn to Paradise &quot;if she was patient and sought reward for her loss,&quot; and the parent spared the Fire is the one who &quot;resigns himself calmly to the will of God.&quot; The shield is real, and it is wrapped in sabr and ihtisab — grieving with tears, as the Prophet ﷺ himself did, while keeping the heart anchored in Allah and hoping in His reward. Grieve gently. Your child has gone ahead of you into safety, and holds the door.
+          </p>
+          <Link href="/death-rites?tab=grief-visiting" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Grief, patience, and what the Sunnah permits →
+          </Link>
         </ContentCard>
       </div>
     </div>
@@ -958,6 +1062,16 @@ const typesOfDeathSources: Record<TypesOfDeathSub, SourceRef[]> = {
   "seeking-martyrdom": [
     { ref: "Muslim 33:225; Abu Dawud 8:105", desc: "Sincerely asking for martyrdom — ranked among martyrs even in bed" },
   ],
+  children: [
+    { ref: "Musnad Ahmad 940", desc: "The Pen is lifted from the child until he reaches puberty" },
+    { ref: "Bukhari 23:111", desc: "The funeral prayer is offered for every child — born upon the fitrah" },
+    { ref: "Bukhari 91:61", desc: "The Prophet's ﷺ dream — the children in the garden around Ibrahim" },
+    { ref: "Bukhari 23:12; Muslim 45:196", desc: "Three children a screen from the Fire — 'and two?' — 'Even two'" },
+    { ref: "Bukhari 23:13; Bukhari 83:35; Muslim 45:193", desc: "'Except for Allah's oath' — the pass over the Fire none are exempted from" },
+    { ref: "Quran 19:71", desc: "There is none among you except that he will pass over it" },
+    { ref: "Ibn Majah 6:177; Ibn Majah 6:176", desc: "The miscarried child draws his mother to Paradise by his umbilical cord" },
+    { ref: "Ibn Majah 6:175", desc: "A miscarried fetus sent before me is dearer to me than a horseman left behind" },
+  ],
 };
 
 const burialSources: Record<BurialSub, SourceRef[]> = {
@@ -1045,6 +1159,7 @@ const searchIndex: SearchEntry[] = [
   { tab: "types-of-death", sub: "battlefield-martyr", label: "Battlefield Martyr", keywords: "shaheed shahid martyr martyrdom battlefield uhud musk wounds six blessings buried in blood" },
   { tab: "types-of-death", sub: "martyrs-of-reward", label: "Martyrs of Reward", keywords: "martyrs of reward plague drowning childbirth burning collapsed building defending property" },
   { tab: "types-of-death", sub: "seeking-martyrdom", label: "Seeking Martyrdom", keywords: "asking allah for martyrdom sincerity dies on his bed" },
+  { tab: "types-of-death", sub: "children", label: "Children Who Die Young", keywords: "miscarriage stillbirth womb child death before puberty infant baby no accountability pen lifted umbilical cord siqt children in paradise ibrahim screened from the fire grieving parents" },
   { tab: "washing-janazah", sub: "washing", label: "Washing & Shrouding", keywords: "ghusl wash the body who washes odd number sidr camphor kafan shroud white sheets fragrance hasten" },
   { tab: "washing-janazah", sub: "janazah", label: "Janazah Prayer", keywords: "funeral prayer takbir fatihah salawat dua for the deceased salam reward qirat standing" },
   { tab: "burial", sub: "grave", label: "The Grave", keywords: "grave hasten depth lahd shaqq" },
@@ -1182,6 +1297,7 @@ function DeathRitesContent() {
                   {activeTypes === "battlefield-martyr" && <TypesBattlefieldSub />}
                   {activeTypes === "martyrs-of-reward" && <TypesRewardSub />}
                   {activeTypes === "seeking-martyrdom" && <TypesSeekingSub />}
+                  {activeTypes === "children" && <TypesChildrenSub />}
                 </SubTabLayout>
                 {/* Full-width sources for the active sub-view, below the rail */}
                 <SourcesCard className="mt-6" sources={typesOfDeathSources[activeTypes]} />
