@@ -8,6 +8,7 @@ import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
@@ -176,7 +177,7 @@ const proofTopics: Topic[] = [
             "Biblical prophecies are often vague, retroactively interpreted, or unfulfilled. Nostradamus's quatrains are deliberately ambiguous. Hindu and Buddhist texts do not contain specific, dated, verifiable predictions. Muhammad's prophecies are specific, recorded in authenticated chains of transmission, and verifiably fulfilled.",
         },
       ],
-      source: "Muslim 1:1; Muslim 0:15:121; Bukhari 2:43; Bukhari 92:65; Tirmidhi 33:82; Tirmidhi 36:29; Nasai 44:7; Abu Dawud 39:7",
+      source: "Muslim 1:1; Bukhari 2:43; Bukhari 92:65; Tirmidhi 33:82; Tirmidhi 36:29; Nasai 44:7; Abu Dawud 39:7",
     },
   },
   {
@@ -1272,7 +1273,7 @@ const questionTopics: Topic[] = [
           note: "Bukhari 64:314",
         },
       ],
-      source: "Quran 2:190; Quran 256; Quran 9:5-6; Bukhari 56:224; Bukhari 64:314-4281; Abu Dawud 15:138",
+      source: "Quran 2:190; Quran 2:256; Quran 9:5-6; Bukhari 56:224; Bukhari 64:314; Abu Dawud 15:138",
     },
   },
   {
@@ -1483,6 +1484,11 @@ const legacyWorldviewTabs: Record<string, WorldviewKey> = {
   atheism: "atheism",
 };
 
+/* Aggregated "Sources & References" rows for a topic group — reuses each
+   topic's existing source line (the per-card footer is suppressed above). */
+const groupSourceRefs = (topics: Topic[]) =>
+  topics.flatMap((t) => (t.content.source ? [{ ref: t.content.source, desc: t.name }] : []));
+
 /* Start Here — clickable index of the sections (the /pillars intro pattern) */
 const startIndex: { key: SectionKey; title: string; count: string; description: string }[] = [
   {
@@ -1616,6 +1622,13 @@ function WhyIslamContent() {
         subtitle="Examining the evidence for Islam and comparing it against other worldviews — with authentic sources and logical reasoning."
       />
 
+      <VerseHero
+        label="Surah Aal Imran"
+        arabic="إِنَّ ٱلدِّينَ عِندَ ٱللَّهِ ٱلْإِسْلَـٰمُ ۗ وَمَا ٱخْتَلَفَ ٱلَّذِينَ أُوتُوا۟ ٱلْكِتَـٰبَ إِلَّا مِنۢ بَعْدِ مَا جَآءَهُمُ ٱلْعِلْمُ بَغْيًۢا بَيْنَهُمْ ۗ وَمَن يَكْفُرْ بِـَٔايَـٰتِ ٱللَّهِ فَإِنَّ ٱللَّهَ سَرِيعُ ٱلْحِسَابِ"
+        text="The true religion with Allah is Islam. Those who were given the Scripture did not dispute except after the knowledge had come to them, out of mutual envy and rivalry. But whoever rejects the verses of Allah, then Allah is swift in reckoning."
+        reference="Quran 3:19"
+      />
+
       <PageSearch value={search} onChange={setSearch} placeholder="Search topics, evidence, verses..." className="mb-6" />
 
       {/* Section navigation (shared TabBar) */}
@@ -1637,24 +1650,6 @@ function WhyIslamContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            {/* Opening verse — Quran 3:19 */}
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  Surah Aal Imran
-                </p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  إِنَّ ٱلدِّينَ عِندَ ٱللَّهِ ٱلْإِسْلَـٰمُ ۗ وَمَا ٱخْتَلَفَ ٱلَّذِينَ أُوتُوا۟ ٱلْكِتَـٰبَ إِلَّا مِنۢ بَعْدِ مَا جَآءَهُمُ ٱلْعِلْمُ بَغْيًۢا بَيْنَهُمْ ۗ وَمَن يَكْفُرْ بِـَٔايَـٰتِ ٱللَّهِ فَإِنَّ ٱللَّهَ سَرِيعُ ٱلْحِسَابِ
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;The true religion with Allah is Islam. Those who were given the Scripture did not dispute except after the knowledge had come to them, out of mutual envy and rivalry. But whoever rejects the verses of Allah, then Allah is swift in reckoning.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 3:19
-                </span>
-              </div>
-            </ContentCard>
-
             {/* What this page covers */}
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">What this page covers</h2>
@@ -1731,11 +1726,13 @@ function WhyIslamContent() {
               >
                 {activeProof && (
                   <div id={`section-${activeProof.id}`}>
-                    <TopicInfoCard topic={activeProof} />
+                    <TopicInfoCard topic={activeProof} showSource={false} />
                   </div>
                 )}
               </SubTabLayout>
             )}
+
+            <SourcesCard className="mt-8" sources={groupSourceRefs(proofTopics)} />
           </motion.div>
         )}
 
@@ -1783,13 +1780,15 @@ function WhyIslamContent() {
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.25 }}
                       >
-                        <TopicInfoCard topic={activeWorldviewTopic} />
+                        <TopicInfoCard topic={activeWorldviewTopic} showSource={false} />
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
               )}
             </SubTabLayout>
+
+            <SourcesCard className="mt-8" sources={groupSourceRefs(topicGroups[activeWorldview])} />
           </motion.div>
         )}
 
@@ -1812,11 +1811,13 @@ function WhyIslamContent() {
               >
                 {activeQuestion && (
                   <div id={`section-${activeQuestion.id}`}>
-                    <TopicInfoCard topic={activeQuestion} />
+                    <TopicInfoCard topic={activeQuestion} showSource={false} />
                   </div>
                 )}
               </SubTabLayout>
             )}
+
+            <SourcesCard className="mt-8" sources={groupSourceRefs(questionTopics)} />
           </motion.div>
         )}
       </AnimatePresence>

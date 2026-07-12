@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -12,6 +12,7 @@ import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -399,12 +400,28 @@ function TheGraveContent() {
     return textMatch(search, item.point, item.detail, item.reference);
   };
 
+  // auto-select the first visible topic when the active one is filtered out
+  useEffect(() => {
+    const wh = whatHappensTopics.filter(topicMatches);
+    if (wh.length && !wh.some((t) => t.id === activeWhatHappens)) setActiveWhatHappens(wh[0].id);
+    const pr = protectionTopics.filter(topicMatches);
+    if (pr.length && !pr.some((t) => t.id === activeProtection)) setActiveProtection(pr[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   return (
     <div>
       <PageHeader
         title="Barzakh"
         titleAr="البرزخ"
         subtitle="The life of al-Barzakh — what happens after death according to authentic sources."
+      />
+
+      <VerseHero
+        label="The Quran"
+        arabic="وَمِن وَرَآئِهِم بَرْزَخٌ إِلَىٰ يَوْمِ يُبْعَثُونَ"
+        text="And behind them is a barrier (Barzakh) until the Day they are resurrected."
+        reference="Quran 23:100"
       />
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search topics, verses..." className="mb-6" />
@@ -431,24 +448,6 @@ function TheGraveContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  The Quran
-                </p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  وَمِن وَرَآئِهِم بَرْزَخٌ إِلَىٰ يَوْمِ يُبْعَثُونَ
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;And behind them is a barrier (Barzakh) until the Day
-                  they are resurrected.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 23:100
-                </span>
-              </div>
-            </ContentCard>
-
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">
                 What is the Barzakh?
@@ -529,21 +528,6 @@ function TheGraveContent() {
             transition={{ duration: 0.3 }}
             className="space-y-4"
           >
-            {/* Opening verse */}
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-lg font-arabic text-gold leading-loose mb-3">
-                  كُلُّ نَفْسٍۢ ذَآئِقَةُ ٱلْمَوْتِ ۗ وَإِنَّمَا
-                  تُوَفَّوْنَ أُجُورَكُمْ يَوْمَ ٱلْقِيَـٰمَةِ
-                </p>
-                <p className="text-themed-muted italic">
-                  &ldquo;Every soul will taste death, and you will only receive
-                  your full reward on the Day of Resurrection.&rdquo;
-                </p>
-                <p className="text-xs text-themed-muted mt-2">Quran 3:185</p>
-              </div>
-            </ContentCard>
-
             {/* Numbered points */}
             {whyItMatters.filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>

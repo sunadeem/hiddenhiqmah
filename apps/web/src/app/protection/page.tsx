@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -12,6 +12,7 @@ import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 
@@ -609,6 +610,20 @@ function ProtectionContent() {
     );
   };
 
+  /* auto-select the first visible topic when search filters out the active one */
+  useEffect(() => {
+    if (!search || search.length < 2) return;
+    const fix = (topics: Topic[], active: string, set: (s: string) => void) => {
+      const visible = topics.filter(topicMatches);
+      if (visible.length && !visible.some((t) => t.id === active)) set(visible[0].id);
+    };
+    fix(sihrTopics, sihrSub, setSihrSub);
+    fix(evilEyeTopics, eyeSub, setEyeSub);
+    fix(ruqyahTopics, ruqyahSub, setRuqyahSub);
+    fix(dailyTopics, dailySub, setDailySub);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, sihrSub, eyeSub, ruqyahSub, dailySub]);
+
   const renderTopicRail = (
     topics: Topic[],
     activeSub: string,
@@ -636,20 +651,11 @@ function ProtectionContent() {
       />
 
       {/* Opening verse — above search + tabs, matching every other content page. */}
-      <ContentCard className="mb-6">
-        <div className="text-center py-6">
-          <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">The Quran</p>
-          <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-            قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ
-          </p>
-          <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-            Say, &ldquo;I seek refuge with the Lord of the daybreak&hellip;&rdquo;
-          </p>
-          <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-            Quran 113:1
-          </span>
-        </div>
-      </ContentCard>
+      <VerseHero
+        arabic="قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ"
+        text="Say, I seek refuge with the Lord of the daybreak…"
+        reference="Quran 113:1"
+      />
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search topics, verses..." className="mb-6" />
 

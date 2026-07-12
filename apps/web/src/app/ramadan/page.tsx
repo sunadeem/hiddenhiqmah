@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -11,6 +11,7 @@ import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -570,12 +571,29 @@ function RamadanContent() {
     return textMatch(search, item.point, item.detail, item.reference);
   };
 
+
+  /* auto-select the first visible topic when search filters out the active one */
+  useEffect(() => {
+    if (!search || search.length < 2) return;
+    const vf = fastingTopics.filter(topicMatches);
+    if (vf.length && !vf.some((t) => t.id === activeFasting)) setActiveFasting(vf[0].id);
+    const vl = lastTenTopics.filter(topicMatches);
+    if (vl.length && !vl.some((t) => t.id === activeLastTen)) setActiveLastTen(vl[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, activeFasting, activeLastTen]);
+
   return (
     <div>
       <PageHeader
         title="Ramadan"
         titleAr="رمضان"
         subtitle="The blessed month of fasting, Quran, and spiritual renewal"
+      />
+
+      <VerseHero
+        arabic="شَهْرُ رَمَضَانَ ٱلَّذِىٓ أُنزِلَ فِيهِ ٱلْقُرْءَانُ هُدًۭى لِّلنَّاسِ وَبَيِّنَـٰتٍۢ مِّنَ ٱلْهُدَىٰ وَٱلْفُرْقَانِ"
+        text="The month of Ramadan in which the Quran was revealed, a guidance for mankind and clear proofs of guidance and criterion."
+        reference="Quran 2:185"
       />
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search fasting, prayers, virtues..." className="mb-6" />
@@ -602,23 +620,6 @@ function RamadanContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  The Quran
-                </p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  شَهْرُ رَمَضَانَ ٱلَّذِىٓ أُنزِلَ فِيهِ ٱلْقُرْءَانُ هُدًۭى لِّلنَّاسِ وَبَيِّنَـٰتٍۢ مِّنَ ٱلْهُدَىٰ وَٱلْفُرْقَانِ
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;The month of Ramadan in which the Quran was revealed, a guidance for mankind and clear proofs of guidance and criterion.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 2:185
-                </span>
-              </div>
-            </ContentCard>
-
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">What is Ramadan?</h2>
               <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
@@ -659,19 +660,6 @@ function RamadanContent() {
             transition={{ duration: 0.3 }}
             className="space-y-4"
           >
-            {/* Opening verse */}
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-lg font-arabic text-gold leading-loose mb-3">
-                  يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا كُتِبَ عَلَيْكُمُ ٱلصِّيَامُ كَمَا كُتِبَ عَلَى ٱلَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ
-                </p>
-                <p className="text-themed-muted italic">
-                  &ldquo;O you who have believed, decreed upon you is fasting as it was decreed upon those before you, that you may become righteous.&rdquo;
-                </p>
-                <p className="text-xs text-themed-muted mt-2">Quran 2:183</p>
-              </div>
-            </ContentCard>
-
             {/* Numbered points */}
             {whyItMatters.filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
@@ -746,7 +734,7 @@ function RamadanContent() {
               {/* Right side — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {fastingTopics.map(
+                  {fastingTopics.filter(topicMatches).map(
                     (topic) =>
                       activeFasting === topic.id && (
                         <motion.div
@@ -814,7 +802,7 @@ function RamadanContent() {
               {/* Right side — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {lastTenTopics.map(
+                  {lastTenTopics.filter(topicMatches).map(
                     (topic) =>
                       activeLastTen === topic.id && (
                         <motion.div

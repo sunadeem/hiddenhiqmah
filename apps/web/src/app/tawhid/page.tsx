@@ -11,6 +11,7 @@ import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import {
   Shield,
@@ -612,6 +613,13 @@ function TawhidContent() {
   );
   const [search, setSearch] = useState("");
 
+  // auto-select the first visible category when the active one is filtered out
+  useEffect(() => {
+    const visible = categories.filter((cat) => textMatch(search, cat.title, cat.meaning, cat.description, ...cat.points));
+    if (visible.length && !visible.some((c) => c.id === activeCategory)) setActiveCategory(visible[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   // Keep ?tab= / ?sub= in sync so the current view is shareable
   const syncUrl = (tab: SectionKey, sub?: string) => {
     router.replace(sub ? `${pathname}?tab=${tab}&sub=${sub}` : `${pathname}?tab=${tab}`, { scroll: false });
@@ -623,6 +631,12 @@ function TawhidContent() {
         title="Tawheed"
         titleAr="التوحيد"
         subtitle="The foundation of Islam — understanding the Oneness of Allah in all aspects"
+      />
+
+      <VerseHero
+        arabic="قُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ"
+        text="Say: He is Allah, the One. Allah, the Eternal Refuge. He neither begets nor is born, nor is there to Him any equivalent."
+        reference="Surah Al-Ikhlas 112:1-4"
       />
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search names, categories, concepts..." className="mb-6" />
@@ -649,21 +663,6 @@ function TawhidContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            {/* Hero verse */}
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-3xl md:text-4xl font-arabic text-gold leading-loose mb-4">
-                  قُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ
-                </p>
-                <p className="text-themed-muted italic mb-2">
-                  &ldquo;Say: He is Allah, the One. Allah, the Eternal Refuge. He neither begets nor is born, nor is there to Him any equivalent.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Surah Al-Ikhlas 112:1-4
-                </span>
-              </div>
-            </ContentCard>
-
             {/* Definition */}
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">What is Tawheed?</h2>
@@ -759,18 +758,6 @@ function TawhidContent() {
             transition={{ duration: 0.3 }}
             className="space-y-4"
           >
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-lg font-arabic text-gold leading-loose mb-3">
-                  وَمَا خَلَقْتُ ٱلْجِنَّ وَٱلْإِنسَ إِلَّا لِيَعْبُدُونِ
-                </p>
-                <p className="text-themed-muted italic">
-                  &ldquo;I did not create the jinn and mankind except to worship Me.&rdquo;
-                </p>
-                <p className="text-xs text-themed-muted mt-2">Quran 51:56</p>
-              </div>
-            </ContentCard>
-
             {whyItMatters.filter((item) => textMatch(search, item.point, item.detail, item.reference)).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
@@ -881,6 +868,10 @@ function TawhidContent() {
 
             <NamesGrid search={search} initialNameKey={initialNameKey} />
 
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 7:180", desc: "And to Allah belong the most beautiful names, so invoke Him by them" },
+              { ref: "Bukhari 97:21", desc: "Allah has ninety-nine names; whoever enumerates them will enter Paradise" },
+            ]} />
           </motion.div>
         )}
       </AnimatePresence>

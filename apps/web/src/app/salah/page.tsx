@@ -17,6 +17,7 @@ import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import PrayerFigure, { type Position } from "@hidden-hiqmah/ui/components/PrayerFigure";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import {
   Clock,
   ChevronLeft,
@@ -1750,6 +1751,24 @@ function SalahContent() {
   const voluntarySubs = filteredVoluntary.map((p) => ({ key: p.id, label: p.name }));
   const purificationSubs = filteredPurification.map((t) => ({ key: t.id, label: t.name }));
 
+  /* auto-select the first visible rail item when search filters out the active one */
+  useEffect(() => {
+    if (!search || search.length < 2) return;
+    const visiblePrayers = [
+      ...prayers.filter(prayerMatches).map((p) => p.id),
+      ...(jumuahMatches ? ["jumuah"] : []),
+    ];
+    if (visiblePrayers.length && !visiblePrayers.includes(activePrayer))
+      setActivePrayer(visiblePrayers[0]);
+    const visibleVoluntary = voluntaryPrayers.filter(prayerMatches).map((p) => p.id);
+    if (visibleVoluntary.length && !visibleVoluntary.includes(activeVoluntary))
+      setActiveVoluntary(visibleVoluntary[0]);
+    const visibleWudu = purificationTopics.filter(wuduTopicMatches).map((t) => t.id);
+    if (visibleWudu.length && !visibleWudu.includes(activeWudu))
+      setActiveWudu(visibleWudu[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, activePrayer, activeVoluntary, activeWudu]);
+
   const openGhusl = () => {
     setActiveSection("wudu");
     setActiveWudu("ghusl");
@@ -1772,15 +1791,11 @@ function SalahContent() {
         subtitle="The five daily prayers — the direct connection between the servant and Allah"
       />
 
-      <ContentCard className="mb-6">
-        <div className="text-center py-4">
-          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-            إِنَّ ٱلصَّلَوٰةَ تَنْهَىٰ عَنِ ٱلْفَحْشَآءِ وَٱلْمُنكَرِ ۗ وَلَذِكْرُ ٱللَّهِ أَكْبَرُ
-          </p>
-          <p className="text-themed-muted italic">&ldquo;Indeed, prayer prohibits immorality and wrongdoing, and the remembrance of Allah is greater.&rdquo;</p>
-          <p className="text-xs text-themed-muted mt-1">Quran 29:45</p>
-        </div>
-      </ContentCard>
+      <VerseHero
+        arabic="إِنَّ ٱلصَّلَوٰةَ تَنْهَىٰ عَنِ ٱلْفَحْشَآءِ وَٱلْمُنكَرِ ۗ وَلَذِكْرُ ٱللَّهِ أَكْبَرُ"
+        text="Indeed, prayer prohibits immorality and wrongdoing, and the remembrance of Allah is greater."
+        reference="Quran 29:45"
+      />
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search prayers, steps, duas..." className="mb-6" />
 

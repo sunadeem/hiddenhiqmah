@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
@@ -11,6 +11,9 @@ import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import {
   BookOpen,
   Search,
@@ -1095,7 +1098,92 @@ function DivorceAfter() {
 
 /* Per-sub-view sources, rendered full-width BELOW the rail layout so the
    Sources card lines up with the rest of the page instead of the rail's
-   right column. */
+   right column. Built from the references already shown on each view's cards. */
+const beforeSources: Record<BeforeSub, SourceRef[]> = {
+  "what-to-look-for": [
+    { ref: "Bukhari 67:28", desc: "A woman is married for four things — choose the one with religion" },
+    { ref: "Tirmidhi 11:5", desc: "Marry the suitor whose religion and character please you" },
+    { ref: "Tirmidhi 11:8", desc: "Go and look at her — more likely to create harmony" },
+    { ref: "Abu Dawud 12:37", desc: "Looking at what encourages one to marry her" },
+  ],
+  "the-halal-way": [
+    { ref: "Tirmidhi 11:23", desc: "Marriage without the wali's permission is invalid" },
+  ],
+  "marry-timely": [
+    { ref: "Bukhari 67:4", desc: "O young men, whoever among you can afford it, let him marry" },
+    { ref: "Bayhaqi, Shu'ab al-Iman 5100", desc: "Marriage completes half of the religion" },
+    { ref: "Ibn Majah 9:2", desc: "Marriage is part of my Sunnah" },
+  ],
+  "trust-in-allah": [
+    { ref: "Tirmidhi 22:38", desc: "Allah is bound to help the one who marries seeking chastity" },
+    { ref: "Quran 24:32", desc: "If they are poor, Allah will enrich them from His bounty" },
+    { ref: "Bukhari 59:19", desc: "Four things written for the embryo, including provision" },
+    { ref: "Quran 2:216", desc: "Perhaps you dislike something and it is good for you" },
+  ],
+};
+
+const weddingSources: Record<WeddingSub, SourceRef[]> = {
+  "the-nikah": [
+    { ref: "Bukhari 67:72", desc: "Consent of the bride must be sought" },
+    { ref: "Abu Dawud 12:40", desc: "No marriage without the permission of a guardian" },
+    { ref: "Bukhari 67:25", desc: "The mahr — even an iron ring or teaching Quran" },
+    { ref: "Tirmidhi 11:10", desc: "Announce the marriage" },
+  ],
+  "the-walimah": [
+    { ref: "Bukhari 67:90", desc: "Give a walimah, even if with just one sheep" },
+    { ref: "Abu Dawud 12:72", desc: "The best of marriage is that which is made easiest" },
+  ],
+  "dua-for-newlyweds": [
+    { ref: "Tirmidhi 11:12", desc: "The du'a of barakah for the newlyweds" },
+  ],
+};
+
+const husbandRightsSources: Record<HusbandRightsSub, SourceRef[]> = {
+  status: [
+    { ref: "Ibn Majah 9:9", desc: "The magnitude of the husband's right over the wife" },
+    { ref: "Tirmidhi 12:14", desc: "The same hadith narrated from Abu Hurairah" },
+  ],
+  "specific-rights": [
+    { ref: "Musnad Ahmad 1095", desc: "No obedience to a created being in disobedience to the Creator" },
+    { ref: "Tirmidhi 12:18", desc: "Guarding the home — from the farewell sermon" },
+    { ref: "Bukhari 2:29", desc: "Warning against ingratitude to husbands" },
+  ],
+};
+
+const wifeRightsSources: Record<WifeRightsSub, SourceRef[]> = {
+  "kind-treatment": [
+    { ref: "Tirmidhi 49:295", desc: "The best of you are those who are best to their wives" },
+    { ref: "Quran 4:19", desc: "And live with them in kindness" },
+    { ref: "Muslim 15:159", desc: "Fear Allah concerning women — the farewell sermon" },
+  ],
+  "specific-rights": [
+    { ref: "Abu Dawud 9:137", desc: "Sin of neglecting those one is responsible for" },
+    { ref: "Quran 4:4", desc: "And give the women their dowries graciously" },
+    { ref: "Muslim 43:108", desc: "The Prophet ﷺ never struck a servant or a woman" },
+    { ref: "Bukhari 10:70", desc: "He was at the service of his family" },
+  ],
+};
+
+const divorceSources: Record<DivorceSub, SourceRef[]> = {
+  "last-resort": [
+    { ref: "Abu Dawud 13:4", desc: "The most hated of permissible things to Allah is divorce" },
+    { ref: "Quran 4:34-35", desc: "The steps before divorce — counsel, separation, arbitrators" },
+  ],
+  "three-talaqs": [
+    { ref: "Quran 65:1", desc: "Divorce during a period of purity; the iddah" },
+    { ref: "Quran 2:229", desc: "Divorce is twice — retain with kindness or release with grace" },
+    { ref: "Quran 2:230", desc: "After the third talaq she is not lawful to him" },
+    { ref: "Nasai 27:13", desc: "The Prophet's ﷺ anger at three talaqs in one sitting" },
+  ],
+  khul: [
+    { ref: "Bukhari 68:22", desc: "The wife of Thabit ibn Qays and the khul'" },
+  ],
+  "after-divorce": [
+    { ref: "Quran 2:228", desc: "The iddah of three menstrual cycles" },
+    { ref: "Quran 2:229", desc: "Either retain her with kindness or release her with grace" },
+  ],
+};
+
 const marriedLifeSources: Record<MarriedLifeSub, SourceRef[]> = {
   intimacy: [
     { ref: "Muslim 12:66", desc: "In the intimacy of one of you there is a charity" },
@@ -1146,6 +1234,35 @@ const defaultSubs: Record<Tab, string> = {
   divorce: "last-resort",
 };
 
+/* ── Page search (Rule 2): the rail is filtered by label + per-view keywords;
+   matching pills stay visible, non-matching hide, and the first match is
+   auto-selected. Empty query restores everything. ── */
+type SearchEntry = { tab: Tab; sub: string; label: string; keywords: string };
+
+const searchIndex: SearchEntry[] = [
+  { tab: "before", sub: "what-to-look-for", label: "What to Look For", keywords: "choose spouse religion character beauty wealth lineage look at her suitor proposal harmony" },
+  { tab: "before", sub: "the-halal-way", label: "The Halal Way", keywords: "wali guardian involve family no dating khalwa secret relationships chaperone istikhara" },
+  { tab: "before", sub: "marry-timely", label: "Marry Timely", keywords: "young men afford lowers the gaze fasting half of faith do not delay sunnah" },
+  { tab: "before", sub: "trust-in-allah", label: "Trust in Allah", keywords: "provision poverty allah enriches qadr decree written for you rizq trust plan" },
+  { tab: "wedding", sub: "the-nikah", label: "The Nikah", keywords: "marriage contract ceremony consent wali guardian mahr dowry witnesses announce khutbah" },
+  { tab: "wedding", sub: "the-walimah", label: "The Walimah", keywords: "wedding feast banquet one sheep keep it simple celebration invitation" },
+  { tab: "wedding", sub: "dua-for-newlyweds", label: "Dua for Newlyweds", keywords: "barakallahu laka blessing congratulate couple supplication" },
+  { tab: "husband-rights", sub: "status", label: "Status of the Husband", keywords: "prostrate magnitude right duty wife" },
+  { tab: "husband-rights", sub: "specific-rights", label: "Specific Rights", keywords: "obedience in good guarding the home permission gratitude ingratitude intimacy" },
+  { tab: "wife-rights", sub: "kind-treatment", label: "Kind Treatment", keywords: "best to their wives live with them in kindness farewell sermon fear allah concerning women" },
+  { tab: "wife-rights", sub: "specific-rights", label: "Specific Rights", keywords: "nafaqah financial support housing food clothing mahr belongs to her no harm abuse never struck emotional care housework" },
+  { tab: "married-life", sub: "intimacy", label: "Intimacy in Islam", keywords: "charity mutual right refusing excuse foreplay tenderness affection" },
+  { tab: "married-life", sub: "permitted", label: "Permitted & Not", keywords: "garments tilth menstruation anal forbidden lawful manner" },
+  { tab: "married-life", sub: "privacy", label: "Privacy of the Bedroom", keywords: "secrets spreading worst of people confidentiality" },
+  { tab: "married-life", sub: "dua-before-intimacy", label: "Du'a Before Intimacy", keywords: "bismillah shaytan protection child supplication" },
+  { tab: "married-life", sub: "purity", label: "Purity Afterwards", keywords: "ghusl janabah wudu between emission ritual bath" },
+  { tab: "married-life", sub: "menses-planning", label: "Menses & Family Planning", keywords: "menstruation period azl contraception family planning" },
+  { tab: "divorce", sub: "last-resort", label: "A Last Resort", keywords: "divorce disliked steps counsel separate beds arbitrators mediation" },
+  { tab: "divorce", sub: "three-talaqs", label: "The Three Talaqs", keywords: "talaq iddah ruju taking back irrevocable three at once sinful purity" },
+  { tab: "divorce", sub: "khul", label: "Khul'", keywords: "wife initiated divorce return mahr thabit ibn qays garden" },
+  { tab: "divorce", sub: "after-divorce", label: "After Divorce", keywords: "iddah waiting period pregnant housing maintenance part with grace kindness" },
+];
+
 function MarriageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -1186,6 +1303,28 @@ function MarriageContent() {
   const activeMarried = activeSubOf("married-life") as MarriedLifeSub;
   const activeDivorce = activeSubOf("divorce") as DivorceSub;
 
+  // Page search over the searchIndex rail entries (Rule 2).
+  const [search, setSearch] = useState("");
+  const searching = search.trim().length >= 2;
+  const matches = searching
+    ? searchIndex.filter((e) => textMatch(search, e.label, e.keywords))
+    : searchIndex;
+  const hasMatches = matches.length > 0;
+  const visibleTabs =
+    searching && hasMatches ? tabs.filter((t) => matches.some((e) => e.tab === t.key)) : tabs;
+  const subMatches = (tab: Tab, sub: string) =>
+    !searching || !hasMatches || matches.some((e) => e.tab === tab && e.sub === sub);
+
+  // Auto-select the first matching view when the current one is filtered out.
+  useEffect(() => {
+    if (!searching || !hasMatches) return;
+    if (matches.some((e) => e.tab === activeTab && e.sub === activeSubOf(activeTab))) return;
+    const target = matches.find((e) => e.tab === activeTab) ?? matches[0];
+    setSubMemory((m) => ({ ...m, [target.tab]: target.sub }));
+    syncUrl(target.tab, target.sub);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   return (
     <div>
       <PageHeader
@@ -1194,20 +1333,16 @@ function MarriageContent() {
         subtitle="From finding a spouse to building a righteous household — guided by the Quran and Sunnah"
       />
 
-      <ContentCard className="mb-6">
-        <div className="text-center py-4">
-          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-            وَمِنْ ءَايَـٰتِهِۦٓ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَٰجًۭا لِّتَسْكُنُوٓا۟ إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةًۭ وَرَحْمَةً
-          </p>
-          <p className="text-themed-muted italic">
-            &ldquo;And among His signs is that He created for you mates from among yourselves, that you may find tranquility in them; and He placed between you affection and mercy.&rdquo;
-          </p>
-          <p className="text-xs text-themed-muted mt-1">Quran 30:21</p>
-        </div>
-      </ContentCard>
+      <VerseHero
+        arabic="وَمِنْ ءَايَـٰتِهِۦٓ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَٰجًۭا لِّتَسْكُنُوٓا۟ إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةًۭ وَرَحْمَةً"
+        text="And among His signs is that He created for you mates from among yourselves, that you may find tranquility in them; and He placed between you affection and mercy."
+        reference="Quran 30:21"
+      />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search nikah, rights, married life..." className="mb-6" />
 
       <TabBar
-        tabs={tabs.map((t) => ({ key: t.key, label: t.label, icon: t.icon }))}
+        tabs={visibleTabs.map((t) => ({ key: t.key, label: t.label, icon: t.icon }))}
         activeTab={activeTab}
         onTabChange={(key) => changeTab(key as Tab)}
         mobileThreshold={4}
@@ -1223,35 +1358,51 @@ function MarriageContent() {
             transition={{ duration: 0.25 }}
           >
             {activeTab === "before" && (
-              <SubTabLayout subs={beforeSubs} activeSub={activeBefore} setActiveSub={changeSub("before")}>
-                {activeBefore === "what-to-look-for" && <FindingWhatToLookFor />}
-                {activeBefore === "the-halal-way" && <FindingTheHalalWay />}
-                {activeBefore === "marry-timely" && <MarryTimely />}
-                {activeBefore === "trust-in-allah" && <TrustInAllah />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={beforeSubs.filter((s) => subMatches("before", s.key))} activeSub={activeBefore} setActiveSub={changeSub("before")}>
+                  {activeBefore === "what-to-look-for" && <FindingWhatToLookFor />}
+                  {activeBefore === "the-halal-way" && <FindingTheHalalWay />}
+                  {activeBefore === "marry-timely" && <MarryTimely />}
+                  {activeBefore === "trust-in-allah" && <TrustInAllah />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={beforeSources[activeBefore]} />
+              </>
             )}
             {activeTab === "wedding" && (
-              <SubTabLayout subs={weddingSubs} activeSub={activeWedding} setActiveSub={changeSub("wedding")}>
-                {activeWedding === "the-nikah" && <TheNikah />}
-                {activeWedding === "the-walimah" && <TheWalimah />}
-                {activeWedding === "dua-for-newlyweds" && <DuaForNewlyweds />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={weddingSubs.filter((s) => subMatches("wedding", s.key))} activeSub={activeWedding} setActiveSub={changeSub("wedding")}>
+                  {activeWedding === "the-nikah" && <TheNikah />}
+                  {activeWedding === "the-walimah" && <TheWalimah />}
+                  {activeWedding === "dua-for-newlyweds" && <DuaForNewlyweds />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={weddingSources[activeWedding]} />
+              </>
             )}
             {activeTab === "husband-rights" && (
-              <SubTabLayout subs={husbandRightsSubs} activeSub={activeHusband} setActiveSub={changeSub("husband-rights")}>
-                {activeHusband === "status" && <HusbandStatus />}
-                {activeHusband === "specific-rights" && <HusbandSpecificRights />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={husbandRightsSubs.filter((s) => subMatches("husband-rights", s.key))} activeSub={activeHusband} setActiveSub={changeSub("husband-rights")}>
+                  {activeHusband === "status" && <HusbandStatus />}
+                  {activeHusband === "specific-rights" && <HusbandSpecificRights />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={husbandRightsSources[activeHusband]} />
+              </>
             )}
             {activeTab === "wife-rights" && (
-              <SubTabLayout subs={wifeRightsSubs} activeSub={activeWife} setActiveSub={changeSub("wife-rights")}>
-                {activeWife === "kind-treatment" && <WifeKindTreatment />}
-                {activeWife === "specific-rights" && <WifeSpecificRights />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={wifeRightsSubs.filter((s) => subMatches("wife-rights", s.key))} activeSub={activeWife} setActiveSub={changeSub("wife-rights")}>
+                  {activeWife === "kind-treatment" && <WifeKindTreatment />}
+                  {activeWife === "specific-rights" && <WifeSpecificRights />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={wifeRightsSources[activeWife]} />
+              </>
             )}
             {activeTab === "married-life" && (
               <>
-                <SubTabLayout subs={marriedLifeSubs} activeSub={activeMarried} setActiveSub={changeSub("married-life")}>
+                <SubTabLayout subs={marriedLifeSubs.filter((s) => subMatches("married-life", s.key))} activeSub={activeMarried} setActiveSub={changeSub("married-life")}>
                   {activeMarried === "intimacy" && <IntimacyView />}
                   {activeMarried === "permitted" && <PermittedView />}
                   {activeMarried === "privacy" && <PrivacyView />}
@@ -1264,12 +1415,16 @@ function MarriageContent() {
               </>
             )}
             {activeTab === "divorce" && (
-              <SubTabLayout subs={divorceSubs} activeSub={activeDivorce} setActiveSub={changeSub("divorce")}>
-                {activeDivorce === "last-resort" && <DivorceLastResort />}
-                {activeDivorce === "three-talaqs" && <DivorceThreeTalaqs />}
-                {activeDivorce === "khul" && <DivorceKhul />}
-                {activeDivorce === "after-divorce" && <DivorceAfter />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={divorceSubs.filter((s) => subMatches("divorce", s.key))} activeSub={activeDivorce} setActiveSub={changeSub("divorce")}>
+                  {activeDivorce === "last-resort" && <DivorceLastResort />}
+                  {activeDivorce === "three-talaqs" && <DivorceThreeTalaqs />}
+                  {activeDivorce === "khul" && <DivorceKhul />}
+                  {activeDivorce === "after-divorce" && <DivorceAfter />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={divorceSources[activeDivorce]} />
+              </>
             )}
           </motion.div>
         </AnimatePresence>

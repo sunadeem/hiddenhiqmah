@@ -6,6 +6,8 @@ import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
@@ -1448,6 +1450,62 @@ const worshipRailGroups = [
   },
 ];
 
+/* ───────────────────────── per-tab sources ─────────────────────────
+   Rule-3 Sources & References cards: aggregated from the reference strings
+   already displayed on each tab's cards — split on ";", deduped, with the
+   first citing card as the description. Display-only aggregation; no new
+   claims. */
+function collectSources(items: { reference?: string; desc: string }[]): SourceRef[] {
+  const seen = new Map<string, string>();
+  for (const item of items) {
+    if (!item.reference) continue;
+    for (const part of item.reference.split(";")) {
+      const ref = part.trim();
+      if (ref && !seen.has(ref)) seen.set(ref, item.desc);
+    }
+  }
+  return Array.from(seen, ([ref, desc]) => ({ ref, desc }));
+}
+
+const timelineSources = collectSources(
+  timelineEvents.map((e) => ({ reference: e.reference, desc: e.title }))
+);
+const characterSources = collectSources(
+  virtues.map((v) => ({ reference: v.reference, desc: v.name }))
+);
+const personSources: Record<PersonSub, SourceRef[]> = {
+  names: collectSources(prophetNames.map((n) => ({ reference: n.reference, desc: n.name }))),
+  face: collectSources(
+    physicalDescription.filter((t) => t.group === "face").map((t) => ({ reference: t.reference, desc: t.trait }))
+  ),
+  body: collectSources(
+    physicalDescription.filter((t) => t.group === "body").map((t) => ({ reference: t.reference, desc: t.trait }))
+  ),
+  manner: collectSources(
+    physicalDescription.filter((t) => t.group === "manner").map((t) => ({ reference: t.reference, desc: t.trait }))
+  ),
+};
+const familySources: Record<string, SourceRef[]> = {
+  wives: collectSources([
+    { reference: "Quran 33:6", desc: "His wives are the Mothers of the Believers" },
+    ...wives.map((w) => ({ reference: w.reference, desc: w.name })),
+  ]),
+  children: collectSources(children.map((c) => ({ reference: c.reference, desc: c.name }))),
+  companions: collectSources(companions.map((c) => ({ reference: c.reference, desc: c.name }))),
+};
+const propheciesSources = collectSources(
+  prophecies.map((p) => ({ reference: p.reference, desc: p.title }))
+);
+const worshipSunnahSources: Record<string, SourceRef[]> = {};
+for (const w of worshipAspects) {
+  worshipSunnahSources[slugId(w.title)] = collectSources([{ reference: w.reference, desc: w.title }]);
+}
+for (const c of dailySunnah) {
+  worshipSunnahSources[slugId(c.category)] = collectSources(
+    c.practices.map((p) => ({ reference: p.reference, desc: p.practice }))
+  );
+}
+
 /* ───────────────────────── grouped rail ───────────────────────── */
 
 /* Grouped variant of the SubTabLayout rail — the same master-detail pills,
@@ -1599,20 +1657,14 @@ function ProphetMuhammadContent() {
         subtitle="The final Messenger of Allah ﷺ— his life, character, and legacy"
       />
 
-      <PageSearch value={search} onChange={setSearch} placeholder="Search life, character, prophecies..." className="mb-6" />
-
       {/* Opening verse */}
-      <ContentCard className="mb-6">
-        <div className="text-center py-4">
-          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-            وَمَآ أَرْسَلْنَـٰكَ إِلَّا رَحْمَةًۭ لِّلْعَـٰلَمِينَ
-          </p>
-          <p className="text-themed-muted italic">
-            &ldquo;And We have not sent you, [O Muhammad], except as a mercy to the worlds.&rdquo;
-          </p>
-          <p className="text-xs text-themed-muted mt-1">Quran 21:107</p>
-        </div>
-      </ContentCard>
+      <VerseHero
+        arabic="وَمَآ أَرْسَلْنَـٰكَ إِلَّا رَحْمَةًۭ لِّلْعَـٰلَمِينَ"
+        text="And We have not sent you, [O Muhammad], except as a mercy to the worlds."
+        reference="Quran 21:107"
+      />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search life, character, prophecies..." className="mb-6" />
 
       {/* Section navigation (shared TabBar — picker on mobile, pills on desktop) */}
       <TabBar
@@ -1675,6 +1727,8 @@ function ProphetMuhammadContent() {
                 )}
               </AnimatePresence>
             </GroupedRail>
+            {/* Full-width sources for the whole tab, below the rail */}
+            <SourcesCard className="mt-6" sources={timelineSources} />
           </motion.div>
         )}
 
@@ -1745,6 +1799,8 @@ function ProphetMuhammadContent() {
                 </AnimatePresence>
               </div>
             </div>
+            {/* Full-width sources for the whole tab, below the rail */}
+            <SourcesCard sources={characterSources} />
           </motion.div>
         )}
 
@@ -1794,6 +1850,8 @@ function ProphetMuhammadContent() {
                 </div>
               )}
             </SubTabLayout>
+            {/* Full-width sources for the active sub-view, below the rail */}
+            <SourcesCard className="mt-6" sources={personSources[personSub]} />
           </motion.div>
         )}
 
@@ -1898,6 +1956,8 @@ function ProphetMuhammadContent() {
                 </div>
               )}
             </SubTabLayout>
+            {/* Full-width sources for the active sub-view, below the rail */}
+            <SourcesCard className="mt-6" sources={familySources[familyTab] ?? []} />
           </motion.div>
         )}
 
@@ -1968,6 +2028,8 @@ function ProphetMuhammadContent() {
                 </AnimatePresence>
               </div>
             </div>
+            {/* Full-width sources for the whole tab, below the rail */}
+            <SourcesCard className="mt-6" sources={propheciesSources} />
           </motion.div>
         )}
 
@@ -2034,6 +2096,8 @@ function ProphetMuhammadContent() {
                 )}
               </AnimatePresence>
             </GroupedRail>
+            {/* Full-width sources for the active rail item, below the rail */}
+            <SourcesCard className="mt-6" sources={worshipSunnahSources[worshipSub] ?? []} />
           </motion.div>
         )}
       </AnimatePresence>

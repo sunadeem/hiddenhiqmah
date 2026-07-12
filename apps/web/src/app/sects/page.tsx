@@ -11,6 +11,7 @@ import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 
 /* ───────────────────────── types ───────────────────────── */
 
@@ -193,7 +194,7 @@ const sunniTopics: SectTopic[] = [
           title: "The Rightly Guided Caliphs",
           detail:
             "The best of the Companions are Abu Bakr, then Umar, then Uthman, then Ali (may Allah be pleased with them all) — in this order of merit. This is the position of the majority of Ahl al-Sunnah. All four were righteous leaders who served Islam with sincerity.",
-          note: "Bukhari 62:7-21; Al-Aqidah at-Tahawiyyah",
+          note: "Bukhari 62:7; Bukhari 62:21; Al-Aqidah at-Tahawiyyah",
         },
         {
           title: "Silence about their disputes",
@@ -208,7 +209,7 @@ const sunniTopics: SectTopic[] = [
           note: "Quran 42:23; Muslim 44:55",
         },
       ],
-      source: "Al-Aqidah at-Tahawiyyah; Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah; Bukhari 52:16; Bukhari 62:7-3671",
+      source: "Al-Aqidah at-Tahawiyyah; Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah; Bukhari 52:16; Bukhari 62:7; Bukhari 62:21",
     },
   },
 ];
@@ -404,7 +405,7 @@ const otherSects: SectTopic[] = [
           note: "Bukhari 61:117; Muslim 12:196; fatawa of contemporary scholars",
         },
       ],
-      source: "Bukhari 61:117; Muslim 12:196-228; Maqalat al-Islamiyyin, al-Ash'ari",
+      source: "Bukhari 61:117; Muslim 12:196; Maqalat al-Islamiyyin, al-Ash'ari",
     },
   },
   {
@@ -649,17 +650,16 @@ function TopicInfoCard({ topic }: { topic: SectTopic }) {
         ))}
       </div>
 
-      {topic.content.source && (
-        <div className="mt-4 pt-3 border-t sidebar-border">
-          <p className="text-xs text-themed-muted">
-            <span className="text-gold/60 font-medium">Sources:</span>{" "}
-            <HadithRefText text={topic.content.source} />
-          </p>
-        </div>
-      )}
+      {/* Aggregated source footer suppressed — the point cards above carry
+          their own refs, and each tab ends with a full SourcesCard. */}
     </ContentCard>
   );
 }
+
+/* Aggregated "Sources & References" rows for a topic group — reuses each
+   topic's existing source line (the per-card footer is suppressed above). */
+const groupSourceRefs = (topics: SectTopic[]) =>
+  topics.flatMap((t) => (t.content.source ? [{ ref: t.content.source, desc: t.name }] : []));
 
 /* ───────────────────────── page ───────────────────────── */
 
@@ -786,6 +786,12 @@ function SectsContent() {
         </p>
       </div>
 
+      <VerseHero
+        label="The Prophet ﷺ said"
+        text="My Ummah will split into seventy-three sects, all of which will be in the Fire except one.” They asked: “Which one is it, O Messenger of Allah?” He said: “The one that follows what I and my Companions are upon today."
+        reference="Tirmidhi 40:36"
+      />
+
       <PageSearch
         value={search}
         onChange={setSearch}
@@ -815,24 +821,6 @@ function SectsContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            <ContentCard>
-              <div className="text-center py-4 sm:py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  The Prophet ﷺ said
-                </p>
-                <p className="text-themed italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;My Ummah will split into seventy-three sects, all of
-                  which will be in the Fire except one.&rdquo; They asked:
-                  &ldquo;Which one is it, O Messenger of Allah?&rdquo; He said:
-                  &ldquo;The one that follows what I and my Companions are upon
-                  today.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Tirmidhi 40:36
-                </span>
-              </div>
-            </ContentCard>
-
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">
                 Understanding Sects in Islam
@@ -877,19 +865,6 @@ function SectsContent() {
             transition={{ duration: 0.3 }}
             className="space-y-4"
           >
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-lg font-arabic text-gold leading-loose mb-3">
-                  إِنَّ ٱلَّذِينَ فَرَّقُوا دِينَهُمْ وَكَانُوا شِيَعًۭا لَّسْتَ مِنْهُمْ فِى شَىْءٍ
-                </p>
-                <p className="text-themed-muted italic">
-                  &ldquo;Indeed, those who have divided their religion and become
-                  sects — you are not associated with them in anything.&rdquo;
-                </p>
-                <p className="text-xs text-themed-muted mt-2">Quran 6:159</p>
-              </div>
-            </ContentCard>
-
             {filteredMatters.map((item, i) => (
               <ContentCard key={item.point} delay={0.05 + i * 0.04}>
                 <h3 className="text-themed font-semibold mb-2">
@@ -901,6 +876,8 @@ function SectsContent() {
                 <p className="text-xs text-gold/60 mt-2"><HadithRefText text={item.reference} /></p>
               </ContentCard>
             ))}
+
+            <SourcesCard delay={0.3} sources={whyItMatters.map((m) => ({ ref: m.reference, desc: m.point }))} />
           </motion.div>
         )}
 
@@ -925,6 +902,8 @@ function SectsContent() {
                 </p>
               </ContentCard>
             )}
+
+            <SourcesCard className="mt-8" sources={groupSourceRefs(sunniTopics)} />
           </motion.div>
         )}
 
@@ -949,6 +928,8 @@ function SectsContent() {
                 </p>
               </ContentCard>
             )}
+
+            <SourcesCard className="mt-8" sources={groupSourceRefs(shiaTopics)} />
           </motion.div>
         )}
 
@@ -973,6 +954,8 @@ function SectsContent() {
                 </p>
               </ContentCard>
             )}
+
+            <SourcesCard className="mt-8" sources={groupSourceRefs(otherSects)} />
           </motion.div>
         )}
       </AnimatePresence>

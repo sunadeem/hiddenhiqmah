@@ -11,6 +11,7 @@ import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import {
   BookOpen,
@@ -634,6 +635,13 @@ function ArticlesOfFaithContent() {
         subtitle="The six pillars of Iman — the core beliefs every Muslim holds"
       />
 
+      <VerseHero
+        label="Hadith of Jibril"
+        arabic="الإيمان أن تؤمن بالله وملائكته وكتبه ورسله واليوم الآخر وتؤمن بالقدر خيره وشره"
+        text="Iman is to believe in Allah, His angels, His books, His messengers, the Last Day, and to believe in divine decree — both its good and its evil."
+        reference="Muslim 1:1"
+      />
+
       <PageSearch value={search} onChange={setSearch} placeholder="Search beliefs, articles, verses..." className="mb-6" />
 
       {/* Section navigation (shared TabBar) */}
@@ -658,24 +666,6 @@ function ArticlesOfFaithContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            {/* Hadith of Jibril */}
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  Hadith of Jibril
-                </p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  الإيمان أن تؤمن بالله وملائكته وكتبه ورسله واليوم الآخر وتؤمن بالقدر خيره وشره
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;Iman is to believe in Allah, His angels, His books, His messengers, the Last Day, and to believe in divine decree — both its good and its evil.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Muslim 1:1
-                </span>
-              </div>
-            </ContentCard>
-
             {/* Definition */}
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">What are the Articles of Faith?</h2>
@@ -768,18 +758,6 @@ function ArticlesOfFaithContent() {
             transition={{ duration: 0.3 }}
             className="space-y-4"
           >
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-lg font-arabic text-gold leading-loose mb-3">
-                  ءَامَنَ ٱلرَّسُولُ بِمَآ أُنزِلَ إِلَيْهِ مِن رَّبِّهِۦ وَٱلْمُؤْمِنُونَ ۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰٓئِكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ
-                </p>
-                <p className="text-themed-muted italic">
-                  &ldquo;The Messenger has believed in what was revealed to him from his Lord, and so have the believers. All of them have believed in Allah, His angels, His books, and His messengers.&rdquo;
-                </p>
-                <p className="text-xs text-themed-muted mt-2">Quran 2:285</p>
-              </div>
-            </ContentCard>
-
             {filteredWhyItMatters.map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">

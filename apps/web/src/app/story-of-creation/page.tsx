@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 
 /* ───────────────────────── tabs ───────────────────────── */
 
@@ -1201,6 +1204,33 @@ function StoryOfCreationContent() {
     syncUrl(activeTab, id);
   };
 
+  const [search, setSearch] = useState("");
+
+  const topicMatches = (t: Topic) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(search, t.name, t.content.intro, t.content.source,
+      t.content.verse?.text,
+      ...t.content.points.map((p) => p.title),
+      ...t.content.points.map((p) => p.detail),
+    );
+  };
+
+  const filteredTopics = currentData.topics.filter(topicMatches);
+
+  // Searching spans all 12 stages: if the current stage has no matches, jump
+  // to the first stage that does; within a stage, auto-select the first match.
+  useEffect(() => {
+    if (!search || search.length < 2) return;
+    if (filteredTopics.length === 0) {
+      const firstTab = tabs.find((t) => tabDataMap[t.key].topics.some(topicMatches));
+      if (firstTab) setActiveTab(firstTab.key);
+      return;
+    }
+    if (!filteredTopics.some((t) => t.id === activeTopic))
+      setActiveTopicMap((prev) => ({ ...prev, [activeTab]: filteredTopics[0].id }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, activeTab]);
+
   // Get tab index for progress indicator
   const currentTabIndex = tabs.findIndex((t) => t.key === activeTab);
 
@@ -1211,6 +1241,14 @@ function StoryOfCreationContent() {
         titleAr="قصة الخلق"
         subtitle="The complete journey — from before anything existed, to the eternal life that awaits."
       />
+
+      <VerseHero
+        arabic="هُوَ ٱلْأَوَّلُ وَٱلْـَٔاخِرُ وَٱلظَّـٰهِرُ وَٱلْبَاطِنُ ۖ وَهُوَ بِكُلِّ شَىْءٍ عَلِيمٌ"
+        text="He is the First and the Last, the Manifest and the Hidden, and He has knowledge of all things."
+        reference="Quran 57:3"
+      />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search stages, topics, verses..." className="mb-6" />
 
       {/* Tab navigation — the 12 numbered stages as an even grid (6 per row on
           desktop, responsive below): the whole journey map stays visible, no
@@ -1253,11 +1291,13 @@ function StoryOfCreationContent() {
           transition={{ duration: 0.3 }}
         >
           {/* Sub-topic navigation + content */}
-          {currentData.topics.length > 1 ? (
+          {filteredTopics.length === 0 ? (
+            <p className="text-sm text-themed-muted text-center py-8">No topics match your search.</p>
+          ) : currentData.topics.length > 1 ? (
             <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left — vertical pills */}
               <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-52 w-full shrink-0">
-                {currentData.topics.map((topic) => (
+                {filteredTopics.map((topic) => (
                   <button
                     key={topic.id}
                     onClick={() => setActiveTopic(topic.id)}
@@ -1275,7 +1315,7 @@ function StoryOfCreationContent() {
               {/* Right — content */}
               <div className="flex-1 min-w-0">
                 <AnimatePresence mode="wait">
-                  {currentData.topics.map(
+                  {filteredTopics.map(
                     (topic) =>
                       activeTopic === topic.id && (
                         <motion.div
@@ -1294,7 +1334,7 @@ function StoryOfCreationContent() {
             </div>
           ) : (
             /* Single topic — no sub-nav needed */
-            <TopicInfoCard topic={currentData.topics[0]} />
+            <TopicInfoCard topic={filteredTopics[0]} showSource={false} />
           )}
 
           {/* Sources */}

@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import namesOfAllah from "@hidden-hiqmah/content/names-of-allah";
 import { prophetStories } from "@hidden-hiqmah/content/prophet-stories";
 import {
@@ -1841,15 +1842,11 @@ function KidsContent() {
       />
 
       {!lesson && (
-        <ContentCard className="mb-6">
-          <div className="text-center py-4">
-            <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-              رَبَّنَا هَبْ لَنَا مِنْ أَزْوَٰجِنَا وَذُرِّيَّـٰتِنَا قُرَّةَ أَعْيُنٍۢ وَٱجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا
-            </p>
-            <p className="text-themed-muted italic">&ldquo;Our Lord, grant us from our spouses and offspring comfort to our eyes, and make us a leader for the righteous.&rdquo;</p>
-            <p className="text-xs text-themed-muted mt-1">Quran 25:74</p>
-          </div>
-        </ContentCard>
+        <VerseHero
+          arabic="رَبَّنَا هَبْ لَنَا مِنْ أَزْوَٰجِنَا وَذُرِّيَّـٰتِنَا قُرَّةَ أَعْيُنٍۢ وَٱجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا"
+          text="Our Lord, grant us from our spouses and offspring comfort to our eyes, and make us a leader for the righteous."
+          reference="Quran 25:74"
+        />
       )}
 
       <div className="max-w-5xl mx-auto px-4">

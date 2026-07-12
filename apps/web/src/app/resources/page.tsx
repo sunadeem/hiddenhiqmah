@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
@@ -382,6 +382,30 @@ export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState("hadith");
 
   const activeCategory = categories.find((c) => c.id === activeTab)!;
+
+  const categoryHasMatch = (cat: Category) =>
+    cat.items.some((item) =>
+      textMatch(
+        search,
+        cat.title,
+        item.name,
+        item.nameAr || "",
+        item.author || "",
+        item.description
+      )
+    );
+
+  /* search spans ALL tabs — jump to the first category with a match when the
+     active one has none (empty query restores normal tab behaviour) */
+  useEffect(() => {
+    if (!search || search.length < 2) return;
+    const active = categories.find((c) => c.id === activeTab)!;
+    if (!categoryHasMatch(active)) {
+      const first = categories.find(categoryHasMatch);
+      if (first) setActiveTab(first.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, activeTab]);
 
   const filteredItems = activeCategory.items.filter((item) =>
     textMatch(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -11,6 +11,7 @@ import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import {
   BookOpen,
   AlertTriangle,
@@ -582,12 +583,26 @@ function PillarsContent() {
     );
   };
 
+  // auto-select the first visible pillar when the active one is filtered out
+  useEffect(() => {
+    const visible = pillars.filter(pillarMatches);
+    if (visible.length && !visible.some((p) => p.id === activePillar)) setActivePillar(visible[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   return (
     <div>
       <PageHeader
         title="Pillars of Islam"
         titleAr="أركان الإسلام"
         subtitle="The five foundational acts of worship upon which Islam is built"
+      />
+
+      <VerseHero
+        label="Hadith of Ibn Umar"
+        arabic="بُنِيَ الإسْلامُ عَلَى خَمْسٍ شَهَادَةِ أنْ لا إلَهَ إلَّا اللَّهُ وَأنَّ مُحَمَّدًا رَسُولُ اللَّهِ وَإقَامِ الصَّلاةِ وَإيتَاءِ الزَّكَاةِ وَصَوْمِ رَمَضَانَ وَحَجِّ الْبَيْتِ"
+        text="Islam is built upon five: the testimony that there is no god but Allah and that Muhammad is the Messenger of Allah, establishing the prayer, giving the zakat, fasting Ramadan, and performing pilgrimage to the House."
+        reference="Bukhari 2:1, Muslim 1:21"
       />
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search pillars, practices, verses..." className="mb-6" />
@@ -614,24 +629,6 @@ function PillarsContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            {/* Hadith of Jibril */}
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  Hadith of Ibn Umar
-                </p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  بُنِيَ الإسْلامُ عَلَى خَمْسٍ شَهَادَةِ أنْ لا إلَهَ إلَّا اللَّهُ وَأنَّ مُحَمَّدًا رَسُولُ اللَّهِ وَإقَامِ الصَّلاةِ وَإيتَاءِ الزَّكَاةِ وَصَوْمِ رَمَضَانَ وَحَجِّ الْبَيْتِ
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;Islam is built upon five: the testimony that there is no god but Allah and that Muhammad is the Messenger of Allah, establishing the prayer, giving the zakat, fasting Ramadan, and performing pilgrimage to the House.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Bukhari 2:1, Muslim 1:21
-                </span>
-              </div>
-            </ContentCard>
-
             {/* Definition */}
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">What are the Pillars of Islam?</h2>
@@ -718,18 +715,6 @@ function PillarsContent() {
             transition={{ duration: 0.3 }}
             className="space-y-4"
           >
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-lg font-arabic text-gold leading-loose mb-3">
-                  وَمَآ أُمِرُوٓا إِلَّا لِيَعْبُدُوا ٱللَّهَ مُخْلِصِينَ لَهُ ٱلدِّينَ حُنَفَآءَ وَيُقِيمُوا ٱلصَّلَوٰةَ وَيُؤْتُوا ٱلزَّكَوٰةَ ۚ وَذَٰلِكَ دِينُ ٱلْقَيِّمَةِ
-                </p>
-                <p className="text-themed-muted italic">
-                  &ldquo;And they were not commanded except to worship Allah, sincere to Him in religion, inclining to truth, and to establish prayer and give zakah. And that is the correct religion.&rdquo;
-                </p>
-                <p className="text-xs text-themed-muted mt-2">Quran 98:5</p>
-              </div>
-            </ContentCard>
-
             {whyItMatters.filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">

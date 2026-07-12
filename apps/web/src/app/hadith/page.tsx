@@ -4,9 +4,11 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
-import { ArrowRight, ScrollText, Search, Star, X } from "lucide-react";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import { ArrowRight, ScrollText, Star } from "lucide-react";
 import { parseHadithRef } from "@hidden-hiqmah/ui/lib/search";
 import {
   SincerityIllustration,
@@ -347,28 +349,20 @@ export default function HadithPage() {
         subtitle="The major collections of Prophet Muhammad's ﷺ sayings and traditions"
       />
 
+      {/* Opening hadith — the first hadith of Sahih al-Bukhari (reuses the featured card's text) */}
+      <VerseHero
+        label="The Prophet ﷺ said"
+        text={featuredHadiths[0].text}
+        reference="Bukhari 1:1"
+      />
+
       {/* Search bar */}
-      <div className="relative max-w-xl mb-6">
-        <Search
-          size={18}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-themed-muted"
-        />
-        <input
-          type="text"
-          placeholder="Search hadiths or references (e.g. bukhari 50, muslim 2912)..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-10 py-3 rounded-xl card-bg border sidebar-border text-themed placeholder:text-themed-muted focus:outline-none focus:border-[var(--color-gold)] transition-colors"
-        />
-        {search && (
-          <button
-            onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-themed-muted hover:text-themed transition-colors"
-          >
-            <X size={16} />
-          </button>
-        )}
-      </div>
+      <PageSearch
+        value={search}
+        onChange={setSearch}
+        placeholder="Search hadiths or references (e.g. bukhari 50, muslim 2912)..."
+        className="mb-6"
+      />
 
       {/* Search results */}
       <AnimatePresence>

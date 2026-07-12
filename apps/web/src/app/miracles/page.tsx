@@ -5,9 +5,12 @@ import { useSearchParams } from "next/navigation";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
-import { BookOpen, Telescope, Clock, MapPin, Hash, Search, X } from "lucide-react";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import { BookOpen, Telescope, Clock, MapPin, Hash } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 
 type Strength = "strong" | "moderate" | "debated";
@@ -414,6 +417,9 @@ const miracles: Miracle[] = [
 ];
 
 
+// Page hero — the Quran's open challenge, taken verbatim from the first miracle card.
+const heroMiracle = miracles[0];
+
 function MiraclesContent() {
   useScrollToSection();
   const searchParams = useSearchParams();
@@ -425,9 +431,10 @@ function MiraclesContent() {
     ? miracles
     : miracles.filter((m) => m.category === activeCategory);
 
+  // Searching spans ALL categories, not just the active pill.
   const filtered = searchLower.length < 2
     ? categoryFiltered
-    : categoryFiltered.filter((m) =>
+    : miracles.filter((m) =>
         m.title.toLowerCase().includes(searchLower) ||
         m.explanation.toLowerCase().includes(searchLower) ||
         m.reference.toLowerCase().includes(searchLower) ||
@@ -452,28 +459,14 @@ function MiraclesContent() {
         subtitle="Quranic miracles, scientific references, fulfilled prophecies, and historical confirmations"
       />
 
-      {/* Search bar */}
-      <div className="relative max-w-xl mb-6">
-        <Search
-          size={18}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-themed-muted"
-        />
-        <input
-          type="text"
-          placeholder="Search miracles..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-10 py-3 rounded-xl card-bg border sidebar-border text-themed placeholder:text-themed-muted focus:outline-none focus:border-[var(--color-gold)] transition-colors"
-        />
-        {search && (
-          <button
-            onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-themed-muted hover:text-themed transition-colors"
-          >
-            <X size={16} />
-          </button>
-        )}
-      </div>
+      {/* Opening verse — the Quran's own challenge (reuses the first card's strings) */}
+      <VerseHero
+        arabic={heroMiracle.arabic}
+        text={heroMiracle.translation ?? ""}
+        reference={heroMiracle.reference}
+      />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search miracles..." className="mb-6" />
 
       {/* Category pills (shared TabBar) */}
       <TabBar
@@ -559,6 +552,12 @@ function MiraclesContent() {
             <p className="text-sm text-themed-muted py-8 text-center">
               No miracles found matching &ldquo;{search}&rdquo;
             </p>
+          )}
+          {filtered.length > 0 && (
+            <SourcesCard
+              className="mt-3"
+              sources={filtered.map((m) => ({ ref: m.reference, desc: m.title }))}
+            />
           )}
         </motion.div>
       </AnimatePresence>

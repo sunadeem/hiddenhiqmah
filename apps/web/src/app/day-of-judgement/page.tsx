@@ -12,6 +12,7 @@ import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TopicInfoCard from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -604,6 +605,13 @@ function DayOfJudgementContent() {
         subtitle="The greatest day — when every soul will stand before Allah and be held accountable."
       />
 
+      <VerseHero
+        label="The Quran"
+        arabic="يَوْمَ يَقُومُ ٱلنَّاسُ لِرَبِّ ٱلْعَـٰلَمِينَ"
+        text="The Day when mankind will stand before the Lord of the worlds."
+        reference="Quran 83:6"
+      />
+
       <PageSearch value={search} onChange={setSearch} placeholder="Search signs, events, verses..." className="mb-6" />
 
       {/* Section navigation (shared TabBar) */}
@@ -628,24 +636,6 @@ function DayOfJudgementContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  The Quran
-                </p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  يَوْمَ يَقُومُ ٱلنَّاسُ لِرَبِّ ٱلْعَـٰلَمِينَ
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;The Day when mankind will stand before the Lord of the
-                  worlds.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 83:6
-                </span>
-              </div>
-            </ContentCard>
-
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">
                 What is Yawm al-Qiyamah?
@@ -726,20 +716,6 @@ function DayOfJudgementContent() {
             transition={{ duration: 0.3 }}
             className="space-y-4"
           >
-            {/* Opening verse */}
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-lg font-arabic text-gold leading-loose mb-3">
-                  أَفَحَسِبْتُمْ أَنَّمَا خَلَقْنَـٰكُمْ عَبَثًۭا وَأَنَّكُمْ إِلَيْنَا لَا تُرْجَعُونَ
-                </p>
-                <p className="text-themed-muted italic">
-                  &ldquo;Did you think that We created you in vain and that you
-                  would not be returned to Us?&rdquo;
-                </p>
-                <p className="text-xs text-themed-muted mt-2">Quran 23:115</p>
-              </div>
-            </ContentCard>
-
             {/* Numbered points */}
             {filteredWhyItMatters.map((item, i) => (
               <ContentCard key={item.point} delay={0.05 + i * 0.05}>

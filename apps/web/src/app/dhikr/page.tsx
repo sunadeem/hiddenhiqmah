@@ -10,6 +10,8 @@ import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
 import { RotateCcw, Pencil, Check, Plus } from "lucide-react";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import { DHIKR_CATALOG_BY_KEY } from "@/lib/dhikr/catalog";
 import { hapticLight } from "@/lib/mobile/haptics";
 import PageTip from "@/components/mobile/PageTip";
@@ -511,15 +513,11 @@ function DhikrPageInner() {
         }
       />
 
-      <ContentCard className="mb-6">
-        <div className="text-center py-4">
-          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-            أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ
-          </p>
-          <p className="text-themed-muted italic">&ldquo;Verily, in the remembrance of Allah do hearts find rest.&rdquo;</p>
-          <p className="text-xs text-themed-muted mt-1">Quran 13:28</p>
-        </div>
-      </ContentCard>
+      <VerseHero
+        arabic="أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ"
+        text="Verily, in the remembrance of Allah do hearts find rest."
+        reference="Quran 13:28"
+      />
 
       <div className="max-w-5xl mx-auto">
         {manage ? (
@@ -557,6 +555,17 @@ function DhikrPageInner() {
             <Plus size={16} /> Add dhikr
           </button>
         </div>
+
+        {/* Sources */}
+        <SourcesCard className="mt-6" sources={[
+          { ref: "Muslim 5:184", desc: "SubhanAllah (33), Alhamdulillah (33), Allahu Akbar (34) after every prayer" },
+          { ref: "Bukhari 80:98", desc: "La ilaha illallah (tahleel)" },
+          { ref: "Bukhari 80:100", desc: "SubhanAllahi wa bihamdihi one hundred times" },
+          { ref: "Bukhari 80:4", desc: "Astaghfirullah — seeking forgiveness" },
+          { ref: "Bukhari 80:79", desc: "La hawla wa la quwwata illa billah" },
+          { ref: "Muslim 4:74", desc: "Salawat upon the Prophet ﷺ" },
+          { ref: "Quran 13:28", desc: "In the remembrance of Allah do hearts find rest" },
+        ]} />
       </div>
 
       {adding && (

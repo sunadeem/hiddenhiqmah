@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -12,6 +12,7 @@ import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -492,12 +493,28 @@ function JannahContent() {
     return textMatch(search, item.point, item.detail, item.reference);
   };
 
+  // auto-select the first visible topic when the active one is filtered out
+  useEffect(() => {
+    const d = descriptionTopics.filter(topicMatches);
+    if (d.length && !d.some((t) => t.id === activeDescription)) setActiveDescription(d[0].id);
+    const h = howToTopics.filter(topicMatches);
+    if (h.length && !h.some((t) => t.id === activeHowTo)) setActiveHowTo(h[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   return (
     <div>
       <PageHeader
         title="Jannah"
         titleAr="الجنة"
         subtitle="Paradise — the eternal home prepared for the believers"
+      />
+
+      <VerseHero
+        label="The Quran"
+        arabic="وَسَارِعُوٓا إِلَىٰ مَغْفِرَةٍۢ مِّن رَّبِّكُمْ وَجَنَّةٍ عَرْضُهَا ٱلسَّمَـٰوَٰتُ وَٱلْأَرْضُ أُعِدَّتْ لِلْمُتَّقِينَ"
+        text="And hasten to forgiveness from your Lord and a garden as wide as the heavens and earth, prepared for the righteous."
+        reference="Quran 3:133"
       />
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search topics, descriptions, verses..." className="mb-6" />
@@ -524,27 +541,6 @@ function JannahContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  The Quran
-                </p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  وَسَارِعُوٓا إِلَىٰ مَغْفِرَةٍۢ مِّن رَّبِّكُمْ وَجَنَّةٍ
-                  عَرْضُهَا ٱلسَّمَـٰوَٰتُ وَٱلْأَرْضُ أُعِدَّتْ
-                  لِلْمُتَّقِينَ
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;And hasten to forgiveness from your Lord and a garden
-                  as wide as the heavens and earth, prepared for the
-                  righteous.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 3:133
-                </span>
-              </div>
-            </ContentCard>
-
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">
                 What is Jannah?
@@ -627,21 +623,6 @@ function JannahContent() {
             transition={{ duration: 0.3 }}
             className="space-y-4"
           >
-            {/* Opening verse */}
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-lg font-arabic text-gold leading-loose mb-3">
-                  لَا تَعْلَمُ نَفْسٌۭ مَّآ أُخْفِىَ لَهُم مِّن قُرَّةِ
-                  أَعْيُنٍۢ جَزَآءًۢ بِمَا كَانُوا يَعْمَلُونَ
-                </p>
-                <p className="text-themed-muted italic">
-                  &ldquo;No soul knows what has been hidden for them of comfort
-                  for eyes as reward for what they used to do.&rdquo;
-                </p>
-                <p className="text-xs text-themed-muted mt-2">Quran 32:17</p>
-              </div>
-            </ContentCard>
-
             {/* Numbered points */}
             {whyItMatters.filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>

@@ -5,6 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
@@ -99,6 +103,31 @@ const rememberSubs: { key: RememberSub; label: string; icon: React.ReactNode }[]
   { key: "judgement", label: "Day of Judgement", icon: <Scale size={16} /> },
   { key: "paradise", label: "Paradise Awaits", icon: <Sparkles size={16} /> },
   { key: "mercy", label: "Hope & Mercy", icon: <HeartHandshake size={16} /> },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   SEARCH INDEX — one entry per (tab, sub) view. PageSearch filters the
+   rails by label + keywords and jumps to the first matching view.
+   ═══════════════════════════════════════════════════════════════════ */
+
+const searchIndex: { tab: MainTab; sub: string; label: string; keywords: string[] }[] = [
+  { tab: "worship", sub: "morning", label: "Morning", keywords: ["fajr", "wake", "waking", "morning adhkar", "duha", "ishraq", "quran time", "ayat al-kursi", "sunrise", "tasbeeh"] },
+  { tab: "worship", sub: "afternoon", label: "Afternoon", keywords: ["dhuhr", "asr", "midday", "dhikr", "charity", "sadaqah", "jumuah", "friday", "kahf", "salawat", "knowledge", "work"] },
+  { tab: "worship", sub: "evening", label: "Evening", keywords: ["maghrib", "isha", "witr", "evening adhkar", "sayyid al-istighfar", "family time", "sunset"] },
+  { tab: "worship", sub: "sleep", label: "Before Sleep", keywords: ["sleep", "bed", "bedtime", "wudu", "ayat al-kursi", "muhasabah", "reflection", "istighfar", "three quls", "baqarah"] },
+  { tab: "worship", sub: "midnight", label: "Midnight", keywords: ["tahajjud", "night prayer", "qiyam", "last third", "witr", "suhoor", "istighfar", "descends"] },
+  { tab: "sunnah", sub: "eating", label: "Eating & Drinking", keywords: ["bismillah", "food", "drink", "eat", "right hand", "standing", "meal", "praise"] },
+  { tab: "sunnah", sub: "greeting", label: "Greeting", keywords: ["salam", "greet", "greeting", "peace", "young", "old"] },
+  { tab: "sunnah", sub: "entering", label: "Entering & Leaving", keywords: ["home", "mosque", "enter", "entering", "leave", "leaving", "shoes", "dua"] },
+  { tab: "sunnah", sub: "dress", label: "Dress & Appearance", keywords: ["clothes", "dress", "miswak", "fitrah", "grooming", "nails", "right side"] },
+  { tab: "sunnah", sub: "speech", label: "Speech & Conduct", keywords: ["speak", "speech", "silence", "silent", "backbite", "backbiting", "truthfulness", "gossip"] },
+  { tab: "sunnah", sub: "sleeping", label: "Sleeping", keywords: ["sleep", "sleeping", "right side", "wudu", "bed"] },
+  { tab: "reminders", sub: "dunya", label: "Dunya is Temporary", keywords: ["world", "dunya", "stranger", "traveler", "amusement", "temporary"] },
+  { tab: "reminders", sub: "death", label: "Death is Near", keywords: ["death", "die", "dies", "five before five", "destroyer of pleasures", "youth"] },
+  { tab: "reminders", sub: "grave", label: "The Grave", keywords: ["grave", "hereafter", "deeds remain", "first stage"] },
+  { tab: "reminders", sub: "judgement", label: "Day of Judgement", keywords: ["judgement", "judgment", "qiyamah", "atom", "account", "reckoning", "asked"] },
+  { tab: "reminders", sub: "paradise", label: "Paradise Awaits", keywords: ["paradise", "jannah", "reward", "garden", "radiant"] },
+  { tab: "reminders", sub: "mercy", label: "Hope & Mercy", keywords: ["mercy", "forgive", "forgiveness", "despair", "hardship", "ease", "hope"] },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1056,16 +1085,18 @@ export function SunnahContent({
   activeSub,
   setActiveSub,
   hideRail = false,
+  visibleKeys,
 }: {
   activeSub: SunnahSub;
   setActiveSub: (s: SunnahSub) => void;
   hideRail?: boolean;
+  visibleKeys?: string[];
 }) {
   return (
     <div className="flex flex-col md:flex-row gap-4 items-start">
       {!hideRail && (
         <div className="daily-subrail flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
-          {sunnahSubs.map((sub) => (
+          {sunnahSubs.filter((sub) => !visibleKeys || visibleKeys.includes(sub.key)).map((sub) => (
             <button
               key={sub.key}
               onClick={() => setActiveSub(sub.key)}
@@ -1308,11 +1339,11 @@ function ReminderCard({
   );
 }
 
-function RememberContent({ activeSub, setActiveSub }: { activeSub: RememberSub; setActiveSub: (s: RememberSub) => void }) {
+function RememberContent({ activeSub, setActiveSub, visibleKeys }: { activeSub: RememberSub; setActiveSub: (s: RememberSub) => void; visibleKeys?: string[] }) {
   return (
     <div className="flex flex-col md:flex-row gap-4 items-start">
       <div className="daily-subrail flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
-        {rememberSubs.map((sub) => (
+        {rememberSubs.filter((sub) => !visibleKeys || visibleKeys.includes(sub.key)).map((sub) => (
           <button
             key={sub.key}
             onClick={() => setActiveSub(sub.key)}
@@ -1527,12 +1558,12 @@ function RememberContent({ activeSub, setActiveSub }: { activeSub: RememberSub; 
    MAIN PAGE
    ═══════════════════════════════════════════════════════════════════ */
 
-function WorshipContent({ activeSub, setActiveSub }: { activeSub: WorshipSub; setActiveSub: (s: WorshipSub) => void }) {
+function WorshipContent({ activeSub, setActiveSub, visibleKeys }: { activeSub: WorshipSub; setActiveSub: (s: WorshipSub) => void; visibleKeys?: string[] }) {
   return (
     <div className="flex flex-col md:flex-row gap-4 items-start">
       {/* Left sub-tabs */}
       <div className="daily-subrail flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
-        {worshipSubs.map((sub) => (
+        {worshipSubs.filter((sub) => !visibleKeys || visibleKeys.includes(sub.key)).map((sub) => (
           <button
             key={sub.key}
             onClick={() => setActiveSub(sub.key)}
@@ -1570,6 +1601,31 @@ function WorshipContent({ activeSub, setActiveSub }: { activeSub: WorshipSub; se
   );
 }
 
+/* Sources & References — aggregated from the refs already shown on this page's cards */
+const worshipSources = [
+  { ref: "Bukhari 80:9; Muslim 6:118; Nasai, Sunan al-Kubra 9928; Abu Dawud 43:310; Muslim 5:188; Bukhari 80:100; Bukhari 80:98; Tirmidhi 48:22; Quran 17:78; Muslim 6:101", desc: "Morning — waking, Fajr, the morning adhkar, Quran time, and Duha" },
+  { ref: "Tirmidhi 2:281; Tirmidhi 48:14; Ibn Majah 5:123; Quran 2:238; Bukhari 78:52; Muslim 45:90; Hakim Mustadrak 1:564; Abu Dawud 8:116", desc: "Afternoon — Dhuhr, midday dhikr, Asr, charity, and the Friday sunnahs" },
+  { ref: "Bukhari 9:50; Abu Dawud 43:302; Bukhari 80:3; Bukhari 14:9; Bukhari 78:69", desc: "Evening — Maghrib, the evening adhkar, Isha & Witr, and family time" },
+  { ref: "Bukhari 80:8; Muslim 48:75; Bukhari 66:39; Bukhari 40:11; Bukhari 66:31; Abu Dawud 43:273; Bukhari 80:4", desc: "Before sleep — the sleep sunnahs, bedtime duas, and istighfar" },
+  { ref: "Muslim 6:147; Bukhari 19:26; Bukhari 19:1; Quran 3:17; Bukhari 30:32", desc: "Midnight — Tahajjud, Allah's nearness in the last third, Witr, and suhoor" },
+];
+const sunnahSources = [
+  { ref: "Abu Dawud 28:32; Muslim 36:139; Bukhari 70:4; Abu Dawud 27:54; Muslim 36:148; Muslim 48:123", desc: "Eating & drinking" },
+  { ref: "Bukhari 79:5; Quran 4:86; Bukhari 2:5", desc: "Greeting" },
+  { ref: "Bukhari 4:34; Abu Dawud 43:324; Muslim 6:82; Muslim 36:136", desc: "Entering & leaving" },
+  { ref: "Bukhari 70:8; Bukhari 11:12; Muslim 2:64", desc: "Dress & appearance" },
+  { ref: "Bukhari 78:49; Quran 49:12; Bukhari 78:121", desc: "Speech & conduct" },
+  { ref: "Bukhari 80:8; Bukhari 4:113", desc: "Sleeping" },
+];
+const reminderSources = [
+  { ref: "Quran 3:185; Quran 57:20; Muslim 53:66; Tirmidhi 36:17; Bukhari 81:5", desc: "Dunya is temporary" },
+  { ref: "Tirmidhi 36:4; Quran 31:34; Quran 4:78; Shu'ab al-Iman 10248", desc: "Death is near" },
+  { ref: "Tirmidhi 36:5; Bukhari 81:103", desc: "The grave" },
+  { ref: "Quran 99:7-8; Quran 3:30; Tirmidhi 37:3; Quran 80:34-37", desc: "Day of Judgement" },
+  { ref: "Quran 32:17; Bukhari 59:55; Quran 87:17; Bukhari 56:107; Quran 3:133; Quran 75:22-23", desc: "Paradise awaits" },
+  { ref: "Quran 39:53; Bukhari 78:31; Quran 94:6; Bukhari 97:34", desc: "Hope & mercy" },
+];
+
 function MuslimDailyContent() {
   const isNative = useIsNative();
   const router = useRouter();
@@ -1584,6 +1640,39 @@ function MuslimDailyContent() {
   });
   const [sunnahSub, setSunnahSub] = useState<SunnahSub>("eating");
   const [rememberSub, setRememberSub] = useState<RememberSub>("dunya");
+  const [search, setSearch] = useState("");
+
+  /* search filters the (tab, sub) rails via the searchIndex and jumps to the
+     first matching view; clearing the query restores everything */
+  const matched = useMemo(
+    () =>
+      search.trim().length >= 2
+        ? searchIndex.filter((e) => textMatch(search, e.label, e.tab, ...e.keywords))
+        : null,
+    [search]
+  );
+  const visibleFor = (tab: MainTab): string[] | undefined =>
+    matched ? matched.filter((m) => m.tab === tab).map((m) => m.sub) : undefined;
+
+  useEffect(() => {
+    if (!matched || matched.length === 0) return;
+    const currentSub =
+      activeTab === "worship" ? worshipSub
+      : activeTab === "sunnah" ? sunnahSub
+      : activeTab === "reminders" ? rememberSub
+      : undefined;
+    const stillVisible = matched.some(
+      (m) => m.tab === activeTab && (currentSub === undefined || m.sub === currentSub)
+    );
+    if (!stillVisible) {
+      const first = matched[0];
+      setActiveTab(first.tab);
+      if (first.tab === "worship") setWorshipSub(first.sub as WorshipSub);
+      else if (first.tab === "sunnah") setSunnahSub(first.sub as SunnahSub);
+      else if (first.tab === "reminders") setRememberSub(first.sub as RememberSub);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matched]);
 
   const changeTab = (tab: MainTab) => {
     setActiveTab(tab);
@@ -1603,15 +1692,14 @@ function MuslimDailyContent() {
         subtitle="Your daily guide to living the Sunnah — organized by time of day"
       />
 
-      <ContentCard className={isNative ? "mb-4" : "mb-6"}>
-        <div className="text-center py-4">
-          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-            فَوَاللَّهِ لَلدُّنْيَا أَهْوَنُ عَلَى اللَّهِ مِنْ هَذَا عَلَيْكُمْ
-          </p>
-          <p className="text-themed-muted italic">&ldquo;By Allah, this world is more insignificant in the eye of Allah than this dead lamb is in your eyes.&rdquo;</p>
-          <p className="text-xs text-themed-muted mt-1">Muslim 55:2</p>
-        </div>
-      </ContentCard>
+      <VerseHero
+        label="The Prophet ﷺ said"
+        arabic="فَوَاللَّهِ لَلدُّنْيَا أَهْوَنُ عَلَى اللَّهِ مِنْ هَذَا عَلَيْكُمْ"
+        text="By Allah, this world is more insignificant in the eye of Allah than this dead lamb is in your eyes."
+        reference="Muslim 55:2"
+      />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search worship, sunnahs, reminders..." className="mb-6" />
 
       <div
         className={
@@ -1638,10 +1726,25 @@ function MuslimDailyContent() {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.25 }}
             >
-              {activeTab === "worship" && <WorshipContent activeSub={worshipSub} setActiveSub={changeWorshipSub} />}
-              {activeTab === "sunnah" && <SunnahContent activeSub={sunnahSub} setActiveSub={setSunnahSub} />}
+              {activeTab === "worship" && (
+                <>
+                  <WorshipContent activeSub={worshipSub} setActiveSub={changeWorshipSub} visibleKeys={visibleFor("worship")} />
+                  <SourcesCard className="mt-8" sources={worshipSources} />
+                </>
+              )}
+              {activeTab === "sunnah" && (
+                <>
+                  <SunnahContent activeSub={sunnahSub} setActiveSub={setSunnahSub} visibleKeys={visibleFor("sunnah")} />
+                  <SourcesCard className="mt-8" sources={sunnahSources} />
+                </>
+              )}
               {activeTab === "checklist" && <ChecklistTab />}
-              {activeTab === "reminders" && <RememberContent activeSub={rememberSub} setActiveSub={setRememberSub} />}
+              {activeTab === "reminders" && (
+                <>
+                  <RememberContent activeSub={rememberSub} setActiveSub={setRememberSub} visibleKeys={visibleFor("reminders")} />
+                  <SourcesCard className="mt-8" sources={reminderSources} />
+                </>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>

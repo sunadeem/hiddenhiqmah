@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -10,6 +10,9 @@ import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import {
   BookOpen,
   Scroll,
@@ -841,6 +844,21 @@ const defaultSubs: Record<RailTab, string> = {
   "wasiyyah-faqs": "wasiyyah",
 };
 
+/* ── Page search (Rule 2): the tab strip + rail are filtered by label +
+   per-view keywords; matching pills stay visible, non-matching hide, and the
+   first match is auto-selected. Empty query restores everything. ── */
+type SearchEntry = { tab: MainTab; sub?: string; label: string; keywords: string };
+
+const searchIndex: SearchEntry[] = [
+  { tab: "foundations", sub: "foundations", label: "Foundations", keywords: "ordained share sons daughters both inherit warning wealth belongs to allah faraid" },
+  { tab: "foundations", sub: "verses", label: "The Verses", keywords: "quran 4:11 4:12 4:176 children parents spouses kalalah verses of inheritance" },
+  { tab: "foundations", sub: "before", label: "Before Distribution", keywords: "order funeral expenses takfin debts duyun wasiyyah bequest distribution among heirs" },
+  { tab: "shares", label: "The Shares", keywords: "fixed shares fractions husband wife spouses children parents grandparents siblings kalalah asaba residuary worked examples half quarter eighth two-thirds sixth male double" },
+  { tab: "heirs", label: "Heirs", keywords: "categories ashab al-furud fixed-share asaba residuary dhu al-arham distant relatives who does not inherit non-muslim killer illegitimate divorced adopted" },
+  { tab: "wasiyyah-faqs", sub: "wasiyyah", label: "Wasiyyah (Will)", keywords: "will command to have a will one third rule bequest no bequest to an heir executor wasiy debts declaration of faith update" },
+  { tab: "wasiyyah-faqs", sub: "wisdom", label: "Wisdom & FAQs", keywords: "faq why male double female equal or more exclude daughter wife redistribute non-muslim country trusts joint property hibah gifts" },
+];
+
 const isRailTab = (tab: MainTab): tab is RailTab =>
   tab === "foundations" || tab === "wasiyyah-faqs";
 
@@ -882,6 +900,34 @@ function InheritanceContent() {
   const activeFoundations = activeSubOf("foundations") as FoundationsSub;
   const activeWasiyyahFaqs = activeSubOf("wasiyyah-faqs") as WasiyyahFaqsSub;
 
+  // Page search over the searchIndex rail entries (Rule 2).
+  const [search, setSearch] = useState("");
+  const searching = search.trim().length >= 2;
+  const matches = searching
+    ? searchIndex.filter((e) => textMatch(search, e.label, e.keywords))
+    : searchIndex;
+  const hasMatches = matches.length > 0;
+  const visibleTabs =
+    searching && hasMatches ? mainTabs.filter((t) => matches.some((e) => e.tab === t.key)) : mainTabs;
+  const subMatches = (tab: RailTab, sub: string) =>
+    !searching || !hasMatches || matches.some((e) => e.tab === tab && e.sub === sub);
+
+  // Auto-select the first matching view when the current one is filtered out.
+  useEffect(() => {
+    if (!searching || !hasMatches) return;
+    const currentVisible = matches.some(
+      (e) => e.tab === activeMain && (!isRailTab(activeMain) || e.sub === activeSubOf(activeMain))
+    );
+    if (currentVisible) return;
+    const target = matches.find((e) => e.tab === activeMain) ?? matches[0];
+    if (isRailTab(target.tab) && target.sub) {
+      const sub = target.sub;
+      setSubMemory((m) => ({ ...m, [target.tab]: sub }));
+    }
+    syncUrl(target.tab, isRailTab(target.tab) ? target.sub : undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   return (
     <div>
       <PageHeader
@@ -890,20 +936,16 @@ function InheritanceContent() {
         subtitle="The shares Allah decreed in the Quran — who inherits, the fixed fractions, the wasiyyah, and what must happen before distribution"
       />
 
-      <ContentCard className="mb-6">
-        <div className="text-center py-4">
-          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-            لِّلرِّجَالِ نَصِيبٌ مِّمَّا تَرَكَ ٱلْوَٰلِدَانِ وَٱلْأَقْرَبُونَ وَلِلنِّسَآءِ نَصِيبٌ مِّمَّا تَرَكَ ٱلْوَٰلِدَانِ وَٱلْأَقْرَبُونَ مِمَّا قَلَّ مِنْهُ أَوْ كَثُرَ ۚ نَصِيبًا مَّفْرُوضًا
-          </p>
-          <p className="text-themed-muted italic">
-            &ldquo;Men have a share in what parents and relatives leave behind, and women have a share in what parents and relatives leave behind, whether it is little or much; an ordained share.&rdquo;
-          </p>
-          <p className="text-xs text-themed-muted mt-1">Quran 4:7</p>
-        </div>
-      </ContentCard>
+      <VerseHero
+        arabic="لِّلرِّجَالِ نَصِيبٌ مِّمَّا تَرَكَ ٱلْوَٰلِدَانِ وَٱلْأَقْرَبُونَ وَلِلنِّسَآءِ نَصِيبٌ مِّمَّا تَرَكَ ٱلْوَٰلِدَانِ وَٱلْأَقْرَبُونَ مِمَّا قَلَّ مِنْهُ أَوْ كَثُرَ ۚ نَصِيبًا مَّفْرُوضًا"
+        text="Men have a share in what parents and relatives leave behind, and women have a share in what parents and relatives leave behind, whether it is little or much; an ordained share."
+        reference="Quran 4:7"
+      />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search shares, heirs, wasiyyah..." className="mb-6" />
 
       <TabBar
-        tabs={mainTabs}
+        tabs={visibleTabs}
         activeTab={activeMain}
         onTabChange={(key) => changeTab(key as MainTab)}
       />
@@ -919,7 +961,7 @@ function InheritanceContent() {
           >
             {activeMain === "foundations" && (
               <>
-                <SubTabLayout subs={foundationsSubs} activeSub={activeFoundations} setActiveSub={changeSub("foundations")}>
+                <SubTabLayout subs={foundationsSubs.filter((s) => subMatches("foundations", s.key))} activeSub={activeFoundations} setActiveSub={changeSub("foundations")}>
                   {activeFoundations === "foundations" && <FoundationsInheritanceTab />}
                   {activeFoundations === "verses" && <VersesInheritanceTab />}
                   {activeFoundations === "before" && <BeforeDistributionTab />}
@@ -932,7 +974,7 @@ function InheritanceContent() {
             {activeMain === "heirs" && <HeirsTab />}
             {activeMain === "wasiyyah-faqs" && (
               <>
-                <SubTabLayout subs={wasiyyahFaqsSubs} activeSub={activeWasiyyahFaqs} setActiveSub={changeSub("wasiyyah-faqs")}>
+                <SubTabLayout subs={wasiyyahFaqsSubs.filter((s) => subMatches("wasiyyah-faqs", s.key))} activeSub={activeWasiyyahFaqs} setActiveSub={changeSub("wasiyyah-faqs")}>
                   {activeWasiyyahFaqs === "wasiyyah" && <WasiyyahTab />}
                   {activeWasiyyahFaqs === "wisdom" && <WisdomInheritanceTab />}
                 </SubTabLayout>

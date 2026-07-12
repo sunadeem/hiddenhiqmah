@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,6 +12,7 @@ import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { Calendar } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -394,15 +395,16 @@ function IslamicCalendarContent() {
   const filteredMonths = useMemo(
     () =>
       search
-        ? months.filter(
-            (m) =>
-              textMatch(m.name, search) ||
-              textMatch(m.nameAr, search) ||
-              textMatch(m.meaning, search) ||
-              textMatch(m.intro, search) ||
-              m.points.some(
-                (p) => textMatch(p.title, search) || textMatch(p.detail, search)
-              )
+        ? months.filter((m) =>
+            textMatch(
+              search,
+              m.name,
+              m.nameAr,
+              m.meaning,
+              m.intro,
+              ...m.points.map((p) => p.title),
+              ...m.points.map((p) => p.detail)
+            )
           )
         : months,
     [search]
@@ -411,15 +413,18 @@ function IslamicCalendarContent() {
   const filteredKeyDates = useMemo(
     () =>
       search
-        ? keyDates.filter(
-            (d) =>
-              textMatch(d.date, search) ||
-              textMatch(d.event, search) ||
-              textMatch(d.note, search)
-          )
+        ? keyDates.filter((d) => textMatch(search, d.date, d.event, d.note))
         : keyDates,
     [search]
   );
+
+  /* auto-expand the first visible month when search filters out the expanded one */
+  useEffect(() => {
+    if (!search || search.length < 2) return;
+    if (filteredMonths.length && !filteredMonths.some((m) => m.id === expandedMonth)) {
+      setExpandedMonth(filteredMonths[0].id);
+    }
+  }, [search, filteredMonths, expandedMonth]);
 
   const todayHijri = useMemo(() => {
     try {
@@ -504,6 +509,12 @@ function IslamicCalendarContent() {
         }
       />
 
+      <VerseHero
+        arabic="إِنَّ عِدَّةَ ٱلشُّهُورِ عِندَ ٱللَّهِ ٱثْنَا عَشَرَ شَهْرًۭا فِى كِتَـٰبِ ٱللَّهِ يَوْمَ خَلَقَ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ مِنْهَآ أَرْبَعَةٌ حُرُمٌۭ"
+        text="Indeed, the number of months with Allah is twelve months in the register of Allah from the day He created the heavens and the earth; of these, four are sacred."
+        reference="Quran 9:36"
+      />
+
       <PageSearch value={search} onChange={setSearch} placeholder="Search months, events, dates..." className="mb-6" />
 
       {/* Section navigation (shared TabBar) */}
@@ -528,23 +539,6 @@ function IslamicCalendarContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  The Quran
-                </p>
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-4">
-                  إِنَّ عِدَّةَ ٱلشُّهُورِ عِندَ ٱللَّهِ ٱثْنَا عَشَرَ شَهْرًۭا فِى كِتَـٰبِ ٱللَّهِ يَوْمَ خَلَقَ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ مِنْهَآ أَرْبَعَةٌ حُرُمٌۭ
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;Indeed, the number of months with Allah is twelve months in the register of Allah from the day He created the heavens and the earth; of these, four are sacred.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 9:36
-                </span>
-              </div>
-            </ContentCard>
-
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">
                 What is the Hijri Calendar?
@@ -701,6 +695,20 @@ function IslamicCalendarContent() {
                 );
               })()}
             </AnimatePresence>
+
+            {/* Sources */}
+            <SourcesCard className="mt-6" sources={[
+              { ref: "Muslim 13:261; Muslim 13:253; Muslim 13:173; Bukhari 30:109; Muslim 13:162", desc: "Muharram — the month of Allah, the Day of Ashura, and Musa (peace be upon him)" },
+              { ref: "Bukhari 76:27; Muslim 39:141; Bukhari 63:131", desc: "Safar — no bad omens; the Hijrah journey" },
+              { ref: "Muslim 13:256; Bukhari 63:131; Tirmidhi 49:14", desc: "Rabi al-Awwal — the Prophet's birth, arrival in Madinah, and death" },
+              { ref: "Bukhari 81:53; Bukhari 61:129; Bukhari 23:113; Muslim 1:39", desc: "Rabi al-Thani, Jumada al-Ula, Jumada al-Thani — consistency in deeds; Fatimah; Abu Talib" },
+              { ref: "Bukhari 65:184; Bukhari 63:112; Muslim 1:321; Abu Dawud 14:116", desc: "Rajab — the solitary sacred month; al-Isra wal-Mi'raj; fasting in the sacred months" },
+              { ref: "Bukhari 30:76; Muslim 13:229; Nasai 22:268; Abu Dawud 14:25; Tirmidhi 8:57", desc: "Sha'ban — the Prophet's fasting; deeds raised to Allah" },
+              { ref: "Quran 2:183; Quran 2:185; Quran 97:1-5; Bukhari 91:10; Bukhari 32:1; Bukhari 30:9; Muslim 13:1", desc: "Ramadan — the obligation of fasting, the revelation of the Quran, Laylatul Qadr" },
+              { ref: "Bukhari 13:5; Muslim 13:264; Bukhari 64:90", desc: "Shawwal — Eid al-Fitr, the six days of Shawwal, the Battle of Uhud" },
+              { ref: "Quran 9:36; Bukhari 65:184; Bukhari 64:192", desc: "Dhul Qi'dah — a sacred month; the Prophet's Umrahs" },
+              { ref: "Bukhari 13:18; Muslim 13:253; Abu Dawud 11:45; Bukhari 73:9; Muslim 13:183; Bukhari 26:1; Muslim 15:493", desc: "Dhul Hijjah — the best ten days, Arafah, Eid al-Adha, Tashriq, and Hajj" },
+            ]} />
           </motion.div>
         )}
 
@@ -714,23 +722,6 @@ function IslamicCalendarContent() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            <ContentCard>
-              <div className="text-center py-6">
-                <p className="text-xs text-themed-muted mb-3 uppercase tracking-wider">
-                  The Quran
-                </p>
-                <p className="text-xl md:text-2xl font-arabic text-gold leading-loose mb-4">
-                  ذَٰلِكَ ٱلدِّينُ ٱلْقَيِّمُ ۚ فَلَا تَظْلِمُوا۟ فِيهِنَّ أَنفُسَكُمْ
-                </p>
-                <p className="text-themed-muted italic mb-2 max-w-2xl mx-auto">
-                  &ldquo;That is the correct religion, so do not wrong yourselves during them.&rdquo;
-                </p>
-                <span className="inline-block mt-3 text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 9:36
-                </span>
-              </div>
-            </ContentCard>
-
             <ContentCard delay={0.1}>
               <h2 className="text-xl font-semibold text-themed mb-4">
                 The Four Sacred Months

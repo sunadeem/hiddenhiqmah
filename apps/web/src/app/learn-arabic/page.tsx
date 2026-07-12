@@ -7,6 +7,7 @@ import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { BookOpen, Volume2 } from "lucide-react";
@@ -521,6 +522,12 @@ function LearnArabicContent() {
         subtitle="Learn the language of the Quran — the key to understanding Allah's words directly"
       />
 
+      <VerseHero
+        arabic="ٱقْرَأْ بِٱسْمِ رَبِّكَ ٱلَّذِى خَلَقَ"
+        text="Read! In the name of your Lord who created."
+        reference="Quran 96:1 — The first verse revealed"
+      />
+
       <PageSearch value={search} onChange={setSearch} placeholder="Search letters, words, phrases..." className="mb-6" />
 
       {/* Section navigation (shared TabBar) */}
@@ -535,20 +542,6 @@ function LearnArabicContent() {
         {/* ═══════════════ ALPHABET ═══════════════ */}
         {activeSection === "alphabet" && (
           <motion.div key="alphabet" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="space-y-6">
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-3">
-                  ٱقْرَأْ بِٱسْمِ رَبِّكَ ٱلَّذِى خَلَقَ
-                </p>
-                <p className="text-themed-muted italic text-sm mb-2">
-                  &ldquo;Read! In the name of your Lord who created.&rdquo;
-                </p>
-                <span className="text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 96:1 — The first verse revealed
-                </span>
-              </div>
-            </ContentCard>
-
             <ContentCard delay={0.1}>
               <h2 className="text-lg font-semibold text-themed mb-2">The Arabic Alphabet</h2>
               <p className="text-sm text-themed-muted mb-4">
@@ -905,20 +898,6 @@ function LearnArabicContent() {
         {/* ═══════════════ LEARNING TIPS ═══════════════ */}
         {activeSection === "tips" && (
           <motion.div key="tips" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="space-y-6">
-            <ContentCard>
-              <div className="text-center py-4">
-                <p className="text-2xl md:text-3xl font-arabic text-gold leading-loose mb-3">
-                  وَلَقَدْ يَسَّرْنَا ٱلْقُرْءَانَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍۢ
-                </p>
-                <p className="text-themed-muted italic text-sm mb-2">
-                  &ldquo;And We have certainly made the Quran easy to remember. So is there anyone who will be mindful?&rdquo;
-                </p>
-                <span className="text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
-                  Quran 54:17
-                </span>
-              </div>
-            </ContentCard>
-
             {[
               {
                 title: "1. Start with the Alphabet & Sounds",

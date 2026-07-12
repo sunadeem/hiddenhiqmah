@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
@@ -11,6 +11,9 @@ import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import {
   BookOpen,
   HandHeart,
@@ -747,6 +750,21 @@ const defaultSubs: Record<RailTab, string> = {
   "grief-visiting": "grief",
 };
 
+/* ── Page search (Rule 2): the tab strip + rail are filtered by label +
+   per-view keywords; matching pills stay visible, non-matching hide, and the
+   first match is auto-selected. Empty query restores everything. ── */
+type SearchEntry = { tab: MainTab; sub?: string; label: string; keywords: string };
+
+const searchIndex: SearchEntry[] = [
+  { tab: "preparing", label: "Preparing", keywords: "reality of death remember often wasiyyah will debts settle tawbah repentance husn al-khatimah good ending visit graves live as if today" },
+  { tab: "dying", label: "The Dying", keywords: "dying moments shahada la ilaha illallah prompt talqin speak only good yasin dua soul departs inna lillahi" },
+  { tab: "washing-janazah", sub: "washing", label: "Washing & Shrouding", keywords: "ghusl wash the body who washes odd number sidr camphor kafan shroud white sheets fragrance hasten" },
+  { tab: "washing-janazah", sub: "janazah", label: "Janazah Prayer", keywords: "funeral prayer takbir fatihah salawat dua for the deceased salam reward qirat standing" },
+  { tab: "burial", label: "Burial", keywords: "grave lower lahd depth untie shroud three handfuls of earth raise slightly dua after burial women" },
+  { tab: "grief-visiting", sub: "grief", label: "Grief & Patience", keywords: "mourning loss patience first shock tears wailing permitted iddah widow four months cooking for the bereaved" },
+  { tab: "grief-visiting", sub: "visiting", label: "Visiting Graves", keywords: "graveyard salam dua reminder of the hereafter don't sit on graves don't pray at graves respect reflect" },
+];
+
 const isRailTab = (tab: MainTab): tab is RailTab =>
   tab === "washing-janazah" || tab === "grief-visiting";
 
@@ -788,6 +806,34 @@ function DeathRitesContent() {
   const activeWashing = activeSubOf("washing-janazah") as WashingJanazahSub;
   const activeGrief = activeSubOf("grief-visiting") as GriefVisitingSub;
 
+  // Page search over the searchIndex rail entries (Rule 2).
+  const [search, setSearch] = useState("");
+  const searching = search.trim().length >= 2;
+  const matches = searching
+    ? searchIndex.filter((e) => textMatch(search, e.label, e.keywords))
+    : searchIndex;
+  const hasMatches = matches.length > 0;
+  const visibleTabs =
+    searching && hasMatches ? mainTabs.filter((t) => matches.some((e) => e.tab === t.key)) : mainTabs;
+  const subMatches = (tab: RailTab, sub: string) =>
+    !searching || !hasMatches || matches.some((e) => e.tab === tab && e.sub === sub);
+
+  // Auto-select the first matching view when the current one is filtered out.
+  useEffect(() => {
+    if (!searching || !hasMatches) return;
+    const currentVisible = matches.some(
+      (e) => e.tab === activeMain && (!isRailTab(activeMain) || e.sub === activeSubOf(activeMain))
+    );
+    if (currentVisible) return;
+    const target = matches.find((e) => e.tab === activeMain) ?? matches[0];
+    if (isRailTab(target.tab) && target.sub) {
+      const sub = target.sub;
+      setSubMemory((m) => ({ ...m, [target.tab]: sub }));
+    }
+    syncUrl(target.tab, isRailTab(target.tab) ? target.sub : undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   return (
     <div>
       <PageHeader
@@ -796,20 +842,16 @@ function DeathRitesContent() {
         subtitle="Preparing for death, the dying moments, washing and shrouding, the janazah prayer, burial, grief, and visiting graves"
       />
 
-      <ContentCard className="mb-6">
-        <div className="text-center py-4">
-          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-            ٱلَّذِينَ إِذَآ أَصَـٰبَتْهُم مُّصِيبَةٌ قَالُوٓا۟ إِنَّا لِلَّهِ وَإِنَّآ إِلَيْهِ رَٰجِعُونَ
-          </p>
-          <p className="text-themed-muted italic">
-            &ldquo;Those when afflicted with a disaster, say, “We belong to Allah, and to Him we will return.”&rdquo;
-          </p>
-          <p className="text-xs text-themed-muted mt-1">Quran 2:156</p>
-        </div>
-      </ContentCard>
+      <VerseHero
+        arabic="ٱلَّذِينَ إِذَآ أَصَـٰبَتْهُم مُّصِيبَةٌ قَالُوٓا۟ إِنَّا لِلَّهِ وَإِنَّآ إِلَيْهِ رَٰجِعُونَ"
+        text="Those when afflicted with a disaster, say, “We belong to Allah, and to Him we will return.”"
+        reference="Quran 2:156"
+      />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search janazah, burial, grief..." className="mb-6" />
 
       <TabBar
-        tabs={mainTabs}
+        tabs={visibleTabs}
         activeTab={activeMain}
         onTabChange={(key) => changeTab(key as MainTab)}
       />
@@ -827,7 +869,7 @@ function DeathRitesContent() {
             {activeMain === "dying" && <DyingMomentsTab />}
             {activeMain === "washing-janazah" && (
               <>
-                <SubTabLayout subs={washingJanazahSubs} activeSub={activeWashing} setActiveSub={changeSub("washing-janazah")}>
+                <SubTabLayout subs={washingJanazahSubs.filter((s) => subMatches("washing-janazah", s.key))} activeSub={activeWashing} setActiveSub={changeSub("washing-janazah")}>
                   {activeWashing === "washing" && <WashingTab />}
                   {activeWashing === "janazah" && <JanazahTab />}
                 </SubTabLayout>
@@ -838,7 +880,7 @@ function DeathRitesContent() {
             {activeMain === "burial" && <BurialTab />}
             {activeMain === "grief-visiting" && (
               <>
-                <SubTabLayout subs={griefVisitingSubs} activeSub={activeGrief} setActiveSub={changeSub("grief-visiting")}>
+                <SubTabLayout subs={griefVisitingSubs.filter((s) => subMatches("grief-visiting", s.key))} activeSub={activeGrief} setActiveSub={changeSub("grief-visiting")}>
                   {activeGrief === "grief" && <GriefTab />}
                   {activeGrief === "visiting" && <VisitingGravesTab />}
                 </SubTabLayout>

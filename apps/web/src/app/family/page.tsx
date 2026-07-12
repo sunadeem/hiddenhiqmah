@@ -11,6 +11,9 @@ import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import {
   BookOpen,
   Heart,
@@ -1385,6 +1388,33 @@ const kinshipSources: Record<KinshipSub, SourceRef[]> = {
   ],
 };
 
+/* ── Page search (Rule 2): the rail is filtered by label + per-view keywords;
+   matching pills stay visible, non-matching hide, and the first match is
+   auto-selected. Empty query restores everything. ── */
+type SearchEntry = { tab: MainTab; sub: string; label: string; keywords: string };
+
+const searchIndex: SearchEntry[] = [
+  { tab: "children", sub: "conceiving", label: "Conceiving", keywords: "conceive trying for a child offspring dua before intimacy zakariyya pure offspring recite quran dhikr patience" },
+  { tab: "children", sub: "pregnancy", label: "Pregnancy", keywords: "pregnant mother weakness upon weakness burden maryam vow thirty months reward" },
+  { tab: "children", sub: "newborn", label: "Newborn", keywords: "baby adhan right ear tahnik softened date beautiful name aqiqah seventh day khitan circumcision" },
+  { tab: "children", sub: "blessings", label: "Blessings", keywords: "gift adornment trial test loss of a child do not compete takathur child's dua after you" },
+  { tab: "children", sub: "rights", label: "Rights of Children", keywords: "good mother father beautiful name education deen teach salah equal treatment justice provision protection mercy curse" },
+  { tab: "children", sub: "raising", label: "Raising Them Right", keywords: "tarbiyah teach tawhid be the example dua habit play speak gently correct privately company friends don't lie" },
+  { tab: "children", sub: "daughters", label: "Virtue of Daughters", keywords: "girls shield from the fire paradise buried alive condemnation raising daughters" },
+  { tab: "parents", sub: "rights", label: "Rights of Parents", keywords: "birr walidayn goodness obedience uff sigh humility mother three times over pleasing allah door of paradise" },
+  { tab: "parents", sub: "quran", label: "In the Quran", keywords: "verses worship none but him old age noble word wing of humility weaning grateful hardship" },
+  { tab: "parents", sub: "sunnah", label: "From the Sunnah", keywords: "hadith prayer on time jihad aging parents supplication answered pleasure anger" },
+  { tab: "parents", sub: "duas", label: "Du'a for Parents", keywords: "dua supplication rabbi irhamhuma mercy ibrahim nuh forgiveness" },
+  { tab: "parents", sub: "after", label: "After They Pass", keywords: "after death ongoing dua sadaqah charity on their behalf honor their friends maintain ties" },
+  { tab: "elders", sub: "elderly", label: "Honoring Elderly", keywords: "old age grey hair respect honor let elders speak first practical kindness precious dua" },
+  { tab: "elders", sub: "sick", label: "Visiting the Sick", keywords: "illness visit angels garden of paradise keep it short speak hope dua healing bring something" },
+  { tab: "kinship", sub: "why", label: "Why Kinship Matters", keywords: "silat rahim womb ties relatives clings to the throne name from ar-rahman fear allah" },
+  { tab: "kinship", sub: "reward", label: "Reward of Maintaining Ties", keywords: "provision expanded life extended barakah khadijah first testimony" },
+  { tab: "kinship", sub: "severing", label: "Severity of Cutting Ties", keywords: "cutting severing qati will not enter paradise curse corruption what counts as severing" },
+  { tab: "kinship", sub: "who", label: "Who Counts as Kin", keywords: "parents first nearest kin relatives in-laws practical upkeep parents' friends" },
+  { tab: "kinship", sub: "cut-off", label: "When They Cut You Off", keywords: "one-sided reconcile hot ashes allah's support reward boundaries harm" },
+];
+
 function FamilyContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -1432,6 +1462,28 @@ function FamilyContent() {
   const activeChildren = activeSubOf("children") as ChildrenSub;
   const activeKinship = activeSubOf("kinship") as KinshipSub;
 
+  // Page search over the searchIndex rail entries (Rule 2).
+  const [search, setSearch] = useState("");
+  const searching = search.trim().length >= 2;
+  const matches = searching
+    ? searchIndex.filter((e) => textMatch(search, e.label, e.keywords))
+    : searchIndex;
+  const hasMatches = matches.length > 0;
+  const visibleTabs =
+    searching && hasMatches ? mainTabs.filter((t) => matches.some((e) => e.tab === t.key)) : mainTabs;
+  const subMatches = (tab: MainTab, sub: string) =>
+    !searching || !hasMatches || matches.some((e) => e.tab === tab && e.sub === sub);
+
+  // Auto-select the first matching view when the current one is filtered out.
+  useEffect(() => {
+    if (!searching || !hasMatches) return;
+    if (matches.some((e) => e.tab === activeMain && e.sub === activeSubOf(activeMain))) return;
+    const target = matches.find((e) => e.tab === activeMain) ?? matches[0];
+    setSubMemory((m) => ({ ...m, [target.tab]: target.sub }));
+    syncUrl(target.tab, target.sub);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   return (
     <div>
       <PageHeader
@@ -1440,20 +1492,16 @@ function FamilyContent() {
         subtitle="Rights of parents, raising children, kinship ties, honoring elders — and the duas that bind family together"
       />
 
-      <ContentCard className="mb-6">
-        <div className="text-center py-4">
-          <p className="text-2xl font-arabic text-gold leading-loose mb-3">
-            وَقَضَىٰ رَبُّكَ أَلَّا تَعْبُدُوا إِلَّا إِيَّاهُ وَبِالْوَالِدَيْنِ إِحْسَانًا
-          </p>
-          <p className="text-themed-muted italic">
-            &ldquo;Your Lord has decreed that you worship none but Him, and that you be good to your parents.&rdquo;
-          </p>
-          <p className="text-xs text-themed-muted mt-1">Quran 17:23</p>
-        </div>
-      </ContentCard>
+      <VerseHero
+        arabic="وَقَضَىٰ رَبُّكَ أَلَّا تَعْبُدُوا إِلَّا إِيَّاهُ وَبِالْوَالِدَيْنِ إِحْسَانًا"
+        text="Your Lord has decreed that you worship none but Him, and that you be good to your parents."
+        reference="Quran 17:23"
+      />
+
+      <PageSearch value={search} onChange={setSearch} placeholder="Search parents, children, kinship..." className="mb-6" />
 
       <TabBar
-        tabs={mainTabs}
+        tabs={visibleTabs}
         activeTab={activeMain}
         onTabChange={(key) => changeTab(key as MainTab)}
       />
@@ -1469,7 +1517,7 @@ function FamilyContent() {
           >
             {activeMain === "parents" && (
               <>
-                <SubTabLayout subs={parentsSubs} activeSub={activeParents} setActiveSub={changeSub("parents")}>
+                <SubTabLayout subs={parentsSubs.filter((s) => subMatches("parents", s.key))} activeSub={activeParents} setActiveSub={changeSub("parents")}>
                   {activeParents === "rights" && <RightsTab />}
                   {activeParents === "quran" && <QuranTab />}
                   {activeParents === "sunnah" && <SunnahTab />}
@@ -1482,7 +1530,7 @@ function FamilyContent() {
             )}
             {activeMain === "elders" && (
               <>
-                <SubTabLayout subs={eldersSubs} activeSub={activeElders} setActiveSub={changeSub("elders")}>
+                <SubTabLayout subs={eldersSubs.filter((s) => subMatches("elders", s.key))} activeSub={activeElders} setActiveSub={changeSub("elders")}>
                   {activeElders === "elderly" && <ElderlyTab />}
                   {activeElders === "sick" && <SickTab />}
                 </SubTabLayout>
@@ -1492,7 +1540,7 @@ function FamilyContent() {
             )}
             {activeMain === "children" && (
               <>
-                <SubTabLayout subs={childrenSubs} activeSub={activeChildren} setActiveSub={changeSub("children")}>
+                <SubTabLayout subs={childrenSubs.filter((s) => subMatches("children", s.key))} activeSub={activeChildren} setActiveSub={changeSub("children")}>
                   {activeChildren === "conceiving" && <ConceivingTab />}
                   {activeChildren === "pregnancy" && <PregnancyTab />}
                   {activeChildren === "newborn" && <NewbornTab />}
@@ -1507,7 +1555,7 @@ function FamilyContent() {
             )}
             {activeMain === "kinship" && (
               <>
-                <SubTabLayout subs={kinshipSubs} activeSub={activeKinship} setActiveSub={changeSub("kinship")}>
+                <SubTabLayout subs={kinshipSubs.filter((s) => subMatches("kinship", s.key))} activeSub={activeKinship} setActiveSub={changeSub("kinship")}>
                   {activeKinship === "why" && <KinshipWhyTab />}
                   {activeKinship === "reward" && <KinshipRewardTab />}
                   {activeKinship === "severing" && <KinshipSeveringTab />}

@@ -10,6 +10,8 @@ import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import { ArrowLeft, Sun, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import { getBookmarks, addBookmark, removeBookmark } from "@hidden-hiqmah/ui/lib/storage";
 
 type Dua = {
@@ -819,6 +821,9 @@ function DuasContent() {
 
   const activeCat = categories.find((c) => c.key === activeCategory);
 
+  // Page hero — reuses the exact strings of the Dua of Yunus card below.
+  const heroDua = duas.find((d) => d.id === "dua-of-yunus");
+
   // One dua card — rendered by both the category list and global search results
   const renderDuaCard = (dua: Dua, i: number) => {
     const displayTag = !isSearching && activeCategory ? activeCategory : dua.tags[0];
@@ -894,6 +899,15 @@ function DuasContent() {
         subtitle="Authentic daily supplications with Arabic, transliteration, translation, and virtues"
       />
 
+      {/* Opening dua — the dua of Yunus (built from this page's own data) */}
+      {heroDua && (
+        <VerseHero
+          arabic={heroDua.arabic}
+          text={heroDua.translation}
+          reference={heroDua.source}
+        />
+      )}
+
       {/* Search — global across every category, landing or not */}
       <PageSearch
         value={search}
@@ -918,6 +932,11 @@ function DuasContent() {
               <p className="text-sm text-themed-muted py-8 text-center">
                 No duas found matching &ldquo;{search}&rdquo;
               </p>
+            )}
+            {filtered.length > 0 && (
+              <SourcesCard
+                sources={filtered.map((d) => ({ ref: d.source, desc: d.title }))}
+              />
             )}
           </motion.div>
         ) : activeCategory ? (
@@ -969,6 +988,13 @@ function DuasContent() {
             <div className="space-y-5">
               {filtered.map(renderDuaCard)}
             </div>
+
+            {filtered.length > 0 && (
+              <SourcesCard
+                className="mt-5"
+                sources={filtered.map((d) => ({ ref: d.source, desc: d.title }))}
+              />
+            )}
           </motion.div>
         ) : (
           /* Category landing grid */
