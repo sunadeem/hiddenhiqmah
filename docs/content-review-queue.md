@@ -53,3 +53,6 @@ citation you trust, or remove._
 31. Majority (Hanafi/Maliki/Shafiʿi) position that Jumuʿah's window = Dhuhr's window (zawāl → ʿAsr) — generic attribution. (Anas "immediately after midday" Bukhari 11:28 + Jabir Muslim 7:39 ARE cited, verified.)
 32. Hanbali permission to hold Jumuʿah before zawāl — generic attribution. (Supporting narrations Bukhari 11:29 + Bukhari 11:63 / Muslim 7:41 ARE cited, verified.)
 33. Definition of zawāl (sun passing zenith = start of Dhuhr's time) — standard fiqh definition, no single citation.
+
+## Timeline reference completions (2026-07-12)
+34. Grandfather's passing + Hilf al-Fudul now attributed to "Seerah — Ibn Hisham; Ibn Sa'd" (plain-text source rows, no hadith-collection citation exists). The other formerly ref-less events got verified local refs: Abyssinia (Bukhari 39:8; 62:46), Ka'bah rebuilding (Bukhari 63:54), Boycott (Bukhari 25:76; 63:107).

@@ -195,6 +195,7 @@ const timeline: TimelineEvent[] = [
   {
     year: "578 CE",
     title: "Grandfather Abdul Muttalib passes away",
+    reference: "Seerah — Ibn Hisham; Ibn Sa'd, at-Tabaqat",
     detail:
       "Abdul Muttalib, who had been deeply attached to his grandson and recognized his special qualities, passed away when Muhammad ﷺ was eight years old. On his deathbed, he entrusted the boy to his son Abu Talib, who was the full brother of the Prophet's ﷺ father Abdullah. Abu Talib took Muhammad ﷺ into his household, treating him with more care than his own children, and would remain his protector and supporter for the next four decades. Despite never embracing Islam, Abu Talib shielded the Prophet ﷺ from the Quraysh and refused all pressure to hand him over.",
   },
@@ -215,6 +216,7 @@ const timeline: TimelineEvent[] = [
   {
     year: "605 CE",
     title: "Hilf al-Fudul & Rebuilding of the Ka'bah",
+    reference: "Bukhari 63:54; Seerah — Ibn Hisham (Hilf al-Fudul)",
     detail:
       "In his thirties, Muhammad ﷺ participated in two defining events. First, he joined the Hilf al-Fudul (Pact of the Virtuous) — an alliance formed at the house of Abdullah ibn Jud'an by several Quraysh clans to protect the oppressed and ensure justice for anyone wronged in Mecca, regardless of their tribe. The Prophet ﷺ later said after Islam: 'I witnessed a pact in the house of Ibn Jud'an that was more beloved to me than a herd of red camels. If I were called to it now in Islam, I would respond.' Around the same time, when the Ka'bah was damaged by flooding and the Quraysh rebuilt it, a fierce dispute arose over which clan would have the honor of placing the Black Stone (al-Hajar al-Aswad) back in its corner. They nearly came to blows until they agreed to let the next person who entered the Sanctuary decide. That person was Muhammad ﷺ. He placed the Black Stone on a cloth, had a representative from each tribe hold a corner and lift it together, then set it in place with his own hands — a solution that satisfied all and prevented bloodshed.",
   },
@@ -235,12 +237,14 @@ const timeline: TimelineEvent[] = [
   {
     year: "615 CE",
     title: "First migration to Abyssinia",
+    reference: "Bukhari 39:8; Bukhari 62:46",
     detail:
       "As the persecution of Muslims in Mecca became unbearable, the Prophet ﷺ told his companions: 'If you went to the land of Abyssinia, you would find a king under whom no one is oppressed.' He sent a first group of 11 men and 4 women, followed later by a larger second migration of about 83 men and 18 women. The Quraysh sent Amr ibn al-As and Abdullah ibn Abi Rabi'ah with lavish gifts for the Negus (An-Najashi) and his courtiers, demanding the return of the Muslims. In the royal court, Ja'far ibn Abi Talib — the Prophet's ﷺ cousin — stood and delivered a powerful speech: 'O King, we were a people of ignorance, worshipping idols, eating dead animals, committing shameful acts... then Allah sent us a Messenger from among us, whose lineage, truthfulness, trustworthiness, and purity we knew.' He then recited the opening verses of Surah Maryam about the birth of Isa (Jesus). The Negus wept until his beard was wet and declared he would never hand them over. The Muslims remained safely in Abyssinia for years, and the Negus later embraced Islam.",
   },
   {
     year: "616 CE",
     title: "Boycott of Banu Hashim",
+    reference: "Bukhari 25:76; Bukhari 63:107",
     detail:
       "Unable to stop Islam's growth, the Quraysh imposed a complete social and economic boycott on the Banu Hashim and Banu al-Muttalib clans — both Muslim and non-Muslim members. They drafted a document banning all trade, marriage, and social interaction, and hung it inside the Ka'bah. The entire clan was confined to the narrow valley of Shi'b Abi Talib for nearly three years (616–619 CE). The suffering was immense — the sounds of children crying from hunger could be heard beyond the valley. Some sympathetic Meccans would secretly smuggle food at night, but it was never enough. The Prophet ﷺ and his followers survived on leaves and scraps of leather. The boycott finally ended when several just men of the Quraysh — including Hisham ibn Amr and Zuhayr ibn Abi Umayyah — publicly denounced the injustice. When they went to tear up the parchment, they found that termites had eaten away all the writing except the words 'Bismika Allahumma' (In Your Name, O Allah), confirming what the Prophet ﷺ had told Abu Talib would happen.",
   },
