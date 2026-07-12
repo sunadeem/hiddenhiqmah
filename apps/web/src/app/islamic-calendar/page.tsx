@@ -568,7 +568,7 @@ function IslamicCalendarContent() {
             {/* Sources */}
             <SourcesCard sources={[
               { ref: "Quran 9:36", desc: "Twelve months ordained by Allah, four sacred" },
-              { ref: "Quran 2:185, 2:189", desc: "Ramadan and the crescent moons" },
+              { ref: "Quran 2:185; Quran 2:189", desc: "Ramadan and the crescent moons" },
               { ref: "Bukhari 65:184; Muslim 13:261", desc: "The four sacred months named by the Prophet" },
               { ref: "Bukhari 63:131", desc: "The Hijrah and the establishment of the calendar" },
             ]} />
@@ -877,10 +877,10 @@ function IslamicCalendarContent() {
 
             {/* Sources */}
             <SourcesCard delay={0.4} sources={[
-              { ref: "Quran 2:183, 2:185", desc: "Fasting prescribed in Ramadan" },
+              { ref: "Quran 2:183; Quran 2:185", desc: "Fasting prescribed in Ramadan" },
               { ref: "Quran 97:1-5", desc: "Laylatul Qadr better than a thousand months" },
-              { ref: "Bukhari 13:5, 13:18, 32:1", desc: "Eid, best ten days, Laylatul Qadr" },
-              { ref: "Muslim 13:173, 13:253, 13:264, 13:183", desc: "Ashura, Arafah, six days of Shawwal, Tashriq" },
+              { ref: "Bukhari 13:5; Bukhari 13:18; Bukhari 32:1", desc: "Eid, best ten days, Laylatul Qadr" },
+              { ref: "Muslim 13:173; Muslim 13:253; Muslim 13:264; Muslim 13:183", desc: "Ashura, Arafah, six days of Shawwal, Tashriq" },
               { ref: "Abu Dawud 11:45", desc: "The Day of Sacrifice is the greatest day" },
             ]} />
           </motion.div>

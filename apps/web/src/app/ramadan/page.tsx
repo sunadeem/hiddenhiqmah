@@ -102,7 +102,7 @@ const fastingTopics: FastingTopic[] = [
           note: "Quran 2:187",
         },
       ],
-      source: "Quran 2:183-187; Bukhari 30:32, 30:64; Muslim 13:55",
+      source: "Quran 2:183-187; Bukhari 30:32; Bukhari 30:64; Muslim 13:55",
     },
   },
   {
@@ -143,7 +143,7 @@ const fastingTopics: FastingTopic[] = [
           note: "Abu Dawud 14:55; differed upon — see Fiqh us-Sunnah",
         },
       ],
-      source: "Bukhari 30:40, 30:42; Muslim 13:101, 13:222; Abu Dawud 14:68",
+      source: "Bukhari 30:40; Bukhari 30:42; Muslim 13:101; Muslim 13:222; Abu Dawud 14:68",
     },
   },
   {
@@ -241,7 +241,7 @@ const fastingTopics: FastingTopic[] = [
           note: "Bukhari 6:9; Muslim 3:85",
         },
       ],
-      source: "Quran 2:184-185; Bukhari 6:9, 65:32; Muslim 3:85, 13:112",
+      source: "Quran 2:184-185; Bukhari 6:9; Bukhari 65:32; Muslim 3:85; Muslim 13:112",
     },
   },
   {
@@ -275,7 +275,7 @@ const fastingTopics: FastingTopic[] = [
             "Scholars agree that make-up fasts should ideally be completed before the next Ramadan. If delayed without a valid reason, some scholars (Shafi'i, Hanbali, Maliki) say fidyah must also be paid in addition to making up the days. The Hanafi school does not require the additional fidyah but considers the delay sinful if without excuse.",
         },
       ],
-      source: "Quran 2:184-185; Bukhari 30:44, 65:32; Muslim 13:101, 13:193",
+      source: "Quran 2:184-185; Bukhari 30:44; Bukhari 65:32; Muslim 13:101; Muslim 13:193",
     },
   },
 ];
@@ -329,7 +329,7 @@ const lastTenTopics: LastTenTopic[] = [
           note: "Bukhari 2:28; Muslim 6:209",
         },
       ],
-      source: "Quran 97:1-5; Bukhari 2:28, 32:4; Muslim 6:209, 13:272; Tirmidhi 48:144",
+      source: "Quran 97:1-5; Bukhari 2:28; Bukhari 32:4; Muslim 6:209; Muslim 13:272; Tirmidhi 48:144",
     },
   },
   {
@@ -363,7 +363,7 @@ const lastTenTopics: LastTenTopic[] = [
           note: "Bukhari 33:8 (the Prophet's wives performed i'tikaf)",
         },
       ],
-      source: "Bukhari 33:1, 33:8; Muslim 14:3, 13:275",
+      source: "Bukhari 33:1; Bukhari 33:8; Muslim 14:3; Muslim 13:275",
     },
   },
   {
@@ -383,7 +383,7 @@ const lastTenTopics: LastTenTopic[] = [
           title: "How much?",
           detail:
             "The amount is one sa' (approximately 2.5-3 kg) of the staple food of the land — dates, barley, wheat, rice, or similar. In monetary terms, many scholars permit paying the equivalent cash value, which varies by region (commonly $10-15 per person in Western countries). The Hanafi school specifically permits cash payment.",
-          note: "Bukhari 24:106, 24:107; Muslim 12:19",
+          note: "Bukhari 24:106; Bukhari 24:107; Muslim 12:19",
         },
         {
           title: "When to pay it?",
@@ -398,7 +398,7 @@ const lastTenTopics: LastTenTopic[] = [
           note: "Abu Dawud 9:54; Ibn Majah 8:45",
         },
       ],
-      source: "Bukhari 24:103, 24:109; Muslim 12:16, 12:17; Abu Dawud 9:54",
+      source: "Bukhari 24:103; Bukhari 24:109; Muslim 12:16; Muslim 12:17; Abu Dawud 9:54",
     },
   },
   {
@@ -412,7 +412,7 @@ const lastTenTopics: LastTenTopic[] = [
           title: "Eid prayer",
           detail:
             "The Eid prayer is 2 rak'at with additional takbirat, prayed in congregation after sunrise. There is no adhan or iqamah. It is followed by a khutbah. The Prophet (peace be upon him) would pray in an open area (musalla) and take one route going and a different route returning.",
-          note: "Bukhari 13:8, 13:35",
+          note: "Bukhari 13:8; Bukhari 13:35",
         },
         {
           title: "Sunnahs of Eid al-Fitr",
@@ -433,7 +433,7 @@ const lastTenTopics: LastTenTopic[] = [
           note: "Bukhari 13:4",
         },
       ],
-      source: "Bukhari 13:4, 13:8; Muslim 13:178",
+      source: "Bukhari 13:4; Bukhari 13:8; Muslim 13:178",
     },
   },
 ];
@@ -839,8 +839,8 @@ function RamadanContent() {
               { ref: "Bukhari 2:28; Muslim 6:209", desc: "Sins forgiven for standing in prayer on Laylatul Qadr" },
               { ref: "Bukhari 32:4; Muslim 13:272", desc: "Seek Laylatul Qadr in the odd nights of the last ten" },
               { ref: "Bukhari 33:1; Muslim 14:3", desc: "The Prophet's i'tikaf in the last ten days" },
-              { ref: "Bukhari 24:103, 24:106; Muslim 12:16, 12:17", desc: "Zakat al-Fitr obligation and amount" },
-              { ref: "Bukhari 13:5, 13:8", desc: "Sunnahs of the Eid prayer" },
+              { ref: "Bukhari 24:103; Bukhari 24:106; Muslim 12:16; Muslim 12:17", desc: "Zakat al-Fitr obligation and amount" },
+              { ref: "Bukhari 13:5; Bukhari 13:8", desc: "Sunnahs of the Eid prayer" },
               { ref: "Bukhari 30:98; Muslim 13:178", desc: "Prohibition of fasting on the day of Eid" },
               { ref: "Tirmidhi 48:144; Ibn Majah 34:24", desc: "The du'a for Laylatul Qadr" },
               { ref: "Abu Dawud 9:54; Ibn Majah 8:45", desc: "Purpose and timing of Zakat al-Fitr" },

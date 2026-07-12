@@ -95,7 +95,7 @@ const proofTopics: Topic[] = [
           note: "Quran 21:52-67 — Abraham's argument against his people's idol worship",
         },
       ],
-      source: "Quran 112:1-4; Quran 4:171; Quran 21:25, 52-67",
+      source: "Quran 112:1-4; Quran 4:171; Quran 21:25; Quran 21:52-67",
     },
   },
   {
@@ -892,7 +892,7 @@ const hinduismTopics: Topic[] = [
           note: "Quran 35:24 — 'There was no nation but that a warner had passed among them'",
         },
       ],
-      source: "Quran 21:22, 52-67; Quran 23:91; Quran 35:24; Quran 37:91-96",
+      source: "Quran 21:22; Quran 21:52-67; Quran 23:91; Quran 35:24; Quran 37:91-96",
     },
   },
   {
@@ -1272,7 +1272,7 @@ const questionTopics: Topic[] = [
           note: "Bukhari 64:314",
         },
       ],
-      source: "Quran 2:190, 256; Quran 9:5-6; Bukhari 56:224; Bukhari 64:314-4281; Abu Dawud 15:138",
+      source: "Quran 2:190; Quran 256; Quran 9:5-6; Bukhari 56:224; Bukhari 64:314-4281; Abu Dawud 15:138",
     },
   },
   {

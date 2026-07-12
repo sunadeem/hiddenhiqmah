@@ -39,7 +39,7 @@ const miracles: Miracle[] = [
   {
     category: "linguistic",
     title: "The Quran's Challenge (Tahaddī)",
-    reference: "Quran 2:23, 17:88",
+    reference: "Quran 2:23; Quran 17:88",
     arabic: "وَإِن كُنتُمْ فِى رَيْبٍۢ مِّمَّا نَزَّلْنَا عَلَىٰ عَبْدِنَا فَأْتُوا۟ بِسُورَةٍۢ مِّن مِّثْلِهِ",
     translation: "And if you are in doubt about what We have sent down upon Our Servant, then produce a surah the like thereof.",
     explanation: "The Quran issues an open challenge to all of humanity and jinn to produce even a single chapter like it. In over 1400 years, despite fierce opposition from the most eloquent Arab poets and orators, no one has successfully met this challenge. This is considered the foundational miracle of the Quran.",
@@ -178,7 +178,7 @@ const miracles: Miracle[] = [
   {
     category: "scientific",
     title: "The Barrier Between Two Seas",
-    reference: "Quran 55:19-20, 25:53",
+    reference: "Quran 55:19-20; Quran 25:53",
     arabic: "مَرَجَ ٱلْبَحْرَيْنِ يَلْتَقِيَانِ ﴿١٩﴾ بَيْنَهُمَا بَرْزَخٌۭ لَّا يَبْغِيَانِ",
     translation: "He released the two seas, meeting [side by side]. Between them is a barrier [so] neither of them transgresses.",
     explanation: "The Quran describes two bodies of water that meet but do not mix, separated by an invisible barrier (barzakh). Modern oceanography has confirmed the phenomenon of haloclines — zones where bodies of water with different salinity, temperature, and density meet but maintain distinct properties. This is observable at locations such as the Strait of Gibraltar, where the Mediterranean and Atlantic meet.",
@@ -218,7 +218,7 @@ const miracles: Miracle[] = [
   {
     category: "scientific",
     title: "The Water Cycle",
-    reference: "Quran 39:21, 23:18",
+    reference: "Quran 39:21; Quran 23:18",
     arabic: "أَلَمْ تَرَ أَنَّ ٱللَّهَ أَنزَلَ مِنَ ٱلسَّمَآءِ مَآءًۭ فَسَلَكَهُۥ يَنَـٰبِيعَ فِى ٱلْأَرْضِ",
     translation: "Do you not see that Allah sends down rain from the sky and makes it flow as springs in the earth?",
     explanation: "The Quran describes the complete water cycle: evaporation, cloud formation, precipitation, and groundwater springs — with remarkable accuracy. While some ancient civilizations had partial understanding of rain and rivers, the Quran's comprehensive description of water being sent from the sky and then emerging as springs from the earth accurately describes infiltration and the water table.",
@@ -229,7 +229,7 @@ const miracles: Miracle[] = [
   {
     category: "scientific",
     title: "Celestial Bodies in Orbits",
-    reference: "Quran 21:33, 36:40",
+    reference: "Quran 21:33; Quran 36:40",
     arabic: "وَكُلٌّۭ فِى فَلَكٍۢ يَسْبَحُونَ",
     translation: "...and each [celestial body] is floating in an orbit.",
     explanation: "The Quran states that the sun, moon, and celestial bodies each travel in their own orbit (falak). The word 'yasbahun' (swimming/floating) accurately describes orbital motion in space. The concept of the sun having its own orbit was only confirmed in modern astronomy — the sun orbits the center of the Milky Way galaxy at about 828,000 km/h.",
@@ -298,7 +298,7 @@ const miracles: Miracle[] = [
   {
     category: "historical",
     title: "The Dwellings of Thamud",
-    reference: "Quran 7:74, 26:149",
+    reference: "Quran 7:74; Quran 26:149",
     arabic: "وَتَنْحِتُونَ مِنَ ٱلْجِبَالِ بُيُوتًۭا فَـٰرِهِينَ",
     translation: "And you carve out of the mountains, homes, with skill.",
     explanation: "The Quran describes the people of Thamud as carving homes out of mountains. The archaeological site of Mada'in Saleh (Al-Hijr) in northwestern Saudi Arabia contains over 130 monumental tombs carved directly into sandstone rock faces, dating to the 1st century CE Nabataean period. The site is traditionally identified with the dwellings of Thamud and matches the Quranic description precisely.",
