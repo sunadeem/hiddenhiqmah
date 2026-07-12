@@ -19,8 +19,19 @@ interface TabBarProps {
   mobileThreshold?: number;
   /** Allow pills to wrap into multiple rows instead of scrolling. */
   wrap?: boolean;
+  /** Lay the pills out as an even grid with this many columns on desktop
+   *  (responsive below), e.g. 12 tabs + columns=6 → exactly two rows of six.
+   *  Replaces both the scroll strip and the mobile dropdown. */
+  columns?: 3 | 4 | 6;
   className?: string;
 }
+
+// Literal class strings (Tailwind JIT can't build dynamic names).
+const GRID_COLS: Record<3 | 4 | 6, string> = {
+  3: "grid-cols-2 sm:grid-cols-3",
+  4: "grid-cols-2 md:grid-cols-4",
+  6: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6",
+};
 
 export default function TabBar({
   tabs,
@@ -28,6 +39,7 @@ export default function TabBar({
   onTabChange,
   mobileThreshold = 6,
   wrap = false,
+  columns,
   className = "",
 }: TabBarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -55,7 +67,9 @@ export default function TabBar({
       <button
         key={tab.key}
         onClick={() => onTabChange(tab.key)}
-        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+          columns ? "justify-center text-center" : "whitespace-nowrap"
+        } ${
           isActive
             ? tab.highlight
               ? "bg-[#d4a84333] text-gold border border-[#d4a8434d] shadow-[0_0_12px_#d4a84330]"
@@ -75,6 +89,15 @@ export default function TabBar({
       </button>
     );
   };
+
+  // Even-grid mode: fixed columns, no scroll strip, no mobile dropdown.
+  if (columns) {
+    return (
+      <div className={`grid gap-2 ${GRID_COLS[columns]} ${className}`}>
+        {tabs.map(renderButton)}
+      </div>
+    );
+  }
 
   return (
     <div className={className}>
