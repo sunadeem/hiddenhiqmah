@@ -1601,30 +1601,31 @@ function WorshipContent({ activeSub, setActiveSub, visibleKeys }: { activeSub: W
   );
 }
 
-/* Sources & References — aggregated from the refs already shown on this page's cards */
-const worshipSources = [
-  { ref: "Bukhari 80:9; Muslim 6:118; Nasai, Sunan al-Kubra 9928; Abu Dawud 43:310; Muslim 5:188; Bukhari 80:100; Bukhari 80:98; Tirmidhi 48:22; Quran 17:78; Muslim 6:101", desc: "Morning — waking, Fajr, the morning adhkar, Quran time, and Duha" },
-  { ref: "Tirmidhi 2:281; Tirmidhi 48:14; Ibn Majah 5:123; Quran 2:238; Bukhari 78:52; Muslim 45:90; Hakim Mustadrak 1:564; Abu Dawud 8:116", desc: "Afternoon — Dhuhr, midday dhikr, Asr, charity, and the Friday sunnahs" },
-  { ref: "Bukhari 9:50; Abu Dawud 43:302; Bukhari 80:3; Bukhari 14:9; Bukhari 78:69", desc: "Evening — Maghrib, the evening adhkar, Isha & Witr, and family time" },
-  { ref: "Bukhari 80:8; Muslim 48:75; Bukhari 66:39; Bukhari 40:11; Bukhari 66:31; Abu Dawud 43:273; Bukhari 80:4", desc: "Before sleep — the sleep sunnahs, bedtime duas, and istighfar" },
-  { ref: "Muslim 6:147; Bukhari 19:26; Bukhari 19:1; Quran 3:17; Bukhari 30:32", desc: "Midnight — Tahajjud, Allah's nearness in the last third, Witr, and suhoor" },
-];
-const sunnahSources = [
-  { ref: "Abu Dawud 28:32; Muslim 36:139; Bukhari 70:4; Abu Dawud 27:54; Muslim 36:148; Muslim 48:123", desc: "Eating & drinking" },
-  { ref: "Bukhari 79:5; Quran 4:86; Bukhari 2:5", desc: "Greeting" },
-  { ref: "Bukhari 4:34; Abu Dawud 43:324; Muslim 6:82; Muslim 36:136", desc: "Entering & leaving" },
-  { ref: "Bukhari 70:8; Bukhari 11:12; Muslim 2:64", desc: "Dress & appearance" },
-  { ref: "Bukhari 78:49; Quran 49:12; Bukhari 78:121", desc: "Speech & conduct" },
-  { ref: "Bukhari 80:8; Bukhari 4:113", desc: "Sleeping" },
-];
-const reminderSources = [
-  { ref: "Quran 3:185; Quran 57:20; Muslim 53:66; Tirmidhi 36:17; Bukhari 81:5", desc: "Dunya is temporary" },
-  { ref: "Tirmidhi 36:4; Quran 31:34; Quran 4:78; Shu'ab al-Iman 10248", desc: "Death is near" },
-  { ref: "Tirmidhi 36:5; Bukhari 81:103", desc: "The grave" },
-  { ref: "Quran 99:7-8; Quran 3:30; Tirmidhi 37:3; Quran 80:34-37", desc: "Day of Judgement" },
-  { ref: "Quran 32:17; Bukhari 59:55; Quran 87:17; Bukhari 56:107; Quran 3:133; Quran 75:22-23", desc: "Paradise awaits" },
-  { ref: "Quran 39:53; Bukhari 78:31; Quran 94:6; Bukhari 97:34", desc: "Hope & mercy" },
-];
+/* Sources & References — aggregated from the refs already shown on this page's
+   cards, KEYED BY SUB-VIEW so the card always reflects the current selection. */
+const worshipSources: Record<WorshipSub, { ref: string; desc: string }[]> = {
+  morning: [{ ref: "Bukhari 80:9; Muslim 6:118; Nasai, Sunan al-Kubra 9928; Abu Dawud 43:310; Muslim 5:188; Bukhari 80:100; Bukhari 80:98; Tirmidhi 48:22; Quran 17:78; Muslim 6:101", desc: "Morning — waking, Fajr, the morning adhkar, Quran time, and Duha" }],
+  afternoon: [{ ref: "Tirmidhi 2:281; Tirmidhi 48:14; Ibn Majah 5:123; Quran 2:238; Bukhari 78:52; Muslim 45:90; Hakim Mustadrak 1:564; Abu Dawud 8:116", desc: "Afternoon — Dhuhr, midday dhikr, Asr, charity, and the Friday sunnahs" }],
+  evening: [{ ref: "Bukhari 9:50; Abu Dawud 43:302; Bukhari 80:3; Bukhari 14:9; Bukhari 78:69", desc: "Evening — Maghrib, the evening adhkar, Isha & Witr, and family time" }],
+  sleep: [{ ref: "Bukhari 80:8; Muslim 48:75; Bukhari 66:39; Bukhari 40:11; Bukhari 66:31; Abu Dawud 43:273; Bukhari 80:4", desc: "Before sleep — the sleep sunnahs, bedtime duas, and istighfar" }],
+  midnight: [{ ref: "Muslim 6:147; Bukhari 19:26; Bukhari 19:1; Quran 3:17; Bukhari 30:32", desc: "Midnight — Tahajjud, Allah's nearness in the last third, Witr, and suhoor" }],
+};
+const sunnahSources: Record<SunnahSub, { ref: string; desc: string }[]> = {
+  eating: [{ ref: "Abu Dawud 28:32; Muslim 36:139; Bukhari 70:4; Abu Dawud 27:54; Muslim 36:148; Muslim 48:123", desc: "Eating & drinking" }],
+  greeting: [{ ref: "Bukhari 79:5; Quran 4:86; Bukhari 2:5", desc: "Greeting" }],
+  entering: [{ ref: "Bukhari 4:34; Abu Dawud 43:324; Muslim 6:82; Muslim 36:136", desc: "Entering & leaving" }],
+  dress: [{ ref: "Bukhari 70:8; Bukhari 11:12; Muslim 2:64", desc: "Dress & appearance" }],
+  speech: [{ ref: "Bukhari 78:49; Quran 49:12; Bukhari 78:121", desc: "Speech & conduct" }],
+  sleeping: [{ ref: "Bukhari 80:8; Bukhari 4:113", desc: "Sleeping" }],
+};
+const reminderSources: Record<RememberSub, { ref: string; desc: string }[]> = {
+  dunya: [{ ref: "Quran 3:185; Quran 57:20; Muslim 53:66; Tirmidhi 36:17; Bukhari 81:5", desc: "Dunya is temporary" }],
+  death: [{ ref: "Tirmidhi 36:4; Quran 31:34; Quran 4:78; Shu'ab al-Iman 10248", desc: "Death is near" }],
+  grave: [{ ref: "Tirmidhi 36:5; Bukhari 81:103", desc: "The grave" }],
+  judgement: [{ ref: "Quran 99:7-8; Quran 3:30; Tirmidhi 37:3; Quran 80:34-37", desc: "Day of Judgement" }],
+  paradise: [{ ref: "Quran 32:17; Bukhari 59:55; Quran 87:17; Bukhari 56:107; Quran 3:133; Quran 75:22-23", desc: "Paradise awaits" }],
+  mercy: [{ ref: "Quran 39:53; Bukhari 78:31; Quran 94:6; Bukhari 97:34", desc: "Hope & mercy" }],
+};
 
 function MuslimDailyContent() {
   const isNative = useIsNative();
@@ -1729,20 +1730,20 @@ function MuslimDailyContent() {
               {activeTab === "worship" && (
                 <>
                   <WorshipContent activeSub={worshipSub} setActiveSub={changeWorshipSub} visibleKeys={visibleFor("worship")} />
-                  <SourcesCard className="mt-8" sources={worshipSources} />
+                  <SourcesCard className="mt-8" sources={worshipSources[worshipSub]} />
                 </>
               )}
               {activeTab === "sunnah" && (
                 <>
                   <SunnahContent activeSub={sunnahSub} setActiveSub={setSunnahSub} visibleKeys={visibleFor("sunnah")} />
-                  <SourcesCard className="mt-8" sources={sunnahSources} />
+                  <SourcesCard className="mt-8" sources={sunnahSources[sunnahSub]} />
                 </>
               )}
               {activeTab === "checklist" && <ChecklistTab />}
               {activeTab === "reminders" && (
                 <>
                   <RememberContent activeSub={rememberSub} setActiveSub={setRememberSub} visibleKeys={visibleFor("reminders")} />
-                  <SourcesCard className="mt-8" sources={reminderSources} />
+                  <SourcesCard className="mt-8" sources={reminderSources[rememberSub]} />
                 </>
               )}
             </motion.div>

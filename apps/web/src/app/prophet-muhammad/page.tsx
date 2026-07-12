@@ -1467,12 +1467,16 @@ function collectSources(items: { reference?: string; desc: string }[]): SourceRe
   return Array.from(seen, ([ref, desc]) => ({ ref, desc }));
 }
 
-const timelineSources = collectSources(
-  timelineEvents.map((e) => ({ reference: e.reference, desc: e.title }))
-);
-const characterSources = collectSources(
-  virtues.map((v) => ({ reference: v.reference, desc: v.name }))
-);
+// Sources are scoped to the CURRENTLY VIEWED item/sub-view (house rule) —
+// keyed per selection, never the whole tab's hidden content.
+const timelineSources: Record<string, SourceRef[]> = {};
+for (const e of timelineEvents) {
+  timelineSources[e.id] = collectSources([{ reference: e.reference, desc: e.title }]);
+}
+const characterSources: Record<string, SourceRef[]> = {};
+for (const v of virtues) {
+  characterSources[slugId(v.name)] = collectSources([{ reference: v.reference, desc: v.name }]);
+}
 const personSources: Record<PersonSub, SourceRef[]> = {
   names: collectSources(prophetNames.map((n) => ({ reference: n.reference, desc: n.name }))),
   face: collectSources(
@@ -1493,9 +1497,10 @@ const familySources: Record<string, SourceRef[]> = {
   children: collectSources(children.map((c) => ({ reference: c.reference, desc: c.name }))),
   companions: collectSources(companions.map((c) => ({ reference: c.reference, desc: c.name }))),
 };
-const propheciesSources = collectSources(
-  prophecies.map((p) => ({ reference: p.reference, desc: p.title }))
-);
+const propheciesSources: Record<string, SourceRef[]> = {};
+for (const p of prophecies) {
+  propheciesSources[slugId(p.title)] = collectSources([{ reference: p.reference, desc: p.title }]);
+}
 const worshipSunnahSources: Record<string, SourceRef[]> = {};
 for (const w of worshipAspects) {
   worshipSunnahSources[slugId(w.title)] = collectSources([{ reference: w.reference, desc: w.title }]);
@@ -1727,8 +1732,8 @@ function ProphetMuhammadContent() {
                 )}
               </AnimatePresence>
             </GroupedRail>
-            {/* Full-width sources for the whole tab, below the rail */}
-            <SourcesCard className="mt-6" sources={timelineSources} />
+            {/* Full-width sources for the CURRENT selection, below the rail */}
+            <SourcesCard className="mt-6" sources={timelineSources[activeTimeline] ?? []} />
           </motion.div>
         )}
 
@@ -1799,8 +1804,8 @@ function ProphetMuhammadContent() {
                 </AnimatePresence>
               </div>
             </div>
-            {/* Full-width sources for the whole tab, below the rail */}
-            <SourcesCard sources={characterSources} />
+            {/* Full-width sources for the CURRENT selection, below the rail */}
+            <SourcesCard sources={characterSources[activeVirtue] ?? []} />
           </motion.div>
         )}
 
@@ -2028,8 +2033,8 @@ function ProphetMuhammadContent() {
                 </AnimatePresence>
               </div>
             </div>
-            {/* Full-width sources for the whole tab, below the rail */}
-            <SourcesCard className="mt-6" sources={propheciesSources} />
+            {/* Full-width sources for the CURRENT selection, below the rail */}
+            <SourcesCard className="mt-6" sources={propheciesSources[activeProphecy] ?? []} />
           </motion.div>
         )}
 

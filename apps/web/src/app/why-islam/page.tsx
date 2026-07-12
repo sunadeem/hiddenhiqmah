@@ -1732,7 +1732,7 @@ function WhyIslamContent() {
               </SubTabLayout>
             )}
 
-            <SourcesCard className="mt-8" sources={groupSourceRefs(proofTopics)} />
+            <SourcesCard className="mt-8" sources={groupSourceRefs(activeProof ? [activeProof] : [])} />
           </motion.div>
         )}
 
@@ -1788,7 +1788,7 @@ function WhyIslamContent() {
               )}
             </SubTabLayout>
 
-            <SourcesCard className="mt-8" sources={groupSourceRefs(topicGroups[activeWorldview])} />
+            <SourcesCard className="mt-8" sources={groupSourceRefs(activeWorldviewTopic ? [activeWorldviewTopic] : [])} />
           </motion.div>
         )}
 
@@ -1817,7 +1817,7 @@ function WhyIslamContent() {
               </SubTabLayout>
             )}
 
-            <SourcesCard className="mt-8" sources={groupSourceRefs(questionTopics)} />
+            <SourcesCard className="mt-8" sources={groupSourceRefs(activeQuestion ? [activeQuestion] : [])} />
           </motion.div>
         )}
       </AnimatePresence>

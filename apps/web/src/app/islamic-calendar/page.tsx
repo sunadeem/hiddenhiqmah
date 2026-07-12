@@ -696,19 +696,25 @@ function IslamicCalendarContent() {
               })()}
             </AnimatePresence>
 
-            {/* Sources */}
-            <SourcesCard className="mt-6" sources={[
-              { ref: "Muslim 13:261; Muslim 13:253; Muslim 13:173; Bukhari 30:109; Muslim 13:162", desc: "Muharram — the month of Allah, the Day of Ashura, and Musa (peace be upon him)" },
-              { ref: "Bukhari 76:27; Muslim 39:141; Bukhari 63:131", desc: "Safar — no bad omens; the Hijrah journey" },
-              { ref: "Muslim 13:256; Bukhari 63:131; Tirmidhi 49:14", desc: "Rabi al-Awwal — the Prophet's birth, arrival in Madinah, and death" },
-              { ref: "Bukhari 81:53; Bukhari 61:129; Bukhari 23:113; Muslim 1:39", desc: "Rabi al-Thani, Jumada al-Ula, Jumada al-Thani — consistency in deeds; Fatimah; Abu Talib" },
-              { ref: "Bukhari 65:184; Bukhari 63:112; Muslim 1:321; Abu Dawud 14:116", desc: "Rajab — the solitary sacred month; al-Isra wal-Mi'raj; fasting in the sacred months" },
-              { ref: "Bukhari 30:76; Muslim 13:229; Nasai 22:268; Abu Dawud 14:25; Tirmidhi 8:57", desc: "Sha'ban — the Prophet's fasting; deeds raised to Allah" },
-              { ref: "Quran 2:183; Quran 2:185; Quran 97:1-5; Bukhari 91:10; Bukhari 32:1; Bukhari 30:9; Muslim 13:1", desc: "Ramadan — the obligation of fasting, the revelation of the Quran, Laylatul Qadr" },
-              { ref: "Bukhari 13:5; Muslim 13:264; Bukhari 64:90", desc: "Shawwal — Eid al-Fitr, the six days of Shawwal, the Battle of Uhud" },
-              { ref: "Quran 9:36; Bukhari 65:184; Bukhari 64:192", desc: "Dhul Qi'dah — a sacred month; the Prophet's Umrahs" },
-              { ref: "Bukhari 13:18; Muslim 13:253; Abu Dawud 11:45; Bukhari 73:9; Muslim 13:183; Bukhari 26:1; Muslim 15:493", desc: "Dhul Hijjah — the best ten days, Arafah, Eid al-Adha, Tashriq, and Hajj" },
-            ]} />
+            {/* Sources — scoped to the currently EXPANDED month (house rule) */}
+            {expandedMonth && (
+              <SourcesCard className="mt-6" sources={
+                ({
+                  1: [{ ref: "Muslim 13:261; Muslim 13:253; Muslim 13:173; Bukhari 30:109; Muslim 13:162", desc: "Muharram — the month of Allah, the Day of Ashura, and Musa (peace be upon him)" }],
+                  2: [{ ref: "Bukhari 76:27; Muslim 39:141; Bukhari 63:131", desc: "Safar — no bad omens; the Hijrah journey" }],
+                  3: [{ ref: "Muslim 13:256; Bukhari 63:131; Tirmidhi 49:14", desc: "Rabi al-Awwal — the Prophet's birth, arrival in Madinah, and death" }],
+                  4: [{ ref: "Bukhari 81:53; Bukhari 61:129; Bukhari 23:113; Muslim 1:39", desc: "Rabi al-Thani, Jumada al-Ula, Jumada al-Thani — consistency in deeds; Fatimah; Abu Talib" }],
+                  5: [{ ref: "Bukhari 81:53; Bukhari 61:129; Bukhari 23:113; Muslim 1:39", desc: "Rabi al-Thani, Jumada al-Ula, Jumada al-Thani — consistency in deeds; Fatimah; Abu Talib" }],
+                  6: [{ ref: "Bukhari 81:53; Bukhari 61:129; Bukhari 23:113; Muslim 1:39", desc: "Rabi al-Thani, Jumada al-Ula, Jumada al-Thani — consistency in deeds; Fatimah; Abu Talib" }],
+                  7: [{ ref: "Bukhari 65:184; Bukhari 63:112; Muslim 1:321; Abu Dawud 14:116", desc: "Rajab — the solitary sacred month; al-Isra wal-Mi'raj; fasting in the sacred months" }],
+                  8: [{ ref: "Bukhari 30:76; Muslim 13:229; Nasai 22:268; Abu Dawud 14:25; Tirmidhi 8:57", desc: "Sha'ban — the Prophet's fasting; deeds raised to Allah" }],
+                  9: [{ ref: "Quran 2:183; Quran 2:185; Quran 97:1-5; Bukhari 91:10; Bukhari 32:1; Bukhari 30:9; Muslim 13:1", desc: "Ramadan — the obligation of fasting, the revelation of the Quran, Laylatul Qadr" }],
+                  10: [{ ref: "Bukhari 13:5; Muslim 13:264; Bukhari 64:90", desc: "Shawwal — Eid al-Fitr, the six days of Shawwal, the Battle of Uhud" }],
+                  11: [{ ref: "Quran 9:36; Bukhari 65:184; Bukhari 64:192", desc: "Dhul Qi'dah — a sacred month; the Prophet's Umrahs" }],
+                  12: [{ ref: "Bukhari 13:18; Muslim 13:253; Abu Dawud 11:45; Bukhari 73:9; Muslim 13:183; Bukhari 26:1; Muslim 15:493", desc: "Dhul Hijjah — the best ten days, Arafah, Eid al-Adha, Tashriq, and Hajj" }],
+                } as Record<number, { ref: string; desc: string }[]>)[expandedMonth] ?? []
+              } />
+            )}
           </motion.div>
         )}
 
