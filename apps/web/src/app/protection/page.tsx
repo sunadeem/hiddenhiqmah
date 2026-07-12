@@ -492,6 +492,12 @@ const dailyTopics: Topic[] = [
           note: "Abu Dawud 43:323; Tirmidhi 48:57",
         },
         {
+          title: "Setting out on a journey",
+          detail:
+            "When mounting a ride — a car, plane, or anything that carries you — the Sunnah is the du'a of travel: سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ — 'Subhanal-ladhi sakh-khara lana hadha wa ma kunna lahu muqrineen, wa inna ila Rabbina la munqalibun' — 'Glory to Him who has subjected this to us, and we could never have it by our efforts. And to our Lord we will surely return.' The words are the Quran's own (43:13-14), and the Prophet (peace be upon him) said them whenever he mounted his camel setting out on a journey. The full set of travel du'as — returning home and bidding farewell included — is linked below.",
+          note: "Quran 43:13-14; Muslim 15:479",
+        },
+        {
           title: "Small words, constant shield",
           detail:
             "None of these takes more than a few seconds. Together they mean a believer's day is bracketed by Allah's name at every threshold — food, home, road, and bed. Protection in Islam is not an emergency measure; it is a lifestyle of remembrance.",
@@ -864,6 +870,12 @@ function ProtectionContent() {
                 >
                   Protection du&apos;as →
                 </Link>
+                <Link
+                  href="/duas?tab=travel"
+                  className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  All travel du&apos;as →
+                </Link>
               </div>
             </ContentCard>
 
@@ -875,6 +887,7 @@ function ProtectionContent() {
                 { ref: "Bukhari 66:32", desc: "Ayat al-Kursi before sleep — a guard from Allah till dawn" },
                 { ref: "Muslim 36:136", desc: "Bismillah when entering the home and eating" },
                 { ref: "Abu Dawud 43:323; Tirmidhi 48:57", desc: "The du'a upon leaving the home" },
+                { ref: "Quran 43:13-14; Muslim 15:479", desc: "The du'a of travel — 'Glory to Him who has subjected this to us'" },
               ]}
             />
           </motion.div>

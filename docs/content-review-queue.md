@@ -48,3 +48,8 @@ citation you trust, or remove._
 28. The file's variant counts "Allah" as name 1 and omits al-Aḥad — one of the standard published renderings of the Tirmidhi list; others differ. Noted in case you ever want a variant note in the UI.
 29. The 99-name enumeration appended to the Tirmidhi hadith is generally regarded as a narrator's compilation (al-Walīd ibn Muslim) — the base "Allah has ninety-nine names" hadith is verified (Bukhari/Muslim).
 30. الماجد transliterated "Al-Maajid" (entry 66) to distinguish from المجيد "Al-Majid" (49) — spelling convention varies across publications.
+
+## Round-2 additions (Jumuʿah timing, 2026-07-11)
+31. Majority (Hanafi/Maliki/Shafiʿi) position that Jumuʿah's window = Dhuhr's window (zawāl → ʿAsr) — generic attribution. (Anas "immediately after midday" Bukhari 11:28 + Jabir Muslim 7:39 ARE cited, verified.)
+32. Hanbali permission to hold Jumuʿah before zawāl — generic attribution. (Supporting narrations Bukhari 11:29 + Bukhari 11:63 / Muslim 7:41 ARE cited, verified.)
+33. Definition of zawāl (sun passing zenith = start of Dhuhr's time) — standard fiqh definition, no single citation.

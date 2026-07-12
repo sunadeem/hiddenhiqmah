@@ -10,7 +10,7 @@ import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
-import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
 import {
   BookOpen,
   Search,
@@ -685,12 +685,6 @@ function IntimacyView() {
         </p>
       </ContentCard>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Muslim 12:66", desc: "In the intimacy of one of you there is a charity" },
-        { ref: "Bukhari 67:127", desc: "Not refusing the spouse without a valid excuse" },
-        { ref: "Quran 30:21", desc: "Affection and mercy placed between spouses" },
-        { ref: "Quran 4:19", desc: "And live with them in kindness" },
-      ]} />
     </div>
   );
 }
@@ -759,13 +753,6 @@ function PermittedView() {
         </p>
       </ContentCard>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 2:187", desc: "Spouses are garments for one another" },
-        { ref: "Quran 2:223", desc: "The tilth verse — breadth of manner, one place" },
-        { ref: "Quran 2:222", desc: "Prohibition of intercourse during menstruation" },
-        { ref: "Abu Dawud 12:117", desc: "Prohibition of anal intercourse" },
-        { ref: "Quran 4:19", desc: "And live with them in kindness" },
-      ]} />
     </div>
   );
 }
@@ -795,9 +782,6 @@ function PrivacyView() {
         </p>
       </ContentCard>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Muslim 16:144", desc: "The one who spreads the spouse's secret is among the worst of people" },
-      ]} />
     </div>
   );
 }
@@ -841,9 +825,6 @@ function DuaBeforeIntimacyView() {
         </Link>
       </ContentCard>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 80:83", desc: "Du'a before intimacy — protection of the child from Shaytan" },
-      ]} />
     </div>
   );
 }
@@ -889,11 +870,6 @@ function PurityView() {
         </Link>
       </ContentCard>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Tirmidhi 1:108", desc: "When the circumcised meets the circumcised, ghusl is required" },
-        { ref: "Muslim 3:107", desc: "Ghusl obligatory even without emission — Aishah's report" },
-        { ref: "Muslim 3:29", desc: "Wudu between two acts of intimacy" },
-      ]} />
     </div>
   );
 }
@@ -943,11 +919,6 @@ function MensesPlanningView() {
         </p>
       </ContentCard>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 2:222", desc: "The verse on menstruation" },
-        { ref: "Muslim 3:16", desc: "Do everything except intercourse" },
-        { ref: "Bukhari 67:142", desc: "'Azl practiced while the Quran was being revealed" },
-      ]} />
     </div>
   );
 }
@@ -1122,6 +1093,41 @@ function DivorceAfter() {
    MAIN PAGE
    ═══════════════════════════════════════════════════════════════════ */
 
+/* Per-sub-view sources, rendered full-width BELOW the rail layout so the
+   Sources card lines up with the rest of the page instead of the rail's
+   right column. */
+const marriedLifeSources: Record<MarriedLifeSub, SourceRef[]> = {
+  intimacy: [
+    { ref: "Muslim 12:66", desc: "In the intimacy of one of you there is a charity" },
+    { ref: "Bukhari 67:127", desc: "Not refusing the spouse without a valid excuse" },
+    { ref: "Quran 30:21", desc: "Affection and mercy placed between spouses" },
+    { ref: "Quran 4:19", desc: "And live with them in kindness" },
+  ],
+  permitted: [
+    { ref: "Quran 2:187", desc: "Spouses are garments for one another" },
+    { ref: "Quran 2:223", desc: "The tilth verse — breadth of manner, one place" },
+    { ref: "Quran 2:222", desc: "Prohibition of intercourse during menstruation" },
+    { ref: "Abu Dawud 12:117", desc: "Prohibition of anal intercourse" },
+    { ref: "Quran 4:19", desc: "And live with them in kindness" },
+  ],
+  privacy: [
+    { ref: "Muslim 16:144", desc: "The one who spreads the spouse's secret is among the worst of people" },
+  ],
+  "dua-before-intimacy": [
+    { ref: "Bukhari 80:83", desc: "Du'a before intimacy — protection of the child from Shaytan" },
+  ],
+  purity: [
+    { ref: "Tirmidhi 1:108", desc: "When the circumcised meets the circumcised, ghusl is required" },
+    { ref: "Muslim 3:107", desc: "Ghusl obligatory even without emission — Aishah's report" },
+    { ref: "Muslim 3:29", desc: "Wudu between two acts of intimacy" },
+  ],
+  "menses-planning": [
+    { ref: "Quran 2:222", desc: "The verse on menstruation" },
+    { ref: "Muslim 3:16", desc: "Do everything except intercourse" },
+    { ref: "Bukhari 67:142", desc: "'Azl practiced while the Quran was being revealed" },
+  ],
+};
+
 const subsByTab: Record<Tab, readonly { key: string }[]> = {
   before: beforeSubs,
   wedding: weddingSubs,
@@ -1244,14 +1250,18 @@ function MarriageContent() {
               </SubTabLayout>
             )}
             {activeTab === "married-life" && (
-              <SubTabLayout subs={marriedLifeSubs} activeSub={activeMarried} setActiveSub={changeSub("married-life")}>
-                {activeMarried === "intimacy" && <IntimacyView />}
-                {activeMarried === "permitted" && <PermittedView />}
-                {activeMarried === "privacy" && <PrivacyView />}
-                {activeMarried === "dua-before-intimacy" && <DuaBeforeIntimacyView />}
-                {activeMarried === "purity" && <PurityView />}
-                {activeMarried === "menses-planning" && <MensesPlanningView />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={marriedLifeSubs} activeSub={activeMarried} setActiveSub={changeSub("married-life")}>
+                  {activeMarried === "intimacy" && <IntimacyView />}
+                  {activeMarried === "permitted" && <PermittedView />}
+                  {activeMarried === "privacy" && <PrivacyView />}
+                  {activeMarried === "dua-before-intimacy" && <DuaBeforeIntimacyView />}
+                  {activeMarried === "purity" && <PurityView />}
+                  {activeMarried === "menses-planning" && <MensesPlanningView />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={marriedLifeSources[activeMarried]} />
+              </>
             )}
             {activeTab === "divorce" && (
               <SubTabLayout subs={divorceSubs} activeSub={activeDivorce} setActiveSub={changeSub("divorce")}>

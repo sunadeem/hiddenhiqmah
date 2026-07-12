@@ -871,6 +871,36 @@ const jumuahAccordion = [
     ),
   },
   {
+    id: "when",
+    title: "When it is prayed",
+    subtitle: "Zawāl and the window of Jumu'ah",
+    body: (
+      <div className="space-y-3 text-sm text-themed-muted leading-relaxed">
+        <p>
+          The reference point is <span className="text-gold">zawāl</span> — the moment the sun passes its zenith (its highest point in the sky) and begins to decline westward. This is the same moment at which the time of Dhuhr begins.
+        </p>
+        <p>
+          <span className="text-gold font-medium">The majority position (attributed to the Hanafi, Maliki, and Shafi&apos;i schools).</span> Jumu&apos;ah&apos;s window is Dhuhr&apos;s window — from zawāl until &apos;Asr begins — since Jumu&apos;ah stands in Dhuhr&apos;s place. This is the Prophet&apos;s ﷺ own recorded practice:
+        </p>
+        <div className="rounded-lg p-3 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+          <p className="italic text-themed">
+            &ldquo;The Prophet ﷺ used to offer the Jumua prayer immediately after midday.&rdquo; — Anas bin Malik
+          </p>
+          <p className="text-xs text-gold/60 mt-2"><HadithRefText text="Bukhari 11:28" /></p>
+        </div>
+        <p>
+          Jabir likewise reported: &ldquo;We used to observe (Jumu&apos;a) prayer with the Messenger of Allah ﷺ and then we returned and gave rest to our camels used for carrying water&rdquo; — and when a narrator asked what time that was, the reply came: &ldquo;It is the time when the sun passes the meridian&rdquo; (<HadithRefText text="Muslim 7:39" className="inline" />).
+        </p>
+        <p>
+          <span className="text-gold font-medium">The position attributed to the Hanbali school.</span> Jumu&apos;ah may also be held before zawāl, from earlier in the morning, based on the narrations of early Jumu&apos;ah: Anas said, &ldquo;We used to offer the Jumua prayer early and then have an afternoon nap&rdquo; (<HadithRefText text="Bukhari 11:29" className="inline" />), and Sahl said, &ldquo;We never had an afternoon nap nor meals except after offering the Jumua prayer&rdquo; (<HadithRefText text="Bukhari 11:63; Muslim 7:41" className="inline" />).
+        </p>
+        <p>
+          <span className="text-gold font-medium">In practice.</span> This is why congregations schedule Jumu&apos;ah anywhere from late morning to mid-afternoon — all of it within a legitimately held window. The khutbah and the 2 rak&apos;ah simply take place at your masjid&apos;s announced time, and once prayed, the Jumu&apos;ah is valid.
+        </p>
+      </div>
+    ),
+  },
+  {
     id: "how",
     title: "How it is prayed",
     subtitle: "Khutbah etiquette + 2 rak'ah in congregation",
@@ -1686,6 +1716,7 @@ function SalahContent() {
       "Friday prayer",
       "khutbah",
       "sermon",
+      "zawal",
       "congregation",
       "ghusl",
       "Surah al-Kahf",
@@ -2116,6 +2147,8 @@ function SalahContent() {
                 { ref: "Bukhari 14:9", desc: "Witr: make the last of your night prayer Witr" },
                 { ref: "Quran 62:9", desc: "Jumu'ah: hasten to the remembrance of Allah and leave off trading" },
                 { ref: "Abu Dawud 2:678", desc: "Jumu'ah: a duty upon every Muslim in congregation, with four exceptions" },
+                { ref: "Bukhari 11:28; Muslim 7:39", desc: "Jumu'ah time: prayed immediately after midday, when the sun passes the meridian" },
+                { ref: "Bukhari 11:29; Bukhari 11:63; Muslim 7:41", desc: "Jumu'ah time: praying early; the nap and meal only after Jumu'ah" },
                 { ref: "Muslim 7:14; Muslim 7:15", desc: "Jumu'ah: reward of going early; silence during the khutbah" },
                 { ref: "Bukhari 11:5; Bukhari 11:59", desc: "Jumu'ah: the Friday ghusl; the hour of accepted du'a" },
                 { ref: "Abu Dawud 2:658", desc: "Jumu'ah: invoke abundant blessings on the Prophet ﷺ on Friday" },

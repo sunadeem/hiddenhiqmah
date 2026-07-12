@@ -10,7 +10,7 @@ import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
-import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
 import {
   BookOpen,
   HandHeart,
@@ -343,13 +343,6 @@ function WashingTab() {
         </ContentCard>
       </div>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 23:15", desc: "Wash an odd number of times with sidr and camphor" },
-        { ref: "Bukhari 23:18", desc: "Method of washing — begin from the right" },
-        { ref: "Bukhari 23:32", desc: "Three white sheets, no shirt, no turban" },
-        { ref: "Abu Dawud 21:69", desc: "Five pieces of cloth for shrouding Umm Kulthum" },
-        { ref: "Bukhari 23:73", desc: "Hasten the funeral" },
-      ]} />
     </div>
   );
 }
@@ -439,12 +432,6 @@ function JanazahTab() {
         />
       </div>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 23:80", desc: "Two qirats — like two great mountains — for attending burial" },
-        { ref: "Bukhari 23:90", desc: "Reciting Al-Fatihah in the janazah" },
-        { ref: "Muslim 11:109", desc: "The Prophet's du'a in janazah" },
-        { ref: "Abu Dawud 21:113", desc: "The comprehensive janazah du'a" },
-      ]} />
     </div>
   );
 }
@@ -641,15 +628,6 @@ function GriefTab() {
         </ContentCard>
       </div>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 2:156", desc: "Inna lillahi wa inna ilayhi raji'un" },
-        { ref: "Quran 2:234", desc: "Widow's iddah of 4 months and 10 days" },
-        { ref: "Quran 65:4", desc: "Pregnant widow's iddah ends at birth" },
-        { ref: "Bukhari 23:43", desc: "Patience is at the first shock" },
-        { ref: "Bukhari 23:52", desc: "Forbidden: slapping cheeks and tearing garments" },
-        { ref: "Bukhari 23:61", desc: "The Prophet ﷺ weeping for his son" },
-        { ref: "Muslim 11:4", desc: "Du'a at the moment of musibah" },
-      ]} />
     </div>
   );
 }
@@ -713,13 +691,6 @@ function VisitingGravesTab() {
         </ContentCard>
       </div>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Muslim 11:136", desc: "Visit graves — they remind you of the Hereafter" },
-        { ref: "Muslim 11:131", desc: "The salam to give upon entering a graveyard" },
-        { ref: "Muslim 11:124", desc: "Prohibition of sitting on graves" },
-        { ref: "Muslim 11:127", desc: "Prohibition of praying facing graves" },
-        { ref: "Muslim 25:20", desc: "Du'a of the living benefits the deceased" },
-      ]} />
     </div>
   );
 }
@@ -727,6 +698,44 @@ function VisitingGravesTab() {
 /* ═══════════════════════════════════════════════════════════════════
    MAIN PAGE
    ═══════════════════════════════════════════════════════════════════ */
+
+/* Per-sub-view sources, rendered full-width BELOW the rail layout so the
+   Sources card lines up with the rest of the page instead of the rail's
+   right column. */
+const washingJanazahSources: Record<WashingJanazahSub, SourceRef[]> = {
+  washing: [
+    { ref: "Bukhari 23:15", desc: "Wash an odd number of times with sidr and camphor" },
+    { ref: "Bukhari 23:18", desc: "Method of washing — begin from the right" },
+    { ref: "Bukhari 23:32", desc: "Three white sheets, no shirt, no turban" },
+    { ref: "Abu Dawud 21:69", desc: "Five pieces of cloth for shrouding Umm Kulthum" },
+    { ref: "Bukhari 23:73", desc: "Hasten the funeral" },
+  ],
+  janazah: [
+    { ref: "Bukhari 23:80", desc: "Two qirats — like two great mountains — for attending burial" },
+    { ref: "Bukhari 23:90", desc: "Reciting Al-Fatihah in the janazah" },
+    { ref: "Muslim 11:109", desc: "The Prophet's du'a in janazah" },
+    { ref: "Abu Dawud 21:113", desc: "The comprehensive janazah du'a" },
+  ],
+};
+
+const griefVisitingSources: Record<GriefVisitingSub, SourceRef[]> = {
+  grief: [
+    { ref: "Quran 2:156", desc: "Inna lillahi wa inna ilayhi raji'un" },
+    { ref: "Quran 2:234", desc: "Widow's iddah of 4 months and 10 days" },
+    { ref: "Quran 65:4", desc: "Pregnant widow's iddah ends at birth" },
+    { ref: "Bukhari 23:43", desc: "Patience is at the first shock" },
+    { ref: "Bukhari 23:52", desc: "Forbidden: slapping cheeks and tearing garments" },
+    { ref: "Bukhari 23:61", desc: "The Prophet ﷺ weeping for his son" },
+    { ref: "Muslim 11:4", desc: "Du'a at the moment of musibah" },
+  ],
+  visiting: [
+    { ref: "Muslim 11:136", desc: "Visit graves — they remind you of the Hereafter" },
+    { ref: "Muslim 11:131", desc: "The salam to give upon entering a graveyard" },
+    { ref: "Muslim 11:124", desc: "Prohibition of sitting on graves" },
+    { ref: "Muslim 11:127", desc: "Prohibition of praying facing graves" },
+    { ref: "Muslim 25:20", desc: "Du'a of the living benefits the deceased" },
+  ],
+};
 
 const subsByTab: Record<RailTab, readonly { key: string }[]> = {
   "washing-janazah": washingJanazahSubs,
@@ -817,17 +826,25 @@ function DeathRitesContent() {
             {activeMain === "preparing" && <PreparingDeathTab />}
             {activeMain === "dying" && <DyingMomentsTab />}
             {activeMain === "washing-janazah" && (
-              <SubTabLayout subs={washingJanazahSubs} activeSub={activeWashing} setActiveSub={changeSub("washing-janazah")}>
-                {activeWashing === "washing" && <WashingTab />}
-                {activeWashing === "janazah" && <JanazahTab />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={washingJanazahSubs} activeSub={activeWashing} setActiveSub={changeSub("washing-janazah")}>
+                  {activeWashing === "washing" && <WashingTab />}
+                  {activeWashing === "janazah" && <JanazahTab />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={washingJanazahSources[activeWashing]} />
+              </>
             )}
             {activeMain === "burial" && <BurialTab />}
             {activeMain === "grief-visiting" && (
-              <SubTabLayout subs={griefVisitingSubs} activeSub={activeGrief} setActiveSub={changeSub("grief-visiting")}>
-                {activeGrief === "grief" && <GriefTab />}
-                {activeGrief === "visiting" && <VisitingGravesTab />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={griefVisitingSubs} activeSub={activeGrief} setActiveSub={changeSub("grief-visiting")}>
+                  {activeGrief === "grief" && <GriefTab />}
+                  {activeGrief === "visiting" && <VisitingGravesTab />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={griefVisitingSources[activeGrief]} />
+              </>
             )}
           </motion.div>
         </AnimatePresence>

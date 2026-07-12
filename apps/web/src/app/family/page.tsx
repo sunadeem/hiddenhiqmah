@@ -10,7 +10,7 @@ import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
-import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
 import {
   BookOpen,
   Heart,
@@ -189,13 +189,6 @@ function RightsTab() {
           <Ref text="Tirmidhi 27:3" />
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 17:23-24", desc: "Worship Allah alone and treat parents with excellence" },
-        { ref: "Quran 31:14-15", desc: "Be thankful to Allah and to your parents" },
-        { ref: "Bukhari 78:2", desc: "Your mother, your mother, your mother, then your father" },
-        { ref: "Tirmidhi 27:3", desc: "Pleasure of the Lord in the pleasure of the parent" },
-      ]} />
     </div>
   );
 }
@@ -253,13 +246,6 @@ function QuranTab() {
           delay={0.25}
         />
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 17:23-24", desc: "The foundational verses on parents" },
-        { ref: "Quran 31:14", desc: "Be grateful to Allah and to your parents" },
-        { ref: "Quran 46:15", desc: "Hardship of pregnancy and birth" },
-        { ref: "Quran 4:36", desc: "Worship Allah, do good to parents" },
-      ]} />
     </div>
   );
 }
@@ -311,13 +297,6 @@ function SunnahTab() {
           delay={0.2}
         />
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 78:1", desc: "Prayer on time, then goodness to parents" },
-        { ref: "Muslim 45:11", desc: "Loss for one who does not honor aging parents" },
-        { ref: "Tirmidhi 27:3", desc: "Allah's pleasure follows parents' pleasure" },
-        { ref: "Tirmidhi 27:11", desc: "Three supplications always answered, including the parent's against their child" },
-      ]} />
     </div>
   );
 }
@@ -361,13 +340,6 @@ function DuasTab() {
           delay={0.17}
         />
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 17:24", desc: "The most well-known du'a for parents" },
-        { ref: "Quran 14:41", desc: "Ibrahim's du'a for his parents and the believers" },
-        { ref: "Quran 46:15", desc: "Gratitude for parents and good deeds" },
-        { ref: "Quran 71:28", desc: "Nuh's du'a for his parents and household" },
-      ]} />
     </div>
   );
 }
@@ -421,12 +393,6 @@ function AfterTab() {
           </Link>
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Muslim 25:20", desc: "Three things that continue after death" },
-        { ref: "Muslim 45:13", desc: "Keeping ties with parents' friends" },
-        { ref: "Bukhari 55:23", desc: "Charity on behalf of the deceased" },
-      ]} />
     </div>
   );
 }
@@ -482,13 +448,6 @@ function ElderlyTab() {
           </p>
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Tirmidhi 27:25", desc: "Mercy to young, respect to elders" },
-        { ref: "Abu Dawud 43:71", desc: "Honoring the grey-haired Muslim" },
-        { ref: "Tirmidhi 27:128", desc: "Allah appoints honor in your own old age" },
-        { ref: "Bukhari 78:169", desc: "Let the elder speak first" },
-      ]} />
     </div>
   );
 }
@@ -580,14 +539,6 @@ function SickTab() {
           <Ref text="Muslim 45:54" />
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 23:4", desc: "Visiting the sick is one of five rights between Muslims" },
-        { ref: "Tirmidhi 10:5", desc: "Seventy thousand angels pray for the visitor" },
-        { ref: "Muslim 45:49", desc: "A garden of Paradise while visiting" },
-        { ref: "Muslim 45:54", desc: "Allah is with the sick — visit them" },
-        { ref: "Bukhari 75:35", desc: "The Prophetic du'a for healing" },
-      ]} />
     </div>
   );
 }
@@ -646,13 +597,6 @@ function ConceivingTab() {
           delay={0.14}
         />
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 80:83", desc: "Du'a before intimacy (see Marriage → Married Life)" },
-        { ref: "Quran 25:74", desc: "Asking for spouses and offspring as comfort of the eyes" },
-        { ref: "Quran 3:38", desc: "Zakariyya's du'a for pure offspring" },
-        { ref: "Quran 14:40", desc: "Ibrahim's du'a for prayer in his offspring" },
-      ]} />
     </div>
   );
 }
@@ -713,13 +657,6 @@ function PregnancyTab() {
           </p>
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 31:14", desc: "Weakness upon weakness — the mother's burden" },
-        { ref: "Quran 46:15", desc: "Pregnancy and weaning is thirty months" },
-        { ref: "Quran 3:35", desc: "The mother of Maryam's vow during pregnancy" },
-        { ref: "Quran 3:38", desc: "Zakariyya's du'a for pure offspring" },
-      ]} />
     </div>
   );
 }
@@ -777,14 +714,6 @@ function NewbornTab() {
           </p>
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Abu Dawud 43:142", desc: "Adhan in the newborn's ear" },
-        { ref: "Bukhari 71:51", desc: "Tahnik with dates and du'a" },
-        { ref: "Muslim 38:2", desc: "Best names: Abdullah and Abdur-Rahman" },
-        { ref: "Tirmidhi 22:21", desc: "Aqiqah, naming, shaving on the 7th day" },
-        { ref: "Bukhari 77:63", desc: "Khitan as part of the fitrah" },
-      ]} />
     </div>
   );
 }
@@ -870,16 +799,6 @@ function BlessingsTab() {
           <Ref text="Bukhari 23:11" />
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 18:46", desc: "Children are adornment, but enduring good deeds are better" },
-        { ref: "Quran 25:74", desc: "Asking Allah for children who delight the eyes" },
-        { ref: "Quran 42:49", desc: "Allah gives daughters and sons to whom He wills" },
-        { ref: "Quran 64:15", desc: "Children are a trial — keep love for Allah first" },
-        { ref: "Quran 102:1-2", desc: "At-Takathur — the warning against competing in numbers" },
-        { ref: "Quran 57:20", desc: "Worldly life is competition in wealth and children" },
-        { ref: "Muslim 25:20", desc: "A righteous child's du'a reaches the parent" },
-      ]} />
     </div>
   );
 }
@@ -950,14 +869,6 @@ function ChildrenRightsTab() {
           <Ref text="Tirmidhi 27:11" />
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Abu Dawud 43:147", desc: "Give children beautiful names" },
-        { ref: "Abu Dawud 2:90", desc: "Command salah at seven, discipline at ten" },
-        { ref: "Bukhari 51:13", desc: "Be just among your children" },
-        { ref: "Bukhari 78:27", desc: "Mercy to one's children" },
-        { ref: "Bukhari 66:21", desc: "The best is one who learns the Quran and teaches it" },
-      ]} />
     </div>
   );
 }
@@ -1026,13 +937,6 @@ function RaisingTab() {
           <Ref text="Tirmidhi 27:11" />
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Tirmidhi 37:102", desc: "Be mindful of Allah — the Prophet's advice to a child" },
-        { ref: "Bukhari 8:163", desc: "Carrying Umama in prayer — children and worship coexist" },
-        { ref: "Tirmidhi 36:75", desc: "A person is upon the religion of their friend" },
-        { ref: "Abu Dawud 43:219", desc: "Do not lie to children" },
-      ]} />
     </div>
   );
 }
@@ -1094,14 +998,6 @@ function DaughtersTab() {
           </p>
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 16:58-59", desc: "Condemnation of disliking daughters" },
-        { ref: "Quran 81:8-9", desc: "The buried girl will be asked on the Day of Judgement" },
-        { ref: "Bukhari 78:26", desc: "Daughters as a shield from the Fire" },
-        { ref: "Muslim 45:192", desc: "Two fingers held together — companionship with the Prophet ﷺ" },
-        { ref: "Abu Dawud 43:375", desc: "Raising three daughters: Paradise" },
-      ]} />
     </div>
   );
 }
@@ -1149,13 +1045,6 @@ function KinshipWhyTab() {
           <Ref text="Bukhari 78:19" />
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 4:1", desc: "Fear Allah and be mindful of the wombs (kinship ties)" },
-        { ref: "Quran 13:21", desc: "Those who maintain what Allah ordered to be maintained" },
-        { ref: "Bukhari 78:18", desc: "The rahim seeks refuge with Allah from being severed" },
-        { ref: "Bukhari 78:19", desc: "Rahim derives its name from Ar-Rahman" },
-      ]} />
     </div>
   );
 }
@@ -1191,11 +1080,6 @@ function KinshipRewardTab() {
           </p>
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 78:16", desc: "Provision expanded and life extended for maintaining kinship" },
-        { ref: "Bukhari 1:3", desc: "Khadijah: 'You keep good relations with your kith and kin'" },
-      ]} />
     </div>
   );
 }
@@ -1238,11 +1122,6 @@ function KinshipSeveringTab() {
           </p>
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 78:15", desc: "The one who severs kinship will not enter Paradise" },
-        { ref: "Quran 47:22-23", desc: "Severing kinship — corruption and Allah's curse" },
-      ]} />
     </div>
   );
 }
@@ -1293,11 +1172,6 @@ function KinshipWhoTab() {
           <Ref text="Muslim 45:13" />
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 78:2", desc: "Your mother, your mother, your mother, then your father" },
-        { ref: "Muslim 45:13", desc: "Keeping ties with the parents' friends after their death" },
-      ]} />
     </div>
   );
 }
@@ -1339,11 +1213,6 @@ function KinshipCutOffTab() {
           </p>
         </ContentCard>
       </div>
-
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 78:22", desc: "The true wasil keeps ties with those who cut him off" },
-        { ref: "Muslim 45:25", desc: "Feeding them hot ashes — Allah's support for the one who persists" },
-      ]} />
     </div>
   );
 }
@@ -1386,6 +1255,134 @@ const inheritanceRedirects: Record<string, string> = {
   heirs: "?tab=heirs",
   wasiyyah: "?tab=wasiyyah-faqs&sub=wasiyyah",
   wisdom: "?tab=wasiyyah-faqs&sub=wisdom",
+};
+
+/* Per-sub-view sources, rendered full-width BELOW the rail layout so the
+   Sources card lines up with the rest of the page instead of the rail's
+   right column. */
+
+const parentsSources: Record<ParentsSub, SourceRef[]> = {
+  rights: [
+    { ref: "Quran 17:23-24", desc: "Worship Allah alone and treat parents with excellence" },
+    { ref: "Quran 31:14-15", desc: "Be thankful to Allah and to your parents" },
+    { ref: "Bukhari 78:2", desc: "Your mother, your mother, your mother, then your father" },
+    { ref: "Tirmidhi 27:3", desc: "Pleasure of the Lord in the pleasure of the parent" },
+  ],
+  quran: [
+    { ref: "Quran 17:23-24", desc: "The foundational verses on parents" },
+    { ref: "Quran 31:14", desc: "Be grateful to Allah and to your parents" },
+    { ref: "Quran 46:15", desc: "Hardship of pregnancy and birth" },
+    { ref: "Quran 4:36", desc: "Worship Allah, do good to parents" },
+  ],
+  sunnah: [
+    { ref: "Bukhari 78:1", desc: "Prayer on time, then goodness to parents" },
+    { ref: "Muslim 45:11", desc: "Loss for one who does not honor aging parents" },
+    { ref: "Tirmidhi 27:3", desc: "Allah's pleasure follows parents' pleasure" },
+    { ref: "Tirmidhi 27:11", desc: "Three supplications always answered, including the parent's against their child" },
+  ],
+  duas: [
+    { ref: "Quran 17:24", desc: "The most well-known du'a for parents" },
+    { ref: "Quran 14:41", desc: "Ibrahim's du'a for his parents and the believers" },
+    { ref: "Quran 46:15", desc: "Gratitude for parents and good deeds" },
+    { ref: "Quran 71:28", desc: "Nuh's du'a for his parents and household" },
+  ],
+  after: [
+    { ref: "Muslim 25:20", desc: "Three things that continue after death" },
+    { ref: "Muslim 45:13", desc: "Keeping ties with parents' friends" },
+    { ref: "Bukhari 55:23", desc: "Charity on behalf of the deceased" },
+  ],
+};
+
+const eldersSources: Record<EldersSub, SourceRef[]> = {
+  elderly: [
+    { ref: "Tirmidhi 27:25", desc: "Mercy to young, respect to elders" },
+    { ref: "Abu Dawud 43:71", desc: "Honoring the grey-haired Muslim" },
+    { ref: "Tirmidhi 27:128", desc: "Allah appoints honor in your own old age" },
+    { ref: "Bukhari 78:169", desc: "Let the elder speak first" },
+  ],
+  sick: [
+    { ref: "Bukhari 23:4", desc: "Visiting the sick is one of five rights between Muslims" },
+    { ref: "Tirmidhi 10:5", desc: "Seventy thousand angels pray for the visitor" },
+    { ref: "Muslim 45:49", desc: "A garden of Paradise while visiting" },
+    { ref: "Muslim 45:54", desc: "Allah is with the sick — visit them" },
+    { ref: "Bukhari 75:35", desc: "The Prophetic du'a for healing" },
+  ],
+};
+
+const childrenSources: Record<ChildrenSub, SourceRef[]> = {
+  conceiving: [
+    { ref: "Bukhari 80:83", desc: "Du'a before intimacy (see Marriage → Married Life)" },
+    { ref: "Quran 25:74", desc: "Asking for spouses and offspring as comfort of the eyes" },
+    { ref: "Quran 3:38", desc: "Zakariyya's du'a for pure offspring" },
+    { ref: "Quran 14:40", desc: "Ibrahim's du'a for prayer in his offspring" },
+  ],
+  pregnancy: [
+    { ref: "Quran 31:14", desc: "Weakness upon weakness — the mother's burden" },
+    { ref: "Quran 46:15", desc: "Pregnancy and weaning is thirty months" },
+    { ref: "Quran 3:35", desc: "The mother of Maryam's vow during pregnancy" },
+    { ref: "Quran 3:38", desc: "Zakariyya's du'a for pure offspring" },
+  ],
+  newborn: [
+    { ref: "Abu Dawud 43:142", desc: "Adhan in the newborn's ear" },
+    { ref: "Bukhari 71:51", desc: "Tahnik with dates and du'a" },
+    { ref: "Muslim 38:2", desc: "Best names: Abdullah and Abdur-Rahman" },
+    { ref: "Tirmidhi 22:21", desc: "Aqiqah, naming, shaving on the 7th day" },
+    { ref: "Bukhari 77:63", desc: "Khitan as part of the fitrah" },
+  ],
+  blessings: [
+    { ref: "Quran 18:46", desc: "Children are adornment, but enduring good deeds are better" },
+    { ref: "Quran 25:74", desc: "Asking Allah for children who delight the eyes" },
+    { ref: "Quran 42:49", desc: "Allah gives daughters and sons to whom He wills" },
+    { ref: "Quran 64:15", desc: "Children are a trial — keep love for Allah first" },
+    { ref: "Quran 102:1-2", desc: "At-Takathur — the warning against competing in numbers" },
+    { ref: "Quran 57:20", desc: "Worldly life is competition in wealth and children" },
+    { ref: "Muslim 25:20", desc: "A righteous child's du'a reaches the parent" },
+  ],
+  rights: [
+    { ref: "Abu Dawud 43:147", desc: "Give children beautiful names" },
+    { ref: "Abu Dawud 2:90", desc: "Command salah at seven, discipline at ten" },
+    { ref: "Bukhari 51:13", desc: "Be just among your children" },
+    { ref: "Bukhari 78:27", desc: "Mercy to one's children" },
+    { ref: "Bukhari 66:21", desc: "The best is one who learns the Quran and teaches it" },
+  ],
+  raising: [
+    { ref: "Tirmidhi 37:102", desc: "Be mindful of Allah — the Prophet's advice to a child" },
+    { ref: "Bukhari 8:163", desc: "Carrying Umama in prayer — children and worship coexist" },
+    { ref: "Tirmidhi 36:75", desc: "A person is upon the religion of their friend" },
+    { ref: "Abu Dawud 43:219", desc: "Do not lie to children" },
+  ],
+  daughters: [
+    { ref: "Quran 16:58-59", desc: "Condemnation of disliking daughters" },
+    { ref: "Quran 81:8-9", desc: "The buried girl will be asked on the Day of Judgement" },
+    { ref: "Bukhari 78:26", desc: "Daughters as a shield from the Fire" },
+    { ref: "Muslim 45:192", desc: "Two fingers held together — companionship with the Prophet ﷺ" },
+    { ref: "Abu Dawud 43:375", desc: "Raising three daughters: Paradise" },
+  ],
+};
+
+const kinshipSources: Record<KinshipSub, SourceRef[]> = {
+  why: [
+    { ref: "Quran 4:1", desc: "Fear Allah and be mindful of the wombs (kinship ties)" },
+    { ref: "Quran 13:21", desc: "Those who maintain what Allah ordered to be maintained" },
+    { ref: "Bukhari 78:18", desc: "The rahim seeks refuge with Allah from being severed" },
+    { ref: "Bukhari 78:19", desc: "Rahim derives its name from Ar-Rahman" },
+  ],
+  reward: [
+    { ref: "Bukhari 78:16", desc: "Provision expanded and life extended for maintaining kinship" },
+    { ref: "Bukhari 1:3", desc: "Khadijah: 'You keep good relations with your kith and kin'" },
+  ],
+  severing: [
+    { ref: "Bukhari 78:15", desc: "The one who severs kinship will not enter Paradise" },
+    { ref: "Quran 47:22-23", desc: "Severing kinship — corruption and Allah's curse" },
+  ],
+  who: [
+    { ref: "Bukhari 78:2", desc: "Your mother, your mother, your mother, then your father" },
+    { ref: "Muslim 45:13", desc: "Keeping ties with the parents' friends after their death" },
+  ],
+  "cut-off": [
+    { ref: "Bukhari 78:22", desc: "The true wasil keeps ties with those who cut him off" },
+    { ref: "Muslim 45:25", desc: "Feeding them hot ashes — Allah's support for the one who persists" },
+  ],
 };
 
 function FamilyContent() {
@@ -1471,39 +1468,55 @@ function FamilyContent() {
             transition={{ duration: 0.25 }}
           >
             {activeMain === "parents" && (
-              <SubTabLayout subs={parentsSubs} activeSub={activeParents} setActiveSub={changeSub("parents")}>
-                {activeParents === "rights" && <RightsTab />}
-                {activeParents === "quran" && <QuranTab />}
-                {activeParents === "sunnah" && <SunnahTab />}
-                {activeParents === "duas" && <DuasTab />}
-                {activeParents === "after" && <AfterTab />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={parentsSubs} activeSub={activeParents} setActiveSub={changeSub("parents")}>
+                  {activeParents === "rights" && <RightsTab />}
+                  {activeParents === "quran" && <QuranTab />}
+                  {activeParents === "sunnah" && <SunnahTab />}
+                  {activeParents === "duas" && <DuasTab />}
+                  {activeParents === "after" && <AfterTab />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={parentsSources[activeParents]} />
+              </>
             )}
             {activeMain === "elders" && (
-              <SubTabLayout subs={eldersSubs} activeSub={activeElders} setActiveSub={changeSub("elders")}>
-                {activeElders === "elderly" && <ElderlyTab />}
-                {activeElders === "sick" && <SickTab />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={eldersSubs} activeSub={activeElders} setActiveSub={changeSub("elders")}>
+                  {activeElders === "elderly" && <ElderlyTab />}
+                  {activeElders === "sick" && <SickTab />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={eldersSources[activeElders]} />
+              </>
             )}
             {activeMain === "children" && (
-              <SubTabLayout subs={childrenSubs} activeSub={activeChildren} setActiveSub={changeSub("children")}>
-                {activeChildren === "conceiving" && <ConceivingTab />}
-                {activeChildren === "pregnancy" && <PregnancyTab />}
-                {activeChildren === "newborn" && <NewbornTab />}
-                {activeChildren === "blessings" && <BlessingsTab />}
-                {activeChildren === "rights" && <ChildrenRightsTab />}
-                {activeChildren === "raising" && <RaisingTab />}
-                {activeChildren === "daughters" && <DaughtersTab />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={childrenSubs} activeSub={activeChildren} setActiveSub={changeSub("children")}>
+                  {activeChildren === "conceiving" && <ConceivingTab />}
+                  {activeChildren === "pregnancy" && <PregnancyTab />}
+                  {activeChildren === "newborn" && <NewbornTab />}
+                  {activeChildren === "blessings" && <BlessingsTab />}
+                  {activeChildren === "rights" && <ChildrenRightsTab />}
+                  {activeChildren === "raising" && <RaisingTab />}
+                  {activeChildren === "daughters" && <DaughtersTab />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={childrenSources[activeChildren]} />
+              </>
             )}
             {activeMain === "kinship" && (
-              <SubTabLayout subs={kinshipSubs} activeSub={activeKinship} setActiveSub={changeSub("kinship")}>
-                {activeKinship === "why" && <KinshipWhyTab />}
-                {activeKinship === "reward" && <KinshipRewardTab />}
-                {activeKinship === "severing" && <KinshipSeveringTab />}
-                {activeKinship === "who" && <KinshipWhoTab />}
-                {activeKinship === "cut-off" && <KinshipCutOffTab />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={kinshipSubs} activeSub={activeKinship} setActiveSub={changeSub("kinship")}>
+                  {activeKinship === "why" && <KinshipWhyTab />}
+                  {activeKinship === "reward" && <KinshipRewardTab />}
+                  {activeKinship === "severing" && <KinshipSeveringTab />}
+                  {activeKinship === "who" && <KinshipWhoTab />}
+                  {activeKinship === "cut-off" && <KinshipCutOffTab />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={kinshipSources[activeKinship]} />
+              </>
             )}
           </motion.div>
         </AnimatePresence>

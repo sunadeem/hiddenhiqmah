@@ -9,7 +9,7 @@ import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
-import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
 import {
   BookOpen,
   Scroll,
@@ -154,12 +154,6 @@ function FoundationsInheritanceTab() {
         </ContentCard>
       </div>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 4:7", desc: "Men and women each have an ordained share" },
-        { ref: "Quran 4:11-12", desc: "The detailed shares of children, parents, and spouses" },
-        { ref: "Quran 4:13", desc: "These are Allah's limits — obey and enter Paradise" },
-        { ref: "Quran 4:14", desc: "Transgress His limits — enter the Fire" },
-      ]} />
     </div>
   );
 }
@@ -206,11 +200,6 @@ function VersesInheritanceTab() {
         />
       </div>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 4:11", desc: "Shares of children and parents" },
-        { ref: "Quran 4:12", desc: "Shares of spouses; kalalah (no descendants/ascendants)" },
-        { ref: "Quran 4:176", desc: "Full sisters and siblings when no children or parents exist" },
-      ]} />
     </div>
   );
 }
@@ -266,12 +255,6 @@ function BeforeDistributionTab() {
         </ol>
       </ContentCard>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 4:11", desc: "After any bequest and any debt — children/parents" },
-        { ref: "Quran 4:12", desc: "After any bequest and any debt — spouses/kalalah" },
-        { ref: "Bukhari 55:5", desc: "Wasiyyah limited to one-third — Sa'd ibn Abi Waqqas" },
-        { ref: "Tirmidhi 10:114", desc: "Soul of believer attached to debt until paid" },
-      ]} />
     </div>
   );
 }
@@ -727,11 +710,6 @@ function WasiyyahTab() {
         </ContentCard>
       </div>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Bukhari 55:1", desc: "A Muslim should not sleep two nights without his will" },
-        { ref: "Bukhari 55:5", desc: "Sa'd ibn Abi Waqqas — bequest limited to one-third" },
-        { ref: "Tirmidhi 30:5", desc: "No bequest for an heir" },
-      ]} />
     </div>
   );
 }
@@ -808,12 +786,6 @@ function WisdomInheritanceTab() {
         </ContentCard>
       </div>
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 4:11", desc: "Lidh-dhakari mithlu hazzi al-unthayayn — and the financial context" },
-        { ref: "Quran 4:14", desc: "Transgressing Allah's limits = the Fire" },
-        { ref: "Bukhari 51:20", desc: "Be just among your children — Nu'man ibn Bashir" },
-        { ref: "Bukhari 55:1", desc: "Keep your wasiyyah written down" },
-      ]} />
     </div>
   );
 }
@@ -821,6 +793,43 @@ function WisdomInheritanceTab() {
 /* ═══════════════════════════════════════════════════════════════════
    MAIN PAGE
    ═══════════════════════════════════════════════════════════════════ */
+
+/* Per-sub-view sources, rendered full-width BELOW the rail layout so the
+   Sources card lines up with the rest of the page instead of the rail's
+   right column. */
+const foundationsSources: Record<FoundationsSub, SourceRef[]> = {
+  foundations: [
+    { ref: "Quran 4:7", desc: "Men and women each have an ordained share" },
+    { ref: "Quran 4:11-12", desc: "The detailed shares of children, parents, and spouses" },
+    { ref: "Quran 4:13", desc: "These are Allah's limits — obey and enter Paradise" },
+    { ref: "Quran 4:14", desc: "Transgress His limits — enter the Fire" },
+  ],
+  verses: [
+    { ref: "Quran 4:11", desc: "Shares of children and parents" },
+    { ref: "Quran 4:12", desc: "Shares of spouses; kalalah (no descendants/ascendants)" },
+    { ref: "Quran 4:176", desc: "Full sisters and siblings when no children or parents exist" },
+  ],
+  before: [
+    { ref: "Quran 4:11", desc: "After any bequest and any debt — children/parents" },
+    { ref: "Quran 4:12", desc: "After any bequest and any debt — spouses/kalalah" },
+    { ref: "Bukhari 55:5", desc: "Wasiyyah limited to one-third — Sa'd ibn Abi Waqqas" },
+    { ref: "Tirmidhi 10:114", desc: "Soul of believer attached to debt until paid" },
+  ],
+};
+
+const wasiyyahFaqsSources: Record<WasiyyahFaqsSub, SourceRef[]> = {
+  wasiyyah: [
+    { ref: "Bukhari 55:1", desc: "A Muslim should not sleep two nights without his will" },
+    { ref: "Bukhari 55:5", desc: "Sa'd ibn Abi Waqqas — bequest limited to one-third" },
+    { ref: "Tirmidhi 30:5", desc: "No bequest for an heir" },
+  ],
+  wisdom: [
+    { ref: "Quran 4:11", desc: "Lidh-dhakari mithlu hazzi al-unthayayn — and the financial context" },
+    { ref: "Quran 4:14", desc: "Transgressing Allah's limits = the Fire" },
+    { ref: "Bukhari 51:20", desc: "Be just among your children — Nu'man ibn Bashir" },
+    { ref: "Bukhari 55:1", desc: "Keep your wasiyyah written down" },
+  ],
+};
 
 const subsByTab: Record<RailTab, readonly { key: string }[]> = {
   foundations: foundationsSubs,
@@ -909,19 +918,27 @@ function InheritanceContent() {
             transition={{ duration: 0.25 }}
           >
             {activeMain === "foundations" && (
-              <SubTabLayout subs={foundationsSubs} activeSub={activeFoundations} setActiveSub={changeSub("foundations")}>
-                {activeFoundations === "foundations" && <FoundationsInheritanceTab />}
-                {activeFoundations === "verses" && <VersesInheritanceTab />}
-                {activeFoundations === "before" && <BeforeDistributionTab />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={foundationsSubs} activeSub={activeFoundations} setActiveSub={changeSub("foundations")}>
+                  {activeFoundations === "foundations" && <FoundationsInheritanceTab />}
+                  {activeFoundations === "verses" && <VersesInheritanceTab />}
+                  {activeFoundations === "before" && <BeforeDistributionTab />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={foundationsSources[activeFoundations]} />
+              </>
             )}
             {activeMain === "shares" && <SharesTab />}
             {activeMain === "heirs" && <HeirsTab />}
             {activeMain === "wasiyyah-faqs" && (
-              <SubTabLayout subs={wasiyyahFaqsSubs} activeSub={activeWasiyyahFaqs} setActiveSub={changeSub("wasiyyah-faqs")}>
-                {activeWasiyyahFaqs === "wasiyyah" && <WasiyyahTab />}
-                {activeWasiyyahFaqs === "wisdom" && <WisdomInheritanceTab />}
-              </SubTabLayout>
+              <>
+                <SubTabLayout subs={wasiyyahFaqsSubs} activeSub={activeWasiyyahFaqs} setActiveSub={changeSub("wasiyyah-faqs")}>
+                  {activeWasiyyahFaqs === "wasiyyah" && <WasiyyahTab />}
+                  {activeWasiyyahFaqs === "wisdom" && <WisdomInheritanceTab />}
+                </SubTabLayout>
+                {/* Full-width sources for the active sub-view, below the rail */}
+                <SourcesCard className="mt-6" sources={wasiyyahFaqsSources[activeWasiyyahFaqs]} />
+              </>
             )}
           </motion.div>
         </AnimatePresence>
