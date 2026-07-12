@@ -64,3 +64,4 @@ citation you trust, or remove._
 
 ## Children Who Die Young sub-view (2026-07-12)
 38. The "children take hold of the parent's garment and will not let go until Allah admits them" narration (Sahih Muslim 2635, the da'amis hadith) is genuinely absent from local data (muslim/45.json gap between 45:197 and 45:199) — presented with generic attribution, no citation. Everything else on the sub-view is locally verified (incl. Ibn Majah 6:175-177 umbilical-cord set and Bukhari 91:61 Samura dream).
+39. "In today's terms" note on the martyrs list (plague → epidemics/pandemics generally; mabtun → fatal digestive-system illness) — contemporary scholarly extension, generic attribution.

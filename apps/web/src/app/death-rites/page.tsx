@@ -344,35 +344,9 @@ function TypesGoodEndSub() {
         </p>
       </ContentCard>
 
-      <ContentCard delay={0.1}>
-        <h5 className="text-gold font-medium mb-2">The martyrs at a glance</h5>
-        <p className="text-themed-muted text-sm leading-relaxed mb-3">
-          The Prophet ﷺ named those who die in these ways as martyrs — the one killed in battle
-          receives the rank in this world and the next; the rest are granted the martyr&apos;s
-          reward in the Hereafter:
-        </p>
-        <ul className="text-themed-muted text-sm leading-relaxed space-y-1.5 list-none">
-          <li><span className="text-gold">◆</span> Killed in battle in the cause of Allah — the battlefield shahid</li>
-          <li><span className="text-gold">◆</span> The one who dies of the plague</li>
-          <li><span className="text-gold">◆</span> The one who dies of an abdominal illness</li>
-          <li><span className="text-gold">◆</span> The one who drowns</li>
-          <li><span className="text-gold">◆</span> The one crushed beneath a collapsing structure</li>
-          <li><span className="text-gold">◆</span> The one who dies by burning</li>
-          <li><span className="text-gold">◆</span> The woman who dies pregnant or in childbirth</li>
-          <li><span className="text-gold">◆</span> The one killed defending their property</li>
-          <li><span className="text-gold">◆</span> The one killed defending their family, blood, or religion</li>
-        </ul>
-        <p className="text-themed-muted/70 text-xs leading-relaxed mt-3">
-          Each is detailed on the next sub-tabs — and children who die young hold their own
-          honored place, on the last one.
-        </p>
-        <Ref text="Bukhari 56:45; Muslim 33:235; Abu Dawud 21:23; Nasai 21:237; Bukhari 46:41; Abu Dawud 42:177" />
-      </ContentCard>
-
-      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Good Endings Beyond Martyrdom</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <ContentCard delay={0.38}>
-          <h5 className="text-gold font-medium mb-2">Husn al-khatimah takes many forms</h5>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
+        <ContentCard delay={0.1}>
+          <h5 className="text-gold font-medium mb-2">Good endings beyond martyrdom</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
             A good ending is not reserved for martyrs. Dying with the shahada as one&apos;s last words — &quot;If anyone&apos;s last words are &apos;There is no god but Allah,&apos; he will enter Paradise&quot; — or being taken while on a righteous deed are endings the Prophet ﷺ gave glad tidings for. Live in the state you hope to die in.
           </p>
@@ -380,6 +354,37 @@ function TypesGoodEndSub() {
           <Link href="/barzakh?tab=protection" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
             Signs of a good ending and deeds that protect in the grave →
           </Link>
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">The martyrs at a glance</h5>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            The Prophet ﷺ named those who die in these ways as martyrs — the one killed in battle
+            receives the rank in this world and the next; the rest are granted the martyr&apos;s
+            reward in the Hereafter:
+          </p>
+          <ol className="text-themed-muted text-sm leading-relaxed space-y-1.5 list-none">
+            <li><span className="text-gold font-medium">1.</span> Killed in battle in the cause of Allah — the battlefield shahid</li>
+            <li><span className="text-gold font-medium">2.</span> The one who dies of the plague</li>
+            <li><span className="text-gold font-medium">3.</span> The one who dies of an abdominal illness</li>
+            <li><span className="text-gold font-medium">4.</span> The one who drowns</li>
+            <li><span className="text-gold font-medium">5.</span> The one crushed beneath a collapsing structure</li>
+            <li><span className="text-gold font-medium">6.</span> The one who dies by burning</li>
+            <li><span className="text-gold font-medium">7.</span> The woman who dies pregnant or in childbirth</li>
+            <li><span className="text-gold font-medium">8.</span> The one killed defending their property</li>
+            <li><span className="text-gold font-medium">9.</span> The one killed defending their family, blood, or religion</li>
+          </ol>
+          <p className="text-themed-muted/70 text-xs leading-relaxed mt-3">
+            <span className="text-themed-muted">In today&apos;s terms:</span> scholars extend
+            the <span className="italic">plague</span> (ṭāʿūn) to deadly epidemics and pandemics
+            generally, and the <span className="italic">abdominal illness</span> (mabṭūn) to fatal
+            diseases of the stomach and digestive system — severe intestinal infections, and
+            illnesses of that nature.
+          </p>
+          <p className="text-themed-muted/70 text-xs leading-relaxed mt-2">
+            Each is detailed on the next sub-tabs — and children who die young hold their own
+            honored place, on the last one.
+          </p>
+          <Ref text="Bukhari 56:45; Muslim 33:235; Abu Dawud 21:23; Nasai 21:237; Bukhari 46:41; Abu Dawud 42:177" />
         </ContentCard>
       </div>
     </div>
