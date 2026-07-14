@@ -15,7 +15,8 @@ import {
 //    message, priced at Opus 4.8 tiers — an upper-bound estimate). ──
 const RATE = { input: 5.0, output: 25.0, cacheRead: 0.5, cacheWrite: 6.25 };
 const ANON_QUOTA = 5;
-const SIGNED_QUOTA = 15;
+// Mirrors get_quota_for_today (migration 024) — temporary pre-launch bump from 15.
+const SIGNED_QUOTA = 100;
 const CHAT_WINDOW_DAYS = 90; // the only table windowed (the scale risk)
 
 type Tokens = { input: number; output: number; cacheRead: number; cacheWrite: number };
