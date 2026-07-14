@@ -121,8 +121,8 @@ export default function TermsPage() {
         <h2 className="text-xl font-semibold text-gold">10. Contact</h2>
         <p className="text-themed-muted text-sm leading-relaxed">
           Questions about these Terms? Email{" "}
-          <a href="mailto:Subhan.Nadeem@HiddenHiqmah.com" className="text-gold underline">
-            Subhan.Nadeem@HiddenHiqmah.com
+          <a href="mailto:support@hiddenhiqmah.com" className="text-gold underline">
+            support@hiddenhiqmah.com
           </a>
           . Hidden Hiqmah LLC.
         </p>

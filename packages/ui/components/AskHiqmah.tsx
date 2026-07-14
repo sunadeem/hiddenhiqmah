@@ -457,7 +457,10 @@ export default function AskHiqmahFloat() {
   const [placeholderText, setPlaceholderText] = useState("");
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  // Inline-confirm arming for Clear chat (CirclesScreen leave/remove idiom):
+  // first tap arms the button ("Clear?"), the second executes; auto-disarms.
+  const [confirmClear, setConfirmClear] = useState(false);
 
   useEffect(() => {
     if (query || !isOpen) return;
@@ -501,6 +504,26 @@ export default function AskHiqmahFloat() {
       setTimeout(() => messagesEndRef.current?.scrollIntoView(), 50);
     }
   }, [isOpen]);
+
+  // Disarm the Clear confirm if the second tap never comes.
+  useEffect(() => {
+    if (!confirmClear) return;
+    const t = setTimeout(() => setConfirmClear(false), 3000);
+    return () => clearTimeout(t);
+  }, [confirmClear]);
+
+  // Auto-grow the composer with its content, up to ~5 lines, then scroll
+  // internally (CircleChatSheet composer idiom).
+  const autoResize = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 140)}px`;
+  }, []);
+
+  useEffect(() => {
+    autoResize();
+  }, [query, autoResize]);
 
   const sendMessage = useCallback(async (userMessage: string, prevMessages: Message[]) => {
     const newMessages: Message[] = [...prevMessages, { role: "user", content: userMessage }];
@@ -568,16 +591,30 @@ export default function AskHiqmahFloat() {
     return () => { delete w.__askHiqmah; delete w.__openHiqmah; };
   }, [openWithQuery, openPanel]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitQuery = () => {
     if (!query.trim() || loading) return;
     const q = query.trim();
     setQuery("");
     sendMessage(q, messages);
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitQuery();
+  };
+
   const handleClose = () => setIsOpen(false);
-  const handleClear = () => { setMessages([]); setQuery(""); };
+  // Inline confirm (no window.confirm): first tap arms the button ("Clear?"),
+  // the second executes.
+  const handleClear = () => {
+    if (confirmClear) {
+      setConfirmClear(false);
+      setMessages([]);
+      setQuery("");
+    } else {
+      setConfirmClear(true);
+    }
+  };
 
   const handlePopOut = () => {
     window.open("/ask", "hiqmah-chat", "width=440,height=650,menubar=no,toolbar=no,location=no,status=no");
@@ -634,10 +671,15 @@ export default function AskHiqmahFloat() {
                   {messages.length > 0 && (
                     <button
                       onClick={handleClear}
-                      className="p-1.5 rounded-lg hover:bg-[var(--overlay-medium)] text-themed-muted/50 hover:text-themed-muted transition-colors"
-                      title="Clear chat"
+                      aria-label={confirmClear ? "Confirm clear chat" : "Clear chat"}
+                      title={confirmClear ? "Confirm clear chat" : "Clear chat"}
+                      className={
+                        confirmClear
+                          ? "px-2.5 py-1.5 rounded-lg text-xs font-bold text-red-300 bg-red-500/15 border border-red-400/30 transition-colors"
+                          : "p-1.5 rounded-lg hover:bg-[var(--overlay-medium)] text-themed-muted/50 hover:text-themed-muted transition-colors"
+                      }
                     >
-                      <Trash2 size={14} />
+                      {confirmClear ? "Clear?" : <Trash2 size={14} />}
                     </button>
                   )}
                   <button
@@ -740,14 +782,21 @@ export default function AskHiqmahFloat() {
 
               {/* Input */}
               <form onSubmit={handleSubmit} className="border-t sidebar-border p-3 shrink-0 safe-area-bottom">
-                <div className="flex items-center gap-2 min-w-0">
-                  <input
+                <div className="flex items-end gap-2 min-w-0">
+                  <textarea
                     ref={inputRef}
-                    type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      // Enter sends, Shift+Enter inserts a newline (CircleChatSheet idiom).
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        submitQuery();
+                      }
+                    }}
+                    rows={1}
                     placeholder={placeholderText || "Ask anything about Islam..."}
-                    className="flex-1 min-w-0 bg-[var(--color-card)] rounded-lg px-3 py-2.5 text-themed text-base outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
+                    className="flex-1 min-w-0 resize-none max-h-[140px] overflow-y-auto bg-[var(--color-card)] rounded-lg px-3 py-2.5 text-themed text-base outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
                   />
                   <button
                     type="submit"

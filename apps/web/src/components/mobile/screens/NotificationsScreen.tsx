@@ -111,16 +111,20 @@ export default function NotificationsScreen() {
         />
       </SettingsSection>
 
+      {/* Subtitles mirror the staggered times in lib/mobile/notifications.ts
+          (VERSE/HADITH/REMINDER/STREAK/JUMUAH constants) — keep them in sync. */}
       <SettingsSection heading="Daily">
         <SettingsRow
           icon={BookOpen}
           title="Today's verse"
+          subtitle="A morning verse, 8 AM"
           toggle={notif.todaysVerse}
           onToggle={(v) => updateNotif({ todaysVerse: v })}
         />
         <SettingsRow
           icon={ScrollText}
           title="Today's hadith"
+          subtitle="A midday hadith, 1:30 PM"
           toggle={notif.todaysHadith}
           onToggle={(v) => updateNotif({ todaysHadith: v })}
         />
@@ -134,7 +138,7 @@ export default function NotificationsScreen() {
         <SettingsRow
           icon={Flame}
           title="Streak reminder"
-          subtitle="If you miss a day"
+          subtitle="If your day's checklist is unfinished, 9:15 PM"
           toggle={notif.streak}
           onToggle={(v) => updateNotif({ streak: v })}
         />
@@ -144,7 +148,7 @@ export default function NotificationsScreen() {
         <SettingsRow
           icon={Sparkle}
           title="Jumu'ah reminder"
-          subtitle="Friday morning"
+          subtitle="Friday morning, 9:30 AM"
           toggle={notif.jumuah}
           onToggle={(v) => updateNotif({ jumuah: v })}
         />

@@ -257,10 +257,10 @@ export default function PrivacyPage() {
             progress, daily checklist &amp; streaks, Circles you own, saved
             reflections, and AI-chat usage logs. You can also email{" "}
             <a
-              href="mailto:Subhan.Nadeem@HiddenHiqmah.com"
+              href="mailto:support@hiddenhiqmah.com"
               className="text-gold underline"
             >
-              Subhan.Nadeem@HiddenHiqmah.com
+              support@hiddenhiqmah.com
             </a>{" "}
             from the address you signed up with.
           </li>
@@ -321,10 +321,10 @@ export default function PrivacyPage() {
         <p className="text-themed-muted text-sm leading-relaxed">
           Questions, concerns, or deletion requests:{" "}
           <a
-            href="mailto:Subhan.Nadeem@HiddenHiqmah.com"
+            href="mailto:support@hiddenhiqmah.com"
             className="text-gold underline"
           >
-            Subhan.Nadeem@HiddenHiqmah.com
+            support@hiddenhiqmah.com
           </a>
         </p>
       </section>

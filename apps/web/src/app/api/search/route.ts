@@ -673,12 +673,15 @@ export async function POST(req: NextRequest) {
 
         // Streaming ANSWER pass on the quality model: writes the grounded,
         // user-facing answer from the sources gathered above.
+        // max_tokens raised 1024 → 4096: long fiqh/tafsir answers were being
+        // cut off mid-sentence at 1024. Well within the model's streaming
+        // output ceiling; typical answers stop far short of it.
         const answerStream = async (
           msgs: Anthropic.Messages.MessageParam[]
         ): Promise<void> => {
           const s = client.messages.stream({
             model: ANSWER_MODEL,
-            max_tokens: 1024,
+            max_tokens: 4096,
             system: SYSTEM_BLOCKS,
             messages: msgs,
           });
@@ -689,6 +692,21 @@ export async function POST(req: NextRequest) {
             }
           }
           const final = await s.finalMessage();
+          // If the answer still hit the output cap, don't leave a silent
+          // mid-sentence cut: drop any half-emitted [[cite/link]] marker, close
+          // with a clean ellipsis, and log it so truncations are visible.
+          if (final.stop_reason === "max_tokens") {
+            const openMarker = raw.lastIndexOf("[[");
+            if (openMarker !== -1 && raw.indexOf("]]", openMarker) === -1) {
+              raw = raw.slice(0, openMarker);
+            }
+            raw = raw.trimEnd() + " …";
+            flushDeltas();
+            console.warn("[Ask Hiqmah] Answer truncated at max_tokens", {
+              chars: raw.length,
+              outputTokens: final.usage?.output_tokens,
+            });
+          }
           const u = final.usage;
           if (u) {
             usageTotals.input += u.input_tokens ?? 0;

@@ -21,7 +21,6 @@ import {
   Bookmark,
   MessageCircle,
   Pencil,
-  Send,
   Sparkles,
   UserX,
   X,
@@ -48,16 +47,11 @@ import {
 } from "@hidden-hiqmah/ui/lib/storage";
 import { getCachedLocation, getLocationState } from "@hidden-hiqmah/ui/lib/location-cache";
 import { getMyBlockedUsers, unblockCircleUser } from "@/lib/circles";
-import {
-  rescheduleNotificationsDebounced,
-  sendTestNotification,
-  TEST_NOTIFICATION_KINDS,
-  type TestNotificationKind,
-} from "@/lib/mobile/notifications";
+import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
 import { hapticMedium } from "@/lib/mobile/haptics";
 import { resetPageTips } from "@/components/mobile/PageTip";
 
-const FEEDBACK_EMAIL = "Subhan.Nadeem@HiddenHiqmah.com";
+const FEEDBACK_EMAIL = "support@hiddenhiqmah.com";
 
 const CALC_METHODS: { value: number; label: string }[] = [
   { value: 2, label: "Islamic Society of North America (ISNA)" },
@@ -94,20 +88,13 @@ export default function SettingsScreen() {
   const [editingProfile, setEditingProfile] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [managingBlocks, setManagingBlocks] = useState(false);
-  const [testSent, setTestSent] = useState<string | null>(null);
-
-  const fireTest = async (kind: TestNotificationKind, label: string) => {
-    hapticMedium();
-    const ok = await sendTestNotification(kind);
-    setTestSent(ok ? `${label} — arriving in ~4s` : "Enable notifications first");
-    window.setTimeout(() => setTestSent(null), 4000);
-  };
+  const [tipsMsg, setTipsMsg] = useState<string | null>(null);
 
   const resetTips = () => {
     hapticMedium();
     resetPageTips();
-    setTestSent("Page tips reset — open a feature page to see them.");
-    window.setTimeout(() => setTestSent(null), 4000);
+    setTipsMsg("Page tips reset — open a feature page to see them.");
+    window.setTimeout(() => setTipsMsg(null), 4000);
   };
 
   useEffect(() => {
@@ -213,32 +200,6 @@ export default function SettingsScreen() {
           onChange={(v) => updatePrayer({ asrMethod: v as AsrMethod })}
         />
       </SettingsSection>
-
-      {/* NOTIFICATION TESTS — native-only QA: fire each notification on demand */}
-      {isNative && (
-        <SettingsSection heading="Notification tests">
-          {TEST_NOTIFICATION_KINDS.map(({ kind, label }) => (
-            <SettingsRow
-              key={kind}
-              icon={Send}
-              title={label}
-              subtitle="Delivers in ~4s"
-              rightValue="Send"
-              onClick={() => void fireTest(kind, label)}
-            />
-          ))}
-          <SettingsRow
-            icon={Sparkles}
-            title="Reset page tips"
-            subtitle="Show the first-time tips again"
-            rightValue="Reset"
-            onClick={resetTips}
-          />
-          {testSent && (
-            <div className="px-3 py-2 text-xs text-gold text-center">{testSent}</div>
-          )}
-        </SettingsSection>
-      )}
 
       {/* HOME — mobile-home only (the web home is a fixed grid) */}
       {isNative && (
@@ -356,6 +317,18 @@ export default function SettingsScreen() {
           rightChevron
           href="/credits"
         />
+        {isNative && (
+          <SettingsRow
+            icon={Sparkles}
+            title="Reset page tips"
+            subtitle="Show the first-time tips again"
+            rightValue="Reset"
+            onClick={resetTips}
+          />
+        )}
+        {tipsMsg && (
+          <div className="px-3 py-2 text-xs text-gold text-center">{tipsMsg}</div>
+        )}
         <SettingsRow
           icon={Trash2}
           title="Clear local data"

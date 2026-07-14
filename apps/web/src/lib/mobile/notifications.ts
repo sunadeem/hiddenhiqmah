@@ -6,7 +6,8 @@
  * the cached location + the user's calculation method, then schedule:
  *   - Adhan at each enabled prayer (custom adhan.caf sound)
  *   - Pre-prayer reminders (default sound, 15 min before)
- *   - Daily verse/hadith at a fixed morning time
+ *   - Engagement nudges (verse / hadith / reflection / streak) staggered
+ *     across the day — see the *_HOUR constants below
  *   - Jumu'ah reminder on Fridays
  *
  * iOS caps pending local notifications at 64, so we sort by fire time and keep
@@ -72,10 +73,19 @@ function fmtClock(d: Date): string {
   return `${h}:${m} ${ampm}`;
 }
 const PRE_PRAYER_MINUTES = 15;
-const DAILY_HOUR = 8; // 8:00 AM local — daily verse/hadith
+// Engagement times are deliberately STAGGERED so no two kinds ever fire in the
+// same minute (same-minute banners stack and get dismissed as one), and so the
+// nudges shape a sensible day: a verse to start the morning, a hadith at the
+// lunch break, the reflection at evening wind-down, and the streak nudge after
+// it as a last call before sleep. Keep these distinct when adding new kinds.
+const VERSE_HOUR = 8; // 8:00 AM local — today's verse (morning read)
+const HADITH_HOUR = 13; // 1:30 PM local — today's hadith (lunch break)
+const HADITH_MINUTE = 30;
 const REMINDER_HOUR = 20; // 8:00 PM local — today's reflection (evening wind-down)
-const STREAK_HOUR = 21; // 9:00 PM local — streak-protection nudge
-const JUMUAH_HOUR = 10; // 10:00 AM Friday
+const STREAK_HOUR = 21; // 9:15 PM local — streak nudge (after the reflection, before sleep)
+const STREAK_MINUTE = 15;
+const JUMUAH_HOUR = 9; // 9:30 AM Friday — before most congregations
+const JUMUAH_MINUTE = 30;
 const LAST_ACTIVE_KEY = "hiqmah-daily-last-active"; // YYYY-MM-DD of last checklist activity
 const DAYS_AHEAD = 10;
 const MAX_NOTIFICATIONS = 60; // stay under iOS's 64 pending cap
@@ -315,36 +325,42 @@ export async function scheduleAllNotifications(
   }
 
   // ── Daily verse / hadith (independent — either or both can be enabled) ──
+  // Verse in the morning, hadith at lunch — staggered so they never collide.
   if (wantDaily) {
     for (let i = 0; i <= ENGAGEMENT_DAYS; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);
-      const at = new Date(day);
-      at.setHours(DAILY_HOUR, 0, 0, 0);
-      if (at <= now) continue;
       if (prefs.todaysVerse) {
-        const insp = inspirationForDate(at, "Quran");
-        if (insp)
-          notifs.push({
-            id: id++,
-            title: "Today's Verse",
-            body: `${insp.english} — ${insp.reference}`,
-            schedule: { at },
-            url: "/",
-            tier: 3,
-          });
+        const at = new Date(day);
+        at.setHours(VERSE_HOUR, 0, 0, 0);
+        if (at > now) {
+          const insp = inspirationForDate(at, "Quran");
+          if (insp)
+            notifs.push({
+              id: id++,
+              title: "Today's Verse",
+              body: `${insp.english} — ${insp.reference}`,
+              schedule: { at },
+              url: "/",
+              tier: 3,
+            });
+        }
       }
       if (prefs.todaysHadith) {
-        const insp = inspirationForDate(at, "Hadith");
-        if (insp)
-          notifs.push({
-            id: id++,
-            title: "Today's Hadith",
-            body: `${insp.english} — ${insp.reference}`,
-            schedule: { at },
-            url: "/",
-            tier: 3,
-          });
+        const at = new Date(day);
+        at.setHours(HADITH_HOUR, HADITH_MINUTE, 0, 0);
+        if (at > now) {
+          const insp = inspirationForDate(at, "Hadith");
+          if (insp)
+            notifs.push({
+              id: id++,
+              title: "Today's Hadith",
+              body: `${insp.english} — ${insp.reference}`,
+              schedule: { at },
+              url: "/",
+              tier: 3,
+            });
+        }
       }
     }
   }
@@ -378,7 +394,7 @@ export async function scheduleAllNotifications(
       day.setDate(day.getDate() + i);
       if (day.getDay() !== 5) continue; // Friday
       const at = new Date(day);
-      at.setHours(JUMUAH_HOUR, 0, 0, 0);
+      at.setHours(JUMUAH_HOUR, JUMUAH_MINUTE, 0, 0);
       if (at <= now) continue;
       notifs.push({
         id: id++,
@@ -403,7 +419,7 @@ export async function scheduleAllNotifications(
       const day = new Date(now);
       day.setDate(day.getDate() + i);
       const at = new Date(day);
-      at.setHours(STREAK_HOUR, 0, 0, 0);
+      at.setHours(STREAK_HOUR, STREAK_MINUTE, 0, 0);
       if (at <= now) continue;
       if (i === 0 && doneToday) continue; // already kept the streak today
       notifs.push({
@@ -492,145 +508,4 @@ export function rescheduleNotificationsDebounced(promptIfNeeded = false) {
   debounceTimer = setTimeout(() => {
     void scheduleAllNotifications(promptIfNeeded);
   }, 600);
-}
-
-// ── Notification test harness (Settings → Notification tests) ─────────────
-// Fire ONE notification of a given kind ~4s out, using the SAME title / body /
-// sound / deep-link the scheduler emits — so a test truly exercises delivery
-// and tap-routing (registerNotificationTapHandler reads the same extra.url).
-export type TestNotificationKind =
-  | "adhan"
-  | "prePrayer"
-  | "dailyVerse"
-  | "dailyHadith"
-  | "todaysReminder"
-  | "jumuah"
-  | "streak"
-  | "enabledConfirmation";
-
-/**
- * Every distinct notification the scheduler can emit, in a stable order. Drives
- * the Settings test panel and each test's notification id (TEST_ID_BASE + index).
- */
-export const TEST_NOTIFICATION_KINDS: { kind: TestNotificationKind; label: string }[] = [
-  { kind: "adhan", label: "Adhan (prayer time)" },
-  { kind: "prePrayer", label: "Pre-prayer reminder" },
-  { kind: "dailyVerse", label: "Today's verse" },
-  { kind: "dailyHadith", label: "Today's hadith" },
-  { kind: "todaysReminder", label: "Today's reminder" },
-  { kind: "jumuah", label: "Jumu'ah reminder" },
-  { kind: "streak", label: "Streak nudge" },
-  { kind: "enabledConfirmation", label: "Enabled confirmation" },
-];
-
-/** Build the exact payload the scheduler would emit for `kind`, with live content. */
-function buildTestNotification(kind: TestNotificationKind): {
-  title: string;
-  body: string;
-  sound?: string;
-  url?: string;
-} {
-  const now = new Date();
-  const samplePrayer: PrayerKey = "dhuhr"; // representative prayer for adhan/pre-prayer
-  switch (kind) {
-    case "adhan": {
-      const loc = getCachedLocation();
-      return {
-        title: [PRAYER_LABEL[samplePrayer], loc?.city, fmtClock(now)]
-          .filter(Boolean)
-          .join(" · "),
-        body: ADHAN_BODY[samplePrayer],
-        sound: ADHAN_SOUND,
-        url: "/salah",
-      };
-    }
-    case "prePrayer":
-      return {
-        title: `${PRAYER_LABEL[samplePrayer]} in ${PRE_PRAYER_MINUTES} min`,
-        body: `Get ready for ${PRAYER_LABEL[samplePrayer]} prayer.`,
-        url: "/salah",
-      };
-    case "dailyVerse": {
-      const insp = inspirationForDate(now, "Quran");
-      return {
-        title: "Today's Verse",
-        body: insp ? `${insp.english} — ${insp.reference}` : "Today's verse.",
-        url: "/",
-      };
-    }
-    case "dailyHadith": {
-      const insp = inspirationForDate(now, "Hadith");
-      return {
-        title: "Today's Hadith",
-        body: insp ? `${insp.english} — ${insp.reference}` : "Today's hadith.",
-        url: "/",
-      };
-    }
-    case "todaysReminder": {
-      const r = REMINDERS[dailyIndex(dayKey(now), REMINDERS.length)];
-      const ref = r
-        ? r.sourceKind === "quran"
-          ? `Qur'an ${r.sourceRef}`
-          : r.sourceRef
-        : "";
-      return {
-        title: "Today's Reminder",
-        body: r ? `${r.textEn} — ${ref}` : "Today's reflection.",
-        url: "/muslim-daily?tab=reminders",
-      };
-    }
-    case "jumuah":
-      return {
-        title: "Jumu'ah Mubarak",
-        body: "Read Surah Al-Kahf and prepare for Jumu'ah prayer.",
-        url: "/quran/18",
-      };
-    case "streak":
-      return {
-        title: "Keep your streak going",
-        body: "You haven't completed today's checklist yet — a little before the day ends keeps your streak alive.",
-        url: "/muslim-daily",
-      };
-    case "enabledConfirmation":
-      return {
-        title: "Notifications on",
-        body: "You're all set — you'll get the reminders you've turned on, in shā' Allah.",
-      };
-  }
-}
-
-const TEST_ID_BASE = 90000;
-
-/**
- * Fire a single test notification of `kind` ~4s from now, mirroring the real
- * scheduled version (title/body/sound/deep-link). Prompts for OS permission if
- * needed. Returns whether it was scheduled. Native-only; no-op on web.
- */
-export async function sendTestNotification(
-  kind: TestNotificationKind
-): Promise<boolean> {
-  if (!Capacitor.isNativePlatform()) return false;
-  const granted = await ensureNotificationPermission();
-  if (!granted) return false;
-  const n = buildTestNotification(kind);
-  const idx = TEST_NOTIFICATION_KINDS.findIndex((k) => k.kind === kind);
-  try {
-    await LocalNotifications.schedule({
-      notifications: [
-        {
-          id: TEST_ID_BASE + (idx >= 0 ? idx : 0),
-          title: n.title,
-          body: n.body,
-          schedule: { at: new Date(Date.now() + 4000) },
-          ...(n.sound ? { sound: n.sound } : {}),
-          ...(kind === "adhan" ? { interruptionLevel: "timeSensitive" } : {}),
-          ...(n.url ? { extra: { url: n.url } } : {}),
-        },
-      ],
-    });
-    return true;
-  } catch (e) {
-    console.error("[notifications] test schedule failed", e);
-    return false;
-  }
 }

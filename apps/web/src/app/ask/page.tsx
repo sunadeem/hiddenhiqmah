@@ -68,7 +68,10 @@ export default function AskPage() {
   const [placeholderText, setPlaceholderText] = useState("");
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  // Inline-confirm arming for Clear chat (CirclesScreen leave/remove idiom):
+  // first tap arms the button ("Clear?"), the second executes; auto-disarms.
+  const [confirmClear, setConfirmClear] = useState(false);
   const { user } = useAuth();
   const meta = (user?.user_metadata ?? {}) as {
     first_name?: string;
@@ -150,6 +153,26 @@ export default function AskPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  // Disarm the Clear confirm if the second tap never comes.
+  useEffect(() => {
+    if (!confirmClear) return;
+    const t = setTimeout(() => setConfirmClear(false), 3000);
+    return () => clearTimeout(t);
+  }, [confirmClear]);
+
+  // Auto-grow the composer with its content, up to ~5 lines, then scroll
+  // internally (CircleChatSheet composer idiom).
+  const autoResize = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 140)}px`;
+  }, []);
+
+  useEffect(() => {
+    autoResize();
+  }, [query, autoResize]);
+
   const sendMessage = useCallback(async (userMessage: string, prevMessages: Message[]) => {
     const newMessages: Message[] = [...prevMessages, { role: "user", content: userMessage }];
     setMessages(newMessages);
@@ -195,12 +218,16 @@ export default function AskPage() {
     sendMessage(autoSend, messages);
   }, [hydrated, autoSend, messages, sendMessage]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitQuery = () => {
     if (!query.trim() || loading) return;
     const q = query.trim();
     setQuery("");
     sendMessage(q, messages);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitQuery();
   };
 
   const handleLinkClick = (href: string) => {
@@ -234,11 +261,26 @@ export default function AskPage() {
         <div className="flex items-center gap-2">
           {messages.length > 0 && (
             <button
-              onClick={() => { setMessages([]); setQuery(""); }}
-              className="p-1.5 rounded-lg hover:bg-white/10 text-themed-muted/50 hover:text-themed-muted transition-colors"
-              title="Clear chat"
+              onClick={() => {
+                // Inline confirm (no window.confirm): first tap arms the
+                // button ("Clear?"), the second executes.
+                if (confirmClear) {
+                  setConfirmClear(false);
+                  setMessages([]);
+                  setQuery("");
+                } else {
+                  setConfirmClear(true);
+                }
+              }}
+              aria-label={confirmClear ? "Confirm clear chat" : "Clear chat"}
+              title={confirmClear ? "Confirm clear chat" : "Clear chat"}
+              className={
+                confirmClear
+                  ? "px-2.5 py-1.5 rounded-lg text-xs font-bold text-red-300 bg-red-500/15 border border-red-400/30 transition-colors"
+                  : "p-1.5 rounded-lg hover:bg-white/10 text-themed-muted/50 hover:text-themed-muted transition-colors"
+              }
             >
-              <Trash2 size={14} />
+              {confirmClear ? "Clear?" : <Trash2 size={14} />}
             </button>
           )}
         </div>
@@ -332,14 +374,21 @@ export default function AskPage() {
         onSubmit={handleSubmit}
         className="ask-composer border-t sidebar-border p-4 shrink-0"
       >
-        <div className="flex items-center gap-3 min-w-0">
-          <input
+        <div className="flex items-end gap-3 min-w-0">
+          <textarea
             ref={inputRef}
-            type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              // Enter sends, Shift+Enter inserts a newline (CircleChatSheet idiom).
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                submitQuery();
+              }
+            }}
+            rows={1}
             placeholder={placeholderText || "Ask anything about Islam..."}
-            className="flex-1 min-w-0 bg-[var(--color-card)] rounded-lg px-4 py-3 text-themed text-base outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
+            className="flex-1 min-w-0 resize-none max-h-[140px] overflow-y-auto bg-[var(--color-card)] rounded-lg px-4 py-3 text-themed text-base outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
           />
           <button
             type="submit"

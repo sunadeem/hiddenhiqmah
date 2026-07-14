@@ -556,7 +556,7 @@ const purificationTopics: Topic[] = [
         {
           title: "The obligation of wudu",
           detail:
-            "The obligatory (fard) acts are established directly in Quran 5:6: washing the face, washing the arms to the elbows, wiping the head, and washing the feet to the ankles. These four acts plus the intention (niyyah) are the pillars without which wudu is invalid.",
+            "Wudu has four obligatory (fard) acts, established directly in Quran 5:6: 1) washing the face, 2) washing the arms up to the elbows, 3) wiping the head, and 4) washing the feet up to the ankles. To these the majority of scholars add the intention (niyyah) — wudu is invalid without them. Everything else in the familiar sequence — Bismillah, washing the hands to the wrists, rinsing the mouth and nose, wiping the ears, washing three times, starting with the right — is sunnah according to the majority (the Hanbali school also counts rinsing the mouth and nose as fard). The schools likewise differ on whether keeping the Quranic order (tartib) and washing without long gaps (muwalat) are obligatory or sunnah; performing wudu in order and without interruption, as the Prophet ﷺ did, satisfies all positions.",
           note: "Quran 5:6",
         },
         {
@@ -579,7 +579,7 @@ const purificationTopics: Topic[] = [
     name: "Steps of Wudu",
     content: {
       intro:
-        "The Prophet ﷺ taught wudu in a specific order as narrated by Uthman ibn Affan (may Allah be pleased with him), who demonstrated the Prophet's wudu step by step (Bukhari 4:25). Steps marked 'Fard' are obligatory from Quran 5:6; the rest are sunnah (recommended) from the Prophet's ﷺ practice.",
+        "The Prophet ﷺ taught wudu in a specific order as narrated by Uthman ibn Affan (may Allah be pleased with him), who demonstrated the Prophet's wudu step by step (Bukhari 4:25). Each step below is tagged: Fard steps are the pillars of wudu — the four acts named in Quran 5:6 plus the intention (niyyah) per the majority of scholars — and leaving any of them out invalidates the wudu. Sunnah steps are from the Prophet's ﷺ consistent practice: they perfect the wudu and carry reward, but the wudu remains valid without them (the Hanbali school also counts rinsing the mouth and nose as fard, so it is best never to skip them).",
       points: [
         {
           title: "1. Intention (Niyyah) — Fard",
@@ -602,13 +602,13 @@ const purificationTopics: Topic[] = [
         {
           title: "4. Rinse the Mouth — Sunnah",
           detail:
-            "Take water into the mouth with the right hand and rinse it thoroughly three times. Swirl the water around to clean the entire mouth.",
+            "Take water into the mouth with the right hand and rinse it thoroughly three times. Swirl the water around to clean the entire mouth. Sunnah per the majority of scholars; the Hanbali school counts rinsing the mouth as fard.",
           note: "Bukhari 4:25",
         },
         {
           title: "5. Rinse the Nose — Sunnah",
           detail:
-            "Inhale water into the nostrils with the right hand and blow it out with the left hand, three times. Sniff the water gently — do not inhale too deeply.",
+            "Inhale water into the nostrils with the right hand and blow it out with the left hand, three times. Sniff the water gently — do not inhale too deeply. Sunnah per the majority of scholars; the Hanbali school counts rinsing the nose as fard.",
           note: "Bukhari 4:25",
         },
         {
@@ -845,7 +845,108 @@ const purificationTopics: Topic[] = [
       ],
     },
   },
+  {
+    id: "tayammum",
+    name: "Tayammum",
+    content: {
+      intro:
+        "Tayammum (التيمم) is the dry ablution — purification with clean earth when water cannot be used. It is a mercy from Allah so that no Muslim is ever left unable to pray: when there is no water, or water would cause harm, striking the palms on clean earth and wiping the face and hands takes the place of wudu — and of ghusl. The concession was revealed on a journey when Aisha's necklace was lost and the people had no water for prayer (Bukhari 7:1).",
+      verse: {
+        arabic:
+          "وَإِن كُنتُم مَّرْضَىٰٓ أَوْ عَلَىٰ سَفَرٍ أَوْ جَآءَ أَحَدٌ مِّنكُم مِّنَ ٱلْغَآئِطِ أَوْ لَـٰمَسْتُمُ ٱلنِّسَآءَ فَلَمْ تَجِدُوا۟ مَآءً فَتَيَمَّمُوا۟ صَعِيدًا طَيِّبًا فَٱمْسَحُوا۟ بِوُجُوهِكُمْ وَأَيْدِيكُم مِّنْهُ",
+        text: "But if you are ill, on a journey, or have relieved yourselves, or had sexual contact with women and find no water, then purify yourselves with clean earth, and wipe your faces and hands therewith.",
+        ref: "Quran 5:6",
+      },
+      points: [
+        {
+          title: "When tayammum is permitted",
+          detail:
+            "Quran 5:6 names the cases: 1) No water — after genuinely seeking it, as commonly happens in travel. 2) Illness, or harm from using water — when washing would worsen a sickness, a wound, or endanger you (as with severe cold with no means of heating). Amr ibn al-As, fearing for his life on a freezing night, performed tayammum instead of ghusl and the Prophet ﷺ did not object (Abu Dawud 1:334). The concession lasts as long as the excuse lasts — the Prophet ﷺ said: 'Pure clean earth is a purifier for the Muslim; even if he did not find water for ten years.' (Tirmidhi 1:124)",
+          note: "Quran 5:6; Abu Dawud 1:334; Tirmidhi 1:124",
+        },
+        {
+          title: "How to perform it — the hadith of Ammar",
+          detail:
+            "Ammar ibn Yasir (may Allah be pleased with him) became junub on a journey with no water, so he rolled on the ground and prayed. When he told the Prophet ﷺ, he said: 'It would have been sufficient for you to do like this.' The Prophet then stroked lightly the earth with his hands and then blew off the dust and passed his hands over his face and hands (Bukhari 7:5). So: make the intention, say Bismillah, strike the palms once on clean earth (dust, sand, or a natural rock/earth surface), blow off the excess dust, then wipe the face and wipe the hands. Most scholars hold that wiping the hands means to the wrists, as in the Bukhari narrations; other positions in the schools extend it to the elbows — both trace back to the narrations.",
+          note: "Bukhari 7:5; Bukhari 7:10",
+        },
+        {
+          title: "What it replaces",
+          detail:
+            "Valid tayammum stands in place of both wudu and ghusl — Ammar's own case was janabah, which normally requires ghusl. Once performed, you pray exactly as if you had purified with water: salah, touching the mushaf, and tawaf are all valid, with nothing to make up later for prayers prayed with it.",
+          note: "Quran 5:6; Bukhari 7:5",
+        },
+        {
+          title: "What breaks tayammum",
+          detail:
+            "Everything that breaks wudu breaks tayammum — and additionally, finding water (or the excuse ending, such as recovering from the illness). The Prophet ﷺ said: 'Then if he finds water, then let him use it (for purification) on his skin.' (Tirmidhi 1:124). Prayers already prayed with valid tayammum remain valid: when two travelers prayed with tayammum and then found water within the prayer time, the Prophet ﷺ told the one who did not repeat his prayer: 'You followed the sunnah (model behavior of the Prophet) and your (first) prayer was enough for you' (Abu Dawud 1:338). If the tayammum was for janabah, finding water means ghusl is due; otherwise a fresh wudu.",
+          note: "Tirmidhi 1:124; Abu Dawud 1:338",
+        },
+      ],
+    },
+  },
 ];
+
+/* Steps of Wudu renderer — same layout as TopicInfoCard, but the "— Fard" /
+   "— Sunnah" suffix on each step title is lifted out into a small ruling chip
+   so the obligation level of every step is visible at a glance. */
+const STEP_RULING_PATTERN = /^(.*) — (Fard|Sunnah)$/;
+
+function RulingChip({ ruling }: { ruling: "Fard" | "Sunnah" }) {
+  return (
+    <span
+      className={`shrink-0 px-2 py-0.5 rounded-full border text-[10px] font-medium uppercase tracking-wider ${
+        ruling === "Fard"
+          ? "bg-gold/15 border-gold/30 text-gold"
+          : "sidebar-border text-themed-muted"
+      }`}
+    >
+      {ruling}
+    </span>
+  );
+}
+
+function WuduStepsCard({ topic }: { topic: Topic }) {
+  return (
+    <ContentCard>
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold text-themed">{topic.name}</h2>
+      </div>
+
+      <p className="text-themed-muted text-sm leading-relaxed mb-5">
+        <HadithRefText text={topic.content.intro} />
+      </p>
+
+      <div className="space-y-4">
+        {topic.content.points.map((point) => {
+          const m = point.title.match(STEP_RULING_PATTERN);
+          const title = m ? m[1] : point.title;
+          const ruling = m ? (m[2] as "Fard" | "Sunnah") : null;
+          return (
+            <div
+              key={point.title}
+              className="rounded-lg p-4 border sidebar-border"
+              style={{ backgroundColor: "var(--color-bg)" }}
+            >
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <h4 className="text-sm font-semibold text-themed">{title}</h4>
+                {ruling && <RulingChip ruling={ruling} />}
+              </div>
+              <p className="text-themed-muted text-sm leading-relaxed">
+                <HadithRefText text={point.detail} />
+              </p>
+              {point.note && (
+                <p className="text-xs text-gold/60 mt-2">
+                  <HadithRefText text={point.note} />
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </ContentCard>
+  );
+}
 
 /* ───────────────────────── jumu'ah (friday prayer) data ───────────────────────── */
 
@@ -2035,7 +2136,11 @@ function SalahContent() {
               }}
             >
               <div className="space-y-4">
-                <TopicInfoCard topic={activePurificationTopic} />
+                {activePurificationTopic.id === "steps" ? (
+                  <WuduStepsCard topic={activePurificationTopic} />
+                ) : (
+                  <TopicInfoCard topic={activePurificationTopic} />
+                )}
 
                 {/* Ghusl cross-links */}
                 {activePurificationTopic.id === "ghusl" && (
@@ -2082,9 +2187,19 @@ function SalahContent() {
               </div>
             </SubTabLayout>
 
-            {/* Sources */}
+            {/* Sources — the Tayammum pill carries its own source set */}
+            {activePurificationTopic.id === "tayammum" ? (
+              <SourcesCard delay={0.3} className="mt-8" sources={[
+                { ref: "Quran 5:6", desc: "The tayammum clause — clean earth when ill, traveling, or without water" },
+                { ref: "Bukhari 7:1", desc: "The revelation of tayammum — Aisha's lost necklace on a journey" },
+                { ref: "Bukhari 7:5; Bukhari 7:10", desc: "The hadith of Ammar ibn Yasir — strike the earth, blow off the dust, wipe the face and hands" },
+                { ref: "Abu Dawud 1:334", desc: "Amr ibn al-As — tayammum instead of ghusl when water would cause harm" },
+                { ref: "Tirmidhi 1:124", desc: "Clean earth is a purifier even for ten years; use water once it is found" },
+                { ref: "Abu Dawud 1:338", desc: "Prayers prayed with valid tayammum need not be repeated when water is found" },
+              ]} />
+            ) : (
             <SourcesCard delay={0.3} className="mt-8" sources={[
-              { ref: "Quran 5:6", desc: "The verse of purification — wudu, and ghusl for janabah" },
+              { ref: "Quran 5:6", desc: "The verse of purification — wudu, ghusl for janabah, and tayammum" },
               { ref: "Bukhari 1:1; Bukhari 4:1; Bukhari 4:25; Bukhari 11:12", desc: "Niyyah, nullifiers, the Prophet's ﷺ wudu, right-side preference, miswak" },
               { ref: "Bukhari 5:1; Bukhari 5:26; Bukhari 5:43; Bukhari 6:35; Bukhari 11:5; Bukhari 23:22", desc: "The Prophet's ﷺ ghusl (Aisha and Maymunah), when ghusl is obligatory, ghusl for Jumu'ah, washing the deceased" },
               { ref: "Muslim 2:1; Muslim 2:20; Muslim 2:44; Muslim 2:46; Muslim 3:17; Muslim 3:32; Muslim 3:123", desc: "Cleanliness, dua after wudu, sins washed away, madhy requires only wudu, emission requires ghusl, camel meat" },
@@ -2092,6 +2207,7 @@ function SalahContent() {
               { ref: "Tirmidhi 1:31; Tirmidhi 1:82", desc: "Beard, ears are part of head, interlacing toes, dua after wudu, touching private parts" },
               { ref: "Ibn Majah 1:133; Ibn Majah 1:159", desc: "Bismillah obligation discussion, moderation with water" },
             ]} />
+            )}
           </motion.div>
         )}
 

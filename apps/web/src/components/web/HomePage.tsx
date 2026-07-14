@@ -154,7 +154,7 @@ export default function HomePage() {
             Terms
           </Link>
           <a
-            href="mailto:Subhan.Nadeem@HiddenHiqmah.com"
+            href="mailto:support@hiddenhiqmah.com"
             className="text-themed-muted hover:text-gold transition-colors"
           >
             Contact

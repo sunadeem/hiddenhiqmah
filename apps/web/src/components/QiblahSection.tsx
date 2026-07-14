@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Motion } from "@capacitor/motion";
 import { Compass } from "lucide-react";
+import { model as geomagneticModel } from "geomagnetism";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
@@ -31,6 +32,19 @@ function calcQiblahBearing(lat: number, lng: number): number {
   const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1);
   const bearing = (toDeg(Math.atan2(y, x)) + 360) % 360;
   return bearing;
+}
+
+// Magnetic declination (degrees, east-positive) at a location, from the World
+// Magnetic Model. Device compasses (webkitCompassHeading / absolute alpha) are
+// referenced to MAGNETIC north, while the qiblah bearing is from TRUE north —
+// without this correction the needle is off by the local declination
+// (~10.5°W in Virginia, for example).
+function calcMagneticDeclination(lat: number, lng: number): number | null {
+  try {
+    return geomagneticModel().point([lat, lng]).decl;
+  } catch {
+    return null;
+  }
 }
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -69,8 +83,16 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   const [displayHeading, setDisplayHeading] = useState<number | null>(null);
   const continuousHeadingRef = useRef<number | null>(null);
   const [needsPermission, setNeedsPermission] = useState(false);
+  // Magnetic declination at the user's location (east-positive). Kept in a ref
+  // so the high-frequency orientation handler reads the latest value without
+  // re-attaching listeners; mirrored in state for the caption.
+  const declinationRef = useRef(0);
+  const [declination, setDeclination] = useState<number | null>(null);
 
-  const applyHeading = useCallback((newHeading: number) => {
+  const applyHeading = useCallback((magneticHeading: number) => {
+    // Device heading is relative to magnetic north; shift it to true north so
+    // it matches the true-north qiblah bearing.
+    const newHeading = (((magneticHeading + declinationRef.current) % 360) + 360) % 360;
     setHeading(newHeading);
     if (continuousHeadingRef.current === null) {
       continuousHeadingRef.current = newHeading;
@@ -140,6 +162,14 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   useEffect(() => {
     fetchLocation();
   }, [fetchLocation]);
+
+  // Recompute magnetic declination whenever the location changes.
+  useEffect(() => {
+    if (!loc) return;
+    const decl = calcMagneticDeclination(loc.lat, loc.lng);
+    declinationRef.current = decl ?? 0;
+    setDeclination(decl);
+  }, [loc]);
 
   // Device orientation (compass) — sets up listener and handles iOS permission
   useEffect(() => {
@@ -280,7 +310,8 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
           <div className="flex flex-col md:flex-row items-center gap-6">
             {/* Compass visual — dial is fixed (N stays at top, Ka'bah stays at qibla bearing);
                 only the "you are facing" arrow rotates with device heading. */}
-            <div className="relative w-56 h-56 shrink-0">
+            <div className="flex flex-col items-center shrink-0">
+            <div className="relative w-56 h-56">
               {/* Rotating dial — the arrow stays fixed pointing up; N/E/S/W cardinals and the
                   Ka'bah marker rotate to match the real-world bearing relative to where you're
                   facing. When the Ka'bah marker arrives at the top, you're facing the qiblah. */}
@@ -395,6 +426,15 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Declination caption — shown while the live compass is active and
+                the magnetic→true correction is being applied. */}
+            {heading !== null && declination !== null && Math.abs(declination) >= 0.05 && (
+              <p className="text-[10px] text-themed-muted mt-2 text-center">
+                Compass corrected for magnetic declination ({Math.abs(declination).toFixed(1)}°{declination >= 0 ? "E" : "W"})
+              </p>
+            )}
             </div>
 
             {/* Details */}
