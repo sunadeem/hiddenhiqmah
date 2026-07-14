@@ -65,3 +65,7 @@ citation you trust, or remove._
 ## Children Who Die Young sub-view (2026-07-12)
 38. ~~RESOLVED (2026-07-12)~~ — the daʿāmīs/garment hadith (Sahih Muslim 2635) was missing from the upstream dataset; the verbatim text (Arabic + English) was added by hand to the corpus as Muslim 45:198 from a sunnah.com-sourced mirror, with provenance documented in packages/content/hadith/MANUAL_ADDITIONS.md. The card now quotes it verbatim with a live citation.
 39. "In today's terms" note on the martyrs list (plague → epidemics/pandemics generally; mabtun → fatal digestive-system illness) — contemporary scholarly extension, generic attribution.
+
+## Wudu fard/sunnah + Tayammum (2026-07-13)
+40. Fiqh classifications on the wudu steps — niyyah as fard "per the majority"; Hanbali position that rinsing mouth/nose is fard; tartib (Shafi'i/Hanbali fard vs Hanafi sunnah) and muwalat school differences — generic attribution (the Quran 5:6 four fards ARE the verified anchor).
+41. Tayammum details with generic attribution: the to-the-elbows wiping variant in some schools (to-the-wrists form IS verified — Bukhari 7:5/7:10); that valid tayammum permits mushaf/tawaf (inference from standing in place of wudu/ghusl); Bukhari 7:1 (Aisha's necklace) framed as the revelation occasion.
