@@ -1,5 +1,11 @@
 # Content Review Queue — generically-attributed claims
 
+> **✅ REVIEW COMPLETE (2026-07-16).** Founder reviewed all items. Resolved with
+> verified/precise citations: 14, 16, 17, 18, 19, 21, 24, 38. All remaining items
+> (madhhab positions, consensus characterizations, seerah attributions) were
+> approved to ship as-is with generic attribution. This queue is closed; new
+> unverifiable claims in future content work should append here and be flagged.
+
 _From the IA-redesign content build (2026-07-11). **Every citation that shipped is
 locally verified** — all 66 new hadith references resolve in `packages/content/hadith`
 and the adversarial review sample-confirmed the texts support their claims; all ~17 new
