@@ -17,7 +17,6 @@ import {
   LocateFixed,
   Settings2,
 } from "lucide-react";
-import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { formatLocation, reverseGeocode } from "@hidden-hiqmah/ui/lib/location";
 import {
   getFreshCachedLocation,
@@ -254,9 +253,6 @@ function getWindowProgress(timings: PrayerTimings, nextKey: string, timezone?: s
 /* ───────────────────────── page ───────────────────────── */
 
 export default function PrayerTimesPage() {
-  /* ── Adhan audio context ── */
-  const adhan = useAdhanAudio();
-
   /* ── Prayer Times state ── */
   const [ptTimings, setPtTimings] = useState<PrayerTimings | null>(null);
   const [ptTimezone, setPtTimezone] = useState<string | undefined>(undefined);
@@ -447,11 +443,6 @@ export default function PrayerTimesPage() {
       if (ptIntervalRef.current) clearInterval(ptIntervalRef.current);
     };
   }, [ptTimings, ptTimezone]);
-
-  // Push prayer timings into the adhan audio context (which handles scheduling globally)
-  useEffect(() => {
-    if (ptTimings) adhan.setTimings(ptTimings);
-  }, [ptTimings, adhan]);
 
   const ptHandleMethodChange = (newMethod: number) => {
     setPtMethod(newMethod);

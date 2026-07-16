@@ -10,7 +10,7 @@ function formatTime(seconds: number): string {
 }
 
 export default function AdhanMiniPlayer() {
-  const { playing, paused, progress, duration, source, togglePause, stop, seekTo } = useAdhanAudio();
+  const { playing, paused, progress, duration, togglePause, stop, seekTo } = useAdhanAudio();
   const constraintsRef = useRef<HTMLDivElement>(null);
 
   if (!playing) return null;
@@ -54,7 +54,7 @@ export default function AdhanMiniPlayer() {
                 <Volume2 size={16} className="text-gold shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-themed font-medium truncate">
-                    Adhan {source === "scheduled" && <span className="text-themed-muted font-normal">— prayer time</span>}
+                    Adhan
                   </p>
                   <div className="flex items-center gap-2">
                     <p className="text-[11px] text-themed-muted">Omar Hisham Al Arabi</p>

@@ -1522,7 +1522,7 @@ function PrayerInfoCard({
 /* ───────────────────────── Adhan & Iqamah section ───────────────────────── */
 
 function AdhanSection() {
-  const { settings, updateSettings, playing, startManual, stop } = useAdhanAudio();
+  const { playing, startManual, stop } = useAdhanAudio();
   const isNative = useIsNative();
 
   return (
@@ -1530,38 +1530,20 @@ function AdhanSection() {
       {/* Intro */}
       <ContentCard delay={0.05}>
         <p className="text-themed-muted text-sm leading-relaxed">
-          The <span className="text-gold">adhan</span> is the call to prayer that announces the time has come. The <span className="text-gold">iqamah</span> is a second, shorter call made by someone in the congregation just before the prayer begins, signaling everyone to stand and align in rows. Below you can read both{isNative ? "." : ", and optionally turn on automatic adhan playback at prayer times."}
+          The <span className="text-gold">adhan</span> is the call to prayer that announces the time has come. The <span className="text-gold">iqamah</span> is a second, shorter call made by someone in the congregation just before the prayer begins, signaling everyone to stand and align in rows. Below you can read both.
         </p>
-        {!isNative && (
-          <p className="text-themed-muted text-xs leading-relaxed mt-2">
-            <span className="text-gold/80 font-medium">Note:</span> Automatic adhan playback only works while this site is open in a browser tab. Phones and laptops cannot run background audio when the site is closed.
-          </p>
-        )}
       </ContentCard>
 
-      {/* Adhan settings panel — on the native app this lives in Settings instead,
-          and quick playback is on the Home screen. */}
+      {/* Adhan playback panel — on the native app quick playback is on the
+          Home screen instead. */}
       {!isNative && (
       <ContentCard delay={0.08}>
         <h3 className="text-gold font-semibold text-lg mb-4 flex items-center gap-2">
           <Volume2 size={18} />
-          Auto-Play Adhan
+          Listen to the Adhan
         </h3>
 
-        <label className="flex items-center justify-between gap-3 cursor-pointer">
-          <div>
-            <p className="text-themed text-sm font-medium">Play Adhan at prayer times</p>
-            <p className="text-themed-muted text-xs">Plays automatically at each calculated prayer time while this tab is open</p>
-          </div>
-          <input
-            type="checkbox"
-            checked={settings.adhanEnabled}
-            onChange={(e) => updateSettings({ adhanEnabled: e.target.checked })}
-            className="w-5 h-5 accent-gold cursor-pointer"
-          />
-        </label>
-
-        <div className="mt-5 pt-5 border-t sidebar-border flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           {playing ? (
             <button
               onClick={stop}
