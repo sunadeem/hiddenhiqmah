@@ -210,7 +210,8 @@ const evilEyeTopics: Topic[] = [
         {
           title: "Invoke blessing on what you admire",
           detail:
-            "When something in another person amazes you, the Sunnah is to pray for blessing for them — saying, for example, 'barakallahu fik' (may Allah bless you in it). Scholars state that the harm of the eye is feared when admiration goes out unaccompanied by such an invocation, and that praying for barakah undoes its cause.",
+            "When something in another person amazes you, the Sunnah is to pray for blessing for them — saying, for example, 'barakallahu fik' (may Allah bless you in it). When Amir bin Rabi'ah admired Sahl bin Hunayf's skin and Sahl collapsed, the Prophet (peace be upon him) said: 'Why would anyone of you kill his brother? If he sees something that he likes, then let him pray for blessing for him.'",
+          note: "Ibn Majah 31:74",
         },
         {
           title: "Guard your own eye",
@@ -237,8 +238,8 @@ const evilEyeTopics: Topic[] = [
         {
           title: "Washing",
           detail:
-            "The Prophet (peace be upon him) said: 'When you are asked to take a bath (as a cure) from the influence of an evil eye, you should take a bath.' Scholars describe the practice: the one whose eye caused the harm washes, and the water is then poured over the afflicted person, by which Allah removes the harm.",
-          note: "Muslim 39:56",
+            "The Prophet (peace be upon him) said: 'When you are asked to take a bath (as a cure) from the influence of an evil eye, you should take a bath.' In the incident of Sahl bin Hunayf, he had the one whose eye caused the harm perform ablution — washing his face, his arms up to the elbows, his knees, and inside his lower garment — and the water was then poured over the afflicted, by which Allah removes the harm.",
+          note: "Muslim 39:56; Ibn Majah 31:74",
         },
         {
           title: "The two protectors",
@@ -468,7 +469,8 @@ const dailyTopics: Topic[] = [
         {
           title: "After each prayer",
           detail:
-            "In a narration graded authentic by scholars, reciting Ayat al-Kursi after every obligatory prayer is singled out with immense reward. Many Muslims keep it as a fixed habit at the end of each salah alongside the tasbih.",
+            "The Prophet (peace be upon him) said: 'Whoever recites Ayat al-Kursi after every obligatory prayer, nothing prevents him from entering Paradise except death.' Many Muslims keep it as a fixed habit at the end of each salah alongside the tasbih.",
+          note: "Nasai, al-Sunan al-Kubra 9928 — graded sahih by Ibn Hibban and al-Albani (as-Sahihah 972)",
         },
       ],
     },
@@ -809,6 +811,7 @@ function ProtectionContent() {
                 { ref: "Quran 18:39", desc: "Ma sha' Allah, la quwwata illa billah — when seeing a blessing" },
                 { ref: "Quran 113:5", desc: "Refuge from the harm of the envier when he envies" },
                 { ref: "Bukhari 23:138", desc: "The Prophet would say 'Ma sha' Allah' upon hearing good" },
+                { ref: "Ibn Majah 31:74", desc: "Sahl bin Hunayf — invoke blessing on what you admire; the washing procedure" },
                 { ref: "Abu Dawud 43:131", desc: "Envy devours good deeds as fire devours fuel" },
               ]}
             />
@@ -834,6 +837,7 @@ function ProtectionContent() {
                 { ref: "Bukhari 66:28", desc: "Al-Fatiha — the most superior surah in the Quran" },
                 { ref: "Quran 2:255", desc: "Ayat al-Kursi" },
                 { ref: "Bukhari 66:32", desc: "Ayat al-Kursi at night — a guard from Allah till dawn" },
+                { ref: "Nasai, al-Sunan al-Kubra 9928 (sahih — Ibn Hibban; al-Albani, as-Sahihah 972)", desc: "Ayat al-Kursi after every obligatory prayer" },
                 { ref: "Bukhari 66:39; Bukhari 76:63", desc: "The three Quls blown into the hands before sleep" },
                 { ref: "Bukhari 66:38", desc: "The Prophet's practice when sick" },
                 { ref: "Bukhari 76:58; Bukhari 75:35", desc: "Wiping the sick with 'Remove the trouble, Lord of the people'" },

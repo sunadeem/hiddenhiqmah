@@ -799,8 +799,8 @@ const wives: FamilyMember[] = [
     relation: "Mother of his son Ibrahim",
     chip: "Umm Ibrahim",
     detail:
-      "A Coptic woman sent to the Prophet ﷺ as a gift by al-Muqawqis, the ruler of Egypt, after the Prophet ﷺ wrote to the rulers of the surrounding lands inviting them to Islam. She accepted Islam, and in 8 AH she bore him his son Ibrahim — his only child after the children of Khadijah — for which she was honored as 'Umm Ibrahim' (Mother of Ibrahim) and held a special, esteemed status in his household. Scholars differ on her formal status: the majority historical position is that she remained an umm walad (a bondwoman who, by bearing her master's child, could never be sold and became free upon his death), while others held that the Prophet ﷺ freed and married her — which is why she is honored alongside the Mothers of the Believers here rather than counted with an ordinal number. When the Prophet ﷺ foretold the conquest of Egypt, he instructed the Muslims to treat its people well because of the ties of kinship and marriage with them — understood by the scholars to refer to Hajar, the mother of Isma'il, and to Mariyah. She passed away during the caliphate of Umar ibn al-Khattab, who led her funeral prayer.",
-    reference: "Muslim 44:323; Tabaqat Ibn Sa'd",
+      "A Coptic woman sent to the Prophet ﷺ as a gift by al-Muqawqis, the ruler of Egypt, after the Prophet ﷺ wrote to the rulers of the surrounding lands inviting them to Islam. She accepted Islam, and in 8 AH she bore him his son Ibrahim — his only child after the children of Khadijah — for which she was honored as 'Umm Ibrahim' (Mother of Ibrahim) and held a special, esteemed status in his household. The established position of the classical biographers (Ibn Sa'd's Tabaqat; Ibn al-Qayyim's Zad al-Ma'ad) is that she was not one of his wives but an umm walad — a bondwoman who, by bearing her master's child, could never be sold and became free upon his death; a rare later report that the Prophet ﷺ freed and married her was weakly transmitted and not accepted by the classical scholars. She is honored here for her esteemed place in his household, though not counted among the Mothers of the Believers — which is why she carries no ordinal number. When the Prophet ﷺ foretold the conquest of Egypt, he instructed the Muslims to treat its people well because of the ties of kinship and marriage with them — understood by the scholars to refer to Hajar, the mother of Isma'il, and to Mariyah. She passed away during the caliphate of Umar ibn al-Khattab, who led her funeral prayer.",
+    reference: "Muslim 44:323; Tabaqat Ibn Sa'd; Zad al-Ma'ad",
   },
 ];
 
@@ -1879,7 +1879,7 @@ function ProphetMuhammadContent() {
                 <div className="space-y-3">
                   <ContentCard>
                     <p className="text-themed-muted text-sm">
-                      The Mothers of the Believers <span className="font-arabic text-gold">(أمهات المؤمنين)</span> — listed below in the order of his marriages. Each marriage served a purpose: strengthening alliances, caring for widows, or fulfilling divine command.
+                      The Mothers of the Believers <span className="font-arabic text-gold">(أمهات المؤمنين)</span> — listed below in the order of his marriages. Each marriage served a purpose: strengthening alliances, caring for widows, or fulfilling divine command. Māriyah al-Qibṭiyyah, mother of his son Ibrāhīm, appears at the end of the list — honored in his household, though not herself counted among the Mothers of the Believers.
                     </p>
                     <div className="border-l-2 border-gold/30 pl-4 mt-4">
                       <p className="font-arabic text-gold leading-loose">ٱلنَّبِىُّ أَوْلَىٰ بِٱلْمُؤْمِنِينَ مِنْ أَنفُسِهِمْ ۖ وَأَزْوَٰجُهُۥٓ أُمَّهَـٰتُهُمْ</p>

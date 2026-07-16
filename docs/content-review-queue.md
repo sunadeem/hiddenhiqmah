@@ -25,21 +25,21 @@ citation you trust, or remove._
 11. Wudu recommended before sleeping/eating while junub — mainstream fiqh; the between-acts hadith IS verified (Muslim).
 12. Modern contraception by analogy with ʿazl; no permanent sterilization without need — contemporary scholars, generic. (ʿAzl hadith of Jabir verified.)
 13. "Life extended" in the kinship hadith read as barakah or literal — interpretive note, generic.
-14. "The maternal aunt holds a station near the mother" — hadith not found locally; phrased without citation.
+14. ~~RESOLVED (2026-07-16)~~ — the hadith WAS local under different wording: Bukhari 53:9 ("the aunt was like the mother", custody of Hamzah's daughter) + Abu Dawud 13:104. Kinship card now quotes the ruling with both citations.
 15. Cutting kinship ties "counted among the major sins" + boundaries-when-harmed guidance — generic.
-16. PRE-EXISTING (not added by this build): "Marriage is half the faith" cited to Bayhaqi Shuʿab al-Iman 5100 — Bayhaqi isn't in local collections. Consider re-sourcing or generic attribution.
+16. ~~RESOLVED (2026-07-16)~~ — no local alternative exists (exhaustive EN+AR corpus sweep; the local "half of faith" hadiths are about wudu — a different narration). The Bayhaqi Shuʿab 5100 citation was externally CONFIRMED genuine (Anas ibn Malik; = Mishkat 3096); chains individually weak (al-Iraqi, adh-Dhahabi, Ibn Hajar) but graded hasan li-ghayrihi by al-Albani (Sahih al-Targhib 1916). Card now carries the grading attribution and is paired with locally-verified Nasai 25:36 (Allah's promised help for the one who marries seeking chastity).
 
 ## /protection
 17. The amulet-shirk hadith (Ahmad) wasn't local — REPLACED with a verified Nasai narration; no action needed, noted for completeness.
-18. Saying māshāʾAllāh/bārakAllāh when admiring (Sahl ibn Hunayf incident) — not local; generic. (Evil-eye-is-real + precedes-qadar ARE verified — Bukhari/Muslim.)
-19. Evil-eye washing procedure details — the command to bathe IS verified (Muslim); procedural description generic.
+18. ~~RESOLVED (2026-07-16)~~ — the Sahl ibn Hunayf incident IS local: Ibn Majah 31:74 ("let him pray for blessing for him"). Card now quotes it with citation.
+19. ~~RESOLVED (2026-07-16)~~ — Ibn Majah 31:74 also carries the washing procedure verbatim (face, arms to elbows, knees, inside lower garment, water poured over the afflicted). Card updated to describe the procedure per the hadith, cited Muslim 39:56; Ibn Majah 31:74.
 20. The three classical conditions of permissible ruqyah — attributed to scholars (classically Ibn Hajar's consensus report).
-21. Ayat al-Kursi after each obligatory prayer — narration (Nasai al-Kubra/Tabarani, graded sahih by al-Albani) not in local data; framed as "graded authentic by scholars." (Before-sleep Abu Hurayrah story IS verified — Bukhari.)
+21. ~~RESOLVED (2026-07-16)~~ — confirmed genuinely outside our corpus (all 8 local Ayat-al-Kursi narrations checked; none is the after-prayer one — it lives in al-Sunan al-KUBRA, we mirror the Sughra). Now attributed precisely: "Nasai, al-Sunan al-Kubra 9928 — graded sahih by Ibn Hibban (per Ibn Hajar, Bulugh al-Maram 220) and al-Albani (as-Sahihah 972)"; also Ibn Kathir called one isnad Bukhari-grade. Applied on protection (quote + note), duas (virtue + source), matching muslim-daily's existing citation. Caution kept: only the short Abu Umamah text is sahih — the long Ali variant Ibn al-Jawzi called fabricated; never add it.
 22. Red flags for sorcerers posing as rāqīs — contemporary scholarly guidance, no citation.
 
 ## /prophet-muhammad (Māriyah al-Qibṭiyyah)
 23. Gift from al-Muqawqis; accepted Islam; bore Ibrāhīm in 8 AH — seerah literature (Ibn Saʿd), generic.
-24. Umm-walad vs freed-and-married scholarly difference — presented neutrally, generic.
+24. ~~RESOLVED (2026-07-16, re-verified)~~ — the old "scholars differ" framing OVERSTATED the khilaf: the marriage claim rests on one muʿḍal report (Musʿab al-Zubairi via al-Hakim) that classical biographers (Ibn Saʿd, Ibn ʿAbd al-Barr, Ibn al-Qayyim, Ibn Kathir, Ibn Hajar) did not adopt; IslamQA 47572 / Islamweb 332449 state flatly she was not married. Card rewritten to the established umm-walad position with the marriage report noted as rare + weakly transmitted. ALSO FIXED: the Wives-tab intro blanket-labeled the whole list (incl. Māriyah) "Mothers of the Believers" — intro now states she is honored but not counted among them. Adjacent facts (al-Muqawqis gift, Ibrāhīm 8 AH, Muslim 44:323 Egypt hadith, death in ʿUmar's caliphate) all verified accurate (items 23/25/26 stand as-is).
 25. Egypt-kinship hadith interpretation (Hājar + Māriyah) — the hadith itself IS verified (Muslim); the interpretive link generic.
 26. Died during ʿUmar's caliphate, who led her janāzah — seerah literature, generic.
 27. Wife ordinals 3rd–10th follow the file's pre-existing chronological order (standard seerah chronology).

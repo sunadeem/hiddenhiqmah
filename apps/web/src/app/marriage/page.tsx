@@ -226,12 +226,12 @@ function MarryTimely() {
       <ContentCard delay={0.1}>
         <h4 className="text-gold font-semibold text-sm mb-2">Half of Your Faith</h4>
         <p className="text-themed-muted text-sm leading-relaxed">
-          Marriage is one of the greatest means of protecting yourself from sin. The Prophet &#xFDFA; described it as completing half of one&apos;s faith:
+          Marriage is one of the greatest means of protecting yourself from sin — the Prophet &#xFDFA; counted &quot;the man who gets married, seeking to keep himself chaste&quot; among three who have a promise of help from Allah — and he described it as completing half of one&apos;s faith:
         </p>
         <p className="text-themed font-medium text-sm mt-2 italic">
           &quot;When a servant of Allah marries, he has completed half of his religion, so let him fear Allah in the remaining half.&quot;
         </p>
-        <Ref text="Bayhaqi, Shu'ab al-Iman 5100" />
+        <Ref text="Nasai 25:36; Bayhaqi, Shu'ab al-Iman 5100 — graded hasan by al-Albani (Sahih al-Targhib 1916)" />
       </ContentCard>
 
       <ContentCard delay={0.15}>
@@ -1111,7 +1111,8 @@ const beforeSources: Record<BeforeSub, SourceRef[]> = {
   ],
   "marry-timely": [
     { ref: "Bukhari 67:4", desc: "O young men, whoever among you can afford it, let him marry" },
-    { ref: "Bayhaqi, Shu'ab al-Iman 5100", desc: "Marriage completes half of the religion" },
+    { ref: "Bayhaqi, Shu'ab al-Iman 5100 (hasan — al-Albani, Sahih al-Targhib 1916)", desc: "Marriage completes half of the religion" },
+    { ref: "Nasai 25:36", desc: "Allah's promised help for the one who marries seeking chastity" },
     { ref: "Ibn Majah 9:2", desc: "Marriage is part of my Sunnah" },
   ],
   "trust-in-allah": [

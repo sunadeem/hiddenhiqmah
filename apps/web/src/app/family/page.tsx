@@ -1152,8 +1152,9 @@ function KinshipWhoTab() {
         <ContentCard delay={0.11}>
           <h5 className="text-gold font-medium mb-2">Then the nearest kin</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            Grandparents, siblings, then aunts and uncles (the mother&apos;s sister is given a station near the mother herself in the Sunnah), then cousins and their children. Scholars state the duty is strongest toward those who would inherit from you and those forbidden in marriage to you (mahram relatives), then extends outward by closeness.
+            Grandparents, siblings, then aunts and uncles — when the Prophet ﷺ judged the custody of Hamzah&apos;s daughter to her maternal aunt, he said that &ldquo;the aunt was like the mother&rdquo; — then cousins and their children. Scholars state the duty is strongest toward those who would inherit from you and those forbidden in marriage to you (mahram relatives), then extends outward by closeness.
           </p>
+          <Ref text="Bukhari 53:9; Abu Dawud 13:104" />
         </ContentCard>
         <ContentCard delay={0.14}>
           <h5 className="text-gold font-medium mb-2">Practical upkeep</h5>
@@ -1380,6 +1381,7 @@ const kinshipSources: Record<KinshipSub, SourceRef[]> = {
   ],
   who: [
     { ref: "Bukhari 78:2", desc: "Your mother, your mother, your mother, then your father" },
+    { ref: "Bukhari 53:9; Abu Dawud 13:104", desc: "The maternal aunt is like the mother — the custody of Hamzah's daughter" },
     { ref: "Muslim 45:13", desc: "Keeping ties with the parents' friends after their death" },
   ],
   "cut-off": [
