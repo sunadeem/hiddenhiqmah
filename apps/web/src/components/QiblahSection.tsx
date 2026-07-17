@@ -311,7 +311,7 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
             {/* Compass visual — dial is fixed (N stays at top, Ka'bah stays at qibla bearing);
                 only the "you are facing" arrow rotates with device heading. */}
             <div className="flex flex-col items-center shrink-0">
-            <div className="relative w-56 h-56">
+            <div className="relative w-72 h-72 sm:w-80 sm:h-80">
               {/* Rotating dial — the arrow stays fixed pointing up; N/E/S/W cardinals and the
                   Ka'bah marker rotate to match the real-world bearing relative to where you're
                   facing. When the Ka'bah marker arrives at the top, you're facing the qiblah. */}
@@ -334,7 +334,7 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                       }}
                     >
                       <span
-                        className={`text-xs font-semibold mt-1 ${color ?? "text-themed-muted"}`}
+                        className={`text-sm font-semibold mt-1.5 ${color ?? "text-themed-muted"}`}
                         style={{
                           transform: `rotate(${-screenAngle}deg)`,
                           transition: "transform 80ms linear",
@@ -382,8 +382,8 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                           transition: "transform 80ms linear",
                         }}
                       >
-                        <div className="w-5 h-5 rounded-sm bg-gold border border-gold/60 shadow-[0_0_10px_rgba(212,168,67,0.6)]" />
-                        <span className="text-[9px] font-semibold uppercase tracking-wider text-gold mt-1">Ka&apos;bah</span>
+                        <div className="w-6 h-6 rounded-sm bg-gold border border-gold/60 shadow-[0_0_10px_rgba(212,168,67,0.6)]" />
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-gold mt-1">Ka&apos;bah</span>
                       </div>
                     </div>
                   );
@@ -396,8 +396,8 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
               {heading !== null && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <svg
-                    width="56"
-                    height="56"
+                    width="76"
+                    height="76"
                     viewBox="0 0 24 24"
                     className={
                       Math.abs(((heading - qiblahBearing + 540) % 360) - 180) < 5
@@ -419,7 +419,7 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
               {heading === null && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="text-center">
-                    <p className="text-2xl font-semibold text-gold font-mono">{Math.round(qiblahBearing)}°</p>
+                    <p className="text-3xl font-semibold text-gold font-mono">{Math.round(qiblahBearing)}°</p>
                     <p className="text-[10px] uppercase tracking-wider text-themed-muted">
                       {compassDirection(qiblahBearing)}
                     </p>
