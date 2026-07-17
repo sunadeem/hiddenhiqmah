@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import Link from "next/link";
 import { Capacitor } from "@capacitor/core";
 import { Motion } from "@capacitor/motion";
 import { Compass } from "lucide-react";
+import { hapticSuccess } from "@/lib/mobile/haptics";
 import { model as geomagneticModel } from "geomagnetism";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
@@ -88,6 +90,15 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   // re-attaching listeners; mirrored in state for the caption.
   const declinationRef = useRef(0);
   const [declination, setDeclination] = useState<number | null>(null);
+  // Alignment state with hysteresis (enter ≤4°, exit ≥8°) so the "facing" state
+  // doesn't flicker at the boundary; the haptic fires once on entry.
+  const [aligned, setAligned] = useState(false);
+  const alignedRef = useRef(false);
+  // Sensor-trust hints, bucketed so the 60Hz handler only re-renders on change.
+  const [calibrationPoor, setCalibrationPoor] = useState(false);
+  const calibrationPoorRef = useRef(false);
+  const [tilted, setTilted] = useState(false);
+  const tiltedRef = useRef(false);
 
   const applyHeading = useCallback((magneticHeading: number) => {
     // Device heading is relative to magnetic north; shift it to true north so
@@ -171,20 +182,51 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
     setDeclination(decl);
   }, [loc]);
 
+  // Shared handler for every orientation source: heading, plus the two trust
+  // signals iOS delivers on the same event — webkitCompassAccuracy (max error
+  // in degrees; negative = sensor needs calibration) and beta/gamma tilt
+  // (compass readings degrade when the phone isn't reasonably flat).
+  const processOrientation = useCallback(
+    (e: DeviceOrientationEvent) => {
+      const ev = e as DeviceOrientationEvent & {
+        webkitCompassHeading?: number;
+        webkitCompassAccuracy?: number;
+      };
+      if (typeof ev.webkitCompassHeading === "number") {
+        applyHeading(ev.webkitCompassHeading);
+      } else if (typeof e.alpha === "number") {
+        applyHeading((360 - e.alpha) % 360);
+      }
+
+      if (typeof ev.webkitCompassAccuracy === "number") {
+        const poor = ev.webkitCompassAccuracy < 0 || ev.webkitCompassAccuracy > 25;
+        if (poor !== calibrationPoorRef.current) {
+          calibrationPoorRef.current = poor;
+          setCalibrationPoor(poor);
+        }
+      }
+
+      if (typeof e.beta === "number" && typeof e.gamma === "number") {
+        const tilt = Math.max(Math.abs(e.beta), Math.abs(e.gamma));
+        if (!tiltedRef.current && tilt > 55) {
+          tiltedRef.current = true;
+          setTilted(true);
+        } else if (tiltedRef.current && tilt < 40) {
+          tiltedRef.current = false;
+          setTilted(false);
+        }
+      }
+    },
+    [applyHeading]
+  );
+
   // Device orientation (compass) — sets up listener and handles iOS permission
   useEffect(() => {
     const isNative = Capacitor.isNativePlatform();
     const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
       .DeviceOrientationEvent;
 
-    const handler = (e: DeviceOrientationEvent) => {
-      const webkitHeading = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
-      if (typeof webkitHeading === "number") {
-        applyHeading(webkitHeading);
-      } else if (typeof e.alpha === "number") {
-        applyHeading((360 - e.alpha) % 360);
-      }
-    };
+    const handler = processOrientation;
 
     const attach = () => {
       window.addEventListener("deviceorientationabsolute", handler as EventListener);
@@ -209,9 +251,7 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
         attach();
         try {
           const l = await Motion.addListener("orientation", (e) => {
-            const wk = (e as { webkitCompassHeading?: number }).webkitCompassHeading;
-            if (typeof wk === "number") applyHeading(wk);
-            else if (typeof e.alpha === "number") applyHeading((360 - e.alpha) % 360);
+            processOrientation(e as unknown as DeviceOrientationEvent);
           });
           motionRemove = () => l.remove();
         } catch {
@@ -237,7 +277,7 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
       window.removeEventListener("deviceorientationabsolute", handler as EventListener);
       window.removeEventListener("deviceorientation", handler);
     };
-  }, [applyHeading]);
+  }, [processOrientation]);
 
   const requestCompassPermission = async () => {
     const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
@@ -246,21 +286,38 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
     const res = await DeviceOrientationEventCls.requestPermission();
     if (res === "granted") {
       setNeedsPermission(false);
-      const handler = (e: DeviceOrientationEvent) => {
-        const webkitHeading = (e as DeviceOrientationEvent & { webkitCompassHeading?: number }).webkitCompassHeading;
-        if (typeof webkitHeading === "number") {
-          applyHeading(webkitHeading);
-        } else if (typeof e.alpha === "number") {
-          applyHeading((360 - e.alpha) % 360);
-        }
-      };
-      window.addEventListener("deviceorientation", handler);
+      window.addEventListener("deviceorientation", processOrientation);
     }
   };
 
   const qiblahBearing = loc ? calcQiblahBearing(loc.lat, loc.lng) : null;
   const distanceKm = loc ? haversineKm(loc.lat, loc.lng, KAABA_LAT, KAABA_LNG) : null;
-  // If we have a live device heading, the arrow rotates relative to it
+  // Signed shortest turn from current facing to the qiblah: positive = turn right.
+  const turnDelta =
+    heading !== null && qiblahBearing !== null
+      ? ((qiblahBearing - heading + 540) % 360) - 180
+      : null;
+
+  // Enter/exit the aligned state with hysteresis; buzz once on entry.
+  useEffect(() => {
+    if (turnDelta === null) {
+      if (alignedRef.current) {
+        alignedRef.current = false;
+        setAligned(false);
+      }
+      return;
+    }
+    const off = Math.abs(turnDelta);
+    // Never celebrate off a reading the sensor itself reports as invalid.
+    if (!alignedRef.current && off <= 4 && !calibrationPoorRef.current) {
+      alignedRef.current = true;
+      setAligned(true);
+      hapticSuccess();
+    } else if (alignedRef.current && off >= 8) {
+      alignedRef.current = false;
+      setAligned(false);
+    }
+  }, [turnDelta]);
 
   return (
     <div className="space-y-6">
@@ -315,7 +372,13 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
               {/* Rotating dial — the arrow stays fixed pointing up; N/E/S/W cardinals and the
                   Ka'bah marker rotate to match the real-world bearing relative to where you're
                   facing. When the Ka'bah marker arrives at the top, you're facing the qiblah. */}
-              <div className="absolute inset-0 rounded-full border-2 border-gold/30 bg-gold/[0.03]">
+              <div
+                className={`absolute inset-0 rounded-full border-2 bg-gold/[0.03] transition-[border-color,box-shadow] duration-300 ${
+                  aligned
+                    ? "border-gold shadow-[0_0_28px_rgba(212,168,67,0.35)]"
+                    : "border-gold/30"
+                }`}
+              >
                 {/* Cardinal markers — positioned at (cardinal - displayHeading) */}
                 {[
                   { label: "N", deg: 0, color: "text-gold" },
@@ -400,7 +463,7 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                     height="88"
                     viewBox="0 0 24 24"
                     className={
-                      Math.abs(((heading - qiblahBearing + 540) % 360) - 180) < 5
+                      aligned
                         ? "text-gold drop-shadow-[0_0_12px_rgba(212,168,67,0.9)]"
                         : "text-themed drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]"
                     }
@@ -427,6 +490,35 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                 </div>
               )}
             </div>
+
+            {/* Live status — the celebration when aligned, turn guidance when not. */}
+            {heading !== null && turnDelta !== null && (
+              <div className="mt-4 text-center min-h-[28px]">
+                {aligned ? (
+                  <p className="text-gold font-semibold text-lg">Facing the Qiblah ✓</p>
+                ) : (
+                  <p className="text-themed text-base">
+                    Turn {turnDelta > 0 ? "right" : "left"}{" "}
+                    <span className="text-gold font-mono font-semibold">
+                      {Math.round(Math.abs(turnDelta))}°
+                    </span>
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Sensor-trust hints — most "wrong qibla" reports are an
+                uncalibrated or steeply tilted compass; say so. */}
+            {heading !== null && calibrationPoor && (
+              <p className="text-[11px] text-gold/80 mt-2 text-center">
+                Compass accuracy is low — wave your phone in a figure-8 to recalibrate.
+              </p>
+            )}
+            {heading !== null && !calibrationPoor && tilted && (
+              <p className="text-[11px] text-gold/80 mt-2 text-center">
+                Hold your phone flat for an accurate reading.
+              </p>
+            )}
 
             {/* Declination caption — shown while the live compass is active and
                 the magnetic→true correction is being applied. */}
@@ -470,6 +562,14 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                 <p className="text-xs text-themed-muted mt-3">
                   The dial rotates as you turn — keep turning until the Ka&apos;bah marker arrives at the top, right under the arrow. That direction is the qiblah. Hold your phone flat for the most accurate reading.
                 </p>
+              )}
+              {compact && (
+                <Link
+                  href="/qiblah"
+                  className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  Why do we face the Ka&apos;bah? →
+                </Link>
               )}
             </div>
           </div>
