@@ -310,8 +310,8 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
           <div className="flex flex-col md:flex-row items-center gap-6">
             {/* Compass visual — dial is fixed (N stays at top, Ka'bah stays at qibla bearing);
                 only the "you are facing" arrow rotates with device heading. */}
-            <div className="flex flex-col items-center shrink-0">
-            <div className="relative w-72 h-72 sm:w-80 sm:h-80">
+            <div className="flex flex-col items-center shrink-0 w-full md:w-auto">
+            <div className="relative aspect-square w-full max-w-96 md:w-96">
               {/* Rotating dial — the arrow stays fixed pointing up; N/E/S/W cardinals and the
                   Ka'bah marker rotate to match the real-world bearing relative to where you're
                   facing. When the Ka'bah marker arrives at the top, you're facing the qiblah. */}
@@ -396,8 +396,8 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
               {heading !== null && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <svg
-                    width="76"
-                    height="76"
+                    width="88"
+                    height="88"
                     viewBox="0 0 24 24"
                     className={
                       Math.abs(((heading - qiblahBearing + 540) % 360) - 180) < 5
