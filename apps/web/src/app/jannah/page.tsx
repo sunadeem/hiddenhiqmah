@@ -447,11 +447,370 @@ const howToTopics: HowToTopic[] = [
   },
 ];
 
+const jahannamTopics: DescriptionTopic[] = [
+  {
+    id: "what-is-jahannam",
+    name: "What is Jahannam?",
+    content: {
+      intro:
+        "Jahannam is the Fire — the abode of punishment that Allah has prepared and warned about throughout the Quran. Just as Jannah is real, the Fire is real, and Allah describes it in vivid detail so that hearts turn to Him now, before the Day when warnings become sight.",
+      verse: {
+        arabic:
+          "وَإِنَّ جَهَنَّمَ لَمَوْعِدُهُمْ أَجْمَعِينَ ۝ لَهَا سَبْعَةُ أَبْوَٰبٍ لِّكُلِّ بَابٍ مِّنْهُمْ جُزْءٌ مَّقْسُومٌ",
+        text: "And Hell is certainly the promised place for them, all together. It has seven gates; each gate will have its allotted share of them.",
+        ref: "Quran 15:43-44",
+      },
+      points: [
+        {
+          title: "Seven gates",
+          detail:
+            "Allah describes Jahannam as having seven gates — 'each gate will have its allotted share of them.' On the Day of Resurrection, those who disbelieved will be driven to it in groups, and when they reach it, its gates will be opened and its keepers will ask: 'Did there not come to you messengers from among you, reciting the verses of your Lord and warning you of your meeting of this Day?'",
+          note: "Quran 15:43-44; Quran 39:71",
+        },
+        {
+          title: "Its fuel is people and stones",
+          detail:
+            "The Fire is not fed by wood. Allah says: 'beware of the Fire whose fuel will be people and stones, which is prepared for the disbelievers.' The same description is repeated in the command to the believers: 'protect yourselves and your families from a Fire whose fuel is people and stones.'",
+          note: "Quran 2:24; Quran 66:6",
+        },
+        {
+          title: "It sees them from afar",
+          detail:
+            "The Quran describes the Fire almost as a living thing: 'When it sees them from a far distance, they will hear its raging and roaring.' And when they are thrown in it, 'they will hear its roaring as it boils up, almost bursting in fury.'",
+          note: "Quran 25:12; Quran 67:7-8",
+        },
+        {
+          title: "A warning given out of mercy",
+          detail:
+            "Every description of Jahannam in the Quran comes while its readers are still alive — while the door to escape it is wide open. Allah addresses the believers directly: 'O you who believe, protect yourselves and your families from a Fire...' The warning itself is a mercy: it is given to people who still have time to act on it.",
+          note: "Quran 66:6",
+        },
+      ],
+      source:
+        "Quran 2:24; Quran 15:43-44; Quran 25:12; Quran 39:71; Quran 66:6; Quran 67:7-8",
+    },
+  },
+  {
+    id: "heat-depths",
+    name: "Its Heat & Depths",
+    content: {
+      intro:
+        "The Fire of Jahannam is beyond any comparison with the fires of this world — in its heat, in its depths, and in its degrees of punishment. Even its 'least' punishment is unbearable.",
+      points: [
+        {
+          title: "Seventy times hotter than worldly fire",
+          detail:
+            "The Prophet (peace be upon him) said: 'The fire which sons of Adam burn is only one-seventieth part of the Fire of Hell.' His Companions said: 'By Allah, even ordinary fire would have been enough.' He said: 'It is sixty-nine parts in excess of (the heat of) fire in this world, each of them being equivalent to their heat.'",
+          note: "Muslim 53:34; Tirmidhi 39:17",
+        },
+        {
+          title: "The Fire complained to its Lord",
+          detail:
+            "The Prophet (peace be upon him) said: 'The (Hell) Fire complained to its Lord saying: O my Lord! My different parts eat up each other. So He allowed it to take two breaths, one in the winter and the other in summer' — and this, he explained, is the reason for the severest heat and the bitterest cold people experience in this world.",
+          note: "Bukhari 59:70",
+        },
+        {
+          title: "The least punishment",
+          detail:
+            "The Prophet (peace be upon him) said: 'The least punished person of the (Hell) Fire people on the Day of Resurrection will be a man under whose arch of the feet two smoldering embers will be placed, because of which his brain will boil.' Muslim likewise records of the inhabitant of the Fire with the least suffering that 'he would be wearing two shoes (of Fire) which would boil his brain.' If this is the lightest of it, what of the rest?",
+          note: "Bukhari 81:151; Muslim 1:421",
+        },
+        {
+          title: "The lowest depths — the hypocrites",
+          detail:
+            "Jahannam has depths beneath depths, and its lowest is reserved for the hypocrites — those who wore faith as a mask while concealing disbelief. Allah says: 'Indeed, the hypocrites will be in the lowest depths of the Fire, and you will never find for them any helper.'",
+          note: "Quran 4:145",
+        },
+      ],
+      source:
+        "Quran 4:145; Bukhari 59:70; Bukhari 81:151; Muslim 1:421; Muslim 53:34; Tirmidhi 39:17",
+    },
+  },
+  {
+    id: "its-people",
+    name: "Its People",
+    content: {
+      intro:
+        "The Quran and Sunnah are precise about who the Fire was prepared for: those who rejected Allah, and those whose hearts carried the arrogance of Iblis. And they record — word for word — what its people will say once the truth becomes undeniable.",
+      points: [
+        {
+          title: "Prepared for the disbelievers",
+          detail:
+            "Allah says the Fire is 'prepared for the disbelievers' — those who rejected His signs after they reached them. For them, Allah says: 'there will be the Fire of Hell; neither will they be sentenced to death, so that they may die, nor will its punishment be lightened for them.'",
+          note: "Quran 2:24; Quran 35:36",
+        },
+        {
+          title: "The proud and the arrogant",
+          detail:
+            "The Prophet (peace be upon him) said: 'Shall I inform you about the people of the Fire? They comprise every cruel, violent, proud and conceited person.' And he said: 'No one will enter Paradise who has pride in his heart equal to the weight of a grain of mustard seed.' Arrogance — the sin of Iblis — is the hallmark of the people of the Fire.",
+          note: "Bukhari 78:101; Ibn Majah 37:74",
+        },
+        {
+          title: "Skins renewed",
+          detail:
+            "The punishment does not fade as it would in this world. Allah says: 'Whenever their skins are burnt through, We will replace them with fresh skins, so that they may taste the punishment. Indeed, Allah is All-Mighty, All-Wise.'",
+          note: "Quran 4:56",
+        },
+        {
+          title: "What they will say",
+          detail:
+            "The Quran records their pleas. They will say: 'Our Lord, take us out; we will do righteous deeds, unlike what we used to do' — and be reminded that they were given long enough lives, and that the warner did come to them. They will beg the keepers: 'Pray to your Lord to lighten for us the punishment for just one day.' And to their plea 'Our Lord, take us out of this,' the answer will come: 'Stay therein despised and do not speak to Me.'",
+          note: "Quran 23:107-108; Quran 35:37; Quran 40:49-50",
+        },
+      ],
+      source:
+        "Quran 2:24; Quran 4:56; Quran 23:107-108; Quran 35:36-37; Quran 40:49-50; Bukhari 78:101; Ibn Majah 37:74",
+    },
+  },
+  {
+    id: "food-drink-chains",
+    name: "Food, Drink & Chains",
+    content: {
+      intro:
+        "In Jannah, food and drink are pure delight. In Jahannam, they are part of the punishment — a tree that grows from the bottom of the Blaze, water that scalds, and chains prepared in advance.",
+      verse: {
+        arabic:
+          "إِنَّ شَجَرَتَ ٱلزَّقُّومِ ۝ طَعَامُ ٱلْأَثِيمِ ۝ كَٱلْمُهْلِ يَغْلِى فِى ٱلْبُطُونِ ۝ كَغَلْىِ ٱلْحَمِيمِ",
+        text: "Indeed, the tree of Zaqqūm will be the food of the sinful, like molten metal that will boil in their bellies, like the boiling of scalding water.",
+        ref: "Quran 44:43-46",
+      },
+      points: [
+        {
+          title: "The tree of Zaqqum",
+          detail:
+            "Zaqqum is 'a tree that grows in the bottom of the Blazing Fire; its fruits are like heads of devils.' Allah says its people 'will certainly eat from it, filling their bellies,' and elsewhere: 'will surely eat from the tree of zaqqūm, filling your bellies with it, and drinking scalding water on top of it, drinking like thirsty camels do.'",
+          note: "Quran 37:62-68; Quran 56:51-55",
+        },
+        {
+          title: "Scalding water",
+          detail:
+            "The drink of the Fire is described with terrifying precision: its people 'will be given boiling water to drink that tears apart their intestines.' And: 'They will neither taste therein any coolness nor any drink, except for scalding water and discharge of wounds.'",
+          note: "Quran 47:15; Quran 78:24-25",
+        },
+        {
+          title: "Chains and shackles",
+          detail:
+            "Allah says: 'We have surely prepared for the disbelievers chains, shackles, and a Blazing Fire.' And of the one who rejected his Lord it will be said: 'Seize him and shackle him, then make him burn in the Blazing Fire, then tie him up with a chain of seventy cubits long.'",
+          note: "Quran 69:30-32; Quran 76:4",
+        },
+      ],
+      source:
+        "Quran 37:62-68; Quran 44:43-46; Quran 47:15; Quran 56:51-55; Quran 69:30-32; Quran 76:4; Quran 78:24-25",
+    },
+  },
+  {
+    id: "keepers",
+    name: "Its Keepers",
+    content: {
+      intro:
+        "Jahannam is not unattended. Over it stand angels who never disobey Allah — led by Malik, its keeper — and their number itself is described in the Quran as a test for those who doubt.",
+      points: [
+        {
+          title: "Malik, the keeper of the Fire",
+          detail:
+            "The people of the Fire will call out to its keeper by name: 'They will cry out: O Malik, let your Lord put an end to us! He will say: You are here to stay.' Even the plea for annihilation will be denied.",
+          note: "Quran 43:77",
+        },
+        {
+          title: "Nineteen keepers",
+          detail:
+            "Of Saqar — the Scorching Fire that 'leaves nothing and spares no one, scorching the skin' — Allah says: 'It is overseen by nineteen.' And He explains: 'We have only appointed angels as keepers of the Fire, and We have only made their number as a test for the disbelievers... and none knows the soldiers of your Lord but He.'",
+          note: "Quran 74:26-31",
+        },
+        {
+          title: "Stern and severe angels",
+          detail:
+            "The Fire is 'overseen by rigorous and stern angels, who never disobey whatever Allah commands and do whatever they are commanded.' There is no bribing them, no softening them, and no escaping them.",
+          note: "Quran 66:6",
+        },
+        {
+          title: "\"Did there not come to you a warner?\"",
+          detail:
+            "Every time a group is thrown into the Fire, its keepers will ask them: 'Did there not come to you a warner?' The people of the Fire will admit: 'Yes indeed' — the messengers came, the warnings were heard, and the proof was established before the punishment ever began.",
+          note: "Quran 39:71; Quran 67:8",
+        },
+      ],
+      source:
+        "Quran 39:71; Quran 43:77; Quran 66:6; Quran 67:7-8; Quran 74:26-31",
+    },
+  },
+  {
+    id: "deliverance",
+    name: "Deliverance From It",
+    content: {
+      intro:
+        "For the people of tawhid, Jahannam is not the end of the story. The same texts that describe its horrors describe — in equal detail — how Allah will bring out of it everyone with even the smallest grain of faith.",
+      points: [
+        {
+          title: "A mustard seed of faith",
+          detail:
+            "The Prophet (peace be upon him) said: 'When the people of Paradise have entered Paradise, and the people of the Fire have entered the Fire, Allah will say: Take out (of the Fire) whoever has got faith equal to a mustard seed in his heart.' They will come out charred like coal, be thrown into the river of life, and 'spring up just as a seed grows on the bank of a rainwater stream.'",
+          note: "Bukhari 2:15; Bukhari 81:149",
+        },
+        {
+          title: "The Prophet's intercession",
+          detail:
+            "The Prophet (peace be upon him) said: 'On the Day of Resurrection I will intercede and say: O my Lord! Admit into Paradise (even) those who have faith equal to a mustard seed in their hearts. Such people will enter Paradise, and then I will say: O (Allah) admit into Paradise (even) those who have the least amount of faith in their hearts.'",
+          note: "Bukhari 97:134",
+        },
+        {
+          title: "No one who dies upon tawhid remains forever",
+          detail:
+            "The Prophet (peace be upon him) said that Jibril gave him the tidings: 'Verily he who died amongst your Ummah without associating anything with Allah would enter Paradise.' He was asked: 'Even if he committed adultery and theft?' He said: '(Yes), even if he committed adultery and theft.' And he said: 'no one will enter Hell who has faith in his heart equal to the weight of a grain of mustard seed.'",
+          note: "Muslim 1:178; Ibn Majah 37:74",
+        },
+        {
+          title: "The last to leave",
+          detail:
+            "The Prophet (peace be upon him) said: 'I know the person who will be the last to come out of the (Hell) Fire, and the last to enter Paradise. He will be a man who will come out of the (Hell) Fire crawling, and Allah will say to him: Go and enter Paradise' — and he will end up with the like of the entire world and ten times more. His full story is told under 'The Last to Enter' in the How to Enter section.",
+          note: "Bukhari 81:159",
+        },
+      ],
+      source:
+        "Bukhari 2:15; Bukhari 81:149; Bukhari 81:159; Bukhari 97:134; Muslim 1:178; Ibn Majah 37:74",
+    },
+  },
+];
+
+const protectionTopics: DescriptionTopic[] = [
+  {
+    id: "shield-of-deeds",
+    name: "Deeds That Shield",
+    content: {
+      intro:
+        "The Prophet (peace be upon him) named specific deeds — some as small as half a date — that stand between a person and the Fire. Allah Himself commands the believers to build this protection for themselves and their families.",
+      verse: {
+        arabic:
+          "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ قُوٓا۟ أَنفُسَكُمْ وَأَهْلِيكُمْ نَارًا وَقُودُهَا ٱلنَّاسُ وَٱلْحِجَارَةُ عَلَيْهَا مَلَـٰٓئِكَةٌ غِلَاظٌ شِدَادٌ لَّا يَعْصُونَ ٱللَّهَ مَآ أَمَرَهُمْ وَيَفْعَلُونَ مَا يُؤْمَرُونَ",
+        text: "O you who believe, protect yourselves and your families from a Fire whose fuel is people and stones, and is overseen by rigorous and stern angels, who never disobey whatever Allah commands and do whatever they are commanded.",
+        ref: "Quran 66:6",
+      },
+      points: [
+        {
+          title: "Even half a date",
+          detail:
+            "The Prophet (peace be upon him) said: 'Save yourself from Hell-fire even by giving half a date-fruit in charity.' No act of goodness is too small to matter when the stakes are the Fire.",
+          note: "Bukhari 24:21",
+        },
+        {
+          title: "La ilaha illallah — said sincerely",
+          detail:
+            "The Prophet (peace be upon him) said: 'Verily Allah has forbidden the Fire for one who says: There is no god but Allah, thereby seeking Allah's pleasure.' In Bukhari's narration: 'Nobody will meet Allah with that saying on the Day of Resurrection, but Allah will save him from the Fire.'",
+          note: "Muslim 5:329; Bukhari 88:20",
+        },
+        {
+          title: "Fasting for Allah's sake",
+          detail:
+            "The Prophet (peace be upon him) said: 'Indeed, anyone who fasts for one day for Allah's Pleasure, Allah will keep his face away from the (Hell) fire for (a distance covered by a journey of) seventy years.' In another narration: 'Allah shall put between him and the Fire a trench whose distance is like that between the heavens and the earth.'",
+          note: "Bukhari 56:56; Muslim 13:217; Tirmidhi 22:6",
+        },
+        {
+          title: "Freeing another from bondage",
+          detail:
+            "The Prophet (peace be upon him) said: 'If somebody manumits a Muslim slave, Allah will save from the Fire every part of his body for freeing the corresponding parts of the slave's body.' Deeds that liberate and relieve others become a person's own ransom from the Fire.",
+          note: "Bukhari 84:8",
+        },
+        {
+          title: "Two eyes the Fire will not touch",
+          detail:
+            "The Prophet (peace be upon him) said: 'There are two eyes that shall not be touched by the Fire: An eye that wept from the fear of Allah, and an eye that spent the night standing on guard in the cause of Allah.'",
+          note: "Tirmidhi 22:22",
+        },
+      ],
+      source:
+        "Quran 66:6; Bukhari 24:21; Bukhari 56:56; Bukhari 84:8; Bukhari 88:20; Muslim 5:329; Muslim 13:217; Tirmidhi 22:6; Tirmidhi 22:22",
+    },
+  },
+  {
+    id: "duas-of-protection",
+    name: "Du'as of Protection",
+    content: {
+      intro:
+        "Seeking refuge from the Fire is not an occasional du'a — the Prophet (peace be upon him) built it into every single prayer, and the Quran puts it on the tongues of the believers as one of their defining traits.",
+      points: [
+        {
+          title: "In every prayer — the tashahhud",
+          detail:
+            "The Prophet (peace be upon him) said: 'When any one of you utters tashahhud (in prayer) he must seek refuge with Allah from four (trials) and should thus say: O Allah! I seek refuge with Thee from the torment of the Hell, from the torment of the grave, from the trial of life and death and from the evil of the trial of Masih al-Dajjal.'",
+          note: "Muslim 5:162",
+        },
+        {
+          title: "Ask three times",
+          detail:
+            "The Prophet (peace be upon him) said: 'Whoever asks Allah Paradise three times, Paradise says: O Allah, admit him into Paradise; and whoever seeks refuge from the Fire three times, the Fire says: O Allah, save him from the Fire.'",
+          note: "Tirmidhi 38:50; Nasai 50:94",
+        },
+        {
+          title: "The du'a of the believers in the Quran",
+          detail:
+            "Allah describes His servants as 'those who say: Our Lord, we believe, so forgive us our sins and protect us from the punishment of the Fire' — and those who reflect on creation and conclude: 'Our Lord, you have not created all this in vain. Glory be to You. Protect us from the punishment of the Fire.' The servants of the Most Merciful plead: 'Our Lord, turn the punishment of Hell away from us, for its punishment is unrelenting.'",
+          note: "Quran 3:16; Quran 3:191; Quran 25:65-66",
+        },
+      ],
+      source:
+        "Quran 3:16; Quran 3:191; Quran 25:65-66; Muslim 5:162; Nasai 50:94; Tirmidhi 38:50",
+    },
+  },
+  {
+    id: "door-of-hope",
+    name: "The Door of Hope",
+    content: {
+      intro:
+        "Protection from the Fire is not earned by the flawless — it is granted by the Most Merciful to those who keep turning back to Him. Even grief, borne with faith, becomes a shield.",
+      points: [
+        {
+          title: "Children as a shield",
+          detail:
+            "The Prophet (peace be upon him) told the believing women: 'No woman amongst you who sends her three children as her forerunners (in the Hereafter) but they would serve him as a protection against Hell-Fire.' A woman asked: 'What about two?' He said: 'Even if they are two.' And he said: 'A Muslim whose three children die before the age of puberty will be granted Paradise by Allah due to his mercy for them.'",
+          note: "Muslim 45:196; Bukhari 23:11",
+        },
+        {
+          title: "Do not despair",
+          detail:
+            "The door of repentance stands open. Allah says: 'O My slaves who have transgressed against themselves, do not despair of Allah's mercy, for indeed Allah forgives all sins. He is indeed the All-Forgiving, the Most Merciful.' This is the same verse of hope that closes the story of the last man to leave the Fire (see 'The Last to Enter' under How to Enter).",
+          note: "Quran 39:53",
+        },
+        {
+          title: "True success",
+          detail:
+            "Allah defines success itself by this one escape: 'Whoever is spared from the Fire and admitted into Paradise has truly won, for the life of this world is nothing but an illusory pleasure.' To be pulled away from the Fire is the victory every deed in this life is working toward.",
+          note: "Quran 3:185",
+        },
+      ],
+      source:
+        "Quran 3:185; Quran 39:53; Bukhari 23:11; Muslim 45:196",
+    },
+  },
+];
+
+const jahannamMattersItems = [
+  {
+    point: "The Fire is as near as Paradise",
+    detail:
+      "The same hadith that brings Jannah close brings the Fire close too. The Prophet (peace be upon him) said: 'Paradise is nearer to any of you than the Shirak (leather strap) of his shoe, and so is the (Hell) Fire.' A single deed can draw a person toward either — which is why he also said: 'Save yourself from Hell-fire even by giving half a date-fruit in charity.'",
+    reference: "Bukhari 81:77; Bukhari 24:21",
+  },
+  {
+    point: "Fear and hope, held together",
+    detail:
+      "The Quran never mentions the Fire to crush hope — the servants of the Most Merciful plead, 'Our Lord, turn the punishment of Hell away from us, for its punishment is unrelenting,' and in the very same Book Allah declares: 'O My slaves who have transgressed against themselves, do not despair of Allah's mercy, for indeed Allah forgives all sins.' Remembering Jahannam keeps the heart awake; remembering Allah's mercy keeps it from despair.",
+    reference: "Quran 25:65-66; Quran 39:53",
+  },
+  {
+    point: "Remembrance that moves the heart",
+    detail:
+      "Allah praises 'those who remember Allah while standing, sitting, and lying on their sides, and reflect upon the creation of the heavens and earth' — and their reflection ends in one plea: 'Protect us from the punishment of the Fire.' Thinking about the Hereafter is not morbid; in the Quran it is the mark of a living, reflecting heart, and it is what turns belief into action.",
+    reference: "Quran 3:191; Quran 3:16",
+  },
+];
+
 const sections = [
   { key: "intro", label: "What is Jannah?" },
   { key: "importance", label: "Why It Matters" },
-  { key: "descriptions", label: "Descriptions" },
+  { key: "descriptions", label: "Jannah Described" },
   { key: "how-to", label: "How to Enter" },
+  { key: "jahannam", label: "Jahannam" },
+  { key: "protection", label: "Protection from It" },
 ] as const;
 
 type SectionKey = (typeof sections)[number]["key"];
@@ -471,6 +830,12 @@ function JannahContent() {
   );
   const [activeHowTo, setActiveHowTo] = useState(
     subParam && howToTopics.some((t) => t.id === subParam) ? subParam : "conditions"
+  );
+  const [activeJahannam, setActiveJahannam] = useState(
+    subParam && jahannamTopics.some((t) => t.id === subParam) ? subParam : "what-is-jahannam"
+  );
+  const [activeProtection, setActiveProtection] = useState(
+    subParam && protectionTopics.some((t) => t.id === subParam) ? subParam : "shield-of-deeds"
   );
   const [search, setSearch] = useState("");
 
@@ -499,22 +864,26 @@ function JannahContent() {
     if (d.length && !d.some((t) => t.id === activeDescription)) setActiveDescription(d[0].id);
     const h = howToTopics.filter(topicMatches);
     if (h.length && !h.some((t) => t.id === activeHowTo)) setActiveHowTo(h[0].id);
+    const j = jahannamTopics.filter(topicMatches);
+    if (j.length && !j.some((t) => t.id === activeJahannam)) setActiveJahannam(j[0].id);
+    const p = protectionTopics.filter(topicMatches);
+    if (p.length && !p.some((t) => t.id === activeProtection)) setActiveProtection(p[0].id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   return (
     <div>
       <PageHeader
-        title="Jannah"
-        titleAr="الجنة"
-        subtitle="Paradise — the eternal home prepared for the believers"
+        title="Jannah & Jahannam"
+        titleAr="الجنة والنار"
+        subtitle="Paradise and Hellfire — the two eternal abodes"
       />
 
       <VerseHero
         label="The Quran"
-        arabic="وَسَارِعُوٓا إِلَىٰ مَغْفِرَةٍۢ مِّن رَّبِّكُمْ وَجَنَّةٍ عَرْضُهَا ٱلسَّمَـٰوَٰتُ وَٱلْأَرْضُ أُعِدَّتْ لِلْمُتَّقِينَ"
-        text="And hasten to forgiveness from your Lord and a garden as wide as the heavens and earth, prepared for the righteous."
-        reference="Quran 3:133"
+        arabic="كُلُّ نَفْسٍ ذَآئِقَةُ ٱلْمَوْتِ ۗ وَإِنَّمَا تُوَفَّوْنَ أُجُورَكُمْ يَوْمَ ٱلْقِيَـٰمَةِ ۖ فَمَن زُحْزِحَ عَنِ ٱلنَّارِ وَأُدْخِلَ ٱلْجَنَّةَ فَقَدْ فَازَ ۗ وَمَا ٱلْحَيَوٰةُ ٱلدُّنْيَآ إِلَّا مَتَـٰعُ ٱلْغُرُورِ"
+        text="Every soul will taste death, and you will be paid your reward in full on the Day of Resurrection. Whoever is spared from the Fire and admitted into Paradise has truly won, for the life of this world is nothing but an illusory pleasure."
+        reference="Quran 3:185"
       />
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search topics, descriptions, verses..." className="mb-6" />
@@ -624,7 +993,7 @@ function JannahContent() {
             className="space-y-4"
           >
             {/* Numbered points */}
-            {whyItMatters.filter(mattersMatches).map((item, i) => (
+            {[...whyItMatters, ...jahannamMattersItems].filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -815,6 +1184,153 @@ function JannahContent() {
               { ref: "Bukhari 81:159; Muslim 1:93-95", desc: "The last person to enter Paradise" },
               { ref: "Muslim 1:178", desc: "Whoever dies upon tawhid will enter Paradise" },
               { ref: "Tirmidhi 27:110", desc: "The most common cause of admission: taqwa and good character" },
+            ]} />
+          </motion.div>
+        )}
+
+        {/* ─── jahannam ─── */}
+        {activeSection === "jahannam" && (
+          <motion.div
+            key="jahannam"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="flex flex-col md:flex-row gap-4 items-start">
+              {/* Left side — vertical pills */}
+              <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
+                {jahannamTopics.filter(topicMatches).map((topic) => (
+                    <button
+                      key={topic.id}
+                      onClick={() => {
+                        setActiveJahannam(topic.id);
+                        syncUrl("jahannam", topic.id);
+                      }}
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                        activeJahannam === topic.id
+                          ? "bg-gold/20 text-gold border border-gold/40"
+                          : "text-themed-muted hover:text-themed border sidebar-border"
+                      }`}
+                    >
+                      {topic.name}
+                    </button>
+                ))}
+              </div>
+
+              {/* Right side — content */}
+              <div className="flex-1 min-w-0">
+                <AnimatePresence mode="wait">
+                  {jahannamTopics.map(
+                    (topic) =>
+                      activeJahannam === topic.id && (
+                        <motion.div
+                          key={topic.id}
+                          id={`section-${topic.id}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.25 }}
+                        >
+                          <TopicInfoCard topic={topic} showSource={false} />
+                        </motion.div>
+                      )
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Sources */}
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 15:43-44", desc: "The seven gates of Jahannam" },
+              { ref: "Quran 2:24; Quran 66:6", desc: "Its fuel is people and stones; stern angels over it" },
+              { ref: "Quran 25:12; Quran 67:7-8", desc: "Its raging and roaring" },
+              { ref: "Quran 4:56", desc: "Skins renewed so the punishment is tasted anew" },
+              { ref: "Quran 4:145", desc: "The hypocrites in the lowest depths of the Fire" },
+              { ref: "Quran 39:71", desc: "Driven in groups; the keepers' question" },
+              { ref: "Quran 43:77", desc: "'O Malik, let your Lord put an end to us'" },
+              { ref: "Quran 74:26-31", desc: "Saqar and its nineteen keepers" },
+              { ref: "Quran 37:62-68; Quran 44:43-46; Quran 56:51-55", desc: "The tree of Zaqqum" },
+              { ref: "Quran 47:15; Quran 78:24-25", desc: "Scalding water and the drink of its people" },
+              { ref: "Quran 69:30-32; Quran 76:4", desc: "Chains and shackles" },
+              { ref: "Quran 23:107-108; Quran 35:36-37; Quran 40:49-50", desc: "What its people will say" },
+              { ref: "Muslim 53:34; Tirmidhi 39:17", desc: "Seventy times hotter than worldly fire" },
+              { ref: "Bukhari 59:70", desc: "The Fire's complaint and its two breaths" },
+              { ref: "Bukhari 81:151; Muslim 1:421", desc: "The least punishment in the Fire" },
+              { ref: "Bukhari 78:101; Ibn Majah 37:74", desc: "The proud and arrogant; a mustard seed of pride" },
+              { ref: "Bukhari 2:15; Bukhari 81:149; Bukhari 97:134", desc: "Those with a mustard seed of faith brought out" },
+              { ref: "Muslim 1:178", desc: "Whoever dies upon tawhid will enter Paradise" },
+              { ref: "Bukhari 81:159", desc: "The last person to leave the Fire" },
+            ]} />
+          </motion.div>
+        )}
+
+        {/* ─── protection ─── */}
+        {activeSection === "protection" && (
+          <motion.div
+            key="protection"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="flex flex-col md:flex-row gap-4 items-start">
+              {/* Left side — vertical pills */}
+              <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
+                {protectionTopics.filter(topicMatches).map((topic) => (
+                    <button
+                      key={topic.id}
+                      onClick={() => {
+                        setActiveProtection(topic.id);
+                        syncUrl("protection", topic.id);
+                      }}
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                        activeProtection === topic.id
+                          ? "bg-gold/20 text-gold border border-gold/40"
+                          : "text-themed-muted hover:text-themed border sidebar-border"
+                      }`}
+                    >
+                      {topic.name}
+                    </button>
+                ))}
+              </div>
+
+              {/* Right side — content */}
+              <div className="flex-1 min-w-0">
+                <AnimatePresence mode="wait">
+                  {protectionTopics.map(
+                    (topic) =>
+                      activeProtection === topic.id && (
+                        <motion.div
+                          key={topic.id}
+                          id={`section-${topic.id}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.25 }}
+                        >
+                          <TopicInfoCard topic={topic} showSource={false} />
+                        </motion.div>
+                      )
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Sources */}
+            <SourcesCard className="mt-8" sources={[
+              { ref: "Quran 66:6", desc: "Protect yourselves and your families from the Fire" },
+              { ref: "Quran 3:185", desc: "Whoever is spared from the Fire has truly won" },
+              { ref: "Quran 3:16; Quran 3:191; Quran 25:65-66", desc: "The du'as of the believers against the Fire" },
+              { ref: "Quran 39:53", desc: "Do not despair of the mercy of Allah" },
+              { ref: "Bukhari 24:21", desc: "Save yourself from the Fire even with half a date" },
+              { ref: "Muslim 5:329; Bukhari 88:20", desc: "La ilaha illallah, said seeking Allah's Face" },
+              { ref: "Bukhari 56:56; Muslim 13:217; Tirmidhi 22:6", desc: "Fasting distances the face from the Fire" },
+              { ref: "Bukhari 84:8", desc: "Freeing a slave ransoms the body from the Fire" },
+              { ref: "Tirmidhi 22:22", desc: "Two eyes the Fire will not touch" },
+              { ref: "Muslim 5:162", desc: "Refuge from the punishment of the Fire in the tashahhud" },
+              { ref: "Tirmidhi 38:50; Nasai 50:94", desc: "Ask for Paradise and refuge from the Fire three times" },
+              { ref: "Muslim 45:196; Bukhari 23:11", desc: "Children who pass away as a shield from the Fire" },
             ]} />
           </motion.div>
         )}
