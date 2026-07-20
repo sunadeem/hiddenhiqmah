@@ -449,48 +449,6 @@ const howToTopics: HowToTopic[] = [
 
 const jahannamTopics: DescriptionTopic[] = [
   {
-    id: "what-is-jahannam",
-    name: "What is Jahannam?",
-    content: {
-      intro:
-        "Jahannam is the Fire — the abode of punishment that Allah has prepared and warned about throughout the Quran. Just as Jannah is real, the Fire is real, and Allah describes it in vivid detail so that hearts turn to Him now, before the Day when warnings become sight.",
-      verse: {
-        arabic:
-          "وَإِنَّ جَهَنَّمَ لَمَوْعِدُهُمْ أَجْمَعِينَ ۝ لَهَا سَبْعَةُ أَبْوَٰبٍ لِّكُلِّ بَابٍ مِّنْهُمْ جُزْءٌ مَّقْسُومٌ",
-        text: "And Hell is certainly the promised place for them, all together. It has seven gates; each gate will have its allotted share of them.",
-        ref: "Quran 15:43-44",
-      },
-      points: [
-        {
-          title: "Seven gates",
-          detail:
-            "Allah describes Jahannam as having seven gates — 'each gate will have its allotted share of them.' On the Day of Resurrection, those who disbelieved will be driven to it in groups, and when they reach it, its gates will be opened and its keepers will ask: 'Did there not come to you messengers from among you, reciting the verses of your Lord and warning you of your meeting of this Day?'",
-          note: "Quran 15:43-44; Quran 39:71",
-        },
-        {
-          title: "Its fuel is people and stones",
-          detail:
-            "The Fire is not fed by wood. Allah says: 'beware of the Fire whose fuel will be people and stones, which is prepared for the disbelievers.' The same description is repeated in the command to the believers: 'protect yourselves and your families from a Fire whose fuel is people and stones.'",
-          note: "Quran 2:24; Quran 66:6",
-        },
-        {
-          title: "It sees them from afar",
-          detail:
-            "The Quran describes the Fire almost as a living thing: 'When it sees them from a far distance, they will hear its raging and roaring.' And when they are thrown in it, 'they will hear its roaring as it boils up, almost bursting in fury.'",
-          note: "Quran 25:12; Quran 67:7-8",
-        },
-        {
-          title: "A warning given out of mercy",
-          detail:
-            "Every description of Jahannam in the Quran comes while its readers are still alive — while the door to escape it is wide open. Allah addresses the believers directly: 'O you who believe, protect yourselves and your families from a Fire...' The warning itself is a mercy: it is given to people who still have time to act on it.",
-          note: "Quran 66:6",
-        },
-      ],
-      source:
-        "Quran 2:24; Quran 15:43-44; Quran 25:12; Quran 39:71; Quran 66:6; Quran 67:7-8",
-    },
-  },
-  {
     id: "heat-depths",
     name: "Its Heat & Depths",
     content: {
@@ -822,7 +780,9 @@ const tabGroups = [
     key: "jahannam",
     label: "Jahannam",
     sections: [
-      { key: "jahannam", label: "The Fire Described" },
+      { key: "jahannam-intro", label: "What is Jahannam?" },
+      { key: "jahannam-importance", label: "Why It Matters" },
+      { key: "jahannam", label: "Descriptions" },
       { key: "protection", label: "Protection from It" },
     ],
   },
@@ -847,6 +807,9 @@ function JannahContent() {
   const [activeSection, setActiveSection] = useState<SectionKey>(() => {
     const tab = searchParams.get("tab");
     if (tab === "jannah") return "intro"; // group alias
+    // The what-is-jahannam rail topic became its own view; honor old links.
+    if (tab === "jahannam" && (searchParams.get("sub") ?? searchParams.get("section")) === "what-is-jahannam")
+      return "jahannam-intro";
     return ALL_SECTION_KEYS.includes(tab as SectionKey) ? (tab as SectionKey) : "intro";
   });
   // Deep-link support: ?sub=<topic id> (old ?section= accepted as a mount-time alias)
@@ -858,7 +821,7 @@ function JannahContent() {
     subParam && howToTopics.some((t) => t.id === subParam) ? subParam : "conditions"
   );
   const [activeJahannam, setActiveJahannam] = useState(
-    subParam && jahannamTopics.some((t) => t.id === subParam) ? subParam : "what-is-jahannam"
+    subParam && jahannamTopics.some((t) => t.id === subParam) ? subParam : "heat-depths"
   );
   const [activeProtection, setActiveProtection] = useState(
     subParam && protectionTopics.some((t) => t.id === subParam) ? subParam : "shield-of-deeds"
@@ -1042,7 +1005,7 @@ function JannahContent() {
             className="space-y-4"
           >
             {/* Numbered points */}
-            {[...whyItMatters, ...jahannamMattersItems].filter(mattersMatches).map((item, i) => (
+            {whyItMatters.filter(mattersMatches).map((item, i) => (
               <ContentCard key={i} delay={0.05 + i * 0.05}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -1237,6 +1200,146 @@ function JannahContent() {
           </motion.div>
         )}
 
+        {/* ─── What is Jahannam? ─── */}
+        {activeSection === "jahannam-intro" && (
+          <motion.div
+            key="jahannam-intro"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            <ContentCard delay={0.1}>
+              <h2 className="text-xl font-semibold text-themed mb-4">
+                What is Jahannam?
+              </h2>
+              <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  <span className="text-themed font-medium">Jahannam</span>{" "}
+                  (جهنم) is the Fire — the abode of punishment that Allah has
+                  prepared and warned about throughout the Quran. Just as Jannah
+                  is real, the Fire is real, and Allah describes it in vivid
+                  detail so that hearts turn to Him now, before the Day when
+                  warnings become sight.
+                </p>
+                <p>
+                  Allah describes Jahannam as having seven gates —{" "}
+                  <em>&ldquo;each gate will have its allotted share of them&rdquo;</em>{" "}
+                  (Quran 15:43-44). Its fuel is not wood: <em>&ldquo;beware of the Fire
+                  whose fuel will be people and stones, which is prepared for the
+                  disbelievers&rdquo;</em> (Quran 2:24; Quran 66:6).
+                </p>
+                <p>
+                  The Quran describes the Fire almost as a living thing:{" "}
+                  <em>&ldquo;When it sees them from a far distance, they will hear its
+                  raging and roaring&rdquo;</em> (Quran 25:12) — and when they are thrown
+                  in it, <em>&ldquo;they will hear its roaring as it boils up, almost
+                  bursting in fury&rdquo;</em> (Quran 67:7-8).
+                </p>
+                <p>
+                  Yet every description of Jahannam in the Quran comes while its
+                  readers are still alive — while the door to escape it is wide
+                  open. Allah addresses the believers directly: <em>&ldquo;O you who
+                  believe, protect yourselves and your families from a
+                  Fire...&rdquo;</em> (Quran 66:6). The warning itself is a mercy: it
+                  is given to people who still have time to act on it.
+                </p>
+              </div>
+            </ContentCard>
+
+            <ContentCard delay={0.2}>
+              <div
+                className="rounded-lg p-4"
+                style={{ backgroundColor: "var(--color-bg)" }}
+              >
+                <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
+                  وَإِنَّ جَهَنَّمَ لَمَوْعِدُهُمْ أَجْمَعِينَ ۝ لَهَا سَبْعَةُ أَبْوَٰبٍ لِّكُلِّ بَابٍ مِّنْهُمْ جُزْءٌ مَّقْسُومٌ
+                </p>
+                <p className="text-themed text-sm italic">
+                  &ldquo;And Hell is certainly the promised place for them, all
+                  together. It has seven gates; each gate will have its allotted
+                  share of them.&rdquo;
+                </p>
+                <p className="text-xs text-themed-muted mt-2">Quran 15:43-44</p>
+              </div>
+            </ContentCard>
+
+            {/* Sources */}
+            <SourcesCard sources={[
+              { ref: "Quran 15:43-44", desc: "The seven gates of Jahannam" },
+              { ref: "Quran 2:24; Quran 66:6", desc: "Its fuel is people and stones" },
+              { ref: "Quran 25:12; Quran 67:7-8", desc: "Its raging and roaring" },
+              { ref: "Quran 39:71", desc: "Driven to it in groups; the keepers' question" },
+            ]} />
+          </motion.div>
+        )}
+
+        {/* ─── Why It Matters (Jahannam) ─── */}
+        {activeSection === "jahannam-importance" && (
+          <motion.div
+            key="jahannam-importance"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4"
+          >
+            {/* Numbered points */}
+            {jahannamMattersItems.filter(mattersMatches).map((item, i) => (
+              <ContentCard key={i} delay={0.05 + i * 0.05}>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-gold font-semibold text-sm">
+                      {i + 1}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-themed mb-1">
+                      {item.point}
+                    </h3>
+                    <p className="text-themed-muted text-sm leading-relaxed">
+                      {item.detail}
+                    </p>
+                    <p className="text-xs text-gold/60 mt-2">
+                      <HadithRefText text={item.reference} />
+                    </p>
+                  </div>
+                </div>
+              </ContentCard>
+            ))}
+
+            {/* Closing verse */}
+            <ContentCard delay={0.25}>
+              <div
+                className="rounded-lg p-4"
+                style={{ backgroundColor: "var(--color-bg)" }}
+              >
+                <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
+                  ٱلَّذِينَ يَذْكُرُونَ ٱللَّهَ قِيَـٰمًا وَقُعُودًا وَعَلَىٰ جُنُوبِهِمْ وَيَتَفَكَّرُونَ فِى خَلْقِ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضِ رَبَّنَا مَا خَلَقْتَ هَـٰذَا بَـٰطِلًا سُبْحَـٰنَكَ فَقِنَا عَذَابَ ٱلنَّارِ
+                </p>
+                <p className="text-themed text-sm italic">
+                  &ldquo;Those who remember Allah while standing, sitting, and lying
+                  on their sides, and reflect upon the creation of the heavens and
+                  earth [saying], &lsquo;Our Lord, you have not created all this in
+                  vain. Glory be to You. Protect us from the punishment of the
+                  Fire.&rsquo;&rdquo;
+                </p>
+                <p className="text-xs text-themed-muted mt-2">Quran 3:191</p>
+              </div>
+            </ContentCard>
+
+            {/* Sources */}
+            <SourcesCard delay={0.3} sources={[
+              { ref: "Bukhari 81:77", desc: "The Fire is as near as your sandal strap" },
+              { ref: "Bukhari 24:21", desc: "Save yourself from the Fire even with half a date" },
+              { ref: "Quran 25:65-66", desc: "The servants of the Most Merciful plead against the Fire" },
+              { ref: "Quran 39:53", desc: "Do not despair of the mercy of Allah" },
+              { ref: "Quran 3:16; Quran 3:191", desc: "The believers' reflection ends in one plea" },
+            ]} />
+          </motion.div>
+        )}
+
         {/* ─── jahannam ─── */}
         {activeSection === "jahannam" && (
           <motion.div
@@ -1291,9 +1394,6 @@ function JannahContent() {
 
             {/* Sources */}
             <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 15:43-44", desc: "The seven gates of Jahannam" },
-              { ref: "Quran 2:24; Quran 66:6", desc: "Its fuel is people and stones; stern angels over it" },
-              { ref: "Quran 25:12; Quran 67:7-8", desc: "Its raging and roaring" },
               { ref: "Quran 4:56", desc: "Skins renewed so the punishment is tasted anew" },
               { ref: "Quran 4:145", desc: "The hypocrites in the lowest depths of the Fire" },
               { ref: "Quran 39:71", desc: "Driven in groups; the keepers' question" },
