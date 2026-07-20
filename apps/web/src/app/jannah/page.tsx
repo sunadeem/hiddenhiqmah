@@ -1231,11 +1231,24 @@ function JannahContent() {
                   disbelievers&rdquo;</em> (Quran 2:24; Quran 66:6).
                 </p>
                 <p>
-                  The Quran describes the Fire almost as a living thing:{" "}
+                  The Quran and Sunnah describe the Fire not as something inert,
+                  but as a creation with perception given by its Lord:{" "}
                   <em>&ldquo;When it sees them from a far distance, they will hear its
                   raging and roaring&rdquo;</em> (Quran 25:12) — and when they are thrown
                   in it, <em>&ldquo;they will hear its roaring as it boils up, almost
-                  bursting in fury&rdquo;</em> (Quran 67:7-8).
+                  bursting in fury&rdquo;</em> (Quran 67:7-8). It will even speak: on the
+                  Day when Allah asks it, <em>&ldquo;Have you reached your fill?&rdquo;</em> it
+                  will answer, <em>&ldquo;Are there any more?&rdquo;</em> (Quran 50:30).
+                </p>
+                <p>
+                  And it will be dragged before creation on that Day. Allah says
+                  <em>&ldquo;and Hell is brought near on that Day&rdquo;</em> (Quran 89:23), and
+                  the Prophet (peace be upon him) described how: <em>&ldquo;Hell would
+                  be brought on that day (the Day of Judgment) with seventy
+                  thousand bridles, and seventy thousand angels dragging each
+                  bridle.&rdquo;</em> (Muslim 53:33; Tirmidhi 39:1). It remains the abode
+                  of punishment — a real place — yet one that sees, roars, and
+                  answers its Lord.
                 </p>
                 <p>
                   Yet every description of Jahannam in the Quran comes while its
@@ -1270,6 +1283,8 @@ function JannahContent() {
               { ref: "Quran 15:43-44", desc: "The seven gates of Jahannam" },
               { ref: "Quran 2:24; Quran 66:6", desc: "Its fuel is people and stones" },
               { ref: "Quran 25:12; Quran 67:7-8", desc: "Its raging and roaring" },
+              { ref: "Quran 50:30", desc: "'Are there any more?' — the Fire answers its Lord" },
+              { ref: "Quran 89:23; Muslim 53:33; Tirmidhi 39:1", desc: "Brought near that Day with seventy thousand bridles, each dragged by seventy thousand angels" },
               { ref: "Quran 39:71", desc: "Driven to it in groups; the keepers' question" },
             ]} />
           </motion.div>
