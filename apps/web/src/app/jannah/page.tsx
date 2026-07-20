@@ -755,6 +755,12 @@ const jahannamMattersItems = [
     reference: "Quran 25:65-66; Quran 39:53",
   },
   {
+    point: "An archangel has not laughed since it was created",
+    detail:
+      "The Prophet (peace be upon him) asked Jibril: 'Why do I never see Mika'il laughing?' Jibril replied: 'Mika'il has not laughed since the Fire was created.' An archangel who beholds the unseen has not laughed since Jahannam came into being — those still able to escape it cannot afford to treat it lightly. (A similar account about Malik, the Fire's keeper, never smiling appears in a longer, weaker narration of the Night Journey; what is firmly established is Malik's role as its stern gate-keeper.)",
+    reference: "Musnad Ahmad (13343) — graded hasan by al-Albani, Sahih al-Targhib 3664; Bukhari 59:47",
+  },
+  {
     point: "Remembrance that moves the heart",
     detail:
       "Allah praises 'those who remember Allah while standing, sitting, and lying on their sides, and reflect upon the creation of the heavens and earth' — and their reflection ends in one plea: 'Protect us from the punishment of the Fire.' Thinking about the Hereafter is not morbid; in the Quran it is the mark of a living, reflecting heart, and it is what turns belief into action.",
@@ -1351,6 +1357,8 @@ function JannahContent() {
               { ref: "Quran 25:65-66", desc: "The servants of the Most Merciful plead against the Fire" },
               { ref: "Quran 39:53", desc: "Do not despair of the mercy of Allah" },
               { ref: "Quran 3:16; Quran 3:191", desc: "The believers' reflection ends in one plea" },
+              { ref: "Musnad Ahmad (13343); hasan — al-Albani, Sahih al-Targhib 3664", desc: "Mika'il has not laughed since the Fire was created" },
+              { ref: "Bukhari 59:47", desc: "Malik, the gate-keeper of the Fire" },
             ]} />
           </motion.div>
         )}
