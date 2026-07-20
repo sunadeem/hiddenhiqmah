@@ -479,9 +479,21 @@ const jahannamTopics: DescriptionTopic[] = [
             "Jahannam has depths beneath depths, and its lowest is reserved for the hypocrites — those who wore faith as a mask while concealing disbelief. Allah says: 'Indeed, the hypocrites will be in the lowest depths of the Fire, and you will never find for them any helper.'",
           note: "Quran 4:145",
         },
+        {
+          title: "From the shallowest part to the depths",
+          detail:
+            "Between that lowest depth and the Fire's edge lie degrees. Of his uncle Abu Talib, the Prophet (peace be upon him) said: 'My intercession may benefit him on the Day of Resurrection and he may be placed in the shallow part of the Fire which would reach his ankles and his brain would be boiling.' And Allah says: 'Everyone will be assigned ranks according to their deeds' — in both abodes, the standing differs with the deeds. Of its seven gates, 'each gate will have its allotted share of them,' and a narration in Tirmidhi names one: 'a gate for whoever carries a sword against my Ummah.'",
+          note: "Muslim 1:419; Bukhari 81:153; Quran 6:132; Quran 15:43-44; Tirmidhi 47:175",
+        },
+        {
+          title: "Its names — and the popular 'seven levels' list",
+          detail:
+            "The Quran calls the Fire by several names: Laza ('a raging Flame', Quran 70:15), al-Hutamah ('the Crushing Fire', Quran 104:4-5), Saqar ('the Scorching Fire', Quran 74:26-27), al-Hawiyah ('the abyss', Quran 101:9-11), as well as al-Jahim and as-Sa'ir. A widely-shared list assigns each name to a separate level with a specific community inside it — but that scheme comes from weak tafsir reports, not from any authentic hadith. What the texts themselves establish is simpler and weightier: one Fire with seven gates, differing depths, and differing punishments — each share already allotted.",
+          note: "Quran 70:15; Quran 104:4-5; Quran 74:26-27; Quran 101:9-11; Quran 15:43-44",
+        },
       ],
       source:
-        "Quran 4:145; Bukhari 59:70; Bukhari 81:151; Muslim 1:421; Muslim 53:34; Tirmidhi 39:17",
+        "Quran 4:145; Quran 6:132; Quran 15:43-44; Quran 70:15; Quran 74:26-27; Quran 101:9-11; Quran 104:4-5; Bukhari 59:70; Bukhari 81:151; Bukhari 81:153; Muslim 1:419; Muslim 1:421; Muslim 53:34; Tirmidhi 39:17; Tirmidhi 47:175",
     },
   },
   {
@@ -1429,6 +1441,10 @@ function JannahContent() {
               { ref: "Muslim 53:34; Tirmidhi 39:17", desc: "Seventy times hotter than worldly fire" },
               { ref: "Bukhari 59:70", desc: "The Fire's complaint and its two breaths" },
               { ref: "Bukhari 81:151; Muslim 1:421", desc: "The least punishment in the Fire" },
+              { ref: "Muslim 1:419; Bukhari 81:153", desc: "The shallow part of the Fire — Abu Talib" },
+              { ref: "Quran 6:132", desc: "Ranks assigned according to deeds" },
+              { ref: "Tirmidhi 47:175", desc: "A gate of Jahannam for whoever carries a sword against this Ummah" },
+              { ref: "Quran 70:15; Quran 104:4-5; Quran 74:26-27; Quran 101:9-11", desc: "The Quranic names of the Fire" },
               { ref: "Bukhari 78:101; Ibn Majah 37:74", desc: "The proud and arrogant; a mustard seed of pride" },
               { ref: "Bukhari 2:15; Bukhari 81:149; Bukhari 97:134", desc: "Those with a mustard seed of faith brought out" },
               { ref: "Muslim 1:178", desc: "Whoever dies upon tawhid will enter Paradise" },
