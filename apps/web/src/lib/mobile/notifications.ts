@@ -119,6 +119,35 @@ const HADITH_POOL: { type: "Hadith"; english: string; reference: string }[] =
     reference: r.sourceRef,
   }));
 
+// Deep-link target for a daily inspiration: the notification banner truncates
+// the body, so the tap must land on the actual verse/hadith. Reuses the same
+// reader deep links HadithRefText produces (/quran/S?v=A scrolls the reader;
+// /hadith/{collection}/{book}?h=N highlights the entry).
+const HADITH_COLLECTION_SLUGS: [prefix: string, slug: string][] = [
+  ["Sahih al-Bukhari", "bukhari"],
+  ["Sahih Muslim", "muslim"],
+  ["Sunan Abi Dawud", "abudawud"],
+  ["Jami at-Tirmidhi", "tirmidhi"],
+  ["Musnad Ahmad", "ahmad"],
+];
+
+function urlForInspiration(insp: { type: string; reference: string }): string {
+  if (insp.type === "Quran") {
+    // "Quran 13:28" → /quran/13?v=28
+    const m = insp.reference.match(/(\d+):(\d+)/);
+    return m ? `/quran/${m[1]}?v=${m[2]}` : "/quran";
+  }
+  for (const [prefix, slug] of HADITH_COLLECTION_SLUGS) {
+    if (insp.reference.startsWith(prefix)) {
+      // "Sahih Muslim 48:104" → /hadith/muslim/48?h=104; a bare number
+      // (e.g. "Musnad Ahmad 205") lands on the collection page.
+      const m = insp.reference.slice(prefix.length).match(/(\d+):(\d+)/);
+      return m ? `/hadith/${slug}/${m[1]}?h=${m[2]}` : `/hadith/${slug}`;
+    }
+  }
+  return "/";
+}
+
 /** Today's-style inspiration for an arbitrary date (day-of-year rotation). */
 function inspirationForDate(d: Date, type?: "Quran" | "Hadith") {
   const pool =
@@ -341,7 +370,7 @@ export async function scheduleAllNotifications(
               title: "Today's Verse",
               body: `${insp.english} — ${insp.reference}`,
               schedule: { at },
-              url: "/",
+              url: urlForInspiration(insp),
               tier: 3,
             });
         }
@@ -357,7 +386,7 @@ export async function scheduleAllNotifications(
               title: "Today's Hadith",
               body: `${insp.english} — ${insp.reference}`,
               schedule: { at },
-              url: "/",
+              url: urlForInspiration(insp),
               tier: 3,
             });
         }
