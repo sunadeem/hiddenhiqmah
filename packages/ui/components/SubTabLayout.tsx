@@ -26,7 +26,7 @@ export default function SubTabLayout<T extends string>({
           <button
             key={sub.key}
             onClick={() => setActiveSub(sub.key)}
-            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+            className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap md:whitespace-normal transition-all text-left flex items-center gap-2 ${
               activeSub === sub.key
                 ? "bg-gold/20 text-gold border border-gold/40"
                 : "text-themed-muted hover:text-themed border sidebar-border"

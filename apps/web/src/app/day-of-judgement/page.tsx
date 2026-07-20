@@ -771,7 +771,7 @@ function DayOfJudgementContent() {
                       setActiveSigns(topic.id);
                       syncUrl("signs", topic.id);
                     }}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap md:whitespace-normal transition-all text-left ${
                       activeSigns === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -841,7 +841,7 @@ function DayOfJudgementContent() {
                       setActiveEvents(topic.id);
                       syncUrl("events", topic.id);
                     }}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap md:whitespace-normal transition-all text-left ${
                       activeEvents === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -904,7 +904,7 @@ function DayOfJudgementContent() {
                       setActiveSalvation(topic.id);
                       syncUrl("salvation", topic.id);
                     }}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap md:whitespace-normal transition-all text-left ${
                       activeSalvation === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"

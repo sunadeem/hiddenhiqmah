@@ -699,7 +699,7 @@ function LearnArabicContent() {
                   <button
                     key={cat.id}
                     onClick={() => setActiveVocabCat(cat.id)}
-                    className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap text-left transition-all ${
+                    className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap md:whitespace-normal text-left transition-all ${
                       activeVocabCat === cat.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -753,7 +753,7 @@ function LearnArabicContent() {
                   <button
                     key={topic.id}
                     onClick={() => setActiveGrammarTopic(topic.id)}
-                    className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap text-left transition-all ${
+                    className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap md:whitespace-normal text-left transition-all ${
                       activeGrammarTopic === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"
@@ -808,7 +808,7 @@ function LearnArabicContent() {
                   <button
                     key={cat.id}
                     onClick={() => setActivePhraseCat(cat.id)}
-                    className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap text-left transition-all ${
+                    className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap md:whitespace-normal text-left transition-all ${
                       activePhraseCat === cat.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"

@@ -1301,7 +1301,7 @@ function StoryOfCreationContent() {
                   <button
                     key={topic.id}
                     onClick={() => setActiveTopic(topic.id)}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium md:whitespace-normal whitespace-nowrap transition-all text-left ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium md:whitespace-normal whitespace-nowrap md:whitespace-normal transition-all text-left ${
                       activeTopic === topic.id
                         ? "bg-gold/20 text-gold border border-gold/40"
                         : "text-themed-muted hover:text-themed border sidebar-border"

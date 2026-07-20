@@ -1098,7 +1098,7 @@ function JannahContent() {
                         setActiveDescription(topic.id);
                         syncUrl("descriptions", topic.id);
                       }}
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap md:whitespace-normal transition-all text-left flex items-center gap-2 ${
                         activeDescription === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1166,7 +1166,7 @@ function JannahContent() {
                         setActiveHowTo(topic.id);
                         syncUrl("how-to", topic.id);
                       }}
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap md:whitespace-normal transition-all text-left flex items-center gap-2 ${
                         activeHowTo === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1394,7 +1394,7 @@ function JannahContent() {
                         setActiveJahannam(topic.id);
                         syncUrl("jahannam", topic.id);
                       }}
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap md:whitespace-normal transition-all text-left flex items-center gap-2 ${
                         activeJahannam === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
@@ -1472,7 +1472,7 @@ function JannahContent() {
                         setActiveProtection(topic.id);
                         syncUrl("protection", topic.id);
                       }}
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left flex items-center gap-2 ${
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap md:whitespace-normal transition-all text-left flex items-center gap-2 ${
                         activeProtection === topic.id
                           ? "bg-gold/20 text-gold border border-gold/40"
                           : "text-themed-muted hover:text-themed border sidebar-border"
