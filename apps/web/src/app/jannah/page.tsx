@@ -804,16 +804,38 @@ const jahannamMattersItems = [
   },
 ];
 
-const sections = [
-  { key: "intro", label: "What is Jannah?" },
-  { key: "importance", label: "Why It Matters" },
-  { key: "descriptions", label: "Jannah Described" },
-  { key: "how-to", label: "How to Enter" },
-  { key: "jahannam", label: "Jahannam" },
-  { key: "protection", label: "Protection from It" },
+// Two-level navigation: top tabs are the two abodes; the second row selects a
+// view within the active abode. Section keys are unchanged from the flat-tab
+// era so existing deep links (?tab=descriptions&sub=..., ?tab=jahannam) resolve.
+const tabGroups = [
+  {
+    key: "jannah",
+    label: "Jannah",
+    sections: [
+      { key: "intro", label: "What is Jannah?" },
+      { key: "importance", label: "Why It Matters" },
+      { key: "descriptions", label: "Descriptions" },
+      { key: "how-to", label: "How to Enter" },
+    ],
+  },
+  {
+    key: "jahannam",
+    label: "Jahannam",
+    sections: [
+      { key: "jahannam", label: "The Fire Described" },
+      { key: "protection", label: "Protection from It" },
+    ],
+  },
 ] as const;
 
-type SectionKey = (typeof sections)[number]["key"];
+type SectionKey = (typeof tabGroups)[number]["sections"][number]["key"];
+type GroupKey = (typeof tabGroups)[number]["key"];
+
+const ALL_SECTION_KEYS = tabGroups.flatMap((g) => g.sections.map((s) => s.key)) as SectionKey[];
+
+function groupOf(section: SectionKey): GroupKey {
+  return tabGroups.find((g) => g.sections.some((s) => s.key === section))?.key ?? "jannah";
+}
 
 /* ───────────────────────── page ───────────────────────── */
 
@@ -822,7 +844,11 @@ function JannahContent() {
   const router = useRouter();
   const pathname = usePathname();
   useScrollToSection();
-  const [activeSection, setActiveSection] = useState<SectionKey>(searchParams.get("tab") as SectionKey || "intro");
+  const [activeSection, setActiveSection] = useState<SectionKey>(() => {
+    const tab = searchParams.get("tab");
+    if (tab === "jannah") return "intro"; // group alias
+    return ALL_SECTION_KEYS.includes(tab as SectionKey) ? (tab as SectionKey) : "intro";
+  });
   // Deep-link support: ?sub=<topic id> (old ?section= accepted as a mount-time alias)
   const subParam = searchParams.get("sub") ?? searchParams.get("section");
   const [activeDescription, setActiveDescription] = useState(
@@ -888,16 +914,39 @@ function JannahContent() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search topics, descriptions, verses..." className="mb-6" />
 
-      {/* Section navigation (shared TabBar) */}
+      {/* Top level: the two abodes */}
       <TabBar
-        tabs={sections.map((s) => ({ key: s.key, label: s.label }))}
-        activeTab={activeSection}
+        tabs={tabGroups.map((g) => ({ key: g.key, label: g.label }))}
+        activeTab={groupOf(activeSection)}
         onTabChange={(k) => {
-          setActiveSection(k as SectionKey);
-          syncUrl(k as SectionKey);
+          const first = tabGroups.find((g) => g.key === k)!.sections[0].key;
+          setActiveSection(first);
+          syncUrl(first);
         }}
-        className="mb-6"
+        className="mb-4"
       />
+
+      {/* Second level: views within the active abode */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {tabGroups
+          .find((g) => g.key === groupOf(activeSection))!
+          .sections.map((s) => (
+            <button
+              key={s.key}
+              onClick={() => {
+                setActiveSection(s.key);
+                syncUrl(s.key);
+              }}
+              className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                activeSection === s.key
+                  ? "bg-gold/20 text-gold border border-gold/40"
+                  : "text-themed-muted hover:text-themed border sidebar-border"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+      </div>
 
       <AnimatePresence mode="wait">
         {/* ─── What is Jannah? ─── */}
