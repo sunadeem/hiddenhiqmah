@@ -53,6 +53,24 @@ const whyItMatters = [
       "The people of Jannah will be granted the greatest of all blessings — looking upon the Face of their Lord. The Prophet (peace be upon him) said: 'When the people of Paradise enter Paradise, Allah will say: Do you want anything more? They will say: Have You not brightened our faces? Have You not admitted us to Paradise and saved us from the Fire? Then the veil will be lifted, and nothing they were given will be more beloved to them than looking at their Lord.'",
     reference: "Muslim 1:88; Quran 75:22-23",
   },
+  {
+    point: "Paradise is surrounded by hardships",
+    detail:
+      "The Prophet (peace be upon him) said: 'Paradise is surrounded by hardships, and the Fire is surrounded by desires.' The road to Jannah passes through what the self dislikes — patience, restraint, sincerity, and struggle — while the road to the Fire is paved with what the self craves. This is why striving is the price, and why it is always worth paying.",
+    reference: "Muslim 53:1; Tirmidhi 38:37",
+  },
+  {
+    point: "Shown to Jibril before it was veiled",
+    detail:
+      "When Allah created Paradise, He sent Jibril to look at it. Jibril said: 'By Your Glory, no one will hear of it but he will enter it.' Then Allah surrounded it with hardships, and when Jibril looked again he said: 'By Your Glory, I fear that no one will enter it.' The Fire was shown to him the same way — beautiful to approach, ruinous to reach. The struggle in between is the whole test.",
+    reference: "Nasai 35:3",
+  },
+  {
+    point: "A whip's length of it is better than the world",
+    detail:
+      "The Prophet (peace be upon him) said: 'A (small) place equal to an area occupied by a whip in Paradise is better than the (whole) world and whatever is in it.' A single hand-span of Jannah outweighs everything a person could chase in this life — which is why no worldly loss suffered for its sake is truly a loss.",
+    reference: "Bukhari 81:4; Ibn Majah 37:231",
+  },
 ];
 
 type DescriptionTopic = {
@@ -89,7 +107,7 @@ const descriptionTopics: DescriptionTopic[] = [
         {
           title: "Al-Kawthar",
           detail:
-            "Al-Kawthar is a river in Jannah granted exclusively to the Prophet Muhammad (peace be upon him). On its two banks are tents of hollow pearls, and its scent is of sharp musk. Its water is whiter than milk and sweeter than honey, and its drinking vessels are as numerous as the stars.",
+            "Al-Kawthar is a river in Jannah granted exclusively to the Prophet Muhammad (peace be upon him). On its two banks are tents of hollow pearls, and its scent is of sharp musk. Its water is whiter than milk and sweeter than honey, and its drinking vessels are as numerous as the stars. From it pours the Prophet's Hawd — his Basin, where the believers drink before entering Paradise — described in full on the Day of Judgement page.",
           note: "Bukhari 81:169; Muslim 4:56; Quran 108:1",
         },
         {
@@ -143,6 +161,101 @@ const descriptionTopics: DescriptionTopic[] = [
       ],
       source:
         "Quran 39:20; Bukhari 59:66; Bukhari 81:159; Muslim 1:95; Muslim 15:48; Tirmidhi 38:4",
+    },
+  },
+  {
+    id: "gates",
+    name: "The Gates & the Entry",
+    content: {
+      intro:
+        "The most famous single fact about Jannah is its eight gates — and the scene of entry, when the righteous are led to it in groups and its keepers greet them with peace. Which gate opens for a person reflects the deeds they were known for (those deeds are gathered under How to Enter).",
+      verse: {
+        arabic: "وَسِيقَ ٱلَّذِينَ ٱتَّقَوْا۟ رَبَّهُمْ إِلَى ٱلْجَنَّةِ زُمَرًا ۖ حَتَّىٰٓ إِذَا جَآءُوهَا وَفُتِحَتْ أَبْوَٰبُهَا وَقَالَ لَهُمْ خَزَنَتُهَا سَلَـٰمٌ عَلَيْكُمْ طِبْتُمْ فَٱدْخُلُوهَا خَـٰلِدِينَ",
+        text: "But those who feared their Lord will be led to Paradise in groups, until when they reach it, its gates will be wide open, and its keepers will say to them, “Peace be upon you. You have done well, so enter it, abiding forever.”",
+        ref: "Quran 39:73",
+      },
+      points: [
+        {
+          title: "Eight gates",
+          detail:
+            "The Prophet (peace be upon him) said: 'Paradise has eight gates, and one of them is called Ar-Raiyan through which none will enter but those who observe fasting.'",
+          note: "Bukhari 59:67",
+        },
+        {
+          title: "Ar-Rayyan — reserved for those who fasted",
+          detail:
+            "The Prophet (peace be upon him) said: 'There is a gate in Paradise called Ar-Raiyan, and those who observe fasts will enter through it on the Day of Resurrection and none except them will enter through it... After their entry the gate will be closed and nobody will enter through it.'",
+          note: "Bukhari 30:6",
+        },
+        {
+          title: "Called from every gate",
+          detail:
+            "Whoever spends a pair of anything in Allah's cause is called from the gates of Paradise — from the gate of prayer if he prayed much, of jihad if he fought, of fasting if he fasted, of charity if he gave. Abu Bakr asked whether anyone would be called from all the gates at once, and the Prophet (peace be upon him) answered: 'Yes, and I hope you will be among those, O Abu Bakr.'",
+          note: "Bukhari 30:7; Bukhari 62:18",
+        },
+        {
+          title: "Wudu and the shahadah open all eight",
+          detail:
+            "The Prophet (peace be upon him) said that whoever perfects his ablution and then testifies that there is no god but Allah and that Muhammad is His servant and Messenger — 'the eight gates of Paradise would be opened for him and he may enter by whichever of them he wishes.'",
+          note: "Muslim 2:20",
+        },
+        {
+          title: "The Prophet is the first to knock",
+          detail:
+            "The Prophet (peace be upon him) said: 'I would be the first to knock at the door of Paradise.' On that Day he will seek its opening, and the keeper will ask: 'Who art thou?' He will say: 'Muhammad.' The keeper will answer: 'It is for thee that I have been ordered, and not to open it for anyone before thee.'",
+          note: "Muslim 1:390; Muslim 1:392",
+        },
+        {
+          title: "The Qantarah — the last accounts settled",
+          detail:
+            "After the believers are saved from the Fire, they are halted at a bridge (qantarah) between Paradise and the Fire, where any remaining wrongs between them are settled — 'and when they get purified of all their sins, they will be admitted into Paradise.' Only then does each enter, knowing his own dwelling better than he knew his home in this world. (The Sirat, the Hawd, and the Scale are detailed on the Day of Judgement page.)",
+          note: "Bukhari 46:1; Bukhari 81:124",
+        },
+      ],
+      source:
+        "Quran 39:73; Bukhari 30:6; Bukhari 30:7; Bukhari 46:1; Bukhari 59:67; Bukhari 62:18; Bukhari 81:124; Muslim 1:390; Muslim 1:392; Muslim 2:20",
+    },
+  },
+  {
+    id: "people",
+    name: "The People of Jannah",
+    content: {
+      intro:
+        "The rivers, palaces, and gardens are only the setting. Among the most-asked questions is what the people themselves will be like — and the Sunnah answers in vivid detail: transformed bodies, free of every defect, ageless, and always growing more beautiful.",
+      points: [
+        {
+          title: "The first group — like the full moon",
+          detail:
+            "The Prophet (peace be upon him) said: 'The first group (of people) who will enter Paradise will be (glittering) like the moon when it is full,' and those after them like the brightest star in the sky — 'their hearts will be as if one heart,' with no differences and no hatred between them.",
+          note: "Bukhari 59:56; Muslim 53:19",
+        },
+        {
+          title: "No bodily needs; sweat of musk",
+          detail:
+            "Of that first group the Prophet (peace be upon him) said: 'They will not spit or blow their noses or relieve nature. Their utensils will be of gold and their combs of gold and silver... and their sweat will smell like musk.' Every burden of the body is gone.",
+          note: "Bukhari 59:56; Muslim 53:18",
+        },
+        {
+          title: "In the form of their father Adam — sixty cubits",
+          detail:
+            "The Prophet (peace be upon him) said that Allah created Adam 'sixty cubits (about 30 meters) in height,' and that 'whoever will enter Paradise, will be of the shape and picture of Adam.' The people of Paradise are restored to that original, towering form.",
+          note: "Bukhari 79:1; Bukhari 60:2",
+        },
+        {
+          title: "Ageless, thirty years old",
+          detail:
+            "The Prophet (peace be upon him) said: 'The people of Paradise shall enter Paradise without body hair... thirty years of age or thirty-three years.' There is no aging, and no one grows old.",
+          note: "Tirmidhi 38:23",
+        },
+        {
+          title: "The market of Paradise",
+          detail:
+            "There is a market in Paradise which its people visit, 'in which there is no buying nor selling.' When they return home, their spouses greet them saying they have come back even more handsome and better-scented than they left — for in Jannah, beauty only increases.",
+          note: "Ibn Majah 37:237; Tirmidhi 38:28",
+        },
+      ],
+      source:
+        "Bukhari 59:56; Bukhari 60:2; Bukhari 79:1; Muslim 53:18; Muslim 53:19; Tirmidhi 38:23; Tirmidhi 38:28; Ibn Majah 37:237",
     },
   },
   {
@@ -212,9 +325,62 @@ const descriptionTopics: DescriptionTopic[] = [
             "Those who obey Allah and His Messenger will be with the prophets, the truthful, the martyrs, and the righteous. The Prophet (peace be upon him) told a companion who asked about being with him in Paradise: 'You will be with those whom you love.'",
           note: "Quran 4:69; Bukhari 62:38; Muslim 45:208",
         },
+        {
+          title: "Children in Paradise",
+          detail:
+            "For grieving parents, the Sunnah gives direct comfort. In the Prophet's long dream, the tall man in a garden of every spring colour was Ibrahim, 'and the children around him are those children who die with Al-Fitra' — the natural faith. And of a child lost before birth the Prophet (peace be upon him) said: 'The miscarried fetus will drag his mother by his umbilical cord to Paradise, if she (was patient and) sought reward (for her loss).' The pastoral guidance for losing a child is gathered on the Family page.",
+          note: "Bukhari 91:61; Ibn Majah 6:177",
+        },
       ],
       source:
-        "Quran 4:69; Quran 13:23; Quran 15:47; Quran 44:54; Quran 52:21; Quran 55:70-74; Bukhari 59:56; Bukhari 62:38; Muslim 45:208; Muslim 53:50",
+        "Quran 4:69; Quran 13:23; Quran 15:47; Quran 44:54; Quran 52:21; Quran 55:70-74; Bukhari 59:56; Bukhari 62:38; Bukhari 91:61; Muslim 45:208; Muslim 53:50; Ibn Majah 6:177",
+    },
+  },
+  {
+    id: "women",
+    name: "Women & Jannah",
+    content: {
+      intro:
+        "One of the most-searched questions about the Hereafter — for roughly half the audience — is what Jannah holds for women, and how to read the narrations that mention them. The Quran is unambiguous that the reward is equal; the Sunnah names the greatest women who ever lived; and the warnings it gives are aimed at conduct, not gender.",
+      verse: {
+        arabic: "وَمَن يَعْمَلْ مِنَ ٱلصَّـٰلِحَـٰتِ مِن ذَكَرٍ أَوْ أُنثَىٰ وَهُوَ مُؤْمِنٌ فَأُو۟لَـٰٓئِكَ يَدْخُلُونَ ٱلْجَنَّةَ وَلَا يُظْلَمُونَ نَقِيرًا",
+        text: "Whoever does righteous deeds, whether male or female, and is a believer, it is they who will enter Paradise, and they will not be wronged even as much as the speck on a date stone.",
+        ref: "Quran 4:124",
+      },
+      points: [
+        {
+          title: "Equal reward, male and female",
+          detail:
+            "The measure of Paradise is faith and deeds, not gender. Allah promises that whoever does righteousness — 'whether male or female, and is a believer' — enters Paradise 'and they will not be wronged even as much as the speck on a date stone.'",
+          note: "Quran 4:124",
+        },
+        {
+          title: "The best of women",
+          detail:
+            "The Prophet (peace be upon him) taught that among all women only a few reached perfection — naming Maryam the daughter of Imran and Asiyah the wife of Pharaoh — and that Khadijah is the best of this nation's women. Of Aisha he said that her superiority 'to other women is like the superiority of Tharid (i.e. an Arabic dish) to other meals.'",
+          note: "Bukhari 60:84; Bukhari 60:103; Bukhari 62:114",
+        },
+        {
+          title: "The 'majority of its people are women' narration — in context",
+          detail:
+            "The Prophet (peace be upon him) said he 'was shown the Hell-fire and that the majority of its dwellers were women who were ungrateful,' and when asked whether they disbelieved in Allah he explained: 'They are ungrateful to their husbands and are ungrateful for the favors and the good... done to them.' The hadith names a specific fault of character — not an inherent inferiority of women — and its cure is simply the gratitude and good conduct it calls for. It is one part of a wider warning, not a verdict on any believing woman's worth.",
+          note: "Bukhari 2:22; Bukhari 6:9",
+        },
+        {
+          title: "The Fire's warnings target deeds, not a sex",
+          detail:
+            "When the Prophet (peace be upon him) described the 'Two are the types of the denizens of Hell,' he named both men — those 'having flogs like the tails of the ox... beating people' — and 'the women who would be dressed but appear to be naked.' The point of such narrations is the conduct being warned against; both sexes are addressed, and both are told how to be saved.",
+          note: "Muslim 37:190",
+        },
+        {
+          title: "One popular narration set aside",
+          detail:
+            "A widely-shared saying holds that a believing wife will surpass the Hur al-'Ayn in rank. It rests on a weak chain and is not established by an authentic report, so it is not cited here as proof; scholars discuss it, and it is best left to that discussion rather than quoted as certain.",
+          note: "Generically attributed — held back pending scholarly review; no authentic chain",
+        },
+      ],
+      source:
+        "Quran 4:124; Bukhari 2:22; Bukhari 6:9; Bukhari 60:84; Bukhari 60:103; Bukhari 62:114; Muslim 37:190",
     },
   },
   {
@@ -362,6 +528,42 @@ const howToTopics: HowToTopic[] = [
     },
   },
   {
+    id: "guarantees",
+    name: "Guarantees & Glad Tidings",
+    content: {
+      intro:
+        "Some texts do not merely encourage a deed — they attach an explicit promise of Paradise to it. These are the clearest glad tidings in the Sunnah: whole groups admitted without reckoning, and short, doable deeds the Prophet (peace be upon him) personally guaranteed. (When these people are led in, they enter through the eight gates described under 'The Gates & the Entry.')",
+      points: [
+        {
+          title: "Seventy thousand without reckoning",
+          detail:
+            "The Prophet (peace be upon him) said: 'Seventy thousand people of my followers will enter Paradise without accounts, and they are those who do not practice Ar-Ruqya and do not see an evil omen in things, and put their trust in their Lord.' When he described them, Ukasha bin Muhsin asked him to supplicate that he be one of them, and the Prophet said: 'Yes' — then a second man asked the same, and was told that Ukasha had anticipated him.",
+          note: "Bukhari 81:61; Bukhari 76:25",
+        },
+        {
+          title: "'Pleased with Allah as Lord...'",
+          detail:
+            "The Prophet (peace be upon him) said that whoever declares 'I am pleased with Allah as Lord, with Islam as religion' and with Muhammad as Messenger — 'Paradise will be his due.' A single sincere sentence of contentment with Allah, said and meant, secures it.",
+          note: "Abu Dawud 8:114",
+        },
+        {
+          title: "Sayyid al-Istighfar — the master of seeking forgiveness",
+          detail:
+            "Of the best words for seeking forgiveness, the Prophet (peace be upon him) said: 'If somebody recites it during the day with firm faith in it, and dies on the same day before the evening, he will be from the people of Paradise; and if somebody recites it at night with firm faith in it, and dies before the morning, he will be from the people of Paradise.' The full wording of Sayyid al-Istighfar is taught on the Tawbah page.",
+          note: "Bukhari 80:3",
+        },
+        {
+          title: "Guard the tongue and the chastity",
+          detail:
+            "The Prophet (peace be upon him) said: 'Whoever guarantees me (the chastity of) what is between his legs (i.e. his private parts), and what is between his jaws (i.e., his tongue), I guarantee him Paradise.' The two hardest organs to govern are made the very price of Jannah.",
+          note: "Bukhari 86:36",
+        },
+      ],
+      source:
+        "Bukhari 76:25; Bukhari 80:3; Bukhari 81:61; Bukhari 86:36; Abu Dawud 8:114",
+    },
+  },
+  {
     id: "levels",
     name: "Levels of Jannah",
     content: {
@@ -437,7 +639,7 @@ const howToTopics: HowToTopic[] = [
         {
           title: "A reminder of hope",
           detail:
-            "This hadith is one of the greatest sources of hope in Islam. No matter how many sins a person has, no matter how far they have strayed — if they die upon tawhid, there is hope. The door of repentance is always open, and the mercy of Allah is vast beyond measure.",
+            "This hadith is one of the greatest sources of hope in Islam. No matter how many sins a person has, no matter how far they have strayed — if they die upon tawhid, there is hope. The door of repentance is always open, and the mercy of Allah is vast beyond measure. (How Allah brings the people of tawhid out of the Fire in the first place is told under 'Deliverance From It' in the Jahannam section.)",
           note: "Quran 39:53 — 'Say: O My servants who have transgressed against themselves, do not despair of the mercy of Allah. Indeed, Allah forgives all sins.'",
         },
       ],
@@ -530,6 +732,53 @@ const jahannamTopics: DescriptionTopic[] = [
       ],
       source:
         "Quran 2:24; Quran 4:56; Quran 23:107-108; Quran 35:36-37; Quran 40:49-50; Bukhari 78:101; Ibn Majah 37:74",
+    },
+  },
+  {
+    id: "deeds-warned",
+    name: "Deeds Warned with the Fire",
+    content: {
+      intro:
+        "'Its People' names those the Fire was prepared for. But the Prophet (peace be upon him) also warned Muslims about specific deeds that draw a person toward it — the practical half of protection. None of these is a verdict of eternity for a believer; they are warnings meant to turn a person back while there is still time (repentance erases them, as under 'The Door of Hope').",
+      verse: {
+        arabic: "إِنَّ ٱلَّذِينَ يَأْكُلُونَ أَمْوَٰلَ ٱلْيَتَـٰمَىٰ ظُلْمًا إِنَّمَا يَأْكُلُونَ فِى بُطُونِهِمْ نَارًا ۖ وَسَيَصْلَوْنَ سَعِيرًا",
+        text: "Indeed, those who consume the orphans’ property unjustly, only consume fire into their bellies, and they will burn in a Blazing Fire.",
+        ref: "Quran 4:10",
+      },
+      points: [
+        {
+          title: "Taking one's own life",
+          detail:
+            "The Prophet (peace be upon him) said: 'Whoever purposely throws himself from a mountain and kills himself, will be in the (Hell) Fire falling down into it,' and likewise whoever kills himself with poison or an iron weapon will keep repeating that act in the Fire. Despair is never a way out — it only compounds the loss.",
+          note: "Bukhari 76:90",
+        },
+        {
+          title: "Cruelty to a helpless creature",
+          detail:
+            "The Prophet (peace be upon him) said: 'A woman entered the (Hell) Fire because of a cat which she had tied, neither giving it food nor setting it free to eat from the vermin of the earth.' Even mercy to an animal is weighed; even its neglect can be ruinous.",
+          note: "Bukhari 59:124; Bukhari 60:149",
+        },
+        {
+          title: "Oppression and immodesty",
+          detail:
+            "Among the 'Two are the types of the denizens of Hell' the Prophet (peace be upon him) named those who beat people unjustly — 'having flogs like the tails of the ox' — and those who parade immodesty, 'dressed but appear to be naked.' Wielding power over others and flaunting sin are both warned with the Fire.",
+          note: "Muslim 37:190",
+        },
+        {
+          title: "Devouring an orphan's wealth",
+          detail:
+            "Allah warns that 'those who consume the orphans' property unjustly, only consume fire into their bellies, and they will burn in a Blazing Fire.' Exploiting those with no protector is singled out among the gravest of wrongs.",
+          note: "Quran 4:10",
+        },
+        {
+          title: "Ingratitude",
+          detail:
+            "When the Prophet (peace be upon him) was shown that most of the Fire's dwellers were ungrateful, he explained the fault as ingratitude — being 'ungrateful for the favors and the good... done to them.' A heart that forgets every kindness it received hardens against the One who gave it.",
+          note: "Bukhari 2:22",
+        },
+      ],
+      source:
+        "Quran 4:10; Bukhari 2:22; Bukhari 59:124; Bukhari 60:149; Bukhari 76:90; Muslim 37:190",
     },
   },
   {
@@ -638,6 +887,41 @@ const jahannamTopics: DescriptionTopic[] = [
       ],
       source:
         "Bukhari 2:15; Bukhari 81:149; Bukhari 81:159; Bukhari 97:134; Muslim 1:178; Ibn Majah 37:74",
+    },
+  },
+  {
+    id: "araf",
+    name: "Al-A'raf — the Heights",
+    content: {
+      intro:
+        "Between Paradise and the Fire the Quran describes a third vantage point: Al-A'raf, the Heights — and men who stand upon it, able to see both abodes. It is the one scene that sits literally between the two, and the surah named after it (Surah 7) preserves it.",
+      verse: {
+        arabic: "وَبَيْنَهُمَا حِجَابٌ ۚ وَعَلَى ٱلْأَعْرَافِ رِجَالٌ يَعْرِفُونَ كُلًّۢا بِسِيمَىٰهُمْ ۚ وَنَادَوْا۟ أَصْحَـٰبَ ٱلْجَنَّةِ أَن سَلَـٰمٌ عَلَيْكُمْ ۚ لَمْ يَدْخُلُوهَا وَهُمْ يَطْمَعُونَ",
+        text: "Between them there will be a barrier, and on its Heights there will be men who will recognize each group by their marks. They will call out to the people of Paradise, “Peace be on you.” They will not have entered it, yet they will eagerly hope [to enter].",
+        ref: "Quran 7:46",
+      },
+      points: [
+        {
+          title: "A barrier, and men who know both sides",
+          detail:
+            "Allah says: 'Between them there will be a barrier, and on its Heights there will be men who will recognize each group by their marks.' They call to the people of Paradise with peace; they have not yet entered it, yet they long to.",
+          note: "Quran 7:46",
+        },
+        {
+          title: "Neither numbers nor arrogance availed",
+          detail:
+            "Turning to the people of the Fire whom they recognize, the men of the Heights will say: 'Neither your great numbers nor your arrogance were of any avail to you.' Everything the worldly relied on is shown, on that Day, to have counted for nothing.",
+          note: "Quran 7:48",
+        },
+        {
+          title: "'Enter Paradise; you will have no fear'",
+          detail:
+            "Of the very people the arrogant had mocked, Allah asks: 'Are these the ones whom you swore that Allah would never grant mercy?' — and then the word comes to them: 'Enter Paradise; you will have no fear, nor will you grieve.' The scene ends not in suspense but in mercy.",
+          note: "Quran 7:49",
+        },
+      ],
+      source:
+        "Quran 7:46; Quran 7:47; Quran 7:48; Quran 7:49",
     },
   },
 ];
@@ -778,6 +1062,49 @@ const jahannamMattersItems = [
       "Allah praises 'those who remember Allah while standing, sitting, and lying on their sides, and reflect upon the creation of the heavens and earth' — and their reflection ends in one plea: 'Protect us from the punishment of the Fire.' Thinking about the Hereafter is not morbid; in the Quran it is the mark of a living, reflecting heart, and it is what turns belief into action.",
     reference: "Quran 3:191; Quran 3:16",
   },
+  {
+    point: "One dip erases the memory of the other life",
+    detail:
+      "The Prophet (peace be upon him) described the person of the world who lived in the greatest ease, dipped just once into the Fire, then asked: 'O, son of Adam, did you find any comfort, did you happen to get any material blessing?' He answers: 'By Allah, no, my Lord.' And the most afflicted believer, dipped once into Paradise, is asked whether he ever faced any hardship or distress, and answers that he never did. A single moment of either abode outweighs an entire lifetime of the other.",
+    reference: "Muslim 52:42",
+  },
+];
+
+type CommonQuestion = {
+  q: string;
+  answer: string;
+  verse?: { arabic: string; text: string; ref: string };
+  note?: string;
+};
+
+const commonQuestions: CommonQuestion[] = [
+  {
+    q: "Is Jannah already created, and where is it?",
+    answer:
+      "Yes — it already exists. When Allah created Paradise and Hell, He sent Jibril to look at what He had prepared for its people (Nasai 35:3), and Adam and his wife were told 'dwell in Paradise' before this worldly life began (Quran 2:35). As for where it is: the highest part, al-Firdaus, lies directly beneath the Throne, for the Prophet (peace be upon him) said 'at its top there is the Throne of Beneficent, and from it gush forth the rivers of Paradise' (Bukhari 97:51).",
+  },
+  {
+    q: "Will we ever get bored in Jannah?",
+    answer:
+      "No. Allah removes from Paradise the two things that would make eternity wearisome — bad company and fatigue. There is no idle talk or sinful speech there, only peace (Quran 56:25-26); its people say Allah 'has caused us to settle... in the everlasting home, wherein no weariness or fatigue will touch us' (Quran 35:35); and 'they will have therein all what they wish for, and We have yet more' (Quran 50:35) — even a market where whatever the heart desires simply appears (Tirmidhi 38:28).",
+    verse: {
+      arabic: "لَا يَسْمَعُونَ فِيهَا لَغْوًا وَلَا تَأْثِيمًا إِلَّا قِيلًا سَلَـٰمًا سَلَـٰمًا",
+      text: "They will not hear therein any idle talk or sinful speech, except the words of peace, peace.",
+      ref: "Quran 56:25-26",
+    },
+  },
+  {
+    q: "Do animals or pets enter Paradise?",
+    answer:
+      "The Quran mentions that on the Day of Resurrection 'wild beasts are gathered' (Quran 81:5), and it describes birds in Paradise. But whether a particular pet is reunited with its owner is not settled by an explicit authentic text, and scholars have differed. What is certain is that the people of Paradise 'will have therein all what they wish for' (Quran 50:35); the specifics beyond the texts are left to Allah's knowledge.",
+    note: "The reunion of a specific pet is a scholarly-summary point, not an established narration — flagged for founder review.",
+  },
+  {
+    q: "What about people who never received the message?",
+    answer:
+      "Allah is perfectly just: 'nor do We punish until We have sent a messenger' (Quran 17:15). For those who lived where the message never authentically reached them — the people of the fatrah — the position of most scholars is that they will be tested on the Day of Judgement, and whoever obeys will enter Paradise. The exact mechanism is a matter of scholarly discussion; what is certain is that no one will be wronged.",
+    note: "The 'test on the Day of Judgement' position is a scholarly summary of the majority view — consult a scholar; flagged for founder review.",
+  },
 ];
 
 // Two-level navigation: top tabs are the two abodes; the second row selects a
@@ -792,6 +1119,7 @@ const tabGroups = [
       { key: "importance", label: "Why It Matters" },
       { key: "descriptions", label: "Descriptions" },
       { key: "how-to", label: "How to Enter" },
+      { key: "common-questions", label: "Common Questions" },
     ],
   },
   {
@@ -978,6 +1306,25 @@ function JannahContent() {
                   (Bukhari 59:55).
                 </p>
                 <p>
+                  Jannah is not a distant idea awaiting creation — it already
+                  exists. When Allah created it, He sent Jibril to look at it and
+                  at what He had prepared for its people (Nasai 35:3). And its
+                  scale is beyond the mind: Allah calls the believers to{" "}
+                  <em>
+                    &ldquo;Race one another towards forgiveness from your Lord and
+                    Paradise the width of which is like the width of the heaven and
+                    earth&rdquo;
+                  </em>{" "}
+                  (Quran 57:21), and to{" "}
+                  <em>
+                    &ldquo;hasten towards forgiveness from your Lord and a Paradise
+                    as wide as the heavens and earth&rdquo;
+                  </em>{" "}
+                  (Quran 3:133). If the width of a single garden matches the
+                  heavens and the earth, no worldly loss endured to reach it is
+                  truly a loss.
+                </p>
+                <p>
                   Jannah has levels and degrees — the highest being Jannatul
                   Firdaus al-A&rsquo;la, directly beneath the Throne of Allah.
                   The distance between each level is like the distance between
@@ -1003,9 +1350,11 @@ function JannahContent() {
             {/* Sources */}
             <SourcesCard sources={[
               { ref: "Quran 3:133", desc: "A garden as wide as the heavens and earth" },
+              { ref: "Quran 57:21", desc: "Race towards a Paradise the width of the heaven and earth" },
               { ref: "Quran 3:185", desc: "Every soul will taste death; true success is entering Paradise" },
               { ref: "Quran 32:17", desc: "No soul knows what delight awaits them" },
               { ref: "Quran 39:53", desc: "Do not despair of the mercy of Allah" },
+              { ref: "Nasai 35:3", desc: "Jibril sent to look at the already-created Paradise" },
               { ref: "Bukhari 59:55; Muslim 53:3", desc: "What no eye has seen, no ear has heard" },
               { ref: "Bukhari 56:8", desc: "One hundred degrees of Paradise" },
             ]} />
@@ -1198,6 +1547,65 @@ function JannahContent() {
               const rows = t ? topicSourceRefs(t) : [];
               return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
             })()}
+          </motion.div>
+        )}
+
+        {/* ─── Common Questions ─── */}
+        {activeSection === "common-questions" && (
+          <motion.div
+            key="common-questions"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4"
+          >
+            {commonQuestions
+              .filter((item) =>
+                !search || search.length < 2
+                  ? true
+                  : textMatch(search, item.q, item.answer),
+              )
+              .map((item, i) => (
+                <ContentCard key={item.q} delay={0.05 + i * 0.05}>
+                  <h3 className="font-semibold text-themed mb-2">{item.q}</h3>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <HadithRefText text={item.answer} />
+                  </p>
+                  {item.verse && (
+                    <div
+                      className="rounded-lg p-4 mt-4"
+                      style={{ backgroundColor: "var(--color-bg)" }}
+                    >
+                      <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
+                        {item.verse.arabic}
+                      </p>
+                      <p className="text-themed text-sm italic">
+                        &ldquo;{item.verse.text}&rdquo;
+                      </p>
+                      <p className="text-xs text-themed-muted mt-2">
+                        <HadithRefText text={item.verse.ref} />
+                      </p>
+                    </div>
+                  )}
+                  {item.note && (
+                    <p className="text-xs text-gold/60 mt-3">{item.note}</p>
+                  )}
+                </ContentCard>
+              ))}
+
+            {/* Sources */}
+            <SourcesCard delay={0.35} sources={[
+              { ref: "Nasai 35:3", desc: "Jibril sent to the already-created Paradise" },
+              { ref: "Quran 2:35", desc: "Adam told to dwell in Paradise before this life" },
+              { ref: "Bukhari 97:51", desc: "Al-Firdaus beneath the Throne; rivers gush from it" },
+              { ref: "Quran 56:25-26", desc: "No idle talk in Paradise, only peace" },
+              { ref: "Quran 35:35", desc: "No weariness or fatigue will touch its people" },
+              { ref: "Quran 50:35", desc: "They will have whatever they wish, and more" },
+              { ref: "Tirmidhi 38:28", desc: "The market of Paradise — whatever is desired" },
+              { ref: "Quran 81:5", desc: "Wild beasts gathered on the Day of Resurrection" },
+              { ref: "Quran 17:15", desc: "Allah does not punish before sending a messenger" },
+            ]} />
           </motion.div>
         )}
 

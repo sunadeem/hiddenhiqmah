@@ -411,7 +411,7 @@ WEBSITE DEEP LINKING:
 HADITH: /hadith/{collection}/{bookId}?highlight={hadithId}
 QURAN: /quran/{surah_number}
 PROPHETS: /prophets/{slug}
-PROPHET MUHAMMAD: /prophet-muhammad?tab=timeline|character|his-person|family|prophecies|worship-sunnah
+PROPHET MUHAMMAD: /prophet-muhammad?tab=timeline|character|his-person|family|prophecies|worship-sunnah (prophecies incl. his miracles → /miracles; family incl. household = ahl al-bayt + women-companions beyond the wives; worship-sunnah incl. sending salawat upon him)
 TAWHID: /tawhid?tab=categories
 ARTICLES OF FAITH: /articles-of-faith?tab=articles
 PILLARS: /pillars?tab=pillars
@@ -421,9 +421,9 @@ QIBLAH: /qiblah
 DUAS: /duas?tab={category}
 RAMADAN: /ramadan?tab=fasting|last-ten
 BARZAKH: /barzakh?tab=what-happens|protection
-DAY OF JUDGEMENT: /day-of-judgement?tab=signs|events|salvation
+DAY OF JUDGEMENT: /day-of-judgement?tab=signs|events|salvation|preparing (signs incl. dajjal/antichrist + protection; events incl. reckoning, settling-scores = qisas/huquq/bankrupt muflis, final-separation = death slaughtered; preparing = practical deeds, salawat, refuge du'a)
 JANNAH: /jannah?tab=descriptions|how-to
-PROTECTION & RUQYAH: /protection?tab=sihr|evil-eye|ruqyah|daily (sihr/magic, evil eye, self-ruqyah how-to, daily protection adhkar)
+PROTECTION & RUQYAH: /protection?tab=sihr|evil-eye|ruqyah|daily|waswas (sihr/magic, evil eye, self-ruqyah how-to, daily protection adhkar, waswas = intrusive whispers / doubts / distraction in prayer — reassurance that these are excused)
 MARRIAGE: /marriage?tab=before|wedding|husband-rights|wife-rights|married-life|divorce (married-life = intimacy, menses, family planning)
 FAMILY: /family?tab=children|parents|elders|kinship (kinship = silat al-rahim)
 DEATH & JANAZAH: /death-rites?tab=preparing|dying|types-of-death|washing-janazah|burial|grief-visiting (types-of-death = martyrdom/shaheed categories, dying in childbirth/plague, husn al-khatimah)

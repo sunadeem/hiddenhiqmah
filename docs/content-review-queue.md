@@ -234,3 +234,54 @@ _From the 314-item expansion build (salah cluster, kids, why-islam, family, marr
 
 ### /hajj — post-batch addition (2026-07-22)
 133. Women & the Mahram > 'If she has no mahram' — the four-school survey (Hanafi/Hanbali: mahram is a condition of obligation; Maliki/Shafi'i: secure company suffices for the obligatory Hajj; contemporary organized-group discussions) — scholarly-summary-generic with consult-a-scholar note; all quoted narrations locally verified (Bukhari 18:9, 28:41, 28:42, 6:1; Muslim 15:464, 15:472, 15:476).
+
+---
+
+## EXPANSION BATCH 2 (Opus-built, 2026-07-22) — generic-attribution items
+
+_Batch 2 pages (prophet-muhammad, duas, muslim-daily, protection, jannah, day-of-judgement, kids, dhikr) were BUILT ON OPUS 4.8 while Fable was rate-limited, then adversarially verified (defects fixed). Per founder directive these pages ALSO await a Fable re-review (see project-fable-rereview-queue). The generic-attribution items below follow the usual keep/cite/remove review._
+
+### /prophet-muhammad
+1. Halimah al-Sa'diyyah (Household) — the wet-nursing, blessing-of-her-flocks, and cloak-spreading details are explicitly attributed to the sīrah (reference field: 'Sīrah — Ibn Hisham; Ibn Sa'd, aṭ-Ṭabaqāt'). No invented citation.
+2. Nusaybah bint Ka'b / Umm Ammarah (Women Companions) — her defense of the Prophet at Uhud is explicitly attributed to the sīrah (reference field 'Sīrah — Ibn Hisham; Ibn Sa'd, aṭ-Ṭabaqāt'). No invented citation.
+3. Hamzah's conversion 'in defense of his nephew after Abu Jahl had abused him' (timeline, 615–616 CE card) — framed 'as recorded in the sīrah'; the cited Ibn Majah 0:105 / Tirmidhi 49:77 only support the du'a for Umar, not the Hamzah episode.
+4. Sumayyah bint Khayyat being 'run through with a spear by Abu Jahl' and being 'the first martyr of Islam' (Women Companions) — framed 'the sīrah records her as the first martyr'; the cited Ibn Majah 0:150 only lists the seven who declared Islam publicly, it does not state the spearing or the first-martyr status.
+5. Asma bint Abi Bakr's 'Dhat an-Nitaqayn' two-belts Cave-of-Thawr story (Women Companions) — framed 'this detail is preserved in the sīrah'; the cited Bukhari 24:37 is only the charity ('do not shut your money bag') hadith.
+6. Ja'far ibn Abi Talib's 'two wings in Paradise / Ja'far al-Tayyar' (Companions) — framed 'it is reported that'; not covered by the cited Bukhari 53:9 / 56:16, which support the resemblance quote and the Mu'tah martyrdom only.
+
+### /duas
+7. making-dua explainer, 'manners' bullet (line ~1216): 'Begin by praising Allah and sending blessings upon the Prophet, then ask.' — stated as general etiquette with no inline citation.
+8. making-dua explainer, 'manners' bullet (line ~1219): 'Ask with certainty that Allah will respond, and never invoke against yourself or your family.' — general etiquette, no citation.
+9. making-dua explainer, 'golden windows' final bullet (line ~1226): 'While fasting, on Laylat al-Qadr, and on the Day of Arafah.' — listed as accepted-dua times with no inline citation (unlike the other three windows, which each carry a ref).
+
+### /muslim-daily
+10. Midnight tab 'How to actually wake for Tahajjud' practical-tips card (page.tsx ~line 1120): four bullet tips (sleep early on wudu, alarm for last third, start with two short rak'ahs, keep du'as ready then pray Witr) carry no citation and are correctly labeled 'Practical guidance drawn from the general teachings of the Sunnah.' Proper generic attribution — no invented reference. This is the only generically-attributed new content and it is handled correctly.
+
+### /protection
+11. 'If You Suspect Affliction' (sihr rail): the 6-step triage ORDERING is attributed generically ('reflect standard scholarly guidance'); component narrations (Muslim 39:173, Abu Dawud 29:29) are individually verified. Appropriately framed.
+12. 'A Sign of Faith' point 3: framing persistent intrusive doubt as obsessive waswas (waswas qahri) + advice to seek professional help alongside adhkar is generic ('Scholars of the heart note...'), no hadith attached. Appropriate.
+13. 'Protecting Children': 'Say it over each child, morning and evening' and the bedtime three-Quls 'wipe them gently over the child' are extrapolations of the Prophet's self-practice (Bukhari 60:45 / 66:39) applied to children, framed as sunnah. Mild but reasonable.
+14. 'Whispers in Prayer' point 2: describing the response as a 'light dry spit (nafth, without saliva)' done 'once and left, not a compulsion' is generic scholarly gloss on Muslim 39:92.
+
+### /jannah
+15. Women & Jannah — the claim that a believing wife surpasses the Hur al-'Ayn in rank: presented WITHOUT a citation and explicitly held back ('rests on a weak chain and is not established by an authentic report'), note reads 'Generically attributed — held back pending scholarly review; no authentic chain'. Correctly handled.
+16. Common Questions (animals/pets) — whether a specific pet is reunited with its owner in Paradise: scholarly-summary, no authentic narration, flagged in-note 'flagged for founder review'. Correctly handled.
+17. Common Questions (ahl al-fatrah) — the 'those who never received the message will be tested on the Day of Judgement' position: presented as 'the position of most scholars' / 'majority view' with a consult-a-scholar + founder-review note. Correctly handled.
+
+### /day-of-judgement
+18. FAQ 'What happens to children who die?' — framed as the mainstream scholarly position (children of believers / all who die before the age of accountability enter Paradise, fitrah, no sins recorded) with a consult-a-scholar note; correctly marked generic:true, no invented isnad. Verified as an accepted mainstream framing.
+19. FAQ 'What about those who never received the message?' — ahl al-fatrah / people who never received the da'wah; framed as the majority position ('many scholars hold they will be tested on the Day of Resurrection'), anchored only on Quran 17:15 (verified: 'nor do We punish until We have sent a messenger'), marked generic:true with consult-a-scholar note. No invented citation.
+
+### /kids-dhikr
+20. Heroes of Islam — Abu Bakr as-Siddiq biography (loyalty, 'as-Siddiq' name, cave journey, freeing slaves, first Caliph): no citation, generically framed.
+21. Heroes — Umar ibn al-Khattab biography (conversion after hearing Quran, justice, night patrols): no citation.
+22. Heroes — Bilal ibn Rabah biography (torture, 'Ahad Ahad', first muezzin, freed by Abu Bakr): no citation.
+23. Heroes — Khadijah bint Khuwaylid biography (businesswoman, al-Amin, first believer, support): no citation.
+24. Special Days — Eid al-Fitr customs (Eid prayer, best clothes, charity, gifts): no citation (Ramadan card cites Bukhari 30:8).
+25. Special Days — Eid al-Adha (Ibrahim's obedience, Hajj, sacrifice/meat sharing): no citation.
+26. Special Days — Islamic (Hijri) lunar calendar overview (12 months, Muharram, Dhul Hijjah, dates shift): no citation.
+27. Let's Pray — the 7-step wudu sequence and 7-position salah walkthrough (positions + what to say): generic fiqh presentation, uncited (the 'teach at seven' note is cited to Abu Dawud 2:105).
+28. Daily Words — 10 new conversational phrases (Ameen, BarakAllahu feek, Yahdikumullah sneeze-reply, Taqabbal Allah, Eid/Ramadan Mubarak, Subhanahu wa Ta'ala, Alayhis-salam, Radiyallahu Anhu, Fi Amanillah): common-usage, uncited.
+29. Arabic Letters — 28 letter names and sound approximations: reference material, uncited (audio assets noted as external).
+30. Parents' Guide — pedagogical orientation (age tiers, weekly rhythm, learn-together, celebrate-progress): no citations needed.
+31. Challenges — 31 new quiz questions/answers: derived from the page's own cited lesson content, no independent citations.

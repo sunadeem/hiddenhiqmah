@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { AnimatePresence, motion } from "framer-motion";
@@ -13,6 +14,7 @@ import TopicInfoCard, { topicSourceRefs } from "@hidden-hiqmah/ui/components/Top
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import Accordion from "@hidden-hiqmah/ui/components/Accordion";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -122,6 +124,30 @@ const signsTopics: Topic[] = [
             "The Prophet (peace be upon him) said: 'The Hour will not be established until a fire comes out of the land of Hijaz, and it will throw light on the necks of the camels at Busra.' Many scholars consider this fulfilled by the great volcanic eruption near Madinah in 654 AH (1256 CE), which was visible from great distances.",
           note: "Bukhari 92:65",
         },
+        {
+          title: "The Euphrates uncovers a mountain of gold",
+          detail:
+            "The Prophet (peace be upon him) said the Euphrates 'will disclose the treasure (the mountain) of gold, so whoever will be present at that time should not take anything of it.' In another narration, people will fight over it, and ninety-nine out of every hundred will be killed — each hoping to be the one who survives with the gold.",
+          note: "Bukhari 92:66; Muslim 54:38; Muslim 54:40",
+        },
+        {
+          title: "About thirty false prophets will appear",
+          detail:
+            "The Prophet (peace be upon him) said the Hour will not come 'till there appear about thirty liars, all of whom will be claiming to be the messengers of Allah.' He is the Seal of the Prophets — there is no true prophet after him.",
+          note: "Bukhari 61:116; Bukhari 92:68; Abu Dawud 37:13",
+        },
+        {
+          title: "A man will wish to be in the grave",
+          detail:
+            "The Prophet (peace be upon him) said: 'The Hour will not be established till a man passes by a grave of somebody and says, Would that I were in his place' — a sign of overwhelming trials and hardship, not out of longing for Allah but out of despair at the state of the world.",
+          note: "Bukhari 92:62",
+        },
+        {
+          title: "The conquest of Constantinople",
+          detail:
+            "Among the events preceding the Dajjal, the Prophet (peace be upon him) foretold a great battle with the Romans at al-A'maq or Dabiq, after which the Muslims 'would be conquerors of Constantinople.' It is while they are dividing the spoils that news of the Dajjal's emergence reaches them.",
+          note: "Muslim 54:44",
+        },
       ],
       source:
         "Bukhari 3:22; Bukhari 92:65; Muslim 1:1; Muslim 0:15:159; Tirmidhi 36:29",
@@ -191,6 +217,48 @@ const signsTopics: Topic[] = [
       ],
       source:
         "Bukhari 60:118; Bukhari 65:157; Muslim 54:23; Muslim 15:146; Abu Dawud 38:6; Quran 6:158; Quran 18:94-99; Quran 21:96; Quran 27:82; Quran 44:10-11",
+    },
+  },
+  {
+    id: "dajjal",
+    name: "The Dajjal (False Messiah)",
+    content: {
+      intro:
+        "The Prophet (peace be upon him) warned of the Dajjal more than any other trial, calling it the greatest test since the creation of Adam. Every prophet warned their people about him, and the Prophet Muhammad (peace be upon him) gave his ummah specific, practical protections. He is a one-eyed man who will claim to be God and will be given power to appear to control rain, wealth, and life itself — but his right eye is defective, and between his eyes is written 'kafir' (disbeliever), which every believer will read.",
+      points: [
+        {
+          title: "He will remain on earth for forty days",
+          detail:
+            "The Prophet (peace be upon him) said he would stay 'For forty days, one day like a year and one day like a month and one day like a week and the rest of the days would be like your days.' The companions asked whether one day's prayers would suffice for the day that is like a year. He said no — 'you must make an estimate of time' and observe the prayers accordingly.",
+          note: "Muslim 54:134",
+        },
+        {
+          title: "He cannot enter Madinah",
+          detail:
+            "The Prophet (peace be upon him) said: 'Neither Messiah (Ad-Dajjal) nor plague will enter Medina.' He will camp outside the city, which will then shake three times, driving out every disbeliever and hypocrite toward him — so the trial itself purifies the believing community.",
+          note: "Bukhari 76:46; Bukhari 92:71; Bukhari 92:72",
+        },
+        {
+          title: "Memorize the opening verses of Surah al-Kahf",
+          detail:
+            "The Prophet (peace be upon him) said: 'If anyone learns by heart the first ten verses of the Surah al-Kahf, he will be protected from the Dajjal.' In the long Dajjal narration he added that whoever meets him should recite over him the opening verses of Surah al-Kahf. The ten verses themselves are set out on the Protection page.",
+          note: "Muslim 6:311; Abu Dawud 39:31; Muslim 54:134",
+        },
+        {
+          title: "Seek refuge from his trial in every prayer",
+          detail:
+            "A'ishah reported that the Prophet (peace be upon him) sought refuge from the trial of the Dajjal in his prayer, and Abu Hurayrah reported that he sought refuge 'from the torment of the grave, torment of Hell and the trial of Dajjal.' This refuge is made in the final sitting of the prayer — the du'a is on the 'Preparing for the Day' tab.",
+          note: "Muslim 5:161; Muslim 5:169",
+        },
+        {
+          title: "'Isa (Jesus) will kill him",
+          detail:
+            "The Dajjal's reign ends when 'Isa ibn Maryam (peace be upon him) descends and catches him at the gate of Ludd, killing him. His descent and the destruction of the Dajjal are described among the Major Signs.",
+          note: "Muslim 54:134",
+        },
+      ],
+      source:
+        "Muslim 5:161; Muslim 5:169; Muslim 6:311; Muslim 54:134; Bukhari 76:46; Bukhari 92:71; Bukhari 92:72; Abu Dawud 39:31",
     },
   },
 ];
@@ -299,9 +367,15 @@ const eventsTopics: Topic[] = [
             "The Prophet (peace be upon him) said: 'Seven will be shaded by Allah under His shade on the Day when there is no shade except His shade: a just leader, a youth who grew up in the worship of Allah, a man whose heart is attached to the mosques, two people who love each other for the sake of Allah, a man who is called by a woman of beauty and position but refuses, a man who gives charity so secretly that his left hand does not know what his right hand has given, and a man who remembers Allah in seclusion and his eyes overflow with tears.'",
           note: "Bukhari 24:27; Muslim 4:193",
         },
+        {
+          title: "Gathered in three classes",
+          detail:
+            "The Prophet (peace be upon him) said: 'People will be gathered in three classes on the Day of Resurrection: A class walking, a class riding, and a class upon their faces.' It was asked how they would walk on their faces, and he replied: 'Indeed the One Who made them walk upon their feet, is able to make them walk upon their faces.' People arrive at the gathering according to their deeds.",
+          note: "Tirmidhi 47:194; Tirmidhi 47:195; Tirmidhi 37:10",
+        },
       ],
       source:
-        "Quran 70:4; Quran 83:6; Bukhari 24:27; Muslim 4:193; Muslim 15:74",
+        "Quran 70:4; Quran 83:6; Bukhari 24:27; Muslim 4:193; Muslim 15:74; Tirmidhi 37:10; Tirmidhi 47:194",
     },
   },
   {
@@ -341,9 +415,69 @@ const eventsTopics: Topic[] = [
             "If a person denies their sins, Allah will seal their mouth and their limbs will speak. Allah says: 'On the Day when their tongues, their hands, and their feet will bear witness against them as to what they used to do.'",
           note: "Quran 24:24; Muslim 55:23",
         },
+        {
+          title: "Salah is the first deed to be judged",
+          detail:
+            "The Prophet (peace be upon him) said: 'Indeed the first deed by which a servant will be called to account on the Day of Resurrection is his Salat. If it is complete, he is successful and saved, but if it is defective, he has failed and lost.' If the obligatory prayers fall short, Allah will ask whether the servant has any voluntary prayers to make up the deficiency — and 'then the rest of his deeds will be treated like that.'",
+          note: "Tirmidhi 2:266; Abu Dawud 2:474; Nasai 37:26",
+        },
+        {
+          title: "The first three judged — and condemned for showing off",
+          detail:
+            "The Prophet (peace be upon him) said the first three to be judged will be a martyr, a scholar who taught and recited the Quran, and a wealthy man who gave charity. Each will recount his great deed — but Allah will expose that it was done for reputation, not for Him. To the martyr He will say: 'You have told a lie. You fought that you might be called a brave warrior. And you were called so.' The scholar is likewise condemned for having studied and recited only to be called learned, and the wealthy man for giving only to be called generous. Each will be dragged on his face into the Fire, because the deed was done to be seen by people rather than for Allah.",
+          note: "Muslim 33:218",
+        },
+        {
+          title: "You will be asked about every blessing",
+          detail:
+            "No pleasure of this life is overlooked. Allah says: 'Then on that Day you will surely be asked about your worldly pleasures' — the health, security, food, and comfort we too easily take for granted.",
+          note: "Quran 102:8",
+        },
       ],
       source:
-        "Quran 17:13; Quran 24:24; Quran 69:19-26; Quran 84:7-9; Bukhari 81:125; Muslim 53:94; Muslim 55:23; Tirmidhi 37:3",
+        "Quran 17:13; Quran 24:24; Quran 69:19-26; Quran 84:7-9; Quran 102:8; Bukhari 81:125; Muslim 33:218; Muslim 55:23; Tirmidhi 2:266; Tirmidhi 37:3",
+    },
+  },
+  {
+    id: "settling-scores",
+    name: "The Settling of Scores",
+    content: {
+      intro:
+        "Before a person reaches their final abode, the wrongs they committed against other people (huquq al-'ibad) must be settled. Unlike sins that are purely between a servant and Allah — which He may forgive out of His mercy — rights owed to other people are paid back in the only currency that has value on that Day: good deeds. This is why the Prophet (peace be upon him) taught that the truly bankrupt person is not the one without money, but the one who arrives with mountains of worship and leaves with nothing.",
+      points: [
+        {
+          title: "The bankrupt one (al-muflis)",
+          detail:
+            "The Prophet (peace be upon him) asked his companions who they thought was poor. They said it was one who has neither money nor property. He said the truly poor of his ummah is the one who 'would come on the Day of Resurrection with prayers and fasts and Zakat but ... since he hurled abuses upon others, brought calumny against others and unlawfully consumed the wealth of others and shed the blood of others and beat others, and his virtues would be credited to the account of one (who suffered at his hand).' When his good deeds run out, the sins of those he wronged are loaded onto him, and he is thrown into the Fire.",
+          note: "Muslim 45:77",
+        },
+        {
+          title: "The first disputes judged are over bloodshed",
+          detail:
+            "The Prophet (peace be upon him) said: 'The cases which will be decided first (on the Day of Resurrection) will be the cases of blood-shedding.' The gravest violations of others' rights are settled first.",
+          note: "Bukhari 81:122; Muslim 28:40",
+        },
+        {
+          title: "Even the hornless sheep takes its claim",
+          detail:
+            "So complete is the justice of that Day that the Prophet (peace be upon him) said: 'Rights will certainly be restored to those entitled to them on the Day of Resurrection, (to the point that) even the hornless sheep will lay claim upon the horned one' that butted it. No wrong, against human or animal, is overlooked.",
+          note: "Muslim 45:78; Tirmidhi 37:6",
+        },
+        {
+          title: "The bridge of retaliation (al-qantarah)",
+          detail:
+            "The Prophet (peace be upon him) said the believers, after being saved from the Fire, 'will be stopped at a bridge between Paradise and Hell and mutual retaliation will be established among them regarding wrongs they have committed in the world against one another.' Only once they are cleansed and purified are they admitted into Paradise — each knowing his home there better than he knew his home in this world.",
+          note: "Bukhari 81:124",
+        },
+        {
+          title: "A flag for every betrayer",
+          detail:
+            "The Prophet (peace be upon him) said: 'Every betrayer will have a flag on the Day of Resurrection' by which he is recognized — so that broken trusts and treachery are exposed before all of creation. This is why settling debts, returning what was taken, and seeking the forgiveness of those you wronged is part of sincere repentance while you still can.",
+          note: "Bukhari 58:28; Bukhari 78:201; Bukhari 90:13",
+        },
+      ],
+      source:
+        "Bukhari 58:28; Bukhari 78:201; Bukhari 81:122; Bukhari 81:124; Bukhari 90:13; Muslim 28:40; Muslim 45:77; Muslim 45:78; Tirmidhi 37:6",
     },
   },
   {
@@ -424,6 +558,41 @@ const eventsTopics: Topic[] = [
         "Quran 57:12-13; Bukhari 97:65; Muslim 1:102",
     },
   },
+  {
+    id: "final-separation",
+    name: "The Final Separation",
+    content: {
+      intro:
+        "Once the Bridge is crossed, the two groups reach their eternal homes and the door between them is sealed forever. The Prophet (peace be upon him) described the closing scenes of that Day in vivid, unforgettable images — the terror of the Fire being dragged forth, the supreme honour of the believers seeing their Lord, and the final abolition of death itself.",
+      verse: {
+        arabic: "وَأَنذِرْهُمْ يَوْمَ ٱلْحَسْرَةِ إِذْ قُضِىَ ٱلْأَمْرُ وَهُمْ فِى غَفْلَةٍ وَهُمْ لَا يُؤْمِنُونَ",
+        text: "Warn them of the Day of Remorse when all matters will be decided, but they are heedless and they do not believe.",
+        ref: "Quran 19:39",
+      },
+      points: [
+        {
+          title: "Hell dragged forth by seventy thousand angels",
+          detail:
+            "The Prophet (peace be upon him) said Hell would be brought on that day 'with seventy thousand bridles, and seventy thousand angels dragging each bridle.' Its sheer magnitude is beyond imagining.",
+          note: "Muslim 53:33; Tirmidhi 39:1",
+        },
+        {
+          title: "The believers will see their Lord",
+          detail:
+            "Looking at the full moon, the Prophet (peace be upon him) said: 'You people will see your Lord as you see this full moon, and you will have no trouble in seeing Him.' This vision of Allah — denied to the disbelievers — is the greatest delight the people of Paradise will ever be given.",
+          note: "Bukhari 97:61; Bukhari 97:63; Bukhari 65:372",
+        },
+        {
+          title: "Death is slaughtered — no more death",
+          detail:
+            "The Prophet (peace be upon him) said that Death will be brought 'in the shape of a black and white ram' and placed between Paradise and Hell. Both groups are asked, 'Do you know this?' and both answer, 'Yes, this is Death.' Then it is slaughtered, and a caller announces: 'O people of Paradise! Eternity for you and no death O people of Hell! Eternity for you and no death.' — adding joy to the joyful and grief to the grieving.",
+          note: "Bukhari 65:252; Bukhari 81:137",
+        },
+      ],
+      source:
+        "Quran 19:39; Bukhari 65:252; Bukhari 65:372; Bukhari 81:137; Bukhari 97:61; Bukhari 97:63; Muslim 53:33; Tirmidhi 39:1",
+    },
+  },
 ];
 
 const salvationTopics: Topic[] = [
@@ -458,9 +627,21 @@ const salvationTopics: Topic[] = [
             "This is the station of intercession promised to the Prophet (peace be upon him). Allah says: 'And from the night, pray with it as additional worship for you; it is expected that your Lord will raise you to a praised station.' This is the greatest honor given to any created being.",
           note: "Quran 17:79; Bukhari 65:234",
         },
+        {
+          title: "Intercession for those who committed major sins",
+          detail:
+            "For the struggling believer, the most hope-giving narration is this: the Prophet (peace be upon him) said, 'My intercession is for the people who committed the major sins in my Ummah.' It is not reserved for the flawless — it is precisely for the sinners of his ummah who died upon faith.",
+          note: "Tirmidhi 37:21; Tirmidhi 37:22; Abu Dawud 42:144",
+        },
+        {
+          title: "The Quran will intercede for its companions",
+          detail:
+            "Intercession is not only through people. The Prophet (peace be upon him) said: 'Recite the Qur'an, for on the Day of Resurrection it will come as an intercessor for those who recite It.' The one who kept the Quran close in this life will find it pleading on their behalf on that Day — see the 'Preparing for the Day' tab.",
+          note: "Muslim 6:302",
+        },
       ],
       source:
-        "Quran 2:255; Quran 17:79; Bukhari 65:234; Muslim 1:90; Muslim 1:101",
+        "Quran 2:255; Quran 17:79; Bukhari 65:234; Muslim 1:90; Muslim 1:101; Muslim 6:302; Tirmidhi 37:21; Tirmidhi 37:22; Abu Dawud 42:144",
     },
   },
   {
@@ -524,15 +705,92 @@ const salvationTopics: Topic[] = [
   },
 ];
 
+// "Preparing for the Day" — practical deeds. Single-view tab, so it keeps a
+// curated SourcesCard below.
+const preparingPoints = [
+  {
+    point: "Make the Quran your intercessor",
+    detail:
+      "The Prophet (peace be upon him) said: 'Recite the Qur'an, for on the Day of Resurrection it will come as an intercessor for those who recite It.' A consistent daily portion — even a few verses — builds an advocate for that Day.",
+    reference: "Muslim 6:302",
+  },
+  {
+    point: "Send abundant salawat upon the Prophet",
+    detail:
+      "The Prophet (peace be upon him) said: 'The person closest to me on the Day of Judgement is the one who sent the most Salat upon me.' Sending blessings on him is light to say and draws you near to the one whose intercession you will hope for.",
+    reference: "Tirmidhi 3:32",
+  },
+  {
+    point: "Let the Quran take you to that Day",
+    detail:
+      "The Prophet (peace be upon him) said: 'Whoever wishes to look at the Day of Resurrection, as if he is seeing it with this eye, then let him recite' Surahs at-Takwir (81), al-Infitar (82), and al-Inshiqaq (84). Reciting and pondering these short, vivid surahs keeps the reality of the Day alive in the heart.",
+    reference: "Tirmidhi 47:385",
+  },
+  {
+    point: "Settle your accounts with people now",
+    detail:
+      "Because wrongs against others are repaid from your good deeds on that Day (see 'The Settling of Scores'), the wise believer returns what was taken, repays debts, and seeks the pardon of anyone they wronged while it can still be done with words rather than deeds.",
+    reference: "Muslim 45:77",
+  },
+];
+
+const faqItems = [
+  {
+    id: "children",
+    title: "What happens to children who die?",
+    body:
+      "The mainstream position of scholars is that the young children of the believers are in Paradise, and many scholars hold that all children who die before the age of accountability enter Paradise, as they die in a state of natural purity (fitrah) with no sins recorded against them. There is a recognized scholarly discussion on the specifics, so a knowledgeable scholar should be consulted for detail; but the consistent thrust of the texts is one of mercy for those who died before they could be held responsible.",
+    generic: true,
+  },
+  {
+    id: "never-heard",
+    title: "What about those who never received the message?",
+    body:
+      "Allah says: 'No bearer of burden will bear the burden of another, nor do We punish until We have sent a messenger' (Quran 17:15). The majority position is that those who genuinely never received the message of Islam in a way they could understand — the people of the fatrah (the interval between prophets), and those in comparable situations — are not held to the same account as one who rejected a clear message. Many scholars hold that such people will be tested on the Day of Resurrection. The details are a matter of scholarly discussion; the anchor is Allah's justice — He never punishes anyone for a message that never reached them.",
+    generic: true,
+  },
+  {
+    id: "recognize-family",
+    title: "Will I recognize my family on that Day?",
+    body:
+      "The overwhelming terror of the Day means each person is consumed by their own situation. Allah describes it — 'everyone will flee from his brother, and from his mother and father, and from his wife and children. On that day, everyone will have enough concern of his own' (Quran 80:34-37). This is why the bonds that truly last are those built on faith and righteousness — the people of Paradise are reunited there with the believers among their families.",
+    generic: false,
+  },
+  {
+    id: "when",
+    title: "Why does no one know when the Hour will come?",
+    body:
+      "Its timing is knowledge Allah kept for Himself alone. When asked about the Hour, the Prophet (peace be upon him) was told to reply: 'Its knowledge is only with my Lord' (Quran 7:187). The wisdom is that not knowing keeps every generation ready — living each day as though the Hour could arrive, since by the time its final signs appear, faith will no longer benefit the one who did not believe before (Quran 6:158).",
+    generic: false,
+  },
+];
+
 const sections = [
   { key: "intro", label: "What is Yawm al-Qiyamah?" },
   { key: "importance", label: "Why It Matters" },
   { key: "signs", label: "Signs of the Hour" },
   { key: "events", label: "Events of the Day" },
   { key: "salvation", label: "Salvation" },
+  { key: "preparing", label: "Preparing for the Day" },
 ] as const;
 
 type SectionKey = (typeof sections)[number]["key"];
+
+// The chronological order of the Day — an at-a-glance map so the parallel
+// Events pills read as a sequence. Each step links to its rail topic (some live
+// on the Salvation tab). Reuses only refs already cited on the page.
+const timelineSteps: { label: string; tab: SectionKey; sub: string }[] = [
+  { label: "The Trumpet is blown", tab: "events", sub: "trumpet" },
+  { label: "The Resurrection", tab: "events", sub: "resurrection" },
+  { label: "The Gathering & Standing", tab: "events", sub: "gathering" },
+  { label: "The Great Intercession begins", tab: "salvation", sub: "intercession" },
+  { label: "The Reckoning", tab: "events", sub: "reckoning" },
+  { label: "The Settling of Scores", tab: "events", sub: "settling-scores" },
+  { label: "The Scale (al-Mizan)", tab: "events", sub: "scale" },
+  { label: "The Bridge (as-Sirat)", tab: "events", sub: "bridge" },
+  { label: "The Hawd (Pool)", tab: "salvation", sub: "hawd" },
+  { label: "The Final Separation — Paradise or the Fire", tab: "events", sub: "final-separation" },
+];
 
 /* ───────────────────────── page ───────────────────────── */
 
@@ -701,11 +959,59 @@ function DayOfJudgementContent() {
               </div>
             </ContentCard>
 
+            {/* The three stages of the journey — de-orphan the neighbouring pages */}
+            <ContentCard delay={0.15}>
+              <h3 className="font-semibold text-themed mb-1">One journey, three stages</h3>
+              <p className="text-themed-muted text-sm leading-relaxed">
+                The Day of Judgement is the middle stage of a single journey. Before it
+                comes life in the grave (al-Barzakh); after the reckoning comes the
+                eternal home — Paradise or the Fire.
+              </p>
+              <div className="flex gap-3 flex-wrap mt-3">
+                <Link
+                  href="/barzakh"
+                  className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  ← Before: the grave &amp; al-Barzakh
+                </Link>
+                <Link
+                  href="/jannah"
+                  className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  After: Paradise &amp; the Fire →
+                </Link>
+              </div>
+            </ContentCard>
+
+            {/* Common questions */}
+            <ContentCard delay={0.2}>
+              <h3 className="font-semibold text-themed mb-3">Common questions</h3>
+              <Accordion
+                items={faqItems.map((f) => ({
+                  id: f.id,
+                  title: f.title,
+                  children: (
+                    <p className="text-themed-muted text-sm leading-relaxed">
+                      {f.body}
+                      {f.generic && (
+                        <span className="block mt-2 text-xs text-themed-muted italic">
+                          General scholarly position — consult a qualified scholar for detail.
+                        </span>
+                      )}
+                    </p>
+                  ),
+                }))}
+              />
+            </ContentCard>
+
             {/* Sources */}
             <SourcesCard sources={[
               { ref: "Quran 1:4", desc: "Master of the Day of Recompense" },
               { ref: "Quran 83:6", desc: "The Day when mankind will stand before the Lord of the worlds" },
               { ref: "Quran 99:7-8", desc: "Whoever does an atom's weight of good or evil will see it" },
+              { ref: "Quran 7:187", desc: "Knowledge of the Hour is with Allah alone" },
+              { ref: "Quran 17:15", desc: "Nor do We punish until We have sent a messenger" },
+              { ref: "Quran 80:34-37", desc: "Everyone will flee from his own family on that Day" },
               { ref: "Muslim 1:1", desc: "Hadith of Jibril: belief in the Last Day is a pillar of faith" },
               { ref: "Bukhari 65:234", desc: "The great intercession of the Prophet (peace be upon him)" },
             ]} />
@@ -826,6 +1132,43 @@ function DayOfJudgementContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
+            {/* Ordered timeline — the sequence of the Day at a glance */}
+            {(!search || search.length < 2) && (
+              <ContentCard className="mb-6">
+                <h3 className="font-semibold text-themed mb-1">The sequence of the Day</h3>
+                <p className="text-themed-muted text-sm leading-relaxed mb-3">
+                  The events below unfold in order. Tap any step to jump to it.
+                </p>
+                <ol className="space-y-1.5">
+                  {timelineSteps.map((step, i) => (
+                    <li key={step.sub}>
+                      <button
+                        onClick={() => {
+                          if (step.tab === "events") {
+                            setActiveEvents(step.sub);
+                            syncUrl("events", step.sub);
+                          } else {
+                            setActiveSection(step.tab);
+                            setActiveSalvation(step.sub);
+                            syncUrl(step.tab, step.sub);
+                          }
+                        }}
+                        className="w-full flex items-center gap-3 text-left rounded-lg px-3 py-2 border sidebar-border hover:border-gold/40 transition-colors"
+                      >
+                        <span className="w-6 h-6 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 text-gold text-xs font-semibold">
+                          {i + 1}
+                        </span>
+                        <span className="text-sm text-themed">{step.label}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+                <p className="text-xs text-themed-muted mt-3">
+                  <HadithRefText text="Quran 39:68; Muslim 54:175; Bukhari 65:234; Muslim 1:102" />
+                </p>
+              </ContentCard>
+            )}
+
             <div className="flex flex-col md:flex-row gap-4 items-start">
               {/* Left side — vertical pills */}
               <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible gap-2 md:w-48 w-full shrink-0">
@@ -932,6 +1275,118 @@ function DayOfJudgementContent() {
             {activeSalvationTopic && topicSourceRefs(activeSalvationTopic).length > 0 && (
               <SourcesCard className="mt-8" sources={topicSourceRefs(activeSalvationTopic)} />
             )}
+          </motion.div>
+        )}
+
+        {/* ─── Preparing for the Day ─── */}
+        {activeSection === "preparing" && (
+          <motion.div
+            key="preparing"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4"
+          >
+            <ContentCard delay={0.05}>
+              <h2 className="text-xl font-semibold text-themed mb-2">
+                Preparing for the Day
+              </h2>
+              <p className="text-themed-muted text-sm leading-relaxed">
+                The point of learning about the Day is not fear alone but action. The
+                Prophet (peace be upon him) said the wise person is the one who holds
+                himself accountable and works for what comes after death. These are
+                deeds he taught his ummah to store up for that Day.
+              </p>
+            </ContentCard>
+
+            {preparingPoints.map((item, i) => (
+              <ContentCard key={item.point} delay={0.1 + i * 0.05}>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-gold font-semibold text-sm">{i + 1}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-themed mb-1">{item.point}</h3>
+                    <p className="text-themed-muted text-sm leading-relaxed">
+                      <HadithRefText text={item.detail} />
+                    </p>
+                    <p className="text-xs text-gold/60 mt-2">
+                      <HadithRefText text={item.reference} />
+                    </p>
+                  </div>
+                </div>
+              </ContentCard>
+            ))}
+
+            {/* The refuge du'a of the tashahhud */}
+            <ContentCard delay={0.3}>
+              <h3 className="font-semibold text-themed mb-1">
+                Seek refuge from the four trials in every prayer
+              </h3>
+              <p className="text-themed-muted text-sm leading-relaxed mb-3">
+                The Prophet (peace be upon him) taught that after the final tashahhud, before
+                the tasleem, one should seek refuge in Allah from four things. He also sought
+                refuge from the Dajjal&apos;s trial in his prayer.
+              </p>
+              <div className="rounded-lg p-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
+                  اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ جَهَنَّمَ وَمِنْ عَذَابِ الْقَبْرِ وَمِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ وَمِنْ شَرِّ فِتْنَةِ الْمَسِيحِ الدَّجَّالِ
+                </p>
+                <p className="text-xs text-themed-muted italic mb-1">
+                  Allahumma inni a&apos;udhu bika min &apos;adhabi jahannam, wa min
+                  &apos;adhabil-qabr, wa min fitnatil-mahya wal-mamat, wa min sharri
+                  fitnatil-masihid-dajjal.
+                </p>
+                <p className="text-themed text-sm italic">
+                  &ldquo;O Allah! I seek refuge with Thee from the torment of the Hell, from the
+                  torment of the grave, from the trial of life and death and from the evil of
+                  the trial of Masih al-Dajjal (Antichrist).&rdquo;
+                </p>
+                <p className="text-xs text-themed-muted mt-2">
+                  <HadithRefText text="Muslim 5:162; Muslim 5:161; Muslim 5:169" />
+                </p>
+              </div>
+            </ContentCard>
+
+            {/* Cross-links to deeds covered elsewhere on the page */}
+            <ContentCard delay={0.35}>
+              <h3 className="font-semibold text-themed mb-1">Deeds that weigh heavy on that Day</h3>
+              <p className="text-themed-muted text-sm leading-relaxed">
+                Much of what prepares you for the Day is already elsewhere on this page: the
+                dhikr and good character that fill the Scale, and the deeds that place you
+                among the seven shaded by Allah&apos;s throne when there is no other shade.
+              </p>
+              <div className="flex gap-3 flex-wrap mt-3">
+                <button
+                  onClick={() => { setActiveSection("events"); setActiveEvents("scale"); syncUrl("events", "scale"); }}
+                  className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  What fills the Scale →
+                </button>
+                <button
+                  onClick={() => { setActiveSection("events"); setActiveEvents("gathering"); syncUrl("events", "gathering"); }}
+                  className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  The seven shaded by Allah →
+                </button>
+                <button
+                  onClick={() => { setActiveSection("events"); setActiveEvents("settling-scores"); syncUrl("events", "settling-scores"); }}
+                  className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  Settle your scores now →
+                </button>
+              </div>
+            </ContentCard>
+
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Muslim 6:302", desc: "Recite the Quran — it will come as an intercessor on the Day of Resurrection" },
+              { ref: "Tirmidhi 3:32", desc: "The closest to the Prophet is the one who sent the most salat upon him" },
+              { ref: "Tirmidhi 47:385", desc: "Whoever wishes to see the Day, let him recite Surahs at-Takwir, al-Infitar, al-Inshiqaq" },
+              { ref: "Muslim 5:162", desc: "The tashahhud refuge from the four trials" },
+              { ref: "Muslim 5:161; Muslim 5:169", desc: "Seeking refuge from the Dajjal's trial in prayer" },
+              { ref: "Muslim 45:77", desc: "The bankrupt one — settling rights with people" },
+            ]} />
           </motion.div>
         )}
       </AnimatePresence>

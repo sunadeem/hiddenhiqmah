@@ -52,6 +52,8 @@ import {
   Sparkles,
   HeartHandshake,
   Pencil,
+  Wind,
+  Stethoscope,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -69,7 +71,7 @@ export function resolveMainTab(param: string | null): MainTab | null {
   return null;
 }
 type WorshipSub = "morning" | "afternoon" | "evening" | "sleep" | "midnight";
-export type SunnahSub = "eating" | "greeting" | "entering" | "dress" | "speech" | "sleeping";
+export type SunnahSub = "eating" | "greeting" | "entering" | "dress" | "speech" | "sleeping" | "sneezing" | "sick";
 type RememberSub = "dunya" | "death" | "grave" | "judgement" | "paradise" | "mercy";
 
 const mainTabs: { key: MainTab; label: string; icon: React.ReactNode; highlight?: boolean }[] = [
@@ -94,6 +96,8 @@ export const sunnahSubs: { key: SunnahSub; label: string; icon: React.ReactNode 
   { key: "dress", label: "Dress & Appearance", icon: <Shirt size={16} /> },
   { key: "speech", label: "Speech & Conduct", icon: <MessageCircle size={16} /> },
   { key: "sleeping", label: "Sleeping", icon: <Bed size={16} /> },
+  { key: "sneezing", label: "Sneezing & Yawning", icon: <Wind size={16} /> },
+  { key: "sick", label: "Visiting the Sick", icon: <Stethoscope size={16} /> },
 ];
 
 const rememberSubs: { key: RememberSub; label: string; icon: React.ReactNode }[] = [
@@ -112,16 +116,18 @@ const rememberSubs: { key: RememberSub; label: string; icon: React.ReactNode }[]
 
 const searchIndex: { tab: MainTab; sub: string; label: string; keywords: string[] }[] = [
   { tab: "worship", sub: "morning", label: "Morning", keywords: ["fajr", "wake", "waking", "morning adhkar", "duha", "ishraq", "quran time", "ayat al-kursi", "sunrise", "tasbeeh"] },
-  { tab: "worship", sub: "afternoon", label: "Afternoon", keywords: ["dhuhr", "asr", "midday", "dhikr", "charity", "sadaqah", "jumuah", "friday", "kahf", "salawat", "knowledge", "work"] },
-  { tab: "worship", sub: "evening", label: "Evening", keywords: ["maghrib", "isha", "witr", "evening adhkar", "sayyid al-istighfar", "family time", "sunset"] },
-  { tab: "worship", sub: "sleep", label: "Before Sleep", keywords: ["sleep", "bed", "bedtime", "wudu", "ayat al-kursi", "muhasabah", "reflection", "istighfar", "three quls", "baqarah"] },
-  { tab: "worship", sub: "midnight", label: "Midnight", keywords: ["tahajjud", "night prayer", "qiyam", "last third", "witr", "suhoor", "istighfar", "descends"] },
-  { tab: "sunnah", sub: "eating", label: "Eating & Drinking", keywords: ["bismillah", "food", "drink", "eat", "right hand", "standing", "meal", "praise"] },
-  { tab: "sunnah", sub: "greeting", label: "Greeting", keywords: ["salam", "greet", "greeting", "peace", "young", "old"] },
-  { tab: "sunnah", sub: "entering", label: "Entering & Leaving", keywords: ["home", "mosque", "enter", "entering", "leave", "leaving", "shoes", "dua"] },
-  { tab: "sunnah", sub: "dress", label: "Dress & Appearance", keywords: ["clothes", "dress", "miswak", "fitrah", "grooming", "nails", "right side"] },
-  { tab: "sunnah", sub: "speech", label: "Speech & Conduct", keywords: ["speak", "speech", "silence", "silent", "backbite", "backbiting", "truthfulness", "gossip"] },
-  { tab: "sunnah", sub: "sleeping", label: "Sleeping", keywords: ["sleep", "sleeping", "right side", "wudu", "bed"] },
+  { tab: "worship", sub: "afternoon", label: "Afternoon", keywords: ["dhuhr", "asr", "midday", "dhikr", "charity", "sadaqah", "jumuah", "friday", "kahf", "salawat", "knowledge", "work", "hour of acceptance", "friday hour"] },
+  { tab: "worship", sub: "evening", label: "Evening", keywords: ["maghrib", "isha", "witr", "evening adhkar", "sayyid al-istighfar", "family time", "sunset", "al-baqarah", "houses graves"] },
+  { tab: "worship", sub: "sleep", label: "Before Sleep", keywords: ["sleep", "bed", "bedtime", "wudu", "ayat al-kursi", "muhasabah", "reflection", "istighfar", "three quls", "baqarah", "bad dream", "nightmare", "waking at night", "tahajjud"] },
+  { tab: "worship", sub: "midnight", label: "Midnight", keywords: ["tahajjud", "night prayer", "qiyam", "last third", "witr", "suhoor", "istighfar", "descends", "feet swelled", "grateful servant", "how to wake"] },
+  { tab: "sunnah", sub: "eating", label: "Eating & Drinking", keywords: ["bismillah", "food", "drink", "eat", "right hand", "standing", "meal", "praise", "dua after eating", "three breaths", "stomach thirds", "eat together", "never criticized"] },
+  { tab: "sunnah", sub: "greeting", label: "Greeting", keywords: ["salam", "greet", "greeting", "peace", "young", "old", "spread salam", "handshake", "musafahah", "six rights", "rights of a muslim"] },
+  { tab: "sunnah", sub: "entering", label: "Entering & Leaving", keywords: ["home", "mosque", "enter", "entering", "leave", "leaving", "shoes", "dua", "bathroom", "toilet", "washroom", "ghufranak", "istinja", "qiblah", "leaving home"] },
+  { tab: "sunnah", sub: "dress", label: "Dress & Appearance", keywords: ["clothes", "dress", "miswak", "fitrah", "grooming", "nails", "right side", "new garment", "new clothes", "thawb"] },
+  { tab: "sunnah", sub: "speech", label: "Speech & Conduct", keywords: ["speak", "speech", "silence", "silent", "backbite", "backbiting", "truthfulness", "gossip", "anger", "angry", "do not become angry", "smile", "smiling", "tongue"] },
+  { tab: "sunnah", sub: "sleeping", label: "Sleeping", keywords: ["sleep", "sleeping", "right side", "wudu", "bed", "stomach", "prone", "al-kafirun"] },
+  { tab: "sunnah", sub: "sneezing", label: "Sneezing & Yawning", keywords: ["sneeze", "sneezing", "yawn", "yawning", "alhamdulillah", "yarhamukallah", "tashmit", "cover mouth"] },
+  { tab: "sunnah", sub: "sick", label: "Visiting the Sick", keywords: ["sick", "ill", "visit", "visiting", "patient", "iyadah", "seventy thousand angels", "dua for the sick", "shifa"] },
   { tab: "reminders", sub: "dunya", label: "Dunya is Temporary", keywords: ["world", "dunya", "stranger", "traveler", "amusement", "temporary"] },
   { tab: "reminders", sub: "death", label: "Death is Near", keywords: ["death", "die", "dies", "five before five", "destroyer of pleasures", "youth"] },
   { tab: "reminders", sub: "grave", label: "The Grave", keywords: ["grave", "hereafter", "deeds remain", "first stage"] },
@@ -333,7 +339,8 @@ export function MorningTab() {
             transliteration="La ilaha illallah, wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa ala kulli shay'in qadir — 10 times"
             translation="There is no god but Allah alone, with no partner. His is the dominion and His is the praise, and He is over all things capable."
             english="He will have the reward of freeing four slaves from the children of Isma'il."
-            reference="Bukhari 80:98"
+            note="Said once in the morning it also earns ten good deeds, erases ten sins, raises you ten ranks, and guards you from Shaytan until evening."
+            reference="Bukhari 80:98; Abu Dawud 43:305"
             delay={0}
           />
           <AdhkarItem
@@ -341,6 +348,38 @@ export function MorningTab() {
             transliteration="Allahumma bika asbahna wa bika amsayna, wa bika nahya wa bika namutu, wa ilaykan-nushur"
             english="O Allah, by You we enter the morning, by You we enter the evening, by You we live, by You we die, and to You is the resurrection."
             reference="Tirmidhi 48:22"
+            delay={0}
+          />
+          <AdhkarItem
+            arabic="أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ"
+            transliteration="Asbahna wa asbahal-mulku lillah"
+            translation="We have entered the morning and the whole dominion belongs to Allah."
+            english="The source gives this short form for the morning and notes the Prophet ﷺ 'said likewise' the fuller evening supplication that begins Amsayna wa amsal-mulku lillah, wal-hamdu lillah."
+            reference="Muslim 48:101"
+            delay={0}
+          />
+          <AdhkarItem
+            arabic="بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَىْءٌ فِي الأَرْضِ وَلاَ فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ"
+            transliteration="Bismillahilladhi la yadurru ma'a-smihi shay'un fil-ardi wa la fis-sama'i wa huwas-Sami'ul-'Alim — 3 times"
+            translation="In the name of Allah, with whose name nothing in the earth or the sky can cause harm, and He is the All-Hearing, the All-Knowing."
+            english="Whoever says it three times in the morning and evening, nothing will harm him."
+            reference="Ibn Majah 34:43"
+            delay={0}
+          />
+          <AdhkarItem
+            arabic="رَضِيتُ بِاللَّهِ رَبًّا وَبِالإِسْلاَمِ دِينًا وَبِمُحَمَّدٍ رَسُولاً"
+            transliteration="Radeetu billahi rabban, wa bil-islami dinan, wa bi-Muhammadin rasula"
+            translation="I am pleased with Allah as my Lord, with Islam as my religion, and with Muhammad ﷺ as my Messenger."
+            english="Whoever says it in the morning and evening, Allah has promised to please him."
+            reference="Abu Dawud 8:114; Abu Dawud 43:300"
+            delay={0}
+          />
+          <AdhkarItem
+            arabic="اللَّهُمَّ عَافِنِي فِي بَدَنِي اللَّهُمَّ عَافِنِي فِي سَمْعِي اللَّهُمَّ عَافِنِي فِي بَصَرِي لاَ إِلَهَ إِلاَّ أَنْتَ"
+            transliteration="Allahumma 'afini fi badani, Allahumma 'afini fi sam'i, Allahumma 'afini fi basari, la ilaha illa Anta — 3 times"
+            translation="O Allah, grant me well-being in my body; O Allah, grant me well-being in my hearing; O Allah, grant me well-being in my sight. There is no god but You."
+            english="A supplication the Prophet ﷺ repeated three times each morning and evening."
+            reference="Abu Dawud 43:318; Tirmidhi 48:111"
             delay={0}
           />
         </div>
@@ -516,7 +555,12 @@ export function AfternoonTab() {
                   <span className="text-gold font-medium">Salawat:</span> Increase salawat on the Prophet &#xFDFA; — &quot;The best of your days is Friday, so increase your salawat upon me on that day.&quot;
                   <Ref text="Abu Dawud 8:116" />
                 </li>
+                <li>
+                  <span className="text-gold font-medium">The hour of acceptance:</span> There is an hour on Friday in which no Muslim asks Allah for something while praying except that He gives it to him — many scholars locate it in the last hour before Maghrib.
+                  <Ref text="Bukhari 11:59; Abu Dawud 2:659" />
+                </li>
               </ul>
+              <Link href="/salah?tab=prayers&sub=jumuah" className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Full Jumu&apos;ah guide →</Link>
             </div>
             <BookmarkButton type="hadith" id="daily-jumuah" title="Friday Special (Jumu'ah)" subtitle="Muslim Daily" href="/muslim-daily?tab=worship&sub=afternoon" />
           </div>
@@ -594,6 +638,38 @@ export function EveningTab() {
             reference="Bukhari 80:3"
             delay={0}
           />
+          <AdhkarItem
+            arabic="أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ"
+            transliteration="Amsayna wa amsal-mulku lillah, wal-hamdu lillah, la ilaha illallahu wahdahu la sharika lah"
+            translation="We have entered the evening and the whole dominion belongs to Allah. All praise is for Allah; there is no god but Allah alone, with no partner."
+            english="The Prophet ﷺ said this every evening; the parallel morning form begins Asbahna wa asbahal-mulku lillah."
+            reference="Muslim 48:101"
+            delay={0}
+          />
+          <AdhkarItem
+            arabic="رَضِيتُ بِاللَّهِ رَبًّا وَبِالإِسْلاَمِ دِينًا وَبِمُحَمَّدٍ رَسُولاً"
+            transliteration="Radeetu billahi rabban, wa bil-islami dinan, wa bi-Muhammadin rasula"
+            translation="I am pleased with Allah as my Lord, with Islam as my religion, and with Muhammad ﷺ as my Messenger."
+            english="Whoever says it in the morning and evening, Allah has promised to please him."
+            reference="Abu Dawud 8:114; Abu Dawud 43:300"
+            delay={0}
+          />
+          <AdhkarItem
+            arabic="اللَّهُمَّ عَافِنِي فِي بَدَنِي اللَّهُمَّ عَافِنِي فِي سَمْعِي اللَّهُمَّ عَافِنِي فِي بَصَرِي لاَ إِلَهَ إِلاَّ أَنْتَ"
+            transliteration="Allahumma 'afini fi badani, Allahumma 'afini fi sam'i, Allahumma 'afini fi basari, la ilaha illa Anta — 3 times"
+            translation="O Allah, grant me well-being in my body; O Allah, grant me well-being in my hearing; O Allah, grant me well-being in my sight. There is no god but You."
+            english="A supplication the Prophet ﷺ repeated three times each morning and evening."
+            reference="Abu Dawud 43:318; Tirmidhi 48:111"
+            delay={0}
+          />
+          <AdhkarItem
+            arabic="أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ"
+            transliteration="A'udhu bikalimatillahi-t-tammati min sharri ma khalaq — 3 times"
+            translation="I seek refuge in the perfect words of Allah from the evil of what He has created."
+            english="Whoever says it three times when entering the evening, no harm will befall him that night."
+            reference="Tirmidhi 48:236; Abu Dawud 29:44; Abu Dawud 29:45"
+            delay={0}
+          />
         </div>
       </TimelineStep>
 
@@ -626,6 +702,14 @@ export function EveningTab() {
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 Teach children, play with them, check on family members.
               </p>
+              <div className="mt-3 border-l-2 border-gold/30 pl-3">
+                <p className="font-arabic text-gold text-base leading-loose mb-1">لاَ تَجْعَلُوا بُيُوتَكُمْ مَقَابِرَ إِنَّ الشَّيْطَانَ يَنْفِرُ مِنَ الْبَيْتِ الَّذِي تُقْرَأُ فِيهِ سُورَةُ الْبَقَرَةِ</p>
+                <p className="text-themed-muted text-sm leading-relaxed">
+                  <span className="text-gold font-medium">Fill the home with Quran:</span> &quot;Do not make your houses as graveyards. Satan runs away from the house in which Surah Baqara is recited.&quot;
+                </p>
+                <Ref text="Muslim 6:252; Tirmidhi 45:3" />
+                <Link href="/quran/2" className="inline-block mt-1 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Read Surah Al-Baqarah →</Link>
+              </div>
             </div>
             <BookmarkButton type="hadith" id="daily-family" title="Family Time" subtitle="Muslim Daily" href="/muslim-daily?tab=worship&sub=evening" />
           </div>
@@ -712,6 +796,25 @@ export function SleepTab() {
             reference="Abu Dawud 43:273"
             delay={0}
           />
+        </div>
+      </TimelineStep>
+
+      <TimelineStep time="During the night" title="Bad Dreams &amp; Waking at Night" delay={0.13}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <ContentCard delay={0}>
+            <p className="font-arabic text-gold text-base leading-loose mb-2">فَإِذَا حَلَمَ فَلْيَتَعَوَّذْ مِنْهُ وَلْيَبْصُقْ عَنْ شِمَالِهِ، فَإِنَّهَا لاَ تَضُرُّهُ</p>
+            <p className="text-themed-muted text-sm leading-relaxed">
+              <span className="text-gold font-medium">A bad dream:</span> A good dream is from Allah and a bad dream is from Shaytan. If you see one, seek refuge in Allah from it, spit lightly to your left three times, and do not tell anyone about it — then it will not harm you.
+            </p>
+            <Ref text="Bukhari 91:5" />
+          </ContentCard>
+          <ContentCard delay={0}>
+            <p className="font-arabic text-gold text-base leading-loose mb-2">مَنْ تَعَارَّ مِنَ اللَّيْلِ فَقَالَ … وَحْدَهُ لاَ شَرِيكَ</p>
+            <p className="text-themed-muted text-sm leading-relaxed">
+              <span className="text-gold font-medium">If you wake in the night:</span> Whoever wakes and remembers Allah — declaring His oneness and then asking forgiveness or making duʿa — his supplication is answered. Whoever sleeps in a state of wudu and then asks Allah for anything will be given it.
+            </p>
+            <Ref text="Bukhari 19:35; Ibn Majah 34:55" />
+          </ContentCard>
         </div>
       </TimelineStep>
 
@@ -1003,6 +1106,31 @@ export function MidnightTab() {
         </ContentCard>
       </TimelineStep>
 
+      {/* Gratitude + practical on-ramp */}
+      <TimelineStep time="How the Prophet ﷺ prayed" title="Devotion &amp; a Realistic Start" delay={0.08}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <ContentCard delay={0}>
+            <p className="font-arabic text-gold text-base leading-loose mb-2">أَفَلاَ أَكُونُ عَبْدًا شَكُورًا</p>
+            <p className="text-themed-muted text-sm leading-relaxed">
+              The Prophet ﷺ would stand in night prayer until his feet became swollen. When asked why he burdened himself when his past and future sins were forgiven, he answered: &quot;Shouldn&apos;t I be a grateful worshipper?&quot;
+            </p>
+            <Ref text="Muslim 52:77; Tirmidhi 2:265; Nasai 20:47" />
+          </ContentCard>
+          <ContentCard delay={0}>
+            <p className="text-themed-muted text-sm leading-relaxed mb-2">
+              <span className="text-gold font-medium">How to actually wake for Tahajjud:</span>
+            </p>
+            <ul className="space-y-2 text-themed-muted text-sm leading-relaxed">
+              <li className="flex gap-2"><span className="text-gold">•</span> Sleep early, ideally already in a state of wudu.</li>
+              <li className="flex gap-2"><span className="text-gold">•</span> Set an alarm for the last third of the night, even for just 10–15 minutes.</li>
+              <li className="flex gap-2"><span className="text-gold">•</span> Start with two short rak&apos;ahs — begin light rather than aiming for many.</li>
+              <li className="flex gap-2"><span className="text-gold">•</span> Keep a few duʿas ready for when you finish, then pray Witr.</li>
+            </ul>
+            <p className="text-themed-muted/70 text-xs mt-2 italic">Practical guidance drawn from the general teachings of the Sunnah.</p>
+          </ContentCard>
+        </div>
+      </TimelineStep>
+
       {/* Allah descends */}
       <TimelineStep time="Last third of the night" title="Allah&apos;s Special Nearness" delay={0.1}>
         <ContentCard delay={0}>
@@ -1166,6 +1294,41 @@ export function SunnahContent({
                   </p>
                   <Ref text="Muslim 48:123" />
                 </ContentCard>
+                <ContentCard delay={0.23}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا الطَّعَامَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <span className="text-gold font-medium">After a meal:</span> Whoever says &quot;Al-hamdu lillahilladhi at&apos;amani hadhat-ta&apos;ama wa razaqanihi min ghayri hawlin minni wa la quwwah&quot; (All praise is for Allah who fed me this food and provided it to me without any power or strength on my part) is forgiven his past sins.
+                  </p>
+                  <Ref text="Abu Dawud 34:4; Tirmidhi 48:89" />
+                </ContentCard>
+                <ContentCard delay={0.26}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">مَا عَابَ النَّبِيُّ صلى الله عليه وسلم طَعَامًا قَطُّ، إِنِ اشْتَهَاهُ أَكَلَهُ، وَإِنْ كَرِهَهُ تَرَكَهُ.</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    The Prophet ﷺ never criticized any food; if he liked it he ate it, and if he disliked it he simply left it.
+                  </p>
+                  <Ref text="Bukhari 70:37; Muslim 36:254" />
+                </ContentCard>
+                <ContentCard delay={0.29}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">كُلُوا جَمِيعًا وَلاَ تَفَرَّقُوا فَإِنَّ الْبَرَكَةَ مَعَ الْجَمَاعَةِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Eat together and do not eat separately, for the blessing is in eating as a group and mentioning Allah&apos;s name over the food.
+                  </p>
+                  <Ref text="Ibn Majah 29:37; Abu Dawud 28:29" />
+                </ContentCard>
+                <ContentCard delay={0.32}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">مَا مَلأَ آدَمِيٌّ وِعَاءً شَرًّا مِنْ بَطْنٍ بِحَسْبِ ابْنِ آدَمَ أُكُلاَتٌ يُقِمْنَ صُلْبَهُ فَإِنْ كَانَ لاَ مَحَالَةَ فَثُلُثٌ لِطَعَامِهِ وَثُلُثٌ لِشَرَابِهِ وَثُلُثٌ لِنَفَسِهِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Moderation: no one fills a vessel worse than his stomach. A few morsels to keep the back straight suffice; if more is needed, then a third for food, a third for drink, and a third for breath.
+                  </p>
+                  <Ref text="Tirmidhi 36:77" />
+                </ContentCard>
+                <ContentCard delay={0.35}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">أَنَّ النَّبِيَّ صلى الله عليه وسلم كَانَ يَتَنَفَّسُ ثَلاَثًا.</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    The Prophet ﷺ would take three breaths while drinking (breathing outside the vessel), rather than draining it in one go.
+                  </p>
+                  <Ref text="Bukhari 74:57" />
+                </ContentCard>
               </div>
             )}
             {activeSub === "greeting" && (
@@ -1190,6 +1353,27 @@ export function SunnahContent({
                     Feed the poor and spread Salam to those you know and those you do not know.
                   </p>
                   <Ref text="Bukhari 2:5" />
+                </ContentCard>
+                <ContentCard delay={0.14}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">لاَ تَدْخُلُوا الْجَنَّةَ حَتَّى تُؤْمِنُوا وَلاَ تُؤْمِنُوا حَتَّى تَحَابُّوا … أَفْشُوا السَّلاَمَ بَيْنَكُمْ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;You will not enter Paradise until you believe, and you will not (truly) believe until you love one another. Shall I not tell you of something which, if you do it, you will love one another? Spread the greetings of Salam amongst yourselves.&quot;
+                  </p>
+                  <Ref text="Abu Dawud 43:421; Ibn Majah 0:68" />
+                </ContentCard>
+                <ContentCard delay={0.17}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِذَا الْتَقَى الْمُسْلِمَانِ فَتَصَافَحَا وَحَمِدَا اللَّهَ عَزَّ وَجَلَّ وَاسْتَغْفَرَاهُ غُفِرَ لَهُمَا</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    When two Muslims meet and shake hands, praising Allah and seeking His forgiveness, they are forgiven before they part. Shaking hands on meeting was the practice of the Companions.
+                  </p>
+                  <Ref text="Abu Dawud 43:439; Abu Dawud 43:440; Bukhari 79:37" />
+                </ContentCard>
+                <ContentCard delay={0.2}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">لِلْمُسْلِمِ عَلَى الْمُسْلِمِ سِتٌّ بِالْمَعْرُوفِ يُسَلِّمُ عَلَيْهِ إِذَا لَقِيَهُ وَيُجِيبُهُ إِذَا دَعَاهُ وَيُشَمِّتُهُ إِذَا عَطَسَ وَيَعُودُهُ إِذَا مَرِضَ وَيَتْبَعُ جَنَازَتَهُ إِذَا مَاتَ وَيُحِبُّ لَهُ مَا يُحِبُّ لِنَفْسِهِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Six courtesies a Muslim owes another: greet him with Salam, answer his invitation, reply when he sneezes, visit him when ill, follow his funeral, and love for him what you love for yourself.
+                  </p>
+                  <Ref text="Tirmidhi 43:1; Bukhari 23:4" />
                 </ContentCard>
               </div>
             )}
@@ -1223,6 +1407,35 @@ export function SunnahContent({
                   </p>
                   <Ref text="Muslim 36:136" />
                 </ContentCard>
+                <ContentCard delay={0.17}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <span className="text-gold font-medium">Entering the bathroom:</span> &quot;Allahumma inni a&apos;udhu bika minal-khubuthi wal-khaba&apos;ith&quot; (O Allah, I seek refuge in You from the male and female devils) — these places are frequented by them.
+                  </p>
+                  <Ref text="Bukhari 4:8; Bukhari 80:19; Abu Dawud 1:6" />
+                </ContentCard>
+                <ContentCard delay={0.2}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">غُفْرَانَكَ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <span className="text-gold font-medium">Leaving the bathroom:</span> &quot;Ghufranak&quot; (I seek Your forgiveness) — the Prophet ﷺ said it whenever he came out.
+                  </p>
+                  <Ref text="Abu Dawud 1:30" />
+                </ContentCard>
+                <ContentCard delay={0.23}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِذَا أَتَيْتُمُ الْغَائِطَ فَلاَ تَسْتَقْبِلُوا الْقِبْلَةَ بِغَائِطٍ وَلاَ بَوْلٍ وَلَكِنْ شَرِّقُوا أَوْ غَرِّبُوا</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <span className="text-gold font-medium">Toilet manners:</span> Do not face or turn your back to the qiblah while relieving yourself, and do not use the right hand for cleaning — reserve the left hand for it. The prohibition is strongest in the open; scholars differ over enclosed, built toilets, so follow the guidance of a trusted scholar.
+                  </p>
+                  <Ref text="Abu Dawud 1:9; Abu Dawud 1:31" />
+                </ContentCard>
+                <ContentCard delay={0.26}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <span className="text-gold font-medium">Leaving home:</span> &quot;Bismillah, tawakkaltu &apos;alallah, la hawla wa la quwwata illa billah&quot; (In the name of Allah, I trust in Allah; there is no might nor power except with Allah). He is told: you are guided, defended, and protected — and the devils turn away from him.
+                  </p>
+                  <Ref text="Abu Dawud 43:323" />
+                  <Link href="/duas" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Browse Duas →</Link>
+                </ContentCard>
               </div>
             )}
             {activeSub === "dress" && (
@@ -1247,6 +1460,14 @@ export function SunnahContent({
                     Five acts of fitrah: circumcision, shaving the pubic hair, trimming the nails, plucking the armpit hair, and trimming the moustache.
                   </p>
                   <Ref text="Muslim 2:64" />
+                </ContentCard>
+                <ContentCard delay={0.14}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ أَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَا صُنِعَ لَهُ وَأَعُوذُ بِكَ مِنْ شَرِّهِ وَشَرِّ مَا صُنِعَ لَهُ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <span className="text-gold font-medium">A new garment:</span> The Prophet ﷺ would name it (shirt, turban) and then praise Allah who had clothed him with it, asking Allah for its good and the good for which it was made, and seeking refuge in Allah from its evil and the evil for which it was made. ʿUmar&apos;s well-known duʿa on new clothes is also reported.
+                  </p>
+                  <Ref text="Abu Dawud 34:1; Tirmidhi 48:191; Ibn Majah 32:8" />
+                  <Link href="/duas" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Browse Duas →</Link>
                 </ContentCard>
               </div>
             )}
@@ -1273,6 +1494,27 @@ export function SunnahContent({
                   </p>
                   <Ref text="Bukhari 78:121" />
                 </ContentCard>
+                <ContentCard delay={0.14}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">لاَ تَغْضَبْ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    A man asked for advice and the Prophet ﷺ said: &quot;Do not become angry,&quot; repeating it each time he asked again. He also taught: when anger comes while standing, sit down; if it does not pass, lie down.
+                  </p>
+                  <Ref text="Bukhari 78:143; Abu Dawud 43:10" />
+                </ContentCard>
+                <ContentCard delay={0.17}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    &quot;Your smiling in the face of your brother is charity.&quot; Even the smallest kindness in your dealings is rewarded.
+                  </p>
+                  <Ref text="Tirmidhi 27:62" />
+                </ContentCard>
+                <ContentCard delay={0.2}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">وَهَلْ يَكُبُّ النَّاسَ فِي النَّارِ عَلَى وُجُوهِهِمْ أَوْ عَلَى مَنَاخِرِهِمْ إِلاَّ حَصَائِدُ أَلْسِنَتِهِمْ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    When Muʿadh asked how to guard all good, the Prophet ﷺ took hold of his tongue and said &quot;Restrain this,&quot; then warned: are people thrown on their faces into the Fire for anything but the harvests of their tongues?
+                  </p>
+                  <Ref text="Tirmidhi 40:11; Ibn Majah 36:48" />
+                </ContentCard>
               </div>
             )}
             {activeSub === "sleeping" && (
@@ -1297,6 +1539,78 @@ export function SunnahContent({
                     &quot;O Allah, I submit my face to You, entrust my affairs to You, and lean my back on You&quot; — let your last words before sleep be remembrance of Allah.
                   </p>
                   <Ref text="Bukhari 80:8" />
+                </ContentCard>
+                <ContentCard delay={0.14}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِنَّ هَذِهِ ضِجْعَةٌ يُبْغِضُهَا اللَّهُ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Do not sleep lying flat on your stomach — the Prophet ﷺ found a man lying prone and said: &quot;This is a method of lying which Allah hates.&quot;
+                  </p>
+                  <Ref text="Abu Dawud 43:268" />
+                </ContentCard>
+                <ContentCard delay={0.17}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">ثُمَّ نَمْ عَلَى خَاتِمَتِهَا فَإِنَّهَا بَرَاءَةٌ مِنَ الشِّرْكِ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    The Prophet ﷺ advised reciting Surah Al-Kafirun before sleeping and sleeping upon its ending, &quot;for it is a declaration of freedom from polytheism.&quot;
+                  </p>
+                  <Ref text="Abu Dawud 43:283" />
+                  <Link href="/quran/109" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">Read Al-Kafirun →</Link>
+                </ContentCard>
+              </div>
+            )}
+            {activeSub === "sneezing" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ContentCard delay={0.05}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِذَا عَطَسَ أَحَدُكُمْ فَلْيَقُلِ الْحَمْدُ لِلَّهِ. وَلْيَقُلْ لَهُ أَخُوهُ أَوْ صَاحِبُهُ يَرْحَمُكَ اللَّهُ. فَإِذَا قَالَ لَهُ يَرْحَمُكَ اللَّهُ. فَلْيَقُلْ يَهْدِيكُمُ اللَّهُ وَيُصْلِحُ بَالَكُمْ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    When you sneeze, say &quot;Alhamdulillah.&quot; The one who hears replies &quot;Yarhamukallah&quot; (may Allah have mercy on you), and the sneezer answers &quot;Yahdikumullah wa yuslih balakum&quot; (may Allah guide you and set your affairs right).
+                  </p>
+                  <Ref text="Bukhari 78:248" />
+                </ContentCard>
+                <ContentCard delay={0.08}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">هَذَا حَمِدَ اللَّهَ، وَهَذَا لَمْ يَحْمَدِ اللَّهَ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Two men sneezed near the Prophet ﷺ; he answered one but not the other, explaining that the one he answered had praised Allah while the other had not. The reply is earned by first saying Alhamdulillah.
+                  </p>
+                  <Ref text="Bukhari 78:245" />
+                </ContentCard>
+                <ContentCard delay={0.11}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِنَّ اللَّهَ يُحِبُّ الْعُطَاسَ وَيَكْرَهُ التَّثَاؤُبَ،</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Allah loves sneezing but dislikes yawning. When someone sneezes and praises Allah, every Muslim who hears should say Tashmit (Yarhamukallah) to him.
+                  </p>
+                  <Ref text="Bukhari 78:250; Bukhari 78:247" />
+                </ContentCard>
+                <ContentCard delay={0.14}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">إِذَا تَثَاءَبَ أَحَدُكُمْ فَلْيُمْسِكْ عَلَى فِيهِ فَإِنَّ الشَّيْطَانَ يَدْخُلُ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Yawning is from Shaytan: restrain it as much as you can, and cover your mouth with your hand when you yawn.
+                  </p>
+                  <Ref text="Abu Dawud 43:254" />
+                </ContentCard>
+              </div>
+            )}
+            {activeSub === "sick" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ContentCard delay={0.05}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">مَنْ أَتَى أَخَاهُ الْمُسْلِمَ عَائِدًا مَشَى فِي خِرَافَةِ الْجَنَّةِ حَتَّى يَجْلِسَ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    Whoever visits his sick Muslim brother walks amid the harvest of Paradise until he sits, and is then enveloped in mercy. If he visits in the evening, seventy thousand angels seek forgiveness for him until morning — and he will have a garden in Paradise.
+                  </p>
+                  <Ref text="Abu Dawud 21:10; Ibn Majah 6:10" />
+                </ContentCard>
+                <ContentCard delay={0.08}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    <span className="text-gold font-medium">Duʿa for the sick (7 times):</span> &quot;As&apos;alullahal-&apos;Azima Rabbal-&apos;arshil-&apos;azimi an yashfiyak&quot; (I ask Allah the Mighty, Lord of the Mighty Throne, to cure you). If his time has not come, Allah will cure him of that illness.
+                  </p>
+                  <Ref text="Abu Dawud 21:18" />
+                </ContentCard>
+                <ContentCard delay={0.11}>
+                  <p className="font-arabic text-gold text-lg leading-loose mb-2">أَمَرَنَا النَّبِيُّ صلى الله عليه وسلم بِسَبْعٍ عِيَادَةِ الْمَرِيضِ، وَاتِّبَاعِ الْجَنَائِزِ، وَتَشْمِيتِ الْعَاطِسِ،</p>
+                  <p className="text-themed-muted text-sm leading-relaxed">
+                    The Prophet ﷺ commanded seven things, among them: visiting the sick, following funeral processions, and replying to the one who sneezes — daily duties of a believer toward others.
+                  </p>
+                  <Ref text="Bukhari 77:66" />
                 </ContentCard>
               </div>
             )}
@@ -1448,6 +1762,24 @@ function RememberContent({ activeSub, setActiveSub, visibleKeys }: { activeSub: 
                   english="Three follow the deceased: his family, his wealth, and his deeds. Two return and one remains — his family and wealth return, but his deeds remain with him."
                   source="Bukhari 81:103"
                   delay={0.1}
+                />
+                <ReminderCard
+                  arabic="أَتَاهُ مَلَكَانِ أَسْوَدَانِ أَزْرَقَانِ يُقَالُ لأَحَدِهِمَا الْمُنْكَرُ وَالآخَرُ النَّكِيرُ فَيَقُولاَنِ مَا كُنْتَ تَقُولُ فِي هَذَا الرَّجُلِ"
+                  english="One of them is called Al-Munkar, and the other An-Nakir. They say: 'What did you used to say about this man?'"
+                  source="Tirmidhi 10:107"
+                  delay={0.15}
+                />
+                <ReminderCard
+                  arabic="إِذَا مَاتَ الإِنْسَانُ انْقَطَعَ عَمَلُهُ إِلاَّ مِنْ ثَلاَثَةٍ مِنْ صَدَقَةٍ جَارِيَةٍ وَعِلْمٍ يُنْتَفَعُ بِهِ وَوَلَدٍ صَالِحٍ يَدْعُو لَهُ"
+                  english="When a man dies all his good deeds come to an end except three: Ongoing charity (Sadaqah Jariyah), beneficial knowledge and a righteous son who prays for him"
+                  source="Nasai 30:41; Ibn Majah 0:241"
+                  delay={0.2}
+                />
+                <ReminderCard
+                  arabic="زُورُوا الْقُبُورَ فَإِنَّهَا تُذَكِّرُكُمُ الآخِرَةَ"
+                  english="Visit the graves, for they will remind you of the Hereafter."
+                  source="Ibn Majah 6:137; Abu Dawud 21:147"
+                  delay={0.25}
                 />
               </div>
             )}
@@ -1604,24 +1936,26 @@ function WorshipContent({ activeSub, setActiveSub, visibleKeys }: { activeSub: W
 /* Sources & References — aggregated from the refs already shown on this page's
    cards, KEYED BY SUB-VIEW so the card always reflects the current selection. */
 const worshipSources: Record<WorshipSub, { ref: string; desc: string }[]> = {
-  morning: [{ ref: "Bukhari 80:9; Muslim 6:118; Nasai, Sunan al-Kubra 9928; Abu Dawud 43:310; Muslim 5:188; Bukhari 80:100; Bukhari 80:98; Tirmidhi 48:22; Quran 17:78; Muslim 6:101", desc: "Morning — waking, Fajr, the morning adhkar, Quran time, and Duha" }],
-  afternoon: [{ ref: "Tirmidhi 2:281; Tirmidhi 48:14; Ibn Majah 5:123; Quran 2:238; Bukhari 78:52; Muslim 45:90; Hakim Mustadrak 1:564; Abu Dawud 8:116", desc: "Afternoon — Dhuhr, midday dhikr, Asr, charity, and the Friday sunnahs" }],
-  evening: [{ ref: "Bukhari 9:50; Abu Dawud 43:302; Bukhari 80:3; Bukhari 14:9; Bukhari 78:69", desc: "Evening — Maghrib, the evening adhkar, Isha & Witr, and family time" }],
-  sleep: [{ ref: "Bukhari 80:8; Muslim 48:75; Bukhari 66:39; Bukhari 40:11; Bukhari 66:31; Abu Dawud 43:273; Bukhari 80:4", desc: "Before sleep — the sleep sunnahs, bedtime duas, and istighfar" }],
-  midnight: [{ ref: "Muslim 6:147; Bukhari 19:26; Bukhari 19:1; Quran 3:17; Bukhari 30:32", desc: "Midnight — Tahajjud, Allah's nearness in the last third, Witr, and suhoor" }],
+  morning: [{ ref: "Bukhari 80:9; Muslim 6:118; Nasai, Sunan al-Kubra 9928; Abu Dawud 43:310; Muslim 5:188; Bukhari 80:100; Bukhari 80:98; Abu Dawud 43:305; Tirmidhi 48:22; Muslim 48:101; Ibn Majah 34:43; Abu Dawud 8:114; Abu Dawud 43:300; Abu Dawud 43:318; Tirmidhi 48:111; Quran 17:78; Muslim 6:101", desc: "Morning — waking, Fajr, the morning adhkar, Quran time, and Duha" }],
+  afternoon: [{ ref: "Tirmidhi 2:281; Tirmidhi 48:14; Ibn Majah 5:123; Quran 2:238; Bukhari 78:52; Muslim 45:90; Hakim Mustadrak 1:564; Abu Dawud 8:116; Bukhari 11:59; Abu Dawud 2:659", desc: "Afternoon — Dhuhr, midday dhikr, Asr, charity, and the Friday sunnahs" }],
+  evening: [{ ref: "Bukhari 9:50; Abu Dawud 43:302; Bukhari 80:3; Muslim 48:101; Abu Dawud 8:114; Abu Dawud 43:300; Abu Dawud 43:318; Tirmidhi 48:111; Abu Dawud 29:44; Abu Dawud 29:45; Tirmidhi 48:236; Bukhari 14:9; Bukhari 78:69; Muslim 6:252; Tirmidhi 45:3", desc: "Evening — Maghrib, the evening adhkar, Isha & Witr, and family time" }],
+  sleep: [{ ref: "Bukhari 80:8; Muslim 48:75; Bukhari 66:39; Bukhari 40:11; Bukhari 66:31; Abu Dawud 43:273; Bukhari 91:5; Bukhari 19:35; Ibn Majah 34:55; Bukhari 80:4", desc: "Before sleep — the sleep sunnahs, bedtime duas, bad dreams, and istighfar" }],
+  midnight: [{ ref: "Muslim 6:147; Bukhari 19:26; Muslim 52:77; Tirmidhi 2:265; Nasai 20:47; Bukhari 19:1; Quran 3:17; Bukhari 30:32", desc: "Midnight — Tahajjud, Allah's nearness in the last third, Witr, and suhoor" }],
 };
 const sunnahSources: Record<SunnahSub, { ref: string; desc: string }[]> = {
-  eating: [{ ref: "Abu Dawud 28:32; Muslim 36:139; Bukhari 70:4; Abu Dawud 27:54; Muslim 36:148; Muslim 48:123", desc: "Eating & drinking" }],
-  greeting: [{ ref: "Bukhari 79:5; Quran 4:86; Bukhari 2:5", desc: "Greeting" }],
-  entering: [{ ref: "Bukhari 4:34; Abu Dawud 43:324; Muslim 6:82; Muslim 36:136", desc: "Entering & leaving" }],
-  dress: [{ ref: "Bukhari 70:8; Bukhari 11:12; Muslim 2:64", desc: "Dress & appearance" }],
-  speech: [{ ref: "Bukhari 78:49; Quran 49:12; Bukhari 78:121", desc: "Speech & conduct" }],
-  sleeping: [{ ref: "Bukhari 80:8; Bukhari 4:113", desc: "Sleeping" }],
+  eating: [{ ref: "Abu Dawud 28:32; Muslim 36:139; Bukhari 70:4; Abu Dawud 27:54; Muslim 36:148; Muslim 48:123; Abu Dawud 34:4; Tirmidhi 48:89; Bukhari 70:37; Muslim 36:254; Ibn Majah 29:37; Abu Dawud 28:29; Tirmidhi 36:77; Bukhari 74:57", desc: "Eating & drinking" }],
+  greeting: [{ ref: "Bukhari 79:5; Quran 4:86; Bukhari 2:5; Abu Dawud 43:421; Ibn Majah 0:68; Abu Dawud 43:439; Abu Dawud 43:440; Bukhari 79:37; Tirmidhi 43:1; Bukhari 23:4", desc: "Greeting" }],
+  entering: [{ ref: "Bukhari 4:34; Abu Dawud 43:324; Muslim 6:82; Muslim 36:136; Bukhari 4:8; Bukhari 80:19; Abu Dawud 1:6; Abu Dawud 1:30; Abu Dawud 1:9; Abu Dawud 1:31; Abu Dawud 43:323", desc: "Entering & leaving" }],
+  dress: [{ ref: "Bukhari 70:8; Bukhari 11:12; Muslim 2:64; Abu Dawud 34:1; Tirmidhi 48:191; Ibn Majah 32:8", desc: "Dress & appearance" }],
+  speech: [{ ref: "Bukhari 78:49; Quran 49:12; Bukhari 78:121; Bukhari 78:143; Abu Dawud 43:10; Tirmidhi 27:62; Tirmidhi 40:11; Ibn Majah 36:48", desc: "Speech & conduct" }],
+  sleeping: [{ ref: "Bukhari 80:8; Bukhari 4:113; Abu Dawud 43:268; Abu Dawud 43:283", desc: "Sleeping" }],
+  sneezing: [{ ref: "Bukhari 78:248; Bukhari 78:245; Bukhari 78:250; Bukhari 78:247; Abu Dawud 43:254", desc: "Sneezing & yawning" }],
+  sick: [{ ref: "Abu Dawud 21:10; Ibn Majah 6:10; Abu Dawud 21:18; Bukhari 77:66", desc: "Visiting the sick" }],
 };
 const reminderSources: Record<RememberSub, { ref: string; desc: string }[]> = {
   dunya: [{ ref: "Quran 3:185; Quran 57:20; Muslim 53:66; Tirmidhi 36:17; Bukhari 81:5", desc: "Dunya is temporary" }],
   death: [{ ref: "Tirmidhi 36:4; Quran 31:34; Quran 4:78; Shu'ab al-Iman 10248", desc: "Death is near" }],
-  grave: [{ ref: "Tirmidhi 36:5; Bukhari 81:103", desc: "The grave" }],
+  grave: [{ ref: "Tirmidhi 36:5; Bukhari 81:103; Tirmidhi 10:107; Nasai 30:41; Ibn Majah 0:241; Ibn Majah 6:137; Abu Dawud 21:147", desc: "The grave" }],
   judgement: [{ ref: "Quran 99:7-8; Quran 3:30; Tirmidhi 37:3; Quran 80:34-37", desc: "Day of Judgement" }],
   paradise: [{ ref: "Quran 32:17; Bukhari 59:55; Quran 87:17; Bukhari 56:107; Quran 3:133; Quran 75:22-23", desc: "Paradise awaits" }],
   mercy: [{ ref: "Quran 39:53; Bukhari 78:31; Quran 94:6; Bukhari 97:34", desc: "Hope & mercy" }],

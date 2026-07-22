@@ -39,6 +39,8 @@ type DhikrItem = {
   english: string;
   target: number | null; // null = free (unlimited)
   hadith?: string;
+  /** One-line "why this dhikr" reward narration; refs inside are linkified. */
+  virtue?: string;
 };
 
 // The page's base cards. The user's *custom* cards (added via the Worship tab
@@ -54,6 +56,7 @@ const BASE_DHIKR = [
     english: "Glory be to Allah",
     target: 33,
     hadith: "Muslim 5:184",
+    virtue: "With Alhamdulillah it fills what is between the heavens and the earth (Muslim 2:1).",
   },
   {
     id: "alhamdulillah",
@@ -63,6 +66,7 @@ const BASE_DHIKR = [
     english: "Praise be to Allah",
     target: 33,
     hadith: "Muslim 5:184",
+    virtue: "It fills the Scale of good deeds, and is the best supplication (Muslim 2:1; Tirmidhi 48:14).",
   },
   {
     id: "allahu-akbar",
@@ -72,6 +76,7 @@ const BASE_DHIKR = [
     english: "Allah is the Greatest",
     target: 34,
     hadith: "Muslim 5:184",
+    virtue: "Said 34 times after every prescribed prayer, its reciter is never left disappointed (Muslim 5:186).",
   },
   {
     id: "la-ilaha-illallah",
@@ -81,6 +86,7 @@ const BASE_DHIKR = [
     english: "There is no god but Allah",
     target: 100,
     hadith: "Bukhari 80:98",
+    virtue: "The best remembrance (Tirmidhi 48:14). Said in its full form — La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadeer — 100 times a day, it equals freeing ten slaves and guards you from Shaytan until nightfall (Bukhari 80:98).",
   },
   {
     id: "subhanallahi-wa-bihamdihi",
@@ -90,6 +96,7 @@ const BASE_DHIKR = [
     english: "Glory and praise be to Allah",
     target: 100,
     hadith: "Bukhari 80:100",
+    virtue: "Two words light on the tongue, heavy on the Scale, beloved to the Most Merciful; said 100 times a day, sins are forgiven though they be like the foam of the sea (Bukhari 80:101; Bukhari 80:100).",
   },
   {
     id: "astaghfirullah",
@@ -99,6 +106,7 @@ const BASE_DHIKR = [
     english: "I seek forgiveness from Allah",
     target: 100,
     hadith: "Bukhari 80:4",
+    virtue: "The Prophet ﷺ would be counted seeking forgiveness a hundred times in a single sitting (Tirmidhi 48:65).",
   },
   {
     id: "la-hawla",
@@ -108,6 +116,7 @@ const BASE_DHIKR = [
     english: "There is no power except with Allah",
     target: null,
     hadith: "Bukhari 80:79",
+    virtue: "It is a treasure from the treasures of Paradise (Bukhari 80:79).",
   },
   {
     id: "salawat",
@@ -117,6 +126,7 @@ const BASE_DHIKR = [
     english: "O Allah, send blessings upon Muhammad",
     target: 100,
     hadith: "Muslim 4:74",
+    virtue: "Whoever sends blessings upon the Prophet ﷺ once, Allah sends ten blessings upon him (Muslim 4:74).",
   },
 ] as const satisfies DhikrItem[];
 
@@ -215,6 +225,7 @@ type DhikrCardModel = {
   target: number | null; // counting ring (null = free)
   manageGoal: number; // goal-stepper value (always a number)
   hadith?: string;
+  virtue?: string;
   isCustom: boolean;
 };
 
@@ -341,7 +352,12 @@ function DhikrCard({
             {dhikr.english && (
               <p className="text-xs text-themed-muted mt-0.5">{dhikr.english}</p>
             )}
-            {dhikr.hadith && (
+            {dhikr.virtue && (
+              <p className="text-[11px] text-themed-muted mt-1.5 leading-snug">
+                <HadithRefText text={dhikr.virtue} />
+              </p>
+            )}
+            {dhikr.hadith && !dhikr.virtue && (
               <p className="text-[10px] text-themed-muted/60 mt-1.5 italic">
                 <HadithRefText text={dhikr.hadith} />
               </p>
@@ -536,6 +552,46 @@ function SequencePlayer({
   );
 }
 
+/** Emotional framing under the hero: the most beloved dhikr narrations. */
+function DhikrVirtuesIntro() {
+  return (
+    <ContentCard className="mb-5">
+      <p className="text-sm text-themed leading-relaxed">
+        The Prophet ﷺ said the <span className="text-gold font-medium">Mufarridun</span> have raced ahead —
+        those who remember Allah abundantly, whose remembrance lays down their burdens so they come light
+        on the Day of Judgment. He ﷺ also taught that the remembrance of Allah is better for you than
+        spending gold and silver, and that those who remember Allah much are the highest of people in rank.
+      </p>
+      <p className="text-[10px] text-themed-muted/60 mt-2 italic">
+        <HadithRefText text="Tirmidhi 48:227; Tirmidhi 48:8; Tirmidhi 48:7" />
+      </p>
+    </ContentCard>
+  );
+}
+
+/** How the Prophet ﷺ counted and remembered Allah — a one-card teaching. */
+function CountingEtiquetteCard() {
+  const bullets = [
+    "Count on your fingers and fingertips — the Prophet ﷺ told the women to count this way, for the fingers will be questioned and made to speak on the Day of Judgment (Abu Dawud 8:86; Tirmidhi 48:214).",
+    "Remember Allah much, and glorify Him morning and evening (Quran 33:41-42).",
+    "Remember your Lord within yourself, humbly and quietly, without raising your voice (Quran 7:205).",
+    "Remember Allah standing, sitting, and lying on your side — in every state (Quran 3:191).",
+  ];
+  return (
+    <ContentCard className="mt-6">
+      <h3 className="text-sm font-semibold text-themed mb-2">How the Prophet ﷺ counted</h3>
+      <ul className="space-y-2">
+        {bullets.map((b, i) => (
+          <li key={i} className="flex items-start gap-2 text-xs text-themed-muted leading-snug">
+            <span className="text-gold mt-0.5 shrink-0">•</span>
+            <span><HadithRefText text={b} /></span>
+          </li>
+        ))}
+      </ul>
+    </ContentCard>
+  );
+}
+
 function DhikrPageInner() {
   const searchParams = useSearchParams();
   const scrollToItem = searchParams.get("item");
@@ -568,6 +624,7 @@ function DhikrPageInner() {
         target: override ?? d.target,
         manageGoal: override ?? fallback,
         hadith: d.hadith,
+        virtue: d.virtue,
         isCustom: false,
       };
     });
@@ -770,6 +827,9 @@ function DhikrPageInner() {
           </div>
         ) : (
           <>
+            {/* Why we remember Allah — beloved dhikr narrations */}
+            {!activePresetId && <DhikrVirtuesIntro />}
+
             {/* Guided sequences — chain the shared counters card-to-card */}
             {activePresetId ? (
               <SequencePlayer
@@ -831,17 +891,24 @@ function DhikrPageInner() {
           </button>
         </div>
 
+        {/* How the Prophet ﷺ counted — etiquette teaching */}
+        {!manage && <CountingEtiquetteCard />}
+
         {/* Sources */}
         <SourcesCard className="mt-6" sources={[
           { ref: "Muslim 5:184; Muslim 5:186", desc: "SubhanAllah (33), Alhamdulillah (33), Allahu Akbar (34) after every prayer" },
           { ref: "Muslim 5:171", desc: "The Prophet ﷺ sought forgiveness three times when he finished the prayer" },
           { ref: "Muslim 5:188", desc: "Tasbih, tahmid, and takbir 33 each after every prayer, completed to 100 with the tahlil — sins forgiven even if like the foam of the sea" },
           { ref: "Bukhari 80:15; Muslim 48:108", desc: "Tasbih Fatimah at bedtime — takbir 34, tasbih 33, tahmid 33 — “better for you than a servant”" },
-          { ref: "Bukhari 80:98", desc: "La ilaha illallah (tahleel)" },
-          { ref: "Bukhari 80:100", desc: "SubhanAllahi wa bihamdihi one hundred times" },
-          { ref: "Bukhari 80:4", desc: "Astaghfirullah — seeking forgiveness" },
-          { ref: "Bukhari 80:79", desc: "La hawla wa la quwwata illa billah" },
-          { ref: "Muslim 4:74", desc: "Salawat upon the Prophet ﷺ" },
+          { ref: "Muslim 2:1", desc: "Alhamdulillah fills the Scale; SubhanAllah and Alhamdulillah fill what is between the heavens and the earth" },
+          { ref: "Tirmidhi 48:14", desc: "The best remembrance is La ilaha illallah, and the best supplication is Alhamdulillah" },
+          { ref: "Bukhari 80:98", desc: "The full tahlil (La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadeer) 100 times — the reward of freeing ten slaves and a shield from Shaytan till nightfall" },
+          { ref: "Bukhari 80:100; Bukhari 80:101", desc: "SubhanAllahi wa bihamdihi 100 times forgives sins like the foam of the sea; two words light on the tongue, heavy on the Scale" },
+          { ref: "Bukhari 80:4; Tirmidhi 48:65", desc: "Astaghfirullah — the Prophet ﷺ sought forgiveness a hundred times in a sitting" },
+          { ref: "Bukhari 80:79", desc: "La hawla wa la quwwata illa billah — a treasure of Paradise" },
+          { ref: "Muslim 4:74", desc: "Whoever sends blessings on the Prophet ﷺ once, Allah sends ten upon him" },
+          { ref: "Tirmidhi 48:227; Tirmidhi 48:8; Tirmidhi 48:7", desc: "The Mufarridun race ahead; remembrance is better than gold and silver; those who remember Allah much are highest in rank" },
+          { ref: "Abu Dawud 8:86; Tirmidhi 48:214", desc: "Count dhikr on the fingers, for they will be made to speak on the Day of Judgment" },
           { ref: "Quran 13:28", desc: "In the remembrance of Allah do hearts find rest" },
         ]} />
       </div>

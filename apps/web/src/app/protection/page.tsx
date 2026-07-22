@@ -73,6 +73,33 @@ const sihrTopics: Topic[] = [
     },
   },
   {
+    id: "afflicted-prophet",
+    name: "When the Prophet Was Afflicted",
+    content: {
+      intro:
+        "The most famous narration on the whole subject concerns the Prophet (peace be upon him) himself: sorcery was worked on him by a man named Labid ibn al-A'sam. It answers the question every afflicted believer asks — can this reach even the best of people? — and it shows exactly how he responded: not with counter-magic, but by turning to Allah, who cured him.",
+      points: [
+        {
+          title: "Magic was worked on the Prophet",
+          detail:
+            "A'isha narrated: 'Magic was worked on the Prophet (peace be upon him) so that he began to fancy that he was doing a thing which he was not actually doing. One day he invoked (Allah) for a long period and then said, \"I feel that Allah has inspired me as how to cure myself.\"' That sihr struck even the Messenger of Allah shows that being afflicted is no sign of weak faith or of Allah's displeasure — it is a trial, and it has a cure.",
+          note: "Bukhari 59:78",
+        },
+        {
+          title: "Labid ibn al-A'sam, named",
+          detail:
+            "A'isha said: 'A man called Labid bin al-A'sam from the tribe of Bani Zaraiq worked magic on Allah's Messenger (peace be upon him) till Allah's Messenger (peace be upon him) started imagining that he had done a thing that he had not really done.' In answer to his long supplication, two men came to him in a dream and named the sorcerer, the material he had used — a comb, the hairs stuck to it, and the skin of pollen of a male date-palm — and its hiding place in the well of Dharwan.",
+          note: "Bukhari 76:77",
+        },
+        {
+          title: "He turned to Allah, not to counter-magic",
+          detail:
+            "When the well was found, the Prophet (peace be upon him) did not answer sorcery with sorcery. He said, 'Since Allah cured me, I disliked to let evil spread among the people,' and ordered the well filled with earth. His cure was du'a and Allah's response — the very means available to every believer: the two protecting surahs, ruqyah, and reliance on Allah.",
+        },
+      ],
+    },
+  },
+  {
     id: "seven-destructive-sins",
     name: "A Destructive Sin",
     content: {
@@ -154,6 +181,47 @@ const sihrTopics: Topic[] = [
           title: "A balanced heart",
           detail:
             "The person who keeps the daily adhkar, prays on time, and recites the Quran regularly has done what the Prophet (peace be upon him) prescribed. After that, fear of sihr should have no grip on the heart: nothing occurs except by Allah's permission, and He is sufficient for those who rely on Him.",
+        },
+      ],
+    },
+  },
+  {
+    id: "if-you-suspect",
+    name: "If You Suspect Affliction",
+    content: {
+      intro:
+        "A genuinely worried reader needs more than doctrine — an ordered, calm walkthrough of what to actually do. The steps below reflect standard scholarly guidance; keep them in order and do not skip the first.",
+      points: [
+        {
+          title: "1. See a doctor first",
+          detail:
+            "Most symptoms blamed on sihr or the eye — exhaustion, anxiety, insomnia, marital strain — have ordinary medical or psychological causes. Seeking qualified help is part of taking the means Allah prescribed, not a lapse of faith. Medicine and ruqyah are companions, not rivals.",
+        },
+        {
+          title: "2. Keep the daily fortress",
+          detail:
+            "Hold firmly to the morning and evening adhkar, the three Quls, Ayat al-Kursi, and praying on time. These are the everyday shield the Prophet (peace be upon him) never left — see the Daily Protection tab of this page.",
+        },
+        {
+          title: "3. Perform self-ruqyah",
+          detail:
+            "You need no one's permission or presence: recite al-Fatiha, Ayat al-Kursi, and the three Quls over yourself, blowing gently, and persist over days rather than expecting one session to suffice. The Ruqyah tab walks through each step.",
+        },
+        {
+          title: "4. Do not accuse anyone",
+          detail:
+            "Suspecting a named person without proof is a grave charge against their faith and honor. Treat the affliction and leave blame to Allah — a believer keeps husn adh-dhann (thinking well of others) even while guarding himself.",
+        },
+        {
+          title: "5. Never seek a cure through sorcery (nushrah)",
+          detail:
+            "Undoing magic through another sorcerer — 'nushrah' — means seeking help from the very devils that caused the harm. The Prophet (peace be upon him) said: 'Spells, charms and love-potions are polytheism' (Abu Dawud 29:29), and 'He who visits a diviner and asks him about anything, his prayers extending to forty nights will not be accepted' (Muslim 39:173). A cure sought through shirk is no cure.",
+          note: "Muslim 39:173; Abu Dawud 29:29",
+        },
+        {
+          title: "6. Involve a trustworthy raqi if needed",
+          detail:
+            "If the adhkar and self-ruqyah are not enough, ask a person known for sound belief and righteousness to recite over you — openly, from the Quran and the authentic supplications. The Ruqyah tab lists what to look for and the red flags of a sorcerer in disguise.",
         },
       ],
     },
@@ -278,6 +346,44 @@ const evilEyeTopics: Topic[] = [
           title: "Emptying the heart of hasad",
           detail:
             "The practical cure scholars prescribe for envy in one's own heart: make du'a for the person you envy, congratulate them sincerely, and remember that Allah's giving follows His wisdom. What He allotted you was never diminished by what He gave another.",
+        },
+      ],
+    },
+  },
+  {
+    id: "protecting-children",
+    name: "Protecting Children",
+    content: {
+      intro:
+        "Parents — especially of a new baby — are the audience most anxious about the evil eye. The Prophet's own practice with his grandsons is the template: seek Allah's refuge over them, recite the Quls at bedtime, and keep them in at dusk. Prevention here is gentle and daily, not fearful.",
+      verse: {
+        arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ، وَمِنْ كُلِّ عَيْنٍ لاَمَّةٍ",
+        text: "I seek Refuge with Your Perfect Words from every devil and from poisonous pests and from every evil, harmful, envious eye.",
+        ref: "Bukhari 60:45",
+      },
+      points: [
+        {
+          title: "The Prophet's du'a for Hasan and Husayn",
+          detail:
+            "Ibn Abbas said: 'The Prophet (peace be upon him) used to seek Refuge with Allah for Al-Hasan and Al-Husain and say: \"Your forefather (i.e. Abraham) used to seek Refuge with Allah for Ishmael and Isaac by reciting the following: A'udhu bi-kalimatillah at-tammah min kulli shaytanin wa hammah, wa min kulli 'aynin lammah — I seek Refuge with Your Perfect Words from every devil and from poisonous pests and from every evil, harmful, envious eye.\"' Say it over each child, morning and evening.",
+          note: "Bukhari 60:45",
+        },
+        {
+          title: "The three Quls at bedtime",
+          detail:
+            "Recite Surah al-Ikhlas, al-Falaq and an-Nas, blow into your cupped hands, and wipe them gently over the child — the very routine the Prophet (peace be upon him) kept over himself every night. It turns bedtime into a moment of protection the child grows up loving.",
+          note: "Bukhari 66:39",
+        },
+        {
+          title: "Keep them in at dusk",
+          detail:
+            "The Prophet (peace be upon him) said: 'When night falls, then keep your children close to you, for the devils spread out then. An hour later you can let them free.' A simple habit for the first stretch of nightfall — see 'When Night Falls' in the Daily Protection tab.",
+          note: "Bukhari 59:89",
+        },
+        {
+          title: "Say ma sha' Allah when you admire them",
+          detail:
+            "When a child's beauty, health, or cleverness amazes you — or amazes a guest — tie it back to Allah with 'ma sha' Allah, tabarakallah' and a prayer for blessing. This is the Sunnah guard against the admiring glance becoming a harmful one (see 'When You Admire').",
         },
       ],
     },
@@ -476,6 +582,61 @@ const dailyTopics: Topic[] = [
     },
   },
   {
+    id: "quran-in-home",
+    name: "The Quran in Your Home",
+    content: {
+      intro:
+        "Two of the best-loved protection practices in the Sunnah concern the home itself: the surah that drives the Shaytan out of the house, and the two verses that suffice the believer at night.",
+      points: [
+        {
+          title: "Al-Baqarah empties the house of Shaytan",
+          detail:
+            "The Prophet (peace be upon him) said: 'Do not make your houses as graveyards. Satan runs away from the house in which Surah Baqara is recited.' A home in which the Quran is recited — even a regular portion — is a home the Shaytan flees; a home with no recitation and no dhikr is likened to a grave.",
+          note: "Muslim 6:252",
+        },
+        {
+          title: "The last two verses at night",
+          detail:
+            "The Prophet (peace be upon him) said: 'It is sufficient for one to recite the last two Verses of Surat-al-Baqara at night,' and in another wording, 'that will be sufficient for him.' These verses — Amana-r-rasulu (2:285-286) — are a nightly protection that takes under a minute.",
+          note: "Bukhari 64:59; Bukhari 66:31",
+        },
+        {
+          title: "Keep recitation alive in it",
+          detail:
+            "You need not recite all of al-Baqarah at once — keep the Quran a living sound in your home through daily portions, memorization, and teaching the children. The full daily routine is on the worship guide linked below.",
+        },
+      ],
+    },
+  },
+  {
+    id: "when-night-falls",
+    name: "When Night Falls",
+    content: {
+      intro:
+        "A vivid, immediately practical household sunnah: as dusk settles, the Prophet (peace be upon him) taught a few simple acts that shut the Shaytan out of the home for the night — acts a parent can begin the very evening they read them.",
+      points: [
+        {
+          title: "Keep your children close at dusk",
+          detail:
+            "The Prophet (peace be upon him) said: 'When night falls, then keep your children close to you, for the devils spread out then. An hour later you can let them free; and close the gates of your house, and mention Allah's Name thereupon, and cover your utensils, and mention Allah's Name thereupon.'",
+          note: "Bukhari 59:89; Bukhari 59:112",
+        },
+        {
+          title: "Shut the doors, cover the vessels, put out the lamps",
+          detail:
+            "The Prophet (peace be upon him) said: 'Cover vessels, waterskins, close the doors and extinguish the lamps, for the Satan does not loosen the waterskin, does not open the door and does not uncover the vessels. And if one amongst you fails to find (something) to cover it well, he should cover it by placing (a piece of) wood across it.'",
+          note: "Muslim 36:120",
+        },
+        {
+          title: "The thread through all of it is Allah's name",
+          detail:
+            "Each act is paired with bismillah: a door closed in Allah's name stays shut against the Shaytan. As the Prophet (peace be upon him) said, 'Close the doors and mention the Name of Allah, for Satan does not open a closed door.'",
+          note: "Bukhari 59:112",
+        },
+      ],
+    },
+  },
+  {
     id: "home-and-out",
     name: "Home & Going Out",
     content: {
@@ -510,10 +671,156 @@ const dailyTopics: Topic[] = [
   },
 ];
 
+const waswasTopics: Topic[] = [
+  {
+    id: "whispers-about-faith",
+    name: "Whispers About Faith",
+    content: {
+      intro:
+        "One of the Shaytan's sharpest attacks is the whisper aimed at faith itself — sudden, unwanted thoughts that question Allah, the religion, or one's own belief. These thoughts distress the believer precisely because he loves his faith. The Prophet (peace be upon him) did not tell us to fear them or to untangle them by argument; he gave a short, decisive response: recognize where the whisper comes from, seek refuge in Allah, affirm your belief, and turn away.",
+      points: [
+        {
+          title: "'Who created your Lord?'",
+          detail:
+            "Abu Huraira narrated that the Prophet (peace be upon him) said: 'Satan comes to one of you and says, \"Who created so-and-so?\" till he says, \"Who has created your Lord?\" So, when he inspires such a question, one should seek refuge with Allah and give up such thoughts.' The whisper is not your belief — it is an attack on it, and the answer is not to debate but to seek refuge and stop.",
+          note: "Bukhari 59:85",
+        },
+        {
+          title: "Affirm your faith and move on",
+          detail:
+            "In Sahih Muslim the same guidance is given: 'Men will continue to question one another till this is propounded: Allah created all things but who created Allah? He who found himself confronted with such a situation should say: I affirm my faith in Allah.' A firm word of belief — 'I believe in Allah' — and then disengaging is the prophetic cure, not chasing the thought in circles.",
+          note: "Muslim 1:250",
+        },
+        {
+          title: "The thought is not held against you",
+          detail:
+            "The Prophet (peace be upon him) said: 'Allah has forgiven my followers the evil thoughts that occur to their minds, as long as such thoughts are not put into action or uttered.' An intrusive thought that arrives uninvited and unwanted is not a sin — you answer for what you choose and do, not for what the Shaytan throws at you.",
+          note: "Bukhari 68:19",
+        },
+      ],
+    },
+  },
+  {
+    id: "sign-of-faith",
+    name: "A Sign of Faith",
+    content: {
+      intro:
+        "The most reassuring truth for anyone plagued by these whispers: experiencing them is not hypocrisy or weak faith. The Prophet (peace be upon him) told his own Companions — who were terrified by such thoughts — that the very distress they felt was evidence of a believing heart.",
+      points: [
+        {
+          title: "'That is the faith manifest'",
+          detail:
+            "Abu Huraira reported that some of the Companions came to the Prophet (peace be upon him) and said: 'Verily we perceive in our minds that which every one of us considers it too grave to express.' He said: 'Do you really perceive it?' They said: 'Yes.' Upon this he remarked: 'That is the faith manifest.' The horror you feel at the thought is itself proof that faith, not the whisper, owns your heart.",
+          note: "Muslim 1:247",
+        },
+        {
+          title: "'It is pure faith'",
+          detail:
+            "Ibn Mas'ud reported that the Prophet (peace be upon him) 'was asked about evil prompting, to which he replied: It is pure faith.' The Shaytan does not waste effort whispering doubt into a heart already empty of faith — he attacks the believer precisely because there is something there to attack.",
+          note: "Muslim 1:249",
+        },
+        {
+          title: "When it feels relentless",
+          detail:
+            "Scholars of the heart note that anxiety over these whispers — sometimes so intense it resembles obsessive doubt (waswas qahri) — is a trial, not a verdict. The believer troubled by the thought has already rejected it. When it becomes persistent and distressing, seeking professional help alongside the adhkar is taking the means, not a failure of faith.",
+        },
+      ],
+    },
+  },
+  {
+    id: "whispers-in-prayer",
+    name: "Whispers in Prayer",
+    content: {
+      intro:
+        "The Shaytan works hardest to steal the believer's focus in salah and recitation. When a Companion complained of exactly this, the Prophet (peace be upon him) named the culprit and gave a simple, one-time remedy — not a ritual to repeat obsessively.",
+      points: [
+        {
+          title: "The devil named Khinzab",
+          detail:
+            "Uthman b. Abu al-'As came to the Prophet (peace be upon him) and said: 'Allah's Messenger, the Satan intervenes between me and my prayer and my reciting of the Qur'an and he confounds me.' The Prophet (peace be upon him) said: 'That is (the doing of a) Satan (devil) who is known as Khinzab, and when you perceive its effect, seek refuge with Allah from it and spit three times to your left.' Uthman said: 'I did that and Allah dispelled that from me.'",
+          note: "Muslim 39:92",
+        },
+        {
+          title: "The response: refuge and a light spit",
+          detail:
+            "When distraction floods the prayer, seek refuge in Allah and give a light dry spit (nafth, without saliva) three times to your left, then simply return to your salah. It is done once and left — treating it as a compulsion to repeat perfectly only feeds the very whisper it was meant to dispel.",
+        },
+        {
+          title: "The adhan already routs him",
+          detail:
+            "The Prophet (peace be upon him) said: 'When the Adhan is pronounced Satan takes to his heels and passes wind with noise during his flight in order not to hear the Adhan… till he whispers into the heart of the person… and makes him remember things which he does not recall to his mind before the prayer.' The call to prayer itself drives the Shaytan off; he returns only to whisper — a daily contest the believer is fully equipped to win.",
+          note: "Bukhari 10:6; Bukhari 21:26",
+        },
+      ],
+    },
+  },
+  {
+    id: "seeking-refuge",
+    name: "Seeking Refuge Daily",
+    content: {
+      intro:
+        "Isti'adha — seeking refuge in Allah — is the believer's standing guard against the whisperer. Allah Himself commands it before recitation, and the Prophet (peace be upon him) reached for it at the moments the Shaytan presses hardest.",
+      verse: {
+        arabic: "فَإِذَا قَرَأْتَ ٱلْقُرْءَانَ فَٱسْتَعِذْ بِٱللَّهِ مِنَ ٱلشَّيْطَـٰنِ ٱلرَّجِيمِ",
+        text: "When you recite the Qur’an, seek refuge with Allah from the accursed Satan.",
+        ref: "Quran 16:98",
+      },
+      points: [
+        {
+          title: "Before reciting the Quran",
+          detail:
+            "Allah commands: 'When you recite the Qur'an, seek refuge with Allah from the accursed Satan.' Beginning with 'A'udhu billahi min ash-shaytan ir-rajim' sets a guard over the recitation before the whisper can enter it.",
+          note: "Quran 16:98",
+        },
+        {
+          title: "When anger rises",
+          detail:
+            "Two men abused each other before the Prophet (peace be upon him) and the face of one reddened with rage. The Prophet (peace be upon him) said: 'I know a word, the saying of which will cause him to relax… If he says: \"I seek Refuge with Allah from Satan,\" then all his anger will go away.' Anger is a doorway the Shaytan uses; the isti'adha shuts it.",
+          note: "Bukhari 59:91",
+        },
+        {
+          title: "A habit, not an emergency",
+          detail:
+            "Seeking refuge belongs to the whole day — entering the bathroom, at moments of fear, before sleep, when a bad thought comes. Turn the isti'adha into a reflex. The Daily Protection tab and the protection du'as page collect the fixed adhkar that keep this guard in place.",
+        },
+      ],
+    },
+  },
+  {
+    id: "dreams-and-nightmares",
+    name: "Dreams & Nightmares",
+    content: {
+      intro:
+        "Frightening dreams are a common trigger for anxiety — and, historically, for turning to fortune-tellers, which this page warns against. The Prophet (peace be upon him) gave a complete, calming etiquette: a good dream is from Allah, a bad one is the Shaytan's idle play, and it can do you no harm once you follow the simple response.",
+      points: [
+        {
+          title: "Good is from Allah, bad is from the Shaytan",
+          detail:
+            "The Prophet (peace be upon him) said: 'A good vision is from Allah and a bad dream (hulm) is from the satan; so if one of you sees anything (in a dream) which he dislikes, he should spit on his left side thrice and seek refuge with Allah from its evil, and then it will never harm him.' A distressing dream is not a message or an omen — it is the Shaytan trying to grieve you.",
+          note: "Muslim 42:4",
+        },
+        {
+          title: "The response, step by step",
+          detail:
+            "Jabir reported that the Prophet (peace be upon him) said: 'If anyone sees a dream which he does not like, he should spit on his left side three times, and seek refuge with Allah from the Satan three times, and let him turn over from the side on which he was sleeping.' Spit lightly (dry) to the left, say the isti'adha, and change the side you were lying on.",
+          note: "Muslim 42:8",
+        },
+        {
+          title: "Tell no one about it",
+          detail:
+            "The Prophet (peace be upon him) said one 'should not disclose it to anyone,' whereas a good vision may be shared only 'to anyone but whom one loves.' Not retelling a bad dream is part of stripping it of its power — 'it will not do one any harm.'",
+          note: "Muslim 42:6",
+        },
+      ],
+    },
+  },
+];
+
 const tabs = [
   { key: "overview", label: "Overview" },
   { key: "sihr", label: "Sihr (Magic)" },
   { key: "evil-eye", label: "The Evil Eye" },
+  { key: "waswas", label: "Waswas" },
   { key: "ruqyah", label: "Ruqyah" },
   { key: "daily", label: "Daily Protection" },
 ] as const;
@@ -577,6 +884,9 @@ function ProtectionContent() {
   const [eyeSub, setEyeSub] = useState(() =>
     initialSub && evilEyeTopics.some((t) => t.id === initialSub) ? initialSub : evilEyeTopics[0].id
   );
+  const [waswasSub, setWaswasSub] = useState(() =>
+    initialSub && waswasTopics.some((t) => t.id === initialSub) ? initialSub : waswasTopics[0].id
+  );
   const [ruqyahSub, setRuqyahSub] = useState(() =>
     initialSub && ruqyahTopics.some((t) => t.id === initialSub) ? initialSub : ruqyahTopics[0].id
   );
@@ -621,15 +931,17 @@ function ProtectionContent() {
     };
     fix(sihrTopics, sihrSub, setSihrSub);
     fix(evilEyeTopics, eyeSub, setEyeSub);
+    fix(waswasTopics, waswasSub, setWaswasSub);
     fix(ruqyahTopics, ruqyahSub, setRuqyahSub);
     fix(dailyTopics, dailySub, setDailySub);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, sihrSub, eyeSub, ruqyahSub, dailySub]);
+  }, [search, sihrSub, eyeSub, waswasSub, ruqyahSub, dailySub]);
 
   // Active topic per rail — the Sources card below each rail lists ONLY the
   // currently selected topic's refs (house rule), never the whole tab's.
   const activeSihrTopic = sihrTopics.find((t) => t.id === sihrSub) ?? sihrTopics[0];
   const activeEyeTopic = evilEyeTopics.find((t) => t.id === eyeSub) ?? evilEyeTopics[0];
+  const activeWaswasTopic = waswasTopics.find((t) => t.id === waswasSub) ?? waswasTopics[0];
   const activeRuqyahTopic = ruqyahTopics.find((t) => t.id === ruqyahSub) ?? ruqyahTopics[0];
   const activeDailyTopic = dailyTopics.find((t) => t.id === dailySub) ?? dailyTopics[0];
 
@@ -646,7 +958,7 @@ function ProtectionContent() {
         activeSub={activeSub}
         setActiveSub={onSubChange}
       >
-        {active && <TopicInfoCard topic={active} />}
+        {active && <TopicInfoCard topic={active} showSource={false} />}
       </SubTabLayout>
     );
   };
@@ -800,6 +1112,55 @@ function ProtectionContent() {
 
             {topicSourceRefs(activeEyeTopic).length > 0 && (
               <SourcesCard className="mt-8" sources={topicSourceRefs(activeEyeTopic)} />
+            )}
+          </motion.div>
+        )}
+
+        {/* ─── Waswas & the Shaytan ─── */}
+        {activeTab === "waswas" && (
+          <motion.div
+            key="waswas"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {renderTopicRail(waswasTopics, waswasSub, handleSubChange("waswas", setWaswasSub))}
+
+            {/* Companion pages — the whisper about faith is treated in depth here;
+                the doubt-framing angles live on why-islam and articles-of-faith. */}
+            <ContentCard className="mt-6">
+              <h3 className="font-semibold text-themed mb-2">Reassurance, not alarm</h3>
+              <p className="text-themed-muted text-sm leading-relaxed">
+                Intrusive religious thoughts are among the most common trials a believer faces —
+                and, as the Prophet (peace be upon him) taught, the distress they cause is itself a
+                mark of faith. For the fixed adhkar that keep the whisperer at bay, and for the
+                framing of doubt as a step toward certainty, see the pages below.
+              </p>
+              <div className="flex gap-3 flex-wrap mt-3">
+                <Link
+                  href="/duas?tab=protection"
+                  className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  Protection du&apos;as →
+                </Link>
+                <Link
+                  href="/articles-of-faith"
+                  className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  Articles of faith →
+                </Link>
+                <Link
+                  href="/why-islam"
+                  className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  Why Islam →
+                </Link>
+              </div>
+            </ContentCard>
+
+            {topicSourceRefs(activeWaswasTopic).length > 0 && (
+              <SourcesCard className="mt-6" sources={topicSourceRefs(activeWaswasTopic)} />
             )}
           </motion.div>
         )}

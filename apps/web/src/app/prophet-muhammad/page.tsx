@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Suspense, Fragment } from "react";
+import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,7 +24,7 @@ const sections = [
   { id: "character", label: "Character & Virtues" },
   { id: "his-person", label: "His Person" },
   { id: "family", label: "Family & Companions" },
-  { id: "prophecies", label: "Prophecies" },
+  { id: "prophecies", label: "Miracles & Prophecies" },
   { id: "worship-sunnah", label: "Worship & Sunnah" },
 ];
 
@@ -164,6 +165,14 @@ const prophetNames = [
       "He was sent with the message that the door of repentance is always open. No sin is too great for Allah's forgiveness if one turns back sincerely. The Prophet ﷺ himself would seek Allah's forgiveness more than seventy times a day, though all his sins — past and future — had been forgiven. He taught: 'Allah is more pleased with the repentance of His servant than a man who loses his camel in the desert and then finds it again.' His message brought hope to sinners who had despaired of Allah's mercy, and he encouraged repentance at every opportunity.",
     reference: "Muslim 43:166; Bukhari 80:4; Muslim 50:7",
   },
+  {
+    name: "The Five Distinctions (Khaṣāʾiṣ)",
+    nameAr: "الخصائص الخمس",
+    meaning: "Given to no prophet before him",
+    description:
+      "Beyond his names, the Prophet ﷺ was given five distinctions that set his prophethood apart from every messenger before him. He said: 'I have been given five things which were not given to any one else before me.' First, Allah made him victorious by awe striking his enemies at a distance of one month's journey. Second, the whole earth was made a place of prayer and a means of purification for his ummah, so a Muslim may pray wherever the time of prayer overtakes him. Third, the spoils of war were made lawful for him, though they were forbidden to earlier prophets. Fourth, he was given the power of intercession. Fifth, whereas each earlier prophet was sent only to his own people, he ﷺ was sent to all of mankind. This concise hadith is a frequent answer to the question of what makes Muhammad ﷺ unique among the prophets.",
+    reference: "Bukhari 7:2; Bukhari 8:87",
+  },
 ];
 
 
@@ -198,6 +207,13 @@ const timeline: TimelineEvent[] = [
     reference: "Seerah — Ibn Hisham; Ibn Sa'd, at-Tabaqat",
     detail:
       "Abdul Muttalib, who had been deeply attached to his grandson and recognized his special qualities, passed away when Muhammad ﷺ was eight years old. On his deathbed, he entrusted the boy to his son Abu Talib, who was the full brother of the Prophet's ﷺ father Abdullah. Abu Talib took Muhammad ﷺ into his household, treating him with more care than his own children, and would remain his protector and supporter for the next four decades. Despite never embracing Islam, Abu Talib shielded the Prophet ﷺ from the Quraysh and refused all pressure to hand him over.",
+  },
+  {
+    year: "c. 582 CE",
+    title: "Tending sheep — his shepherd youth",
+    detail:
+      "Like the prophets before him, Muhammad ﷺ spent part of his youth as a shepherd, tending flocks for the people of Mecca in return for a modest wage. He later taught that shepherding was a shared training of all the prophets — cultivating patience, gentleness, vigilance, and responsibility for those in one's care. When his companions heard him say that Allah sends no prophet except that he shepherds sheep, they asked whether he had done so too. He ﷺ said: 'Allah did not send any prophet but shepherded sheep,' and of himself: 'Yes, I used to shepherd the sheep of the people of Mecca for some Qirats.' The one who would shepherd an entire ummah was first entrusted with a flock.",
+    reference: "Bukhari 37:3",
   },
   {
     year: "583 CE",
@@ -240,6 +256,13 @@ const timeline: TimelineEvent[] = [
     reference: "Bukhari 39:8; Bukhari 62:46",
     detail:
       "As the persecution of Muslims in Mecca became unbearable, the Prophet ﷺ told his companions: 'If you went to the land of Abyssinia, you would find a king under whom no one is oppressed.' He sent a first group of 11 men and 4 women, followed later by a larger second migration of about 83 men and 18 women. The Quraysh sent Amr ibn al-As and Abdullah ibn Abi Rabi'ah with lavish gifts for the Negus (An-Najashi) and his courtiers, demanding the return of the Muslims. In the royal court, Ja'far ibn Abi Talib — the Prophet's ﷺ cousin — stood and delivered a powerful speech: 'O King, we were a people of ignorance, worshipping idols, eating dead animals, committing shameful acts... then Allah sent us a Messenger from among us, whose lineage, truthfulness, trustworthiness, and purity we knew.' He then recited the opening verses of Surah Maryam about the birth of Isa (Jesus). The Negus wept until his beard was wet and declared he would never hand them over. The Muslims remained safely in Abyssinia for years, and the Negus later embraced Islam.",
+  },
+  {
+    year: "615–616 CE",
+    title: "Conversions of Hamzah and Umar",
+    detail:
+      "Two of the strongest men of the Quraysh entered Islam within roughly a year of each other, transforming the standing of the young Muslim community. Hamzah ibn Abdul Muttalib — the Prophet's ﷺ uncle and one of the most feared warriors of Mecca — embraced Islam in defense of his nephew after Abu Jahl had abused him (as recorded in the sīrah). Then came Umar ibn al-Khattab, who had set out intending to kill the Prophet ﷺ but was turned to faith on the way. The Prophet ﷺ had earlier supplicated for exactly this, as Aisha narrated: 'O Allah! Strengthen Islam with 'Umar bin Khattab in particular' — and in another wording he asked Allah to honor Islam through the dearer to Him of Umar or Abu Jahl, and Umar was the dearer. With Umar's conversion the Muslims prayed openly at the Ka'bah for the first time, and he was thereafter called Al-Faruq, the one who distinguishes truth from falsehood.",
+    reference: "Ibn Majah 0:105; Tirmidhi 49:77",
   },
   {
     year: "616 CE",
@@ -311,12 +334,28 @@ const timeline: TimelineEvent[] = [
     reference: "Quran 33:9-11; Quran 33:22; Bukhari 64:150; Bukhari 64:159",
   },
   {
+    year: "627 CE",
+    hijri: "5 AH",
+    title: "The Slander (Al-Ifk)",
+    detail:
+      "On the return from an expedition, Aisha was unknowingly left behind when the caravan set off — she had stepped away to search for a lost necklace and her howdah was lifted onto the camel without her. She was found and brought back to Medina by the companion Safwan ibn al-Mu'attal, and the hypocrites led by Abdullah ibn Ubayy seized upon this to spread a vile slander against her chastity. For about a month the accusation tormented the Prophet's ﷺ household and the whole community, until Allah Himself declared her innocence from above the seven heavens in Surah an-Nur: 'Indeed, those who came up with the slander are a group among you. Do not think that it is bad for you, rather it is good for you.' From this trial came the Islamic safeguard requiring four eyewitnesses for any accusation of adultery, and a grave warning against slandering chaste believers.",
+    reference: "Bukhari 64:185; Quran 24:11",
+  },
+  {
     year: "628 CE",
     hijri: "6 AH",
     title: "Treaty of Hudaybiyyah",
     detail:
       "The Prophet ﷺ saw a dream that he was performing Umrah, so he set out for Mecca with about 1,400 companions in the state of ihram, bringing sacrificial animals to show their peaceful intent. The Quraysh, however, refused them entry. At Hudaybiyyah, on the outskirts of Mecca, the Prophet ﷺ sent Uthman ibn Affan as an envoy to negotiate. When a rumor spread that Uthman had been killed, the Prophet ﷺ called his companions to pledge allegiance under a tree — the Bay'ah al-Ridwan (Pledge of Good Pleasure), which Allah praised in the Quran: 'Allah was pleased with the believers when they pledged to you under the tree.' A treaty was then negotiated with terms that appeared unfavorable: the Muslims would return to Medina without performing Umrah that year, any Meccan who fled to Medina must be returned, but any Muslim who fled to Mecca would not be returned, and there would be a ten-year truce. Umar ibn al-Khattab was so distressed that he questioned the terms, but the Prophet ﷺ remained firm: 'I am the Messenger of Allah, and I will not disobey Him.' Despite the apparent setback, Allah called it a 'clear victory' — the peace allowed the Prophet ﷺ to send letters inviting rulers of the world to Islam, and more people entered Islam in the two years of peace that followed than in all the previous years combined.",
     reference: "Quran 48:1; Quran 48:18; Bukhari 53:10; Bukhari 56:171",
+  },
+  {
+    year: "628 CE",
+    hijri: "6–7 AH",
+    title: "Letters to the kings and emperors",
+    detail:
+      "With the truce of Hudaybiyyah freeing him to look beyond Arabia, the Prophet ﷺ sent envoys bearing letters to the great rulers of the age — Heraclius of Byzantium, Khosrau (Kisra) of Persia, the Negus of Abyssinia, al-Muqawqis of Egypt, and others — inviting each to Islam. Heraclius received the letter with respect and questioned Abu Sufyan closely about the man calling to this new faith, privately acknowledging the signs of a true prophet though he did not embrace it. Khosrau of Persia, by contrast, tore the letter to pieces in arrogance; when word reached the Prophet ﷺ, he prayed that Allah tear apart his kingdom — and the Persian Empire was indeed torn to pieces within a few years. It was for these letters that the Prophet ﷺ had a silver seal-ring engraved with the words Muhammad, the Messenger of Allah.",
+    reference: "Bukhari 1:7; Bukhari 64:446; Bukhari 56:151",
   },
   {
     year: "628 CE",
@@ -333,6 +372,14 @@ const timeline: TimelineEvent[] = [
     detail:
       "As stipulated in the Treaty of Hudaybiyyah, the Prophet ﷺ and approximately 2,000 Muslims returned to Mecca to perform the Umrah they had been prevented from completing the previous year. The Quraysh evacuated the city and watched from the surrounding hills. The Prophet ﷺ entered Mecca riding his camel al-Qaswa, and the Muslims performed the tawaf (circumambulation) of the Ka'bah and the sa'i (walking) between Safa and Marwah. Abdullah ibn Rawahah walked before the Prophet ﷺ reciting poetry praising Allah and His Messenger. The Muslims stayed for three days as agreed. This peaceful visit made a powerful impression on the Quraysh and contributed to several prominent figures embracing Islam shortly afterward, including Khalid ibn al-Walid — who had led the cavalry charge at Uhud — and Amr ibn al-As.",
     reference: "Bukhari 64:286; Bukhari 64:290",
+  },
+  {
+    year: "629 CE",
+    hijri: "8 AH",
+    title: "Battle of Mu'tah",
+    detail:
+      "The Prophet ﷺ dispatched an army of 3,000 toward Mu'tah, near the borders of Byzantine Syria, after one of his envoys had been killed. He appointed Zayd ibn Harithah as commander, instructing that if Zayd fell, Ja'far ibn Abi Talib should take the banner, and if Ja'far fell, Abdullah ibn Rawahah. Facing an overwhelming enemy force, all three were martyred in turn, each seizing the banner as the one before him fell. In Medina, Allah unveiled the distant battlefield to His Prophet ﷺ, who announced their deaths with tears flowing before any news could arrive: 'Zaid took the flag and was martyred; then Ja`far took the flag and was martyred, and then Ibn Rawaha took the flag and was martyred.' The banner was then taken up by Khalid ibn al-Walid — 'one of Allah's Swords' — under whom the Muslims withdrew intact. It was at Mu'tah that Khalid earned his enduring title, Sayfullah (the Sword of Allah).",
+    reference: "Bukhari 62:103; Bukhari 56:16",
   },
   {
     year: "630 CE",
@@ -396,9 +443,9 @@ const timeline: TimelineEvent[] = [
    boundaries are the first revelation (610 CE) and the Hijrah (622 CE). */
 const timelineEvents = timeline.map((e) => ({ ...e, id: slugId(e.title) }));
 const timelineEras = [
-  { id: "before-prophethood", label: "Before Prophethood", events: timelineEvents.slice(0, 6) },
-  { id: "makkah", label: "Makkah", events: timelineEvents.slice(6, 12) },
-  { id: "madinah", label: "Madinah", events: timelineEvents.slice(12) },
+  { id: "before-prophethood", label: "Before Prophethood", events: timelineEvents.slice(0, 7) },
+  { id: "makkah", label: "Makkah", events: timelineEvents.slice(7, 14) },
+  { id: "madinah", label: "Madinah", events: timelineEvents.slice(14) },
 ];
 
 /* ───────────────────────── character & virtues ───────────────────────── */
@@ -535,7 +582,7 @@ const virtues: Virtue[] = [
     description:
       "Anas ibn Malik served him for ten years — from the age of ten until the Prophet's ﷺ passing. In that entire decade, the Prophet ﷺ never once rebuked him, never said 'uff' to him, and never said 'why did you do this?' or 'why didn't you do that?' He commanded people to feed their servants from the same food they ate and clothe them from the same clothes they wore. He said: 'Your servants are your brothers whom Allah has placed under your authority. Whoever has a brother under his authority, let him feed him from what he eats and clothe him from what he wears, and do not burden them with what overwhelms them.'",
     hadith:
-      "Anas said: 'I served the Prophet ﷺ for ten years. He never said to me uff, nor did he ever say: why did you do this? or why did you not do that?'",
+      "Anas said: 'I served the Prophet ﷺ for ten years, and he never said to me, \"Uf\" … and never blamed me by saying, \"Why did you do so or why didn't you do so?\"'",
     reference: "Bukhari 78:68; Muslim 27:60; Bukhari 2:23",
   },
   {
@@ -556,6 +603,15 @@ const virtues: Virtue[] = [
       "The Prophet ﷺ said: 'A woman was punished because of a cat she had locked up until it died. She did not feed it or let it eat from the vermin of the earth.' And he said: 'While a man was walking, he became extremely thirsty. He found a well, went down into it, drank, and came out. He saw a dog panting and eating moist earth from thirst. He said: This dog is suffering the same thirst I suffered. He went back down into the well, filled his shoe with water, and gave it to the dog. Allah thanked him and forgave him.'",
     reference: "Bukhari 59:124; Bukhari 42:11; Muslim 39:210; Abu Dawud 15:88",
   },
+  {
+    name: "Cheerfulness & Humor",
+    nameAr: "المزاح والبشر",
+    description:
+      "He was cheerful and approachable, mixing easily with people, yet he never spoke anything but the truth even in jest. He was playful with children — he would ask his companion Anas's little brother, who had a pet bird that died, about it by name, to lighten his heart. He teased his family and companions gently and with warmth. His humor was clean and kind, never mockery or falsehood, and he taught that a smile in your brother's face is charity. Aisha reported that he ﷺ had the most excellent character of all people, and part of that excellence was his lightness of spirit that put those around him at ease.",
+    hadith:
+      "Anas ibn Malik said: 'The Prophet ﷺ used to mix with us to the extent that he would say to a younger brother of mine, O Aba `Umair! What did the Nughair (a kind of bird) do?'",
+    reference: "Bukhari 78:156; Muslim 38:37",
+  },
 ];
 
 /* ───────────────────────── physical description ───────────────────────── */
@@ -565,6 +621,8 @@ type PhysicalTrait = {
   description: string;
   reference: string;
   group: "face" | "body" | "manner";
+  /** Optional cross-link rendered under the card (overlap-owned topics). */
+  link?: { href: string; label: string };
 };
 
 const physicalDescription: PhysicalTrait[] = [
@@ -674,6 +732,21 @@ const physicalDescription: PhysicalTrait[] = [
     description:
       "He preferred white garments, saying: 'Wear white clothes, for they are the purest and best; and shroud your dead in them.' He also wore garments of green and red-striped Yemeni cloth. He regularly applied kohl (ithmid) to his eyes before sleeping, three times in each eye. He used the miswak (tooth-stick) frequently — upon waking, before prayer, and upon entering his home. He oiled his hair, combed it regularly, and forbade neglecting one's appearance.",
     reference: "Tirmidhi 43:83; Bukhari 77:144; Bukhari 4:111; Abu Dawud 35:1",
+    group: "manner",
+  },
+  {
+    trait: "How He Taught",
+    description:
+      "He was a teacher before all else, and his method was gentle, clear, and unforgettable. When he delivered a sermon his whole bearing would change — Jabir said: 'When Allah's Messenger ﷺ delivered the sermon, his eyes became red, his voice rose, and his anger increased so that he was like one giving a warning against the enemy...' Yet he taught individuals just as carefully as crowds, taking the young by the hand and giving them counsel to carry for life. Riding behind him one day, he said to the boy Ibn Abbas: 'O boy! I will teach you a statement: Be mindful of Allah and He will protect you...' — a few short sentences that generations of Muslims have memorized as children. He repeated important words three times so they would be understood, and chose ease over hardship in all he taught.",
+    reference: "Muslim 7:55; Tirmidhi 37:102",
+    group: "manner",
+    link: { href: "/tawhid", label: "Read his full counsel to Ibn Abbas on Tawhid →" },
+  },
+  {
+    trait: "His Possessions",
+    description:
+      "For all his rank, he owned almost nothing. He died with his iron armor pledged to a Jewish neighbor as security for a loan of barley for his family; Aisha said the Prophet ﷺ 'purchased food grains from a Jew on credit and mortgaged his iron armor to him,' and Anas heard him say that 'the household of Muhammad did not possess even a single Sa of wheat or food grains for the evening meal,' though he had many dependents. His most notable possession was a simple silver signet ring engraved with Muhammad, the Messenger of Allah, which he had made only so that his letters to foreign rulers could be sealed. These plain facts are the concrete proof of the asceticism his life embodied.",
+    reference: "Bukhari 34:21; Bukhari 34:22; Bukhari 56:151",
     group: "manner",
   },
 ];
@@ -995,6 +1068,146 @@ const companions: FamilyMember[] = [
       "One of the earliest converts and among the greatest scholars of the Quran. The Prophet ﷺ said: 'Learn the recitation of the Quran from four persons: from Ibn Mas'ud, Salim, the ally of Abu Hudhaifa, Ubayy ibn Ka'b, and Mu'adh ibn Jabal.' He was the first person to publicly recite Quran in Mecca.",
     reference: "Muslim 44:168",
   },
+  {
+    name: "Zayd ibn Harithah",
+    nameAr: "زيد بن حارثة",
+    relation: "The beloved — the only companion named in the Quran",
+    detail:
+      "A freed slave whom the Prophet ﷺ loved as his own, and the only companion mentioned by name in the Quran (33:37). He was so cherished that he was once called Zayd ibn Muhammad until Allah restored the naming of adopted sons after their fathers. The Prophet ﷺ said of him and his son Usamah that Zayd 'was certainly fit for leadership, and he was of the most beloved of people to me.' He was appointed commander at Mu'tah, where he took the banner and was martyred — the first to fall of the three commanders the Prophet ﷺ had named.",
+    reference: "Quran 33:37; Tirmidhi 49:216; Bukhari 56:16",
+  },
+  {
+    name: "Ja'far ibn Abi Talib",
+    nameAr: "جعفر بن أبي طالب",
+    relation: "Ja'far of the Two Wings",
+    detail:
+      "The Prophet's ﷺ cousin and elder brother of Ali, who led the Muslim emigrants in Abyssinia and delivered the famous defense of Islam before the Negus. He resembled the Prophet ﷺ so closely that he was told: 'You resemble me both in character and appearance.' Known for his generosity to the poor, he was nicknamed 'the father of the destitute.' At Mu'tah he took the banner after Zayd and was martyred defending it; it is reported that Allah gave him two wings in Paradise in place of his severed arms, so he is remembered as Ja'far al-Tayyar (the Flyer).",
+    reference: "Bukhari 53:9; Bukhari 56:16",
+  },
+  {
+    name: "Abu Ubaydah ibn al-Jarrah",
+    nameAr: "أبو عبيدة بن الجراح",
+    relation: "Trustworthy man of this ummah — one of the ten promised Paradise",
+    detail:
+      "One of the ten promised Paradise and among the earliest converts. The Prophet ﷺ gave him a title he gave to no one else: 'Every nation has an extremely trustworthy man, and the trustworthy man of this (i.e. Muslim) nation is Abu 'Ubaida bin Al-Jarrah.' When the Christians of Najran asked the Prophet ﷺ to send them a trustworthy man to teach them, every companion hoped to be chosen — and he sent Abu Ubaydah. He later became a leading commander in the conquest of Syria and died in the plague of Amwas.",
+    reference: "Bukhari 62:89; Bukhari 62:90; Tirmidhi 49:144",
+  },
+  {
+    name: "Mu'adh ibn Jabal",
+    nameAr: "معاذ بن جبل",
+    relation: "The most knowledgeable in halal and haram",
+    detail:
+      "A young Ansari companion renowned for his deep understanding of the lawful and the forbidden. The Prophet ﷺ sent him to Yemen as a teacher and judge, and instructed him on how to call people to Islam step by step. The Prophet ﷺ took him by the hand and told him: 'By Allah, I love you, Mu'adh,' then taught him never to leave, after every prayer, the supplication: 'O Allah, help me in remembering You, in giving You thanks, and worshipping You well.'",
+    reference: "Abu Dawud 8:107; Nasai 13:125",
+  },
+  {
+    name: "Sa'id ibn Zayd",
+    nameAr: "سعيد بن زيد",
+    relation: "One of the ten promised Paradise",
+    detail:
+      "An early convert whose acceptance of Islam, together with that of his wife Fatimah bint al-Khattab, was the very cause of her brother Umar's conversion. He is named among the ten given glad tidings of Paradise in a single gathering, when the Prophet ﷺ listed: 'Abu Bakr is in Paradise, 'Umar is in Paradise... Sa'eed bin Zaid is in Paradise, and Abu 'Ubaidah bin Al-Jarrah is in Paradise.' He took part in every major campaign except Badr, from which he was absent on the Prophet's ﷺ own assignment.",
+    reference: "Tirmidhi 49:144",
+  },
+  {
+    name: "Anas ibn Malik",
+    nameAr: "أنس بن مالك",
+    relation: "Servant of the Prophet ﷺ for ten years",
+    detail:
+      "His mother Umm Sulaym gave him into the Prophet's ﷺ service as a boy, and he attended him for ten years until his passing. In all that time he was never once rebuked: 'I served the Prophet ﷺ for ten years, and he never said to me, \"Uf\" … and never blamed me by saying, \"Why did you do so or why didn't you do so?\"' From his long, close companionship he became one of the most prolific narrators of hadith, transmitting a vast portion of what we know of the Prophet's ﷺ daily life and manners.",
+    reference: "Bukhari 78:68",
+  },
+];
+
+/* Household — grandchildren, uncles, and the guardians who raised him.
+   Anchor narrations are local-verified; the biographical detail on Halimah
+   and Umm Ayman is a scholarly summary from the sīrah (generic). */
+const household: FamilyMember[] = [
+  {
+    name: "Al-Hasan ibn Ali",
+    nameAr: "الحسن بن علي",
+    relation: "Grandson — son of Fatimah and Ali",
+    detail:
+      "The elder grandson of the Prophet ﷺ, who loved him dearly and carried him on his shoulders. He resembled the Prophet ﷺ closely. From the pulpit, the Prophet ﷺ once brought him out and foretold his role in the ummah: 'This son of mine is a Saiyid (i.e. chief) and I hope that Allah will help him bring about reconciliation between two Muslim groups.' This was fulfilled when Hasan, to spare Muslim blood, ceded the caliphate to Mu'awiyah and reconciled two great armies — one of the clearest of the Prophet's ﷺ prophecies.",
+    reference: "Bukhari 61:133; Bukhari 78:28",
+  },
+  {
+    name: "Al-Husayn ibn Ali",
+    nameAr: "الحسين بن علي",
+    relation: "Grandson — son of Fatimah and Ali",
+    detail:
+      "The younger grandson of the Prophet ﷺ, who cherished both boys and said of them: 'Al-Hasan and Al-Husain are the chiefs of the youths of Paradise.' The Prophet ﷺ would prolong his prostration when Husayn climbed on his back, and kissed and played with him openly. His martyrdom at Karbala decades later became one of the most grief-laden events in Islamic memory. He and his brother are the continuation of the Prophet's ﷺ blessed lineage through Fatimah.",
+    reference: "Tirmidhi 49:167",
+  },
+  {
+    name: "Al-Abbas ibn Abdul Muttalib",
+    nameAr: "العباس بن عبد المطلب",
+    relation: "Paternal uncle",
+    detail:
+      "The Prophet's ﷺ uncle, close to him in age, who embraced Islam and migrated shortly before the conquest of Mecca. On the night before the conquest he brought Abu Sufyan to accept safe conduct, and his booming voice rallied the Muslims at Hunayn. His standing was such that after the Prophet's ﷺ death, the caliph Umar would seek rain through his supplication, saying: 'O Allah! We used to request our Prophet to ask You for rain, and You would give us. Now we request the uncle of our Prophet to ask You for rain, so give us rain.' The Abbasid dynasty later traced its lineage to him.",
+    reference: "Bukhari 62:60",
+  },
+  {
+    name: "Abu Talib",
+    nameAr: "أبو طالب",
+    relation: "Uncle and lifelong guardian",
+    detail:
+      "The uncle who raised the Prophet ﷺ from the age of eight and shielded him from the Quraysh for over forty years, refusing every demand to abandon him — yet who died without accepting Islam, to the Prophet's ﷺ deep sorrow. Because of his protection and love, the Prophet ﷺ said his intercession would lighten Abu Talib's punishment: 'Perhaps my intercession will be helpful to him on the Day of Resurrection so that he may be put in a shallow fire reaching only up to his ankles.' His example is cited by scholars on the reality that guidance is Allah's alone to grant.",
+    reference: "Bukhari 63:110",
+  },
+  {
+    name: "Halimah al-Sa'diyyah",
+    nameAr: "حليمة السعدية",
+    relation: "Foster mother and wet-nurse",
+    detail:
+      "The woman of the Banu Sa'd who nursed the infant Muhammad ﷺ in the desert, as was the custom of the noble families of Mecca. The sīrah records that her household was visibly blessed during the years she cared for him — her flocks flourished and her family prospered. He never forgot her kindness: years later, when she came to him after he had married Khadijah, he spread out his cloak for her to sit upon. This portion is a scholarly summary from the classical biographies.",
+    reference: "Sīrah — Ibn Hisham; Ibn Sa'd, aṭ-Ṭabaqāt",
+  },
+  {
+    name: "Umm Ayman (Barakah)",
+    nameAr: "أم أيمن",
+    relation: "Nursemaid who raised him after his mother",
+    detail:
+      "An Abyssinian freedwoman who had served his mother Aminah and cared for the Prophet ﷺ from his childhood, whom he honored and loved as a mother after his own. She embraced Islam early and migrated to Medina. So beloved was she that after his passing, Abu Bakr said to Umar: 'Let us visit Umm Aiman as Allah's Messenger ﷺ used to visit her' — and when they came to her she wept for the ending of revelation. Her son Usamah ibn Zayd was among the most beloved of people to the Prophet ﷺ.",
+    reference: "Muslim 44:148",
+  },
+];
+
+/* Women companions — beyond Khadijah (listed with the wives). Sumayyah,
+   Asma, and Umm Sulaym are anchored in local narrations; Nusaybah's defense
+   of the Prophet ﷺ at Uhud is preserved in the sīrah (generic). */
+const womenCompanions: FamilyMember[] = [
+  {
+    name: "Sumayyah bint Khayyat",
+    nameAr: "سمية بنت خياط",
+    relation: "The first martyr of Islam",
+    detail:
+      "A freedwoman of low worldly status but the highest honor: the first person to be killed for the faith. She was among the very first to accept Islam publicly — Ibn Mas'ud counted 'the first people to declare their Islam publicly were seven: The Messenger of Allah, Abu Bakr, 'Ammar and his mother Sumayyah, Suhaib, Bilal and Miqdad.' She and her family, having no tribe to protect them, were tortured in the sun by Abu Jahl, who ran her through with a spear when she refused to renounce her faith — the sīrah records her as the first martyr of Islam. Her son Ammar became a great companion.",
+    reference: "Ibn Majah 0:150",
+  },
+  {
+    name: "Asma bint Abi Bakr",
+    nameAr: "أسماء بنت أبي بكر",
+    relation: "Dhat an-Nitaqayn — of the Hijrah",
+    detail:
+      "The daughter of Abu Bakr and sister of Aisha, called Dhat an-Nitaqayn ('she of the two belts') because on the night of the Hijrah she tore her waist-belt in two to tie up the food and water-skin she carried to the Prophet ﷺ and her father hiding in the Cave of Thawr — this detail is preserved in the sīrah. The Prophet ﷺ taught her the virtue of open-handed charity: 'Do not shut your money bag; otherwise Allah too will withhold His blessings from you. Spend (in Allah's Cause) as much as you can afford.' She lived to nearly a hundred and was the mother of Abdullah ibn al-Zubayr.",
+    reference: "Bukhari 24:37",
+  },
+  {
+    name: "Umm Sulaym bint Milhan",
+    nameAr: "أم سليم بنت ملحان",
+    relation: "Mother of Anas; devoted early believer",
+    detail:
+      "An early Ansari believer of remarkable faith, the mother of the Prophet's ﷺ servant Anas ibn Malik. Her devotion was such that she made her acceptance of Islam the condition of her marriage. She would collect the Prophet's ﷺ sweat for its blessing: when he took a siesta in her home 'he sweated profusely and she collected his sweat and put it in a perfume and in bottles,' and when he asked her about it she said it was the most fragrant of scents. She was known for her patience and her presence, tending the wounded on the battlefield.",
+    reference: "Muslim 43:115",
+  },
+  {
+    name: "Nusaybah bint Ka'b (Umm Ammarah)",
+    nameAr: "نسيبة بنت كعب",
+    relation: "Defender of the Prophet ﷺ at Uhud",
+    detail:
+      "An Ansari woman who pledged allegiance at the Second Pledge of Aqabah and became a legendary defender of the Prophet ﷺ. The sīrah records that at the Battle of Uhud, when the ranks broke and the Prophet ﷺ was exposed, she stood her ground and shielded him with her body and sword, sustaining many wounds; he is reported to have said that wherever he turned that day, right or left, he saw her fighting in his defense. She continued to serve the ummah in later campaigns. This account is preserved in the classical sīrah literature.",
+    reference: "Sīrah — Ibn Hisham; Ibn Sa'd, aṭ-Ṭabaqāt",
+  },
 ];
 
 /* ───────────────────────── prophecies ───────────────────────── */
@@ -1107,7 +1320,58 @@ const prophecies: Prophecy[] = [
     reference: "Abu Dawud 39:7",
     status: "ongoing",
   },
+  {
+    title: "Islam will reach wherever the earth was folded",
+    description:
+      "The Prophet ﷺ was shown, in a single vision, the whole earth 'folded' before him — its farthest east and west — and told that the dominion of his ummah would one day span exactly that expanse. Within a century Islam stretched from the Atlantic coast of Spain to the frontiers of China, and today it is present in every land on earth, fulfilling this within-history sign of his prophethood.",
+    hadith:
+      "The Messenger of Allah ﷺ said: 'Allah, the Exalted, folded for me the earth... so much so that I saw its easts and wests... The kingdom of my community will reach as far as the earth was folded for me.'",
+    reference: "Abu Dawud 37:13",
+    status: "fulfilled",
+  },
+  {
+    title: "Ammar will be killed by the transgressing party",
+    description:
+      "The Prophet ﷺ foretold that his beloved companion Ammar ibn Yasir would be killed by 'the transgressing party' (al-fi'ah al-baghiyah). Decades later, Ammar was killed at the Battle of Siffin fighting alongside Ali against the army of Mu'awiyah — and the prophecy became a decisive proof, in the eyes of the companions, of which side had transgressed.",
+    hadith:
+      "The Messenger of Allah ﷺ said: 'Rejoice, 'Ammar, the transgressing party shall kill you.'",
+    reference: "Tirmidhi 49:200",
+    status: "fulfilled",
+  },
+  {
+    title: "Hasan will reconcile two great Muslim armies",
+    description:
+      "Taking his infant grandson Al-Hasan up onto the pulpit, the Prophet ﷺ foretold that this child would one day reconcile two warring factions of the Muslims. Roughly forty years later, to spare Muslim blood, Al-Hasan ceded the caliphate to Mu'awiyah in the 'Year of Unity' (Am al-Jama'ah), bringing two great armies to peace — precisely as foretold.",
+    hadith:
+      "The Prophet ﷺ said: 'This son of mine is a Saiyid (i.e. chief) and I hope that Allah will help him bring about reconciliation between two Muslim groups.'",
+    reference: "Bukhari 61:133",
+    status: "fulfilled",
+  },
+  {
+    title: "Uthman's trial foretold at the garden gate",
+    description:
+      "As Abu Musa guarded the gate of a garden in Medina, the Prophet ﷺ gave glad tidings of Paradise to Abu Bakr and Umar as they entered — and then, for Uthman ibn Affan, added that his entry to Paradise would come 'with a calamity which will befall him.' This foretold the siege and martyrdom of Uthman during his caliphate, when rebels killed him in his own home as he recited the Quran.",
+    hadith:
+      "The Prophet ﷺ said: 'Admit him and give him the glad tidings of entering Paradise with a calamity which will befall him.' Behold! It was 'Uthman bin 'Affan.",
+    reference: "Bukhari 62:45",
+    status: "fulfilled",
+  },
 ];
+
+/* Compact pointer — the sensory miracles are OWNED by the /miracles page.
+   Here we keep only a biographically-framed highlight card that cross-links,
+   rather than duplicating the full catalogue. */
+const miraclesId = "miracles-of-the-prophet";
+const miraclesPointer = {
+  title: "Miracles of the Prophet ﷺ",
+  description:
+    "Alongside the prophecies, Allah supported His Messenger ﷺ with sensory miracles witnessed by his companions: the splitting of the moon before the people of Mecca; water flowing from between his fingers so that whole armies could make wudu; a little food multiplied to feed hundreds at the Trench; and the palm-trunk that wept aloud when he left it for the pulpit. His greatest and enduring miracle, however, is the Quran itself — inimitable, unchanged, and challenging all creation: 'If all humans and jinn were to come together to produce something similar to this Qur’an, they would not be able to produce the like of it…' (Quran 17:88). The full catalogue of his miracles, with narrations, lives on the Miracles page.",
+  hadith:
+    "Abdullah ibn Mas'ud said: 'During the lifetime of the Prophet ﷺ the moon was split into two parts and on that the Prophet ﷺ said, Bear witness (to this).' Allah recorded it in the Quran: 'The Hour has drawn near and the moon has split asunder' (Quran 54:1).",
+  reference:
+    "Quran 54:1; Quran 17:88; Bukhari 61:140; Bukhari 61:141; Bukhari 61:142; Bukhari 4:35; Bukhari 61:81; Bukhari 64:145; Bukhari 64:146; Bukhari 11:42; Bukhari 61:92",
+  link: { href: "/miracles", label: "Explore all his miracles, in full, on the Miracles page →" },
+};
 
 /* ───────────────────────── his worship ───────────────────────── */
 
@@ -1193,6 +1457,8 @@ type SunnahPractice = {
     practice: string;
     hadith: string;
     reference: string;
+    /** Optional cross-link to the page that owns the full topic (overlaps). */
+    link?: { href: string; label: string };
   }[];
 };
 
@@ -1418,6 +1684,136 @@ const dailySunnah: SunnahPractice[] = [
       },
     ],
   },
+  {
+    category: "Dressing & New Clothes",
+    practices: [
+      {
+        practice: "Begin with the right side when dressing",
+        hadith:
+          "Aisha said: 'The Prophet ﷺ used to love to start doing things from the right side whenever possible, in performing ablution, putting on his shoes, and combing his hair.' So one begins with the right hand, the right sleeve, and the right foot.",
+        reference: "Bukhari 70:8",
+      },
+      {
+        practice: "Say the du'a when wearing a new garment",
+        hadith:
+          "When the Prophet ﷺ put on a new garment he would name it — a turban or a shirt — 'and would then say: O Allah, praise be to Thee! as Thou hast clothed me with it, I ask Thee for its good and the good of that for which it was made, and I seek refuge in Thee from its evil and the evil of that for which it was made.'",
+        reference: "Abu Dawud 34:1",
+        link: { href: "/duas", label: "Full text & transliteration on the Du'as page →" },
+      },
+    ],
+  },
+  {
+    category: "Duha & Voluntary Prayer",
+    practices: [
+      {
+        practice: "Guard the twelve rak'ahs of Sunnah each day",
+        hadith:
+          "The Prophet ﷺ said: 'A house will be built in Paradise, for anyone who prays in a day and a night twelve rak'ahs' — the regular voluntary prayers offered before and after the obligatory ones.",
+        reference: "Muslim 6:124; Tirmidhi 2:267",
+      },
+      {
+        practice: "Never neglect the two rak'ahs of Fajr",
+        hadith:
+          "Aisha narrated that the Messenger of Allah ﷺ said: 'The two Rak'ah of Fajr are better than the world and what is in it.' Aisha also said he ﷺ 'was never more regular and particular in offering any Nawafil than the two rak`at (Sunna) of the Fajr prayer.'",
+        reference: "Tirmidhi 2:269; Bukhari 19:42",
+      },
+      {
+        practice: "Pray Duha (the forenoon prayer)",
+        hadith:
+          "Umm Hani said: 'On the day of the conquest of Mecca, the Prophet ﷺ took a bath in my house and offered eight rak`at' of the Duha prayer — the voluntary prayer after the sun has risen high, which he encouraged and which expiates for the joints of the body.",
+        reference: "Bukhari 18:23",
+      },
+    ],
+  },
+  {
+    category: "Gatherings & Sneezing",
+    practices: [
+      {
+        practice: "Answer the one who praises Allah when he sneezes",
+        hadith:
+          "Al-Bara said: 'The Prophet ﷺ ordered us to observe seven things: To visit the sick; follow funeral processions; say May Allah bestow His Mercy on you, to the sneezer if he says, Praise be to Allah...' — so when a Muslim sneezes and says Alhamdulillah, reply Yarhamukallah.",
+        reference: "Bukhari 77:66",
+        link: { href: "/muslim-daily", label: "Full sneezing etiquette on the Muslim Daily page →" },
+      },
+      {
+        practice: "Do not whisper privately in a group of three",
+        hadith:
+          "The Prophet ﷺ said: 'When you are three persons sitting together, then no two of you should hold secret counsel excluding the third person until you are with some other people too, for that would grieve him.'",
+        reference: "Bukhari 79:62",
+      },
+    ],
+  },
+];
+
+/* ───────────────────────── loving & following him ─────────────────────────
+   The believer's relationship TO the Prophet ﷺ — the devotional frame that
+   pairs with the descriptive tabs. Arabic du'a and the command verse are
+   byte-spliced from the corpus; transliteration and plain meaning accompany
+   them. Cross-links defer owned topics to /duas and /day-of-judgement. */
+type Devotion = {
+  title: string;
+  intro: string;
+  verseAr?: string;
+  verseEn?: string;
+  verseRef?: string;
+  arabic?: string;
+  translit?: string;
+  meaning?: string;
+  hadith?: string;
+  points?: string[];
+  reference: string;
+  link?: { href: string; label: string };
+};
+
+const devotions: Devotion[] = [
+  {
+    title: "Sending Salawat upon the Prophet ﷺ",
+    intro:
+      "The small symbol ﷺ written after his name stands for ṣallā Allāhu ʿalayhi wa sallam — 'may Allah send blessings and peace upon him.' Sending ṣalawāt is not optional praise; it is a direct command from Allah to every believer, and Allah joins His own blessing and that of the angels to it.",
+    verseAr: "إِنَّ ٱللَّهَ وَمَلَـٰٓئِكَتَهُۥ يُصَلُّونَ عَلَى ٱلنَّبِىِّ ۚ يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ صَلُّوا۟ عَلَيْهِ وَسَلِّمُوا۟ تَسْلِيمًا",
+    verseEn:
+      "Indeed, Allah sends His blessings upon the Prophet, and His angels pray for him. O you who believe, invoke Allah’s blessings upon him and send him greetings of peace.",
+    verseRef: "Quran 33:56",
+    arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ، وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ، وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ، وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ",
+    translit:
+      "Allāhumma ṣalli ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā ṣallayta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka Ḥamīdun Majīd. Allāhumma bārik ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā bārakta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka Ḥamīdun Majīd.",
+    meaning:
+      "O Allah, send blessings upon Muhammad and upon the family of Muhammad, as You sent blessings upon Ibrahim and upon the family of Ibrahim; indeed You are Praiseworthy, Glorious. O Allah, send Your favor upon Muhammad and upon the family of Muhammad, as You sent Your favor upon Ibrahim and upon the family of Ibrahim; indeed You are Praiseworthy, Glorious.",
+    points: [
+      "This is the Ibrāhīmiyyah — the wording the Prophet ﷺ himself taught his companions when they asked how to send blessings upon him. It is recited in the final sitting of every prayer.",
+      "Every single ṣalāh is multiplied back to you: 'Whoever sends salah upon me once, Allah (SWT) will send salah upon him tenfold.'",
+      "Send them especially often on Fridays, for the Prophet ﷺ said the ṣalawāt of the believers are presented to him on that day.",
+    ],
+    reference: "Quran 33:56; Bukhari 60:44; Muslim 4:70; Nasai 13:118; Ibn Majah 5:283",
+    link: { href: "/duas", label: "More du'a texts & audio on the Du'as page →" },
+  },
+  {
+    title: "Loving Him & His Rights Over Us",
+    intro:
+      "The page describes him thoroughly — but the believer is also asked for something in return. Faith itself is incomplete until he ﷺ is more beloved to a person than their own family, their wealth, and their own self. That love is not a claim of the tongue but is proven by following his Sunnah.",
+    hadith:
+      "The Prophet ﷺ said: 'None of you will have faith till he loves me more than his father, his children and all mankind.'",
+    points: [
+      "His love for us came first: Allah describes him as one who 'is grieved by your suffering, and is concerned for you, and is gracious and merciful towards the believers' (Quran 9:128).",
+      "Loving him is shown by obeying his commands and reviving his Sunnah, not by mere words.",
+      "To see him truly is a mercy, not a deception: 'Whoever sees me in a dream will see me in his wakefulness, and Satan cannot imitate me in shape' (Bukhari 91:12).",
+    ],
+    reference: "Bukhari 2:7; Bukhari 2:8; Quran 9:128; Bukhari 91:12",
+  },
+  {
+    title: "His Station on the Day of Judgment",
+    intro:
+      "On the Day of Resurrection the Prophet ﷺ holds a rank given to no one else — he is the master of the children of Adam, the first to intercede, and the one his ummah will meet at the Hawd (his Basin). This is central to how a believer relates to him and hopes to be gathered with him.",
+    hadith:
+      "The Prophet ﷺ said: 'I shall be pre-eminent amongst the descendants of Adam on the Day of Resurrection and I will be the first intercessor and the first whose intercession will be accepted.'",
+    points: [
+      "He is the first to intercede when all other prophets excuse themselves: 'I would be the first intercessor in the Paradise' (Muslim 1:391).",
+      "His ummah will meet him at his Basin (the Hawd): 'I shall be your predecessor and a witness on you, and I am really looking at my sacred Fount now' (Bukhari 61:104).",
+      "Allah will raise him to al-Maqam al-Mahmud — the Praiseworthy Station promised in the Quran (17:79).",
+    ],
+    reference: "Muslim 43:3; Muslim 1:391; Bukhari 61:104; Quran 17:79",
+    link: { href: "/day-of-judgement", label: "The Great Intercession, in full, on the Day of Judgement page →" },
+  },
 ];
 
 /* ───────────────────────── merged-tab rails ───────────────────────── */
@@ -1436,7 +1832,9 @@ const isPersonSub = (s: string | null): s is PersonSub =>
 const familySubs: { key: string; label: string }[] = [
   { key: "wives", label: "Wives" },
   { key: "children", label: "Children" },
+  { key: "household", label: "Household" },
   { key: "companions", label: "Companions" },
+  { key: "women-companions", label: "Women Companions" },
 ];
 
 /* Worship & Sunnah — his worship aspects first, then the daily sunnah
@@ -1451,6 +1849,11 @@ const worshipRailGroups = [
     id: "daily-sunnah",
     label: "Daily Sunnah",
     items: dailySunnah.map((c) => ({ id: slugId(c.category), label: c.category })),
+  },
+  {
+    id: "loving-following",
+    label: "Loving & Following Him",
+    items: devotions.map((d) => ({ id: slugId(d.title), label: d.title })),
   },
 ];
 
@@ -1499,12 +1902,17 @@ const familySources: Record<string, SourceRef[]> = {
     ...wives.map((w) => ({ reference: w.reference, desc: w.name })),
   ]),
   children: collectSources(children.map((c) => ({ reference: c.reference, desc: c.name }))),
+  household: collectSources(household.map((c) => ({ reference: c.reference, desc: c.name }))),
   companions: collectSources(companions.map((c) => ({ reference: c.reference, desc: c.name }))),
+  "women-companions": collectSources(womenCompanions.map((c) => ({ reference: c.reference, desc: c.name }))),
 };
 const propheciesSources: Record<string, SourceRef[]> = {};
 for (const p of prophecies) {
   propheciesSources[slugId(p.title)] = collectSources([{ reference: p.reference, desc: p.title }]);
 }
+propheciesSources[miraclesId] = collectSources([
+  { reference: miraclesPointer.reference, desc: miraclesPointer.title },
+]);
 const worshipSunnahSources: Record<string, SourceRef[]> = {};
 for (const w of worshipAspects) {
   worshipSunnahSources[slugId(w.title)] = collectSources([{ reference: w.reference, desc: w.title }]);
@@ -1513,6 +1921,9 @@ for (const c of dailySunnah) {
   worshipSunnahSources[slugId(c.category)] = collectSources(
     c.practices.map((p) => ({ reference: p.reference, desc: p.practice }))
   );
+}
+for (const d of devotions) {
+  worshipSunnahSources[slugId(d.title)] = collectSources([{ reference: d.reference, desc: d.title }]);
 }
 
 /* ───────────────────────── grouped rail ───────────────────────── */
@@ -1653,10 +2064,13 @@ function ProphetMuhammadContent() {
     filteredTimeline.find((e) => e.id === activeTimeline) ?? filteredTimeline[0];
   const activeVirtueItem =
     filteredVirtues.find((v) => slugId(v.name) === activeVirtue) ?? filteredVirtues[0];
-  const activeProphecyItem =
-    filteredProphecies.find((p) => slugId(p.title) === activeProphecy) ?? filteredProphecies[0];
+  const isMiraclesView = activeProphecy === miraclesId;
+  const activeProphecyItem = isMiraclesView
+    ? undefined
+    : filteredProphecies.find((p) => slugId(p.title) === activeProphecy) ?? filteredProphecies[0];
   const activeWorshipAspect = worshipAspects.find((w) => slugId(w.title) === worshipSub);
   const activeSunnahCategory = dailySunnah.find((c) => slugId(c.category) === worshipSub);
+  const activeDevotion = devotions.find((d) => slugId(d.title) === worshipSub);
 
   return (
     <div>
@@ -1756,6 +2170,11 @@ function ProphetMuhammadContent() {
                 Allah described him: <span className="text-gold font-arabic">&ldquo;وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ&rdquo;</span>{" "}
                 — &ldquo;And indeed, you are of a great moral character.&rdquo; <span className="text-xs">(Quran 68:4)</span>
               </p>
+              <p className="text-themed-muted text-sm mt-3">
+                When Aisha <span className="text-gold">رضي الله عنها</span> was asked to describe his character, she gave the most famous
+                summary of all: &ldquo;The character of the Messenger of Allah ﷺ was the Qur&rsquo;an.&rdquo; — he was a living embodiment of
+                everything the Qur&rsquo;an commands and praises. <span className="text-xs text-gold/70">(Muslim 6:168)</span>
+              </p>
             </ContentCard>
 
             <div className="flex flex-col md:flex-row gap-4 items-start">
@@ -1854,6 +2273,14 @@ function ProphetMuhammadContent() {
                           <BookOpen size={12} />
                           <HadithRefText text={item.reference} />
                         </p>
+                        {item.link && (
+                          <Link
+                            href={item.link.href}
+                            className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                          >
+                            {item.link.label}
+                          </Link>
+                        )}
                       </ContentCard>
                     ))}
                 </div>
@@ -1938,6 +2365,33 @@ function ProphetMuhammadContent() {
                 </div>
               )}
 
+              {/* Household */}
+              {familyTab === "household" && (
+                <div className="space-y-3">
+                  <ContentCard>
+                    <p className="text-themed-muted text-sm">
+                      His household <span className="font-arabic text-gold">(أهل البيت)</span> and the family who raised him — his grandsons Hasan and Husayn, his uncles Abbas and Abu Talib, and the guardians of his childhood, Halimah and Umm Ayman.
+                    </p>
+                  </ContentCard>
+                  {household.map((c, i) => (
+                    <ContentCard key={c.name} delay={Math.min(i * 0.05, 0.3)} id={`section-${slugId(c.name)}`}>
+                      <div className="flex items-baseline gap-3 mb-1">
+                        <h3 className="font-semibold text-themed">{c.name}</h3>
+                        <span className="font-arabic text-gold text-sm">{c.nameAr}</span>
+                      </div>
+                      <p className="text-xs text-gold/70 mb-2">{c.relation}</p>
+                      <p className="text-themed-muted text-sm leading-relaxed">{c.detail}</p>
+                      {c.reference && (
+                        <p className="text-xs text-gold/70 flex items-center gap-1 mt-3">
+                          <BookOpen size={12} />
+                          <HadithRefText text={c.reference} />
+                        </p>
+                      )}
+                    </ContentCard>
+                  ))}
+                </div>
+              )}
+
               {/* Companions */}
               {familyTab === "companions" && (
                 <div className="space-y-3">
@@ -1947,6 +2401,33 @@ function ProphetMuhammadContent() {
                     </p>
                   </ContentCard>
                   {companions.map((c, i) => (
+                    <ContentCard key={c.name} delay={Math.min(i * 0.05, 0.3)} id={`section-${slugId(c.name)}`}>
+                      <div className="flex items-baseline gap-3 mb-1">
+                        <h3 className="font-semibold text-themed">{c.name}</h3>
+                        <span className="font-arabic text-gold text-sm">{c.nameAr}</span>
+                      </div>
+                      <p className="text-xs text-gold/70 mb-2">{c.relation}</p>
+                      <p className="text-themed-muted text-sm leading-relaxed">{c.detail}</p>
+                      {c.reference && (
+                        <p className="text-xs text-gold/70 flex items-center gap-1 mt-3">
+                          <BookOpen size={12} />
+                          <HadithRefText text={c.reference} />
+                        </p>
+                      )}
+                    </ContentCard>
+                  ))}
+                </div>
+              )}
+
+              {/* Women Companions */}
+              {familyTab === "women-companions" && (
+                <div className="space-y-3">
+                  <ContentCard>
+                    <p className="text-themed-muted text-sm">
+                      The women companions <span className="font-arabic text-gold">(الصحابيات)</span> — believers whose faith, sacrifice, and courage shaped the earliest ummah. Khadijah, the first believer of all, is listed among his wives.
+                    </p>
+                  </ContentCard>
+                  {womenCompanions.map((c, i) => (
                     <ContentCard key={c.name} delay={Math.min(i * 0.05, 0.3)} id={`section-${slugId(c.name)}`}>
                       <div className="flex items-baseline gap-3 mb-1">
                         <h3 className="font-semibold text-themed">{c.name}</h3>
@@ -1979,31 +2460,67 @@ function ProphetMuhammadContent() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              {/* Left side — prophecy pills */}
-              <div className="flex flex-row md:flex-col gap-2 shrink-0 overflow-x-auto md:overflow-x-visible md:max-h-[70vh] md:overflow-y-auto md:pr-1 w-full md:w-auto pb-2 md:pb-0">
-                {filteredProphecies.map((p) => (
-                  <button
-                    key={slugId(p.title)}
-                    onClick={() => changeProphecy(slugId(p.title))}
-                    className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
-                      activeProphecyItem === p
-                        ? "bg-gold/20 text-gold border border-gold/40"
-                        : "text-themed-muted hover:text-themed border sidebar-border"
-                    }`}
+            <GroupedRail
+              groups={[
+                {
+                  id: "miracles",
+                  label: "Miracles",
+                  items: [
+                    {
+                      id: miraclesId,
+                      content: <span className="font-bold">{miraclesPointer.title}</span>,
+                    },
+                  ],
+                },
+                {
+                  id: "prophecies",
+                  label: "Prophecies",
+                  items: filteredProphecies.map((p) => ({
+                    id: slugId(p.title),
+                    content: (
+                      <>
+                        <span className="font-bold">{p.title}</span>
+                        <span className={`block text-xs mt-0.5 ${p.status === "fulfilled" ? "text-green-400" : "text-blue-400"}`}>
+                          {p.status === "fulfilled" ? "Fulfilled" : "Ongoing"}
+                        </span>
+                      </>
+                    ),
+                  })),
+                },
+              ]}
+              activeId={activeProphecy}
+              onSelect={changeProphecy}
+            >
+              <AnimatePresence mode="wait">
+                {isMiraclesView && (
+                  <motion.div
+                    key={miraclesId}
+                    id={`section-${miraclesId}`}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.25 }}
                   >
-                    <span className="font-bold">{p.title}</span>
-                    <span className={`block text-xs mt-0.5 ${p.status === "fulfilled" ? "text-green-400" : "text-blue-400"}`}>
-                      {p.status === "fulfilled" ? "Fulfilled" : "Ongoing"}
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Right side — content */}
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
-                  {activeProphecyItem && (
+                    <ContentCard>
+                      <h3 className="font-semibold text-themed text-lg mb-3">{miraclesPointer.title}</h3>
+                      <p className="text-themed-muted text-sm leading-relaxed mb-4">{miraclesPointer.description}</p>
+                      <div className="border-l-2 border-gold/30 pl-4">
+                        <p className="text-themed text-sm italic leading-relaxed">{miraclesPointer.hadith}</p>
+                        <p className="text-xs text-gold/70 mt-2 flex items-center gap-1">
+                          <BookOpen size={12} />
+                          <HadithRefText text={miraclesPointer.reference} />
+                        </p>
+                      </div>
+                      <Link
+                        href={miraclesPointer.link.href}
+                        className="inline-block mt-4 text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                      >
+                        {miraclesPointer.link.label}
+                      </Link>
+                    </ContentCard>
+                  </motion.div>
+                )}
+                {!isMiraclesView && activeProphecyItem && (
                   <motion.div
                     key={slugId(activeProphecyItem.title)}
                     id={`section-${slugId(activeProphecyItem.title)}`}
@@ -2033,10 +2550,9 @@ function ProphetMuhammadContent() {
                       </div>
                     </ContentCard>
                   </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
+                )}
+              </AnimatePresence>
+            </GroupedRail>
             {/* Full-width sources for the CURRENT selection, below the rail */}
             <SourcesCard className="mt-6" sources={propheciesSources[activeProphecy] ?? []} />
           </motion.div>
@@ -2099,8 +2615,83 @@ function ProphetMuhammadContent() {
                           <BookOpen size={12} />
                           <HadithRefText text={p.reference} />
                         </p>
+                        {p.link && (
+                          <Link
+                            href={p.link.href}
+                            className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                          >
+                            {p.link.label}
+                          </Link>
+                        )}
                       </ContentCard>
                     ))}
+                  </motion.div>
+                )}
+                {activeDevotion && (
+                  <motion.div
+                    key={worshipSub}
+                    id={`section-${slugId(activeDevotion.title)}`}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <ContentCard>
+                      <h3 className="font-semibold text-themed text-lg mb-3">{activeDevotion.title}</h3>
+                      <p className="text-themed-muted text-sm leading-relaxed mb-4">{activeDevotion.intro}</p>
+
+                      {activeDevotion.verseAr && (
+                        <div className="border-l-2 border-gold/30 pl-4 mb-4">
+                          <p className="font-arabic text-gold leading-loose text-right">{activeDevotion.verseAr}</p>
+                          {activeDevotion.verseEn && (
+                            <p className="text-themed-muted text-sm italic mt-1">&ldquo;{activeDevotion.verseEn}&rdquo;</p>
+                          )}
+                          {activeDevotion.verseRef && (
+                            <p className="text-xs text-gold/70 mt-1">{activeDevotion.verseRef}</p>
+                          )}
+                        </div>
+                      )}
+
+                      {activeDevotion.arabic && (
+                        <div className="rounded-lg bg-gold/5 border border-gold/20 p-4 mb-4">
+                          <p className="font-arabic text-gold leading-loose text-right text-lg">{activeDevotion.arabic}</p>
+                          {activeDevotion.translit && (
+                            <p className="text-themed text-sm mt-3 leading-relaxed">{activeDevotion.translit}</p>
+                          )}
+                          {activeDevotion.meaning && (
+                            <p className="text-themed-muted text-sm italic mt-2 leading-relaxed">{activeDevotion.meaning}</p>
+                          )}
+                        </div>
+                      )}
+
+                      {activeDevotion.hadith && (
+                        <p className="text-themed text-sm italic leading-relaxed border-l-2 border-gold/30 pl-4 mb-4">{activeDevotion.hadith}</p>
+                      )}
+
+                      {activeDevotion.points && (
+                        <ul className="space-y-2 mb-4">
+                          {activeDevotion.points.map((pt, pi) => (
+                            <li key={pi} className="text-themed-muted text-sm leading-relaxed flex gap-2">
+                              <span className="text-gold shrink-0">•</span>
+                              <span>{pt}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
+                      <p className="text-xs text-gold/70 flex items-center gap-1">
+                        <BookOpen size={12} />
+                        <HadithRefText text={activeDevotion.reference} />
+                      </p>
+                      {activeDevotion.link && (
+                        <Link
+                          href={activeDevotion.link.href}
+                          className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                        >
+                          {activeDevotion.link.label}
+                        </Link>
+                      )}
+                    </ContentCard>
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -40,6 +40,13 @@ import {
   ScrollText,
   BookOpen,
   ListChecks,
+  ShieldCheck,
+  PersonStanding,
+  Hand,
+  Smile,
+  Users,
+  Moon,
+  Languages,
   type LucideIcon,
 } from "lucide-react";
 
@@ -164,11 +171,18 @@ function Confetti({ show, onDone }: { show: boolean; onDone: () => void }) {
 
 type TabKey =
   | "who-is-allah"
+  | "iman-pillars"
   | "five-pillars"
+  | "lets-pray"
+  | "my-duas"
   | "daily-words"
+  | "good-manners"
   | "prophet-stories"
+  | "heroes"
   | "quran-corner"
   | "good-deeds"
+  | "special-days"
+  | "arabic-alphabet"
   | "challenges";
 
 type LessonDef = {
@@ -192,6 +206,17 @@ const lessons: LessonDef[] = [
     hint: (_p, age) => `${getNamesByAge(age).length} names to explore`,
   },
   {
+    key: "iman-pillars",
+    label: "What We Believe",
+    description: "The six things a Muslim believes in — the pillars of iman",
+    icon: ShieldCheck,
+    chipClass: "bg-teal-500/15 text-teal-400 border-teal-500/30",
+    hint: (p) => {
+      const done = imanData.filter((a) => p.completedLessons.includes(`iman-${a.id}`)).length;
+      return `${done} of ${imanData.length} complete`;
+    },
+  },
+  {
     key: "five-pillars",
     label: "The 5 Pillars",
     description: "Discover the five pillars of Islam, then take the quiz",
@@ -203,6 +228,22 @@ const lessons: LessonDef[] = [
     },
   },
   {
+    key: "lets-pray",
+    label: "Let's Pray!",
+    description: "Learn wudu and how to pray, step by step",
+    icon: PersonStanding,
+    chipClass: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+    hint: () => null,
+  },
+  {
+    key: "my-duas",
+    label: "My First Duas",
+    description: "Little duas for eating, sleeping, and every day",
+    icon: Hand,
+    chipClass: "bg-lime-500/15 text-lime-500 border-lime-500/30",
+    hint: (_p, age) => `${getDuasByAge(age).length} duas to learn`,
+  },
+  {
     key: "daily-words",
     label: "Daily Words",
     description: "Everyday Islamic words and phrases to practice",
@@ -211,6 +252,17 @@ const lessons: LessonDef[] = [
     hint: (p) => {
       const mastered = Object.values(p.flashcardBuckets).filter((b) => b === 2).length;
       return `${mastered} mastered`;
+    },
+  },
+  {
+    key: "good-manners",
+    label: "Good Manners",
+    description: "Be like the Prophet ﷺ — kindness, honesty, and mercy",
+    icon: Smile,
+    chipClass: "bg-pink-500/15 text-pink-400 border-pink-500/30",
+    hint: (p) => {
+      const done = mannersData.filter((m) => p.completedLessons.includes(`manner-${m.id}`)).length;
+      return `${done} of ${mannersData.length} learned`;
     },
   },
   {
@@ -226,12 +278,31 @@ const lessons: LessonDef[] = [
     },
   },
   {
+    key: "heroes",
+    label: "Heroes of Islam",
+    description: "Amazing companions and family of the Prophet ﷺ",
+    icon: Users,
+    chipClass: "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
+    hint: (p) => {
+      const done = heroStories.filter((h) => p.completedLessons.includes(`hero-${h.slug}`)).length;
+      return `${done} of ${heroStories.length} heroes`;
+    },
+  },
+  {
     key: "quran-corner",
     label: "Quran Corner",
     description: "Memorize short surahs, verse by verse",
     icon: BookOpen,
     chipClass: "bg-rose-500/15 text-rose-400 border-rose-500/30",
     hint: (p) => `${p.memorizedSurahs.length} of ${miniSurahs.length} memorized`,
+  },
+  {
+    key: "arabic-alphabet",
+    label: "Arabic Letters",
+    description: "Meet the 28 letters that make up the Quran",
+    icon: Languages,
+    chipClass: "bg-yellow-500/15 text-yellow-500 border-yellow-500/30",
+    hint: () => `${arabicLetters.length} letters`,
   },
   {
     key: "good-deeds",
@@ -246,6 +317,14 @@ const lessons: LessonDef[] = [
       ).length;
       return doneToday > 0 ? `${doneToday} deeds today` : `${p.streak} day streak`;
     },
+  },
+  {
+    key: "special-days",
+    label: "Special Days",
+    description: "Ramadan, the two Eids, and the Islamic calendar",
+    icon: Moon,
+    chipClass: "bg-purple-500/15 text-purple-400 border-purple-500/30",
+    hint: () => null,
   },
   {
     key: "challenges",
@@ -480,15 +559,157 @@ function WhoIsAllahTab({
    TAB 2: THE 5 PILLARS
    ═══════════════════════════════════════════════════════════════════ */
 
-type PillarData = {
+type ModuleTopic = {
   id: string;
   name: string;
-  nameAr: string;
+  nameAr?: string;
   icon: string;
+  /** Optional source ref line (e.g. "Bukhari 78:121") shown under the lesson. */
+  source?: string;
   descriptions: { little: string; explorer: string; scholar: string };
+  /** Heading above the numbered list; defaults to "Steps to follow". */
+  stepsLabel?: string;
   steps: { little: string[]; explorer: string[]; scholar: string[] };
   quiz: { q: string; options: string[]; answer: number; explanation: string }[];
 };
+
+// The 5 Pillars keep this concrete alias so existing references read clearly.
+type PillarData = ModuleTopic & { nameAr: string };
+
+/* ───────── The Six Pillars of Iman (What We Believe) ─────────
+   Anchor: the hadith of Jibril — "That you affirm your faith in Allah, in His
+   angels, in His Books, in His Apostles, in the Day of Judgment, and you affirm
+   your faith in the Divine Decree about good and evil" (Muslim 1:1). */
+const imanData: ModuleTopic[] = [
+  {
+    id: "allah",
+    name: "Believe in Allah",
+    nameAr: "الإيمان بالله",
+    icon: "🌟",
+    stepsLabel: "Good to know",
+    source: "Muslim 1:1; Bukhari 54:23",
+    descriptions: {
+      little: "We believe in one God, Allah. He made everything and loves us.",
+      explorer: "The first thing a Muslim believes is that Allah is One. He has no partner, He made everything, and nothing is like Him.",
+      scholar: "Believing in Allah means believing He alone is the Creator, that He alone deserves worship (Tawheed), and in His beautiful names and perfect attributes. The Prophet ﷺ said Allah has ninety-nine names, and whoever learns them will enter Paradise.",
+    },
+    steps: {
+      little: ["Allah is One", "Allah made everything", "We love and worship only Allah"],
+      explorer: ["Allah is One, with no partner", "Nothing is like Allah", "Allah has beautiful names, like Ar-Rahman (the Most Merciful)"],
+      scholar: ["Allah alone created and sustains everything", "Worship belongs to Allah alone (Tawheed)", "Allah has ninety-nine beautiful names", "Nothing is comparable to Him"],
+    },
+    quiz: [
+      { q: "How many gods do Muslims believe in?", options: ["One", "Two", "Three", "Many"], answer: 0, explanation: "A Muslim believes in only one God — Allah, with no partner." },
+      { q: "How many beautiful names does Allah have?", options: ["10", "50", "99", "100"], answer: 2, explanation: "The Prophet ﷺ said Allah has ninety-nine names (Bukhari 54:23)." },
+    ],
+  },
+  {
+    id: "angels",
+    name: "Believe in the Angels",
+    nameAr: "الإيمان بالملائكة",
+    icon: "😇",
+    stepsLabel: "Good to know",
+    source: "Muslim 1:1; Muslim 55:78",
+    descriptions: {
+      little: "Allah made angels from light. They always obey Allah.",
+      explorer: "We believe Allah created angels from light. They never disobey Allah and each has a special job, like Jibril who brought Allah's words to the prophets.",
+      scholar: "Angels are a creation of Allah made from light who never tire of worshipping Him and always do exactly what He commands. Among them are Jibril, who brought revelation, and the angels who record our good and bad deeds.",
+    },
+    steps: {
+      little: ["Angels are made of light", "Angels always obey Allah", "Angel Jibril brought Allah's words"],
+      explorer: ["Angels were created from light", "They never disobey Allah", "Jibril brought revelation to the prophets", "Two angels write down our deeds"],
+      scholar: ["Angels are made of light and never tire of worship", "They obey Allah's commands perfectly", "Jibril is the angel of revelation", "The recording angels write our good and bad deeds"],
+    },
+    quiz: [
+      { q: "What did Allah create the angels from?", options: ["Fire", "Clay", "Light", "Water"], answer: 2, explanation: "The Prophet ﷺ said the angels were created from light (Muslim 55:78)." },
+      { q: "Which angel brought Allah's words to the prophets?", options: ["Jibril", "Adam", "Bilal", "Nuh"], answer: 0, explanation: "The angel Jibril (Gabriel) brought revelation to the prophets." },
+    ],
+  },
+  {
+    id: "books",
+    name: "Believe in the Books",
+    nameAr: "الإيمان بالكتب",
+    icon: "📖",
+    stepsLabel: "Good to know",
+    source: "Muslim 1:1",
+    descriptions: {
+      little: "Allah sent holy books to teach people. The Quran is the last one.",
+      explorer: "Allah sent holy books to His messengers to guide people. The Quran, given to Prophet Muhammad ﷺ, is the final book, and Allah has promised to protect it.",
+      scholar: "We believe Allah revealed books to His messengers — including the Tawrah to Musa, the Injil to Isa, and the Zabur to Dawud. The Quran is the final revelation to Muhammad ﷺ, and Allah has guaranteed to preserve it unchanged.",
+    },
+    steps: {
+      little: ["Allah sent holy books", "The Quran is Allah's last book", "We read and respect the Quran"],
+      explorer: ["Allah gave books to His messengers", "The Quran was given to Prophet Muhammad ﷺ", "The Quran is the final book", "Allah protects the Quran forever"],
+      scholar: ["Allah revealed books such as the Tawrah, Injil and Zabur", "The Quran is the final revelation", "The Quran confirms and completes the earlier messages", "Allah has promised to preserve the Quran"],
+    },
+    quiz: [
+      { q: "Which is the final book Allah revealed?", options: ["The Zabur", "The Injil", "The Quran", "The Tawrah"], answer: 2, explanation: "The Quran, given to Prophet Muhammad ﷺ, is the final book from Allah." },
+    ],
+  },
+  {
+    id: "messengers",
+    name: "Believe in the Messengers",
+    nameAr: "الإيمان بالرسل",
+    icon: "🕌",
+    stepsLabel: "Good to know",
+    source: "Muslim 1:1",
+    descriptions: {
+      little: "Allah sent prophets to teach us about Him. Muhammad ﷺ is the last one.",
+      explorer: "We believe Allah sent many prophets and messengers — like Adam, Nuh, Ibrahim, Musa, and Isa — to guide people. Muhammad ﷺ is the final messenger for everyone.",
+      scholar: "Belief in the messengers means believing Allah sent prophets to every people to call them to worship Him alone. We love and follow them all, and we believe Muhammad ﷺ is the last of them, sent to all of humankind.",
+    },
+    steps: {
+      little: ["Allah sent prophets to teach us", "We love all the prophets", "Muhammad ﷺ is the last prophet"],
+      explorer: ["Allah sent many prophets to guide people", "We believe in all of them", "Muhammad ﷺ is the final messenger", "We follow the Prophet's example"],
+      scholar: ["Allah sent messengers to every nation", "They all called to worship Allah alone", "We believe in and love every prophet", "Muhammad ﷺ is the final messenger to all people"],
+    },
+    quiz: [
+      { q: "Who is the final messenger of Allah?", options: ["Ibrahim", "Isa", "Muhammad ﷺ", "Musa"], answer: 2, explanation: "Prophet Muhammad ﷺ is the last messenger, sent to all people." },
+    ],
+  },
+  {
+    id: "last-day",
+    name: "Believe in the Last Day",
+    nameAr: "الإيمان باليوم الآخر",
+    icon: "⏳",
+    stepsLabel: "Good to know",
+    source: "Muslim 1:1",
+    descriptions: {
+      little: "One day this world will end and Allah will bring everyone back to life.",
+      explorer: "We believe in the Last Day — a day when this world will end, everyone will be raised again, and Allah will reward the good and be just with everyone.",
+      scholar: "Belief in the Last Day includes believing in resurrection after death, the Day of Judgment when our deeds are weighed, and the reality of Paradise (Jannah) and the Fire. It reminds us that every good and bad deed matters.",
+    },
+    steps: {
+      little: ["This world will end one day", "Allah will bring everyone back to life", "Good deeds bring us to Paradise"],
+      explorer: ["One day the world will end", "Everyone will be raised again", "Our deeds will be weighed", "Allah rewards good with Paradise"],
+      scholar: ["We will be resurrected after death", "Our deeds are weighed on the Day of Judgment", "Paradise and the Fire are real", "Every deed, big or small, counts"],
+    },
+    quiz: [
+      { q: "What happens on the Last Day?", options: ["Nothing", "Everyone is raised again and judged", "The sun gets bigger", "People go to sleep"], answer: 1, explanation: "On the Last Day everyone is raised again and Allah judges all our deeds." },
+    ],
+  },
+  {
+    id: "qadar",
+    name: "Believe in Qadar",
+    nameAr: "الإيمان بالقدر",
+    icon: "🤲",
+    stepsLabel: "Good to know",
+    source: "Muslim 1:1",
+    descriptions: {
+      little: "Allah knows everything and everything happens because Allah allows it.",
+      explorer: "Qadar means Allah's decree. We believe Allah knows everything that will happen, and nothing happens except by His knowledge and permission — so we trust Allah and still try our best.",
+      scholar: "Belief in Qadar is to believe that Allah knows all things, wrote them down, and that nothing happens except by His will. It teaches us to try our best, trust Allah with the outcome, be patient in hardship, and grateful in ease.",
+    },
+    steps: {
+      little: ["Allah knows everything", "Everything happens by Allah's plan", "We trust Allah always"],
+      explorer: ["Allah knows all that will happen", "Nothing happens without Allah allowing it", "We do our best and trust Allah", "We stay patient when things are hard"],
+      scholar: ["Allah knows and has written all things", "Nothing occurs except by His will", "We take action and trust the result to Allah", "Patience in hardship, gratitude in ease"],
+    },
+    quiz: [
+      { q: "What does believing in Qadar teach us?", options: ["To give up", "To try our best and trust Allah", "That deeds don't matter", "To worry a lot"], answer: 1, explanation: "Believing in Qadar means we do our best and trust Allah with the result." },
+    ],
+  },
+];
 
 const pillarsData: PillarData[] = [
   {
@@ -595,24 +816,42 @@ const pillarsData: PillarData[] = [
   },
 ];
 
-function FivePillarsTab({
+/**
+ * Generic "pick a topic → read a description + steps → take the quiz" lesson.
+ * Powers the 5 Pillars, the 6 Pillars of Iman, and Good Manners so the pattern
+ * (and the perfect-score star logic) lives in one place.
+ */
+function ModuleLessonTab({
   age,
   progress,
   onStar,
   onLessonComplete,
+  topics,
+  prefix,
+  intro,
+  backLabel,
+  learnTogether,
+  showIconRow = true,
 }: {
   age: AgeGroup;
   progress: KidsProgress;
   onStar: () => void;
   onLessonComplete: (id: string) => void;
+  topics: ModuleTopic[];
+  /** completedLessons id prefix, e.g. "pillar" → "pillar-salah". */
+  prefix: string;
+  intro: string;
+  backLabel: string;
+  learnTogether: string;
+  showIconRow?: boolean;
 }) {
-  const [selectedPillar, setSelectedPillar] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [quizMode, setQuizMode] = useState(false);
   const [quizIdx, setQuizIdx] = useState(0);
   const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
   const [quizScore, setQuizScore] = useState(0);
 
-  const pillar = pillarsData.find((p) => p.id === selectedPillar);
+  const topic = topics.find((t) => t.id === selectedId);
 
   const handleStartQuiz = () => {
     setQuizMode(true);
@@ -624,74 +863,73 @@ function FivePillarsTab({
   const handleQuizAnswer = (optionIdx: number) => {
     if (quizAnswer !== null) return;
     setQuizAnswer(optionIdx);
-    if (pillar && optionIdx === pillar.quiz[quizIdx].answer) {
+    if (topic && optionIdx === topic.quiz[quizIdx].answer) {
       setQuizScore((s) => s + 1);
     }
   };
 
   const handleQuizNext = () => {
-    if (!pillar) return;
-    if (quizIdx + 1 < pillar.quiz.length) {
+    if (!topic) return;
+    if (quizIdx + 1 < topic.quiz.length) {
       setQuizIdx((i) => i + 1);
       setQuizAnswer(null);
     } else {
-      // Quiz complete
-      const perfect = quizScore + (quizAnswer === pillar.quiz[quizIdx].answer ? 1 : 0) === pillar.quiz.length;
+      const perfect = quizScore + (quizAnswer === topic.quiz[quizIdx].answer ? 1 : 0) === topic.quiz.length;
       if (perfect) onStar();
-      onLessonComplete(`pillar-${pillar.id}`);
+      onLessonComplete(`${prefix}-${topic.id}`);
       setQuizMode(false);
-      setSelectedPillar(null);
+      setSelectedId(null);
     }
   };
 
-  if (!selectedPillar) {
+  if (!selectedId) {
     return (
       <div className="max-w-3xl mx-auto">
-        <p className="text-center text-themed-muted text-sm mb-4">
-          Islam is built on five pillars. Learn about each one!
-        </p>
+        <p className="text-center text-themed-muted text-sm mb-4">{intro}</p>
 
-        {/* Pillar icons row */}
-        <div className="flex justify-center gap-3 mb-6">
-          {pillarsData.map((p) => {
-            const done = progress.completedLessons.includes(`pillar-${p.id}`);
-            return (
-              <div key={p.id} className="flex flex-col items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
-                    done ? "bg-gold text-black" : "card-bg sidebar-border"
-                  }`}
-                >
-                  {done ? <Check size={16} /> : p.icon}
+        {showIconRow && (
+          <div className="flex justify-center flex-wrap gap-3 mb-6">
+            {topics.map((t) => {
+              const done = progress.completedLessons.includes(`${prefix}-${t.id}`);
+              return (
+                <div key={t.id} className="flex flex-col items-center">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+                      done ? "bg-gold text-black" : "card-bg sidebar-border"
+                    }`}
+                  >
+                    {done ? <Check size={16} /> : t.icon}
+                  </div>
+                  <span className="text-[10px] text-themed-muted mt-1">{t.name}</span>
                 </div>
-                <span className="text-[10px] text-themed-muted mt-1">{p.name}</span>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
 
-        {/* Pillar cards */}
         <div className="space-y-3">
-          {pillarsData.map((p, i) => {
-            const done = progress.completedLessons.includes(`pillar-${p.id}`);
+          {topics.map((t, i) => {
+            const done = progress.completedLessons.includes(`${prefix}-${t.id}`);
             return (
-              <ContentCard key={p.id} delay={0.05 + i * 0.05}>
+              <ContentCard key={t.id} delay={0.05 + i * 0.05}>
                 <button
-                  onClick={() => setSelectedPillar(p.id)}
+                  onClick={() => setSelectedId(t.id)}
                   className="w-full text-left flex items-start gap-3 p-1"
                 >
-                  <span className="text-2xl">{p.icon}</span>
+                  <span className="text-2xl">{t.icon}</span>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-themed">{p.name}</h3>
-                      <span className="text-xs font-arabic text-themed-muted">{p.nameAr}</span>
+                      <h3 className="font-semibold text-themed">{t.name}</h3>
+                      {t.nameAr && (
+                        <span className="text-xs font-arabic text-themed-muted">{t.nameAr}</span>
+                      )}
                       {done && (
                         <span className="ml-auto text-gold text-xs flex items-center gap-1">
                           <Check size={12} /> Done
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-themed-muted mt-1">{p.descriptions[age]}</p>
+                    <p className="text-sm text-themed-muted mt-1">{t.descriptions[age]}</p>
                   </div>
                 </button>
               </ContentCard>
@@ -702,25 +940,24 @@ function FivePillarsTab({
     );
   }
 
-  // Pillar detail view
-  if (!pillar) return null;
+  if (!topic) return null;
 
   if (quizMode) {
-    const q = pillar.quiz[quizIdx];
+    const q = topic.quiz[quizIdx];
     return (
       <div className="max-w-2xl mx-auto">
         <button
-          onClick={() => { setQuizMode(false); setSelectedPillar(null); }}
+          onClick={() => { setQuizMode(false); setSelectedId(null); }}
           className="flex items-center gap-1 text-sm text-themed-muted hover:text-themed mb-4"
         >
           <ChevronLeft size={16} /> Back
         </button>
 
         <h3 className="font-semibold text-themed text-center mb-1">
-          {pillar.icon} {pillar.name} Quiz
+          {topic.icon} {topic.name} Quiz
         </h3>
         <p className="text-xs text-themed-muted text-center mb-4">
-          Question {quizIdx + 1} of {pillar.quiz.length}
+          Question {quizIdx + 1} of {topic.quiz.length}
         </p>
 
         <ContentCard>
@@ -757,7 +994,7 @@ function FivePillarsTab({
                 onClick={handleQuizNext}
                 className="mt-3 px-4 py-2 rounded-full bg-gold text-black text-sm font-medium"
               >
-                {quizIdx + 1 < pillar.quiz.length ? "Next Question" : "Finish Quiz"}
+                {quizIdx + 1 < topic.quiz.length ? "Next Question" : "Finish Quiz"}
               </button>
             </motion.div>
           )}
@@ -769,22 +1006,24 @@ function FivePillarsTab({
   return (
     <div className="max-w-2xl mx-auto">
       <button
-        onClick={() => setSelectedPillar(null)}
+        onClick={() => setSelectedId(null)}
         className="flex items-center gap-1 text-sm text-themed-muted hover:text-themed mb-4"
       >
-        <ChevronLeft size={16} /> All Pillars
+        <ChevronLeft size={16} /> {backLabel}
       </button>
 
       <h3 className="text-xl font-semibold text-themed text-center mb-1">
-        {pillar.icon} {pillar.name}
+        {topic.icon} {topic.name}
       </h3>
-      <p className="text-xs font-arabic text-themed-muted text-center mb-4">{pillar.nameAr}</p>
+      {topic.nameAr && (
+        <p className="text-xs font-arabic text-themed-muted text-center mb-4">{topic.nameAr}</p>
+      )}
 
       <ContentCard>
-        <p className="text-sm text-themed leading-relaxed mb-4">{pillar.descriptions[age]}</p>
-        <h4 className="text-sm font-semibold text-gold mb-2">Steps to follow:</h4>
+        <p className="text-sm text-themed leading-relaxed mb-4">{topic.descriptions[age]}</p>
+        <h4 className="text-sm font-semibold text-gold mb-2">{topic.stepsLabel ?? "Steps to follow"}:</h4>
         <ol className="space-y-2">
-          {pillar.steps[age].map((step, i) => (
+          {topic.steps[age].map((step, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-themed">
               <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gold/20 text-gold text-xs flex items-center justify-center font-medium">
                 {i + 1}
@@ -793,6 +1032,9 @@ function FivePillarsTab({
             </li>
           ))}
         </ol>
+        {topic.source && (
+          <p className="text-[11px] text-themed-muted mt-3 italic">Source: {topic.source}</p>
+        )}
       </ContentCard>
 
       <div className="mt-4 flex justify-center">
@@ -807,10 +1049,230 @@ function FivePillarsTab({
       <div className="mt-4 p-3 rounded-xl bg-gold/5 border border-gold/20 text-center">
         <Lightbulb size={14} className="inline text-gold mr-1" />
         <span className="text-xs text-themed-muted">
-          <strong>Learn Together:</strong> Ask your child to explain this pillar in their own words!
+          <strong>Learn Together:</strong> {learnTogether}
         </span>
       </div>
     </div>
+  );
+}
+
+function FivePillarsTab(props: {
+  age: AgeGroup;
+  progress: KidsProgress;
+  onStar: () => void;
+  onLessonComplete: (id: string) => void;
+}) {
+  return (
+    <ModuleLessonTab
+      {...props}
+      topics={pillarsData}
+      prefix="pillar"
+      intro="Islam is built on five pillars. Learn about each one!"
+      backLabel="All Pillars"
+      learnTogether="Ask your child to explain this pillar in their own words!"
+    />
+  );
+}
+
+function ImanPillarsTab(props: {
+  age: AgeGroup;
+  progress: KidsProgress;
+  onStar: () => void;
+  onLessonComplete: (id: string) => void;
+}) {
+  return (
+    <ModuleLessonTab
+      {...props}
+      topics={imanData}
+      prefix="iman"
+      intro="A Muslim believes in six things. These are the pillars of iman (faith)."
+      backLabel="All Beliefs"
+      learnTogether="Count the six beliefs together on your fingers before bed!"
+    />
+  );
+}
+
+/* ───────── Good Manners (Akhlaq) ─────────
+   Each virtue is anchored to a kid-friendly authentic narration. */
+const mannersData: ModuleTopic[] = [
+  {
+    id: "honesty",
+    name: "Always Be Truthful",
+    icon: "🗣️",
+    stepsLabel: "How to practice it",
+    source: "Bukhari 78:121",
+    descriptions: {
+      little: "Always tell the truth. Allah loves people who are honest.",
+      explorer: "The Prophet ﷺ taught that truthfulness leads to goodness, and goodness leads to Paradise. Telling the truth — even when it is hard — is a beautiful habit Allah loves.",
+      scholar: "The Prophet ﷺ said, \"Truthfulness leads to righteousness, and righteousness leads to Paradise.\" A person who keeps telling the truth is written with Allah as truthful (siddiq). Honesty is a sign of real faith.",
+    },
+    steps: {
+      little: ["Tell the truth", "Never tell a lie", "Say sorry if you make a mistake"],
+      explorer: ["Tell the truth even when it is hard", "Keep your promises", "Don't cheat or trick people", "Say sorry honestly when you are wrong"],
+      scholar: ["Be truthful in words and actions", "Keep promises and trusts", "Avoid lying even as a joke", "Honesty leads to Paradise"],
+    },
+    quiz: [
+      { q: "Where does truthfulness lead a person?", options: ["To trouble", "To Paradise", "Nowhere", "To sleep"], answer: 1, explanation: "The Prophet ﷺ said truthfulness leads to righteousness, and righteousness leads to Paradise (Bukhari 78:121)." },
+    ],
+  },
+  {
+    id: "kindness",
+    name: "Be Kind and Gentle",
+    icon: "💛",
+    stepsLabel: "How to practice it",
+    source: "Muslim 45:99",
+    descriptions: {
+      little: "Allah is kind and loves kindness. Be gentle with everyone.",
+      explorer: "The Prophet ﷺ said, \"Allah is kind and He loves kindness…\" Being gentle and soft with people makes them happy and earns Allah's love.",
+      scholar: "The Prophet ﷺ taught that Allah is Gentle (Rafiq) and loves gentleness, and gives for gentleness what He does not give for harshness. Choosing kind words and gentle actions is a way to earn Allah's love.",
+    },
+    steps: {
+      little: ["Use gentle words", "Share and help", "Be kind to everyone"],
+      explorer: ["Speak gently, not harshly", "Help those who need help", "Forgive people who upset you", "Be kind even to those younger than you"],
+      scholar: ["Choose gentle words and actions", "Respond to harshness with kindness", "Kindness earns what harshness cannot", "Be gentle with family, friends, and strangers"],
+    },
+    quiz: [
+      { q: "What does Allah love?", options: ["Harshness", "Kindness", "Shouting", "Anger"], answer: 1, explanation: "The Prophet ﷺ said Allah is kind and loves kindness (Muslim 45:99)." },
+    ],
+  },
+  {
+    id: "brotherhood",
+    name: "Love for Others",
+    icon: "🤝",
+    stepsLabel: "How to practice it",
+    source: "Bukhari 2:6",
+    descriptions: {
+      little: "Want good things for your friends, just like you want them for yourself.",
+      explorer: "The Prophet ﷺ said none of us truly believes until we love for our brother what we love for ourselves. Wishing good for others is part of faith.",
+      scholar: "The Prophet ﷺ said, \"None of you will have faith till he wishes for his (Muslim) brother what he likes for himself.\" A believer is happy when others are happy and shares good things instead of being jealous.",
+    },
+    steps: {
+      little: ["Share with your friends", "Be happy for others", "Don't be jealous"],
+      explorer: ["Wish good things for others", "Be happy when your friends succeed", "Share what you have", "Don't be jealous of what others have"],
+      scholar: ["Love for others what you love for yourself", "Rejoice at others' blessings", "Reject jealousy and greed", "Care for your brothers and sisters in faith"],
+    },
+    quiz: [
+      { q: "A believer wishes for their brother...", options: ["Nothing", "What they wish for themselves", "Bad things", "Less than themselves"], answer: 1, explanation: "The Prophet ﷺ said to wish for your brother what you like for yourself (Bukhari 2:6)." },
+    ],
+  },
+  {
+    id: "mercy-animals",
+    name: "Mercy to Animals",
+    icon: "🐾",
+    stepsLabel: "How to practice it",
+    source: "Bukhari 4:39; Bukhari 78:44",
+    descriptions: {
+      little: "Be kind to animals. Allah loves people who are merciful.",
+      explorer: "The Prophet ﷺ told of a man whose sins were forgiven because he gave water to a thirsty dog. Being merciful to animals is loved by Allah.",
+      scholar: "The Prophet ﷺ said, \"He who is not merciful to others, will not be treated mercifully\", and he told of a man forgiven by Allah for giving water to a thirsty dog. Islam teaches mercy to every living creature.",
+    },
+    steps: {
+      little: ["Be gentle with animals", "Give animals food and water", "Never hurt an animal"],
+      explorer: ["Feed and give water to animals", "Never harm or tease animals", "Be gentle with pets and creatures", "Remember Allah rewards mercy"],
+      scholar: ["Show mercy to every creature", "Provide food and water to animals", "Never cause an animal pain", "Mercy to others earns Allah's mercy"],
+    },
+    quiz: [
+      { q: "What happened to the man who gave water to a thirsty dog?", options: ["Nothing", "Allah forgave him and he entered Paradise", "He was punished", "He got tired"], answer: 1, explanation: "Allah forgave the man and admitted him to Paradise (Bukhari 4:39)." },
+    ],
+  },
+  {
+    id: "anger",
+    name: "Control Your Anger",
+    icon: "😤",
+    stepsLabel: "How to practice it",
+    source: "Bukhari 78:141",
+    descriptions: {
+      little: "Being strong means staying calm when you feel angry.",
+      explorer: "The Prophet ﷺ said the strong person is not the one who wins fights, but the one who controls himself when he is angry. Staying calm is real strength.",
+      scholar: "The Prophet ﷺ said, \"The strong is not the one who overcomes the people by his strength, but the strong is the one who controls himself while in anger.\" Calming down instead of lashing out is true strength.",
+    },
+    steps: {
+      little: ["Take a deep breath", "Stay calm", "Say a kind word instead"],
+      explorer: ["Stop and take a breath when angry", "Do not shout or hit", "Say A'udhu billahi min ash-Shaytan", "Forgive instead of getting even"],
+      scholar: ["Recognise anger and pause", "Seek refuge in Allah from Shaytan", "Sit down or make wudu to calm down", "True strength is self-control"],
+    },
+    quiz: [
+      { q: "Who is truly strong?", options: ["The one who wins fights", "The one who controls his anger", "The loudest person", "The fastest runner"], answer: 1, explanation: "The Prophet ﷺ said the strong one controls himself when angry (Bukhari 78:141)." },
+    ],
+  },
+  {
+    id: "smiling",
+    name: "Smile and Spread Joy",
+    icon: "😊",
+    stepsLabel: "How to practice it",
+    source: "Tirmidhi 27:62",
+    descriptions: {
+      little: "Smiling at people is a good deed. It makes everyone happy!",
+      explorer: "The Prophet ﷺ said that smiling at your brother is charity. A simple smile is a good deed that spreads happiness and earns reward.",
+      scholar: "The Prophet ﷺ said, \"Your smiling in the face of your brother is charity.\" Even helping someone find their way or removing a stone from the road is charity. Small kind acts add up.",
+    },
+    steps: {
+      little: ["Smile at people", "Say kind words", "Help someone today"],
+      explorer: ["Greet people with a smile", "Help someone who is lost or stuck", "Remove harmful things from the path", "Every kind act is charity"],
+      scholar: ["A smile is charity", "Guide and help those in need", "Clear harm from the road", "Small good deeds are rewarded"],
+    },
+    quiz: [
+      { q: "Smiling at your brother is...", options: ["A waste", "Charity", "Rude", "Only for adults"], answer: 1, explanation: "The Prophet ﷺ said your smile in your brother's face is charity (Tirmidhi 27:62)." },
+    ],
+  },
+  {
+    id: "greeting",
+    name: "Give the Salam",
+    icon: "👋",
+    stepsLabel: "How to practice it",
+    source: "Bukhari 79:5",
+    descriptions: {
+      little: "Say 'Assalamu Alaikum' — it means 'peace be upon you'.",
+      explorer: "The Prophet ﷺ taught us to spread salam. He said the younger should greet the older, and greeting others with peace makes us love one another.",
+      scholar: "The Prophet ﷺ taught that the young should greet the old, the passer-by should greet the one sitting, and the smaller group should greet the larger — and spreading salam spreads love between Muslims.",
+    },
+    steps: {
+      little: ["Say Assalamu Alaikum", "Reply Wa Alaikum Assalam", "Greet with a smile"],
+      explorer: ["Greet others with salam", "The younger greets the older first", "Always reply to a greeting", "Salam spreads peace and love"],
+      scholar: ["Spread salam to those you know and don't know", "The young greet the old, the passer-by the sitter", "Reply to every greeting kindly", "Greeting spreads love among believers"],
+    },
+    quiz: [
+      { q: "What does 'Assalamu Alaikum' mean?", options: ["Goodbye", "Peace be upon you", "Thank you", "Well done"], answer: 1, explanation: "Assalamu Alaikum means 'peace be upon you' — the Muslim greeting (Bukhari 79:5)." },
+    ],
+  },
+  {
+    id: "parents",
+    name: "Honour Your Parents",
+    icon: "🫶",
+    stepsLabel: "How to practice it",
+    source: "Bukhari 78:2",
+    descriptions: {
+      little: "Be kind to your mum and dad and obey them. Allah loves that.",
+      explorer: "When a man asked who deserves his best treatment, the Prophet ﷺ said \"Your mother\" three times, then \"Your father.\" Being good to parents is one of the greatest deeds.",
+      scholar: "A man asked the Prophet ﷺ who most deserves his good company. He said \"Your mother\" three times, then \"Your father.\" Obeying and honouring parents — especially our mothers — is beloved to Allah.",
+    },
+    steps: {
+      little: ["Listen to mum and dad", "Say please and thank you", "Help them at home"],
+      explorer: ["Obey your parents in good things", "Speak to them gently", "Help them without being asked", "Make dua for them"],
+      scholar: ["Honour and obey your parents", "Never say a harsh word to them", "Serve them, especially your mother", "Make dua for their mercy and health"],
+    },
+    quiz: [
+      { q: "Who did the Prophet ﷺ say deserves our best treatment first?", options: ["Our friends", "Our mother", "Our teacher", "Our neighbour"], answer: 1, explanation: "The Prophet ﷺ said \"Your mother\" three times, then \"Your father\" (Bukhari 78:2)." },
+    ],
+  },
+];
+
+function GoodMannersTab(props: {
+  age: AgeGroup;
+  progress: KidsProgress;
+  onStar: () => void;
+  onLessonComplete: (id: string) => void;
+}) {
+  return (
+    <ModuleLessonTab
+      {...props}
+      topics={mannersData}
+      prefix="manner"
+      intro="Be like the Prophet ﷺ! Learn a good manner, then take the quiz."
+      backLabel="All Manners"
+      learnTogether="Pick one manner to practice together all week!"
+      showIconRow={false}
+    />
   );
 }
 
@@ -843,6 +1305,16 @@ const dailyWords: DailyWord[] = [
   { id: "tabarakallah", arabic: "تبارك الله", transliteration: "TabarakAllah", english: "Blessed is Allah", when: "When praising something beautiful", category: "daily" },
   { id: "la-ilaha-illallah", arabic: "لا إله إلا الله", transliteration: "La ilaha illallah", english: "There is no god but Allah", when: "The greatest word of remembrance", category: "dhikr" },
   { id: "salallahu-alaihi", arabic: "صلى الله عليه وسلم", transliteration: "Sallallahu Alaihi Wasallam", english: "Peace and blessings be upon him", when: "When mentioning Prophet Muhammad", category: "daily" },
+  { id: "ameen", arabic: "آمين", transliteration: "Ameen", english: "O Allah, accept it", when: "After a dua or after Al-Fatiha in prayer", category: "dhikr" },
+  { id: "barakallahu-feek", arabic: "بارك الله فيك", transliteration: "BarakAllahu feek", english: "May Allah bless you", when: "To thank someone or wish them well", category: "greetings" },
+  { id: "yahdikumullah", arabic: "يَهْدِيكُمُ اللَّهُ وَيُصْلِحُ بَالَكُمْ", transliteration: "Yahdikumullah wa yuslihu balakum", english: "May Allah guide you and set your affairs right", when: "When someone replies to your sneeze with Yarhamukallah", category: "greetings" },
+  { id: "taqabbalallah", arabic: "تقبل الله منا ومنك", transliteration: "Taqabbal Allahu minna wa minkum", english: "May Allah accept it from us and from you", when: "A greeting on Eid and after worship", category: "celebrations" },
+  { id: "eid-mubarak", arabic: "عيد مبارك", transliteration: "Eid Mubarak", english: "Blessed Eid", when: "To greet others on Eid day", category: "celebrations" },
+  { id: "ramadan-mubarak", arabic: "رمضان مبارك", transliteration: "Ramadan Mubarak", english: "Blessed Ramadan", when: "To greet others when Ramadan begins", category: "celebrations" },
+  { id: "subhanahu-wa-taala", arabic: "سبحانه وتعالى", transliteration: "Subhanahu wa Ta'ala", english: "Glorified and Exalted is He", when: "After saying the name of Allah", category: "honorifics" },
+  { id: "alayhis-salam", arabic: "عليه السلام", transliteration: "Alayhis-salam", english: "Peace be upon him", when: "After the name of a prophet or angel", category: "honorifics" },
+  { id: "radiyallahu-anhu", arabic: "رضي الله عنه", transliteration: "Radiyallahu Anhu", english: "May Allah be pleased with him", when: "After the name of a companion of the Prophet ﷺ", category: "honorifics" },
+  { id: "fi-amanillah", arabic: "في أمان الله", transliteration: "Fi Amanillah", english: "In the protection of Allah", when: "When saying goodbye to someone", category: "greetings" },
 ];
 
 function DailyWordsTab({
@@ -1317,6 +1789,93 @@ const miniSurahs: MiniSurah[] = [
       { arabic: "فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا", transliteration: "Fasabbih bihamdi rabbika wastaghfirh, innahu kana tawwaba", meaning: "Then glorify the praises of your Lord and seek His forgiveness. Indeed, He is ever Accepting of repentance" },
     ],
   },
+  {
+    id: 103,
+    name: "Al-Asr",
+    nameAr: "العصر",
+    globalStart: 6177,
+    verses: [
+      { arabic: "وَٱلْعَصْرِ", transliteration: "Wal' asr", meaning: "By the time," },
+      { arabic: "إِنَّ ٱلْإِنسَـٰنَ لَفِى خُسْرٍ", transliteration: "Innal insaana lafee khusr", meaning: "man is in utter loss," },
+      { arabic: "إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّـٰلِحَـٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ", transliteration: "Il lal lazeena aamanu wa 'amilus saali haati wa tawa saw bil haqqi wa tawa saw bis sabr", meaning: "except those who believe and do righteous deeds, and exhort one another to the truth and exhort one another to patience." },
+    ],
+  },
+  {
+    id: 105,
+    name: "Al-Fil",
+    nameAr: "الفيل",
+    globalStart: 6189,
+    verses: [
+      { arabic: "أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَـٰبِ ٱلْفِيلِ", transliteration: "Alam tara kaifa fa'ala rabbuka bi ashaabil feel", meaning: "Have you not seen how your Lord dealt with the people of the Elephant?" },
+      { arabic: "أَلَمْ يَجْعَلْ كَيْدَهُمْ فِى تَضْلِيلٍ", transliteration: "Alam yaj'al kai dahum fee tad leel", meaning: "Did He not turn their scheme into a total loss?" },
+      { arabic: "وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ", transliteration: "Wa arsala 'alaihim tairan abaabeel", meaning: "He sent against them swarms of birds," },
+      { arabic: "تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ", transliteration: "Tar meehim bi hi jaaratim min sij jeel", meaning: "pelting them with stones of baked clay," },
+      { arabic: "فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍۭ", transliteration: "Faja 'alahum ka'asfim m'akool", meaning: "leaving them like chewed-up chaff." },
+    ],
+  },
+  {
+    id: 106,
+    name: "Quraysh",
+    nameAr: "قريش",
+    globalStart: 6194,
+    verses: [
+      { arabic: "لِإِيلَـٰفِ قُرَيْشٍ", transliteration: "Li-ilaafi quraish", meaning: "For the accustomed security of the Quraysh," },
+      { arabic: "إِۦلَـٰفِهِمْ رِحْلَةَ ٱلشِّتَآءِ وَٱلصَّيْفِ", transliteration: "Elaafihim rihlatash shitaa-i wass saif", meaning: "secure in their winter and summer journeys." },
+      { arabic: "فَلْيَعْبُدُوا۟ رَبَّ هَـٰذَا ٱلْبَيْتِ", transliteration: "Fal y'abudu rabba haazal-bait", meaning: "Let them worship the Lord of this [Sacred] House," },
+      { arabic: "ٱلَّذِىٓ أَطْعَمَهُم مِّن جُوعٍ وَءَامَنَهُم مِّنْ خَوْفٍۭ", transliteration: "Allazi at'amahum min ju'inw-wa-aamana hum min khawf", meaning: "Who fed them against hunger and made them secure against fear." },
+    ],
+  },
+  {
+    id: 107,
+    name: "Al-Ma'un",
+    nameAr: "الماعون",
+    globalStart: 6198,
+    verses: [
+      { arabic: "أَرَءَيْتَ ٱلَّذِى يُكَذِّبُ بِٱلدِّينِ", transliteration: "Ara-aital lazee yu kazzibu bid deen", meaning: "Have you seen the one who denies the Recompense?" },
+      { arabic: "فَذَٰلِكَ ٱلَّذِى يَدُعُّ ٱلْيَتِيمَ", transliteration: "Fa zaalikal lazi yadu'ul-yateem", meaning: "Such is the one who repulses the orphan harshly," },
+      { arabic: "وَلَا يَحُضُّ عَلَىٰ طَعَامِ ٱلْمِسْكِينِ", transliteration: "Wa la ya huddu 'alaa ta'amil miskeen", meaning: "and does not urge others to feed the needy." },
+      { arabic: "فَوَيْلٌ لِّلْمُصَلِّينَ", transliteration: "Fa wai lul-lil mu salleen", meaning: "So woe to those who pray," },
+      { arabic: "ٱلَّذِينَ هُمْ عَن صَلَاتِهِمْ سَاهُونَ", transliteration: "Al lazeena hum 'an salaatihim sahoon", meaning: "but are heedless of their prayer;" },
+      { arabic: "ٱلَّذِينَ هُمْ يُرَآءُونَ", transliteration: "Al lazeena hum yuraa-oon", meaning: "those who only show off," },
+      { arabic: "وَيَمْنَعُونَ ٱلْمَاعُونَ", transliteration: "Wa yamna'oonal ma'oon", meaning: "and withhold even the small kindnesses." },
+    ],
+  },
+  {
+    id: 109,
+    name: "Al-Kafirun",
+    nameAr: "الكافرون",
+    globalStart: 6208,
+    verses: [
+      { arabic: "قُلْ يَـٰٓأَيُّهَا ٱلْكَـٰفِرُونَ", transliteration: "Qul yaa-ai yuhal kaafiroon", meaning: "Say, “O disbelievers," },
+      { arabic: "لَآ أَعْبُدُ مَا تَعْبُدُونَ", transliteration: "Laa a'budu ma t'abudoon", meaning: "I do not worship what you worship," },
+      { arabic: "وَلَآ أَنتُمْ عَـٰبِدُونَ مَآ أَعْبُدُ", transliteration: "Wa laa antum 'aabidoona maa a'bud", meaning: "nor do you worship what I worship." },
+      { arabic: "وَلَآ أَنَا۠ عَابِدٌ مَّا عَبَدتُّمْ", transliteration: "Wa laa ana 'abidum maa 'abattum", meaning: "Never will I worship what you worship," },
+      { arabic: "وَلَآ أَنتُمْ عَـٰبِدُونَ مَآ أَعْبُدُ", transliteration: "Wa laa antum 'aabidoona ma a'bud", meaning: "nor will you ever worship what I worship." },
+      { arabic: "لَكُمْ دِينُكُمْ وَلِىَ دِينِ", transliteration: "Lakum deenukum wa liya deen.", meaning: "You have your religion and I have my religion.\"" },
+    ],
+  },
+  {
+    id: 111,
+    name: "Al-Masad",
+    nameAr: "المسد",
+    globalStart: 6217,
+    verses: [
+      { arabic: "تَبَّتْ يَدَآ أَبِى لَهَبٍ وَتَبَّ", transliteration: "Tab bat yadaa abee Lahabinw-wa tabb", meaning: "May the hands of Abu Lahab perish, and may he perish!" },
+      { arabic: "مَآ أَغْنَىٰ عَنْهُ مَالُهُۥ وَمَا كَسَبَ", transliteration: "Maa aghna 'anhu maaluhu wa ma kasab", meaning: "Neither his wealth nor his worldly gains will avail him." },
+      { arabic: "سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ", transliteration: "Sa yas laa naran zaata lahab", meaning: "He will burn in a Flaming Fire," },
+      { arabic: "وَٱمْرَأَتُهُۥ حَمَّالَةَ ٱلْحَطَبِ", transliteration: "Wam ra-atuh hamma latal-hatab", meaning: "and so will his wife, the carrier of firewood," },
+      { arabic: "فِى جِيدِهَا حَبْلٌ مِّن مَّسَدٍۭ", transliteration: "Fee jeediha hab lum mim-masad", meaning: "around her neck will be a rope of palm fiber." },
+    ],
+  },
+  {
+    id: 2,
+    name: "Ayat al-Kursi",
+    nameAr: "آية الكرسي",
+    globalStart: 262,
+    verses: [
+      { arabic: "ٱللَّهُ لَآ إِلَـٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ ۚ لَا تَأْخُذُهُۥ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُۥ مَا فِى ٱلسَّمَـٰوَٰتِ وَمَا فِى ٱلْأَرْضِ ۗ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَىْءٍ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ ۚ وَسِعَ كُرْسِيُّهُ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۖ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا ۚ وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ", transliteration: "Allahu laaa ilaaha illaa Huwal Haiyul Qaiyoom; laa taakhuzuhoo sinatunw wa laa nawm; lahoo maa fissamaawaati wa maa fil ard; man zal lazee yashfa'u indahooo illaa bi-iznih; ya'lamu maa baina aydeehim wa mww khalfahum wa laa yuheetoona bishai'im min 'ilmihee illaa bimaa shaaa'; wasi'a Kursiyyuhus samaawaati wal arda wa laa ya'ooduho hifzuhumaa; wa Huwal Aliyyul 'Azeem", meaning: "Allah: none has the right to be worshiped except Him, the Ever-Living, All-Sustaining. Neither drowsiness overtakes Him nor sleep. To Him belongs all that is in the heavens and all that is on earth. Who is there that can intercede with Him except with His permission? He knows what was before them and what will be after them, while they encompass nothing of His knowledge, except what He wills. His Kursī [i.e., footstool] extends over the heavens and earth, and safeguarding of both does not weary Him, for He is the Most High, the Most Great." },
+    ],
+  },
 ];
 
 function QuranCornerTab({
@@ -1335,6 +1894,14 @@ function QuranCornerTab({
         <p className="text-center text-themed-muted text-sm mb-4">
           Memorize short surahs from the Quran! Start with the ones you hear in prayer.
         </p>
+        <div className="mb-4 p-3 rounded-xl bg-gold/5 border border-gold/20">
+          <p className="text-xs text-themed">
+            <Sparkles size={12} className="inline text-gold mr-1" />
+            The Prophet ﷺ taught that the best of us are the ones who learn the Quran and teach it.
+            Ayat al-Kursi is special too — reciting it at bedtime keeps a guard over you all night.
+          </p>
+          <p className="text-[11px] text-themed-muted mt-1.5 italic">Source: Bukhari 66:49; Bukhari 66:32</p>
+        </div>
         <div className="space-y-3">
           {miniSurahs.map((s, i) => {
             const memorized = progress.memorizedSurahs.includes(s.id);
@@ -1453,13 +2020,18 @@ const checklistItems: ChecklistItem[] = [
   { id: "kind", label: "Was kind to someone", emoji: "💛", ageMin: "little" },
   { id: "prayed", label: "Prayed with family", emoji: "🕌", ageMin: "little" },
   { id: "quran", label: "Read or listened to Quran", emoji: "📖", ageMin: "little" },
+  { id: "parents", label: "Helped or obeyed my parents", emoji: "🫶", ageMin: "little" },
+  { id: "clean", label: "Brushed my teeth and kept clean", emoji: "🪥", ageMin: "little" },
+  { id: "animal", label: "Was kind to an animal", emoji: "🐾", ageMin: "little" },
   { id: "salam", label: "Greeted someone with Salam", emoji: "👋", ageMin: "explorer" },
   { id: "dua", label: "Made a special dua", emoji: "🌟", ageMin: "explorer" },
   { id: "helped", label: "Helped someone in need", emoji: "🤝", ageMin: "explorer" },
+  { id: "sorry", label: "Said sorry or forgave someone", emoji: "🤗", ageMin: "explorer" },
   { id: "dhikr", label: "Did dhikr (remembrance of Allah)", emoji: "📿", ageMin: "scholar" },
   { id: "learned", label: "Learned something new about Islam", emoji: "📚", ageMin: "scholar" },
   { id: "sunnah", label: "Followed a Sunnah of the Prophet ﷺ", emoji: "☀️", ageMin: "scholar" },
   { id: "charity", label: "Gave charity or shared something", emoji: "🎁", ageMin: "scholar" },
+  { id: "prayed-alone", label: "Prayed a prayer on time by myself", emoji: "🕌", ageMin: "scholar" },
 ];
 
 function getChecklistByAge(age: AgeGroup) {
@@ -1606,6 +2178,63 @@ const challengeQuestions: ChallengeQuestion[] = [
   { id: "c13", type: "multiple-choice", category: "prophets", difficulty: "scholar", question: "Which prophet was swallowed by a whale?", options: ["Dawud", "Yunus", "Sulayman", "Ilyas"], answer: 1, explanation: "Prophet Yunus (Jonah) was swallowed by a whale after leaving his people." },
   { id: "c14", type: "multiple-choice", category: "pillars", difficulty: "scholar", question: "On which day of Hajj do pilgrims stand at Arafat?", options: ["8th Dhul Hijjah", "9th Dhul Hijjah", "10th Dhul Hijjah", "12th Dhul Hijjah"], answer: 1, explanation: "Standing at Arafat on the 9th of Dhul Hijjah is the most important pillar of Hajj." },
   { id: "c15", type: "true-false", category: "basics", difficulty: "scholar", question: "Tawheed means the oneness of Allah.", options: ["True", "False"], answer: 0, explanation: "Tawheed is the fundamental Islamic concept of monotheism — the absolute oneness of Allah." },
+
+  // ── Beliefs (pillars of iman) ──
+  { id: "c16", type: "multiple-choice", category: "beliefs", difficulty: "little", question: "What did Allah make the angels from?", options: ["Clay", "Light", "Fire", "Water"], answer: 1, explanation: "The angels were created from light." },
+  { id: "c17", type: "multiple-choice", category: "beliefs", difficulty: "explorer", question: "How many pillars of iman (beliefs) are there?", options: ["Three", "Five", "Six", "Ten"], answer: 2, explanation: "There are six pillars of iman: Allah, angels, books, messengers, the Last Day, and qadar." },
+  { id: "c18", type: "true-false", category: "beliefs", difficulty: "explorer", question: "The Quran is the last book Allah revealed.", options: ["True", "False"], answer: 0, explanation: "The Quran, given to Prophet Muhammad ﷺ, is the final book from Allah." },
+  { id: "c19", type: "multiple-choice", category: "beliefs", difficulty: "scholar", question: "Belief in qadar means believing that...", options: ["We control everything", "Allah knows and decrees all things", "The future is random", "Deeds don't matter"], answer: 1, explanation: "Qadar is Allah's decree — He knows and allows all that happens, so we try our best and trust Him." },
+  { id: "c20", type: "multiple-choice", category: "beliefs", difficulty: "scholar", question: "How many beautiful names does Allah have?", options: ["40", "70", "99", "100"], answer: 2, explanation: "The Prophet ﷺ said Allah has ninety-nine names." },
+
+  // ── Manners (akhlaq) ──
+  { id: "c21", type: "multiple-choice", category: "manners", difficulty: "little", question: "What do we say when we meet a Muslim?", options: ["Goodbye", "Assalamu Alaikum", "Nothing", "Hurry up"], answer: 1, explanation: "We greet with 'Assalamu Alaikum' — peace be upon you." },
+  { id: "c22", type: "multiple-choice", category: "manners", difficulty: "little", question: "Who did the Prophet ﷺ say deserves our best treatment first?", options: ["Our friends", "Our mother", "Our toys", "Strangers"], answer: 1, explanation: "The Prophet ﷺ said 'Your mother' three times, then 'Your father.'" },
+  { id: "c23", type: "true-false", category: "manners", difficulty: "explorer", question: "Smiling at someone can be a good deed.", options: ["True", "False"], answer: 0, explanation: "The Prophet ﷺ said smiling in your brother's face is charity." },
+  { id: "c24", type: "multiple-choice", category: "manners", difficulty: "explorer", question: "Who is truly strong?", options: ["The one who wins fights", "The one who controls his anger", "The tallest person", "The loudest person"], answer: 1, explanation: "The Prophet ﷺ said the strong one controls himself when he is angry." },
+  { id: "c25", type: "multiple-choice", category: "manners", difficulty: "scholar", question: "The Prophet ﷺ said truthfulness leads to...", options: ["Trouble", "Righteousness and Paradise", "Nowhere", "Wealth"], answer: 1, explanation: "Truthfulness leads to righteousness, and righteousness leads to Paradise." },
+  { id: "c26", type: "true-false", category: "manners", difficulty: "scholar", question: "A believer wishes for others what they wish for themselves.", options: ["True", "False"], answer: 0, explanation: "The Prophet ﷺ said none of us truly believes until we love for our brother what we love for ourselves." },
+
+  // ── Prophets ──
+  { id: "c27", type: "multiple-choice", category: "prophets", difficulty: "little", question: "Which prophet built a big boat (ark)?", options: ["Nuh", "Musa", "Yusuf", "Adam"], answer: 0, explanation: "Prophet Nuh built the ark on Allah's command." },
+  { id: "c28", type: "multiple-choice", category: "prophets", difficulty: "explorer", question: "Which prophet was given the miracle of splitting the sea?", options: ["Isa", "Musa", "Dawud", "Yunus"], answer: 1, explanation: "Prophet Musa split the sea by Allah's power to save his people." },
+  { id: "c29", type: "true-false", category: "prophets", difficulty: "explorer", question: "Prophet Ibrahim is called the friend of Allah.", options: ["True", "False"], answer: 0, explanation: "Prophet Ibrahim (Abraham) is honoured as Khalilullah, the friend of Allah." },
+  { id: "c30", type: "multiple-choice", category: "prophets", difficulty: "scholar", question: "Which prophet could understand the speech of animals and had a mighty kingdom?", options: ["Sulayman", "Harun", "Ilyas", "Shuayb"], answer: 0, explanation: "Prophet Sulayman was given a great kingdom and understood the speech of animals." },
+
+  // ── Quran ──
+  { id: "c31", type: "multiple-choice", category: "quran", difficulty: "little", question: "What is the holy book of the Muslims?", options: ["The Quran", "A storybook", "The dictionary", "A magazine"], answer: 0, explanation: "The Quran is the word of Allah." },
+  { id: "c32", type: "multiple-choice", category: "quran", difficulty: "explorer", question: "Which surah talks about the people of the Elephant?", options: ["Al-Ikhlas", "Al-Fil", "An-Nas", "Al-Kawthar"], answer: 1, explanation: "Surah Al-Fil tells how Allah protected the Kaaba from the army with the elephant." },
+  { id: "c33", type: "true-false", category: "quran", difficulty: "explorer", question: "Surah Al-Ikhlas is about the oneness of Allah.", options: ["True", "False"], answer: 0, explanation: "Al-Ikhlas describes Allah as One, with none comparable to Him." },
+  { id: "c34", type: "multiple-choice", category: "quran", difficulty: "scholar", question: "Which special verse is a guard for you at night when recited?", options: ["Ayat al-Kursi", "Al-Kawthar", "Quraysh", "Al-Asr"], answer: 0, explanation: "The Prophet ﷺ said reciting Ayat al-Kursi at bedtime keeps a guard over you all night." },
+
+  // ── Seerah / Heroes ──
+  { id: "c35", type: "multiple-choice", category: "seerah", difficulty: "explorer", question: "Who was the Prophet's loyal best friend who travelled with him to Madinah?", options: ["Umar", "Bilal", "Abu Bakr", "Anas"], answer: 2, explanation: "Abu Bakr as-Siddiq was the Prophet's closest friend and companion on the journey to Madinah." },
+  { id: "c36", type: "multiple-choice", category: "seerah", difficulty: "explorer", question: "Who was the first person to call the adhan?", options: ["Bilal", "Abu Bakr", "Umar", "Anas"], answer: 0, explanation: "Bilal ibn Rabah, with his beautiful voice, was the first muezzin." },
+  { id: "c37", type: "multiple-choice", category: "seerah", difficulty: "scholar", question: "Who was the first person to believe in the Prophet's message?", options: ["Umar", "Khadijah", "Abu Bakr", "Bilal"], answer: 1, explanation: "Khadijah, the Prophet's wife, was the first to believe in and support him." },
+  { id: "c38", type: "true-false", category: "seerah", difficulty: "scholar", question: "Anas served the Prophet ﷺ for about ten years and was never scolded harshly.", options: ["True", "False"], answer: 0, explanation: "Anas said the Prophet ﷺ never once said 'uff' to him in ten years of service." },
+
+  // ── Pillars & practice ──
+  { id: "c39", type: "multiple-choice", category: "pillars", difficulty: "little", question: "How many times do Muslims pray each day?", options: ["Three", "Five", "Seven", "Ten"], answer: 1, explanation: "Muslims pray five times a day." },
+  { id: "c40", type: "multiple-choice", category: "pillars", difficulty: "little", question: "What do we do to get clean before prayer?", options: ["Wudu", "Sleep", "Eat", "Run"], answer: 0, explanation: "We make wudu (washing) before we pray." },
+  { id: "c41", type: "true-false", category: "pillars", difficulty: "explorer", question: "During Ramadan, Muslims fast from dawn until sunset.", options: ["True", "False"], answer: 0, explanation: "Fasting in Ramadan is from Fajr (dawn) to Maghrib (sunset)." },
+  { id: "c42", type: "multiple-choice", category: "pillars", difficulty: "explorer", question: "What is the Eid after the month of fasting called?", options: ["Eid al-Adha", "Eid al-Fitr", "Jumu'ah", "Ashura"], answer: 1, explanation: "Eid al-Fitr is the celebration after Ramadan." },
+
+  // ── Daily words & duas ──
+  { id: "c43", type: "multiple-choice", category: "daily", difficulty: "little", question: "What do we say before we sleep?", options: ["Bismika Allahumma amutu wa ahya", "Goodnight only", "Nothing", "Allahu Akbar"], answer: 0, explanation: "We say 'Allahumma bismika amutu wa ahya' — O Allah, in Your name I die and live." },
+  { id: "c44", type: "multiple-choice", category: "daily", difficulty: "explorer", question: "When someone sneezes and says Alhamdulillah, what do we reply?", options: ["Bismillah", "Yarhamukallah", "InshAllah", "Ameen"], answer: 1, explanation: "We reply 'Yarhamukallah' — may Allah have mercy on you." },
+  { id: "c45", type: "true-false", category: "daily", difficulty: "explorer", question: "'MashAllah' is said when we admire something good.", options: ["True", "False"], answer: 0, explanation: "MashAllah means 'what Allah has willed' — said when admiring a blessing." },
+  { id: "c46", type: "multiple-choice", category: "daily", difficulty: "scholar", question: "What does 'JazakAllahu Khairan' mean?", options: ["Goodbye", "May Allah reward you with good", "In the name of Allah", "See you soon"], answer: 1, explanation: "It means 'May Allah reward you with good' — a beautiful way to say thank you." },
+];
+
+// Themed quiz packs — `key` matches ChallengeQuestion.category ("all" = everything).
+const challengePacks: { key: string; label: string; emoji: string }[] = [
+  { key: "all", label: "Mixed", emoji: "🎲" },
+  { key: "beliefs", label: "Beliefs", emoji: "🛡️" },
+  { key: "pillars", label: "Pillars", emoji: "🕌" },
+  { key: "prophets", label: "Prophets", emoji: "📜" },
+  { key: "seerah", label: "Heroes", emoji: "🫂" },
+  { key: "quran", label: "Quran", emoji: "📖" },
+  { key: "manners", label: "Manners", emoji: "😊" },
+  { key: "daily", label: "Words & Duas", emoji: "💬" },
 ];
 
 function ChallengesTab({
@@ -1619,9 +2248,25 @@ function ChallengesTab({
 }) {
   const ageOrder: AgeGroup[] = ["little", "explorer", "scholar"];
   const maxIdx = ageOrder.indexOf(age);
+  const [pack, setPack] = useState("all");
   const questions = useMemo(
-    () => challengeQuestions.filter((q) => ageOrder.indexOf(q.difficulty) <= maxIdx),
-    [age, maxIdx]
+    () =>
+      challengeQuestions.filter(
+        (q) => ageOrder.indexOf(q.difficulty) <= maxIdx && (pack === "all" || q.category === pack)
+      ),
+    [age, maxIdx, pack]
+  );
+  // Packs shown = those with at least one question for the current age.
+  const availablePacks = useMemo(
+    () =>
+      challengePacks.filter(
+        (pk) =>
+          pk.key === "all" ||
+          challengeQuestions.some(
+            (q) => q.category === pk.key && ageOrder.indexOf(q.difficulty) <= maxIdx
+          )
+      ),
+    [maxIdx]
   );
 
   const [started, setStarted] = useState(false);
@@ -1691,14 +2336,29 @@ function ChallengesTab({
           </ContentCard>
         ) : (
           <>
-            <p className="text-themed-muted text-sm mb-6">
+            <p className="text-themed-muted text-sm mb-4">
               Test your Islamic knowledge with fun challenges!
             </p>
+            <div className="flex flex-wrap justify-center gap-2 mb-5">
+              {availablePacks.map((pk) => (
+                <button
+                  key={pk.key}
+                  onClick={() => setPack(pk.key)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                    pack === pk.key
+                      ? "bg-gold text-black border-gold"
+                      : "card-bg sidebar-border text-themed-muted hover:bg-gold/10"
+                  }`}
+                >
+                  {pk.emoji} {pk.label}
+                </button>
+              ))}
+            </div>
             <ContentCard>
               <Sparkles size={48} className="mx-auto text-gold mb-3" />
               <h3 className="text-lg font-semibold text-themed mb-2">Ready for a Challenge?</h3>
               <p className="text-sm text-themed-muted mb-4">
-                {quizLen} questions about Islam. Get a perfect score for bonus stars!
+                {quizLen}-question {challengePacks.find((p) => p.key === pack)?.label ?? "Mixed"} pack. Get a perfect score for bonus stars!
               </p>
               <button
                 onClick={startQuiz}
@@ -1772,6 +2432,598 @@ function ChallengesTab({
           </motion.div>
         )}
       </ContentCard>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MY FIRST DUAS (flashcard deck) — Arabic matn byte-spliced from the corpus
+   ═══════════════════════════════════════════════════════════════════ */
+
+type FirstDua = {
+  id: string;
+  arabic: string;
+  transliteration: string;
+  english: string;
+  when: string;
+  source: string;
+  ageMin: AgeGroup;
+};
+
+const myDuas: FirstDua[] = [
+  { id: "before-eat", arabic: "بِسْمِ اللَّهِ", transliteration: "Bismillah", english: "In the name of Allah", when: "Say it before you eat or drink anything.", source: "Bukhari 70:4", ageMin: "little" },
+  { id: "after-eat", arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا الطَّعَامَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ", transliteration: "Alhamdu lillahil-ladhi at'amani hadhat-ta'ama wa razaqanihi min ghayri hawlin minni wa la quwwah", english: "All praise is to Allah who fed me this food and provided it for me without any might or power on my part", when: "Say it when you finish your meal to thank Allah.", source: "Abu Dawud 34:4", ageMin: "explorer" },
+  { id: "sleep", arabic: "اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا", transliteration: "Allahumma bismika amutu wa ahya", english: "O Allah, in Your name I die and I live", when: "Say it as you lie down to sleep.", source: "Bukhari 80:9; Bukhari 80:11", ageMin: "little" },
+  { id: "wake", arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ", transliteration: "Alhamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur", english: "All praise is to Allah who gave us life after He caused us to die, and to Him is the return", when: "Say it the moment you wake up.", source: "Bukhari 80:9; Bukhari 80:11", ageMin: "explorer" },
+  { id: "bathroom", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ", transliteration: "Allahumma inni a'udhu bika minal-khubthi wal-khaba'ith", english: "O Allah, I seek refuge in You from evil and evil-doers", when: "Say it before you step into the bathroom.", source: "Bukhari 4:8", ageMin: "little" },
+  { id: "leave-home", arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ", transliteration: "Bismillahi tawakkaltu 'alallah, la hawla wa la quwwata illa billah", english: "In the name of Allah, I trust in Allah; there is no might and no power except with Allah", when: "Say it as you leave your home.", source: "Abu Dawud 43:323", ageMin: "explorer" },
+  { id: "protection", arabic: "بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَىْءٌ فِي الأَرْضِ وَلاَ فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", transliteration: "Bismillahil-ladhi la yadurru ma'asmihi shay'un fil-ardi wa la fis-sama'i wa huwas-Sami'ul-'Alim", english: "In the name of Allah, with whose name nothing on earth or in the heavens can cause harm, and He is the All-Hearing, the All-Knowing", when: "Say it three times each morning and evening to stay safe.", source: "Abu Dawud 43:316", ageMin: "scholar" },
+];
+
+function getDuasByAge(age: AgeGroup): FirstDua[] {
+  const order: AgeGroup[] = ["little", "explorer", "scholar"];
+  const maxIdx = order.indexOf(age);
+  return myDuas.filter((d) => order.indexOf(d.ageMin) <= maxIdx);
+}
+
+function MyDuasTab({
+  age,
+  onStar,
+}: {
+  age: AgeGroup;
+  progress: KidsProgress;
+  onStar: () => void;
+}) {
+  const duas = useMemo(() => getDuasByAge(age), [age]);
+  const [idx, setIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [reviewed, setReviewed] = useState(0);
+
+  const dua = duas[idx];
+  if (!dua) return null;
+
+  const next = () => {
+    const r = reviewed + 1;
+    if (r >= 3) { onStar(); setReviewed(0); } else { setReviewed(r); }
+    setIdx((i) => (i + 1) % duas.length);
+    setFlipped(false);
+  };
+  const prev = () => {
+    setIdx((i) => (i - 1 + duas.length) % duas.length);
+    setFlipped(false);
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <p className="text-center text-themed-muted text-sm mb-4">
+        Little duas to say every day. Tap the card to see what it means!
+      </p>
+      <div className="text-center text-xs text-themed-muted mb-3">
+        {idx + 1} of {duas.length} &middot; {reviewed}/3 towards next{" "}
+        <Star size={10} className="inline text-gold" fill="currentColor" />
+      </div>
+
+      <div className="perspective-1000 cursor-pointer mb-4" onClick={() => setFlipped(!flipped)}>
+        <motion.div
+          className="relative w-full h-64 rounded-2xl"
+          animate={{ rotateY: flipped ? 180 : 0 }}
+          transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          <div
+            className="absolute inset-0 card-bg sidebar-border rounded-2xl flex flex-col items-center justify-center p-6 text-center"
+            style={{ backfaceVisibility: "hidden" }}
+          >
+            <p className="text-[11px] uppercase tracking-widest text-themed-muted mb-2">{dua.when.replace(/^Say it /, "").replace(/\.$/, "")}</p>
+            <p className="text-2xl font-arabic leading-loose mb-3">{dua.arabic}</p>
+            <p className="text-sm text-gold">{dua.transliteration}</p>
+            <p className="text-xs text-themed-muted mt-4 opacity-50">Tap to see meaning</p>
+          </div>
+          <div
+            className="absolute inset-0 card-bg sidebar-border rounded-2xl flex flex-col items-center justify-center p-6 text-center"
+            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+          >
+            <p className="text-base font-semibold text-themed mb-2">{dua.english}</p>
+            <p className="text-sm text-themed-muted">{dua.when}</p>
+            <p className="text-[11px] text-themed-muted mt-3 italic">Source: {dua.source}</p>
+            <p className="text-xs text-themed-muted mt-3 opacity-50">Tap to flip back</p>
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="flex justify-center gap-4">
+        <button onClick={prev} className="p-2 rounded-full card-bg sidebar-border hover:bg-gold/10 transition">
+          <ChevronLeft size={20} />
+        </button>
+        <button onClick={next} className="px-4 py-2 rounded-full bg-gold text-black font-medium text-sm hover:bg-gold/90 transition">
+          Next Dua
+        </button>
+        <button onClick={next} className="p-2 rounded-full card-bg sidebar-border hover:bg-gold/10 transition">
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      <div className="mt-6 p-3 rounded-xl bg-gold/5 border border-gold/20 text-center">
+        <Lightbulb size={14} className="inline text-gold mr-1" />
+        <span className="text-xs text-themed-muted">
+          <strong>Learn Together:</strong> Say &ldquo;{dua.transliteration}&rdquo; together at the right moment today!
+        </span>
+      </div>
+      <div className="mt-3 text-center">
+        <a href="/duas" className="text-xs text-gold hover:underline">See all duas for the family &rarr;</a>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LET'S PRAY! (wudu + salah walkthrough)
+   ═══════════════════════════════════════════════════════════════════ */
+
+const wuduSteps: { emoji: string; title: string; detail: string }[] = [
+  { emoji: "🤲", title: "Make your intention", detail: "In your heart, plan to make wudu to get clean for Allah, then say Bismillah." },
+  { emoji: "✋", title: "Wash your hands", detail: "Wash both hands up to the wrists, three times." },
+  { emoji: "💧", title: "Rinse your mouth and nose", detail: "Rinse your mouth three times, then sniff a little water into your nose and blow it out, three times." },
+  { emoji: "😊", title: "Wash your face", detail: "Wash your whole face three times, from the top of your forehead to your chin." },
+  { emoji: "💪", title: "Wash your arms", detail: "Wash your right arm up to the elbow three times, then your left arm three times." },
+  { emoji: "🧑", title: "Wipe your head and ears", detail: "Wipe your wet hands over your head once, then wipe inside and behind your ears." },
+  { emoji: "🦶", title: "Wash your feet", detail: "Wash your right foot up to the ankle three times, then your left foot three times." },
+];
+
+const salahSteps: { emoji: string; title: string; say: string; detail: string }[] = [
+  { emoji: "🧭", title: "Stand and face the Qibla", say: "Allahu Akbar", detail: "Stand facing the Kaaba in Makkah, raise your hands and say Allahu Akbar to begin." },
+  { emoji: "📖", title: "Recite standing (Qiyam)", say: "Al-Fatiha", detail: "With your right hand over your left, recite Surah Al-Fatiha and a short surah." },
+  { emoji: "🙇", title: "Bow down (Ruku)", say: "Subhana rabbiyal-Azim", detail: "Bow with your back straight and hands on your knees, glorifying Allah." },
+  { emoji: "🧍", title: "Stand up straight", say: "Sami'Allahu liman hamidah", detail: "Rise from bowing and stand up straight again." },
+  { emoji: "🕋", title: "Prostrate (Sujud)", say: "Subhana rabbiyal-A'la", detail: "Put your forehead, nose, hands, knees and toes on the ground — the closest you are to Allah." },
+  { emoji: "🪑", title: "Sit, then prostrate again", say: "Allahu Akbar", detail: "Sit up calmly, then go down into a second prostration." },
+  { emoji: "🤝", title: "Finish with the Tashahhud & Salam", say: "Assalamu Alaikum wa rahmatullah", detail: "After the last unit, sit for the Tashahhud, then turn your face right and left giving salam to end." },
+];
+
+function LetsPrayTab() {
+  const [tab, setTab] = useState<"wudu" | "salah">("wudu");
+  return (
+    <div className="max-w-2xl mx-auto">
+      <p className="text-center text-themed-muted text-sm mb-4">
+        Prayer is how we talk to Allah five times a day. Let&apos;s learn how!
+      </p>
+
+      <div className="flex justify-center gap-2 mb-5">
+        <button
+          onClick={() => setTab("wudu")}
+          className={`px-4 py-1.5 rounded-full text-sm font-medium border transition ${tab === "wudu" ? "bg-gold text-black border-gold" : "card-bg sidebar-border text-themed-muted hover:bg-gold/10"}`}
+        >
+          1. Wudu
+        </button>
+        <button
+          onClick={() => setTab("salah")}
+          className={`px-4 py-1.5 rounded-full text-sm font-medium border transition ${tab === "salah" ? "bg-gold text-black border-gold" : "card-bg sidebar-border text-themed-muted hover:bg-gold/10"}`}
+        >
+          2. Salah
+        </button>
+      </div>
+
+      {tab === "wudu" ? (
+        <div className="space-y-3">
+          {wuduSteps.map((s, i) => (
+            <ContentCard key={i} delay={0.04 + i * 0.04}>
+              <div className="flex items-start gap-3">
+                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gold/20 text-gold text-sm flex items-center justify-center font-semibold">{i + 1}</span>
+                <div className="flex-1">
+                  <p className="font-medium text-themed">{s.emoji} {s.title}</p>
+                  <p className="text-sm text-themed-muted mt-0.5">{s.detail}</p>
+                </div>
+              </div>
+            </ContentCard>
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {salahSteps.map((s, i) => (
+            <ContentCard key={i} delay={0.04 + i * 0.04}>
+              <div className="flex items-start gap-3">
+                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gold/20 text-gold text-sm flex items-center justify-center font-semibold">{i + 1}</span>
+                <div className="flex-1">
+                  <p className="font-medium text-themed">{s.emoji} {s.title}</p>
+                  <p className="text-xs text-gold mt-0.5">Say: {s.say}</p>
+                  <p className="text-sm text-themed-muted mt-0.5">{s.detail}</p>
+                </div>
+              </div>
+            </ContentCard>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-4 p-3 rounded-xl bg-gold/5 border border-gold/20">
+        <p className="text-xs text-themed">
+          <Lightbulb size={12} className="inline text-gold mr-1" />
+          The Prophet ﷺ taught families to start teaching children to pray at the age of seven, gently and with love.
+        </p>
+        <p className="text-[11px] text-themed-muted mt-1.5 italic">Source: Abu Dawud 2:105</p>
+      </div>
+      <div className="mt-3 text-center">
+        <a href="/salah" className="text-xs text-gold hover:underline">Full step-by-step prayer guide for grown-ups &rarr;</a>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HEROES OF ISLAM (companion & family stories)
+   Anchor narrations are cited; fuller biographies are generically framed.
+   ═══════════════════════════════════════════════════════════════════ */
+
+type HeroStory = {
+  slug: string;
+  name: string;
+  emoji: string;
+  tagline: string;
+  sections: { title: string; content: string }[];
+  source?: string;
+  lesson: string;
+};
+
+const heroStories: HeroStory[] = [
+  {
+    slug: "abu-bakr",
+    name: "Abu Bakr as-Siddiq",
+    emoji: "🫂",
+    tagline: "The Prophet's loyal best friend",
+    sections: [
+      { title: "The true friend", content: "Abu Bakr was the Prophet Muhammad's closest friend. When the Prophet ﷺ told him about the message from Allah, Abu Bakr believed straight away, without any doubt. That is why he was given the name as-Siddiq, which means 'the one who always tells and accepts the truth.'" },
+      { title: "The journey to Madinah", content: "When it became dangerous in Makkah, Abu Bakr travelled with the Prophet ﷺ to Madinah. They hid in a cave together, and Abu Bakr was worried for the Prophet's safety, but the Prophet ﷺ comforted him and told him not to be sad, because Allah was with them." },
+      { title: "A generous leader", content: "Abu Bakr was known for being gentle, generous, and brave. He freed slaves who were being hurt for believing in Allah, and he gave away his wealth to help others. After the Prophet ﷺ passed away, Abu Bakr became the first leader (Caliph) of the Muslims." },
+    ],
+    lesson: "A real friend supports you in doing what is right and believes in the truth.",
+  },
+  {
+    slug: "umar",
+    name: "Umar ibn al-Khattab",
+    emoji: "⚖️",
+    tagline: "The strong and just leader",
+    sections: [
+      { title: "From tough to tender", content: "Umar was a strong, brave man who at first was against Islam. But when he heard the Quran being recited, his heart softened and he became a Muslim. His strength then became a strength for the Muslims." },
+      { title: "Famous for justice", content: "As a leader, Umar was known for being fair to everyone, rich or poor. The stories say he would walk the streets at night to check that no one was hungry or in need, and he felt responsible even for a lost animal by the road." },
+      { title: "Simple and humble", content: "Even as the leader of a huge land, Umar lived simply and was careful with the people's trust. He listened to people's problems and was known for his honesty and care." },
+    ],
+    lesson: "True strength is used to protect others and to be fair to everyone.",
+  },
+  {
+    slug: "bilal",
+    name: "Bilal ibn Rabah",
+    emoji: "📢",
+    tagline: "The first caller to prayer",
+    sections: [
+      { title: "Patient through hardship", content: "Bilal was a slave who believed in one God, Allah. He was hurt badly to make him give up his faith, but he stayed patient and kept saying 'Ahad, Ahad' — meaning 'Allah is One.' Abu Bakr then freed him." },
+      { title: "The beautiful voice", content: "Bilal had a beautiful, strong voice. The Prophet ﷺ chose him to call the adhan — the call to prayer. Bilal became the very first muezzin, calling the Muslims to pray five times a day." },
+      { title: "Loved and honoured", content: "Even though some people had looked down on Bilal because he was a slave, in Islam he became one of the most loved and respected companions. Islam teaches that people are judged by their faith and character, not their skin or their status." },
+    ],
+    lesson: "Allah judges us by our faith and good character, not by our looks or wealth.",
+  },
+  {
+    slug: "khadijah",
+    name: "Khadijah bint Khuwaylid",
+    emoji: "🌷",
+    tagline: "The Prophet's beloved wife",
+    sections: [
+      { title: "A trusted businesswoman", content: "Khadijah was a wise and successful businesswoman in Makkah, known for her honesty and good character. She married the Prophet Muhammad ﷺ, who was known even before prophethood as al-Amin, 'the trustworthy.'" },
+      { title: "The first to believe", content: "When the Prophet ﷺ first received revelation and was afraid, Khadijah comforted him and was the very first person to believe in his message. She supported him with her kindness and her wealth." },
+      { title: "A pillar of support", content: "Khadijah stood by the Prophet ﷺ through the hardest years in Makkah. He loved and remembered her all his life. She is one of the greatest women in Islam." },
+    ],
+    lesson: "Comforting and standing by others in hard times is a beautiful act of love.",
+  },
+  {
+    slug: "fatimah",
+    name: "Fatimah bint Muhammad",
+    emoji: "🌸",
+    tagline: "The Prophet's dear daughter",
+    sections: [
+      { title: "The Prophet's daughter", content: "Fatimah was the beloved daughter of the Prophet Muhammad ﷺ. She was known for being kind, patient, and close to her father. The Prophet ﷺ loved her deeply and honoured her greatly." },
+      { title: "A loving mother", content: "Fatimah's sons were al-Hasan and al-Husayn, the Prophet's grandsons. The Prophet ﷺ once kissed al-Hasan in front of a man who said he had ten children and had never kissed any of them. The Prophet ﷺ replied that whoever is not merciful will not be shown mercy." },
+      { title: "Simple and content", content: "Fatimah lived a simple life and was patient and grateful. She is honoured as one of the best women ever to live." },
+    ],
+    source: "Bukhari 78:28",
+    lesson: "Showing love and gentleness to children is part of being a good Muslim.",
+  },
+  {
+    slug: "anas",
+    name: "Anas ibn Malik",
+    emoji: "🧒",
+    tagline: "The boy who served the Prophet ﷺ",
+    sections: [
+      { title: "A young helper", content: "When Anas was still a young boy, his mother brought him to serve the Prophet Muhammad ﷺ. Anas stayed close to the Prophet ﷺ and helped him for about ten years." },
+      { title: "Never a harsh word", content: "Anas said that in all those ten years, the Prophet ﷺ never once said 'uff' to him (a small word of annoyance), and never scolded him by asking why he did something or why he didn't. The Prophet ﷺ was always gentle and patient with him." },
+      { title: "A great teacher", content: "Because he spent so much time with the Prophet ﷺ, Anas remembered many of his sayings and taught them to others when he grew up. He became one of the companions who passed on the Prophet's teachings." },
+    ],
+    source: "Bukhari 78:68; Muslim 43:70",
+    lesson: "Kind and patient people, like the Prophet ﷺ, never need to be harsh to be respected.",
+  },
+];
+
+function HeroesTab({
+  progress,
+  onStar,
+  onLessonComplete,
+}: {
+  age: AgeGroup;
+  progress: KidsProgress;
+  onStar: () => void;
+  onLessonComplete: (id: string) => void;
+}) {
+  const [slug, setSlug] = useState<string | null>(null);
+  const [sectionIdx, setSectionIdx] = useState(0);
+  const hero = heroStories.find((h) => h.slug === slug);
+
+  if (!slug || !hero) {
+    return (
+      <div className="max-w-3xl mx-auto">
+        <p className="text-center text-themed-muted text-sm mb-4">
+          After the prophets, meet the amazing companions and family of the Prophet ﷺ!
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {heroStories.map((h, i) => {
+            const done = progress.completedLessons.includes(`hero-${h.slug}`);
+            return (
+              <ContentCard key={h.slug} delay={0.05 + i * 0.03}>
+                <button onClick={() => { setSlug(h.slug); setSectionIdx(0); }} className="w-full text-center p-2">
+                  <span className="text-3xl block mb-1">{h.emoji}</span>
+                  <p className="text-sm font-medium text-themed leading-tight">{h.name}</p>
+                  <p className="text-[10px] text-themed-muted mt-1">{h.tagline}</p>
+                  {done && (
+                    <span className="text-[10px] text-gold flex items-center justify-center gap-1 mt-1">
+                      <Check size={10} /> Complete
+                    </span>
+                  )}
+                </button>
+              </ContentCard>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  const section = hero.sections[sectionIdx];
+  const isLast = sectionIdx === hero.sections.length - 1;
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <button onClick={() => setSlug(null)} className="flex items-center gap-1 text-sm text-themed-muted hover:text-themed mb-4">
+        <ChevronLeft size={16} /> All Heroes
+      </button>
+      <h3 className="text-lg font-semibold text-themed text-center mb-1">{hero.emoji} {hero.name}</h3>
+      <p className="text-xs text-themed-muted text-center mb-4">Part {sectionIdx + 1} of {hero.sections.length}: {section.title}</p>
+
+      <ContentCard>
+        <h4 className="font-medium text-gold mb-2">{section.title}</h4>
+        <p className="text-sm text-themed leading-relaxed">{section.content}</p>
+        {isLast && (
+          <>
+            <div className="mt-3 p-3 rounded-xl bg-gold/5 border border-gold/20">
+              <div className="flex items-start gap-2">
+                <Heart size={14} className="text-gold mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-themed">{hero.lesson}</p>
+              </div>
+            </div>
+            {hero.source && (
+              <p className="text-[11px] text-themed-muted mt-2 italic">Source: {hero.source}</p>
+            )}
+          </>
+        )}
+      </ContentCard>
+
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => setSectionIdx((i) => i - 1)}
+          disabled={sectionIdx === 0}
+          className="px-4 py-2 rounded-full text-sm card-bg sidebar-border disabled:opacity-30 hover:bg-gold/10 transition"
+        >
+          <ChevronLeft size={16} className="inline" /> Back
+        </button>
+        {!isLast ? (
+          <button
+            onClick={() => setSectionIdx((i) => i + 1)}
+            className="px-4 py-2 rounded-full text-sm bg-gold text-black font-medium hover:bg-gold/90 transition"
+          >
+            Next <ChevronRight size={16} className="inline" />
+          </button>
+        ) : (
+          <button
+            onClick={() => { onLessonComplete(`hero-${hero.slug}`); onStar(); setSlug(null); }}
+            className="px-4 py-2 rounded-full text-sm bg-gold text-black font-medium hover:bg-gold/90 transition"
+          >
+            Finish <Star size={14} className="inline ml-1" />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SPECIAL DAYS (Ramadan, the two Eids, the Islamic calendar)
+   ═══════════════════════════════════════════════════════════════════ */
+
+type SpecialTopic = { id: string; emoji: string; title: string; body: string; source?: string };
+
+const specialDays: SpecialTopic[] = [
+  {
+    id: "ramadan",
+    emoji: "🌙",
+    title: "Ramadan — the month of fasting",
+    body: "Ramadan is a very special month when grown-up Muslims fast from dawn until sunset — no food or drink while the sun is up. Families wake up early for suhoor, break their fast at sunset with dates and water, and pray extra prayers at night. It is a happy, cosy time of sharing, kindness, and reading lots of Quran. The Prophet ﷺ said that when Ramadan begins, the gates of Paradise are opened!",
+    source: "Bukhari 30:8",
+  },
+  {
+    id: "eid-fitr",
+    emoji: "🎉",
+    title: "Eid al-Fitr — the sweet Eid",
+    body: "After a whole month of fasting in Ramadan comes Eid al-Fitr, the 'festival of breaking the fast.' In the morning, families wear their best clothes, pray a special Eid prayer together, give charity to the poor, and enjoy yummy food and sweets. Children often get gifts and money, and everyone says 'Eid Mubarak!'",
+  },
+  {
+    id: "eid-adha",
+    emoji: "🐑",
+    title: "Eid al-Adha — the greater Eid",
+    body: "Eid al-Adha happens later in the year, during the time of Hajj. It remembers how Prophet Ibrahim was ready to obey Allah in everything. Families pray the Eid prayer, and those who are able share meat from a sacrifice with family, friends, and people in need — so everyone can join the celebration.",
+  },
+  {
+    id: "calendar",
+    emoji: "📅",
+    title: "The Islamic calendar",
+    body: "Muslims follow a calendar that goes by the moon, so it has twelve months, starting with Muharram and including the special month of Ramadan and Dhul Hijjah (the month of Hajj). Because it follows the moon, Ramadan and the Eids move a little earlier each year — sometimes in summer, sometimes in winter!",
+  },
+];
+
+function SpecialDaysTab() {
+  return (
+    <div className="max-w-2xl mx-auto">
+      <p className="text-center text-themed-muted text-sm mb-4">
+        The most exciting days in a Muslim child&apos;s year!
+      </p>
+      <div className="space-y-3">
+        {specialDays.map((t, i) => (
+          <ContentCard key={t.id} delay={0.05 + i * 0.04}>
+            <h3 className="font-semibold text-themed">{t.emoji} {t.title}</h3>
+            <p className="text-sm text-themed-muted mt-1.5 leading-relaxed">{t.body}</p>
+            {t.source && (
+              <p className="text-[11px] text-themed-muted mt-2 italic">Source: {t.source}</p>
+            )}
+          </ContentCard>
+        ))}
+      </div>
+      <div className="mt-4 p-3 rounded-xl bg-gold/5 border border-gold/20 text-center">
+        <Lightbulb size={14} className="inline text-gold mr-1" />
+        <span className="text-xs text-themed-muted">
+          <strong>Learn Together:</strong> Count down to the next Eid together and plan how to help someone in need!
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ARABIC LETTERS (Little Learners)
+   ═══════════════════════════════════════════════════════════════════ */
+
+type ArabicLetter = { order: number; letter: string; name: string; sound: string };
+
+const arabicLetters: ArabicLetter[] = [
+  { order: 1, letter: "ا", name: "Alif", sound: "a / long aa" },
+  { order: 2, letter: "ب", name: "Ba", sound: "b" },
+  { order: 3, letter: "ت", name: "Ta", sound: "t" },
+  { order: 4, letter: "ث", name: "Tha", sound: "th (think)" },
+  { order: 5, letter: "ج", name: "Jim", sound: "j" },
+  { order: 6, letter: "ح", name: "Ha", sound: "h (deep)" },
+  { order: 7, letter: "خ", name: "Kha", sound: "kh" },
+  { order: 8, letter: "د", name: "Dal", sound: "d" },
+  { order: 9, letter: "ذ", name: "Dhal", sound: "dh (this)" },
+  { order: 10, letter: "ر", name: "Ra", sound: "r" },
+  { order: 11, letter: "ز", name: "Zay", sound: "z" },
+  { order: 12, letter: "س", name: "Sin", sound: "s" },
+  { order: 13, letter: "ش", name: "Shin", sound: "sh" },
+  { order: 14, letter: "ص", name: "Sad", sound: "s (heavy)" },
+  { order: 15, letter: "ض", name: "Dad", sound: "d (heavy)" },
+  { order: 16, letter: "ط", name: "Ta", sound: "t (heavy)" },
+  { order: 17, letter: "ظ", name: "Za", sound: "dh (heavy)" },
+  { order: 18, letter: "ع", name: "Ayn", sound: "a deep sound" },
+  { order: 19, letter: "غ", name: "Ghayn", sound: "gh" },
+  { order: 20, letter: "ف", name: "Fa", sound: "f" },
+  { order: 21, letter: "ق", name: "Qaf", sound: "q" },
+  { order: 22, letter: "ك", name: "Kaf", sound: "k" },
+  { order: 23, letter: "ل", name: "Lam", sound: "l" },
+  { order: 24, letter: "م", name: "Mim", sound: "m" },
+  { order: 25, letter: "ن", name: "Nun", sound: "n" },
+  { order: 26, letter: "ه", name: "Ha", sound: "h" },
+  { order: 27, letter: "و", name: "Waw", sound: "w / long oo" },
+  { order: 28, letter: "ي", name: "Ya", sound: "y / long ee" },
+];
+
+function ArabicAlphabetTab() {
+  const [idx, setIdx] = useState<number | null>(null);
+  const active = idx !== null ? arabicLetters[idx] : null;
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <p className="text-center text-themed-muted text-sm mb-4">
+        Arabic has 28 letters. Tap a letter to hear its name and sound!
+      </p>
+      <div className="grid grid-cols-4 sm:grid-cols-6 gap-2.5">
+        {arabicLetters.map((l, i) => (
+          <button
+            key={l.order}
+            onClick={() => setIdx(i)}
+            className={`aspect-square rounded-xl border flex items-center justify-center text-2xl font-arabic transition ${idx === i ? "bg-gold text-black border-gold" : "card-bg sidebar-border hover:bg-gold/10"}`}
+          >
+            {l.letter}
+          </button>
+        ))}
+      </div>
+
+      {active && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-5">
+          <ContentCard>
+            <div className="flex items-center gap-4">
+              <span className="text-5xl font-arabic text-gold">{active.letter}</span>
+              <div>
+                <p className="font-semibold text-themed">Letter {active.order}: {active.name}</p>
+                <p className="text-sm text-themed-muted mt-0.5">Sound: {active.sound}</p>
+              </div>
+            </div>
+          </ContentCard>
+        </motion.div>
+      )}
+
+      <div className="mt-4 p-3 rounded-xl bg-gold/5 border border-gold/20 text-center">
+        <Lightbulb size={14} className="inline text-gold mr-1" />
+        <span className="text-xs text-themed-muted">
+          <strong>Learn Together:</strong> Point to a letter and take turns saying its name — knowing the letters is the first step to reading the Quran!
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PARENTS' GUIDE (collapsible orientation card)
+   ═══════════════════════════════════════════════════════════════════ */
+
+function ParentsGuide() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mb-4 rounded-2xl border sidebar-border card-bg overflow-hidden">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-2 p-3 text-left"
+      >
+        <Lightbulb size={16} className="text-gold shrink-0" />
+        <span className="text-sm font-semibold text-themed flex-1">For Parents &amp; Teachers</span>
+        <ChevronDown size={16} className={`text-themed-muted transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <div className="px-4 pb-4 space-y-3 text-sm text-themed-muted">
+              <p>
+                <strong className="text-themed">Pick an age level</strong> at the top of the page. <em>Little Learner (4–6)</em> keeps lessons short and gentle, <em>Explorer (7–9)</em> adds more detail and stories, and <em>Scholar (10–12)</em> unlocks the full content and quizzes.
+              </p>
+              <p>
+                <strong className="text-themed">A suggested weekly rhythm:</strong> one belief or manner to talk about, a few daily words or a dua to practice, one prophet or hero story to read together, and a short Quran surah to work on. End the day with the Good Deeds checklist.
+              </p>
+              <p>
+                <strong className="text-themed">Learn together.</strong> Every lesson ends with a &ldquo;Learn Together&rdquo; tip — a small question or activity to do side by side. Children remember most what they do and say with you, not just what they tap.
+              </p>
+              <p>
+                <strong className="text-themed">Celebrate progress.</strong> Stars, streaks, and badges are there to encourage, not to pressure. Praise effort and consistency over perfect scores.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -1915,20 +3167,41 @@ function KidsContent() {
             {lesson.key === "who-is-allah" && (
               <WhoIsAllahTab age={progress.ageGroup} progress={progress} onStar={handleStar} />
             )}
+            {lesson.key === "iman-pillars" && (
+              <ImanPillarsTab age={progress.ageGroup} progress={progress} onStar={handleStar} onLessonComplete={handleLessonComplete} />
+            )}
             {lesson.key === "five-pillars" && (
               <FivePillarsTab age={progress.ageGroup} progress={progress} onStar={handleStar} onLessonComplete={handleLessonComplete} />
+            )}
+            {lesson.key === "lets-pray" && (
+              <LetsPrayTab />
+            )}
+            {lesson.key === "my-duas" && (
+              <MyDuasTab age={progress.ageGroup} progress={progress} onStar={handleStar} />
             )}
             {lesson.key === "daily-words" && (
               <DailyWordsTab age={progress.ageGroup} progress={progress} onStar={handleStar} />
             )}
+            {lesson.key === "good-manners" && (
+              <GoodMannersTab age={progress.ageGroup} progress={progress} onStar={handleStar} onLessonComplete={handleLessonComplete} />
+            )}
             {lesson.key === "prophet-stories" && (
               <ProphetStoriesTab age={progress.ageGroup} progress={progress} onStar={handleStar} onLessonComplete={handleLessonComplete} />
+            )}
+            {lesson.key === "heroes" && (
+              <HeroesTab age={progress.ageGroup} progress={progress} onStar={handleStar} onLessonComplete={handleLessonComplete} />
             )}
             {lesson.key === "quran-corner" && (
               <QuranCornerTab progress={progress} onStar={handleStar} />
             )}
+            {lesson.key === "arabic-alphabet" && (
+              <ArabicAlphabetTab />
+            )}
             {lesson.key === "good-deeds" && (
               <GoodDeedsTab age={progress.ageGroup} progress={progress} />
+            )}
+            {lesson.key === "special-days" && (
+              <SpecialDaysTab />
             )}
             {lesson.key === "challenges" && (
               <ChallengesTab age={progress.ageGroup} progress={progress} onStar={handleStar} />
@@ -1947,6 +3220,8 @@ function KidsContent() {
               <AgeGroupSelector value={progress.ageGroup} onChange={handleAgeChange} />
             </div>
             <ProgressDashboard progress={progress} />
+
+            <ParentsGuide />
 
             <div className="grid gap-3 sm:grid-cols-2">
               {lessons.map((l, i) => {

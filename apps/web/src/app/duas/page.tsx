@@ -8,7 +8,7 @@ import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
-import { ArrowLeft, Sun, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles } from "lucide-react";
+import { ArrowLeft, Sun, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles, Hand, Moon, HeartCrack, Handshake } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
@@ -28,21 +28,28 @@ type Dua = {
   virtue?: string;
 };
 
+/** Landing-grid sections — grouped so the growing grid stays scannable on mobile. */
+const sectionOrder = ["Start Here", "Daily Rhythm", "Life Moments", "Heart & Hardship"] as const;
+
 const categories = [
-  { key: "powerful", label: "Most Powerful", icon: Sparkles, description: "Duas carrying explicit promises in the Sahih collections" },
-  { key: "morning-evening", label: "Morning & Evening", icon: Sun, description: "Daily adhkar to open and close your day" },
-  { key: "prayer", label: "Prayer", icon: HandHeart, description: "Before, during, and after the prayer" },
-  { key: "sleep", label: "Sleep", icon: Bed, description: "Before sleeping, upon waking, and after bad dreams" },
-  { key: "eating", label: "Eating & Drinking", icon: Utensils, description: "Before and after meals, and when breaking the fast" },
-  { key: "travel", label: "Travel", icon: Plane, description: "Setting out, returning, and bidding farewell" },
-  { key: "home-mosque", label: "Home & Mosque", icon: Home, description: "Entering and leaving the home, mosque, and bathroom" },
-  { key: "protection", label: "Protection", icon: Shield, description: "Seeking refuge from harm, evil, and the evil eye" },
-  { key: "forgiveness", label: "Forgiveness", icon: Heart, description: "Istighfar and turning back to Allah in repentance" },
-  { key: "distress", label: "Distress & Anxiety", icon: Brain, description: "For worry, grief, hardship, and calamity" },
-  { key: "illness", label: "Illness & Healing", icon: Stethoscope, description: "For the sick and those who visit them" },
-  { key: "parents-family", label: "Parents & Family", icon: Users, description: "For parents, spouses, and children" },
-  { key: "guidance", label: "Guidance & Knowledge", icon: BookOpen, description: "Seeking guidance, clarity, and beneficial knowledge" },
-  { key: "rain-weather", label: "Rain & Weather", icon: CloudRain, description: "When it rains and when strong winds blow" },
+  { key: "powerful", section: "Start Here", label: "Most Powerful", icon: Sparkles, description: "Duas carrying explicit promises in the Sahih collections" },
+  { key: "making-dua", section: "Start Here", label: "Making Dua", icon: Hand, description: "How to supplicate, and the times dua is answered" },
+  { key: "morning-evening", section: "Daily Rhythm", label: "Morning & Evening", icon: Sun, description: "Daily adhkar to open and close your day" },
+  { key: "prayer", section: "Daily Rhythm", label: "Prayer", icon: HandHeart, description: "Before, during, and after the prayer" },
+  { key: "sleep", section: "Daily Rhythm", label: "Sleep", icon: Bed, description: "Before sleeping, upon waking, and after bad dreams" },
+  { key: "eating", section: "Daily Rhythm", label: "Eating & Drinking", icon: Utensils, description: "Before and after meals, and when breaking the fast" },
+  { key: "home-mosque", section: "Daily Rhythm", label: "Home, Mosque & Wudu", icon: Home, description: "Entering and leaving the home, mosque, bathroom, and ablution" },
+  { key: "travel", section: "Life Moments", label: "Travel", icon: Plane, description: "Setting out, returning, and bidding farewell" },
+  { key: "ramadan", section: "Life Moments", label: "Ramadan & Fasting", icon: Moon, description: "Breaking the fast and the Night of Decree" },
+  { key: "parents-family", section: "Life Moments", label: "Parents & Family", icon: Users, description: "For parents, spouses, and children" },
+  { key: "death-loss", section: "Life Moments", label: "Death & Loss", icon: HeartCrack, description: "The funeral prayer, visiting graves, and bearing loss" },
+  { key: "everyday-social", section: "Life Moments", label: "Everyday & Social", icon: Handshake, description: "Sneezing, anger, new clothes, and the new moon" },
+  { key: "rain-weather", section: "Life Moments", label: "Rain & Weather", icon: CloudRain, description: "When it rains and when strong winds blow" },
+  { key: "protection", section: "Heart & Hardship", label: "Protection", icon: Shield, description: "Seeking refuge from harm, evil, and the evil eye" },
+  { key: "forgiveness", section: "Heart & Hardship", label: "Forgiveness", icon: Heart, description: "Istighfar and turning back to Allah in repentance" },
+  { key: "distress", section: "Heart & Hardship", label: "Distress & Anxiety", icon: Brain, description: "For worry, grief, hardship, and calamity" },
+  { key: "illness", section: "Heart & Hardship", label: "Illness & Healing", icon: Stethoscope, description: "For the sick and those who visit them" },
+  { key: "guidance", section: "Heart & Hardship", label: "Guidance & Knowledge", icon: BookOpen, description: "Seeking guidance, clarity, and beneficial knowledge" },
 ];
 
 const duas: Dua[] = [
@@ -302,7 +309,7 @@ const duas: Dua[] = [
   },
   {
     id: "when-breaking-fast",
-    tags: ["eating"],
+    tags: ["ramadan", "eating"],
     title: "When Breaking Fast",
     arabic: "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ",
     transliteration: "Dhahabadh-dhama'u wabtallatil-'uruqu wa thabatal-ajru in sha'Allah",
@@ -487,7 +494,7 @@ const duas: Dua[] = [
   },
   {
     id: "comprehensive-istighfar",
-    tags: ["forgiveness"],
+    tags: ["forgiveness", "making-dua"],
     title: "Comprehensive Istighfar",
     arabic: "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ وَارْحَمْنِي إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ",
     transliteration: "Allahumma inni zalamtu nafsi zulman katheeran wa la yaghfirudh-dhunuba illa anta, faghfir li maghfiratan min 'indika warhamni innaka antal-ghafurur-raheem",
@@ -510,7 +517,7 @@ const duas: Dua[] = [
   },
   {
     id: "dua-of-yunus",
-    tags: ["distress", "forgiveness", "powerful"],
+    tags: ["distress", "forgiveness", "powerful", "making-dua"],
     title: "Dua of Yunus (peace be upon him)",
     arabic: "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
     transliteration: "La ilaha illa anta, subhanaka inni kuntu minaz-zalimeen",
@@ -531,7 +538,7 @@ const duas: Dua[] = [
   },
   {
     id: "when-a-calamity-strikes",
-    tags: ["distress"],
+    tags: ["distress", "death-loss"],
     title: "When a Calamity Strikes",
     arabic: "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا",
     transliteration: "Inna lillahi wa inna ilayhi raji'un. Allahumma'jurni fi museebati wa akhlif li khayran minha",
@@ -720,6 +727,214 @@ const duas: Dua[] = [
     translation: "O Allah, I ask You for the good of it, the good within it, and the good it was sent with. And I seek refuge in You from the evil of it, the evil within it, and the evil it was sent with.",
     source: "Muslim 9:16",
     when: "When strong winds blow",
+  },
+
+  // === ADDED: in-prayer essentials, wudu, ramadan, death, everyday, and more ===
+  {
+    id: "tashahhud",
+    tags: ["prayer"],
+    title: "Tashahhud (At-Tahiyyat)",
+    arabic: "التَّحِيَّاتُ لِلَّهِ، وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلاَمُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلاَمُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
+    transliteration: "At-tahiyyatu lillahi was-salawatu wat-tayyibat. As-salamu 'alayka ayyuhan-nabiyyu wa rahmatullahi wa barakatuh. As-salamu 'alayna wa 'ala 'ibadillahis-salihin. Ash-hadu an la ilaha illallah, wa ash-hadu anna Muhammadan 'abduhu wa rasuluh",
+    translation: "All greetings, prayers, and good things are due to Allah. Peace be upon you, O Prophet, and the mercy of Allah and His blessings. Peace be upon us and upon the righteous servants of Allah. I bear witness that there is no god but Allah, and I bear witness that Muhammad is His servant and Messenger.",
+    source: "Bukhari 10:225",
+    when: "In the sitting (tashahhud) of every prayer",
+    virtue: "The Prophet (peace be upon him) taught these exact words to be recited in the sitting of the prayer; they are a pillar of every salah.",
+  },
+  {
+    id: "salawat-in-prayer",
+    tags: ["prayer"],
+    title: "Salawat Ibrahimiyyah (Blessings on the Prophet)",
+    arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ، وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ، وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ، وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ",
+    transliteration: "Allahumma salli 'ala Muhammadin wa 'ala ali Muhammad, kama sallayta 'ala Ibrahima wa 'ala ali Ibrahim, innaka Hamidun Majid. Allahumma barik 'ala Muhammadin wa 'ala ali Muhammad, kama barakta 'ala Ibrahima wa 'ala ali Ibrahim, innaka Hamidun Majid",
+    translation: "O Allah, send Your grace upon Muhammad and upon the family of Muhammad, as You sent Your grace upon Ibrahim and upon the family of Ibrahim. You are indeed Praiseworthy, Glorious. O Allah, send Your blessings upon Muhammad and upon the family of Muhammad, as You sent Your blessings upon Ibrahim and upon the family of Ibrahim. You are indeed Praiseworthy, Glorious.",
+    source: "Bukhari 60:44",
+    when: "In the final tashahhud, after the testimony of faith",
+    virtue: "The Companions asked the Prophet how to send blessings upon him, and he taught them these exact words.",
+  },
+  {
+    id: "tasbih-ruku-sujud",
+    tags: ["prayer"],
+    title: "Glorifying Allah in Ruku and Sujud",
+    arabic: "سُبْحَانَ رَبِّيَ الْعَظِيمِ • سُبْحَانَ رَبِّيَ الأَعْلَى",
+    transliteration: "In ruku': Subhana Rabbiyal-'Azeem. In sujud: Subhana Rabbiyal-A'la",
+    translation: "Glory to my Lord, the Most Great (said while bowing). Glory to my Lord, the Most High (said while prostrating).",
+    source: "Abu Dawud 2:496",
+    when: "Said at least three times in each bowing (ruku') and each prostration (sujud)",
+    repeat: "3 times",
+  },
+  {
+    id: "responding-to-the-adhan",
+    tags: ["prayer"],
+    title: "Responding to the Adhan",
+    arabic: "لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ",
+    transliteration: "La hawla wa la quwwata illa billah",
+    translation: "There is no might nor power except with Allah.",
+    source: "Muslim 4:14, Muslim 4:13",
+    when: "Repeat each phrase after the muezzin; at 'Come to prayer' and 'Come to success', say this instead",
+    virtue: "Whoever repeats the words of the muezzin sincerely from the heart enters Paradise. After the adhan, also send blessings upon the Prophet and ask Allah to grant him al-wasilah, and his intercession becomes due for you.",
+  },
+  {
+    id: "qunut-al-witr",
+    tags: ["prayer"],
+    title: "Qunut al-Witr",
+    arabic: "اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ وَعَافِنِي فِيمَنْ عَافَيْتَ وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ وَبَارِكْ لِي فِيمَا أَعْطَيْتَ وَقِنِي شَرَّ مَا قَضَيْتَ فَإِنَّكَ تَقْضِي وَلاَ يُقْضَى عَلَيْكَ وَإِنَّهُ لاَ يَذِلُّ مَنْ وَالَيْتَ تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ",
+    transliteration: "Allahummah-dini fiman hadayt, wa 'afini fiman 'afayt, wa tawallani fiman tawallayt, wa barik li fima a'tayt, wa qini sharra ma qadayt, fa innaka taqdi wa la yuqda 'alayk, wa innahu la yadhillu man walayt, tabarakta Rabbana wa ta'alayt",
+    translation: "O Allah, guide me among those You have guided, grant me well-being among those You have granted well-being, take me into Your care among those You have taken into Your care, bless me in what You have given, and protect me from the evil of what You have decreed. For You decree and none can decree over You. He whom You befriend is never humiliated. Blessed are You, our Lord, and Exalted.",
+    source: "Abu Dawud 8:10, Tirmidhi 3:12",
+    when: "In the qunut of the witr prayer (see the Prayer guide on Salah for how witr is prayed)",
+    virtue: "The Prophet taught these words to his grandson al-Hasan ibn Ali to say in the witr. Graded hasan by Tirmidhi.",
+  },
+  {
+    id: "rabbana-atina-fid-dunya",
+    tags: ["powerful", "guidance", "making-dua"],
+    title: "Rabbana Atina (Good in Both Worlds)",
+    arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً، وَفِي الآخِرَةِ حَسَنَةً، وَقِنَا عَذَابَ النَّارِ",
+    transliteration: "Rabbana atina fid-dunya hasanah, wa fil-akhirati hasanah, wa qina 'adhaban-nar",
+    translation: "Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.",
+    source: "Quran 2:201, Bukhari 80:84",
+    when: "Anytime — a single dua that gathers the good of both worlds",
+    virtue: "This was the most frequent invocation of the Prophet (peace be upon him). It asks for the good of this life, the good of the next, and refuge from the Fire, all in one supplication.",
+  },
+  {
+    id: "before-wudu",
+    tags: ["home-mosque"],
+    title: "Before Wudu",
+    arabic: "بِسْمِ اللَّهِ",
+    transliteration: "Bismillah",
+    translation: "In the name of Allah.",
+    source: "Abu Dawud 1:101, Ibn Majah 1:131",
+    when: "Before beginning ablution (wudu)",
+    virtue: "The Prophet said there is no (complete) ablution for the one who does not mention the name of Allah over it. Graded hasan.",
+  },
+  {
+    id: "after-wudu",
+    tags: ["home-mosque"],
+    title: "After Wudu",
+    arabic: "أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ اللَّهُمَّ اجْعَلْنِي مِنَ التَّوَّابِينَ وَاجْعَلْنِي مِنَ الْمُتَطَهِّرِينَ",
+    transliteration: "Ash-hadu an la ilaha illallahu wahdahu la sharika lah, wa ash-hadu anna Muhammadan 'abduhu wa rasuluh. Allahummaj-'alni minat-tawwabin, waj-'alni minal-mutatahhirin",
+    translation: "I bear witness that there is no god but Allah alone, with no partner, and I bear witness that Muhammad is His servant and Messenger. O Allah, make me of those who turn to You in repentance, and make me of those who purify themselves.",
+    source: "Muslim 2:20, Tirmidhi 1:55",
+    when: "Upon completing ablution (wudu)",
+    virtue: "Whoever completes wudu well and then bears this testimony has the eight gates of Paradise opened for him, to enter by whichever he wishes. (The closing line 'make me of those who repent...' is an addition reported by Tirmidhi.)",
+  },
+  {
+    id: "laylat-al-qadr",
+    tags: ["ramadan"],
+    title: "Dua of Laylat al-Qadr",
+    arabic: "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+    transliteration: "Allahumma innaka 'Afuwwun tuhibbul-'afwa fa'fu 'anni",
+    translation: "O Allah, You are Pardoning and love pardon, so pardon me.",
+    source: "Tirmidhi 48:144, Ibn Majah 34:24",
+    when: "On the Night of Decree, sought in the last ten nights of Ramadan",
+    virtue: "Aishah asked the Prophet what she should say if she came upon Laylat al-Qadr, and he taught her these words.",
+  },
+  {
+    id: "janazah-dua",
+    tags: ["death-loss"],
+    title: "Dua of the Funeral Prayer",
+    arabic: "اللَّهُمَّ اغْفِرْ لَهُ وَارْحَمْهُ وَعَافِهِ وَاعْفُ عَنْهُ وَأَكْرِمْ نُزُلَهُ وَوَسِّعْ مُدْخَلَهُ وَاغْسِلْهُ بِالْمَاءِ وَالثَّلْجِ وَالْبَرَدِ وَنَقِّهِ مِنَ الْخَطَايَا كَمَا نَقَّيْتَ الثَّوْبَ الأَبْيَضَ مِنَ الدَّنَسِ وَأَبْدِلْهُ دَارًا خَيْرًا مِنْ دَارِهِ وَأَهْلاً خَيْرًا مِنْ أَهْلِهِ وَزَوْجًا خَيْرًا مِنْ زَوْجِهِ وَأَدْخِلْهُ الْجَنَّةَ وَأَعِذْهُ مِنْ عَذَابِ الْقَبْرِ أَوْ مِنْ عَذَابِ النَّارِ",
+    transliteration: "Allahummaghfir lahu warhamhu wa 'afihi wa'fu 'anhu, wa akrim nuzulahu wa wassi' mudkhalahu, waghsilhu bil-ma'i wath-thalji wal-barad, wa naqqihi minal-khataya kama naqqaytath-thawbal-abyada minad-danas, wa abdilhu daran khayran min darihi, wa ahlan khayran min ahlihi, wa zawjan khayran min zawjihi, wa adkhilhul-jannah, wa a'idhhu min 'adhabil-qabri aw min 'adhabin-nar",
+    translation: "O Allah, forgive him and have mercy on him, keep him safe and pardon him, honor his rest and make his entrance spacious, wash him with water, snow, and hail, and cleanse him of his sins as a white garment is cleansed of dirt. Give him in exchange a home better than his home, a family better than his family, and a spouse better than his spouse. Admit him to Paradise and protect him from the punishment of the grave and the punishment of the Fire.",
+    source: "Muslim 11:109",
+    when: "In the funeral prayer, after the third takbir (change the pronouns for a woman). See also the funeral rites section.",
+    virtue: "'Awf ibn Malik heard the Prophet make this supplication over a deceased person and said he wished he were that dead person, so beautiful was the dua.",
+  },
+  {
+    id: "visiting-the-graveyard",
+    tags: ["death-loss"],
+    title: "Greeting the People of the Graves",
+    arabic: "السَّلاَمُ عَلَيْكُمْ أَهْلَ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ وَإِنَّا إِنْ شَاءَ اللَّهُ لَلَاحِقُونَ أَسْأَلُ اللَّهَ لَنَا وَلَكُمْ الْعَافِيَةَ",
+    transliteration: "As-salamu 'alaykum ahlad-diyari minal-mu'minina wal-muslimin, wa inna in sha'Allahu la-lahiqun, as'alullaha lana wa lakumul-'afiyah",
+    translation: "Peace be upon you, O inhabitants of these dwellings, believers and Muslims. Allah willing, we shall join you. I ask Allah for well-being for us and for you.",
+    source: "Muslim 11:133",
+    when: "When entering or passing by a graveyard",
+  },
+  {
+    id: "responding-to-a-sneeze",
+    tags: ["everyday-social"],
+    title: "When Someone Sneezes",
+    arabic: "الْحَمْدُ لِلَّهِ — يَرْحَمُكَ اللَّهُ — يَهْدِيكُمُ اللَّهُ وَيُصْلِحُ بَالَكُمْ",
+    transliteration: "The one who sneezes: Alhamdulillah. The one who hears: Yarhamukallah. The one who sneezed replies: Yahdikumullahu wa yuslihu balakum",
+    translation: "When you sneeze, say: 'Praise be to Allah.' The one who hears you should say: 'May Allah have mercy on you.' Then you reply: 'May Allah guide you and set your affairs right.'",
+    source: "Bukhari 78:248",
+    when: "Whenever you or someone near you sneezes",
+  },
+  {
+    id: "when-angry",
+    tags: ["everyday-social"],
+    title: "When You Are Angry",
+    arabic: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ",
+    transliteration: "A'udhu billahi minash-shaytan",
+    translation: "I seek refuge in Allah from Satan.",
+    source: "Bukhari 59:91",
+    when: "When you feel anger rising within you",
+    virtue: "The Prophet said that if the angry person says this, the anger he feels will leave him.",
+  },
+  {
+    id: "seeing-someone-afflicted",
+    tags: ["everyday-social"],
+    title: "Seeing Someone Afflicted",
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي عَافَانِي مِمَّا ابْتَلاَكَ بِهِ وَفَضَّلَنِي عَلَى كَثِيرٍ مِمَّنْ خَلَقَ تَفْضِيلاً",
+    transliteration: "Alhamdulillahil-ladhi 'afani mimmab-talaka bihi wa faddalani 'ala kathirin mimman khalaqa tafdila",
+    translation: "All praise is due to Allah who saved me from that with which He has afflicted you, and who favored me greatly over many of those He has created.",
+    source: "Tirmidhi 48:62, Tirmidhi 48:63",
+    when: "When you see someone in hardship or affliction — say it quietly, to yourself",
+    virtue: "Whoever sees an afflicted person and says this will be spared that affliction for as long as he lives.",
+  },
+  {
+    id: "wearing-new-clothes",
+    tags: ["everyday-social"],
+    title: "Wearing New Clothes",
+    arabic: "اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ أَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَا صُنِعَ لَهُ وَأَعُوذُ بِكَ مِنْ شَرِّهِ وَشَرِّ مَا صُنِعَ لَهُ",
+    transliteration: "Allahumma lakal-hamdu anta kasawtanihi, as'aluka min khayrihi wa khayri ma suni'a lah, wa a'udhu bika min sharrihi wa sharri ma suni'a lah",
+    translation: "O Allah, to You is all praise; You have clothed me with this. I ask You for its good and the good for which it was made, and I seek refuge in You from its evil and the evil for which it was made.",
+    source: "Abu Dawud 34:1",
+    when: "When putting on a new garment",
+  },
+  {
+    id: "sighting-the-new-moon",
+    tags: ["everyday-social"],
+    title: "Sighting the New Moon",
+    arabic: "اللَّهُمَّ أَهْلِلْهُ عَلَيْنَا بِالْيُمْنِ وَالإِيمَانِ وَالسَّلاَمَةِ وَالإِسْلاَمِ رَبِّي وَرَبُّكَ اللَّهُ",
+    transliteration: "Allahumma ahlilhu 'alayna bil-yumni wal-iman, was-salamati wal-islam, Rabbi wa Rabbukallah",
+    translation: "O Allah, bring it over us with blessing and faith, safety and Islam. My Lord and your Lord is Allah.",
+    source: "Tirmidhi 48:82",
+    when: "When you see the new crescent moon at the start of a month",
+    virtue: "The Prophet would say this whenever he saw the new crescent. Graded hasan.",
+  },
+  {
+    id: "before-marital-intimacy",
+    tags: ["parents-family"],
+    title: "Before Marital Intimacy",
+    arabic: "بِسْمِ اللَّهِ اللَّهُمَّ جَنِّبْنَا الشَّيْطَانَ وَجَنِّبِ الشَّيْطَانَ مَا رَزَقْتَنَا",
+    transliteration: "Bismillah, Allahumma jannibnash-shaytan, wa jannibish-shaytana ma razaqtana",
+    translation: "In the name of Allah. O Allah, keep us away from Satan and keep Satan away from what You provide us.",
+    source: "Bukhari 4:7, Bukhari 59:81",
+    when: "Said by a husband before intimacy with his wife",
+    virtue: "The Prophet said that if a child is then destined for the couple, Satan will never be able to harm that child.",
+  },
+  {
+    id: "relief-from-debt",
+    tags: ["distress"],
+    title: "Relief from Debt",
+    arabic: "اللَّهُمَّ اكْفِنِي بِحَلاَلِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
+    transliteration: "Allahummak-fini bi halalika 'an haramik, wa aghnini bi fadlika 'amman siwak",
+    translation: "O Allah, suffice me with what You have made lawful so that I have no need of what You have forbidden, and enrich me by Your bounty so that I have no need of anyone besides You.",
+    source: "Tirmidhi 48:194",
+    when: "When burdened by debt or financial hardship",
+    virtue: "The Prophet taught these words to Ali, saying that even if one's debt were like the mountain of Sir, Allah would settle it for him.",
+  },
+  {
+    id: "asking-rain-to-ease",
+    tags: ["rain-weather"],
+    title: "When Rain Becomes Excessive",
+    arabic: "اللَّهُمَّ حَوَالَيْنَا وَلاَ عَلَيْنَا",
+    transliteration: "Allahumma hawalayna wa la 'alayna",
+    translation: "O Allah, around us and not upon us.",
+    source: "Bukhari 15:28",
+    when: "When rain is heavy and you fear its harm",
+    virtue: "When continuous rain threatened Medina, the Prophet raised his hands and said this, and the clouds parted from over the city.",
   },
 ];
 
@@ -981,6 +1196,34 @@ function DuasContent() {
                   <li><strong className="text-themed">Tasbeeh After Prayer</strong> — Same promise of total sin forgiveness after every obligatory prayer</li>
                   <li><strong className="text-themed">After the Adhan</strong> — The Prophet&rsquo;s intercession on the Day of Judgement granted to the one who says it</li>
                   <li><strong className="text-themed">Hasbunallah</strong> — Said by Ibrahim when thrown into fire and by the Prophet when armies gathered against him</li>
+                  <li><strong className="text-themed">Rabbana Atina</strong> — The Prophet&rsquo;s <em>most frequent</em> invocation; gathers the good of both worlds and refuge from the Fire</li>
+                </ul>
+              </div>
+            )}
+
+            {/* Making Dua explainer */}
+            {activeCategory === "making-dua" && (
+              <div className="rounded-xl p-5 mb-6 border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/5">
+                <h3 className="text-gold font-semibold mb-2 flex items-center gap-2">
+                  <Hand size={16} />
+                  How Dua Is Answered
+                </h3>
+                <p className="text-sm text-themed-muted leading-relaxed mb-3">
+                  Dua is worship in itself. The Prophet Muhammad (peace be upon him) taught both an <strong className="text-themed">etiquette</strong> for supplicating and the <strong className="text-themed">times</strong> when a dua is most likely to be answered.
+                </p>
+                <p className="text-xs font-semibold text-themed mb-1.5">The manners of dua</p>
+                <ul className="text-sm text-themed-muted space-y-1.5 list-disc list-inside mb-3">
+                  <li>Begin by praising Allah and sending blessings upon the Prophet, then ask.</li>
+                  <li>Do not be hasty — the Prophet taught that a servant&rsquo;s dua is answered as long as he does not grow impatient and give up, complaining that he supplicated but received no answer. (Bukhari 80:37)</li>
+                  <li>Eat, drink, and earn only what is lawful — a man whose food and clothing are unlawful raises his hands, but &ldquo;How can then his supplication be accepted?&rdquo; (Muslim 12:83)</li>
+                  <li>Ask with certainty that Allah will respond, and never invoke against yourself or your family.</li>
+                </ul>
+                <p className="text-xs font-semibold text-themed mb-1.5">The golden windows</p>
+                <ul className="text-sm text-themed-muted space-y-1.5 list-disc list-inside">
+                  <li>The last third of the night, when Allah descends to the lowest heaven and calls out, asking who is invoking Him that He may answer, and who is asking Him that He may give. (Bukhari 80:18)</li>
+                  <li>Between the adhan and the iqamah — &ldquo;The supplication made between the adhan and the iqamah is not rejected.&rdquo; (Abu Dawud 2:131)</li>
+                  <li>While prostrating — &ldquo;The nearest a servant comes to his Lord is when he is prostrating himself, so make supplication.&rdquo; (Muslim 4:245)</li>
+                  <li>While fasting, on Laylat al-Qadr, and on the Day of Arafah.</li>
                 </ul>
               </div>
             )}
@@ -1004,29 +1247,40 @@ function DuasContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+            className="space-y-8"
           >
-            {categories.map((cat) => (
-              <button
-                key={cat.key}
-                onClick={() => selectCategory(cat.key)}
-                className={`card-bg border rounded-xl p-4 text-left transition-colors hover:border-[var(--color-gold)]/50 ${
-                  cat.key === "powerful" ? "border-[var(--color-gold)]/40" : "sidebar-border"
-                }`}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-gold bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/20">
-                    <cat.icon size={16} />
-                  </span>
-                  <span>
-                    <span className="block font-medium text-themed">{cat.label}</span>
-                    <span className="text-xs text-themed-muted">
-                      {counts[cat.key]} {counts[cat.key] === 1 ? "dua" : "duas"}
-                    </span>
-                  </span>
+            {sectionOrder.map((section) => (
+              <div key={section}>
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-themed-muted mb-3">
+                  {section}
+                </h2>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {categories
+                    .filter((cat) => cat.section === section)
+                    .map((cat) => (
+                      <button
+                        key={cat.key}
+                        onClick={() => selectCategory(cat.key)}
+                        className={`card-bg border rounded-xl p-4 text-left transition-colors hover:border-[var(--color-gold)]/50 ${
+                          cat.key === "powerful" ? "border-[var(--color-gold)]/40" : "sidebar-border"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-gold bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/20">
+                            <cat.icon size={16} />
+                          </span>
+                          <span>
+                            <span className="block font-medium text-themed">{cat.label}</span>
+                            <span className="text-xs text-themed-muted">
+                              {counts[cat.key]} {counts[cat.key] === 1 ? "dua" : "duas"}
+                            </span>
+                          </span>
+                        </div>
+                        <p className="text-xs text-themed-muted leading-relaxed">{cat.description}</p>
+                      </button>
+                    ))}
                 </div>
-                <p className="text-xs text-themed-muted leading-relaxed">{cat.description}</p>
-              </button>
+              </div>
             ))}
           </motion.div>
         )}
