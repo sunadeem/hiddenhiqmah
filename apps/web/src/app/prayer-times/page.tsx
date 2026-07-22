@@ -10,6 +10,7 @@ import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import {
   Sunrise,
   Sun,
@@ -109,6 +110,51 @@ const CALCULATION_METHODS = [
   { value: 11, label: "Singapore" },
   { value: 13, label: "Diyanet (Turkey)" },
   { value: 15, label: "Moonsighting Committee" },
+];
+
+/* ── Understanding-tab sub-tabs (deep-linkable via ?sub=; default "windows") ── */
+type LearnSub = "windows" | "night" | "calendar";
+const LEARN_SUBS: { key: LearnSub; label: string }[] = [
+  { key: "windows", label: "Prayer Windows" },
+  { key: "night", label: "Night Prayers" },
+  { key: "calendar", label: "Times & Calendar" },
+];
+
+// Sources & References, split among the sub-tabs — each row lives with the
+// sub-tab whose card(s) actually cite it. This is a partition of the former
+// single footer SourcesCard: every original row is kept, none duplicated.
+const WINDOWS_SOURCES = [
+  { ref: "Abu Dawud 2:3", desc: "Jibril leads the Prophet — each prayer's window, start and end" },
+  { ref: "Abu Dawud 2:6", desc: "The end of each prayer's window (Abdullah b. Amr)" },
+  { ref: "Muslim 5:222", desc: "Prayer window times; Isha until the middle of the night" },
+  { ref: "Muslim 5:223", desc: "The times of the prayers defined by the sun" },
+  { ref: "Bukhari 9:61", desc: "No prayer after Fajr till sunrise, nor after Asr till sunset" },
+  { ref: "Muslim 6:357", desc: "Three times prayer and burial are forbidden" },
+  { ref: "Muslim 6:352; Muslim 6:353", desc: "The sun rises between the horns of Satan" },
+  { ref: "Quran 4:103", desc: "Prayer is prescribed for the believers at fixed times" },
+  { ref: "Bukhari 9:6", desc: "Prayer on time is the dearest deed to Allah" },
+  { ref: "Bukhari 9:50", desc: "Whoever prays the two cool prayers enters Paradise" },
+  { ref: "Muslim 5:271", desc: "The two cool prayers and Paradise" },
+  { ref: "Bukhari 10:51", desc: "Fajr and Isha heaviest on the hypocrites" },
+  { ref: "Bukhari 9:72", desc: "Pray a forgotten prayer when you remember it" },
+  { ref: "Muslim 5:393", desc: "The Prophet and companions sleep past Fajr at Khaybar" },
+  { ref: "Abu Dawud 2:53; Bukhari 61:80", desc: "Sleeping past Fajr on a journey" },
+  { ref: "Muslim 4:12", desc: "Repeat what the muezzin says" },
+  { ref: "Bukhari 10:12; Abu Dawud 2:139", desc: "The wasilah du'a after the adhan" },
+  { ref: "Abu Dawud 2:131", desc: "Du'a between the adhan and iqamah is not rejected" },
+];
+
+const NIGHT_SOURCES = [
+  { ref: "Bukhari 80:18; Muslim 6:201", desc: "Allah descends in the last third of the night" },
+  { ref: "Abu Dawud 2:165", desc: "Isha in congregation like keeping vigil till midnight" },
+];
+
+const CALENDAR_SOURCES = [
+  { ref: "Quran 9:36", desc: "Twelve lunar months, of which four are sacred" },
+  { ref: "Quran 10:5", desc: "The moon's phases as the measure of years and time" },
+  { ref: "Quran 4:101", desc: "Shortening the prayer while traveling" },
+  { ref: "Bukhari 18:1; Bukhari 18:2", desc: "Shortening prayers on a journey" },
+  { ref: "Bukhari 18:27; Bukhari 18:30", desc: "Combining Dhuhr with Asr and Maghrib with Isha while traveling" },
 ];
 
 function formatCountdown(ms: number): string {
@@ -271,6 +317,17 @@ function PrayerTimesContent() {
   const selectTab = (k: string) => {
     setActiveTab(k);
     router.replace(`${pathname}?tab=${k}`, { scroll: false });
+  };
+
+  /* ── Understanding-tab sub-tab state (deep-linkable via ?sub=; default
+     "windows"). Pure navigation state — independent of the live prayer logic. ── */
+  const [activeSub, setActiveSub] = useState<LearnSub>(() => {
+    const sub = searchParams.get("sub");
+    return LEARN_SUBS.some((s) => s.key === sub) ? (sub as LearnSub) : "windows";
+  });
+  const selectSub = (k: LearnSub) => {
+    setActiveSub(k);
+    router.replace(`${pathname}?tab=learn&sub=${k}`, { scroll: false });
   };
 
   /* ── Prayer Times state ── */
@@ -548,14 +605,19 @@ function PrayerTimesContent() {
       />
 
       <div className="space-y-6 max-w-4xl mx-auto">
-        <TabBar
-          tabs={[
-            { key: "times", label: "Times" },
-            { key: "learn", label: "Understanding" },
-          ]}
-          activeTab={activeTab}
-          onTabChange={selectTab}
-        />
+        {/* Top tabs pinned LEFT (flex-start) to the content edge — the Times
+            tab's hero/day-strip are centered, so the tab row is explicitly
+            left-aligned rather than inheriting any centering. */}
+        <div className="flex justify-start">
+          <TabBar
+            tabs={[
+              { key: "times", label: "Times" },
+              { key: "learn", label: "Understanding" },
+            ]}
+            activeTab={activeTab}
+            onTabChange={selectTab}
+          />
+        </div>
 
         {/* ═══════════ Tab: Times (live UI) ═══════════ */}
         {activeTab === "times" && (
@@ -949,8 +1011,8 @@ function PrayerTimesContent() {
 
         {/* ═══════════ Tab: Learn (educational content) ═══════════ */}
         {activeTab === "learn" && (
-          <>
-        {/* ───────── Educational content ───────── */}
+          <div className="space-y-6 text-left">
+        {/* ───────── Educational content (left-aligned content page) ───────── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -961,7 +1023,10 @@ function PrayerTimesContent() {
           <p className="text-themed-muted text-sm">What the times mean, when each window ends, and where they come from.</p>
         </motion.div>
 
+        <SubTabLayout subs={LEARN_SUBS} activeSub={activeSub} setActiveSub={selectSub}>
+        <div className="space-y-6">
         {/* 1 — Every prayer is a window */}
+        {activeSub === "windows" && (
         <ContentCard delay={0.38}>
           <h3 className="text-gold font-semibold text-lg mb-3">Every prayer is a window, not just a start time</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -983,8 +1048,10 @@ function PrayerTimesContent() {
             The best moment is the <span className="text-gold">start</span> of the window; missing the window entirely without excuse is a serious matter. When two prayers&rsquo; times overlap in your day, keep them in order.
           </p>
         </ContentCard>
+        )}
 
         {/* 2 — Forbidden times / why Sunrise is "Not a prayer" */}
+        {activeSub === "windows" && (
         <ContentCard delay={0.41}>
           <h3 className="text-gold font-semibold text-lg mb-3">Why the Sunrise card says &ldquo;Not a prayer&rdquo;</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -1007,8 +1074,10 @@ function PrayerTimesContent() {
             Prohibited times &amp; exceptions on the Salah page &rarr;
           </Link>
         </ContentCard>
+        )}
 
         {/* 3 — Virtue of praying on time */}
+        {activeSub === "windows" && (
         <ContentCard delay={0.44}>
           <h3 className="text-gold font-semibold text-lg mb-3">The reward of praying on time</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -1033,8 +1102,10 @@ function PrayerTimesContent() {
             </div>
           </div>
         </ContentCard>
+        )}
 
         {/* 4 — Midnight, last third, tahajjud */}
+        {activeSub === "night" && (
         <ContentCard delay={0.47}>
           <h3 className="text-gold font-semibold text-lg mb-3">Islamic midnight &amp; the last third of the night</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -1052,8 +1123,12 @@ function PrayerTimesContent() {
             How to pray tahajjud &rarr;
           </Link>
         </ContentCard>
+        )}
+
+        {activeSub === "night" && <SourcesCard className="mt-2" sources={NIGHT_SOURCES} />}
 
         {/* 5 — The Hijri date */}
+        {activeSub === "calendar" && (
         <ContentCard delay={0.50}>
           <h3 className="text-gold font-semibold text-lg mb-3">What the Hijri date means</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -1066,8 +1141,10 @@ function PrayerTimesContent() {
             One key difference from the Gregorian calendar: the Islamic day begins at <span className="text-gold">Maghrib (sunset)</span>, not at midnight. This is why the night comes before the day in Islam, and why Ramadan and the two Eids &ldquo;begin&rdquo; the evening before their first daytime.
           </p>
         </ContentCard>
+        )}
 
         {/* 6 — Calculation method FAQ */}
+        {activeSub === "calendar" && (
         <ContentCard delay={0.53}>
           <h3 className="text-gold font-semibold text-lg mb-3">Which calculation method should I choose?</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -1080,8 +1157,10 @@ function PrayerTimesContent() {
             Separately, <span className="text-themed">Asr</span> has two valid timings: the majority (Shafi&rsquo;i, Maliki, Hanbali) begin it when an object&rsquo;s shadow equals its own length, while the Hanafi position begins it when the shadow is twice the object&rsquo;s length (a later Asr). You can set this in Settings; both are established positions.
           </p>
         </ContentCard>
+        )}
 
         {/* 7 — High-latitude FAQ */}
+        {activeSub === "calendar" && (
         <ContentCard delay={0.56}>
           <h3 className="text-gold font-semibold text-lg mb-3">Why is Isha near midnight (or Fajr at 3&nbsp;a.m.) in summer?</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -1101,8 +1180,10 @@ function PrayerTimesContent() {
             The councils differ on which to apply, so follow the ruling of your local trusted authority or masjid. This is a point of ongoing scholarship, not a settled single answer.
           </p>
         </ContentCard>
+        )}
 
         {/* 8 — Missed prayer cross-link */}
+        {activeSub === "windows" && (
         <ContentCard delay={0.59}>
           <h3 className="text-gold font-semibold text-lg mb-3">Slept through a prayer? What to do</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -1112,8 +1193,10 @@ function PrayerTimesContent() {
             Making up missed prayers (qada), in order, and years of backlog &rarr;
           </Link>
         </ContentCard>
+        )}
 
         {/* 9 — Traveler cross-link */}
+        {activeSub === "calendar" && (
         <ContentCard delay={0.62}>
           <h3 className="text-gold font-semibold text-lg mb-3">Traveling? Your times change</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -1123,8 +1206,12 @@ function PrayerTimesContent() {
             Full rules of qasr &amp; jam&rsquo; for travelers &rarr;
           </Link>
         </ContentCard>
+        )}
+
+        {activeSub === "calendar" && <SourcesCard className="mt-2" sources={CALENDAR_SOURCES} />}
 
         {/* 10 — Adhan response cross-link */}
+        {activeSub === "windows" && (
         <ContentCard delay={0.65}>
           <h3 className="text-gold font-semibold text-lg mb-3">When the countdown ends, the adhan begins</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
@@ -1139,35 +1226,12 @@ function PrayerTimesContent() {
             </Link>
           </div>
         </ContentCard>
+        )}
 
-        <SourcesCard className="mt-2" sources={[
-          { ref: "Quran 4:103", desc: "Prayer is prescribed for the believers at fixed times" },
-          { ref: "Quran 9:36", desc: "Twelve lunar months, of which four are sacred" },
-          { ref: "Quran 10:5", desc: "The moon's phases as the measure of years and time" },
-          { ref: "Quran 4:101", desc: "Shortening the prayer while traveling" },
-          { ref: "Abu Dawud 2:3", desc: "Jibril leads the Prophet — each prayer's window, start and end" },
-          { ref: "Abu Dawud 2:6", desc: "The end of each prayer's window (Abdullah b. Amr)" },
-          { ref: "Muslim 5:222", desc: "Prayer window times; Isha until the middle of the night" },
-          { ref: "Muslim 5:223", desc: "The times of the prayers defined by the sun" },
-          { ref: "Bukhari 9:61", desc: "No prayer after Fajr till sunrise, nor after Asr till sunset" },
-          { ref: "Muslim 6:357", desc: "Three times prayer and burial are forbidden" },
-          { ref: "Muslim 6:352; Muslim 6:353", desc: "The sun rises between the horns of Satan" },
-          { ref: "Bukhari 9:6", desc: "Prayer on time is the dearest deed to Allah" },
-          { ref: "Bukhari 9:50", desc: "Whoever prays the two cool prayers enters Paradise" },
-          { ref: "Muslim 5:271", desc: "The two cool prayers and Paradise" },
-          { ref: "Bukhari 10:51", desc: "Fajr and Isha heaviest on the hypocrites" },
-          { ref: "Bukhari 80:18; Muslim 6:201", desc: "Allah descends in the last third of the night" },
-          { ref: "Abu Dawud 2:165", desc: "Isha in congregation like keeping vigil till midnight" },
-          { ref: "Bukhari 9:72", desc: "Pray a forgotten prayer when you remember it" },
-          { ref: "Muslim 5:393", desc: "The Prophet and companions sleep past Fajr at Khaybar" },
-          { ref: "Abu Dawud 2:53; Bukhari 61:80", desc: "Sleeping past Fajr on a journey" },
-          { ref: "Bukhari 18:1; Bukhari 18:2", desc: "Shortening prayers on a journey" },
-          { ref: "Bukhari 18:27; Bukhari 18:30", desc: "Combining Dhuhr with Asr and Maghrib with Isha while traveling" },
-          { ref: "Muslim 4:12", desc: "Repeat what the muezzin says" },
-          { ref: "Bukhari 10:12; Abu Dawud 2:139", desc: "The wasilah du'a after the adhan" },
-          { ref: "Abu Dawud 2:131", desc: "Du'a between the adhan and iqamah is not rejected" },
-        ]} />
-          </>
+        {activeSub === "windows" && <SourcesCard className="mt-2" sources={WINDOWS_SOURCES} />}
+        </div>
+        </SubTabLayout>
+          </div>
         )}
       </div>
     </div>

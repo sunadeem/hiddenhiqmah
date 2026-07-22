@@ -9,6 +9,7 @@ import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import Accordion from "@hidden-hiqmah/ui/components/Accordion";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import { EmptyState } from "@hidden-hiqmah/ui/components/EmptyState";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { ArrowRight, GitBranch, Sparkles, HelpCircle, Users } from "lucide-react";
@@ -520,6 +521,15 @@ const tabs = [
 
 type TabKey = (typeof tabs)[number]["key"];
 
+// Sub-tabs of the "About the Prophets" tab — the house master-detail rail.
+type SubKey = "beliefs" | "figures" | "questions";
+
+const subTabs: { key: SubKey; label: string; icon: ReactNode }[] = [
+  { key: "beliefs", label: "Beliefs", icon: <Sparkles size={16} /> },
+  { key: "figures", label: "Righteous Figures", icon: <Users size={16} /> },
+  { key: "questions", label: "Questions", icon: <HelpCircle size={16} /> },
+];
+
 function ProphetsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -530,10 +540,25 @@ function ProphetsContent() {
     return tab && tabs.some((t) => t.key === tab) ? (tab as TabKey) : "timeline";
   });
 
+  // Sub-tab of the "About the Prophets" tab (Beliefs default). Read on mount,
+  // written back to ?sub= — the ?tab= for the top tabs is preserved alongside it.
+  const [activeSub, setActiveSub] = useState<SubKey>(() => {
+    const sub = searchParams.get("sub");
+    return sub && subTabs.some((s) => s.key === sub) ? (sub as SubKey) : "beliefs";
+  });
+
   const selectTab = (k: TabKey) => {
     setActiveTab(k);
-    // Deep-linkable: ?tab=timeline (default) | ?tab=about — scroll preserved.
-    router.replace(`${pathname}?tab=${k}`, { scroll: false });
+    // Deep-linkable: ?tab=timeline (default) | ?tab=about&sub=… — scroll preserved.
+    router.replace(
+      `${pathname}?tab=${k}${k === "about" ? `&sub=${activeSub}` : ""}`,
+      { scroll: false }
+    );
+  };
+
+  const selectSub = (k: SubKey) => {
+    setActiveSub(k);
+    router.replace(`${pathname}?tab=about&sub=${k}`, { scroll: false });
   };
 
   const [search, setSearch] = useState("");
@@ -553,14 +578,193 @@ function ProphetsContent() {
     figuresFiltered.length === 0 &&
     faqFiltered.length === 0;
 
-  // Tab gating: while a search query is active we bypass the tabs and show every
-  // matching section (the original combined-search behaviour is unchanged).
-  // Otherwise each section belongs to a tab — the timeline is the default tab,
-  // and the intro + debated-figures + FAQ live under "About the Prophets".
-  const showIntro = (!searching && activeTab === "about") || (searching && introFiltered.length > 0);
-  const showTimeline = (!searching && activeTab === "timeline") || (searching && filtered.length > 0);
-  const showFigures = (!searching && activeTab === "about") || (searching && figuresFiltered.length > 0);
-  const showFaq = (!searching && activeTab === "about") || (searching && faqFiltered.length > 0);
+  // Section render helpers (deferred so unshown sections cost nothing). Each
+  // keeps its own `searching` conditionals, so the same markup serves both the
+  // combined search results and the sub-tab views.
+  const renderIntro = () => (
+    <section className="mb-8">
+      <div className="flex items-center gap-2 mb-3">
+        <Sparkles size={18} className="text-gold" />
+        <h2 className="text-lg sm:text-xl font-semibold text-themed">
+          What Muslims believe about the prophets
+        </h2>
+      </div>
+      {!searching && (
+        <p className="text-themed-muted text-sm leading-relaxed mb-4">
+          Who the prophets were, how many there are, and the beliefs that tie all twenty-seven
+          prophet stories into one message.
+        </p>
+      )}
+      <Accordion
+        items={(searching ? introFiltered : introItems).map(({ search: _s, ...rest }) => rest)}
+        defaultOpenId={searching ? introFiltered[0]?.id ?? null : null}
+      />
+      {!searching && <SourcesCard sources={introSources} className="mt-4" />}
+    </section>
+  );
+
+  const renderTimeline = () => (
+    <>
+      {searching && (
+        <h2 className="text-lg font-semibold text-themed mb-3">Prophets</h2>
+      )}
+      <div className="relative">
+        {/* Vertical line */}
+        <div className="absolute left-[52px] sm:left-[88px] md:left-[140px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-[var(--color-gold)] via-[var(--color-border)] to-transparent" />
+
+        <div className="space-y-4">
+          {filtered.map((prophet, i) => {
+            const dateLabel = prophet.date === "Unknown" ? "Time Unknown" : prophet.date;
+            const yearsAgo = getYearsAgo(prophet.date);
+            return (
+            <div key={prophet.slug} className="relative pl-[68px] sm:pl-[108px] md:pl-[168px]">
+              {/* Date label (left of line) */}
+              <div
+                className="absolute left-0 top-4 w-[42px] sm:w-[78px] md:w-[130px] text-right pr-2 sm:pr-3"
+                title={prophet.dateNote}
+              >
+                <span className="text-[8px] sm:text-[9px] md:text-[10px] leading-tight text-themed-muted block">
+                  {dateLabel}
+                </span>
+                {yearsAgo && (
+                  <span className="text-[7px] sm:text-[8px] md:text-[9px] leading-tight text-gold/60 block mt-0.5">
+                    ({yearsAgo})
+                  </span>
+                )}
+              </div>
+              {/* Timeline dot */}
+              <div className="absolute left-[47px] sm:left-[83px] md:left-[135px] top-6 w-3 h-3 rounded-full bg-gold border-2 border-[var(--color-card)]" />
+
+              <ContentCard delay={i * 0.06}>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                  <div className="min-w-0">
+                    <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                      <h2 className="text-lg sm:text-xl font-semibold text-themed">
+                        Prophet {prophet.name}
+                      </h2>
+                      <span className="text-base sm:text-lg font-arabic text-gold">
+                        {prophet.nameAr}
+                      </span>
+                    </div>
+                    {prophet.name === "Muhammad" ? (
+                      <span className="text-xs text-themed-muted">
+                        صلى الله عليه وسلم
+                      </span>
+                    ) : (
+                      <span className="text-xs text-themed-muted">
+                        عليه السلام
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap sm:flex-col sm:items-end gap-1 shrink-0">
+                    <span className="text-[10px] sm:text-xs text-themed-muted border sidebar-border rounded-full px-2 sm:px-3 py-0.5 sm:py-1">
+                      {prophet.era}
+                    </span>
+                    {prophet.source !== "quran" && (
+                      <span className="text-[10px] sm:text-xs text-gold border border-gold/30 rounded-full px-2 sm:px-3 py-0.5 sm:py-1">
+                        {prophet.source === "hadith" ? "Hadith" : "Scholarly"}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <p className="text-themed-muted text-sm leading-relaxed mb-3">
+                  {prophet.summary}
+                </p>
+
+                <div className="flex flex-wrap gap-x-4 sm:gap-x-6 gap-y-1 text-xs text-themed-muted mb-3">
+                  {prophet.mentions > 0 && (
+                    <span>
+                      Mentioned:{" "}
+                      <strong className="text-themed">
+                        {prophet.mentions}x
+                      </strong>{" "}
+                      in Quran
+                    </span>
+                  )}
+                  {prophet.surahs && (
+                    <span>
+                      Key Surahs:{" "}
+                      <strong className="text-themed">{prophet.surahs}</strong>
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <Link
+                    href={`/prophets/${prophet.slug}`}
+                    className="flex items-center gap-1 text-accent text-sm font-medium hover:gap-2 transition-all"
+                  >
+                    Read Full Story <ArrowRight size={14} />
+                  </Link>
+                  {prophet.name === "Muhammad" && (
+                    <Link
+                      href="/prophet-muhammad"
+                      className="flex items-center gap-1 text-gold text-sm font-medium hover:gap-2 transition-all"
+                    >
+                      Full life &amp; seerah <ArrowRight size={14} />
+                    </Link>
+                  )}
+                </div>
+              </ContentCard>
+            </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+
+  const renderFigures = () => (
+    <section>
+      <div className="flex items-center gap-2 mb-3">
+        <Users size={18} className="text-gold" />
+        <h2 className="text-lg sm:text-xl font-semibold text-themed">
+          Righteous figures in the Quran
+        </h2>
+      </div>
+      {!searching && (
+        <p className="text-themed-muted text-sm leading-relaxed mb-4">
+          Beyond the twenty-five prophets, the Quran honours other figures whose prophethood
+          scholars have debated — several of them anchoring Surah al-Kahf, read every Friday.
+          Here are the main scholarly positions.
+        </p>
+      )}
+      <div className="space-y-4">
+        {(searching ? figuresFiltered : figures).map((f, i) => (
+          <ContentCard key={f.id} delay={i * 0.05}>
+            <div className="flex items-start justify-between gap-2 mb-3">
+              <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                <h3 className="text-lg font-semibold text-themed">{f.name}</h3>
+                <span className="text-base font-arabic text-gold">{f.nameAr}</span>
+              </div>
+              <span className="text-[10px] sm:text-xs text-gold border border-gold/30 rounded-full px-2 sm:px-3 py-0.5 sm:py-1 whitespace-nowrap shrink-0">
+                {f.badge}
+              </span>
+            </div>
+            {f.body}
+          </ContentCard>
+        ))}
+      </div>
+      {!searching && <SourcesCard sources={figureSources} className="mt-4" />}
+    </section>
+  );
+
+  const renderFaq = () => (
+    <section>
+      <div className="flex items-center gap-2 mb-3">
+        <HelpCircle size={18} className="text-gold" />
+        <h2 className="text-lg sm:text-xl font-semibold text-themed">
+          Common questions about the prophets
+        </h2>
+      </div>
+      <Accordion
+        items={(searching ? faqFiltered : faqItems).map(({ search: _s, ...rest }) => rest)}
+        defaultOpenId={searching ? faqFiltered[0]?.id ?? null : null}
+      />
+      {!searching && <SourcesCard sources={faqSources} className="mt-4" />}
+    </section>
+  );
 
   return (
     <div>
@@ -601,193 +805,24 @@ function ProphetsContent() {
         />
       )}
 
-      {/* What Muslims believe about the prophets */}
-      {showIntro && (
-        <section className="mb-8">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles size={18} className="text-gold" />
-            <h2 className="text-lg sm:text-xl font-semibold text-themed">
-              What Muslims believe about the prophets
-            </h2>
-          </div>
-          {!searching && (
-            <p className="text-themed-muted text-sm leading-relaxed mb-4">
-              Who the prophets were, how many there are, and the beliefs that tie all twenty-seven
-              prophet stories into one message.
-            </p>
-          )}
-          <Accordion
-            items={(searching ? introFiltered : introItems).map(({ search: _s, ...rest }) => rest)}
-            defaultOpenId={searching ? introFiltered[0]?.id ?? null : null}
-          />
-          {!searching && <SourcesCard sources={introSources} className="mt-4" />}
-        </section>
-      )}
-
-      {/* Timeline */}
-      {showTimeline && (
+      {/* Search bypasses the tabs — every matching section spans the page.
+          Otherwise the Timeline tab shows the timeline, and the "About the
+          Prophets" tab routes its three sections through the sub-tab rail. */}
+      {searching ? (
         <>
-          {searching && (
-            <h2 className="text-lg font-semibold text-themed mb-3">Prophets</h2>
-          )}
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-[52px] sm:left-[88px] md:left-[140px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-[var(--color-gold)] via-[var(--color-border)] to-transparent" />
-
-            <div className="space-y-4">
-              {filtered.map((prophet, i) => {
-                const dateLabel = prophet.date === "Unknown" ? "Time Unknown" : prophet.date;
-                const yearsAgo = getYearsAgo(prophet.date);
-                return (
-                <div key={prophet.slug} className="relative pl-[68px] sm:pl-[108px] md:pl-[168px]">
-                  {/* Date label (left of line) */}
-                  <div
-                    className="absolute left-0 top-4 w-[42px] sm:w-[78px] md:w-[130px] text-right pr-2 sm:pr-3"
-                    title={prophet.dateNote}
-                  >
-                    <span className="text-[8px] sm:text-[9px] md:text-[10px] leading-tight text-themed-muted block">
-                      {dateLabel}
-                    </span>
-                    {yearsAgo && (
-                      <span className="text-[7px] sm:text-[8px] md:text-[9px] leading-tight text-gold/60 block mt-0.5">
-                        ({yearsAgo})
-                      </span>
-                    )}
-                  </div>
-                  {/* Timeline dot */}
-                  <div className="absolute left-[47px] sm:left-[83px] md:left-[135px] top-6 w-3 h-3 rounded-full bg-gold border-2 border-[var(--color-card)]" />
-
-                  <ContentCard delay={i * 0.06}>
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
-                      <div className="min-w-0">
-                        <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
-                          <h2 className="text-lg sm:text-xl font-semibold text-themed">
-                            Prophet {prophet.name}
-                          </h2>
-                          <span className="text-base sm:text-lg font-arabic text-gold">
-                            {prophet.nameAr}
-                          </span>
-                        </div>
-                        {prophet.name === "Muhammad" ? (
-                          <span className="text-xs text-themed-muted">
-                            صلى الله عليه وسلم
-                          </span>
-                        ) : (
-                          <span className="text-xs text-themed-muted">
-                            عليه السلام
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap sm:flex-col sm:items-end gap-1 shrink-0">
-                        <span className="text-[10px] sm:text-xs text-themed-muted border sidebar-border rounded-full px-2 sm:px-3 py-0.5 sm:py-1">
-                          {prophet.era}
-                        </span>
-                        {prophet.source !== "quran" && (
-                          <span className="text-[10px] sm:text-xs text-gold border border-gold/30 rounded-full px-2 sm:px-3 py-0.5 sm:py-1">
-                            {prophet.source === "hadith" ? "Hadith" : "Scholarly"}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <p className="text-themed-muted text-sm leading-relaxed mb-3">
-                      {prophet.summary}
-                    </p>
-
-                    <div className="flex flex-wrap gap-x-4 sm:gap-x-6 gap-y-1 text-xs text-themed-muted mb-3">
-                      {prophet.mentions > 0 && (
-                        <span>
-                          Mentioned:{" "}
-                          <strong className="text-themed">
-                            {prophet.mentions}x
-                          </strong>{" "}
-                          in Quran
-                        </span>
-                      )}
-                      {prophet.surahs && (
-                        <span>
-                          Key Surahs:{" "}
-                          <strong className="text-themed">{prophet.surahs}</strong>
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                      <Link
-                        href={`/prophets/${prophet.slug}`}
-                        className="flex items-center gap-1 text-accent text-sm font-medium hover:gap-2 transition-all"
-                      >
-                        Read Full Story <ArrowRight size={14} />
-                      </Link>
-                      {prophet.name === "Muhammad" && (
-                        <Link
-                          href="/prophet-muhammad"
-                          className="flex items-center gap-1 text-gold text-sm font-medium hover:gap-2 transition-all"
-                        >
-                          Full life &amp; seerah <ArrowRight size={14} />
-                        </Link>
-                      )}
-                    </div>
-                  </ContentCard>
-                </div>
-                );
-              })}
-            </div>
-          </div>
+          {introFiltered.length > 0 && renderIntro()}
+          {filtered.length > 0 && renderTimeline()}
+          {figuresFiltered.length > 0 && renderFigures()}
+          {faqFiltered.length > 0 && renderFaq()}
         </>
-      )}
-
-      {/* Righteous figures whose prophethood is debated */}
-      {showFigures && (
-        <section className="mt-10">
-          <div className="flex items-center gap-2 mb-3">
-            <Users size={18} className="text-gold" />
-            <h2 className="text-lg sm:text-xl font-semibold text-themed">
-              Righteous figures in the Quran
-            </h2>
-          </div>
-          {!searching && (
-            <p className="text-themed-muted text-sm leading-relaxed mb-4">
-              Beyond the twenty-five prophets, the Quran honours other figures whose prophethood
-              scholars have debated — several of them anchoring Surah al-Kahf, read every Friday.
-              Here are the main scholarly positions.
-            </p>
-          )}
-          <div className="space-y-4">
-            {(searching ? figuresFiltered : figures).map((f, i) => (
-              <ContentCard key={f.id} delay={i * 0.05}>
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
-                    <h3 className="text-lg font-semibold text-themed">{f.name}</h3>
-                    <span className="text-base font-arabic text-gold">{f.nameAr}</span>
-                  </div>
-                  <span className="text-[10px] sm:text-xs text-gold border border-gold/30 rounded-full px-2 sm:px-3 py-0.5 sm:py-1 whitespace-nowrap shrink-0">
-                    {f.badge}
-                  </span>
-                </div>
-                {f.body}
-              </ContentCard>
-            ))}
-          </div>
-          {!searching && <SourcesCard sources={figureSources} className="mt-4" />}
-        </section>
-      )}
-
-      {/* FAQ */}
-      {showFaq && (
-        <section className="mt-10">
-          <div className="flex items-center gap-2 mb-3">
-            <HelpCircle size={18} className="text-gold" />
-            <h2 className="text-lg sm:text-xl font-semibold text-themed">
-              Common questions about the prophets
-            </h2>
-          </div>
-          <Accordion
-            items={(searching ? faqFiltered : faqItems).map(({ search: _s, ...rest }) => rest)}
-            defaultOpenId={searching ? faqFiltered[0]?.id ?? null : null}
-          />
-          {!searching && <SourcesCard sources={faqSources} className="mt-4" />}
-        </section>
+      ) : activeTab === "timeline" ? (
+        renderTimeline()
+      ) : (
+        <SubTabLayout subs={subTabs} activeSub={activeSub} setActiveSub={selectSub}>
+          {activeSub === "beliefs" && renderIntro()}
+          {activeSub === "figures" && renderFigures()}
+          {activeSub === "questions" && renderFaq()}
+        </SubTabLayout>
       )}
     </div>
   );
