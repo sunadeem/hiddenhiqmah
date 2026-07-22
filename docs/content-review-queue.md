@@ -75,3 +75,159 @@ citation you trust, or remove._
 ## Wudu fard/sunnah + Tayammum (2026-07-13)
 40. Fiqh classifications on the wudu steps — niyyah as fard "per the majority"; Hanbali position that rinsing mouth/nose is fard; tartib (Shafi'i/Hanbali fard vs Hanafi sunnah) and muwalat school differences — generic attribution (the Quran 5:6 four fards ARE the verified anchor).
 41. Tayammum details with generic attribution: the to-the-elbows wiping variant in some schools (to-the-wrists form IS verified — Bukhari 7:5/7:10); that valid tayammum permits mushaf/tawaf (inference from standing in place of wudu/ghusl); Bukhari 7:1 (Aisha's necklace) framed as the revelation occasion.
+
+---
+
+## EXPANSION BATCH 1 — generically-attributed items for founder review (2026-07-22)
+
+_From the 314-item expansion build (salah cluster, kids, why-islam, family, marriage, dhikr + six new pages: zakat, hajj, tawbah, halal-living, women, character). Every CITED claim in the batch was adversarially verified against the local corpus; the items below shipped with generic attribution ("scholars state…") or named external grading, per the house rule. Same options as before: keep / add trusted citation / remove._
+
+### /salah (Prayers/Purification/Adhan/Voluntary expansions)
+1. congregation / 'Twenty-seven times the reward': that mosque congregation is an emphasized duty for men, with some scholars holding it obligatory — generic 'scholars state', no citation
+2. congregation / 'Joining late': you catch a rak'ah by joining before the imam rises from its ruku' — majority position, generic, no citation
+3. sujud-sahw / 'How to perform it': the framing that scholars hold both timings (before/after taslim) valid per the differing narrations — generic (the two timings themselves are cited to Bukhari 22:2/22:3 and Muslim 5:110)
+4. missed / 'Keep the order when you can': entire point (tartib between qada and current prayer) — generic 'scholars advise', no citation
+5. missed / 'Years of missed prayers': entire point (majority: gradual qada; minority: repentance + abundant nawafil) — generic, no citation
+6. traveling / 'Shorten the four-rak'ah prayers': the clause that qasr applies only to four-rak'ah prayers (Fajr stays 2, Maghrib stays 3) — generic 'scholars state'
+7. traveling / 'How far, and for how long?': the ~80 km distance and four-day-stay positions — generic scholarly-difference framing, no citation (the 19-days narration itself is cited, Bukhari 18:1)
+8. traveling / 'On the plane, train, or road': entire point — generic practical guidance, no citation
+9. illness / 'Half reward — only for sitting by choice': the interpretive scoping that the half-reward applies to voluntary prayer without excuse — generic 'scholars explain' (both underlying hadith cited: Muslim 6:145, Abu Dawud 2:562; full-reward-when-excused is separately cited to Bukhari 56:205)
+10. illness / 'Praying on a chair': entire point (gesture, sujud-bow lower than ruku'-bow) — generic 'scholars state', no citation
+11. invalidators / 'Looking around': the clause that turning the whole body from the qiblah invalidates — generic 'scholars state'
+12. invalidators / 'Other invalidators the scholars list': entire point (eating/drinking, laughing aloud, excessive movement, uncovering awrah, abandoning a pillar; small movements excused) — generic, no citation
+13. after-prayer / 'The mu'awwidhat': the clause that many scholars include Surah al-Ikhlas with al-Falaq and an-Nas — generic (Abu Dawud 8:108 says 'the last two surahs')
+14. after-prayer / 'Ayat al-Kursi': entire point — the famous after-every-prayer narration (Nasai al-Kubra) is NOT in the local corpus; shipped with generic 'scholars widely teach... a narration they grade as authentic' and NO citation, per the verification contract
+15. khuff topic — 'What about ordinary socks?' point: extension of wiping to non-leather thick socks (jawrab) attributed generically to 'many scholars — notably the Hanbali school'; the local-corpus sock narration (Abu Dawud 1:165) carries Abu Dawud's own weakness note ('Thawr did not hear this tradition from Raja'), so it was not cited. No citation given.
+16. khuff topic — 'The time limits' point, closing sentence: 'Scholars generally count the period from the first wipe after breaking wudu, though the schools differ on the exact starting point.' Fiqh position, generic attribution, no citation.
+17. khuff topic — 'What ends the concession' point, closing sentence: concession ends on expiry of the time limit or removal of the footwear, requiring fresh full wudu — attributed generically to 'scholars'; only the janabah exception is cited (Nasai 1:128).
+18. najasah topic — 'What counts as najasah' point: the enumerated list of impurities and the pure-things list is a scholarly-fiqh summary attributed generically to 'Scholars state'; no citation.
+19. najasah topic — 'A vessel a dog has licked' point, closing sentence: soap/cleaning agents standing in for the sand attributed to 'many scholars'; no citation.
+20. najasah topic — 'If you are not sure' point: the 'certainty is not removed by doubt' principle and the anti-waswas guidance attributed generically to 'Scholars state a foundational principle'; no citation.
+21. afterTaslimStep instruction — Ayat al-Kursi after every prayer: the famous Nasai al-Kubra narration is NOT in the local corpus (as the audit spec also noted), so it is phrased as 'scholars also recommend Ayat al-Kursi (Quran 2:255) after each prayer' with no hadith citation.
+22. Witr 3-rak'ah formats — 'prayed as 2 rak'at + taslim + 1, or as 3 continuous — scholars describe both formats': no local citation for the format split; phrased generically (mirrors the already-shipped uncited phrasing in the page's Types-of-Prayer accordion).
+23. Witr ruling split — 'According to the Hanafi school Witr is wajib; the other schools consider it an emphasized sunnah': madhhab summary stated generically (this exact claim already ships on the page in prayerTypes with refs Bukhari 14:9/Muslim 6:153; I did not add a new citation).
+24. Tahiyyat al-Masjid — 'Scholars state that any prayer performed upon entering (the Fajr sunnah, or a fard prayer) takes its place': fiqh position, no local hadith states it; generic attribution, no citation.
+25. Forbidden times — 'Scholars state that prayers with a specific cause (making up a missed obligatory prayer, or the funeral prayer) are treated differently, with the schools differing on the details': generic attribution, no citation (the missed-prayer 'pray it when he remembers' hadith belongs to the sibling drafter's Missed Prayers topic).
+26. Teaching children item — 'prayer becomes obligatory at puberty': standard uncited fiqh background in the detail text (the cited part — command at seven, seriousness at ten — is verified Abu Dawud 2:105 / Tirmidhi 2:260).
+
+### /family
+27. NursingTab 'What establishes it — and why it matters today': madhhab summary with no citation — Shafi'i/Hanbali require five known feedings, Hanafi/Maliki hold less establishes the tie, majority restrict to nursing within the first two years; keep records of milk-sharing; consult a scholar.
+28. RaisingTab (Discipline section) 'What correction is not': 'Scholars who allow physical discipline at all hedge it with strict limits: never out of anger, never the face, never anything that injures, bruises, or humiliates, and never for a child too young to understand.'
+29. RaisingTab (Discipline section) 'The common mistakes': uncited practical guidance (no public correction, don't punish childishness as sin, don't demand adult composure of a seven-year-old, parent's anger becomes the child's model of authority).
+30. LossOfChildTab 'Miscarriage and infant loss count': 'Scholars extend the hope of these texts to miscarried children as well, and books of fiqh treat the miscarried child as one who will be a cause of their parents' reward.'
+31. OrphansTab 'Kafalah in practice': 'scholars note' — fostered child does not automatically inherit (bequest of up to a third possible), mahram rules with the household are not automatic, historically addressed through milk-kinship when the child arrived in infancy.
+32. CaringForParentsTab 'Patience with repetition and decline': 'Scholars counsel that a parent's dementia, confusion, or sharpened temper in old age changes nothing of their right.' (no citation)
+33. CaringForParentsTab 'Share the load among siblings': 'Scholars note that the duty of care falls on the children together — not solely on the one who lives closest or the daughter by default.' (no citation)
+34. CaringForParentsTab 'Outside help and care homes': 'Scholars state that the obligation is that parents are genuinely cared for... bringing in nurses or professional help is not a failure of birr; what the tradition warns against is abandonment.' (no citation — weakest fiqh claim in the batch)
+35. StoriesOfBirrTab Juraij card: 'The lesson the scholars drew: even a voluntary act of worship does not outrank a mother's call, and a parent's hurt is a dangerous thing to earn.'
+36. NeighborsTab 'Every neighbor — of every faith': 'scholars read in that breadth the Muslim neighbour and the non-Muslim... each holding a share of the right, the nearest holding the most.'
+37. AfterTab 'Settle their debts': uncited generalization 'Discharging what a parent owed — to Allah or to people — is among the first duties of the child left behind' (the cited Nasai 24:15 only gives the debt analogy for Hajj).
+38. NursingTab intro: 'unique to this ummah's law — a kinship created by milk itself' — uncited historical/comparative claim.
+
+### /marriage
+39. Civil Marriage & the Nikah card (The Nikah) — entire card is uncited scholarly summary, per spec's scholarly-summary-generic allowance
+40. Interfaith note (Who You Can Marry) — 'by scholarly consensus a Muslim woman marries only a Muslim man' + contemporary caution counsel
+41. Mut'ah framing note — Sunni four-madhhab abrogation vs Twelver Shia permissibility (accurate, uncited summary)
+42. Stipulated-conditions madhhab note (The Nikah) — 'the Hanbali school enforces the widest range'
+43. Wali-in-practice note (The Nikah) — the 'ruler' role filled today by a qadi or local imam
+44. Secret Marriages card (Forbidden Marriage Types) — composition reasoning from cited nikah conditions, anchored on Tirmidhi 11:10
+45. Wedding-celebration limits note (Celebration) — wholesome words, no prohibited mixing, ask locally
+46. Fasting-permission wisdom note (Husband's Rights) — voluntary fasting cuts off the right to intimacy
+47. Hind derivation note (Wife's Rights) — wife may take a reasonable amount from a withholding husband's wealth even without his knowledge
+48. Rib-hadith scholarly explanation (Resolving Conflict) — gentleness command, not criticism
+49. In-law etiquette note (Resolving Conflict) — serving in-laws is kindness not contractual obligation; balancing parents' and wife's rights
+50. Polygyny reconciliation note — 4:3 justice = outward matters vs 4:129 = heart's inclination; plus 'most Muslim marriages are monogamous' observation
+51. Talaq-in-anger card (Common Questions) — entire card is position-summary (degrees of anger) with consult-a-scholar note, no direct citation
+52. Jest-talaq attribution — 'according to the majority of scholars' (position framing on Ibn Majah 10:24)
+53. Custody fiqh beyond the anchor hadith — madhhab differences on age/child's say/remarriage, father's ongoing maintenance
+54. Parting-gift note — scholars differ on obligatory vs recommended in other divorces
+55. Pregnant-widow iddah — 'majority of scholars' position based on Quran 65:4, with confirm-with-a-scholar note
+56. Zihar/ila'/li'an fiqh-detail disclaimer — orientation-not-manual note, madhhab differences
+
+### /hajj
+57. Ihram > The Miqat > 'Flying over the miqat' — whole point uncited: 'Scholars advise' changing into ihram garments before boarding and intending at the aligned miqat
+58. Ihram > Restrictions > 'No cutting hair, no perfume, no hunting' — 'scholars extend this to applying perfume after entering ihram, and to cutting nails'
+59. Ihram > The Talbiyah > 'When it ends' — 'For Umrah, it ends when tawaf begins' (uncited fiqh point)
+60. Overview > Who must go — istita'ah 'classically described by scholars' as health, wealth, safe route
+61. Overview > Who must go — woman without mahram: madhhab-differed, framed as positions (correctly) but no named sources
+62. Umrah > Tawaf > 'The Stone is greeted, not worshipped' — 'scholars state that all three are valid' (kiss/touch/gesture)
+63. Umrah > Tawaf > 'Dhikr while you circle' — 'There is no fixed litany for tawaf'; Yemeni-corner du'a attributed to 'many' (the underlying Abu Dawud hadith is not cited)
+64. Umrah > Two Rak'ahs & Zamzam — 'If the area is crowded, praying anywhere in the mosque fulfils the Sunnah'
+65. Umrah > Sa'i — 'the stretch now marked by green lights, where men hasten and women walk normally'
+66. Umrah > Halq or Taqsir intro — 'women clip a fingertip's length' (fiqh quantity beyond Abu Dawud 11:264)
+67. Umrah > Tawaf intro — raml 'is Sunnah for men in the arrival tawaf' (men-only/arrival-only qualification is scholarly, not in the cited text)
+68. Days > Muzdalifah > 'Dawn at the Sacred Site' — 'Pebbles for the stoning may be picked up here or anywhere along the way' (not in the cited Muslim 15:159)
+69. Days > Eid Day > sacrifice — 'Today most pilgrims delegate the slaughter through official vouchers'
+70. Days > Eid Day > 'Shave or shorten, and release' — 'Scholars call this the first release (at-tahallul al-awwal)'
+71. Rulings > Ifrad — best-of-three 'a question the madhhabs answer differently'; 'most package groups today perform tamattu'' 
+72. Rulings > Hajj on Behalf > 'Who it applies to' — whole point: 'Scholars apply this to two cases'; hiring conditions 'vary among the madhhabs'
+73. Rulings > Common Mistakes > 'Inventing rituals' — 'Scholars caution against practices with no source'
+74. Rulings > After Hajj > 'The mark of acceptance' — 'Scholars describe its sign as...'
+
+### /halal-living
+75. original-permissibility intro: 'Scholars state as a foundational principle' that worldly things are permissible by default (al-asl al-ibahah maxim, uncited)
+76. original-permissibility: 'Scholars note' that declaring halal to be haram is as serious as the reverse
+77. doubtful-matters: 'Scholars caution' the principle is for genuine doubt, not waswasa (point has no citation)
+78. what-is-forbidden: 'scholars also count predatory animals and a small number of other categories from the Sunnah'
+79. what-is-forbidden: necessity 'a principle scholars apply carefully, not casually'
+80. what-is-forbidden: seafood 'which the majority of scholars hold broadly permissible'
+81. slaughter-zabiha: 'Scholars state' valid-slaughter conditions; madhhabs differ on omitted tasmiyah
+82. slaughter-zabiha: People-of-the-Book meat — scholars agree in principle, differ on modern industrial slaughter; 'follow the position of the scholars they trust'
+83. gelatin-additives: entire istihalah debate ('Some scholars hold... others hold... fatwa bodies genuinely differ', no citation)
+84. gelatin-additives: trace alcohol in flavorings — 'many fatwa bodies' vs 'others advise stricter avoidance'
+85. eating-out: 'Scholars advise reasonable diligence, not forensic investigation'
+86. eating-out: 'many scholars advise avoiding gatherings whose actual purpose is drinking'
+87. modern-finance: 'Scholars agree' a loan stipulating guaranteed interest is riba
+88. modern-finance: murabaha/ijara/musharakah accepted-vs-criticized; mortgage-in-non-Muslim-lands fatwas both ways; insurance gharar vs takaful (all uncited positions)
+89. saving-investing: 'Scholars state the core test' (risk-sharing vs riba); donating unavoidable interest
+90. saving-investing: 'Contemporary scholars screen investments on two levels'; thresholds differ between standards bodies
+91. saving-investing: 'Scholars extend the gambling prohibition' to ownership-free speculation
+92. modesty-inner-outer: 'Scholars summarize the spirit of the dress rulings in two inner questions' (point has no citation)
+93. for-men: awrah navel-to-knee majority position 'based on hadith they grade reliable' — hadith not cited; madhhab difference over thigh
+94. for-men: 'Scholars apply the prohibition to real silk and gold', imitations excluded
+95. for-women: majority face-and-hands position vs well-known face-covering position across the madhhabs
+96. for-women: 'Scholars draw from it' that tight/transparent clothing defeats hijab
+97. lowering-the-gaze: 'The unplanned first look carries no sin' — scholarly inference beyond the cited Muslim 38:59
+98. lowering-the-gaze: 'Scholars note' the unchecked gaze plants what the heart waters (point has no citation)
+99. lawful-earning: core-haram jobs avoided while 'scholars differ over roles merely adjacent'; 'ask a scholar about your specific role'
+100. music: 'The position of the majority of classical scholars prohibits musical instruments (with exceptions like the duff)'
+101. music: 'Other scholars, classical and contemporary, have held wholesome music permissible'
+102. music: 'All scholars agree' on the shared-ground limits (point has no citation)
+103. workplace-conduct: 'Scholars state' the employment contract is a trust; padding/misuse = consuming wealth unlawfully
+104. workplace-conduct: 'Scholars discuss' how khalwa applies to open/public/glass-walled professional spaces
+105. entertainment: 'Scholars apply the gambling prohibition' to casinos, betting apps, lotteries, paid loot boxes
+106. entertainment: 'Scholars advise' taqwa of eyes and ears; 'could you remember Allah in the middle of it' test (point has no citation)
+107. entertainment: 'Scholars class' time-devouring leisure under wasting what Allah entrusted
+
+### /why-islam (Evidence/Worldviews/Questions/Start-Here expansions)
+108. prophet-character: 'al-Amin' epithet — seerah literature, generic
+109. prophet-character: liar/deluded/truthful trilemma — philosophical argument, no citation
+110. seekers-stories: Salman al-Farisi's journey — classical seerah, generic (Bukhari fragments cited)
+111. seekers-stories: the Negus weeping / refusing extradition — seerah generic; 5:83 link per commentators
+112. seekers-stories: modern-converts closing point — no citations by design
+113. agnosticism rail: deism critiques — philosophical framing, Quranic anchors cited
+114. hell-justice: consensus-characterizing sentences beyond the cited texts
+115. apostasy: 'Treason, not thought-crime' juristic survey — SENSITIVE: founder review requested before endorsing framing
+116. man-made: Deir el-Bahari 1881 / Ramesses II / Cairo display — Egyptology stated as history, uncited
+117. marriages: premodern betrothal norms + no contemporaneous objection — historical observation, generic
+118. marriages: Aisha's scholarship/teaching — biographical, 'companions consulted her' hadith not local
+119. marriages: 25 monogamous years with Khadijah — generic seerah
+120. evolution: 'Where scholars genuinely differ' + naturalism point — scholarly-summary-generic
+121. slavery: Bilal's story — generic seerah
+122. slavery: manumission-as-expiation + zakat share for captives — 5:89/9:60 not locally verified, stated unreferenced
+123. linguistic: Musaylimah imitations — classical history, generic (365/12 numerology claim RETIRED)
+124. linguistic: ring composition — attributed to Raymond Farrin (2014), 2:143 midpoint verified
+125. linguistic: Labid falling silent — literary history, 'famously reported'
+126. dawah guide: adab guidance points — no citations claimed
+
+### /zakat
+127. Contemporary-fiqh positions throughout (85g/595g nisab conversions, silver-vs-gold nisab for cash, hawl-dip positions, children's wealth, jewelry positions, business-asset valuation, rental property, stocks/retirement/crypto, mortgage deduction, faqir-vs-miskin, zakat-to-dependents, fitr cash-value positions, sa' = 2.5-3 kg) — all generically attributed with consult-a-scholar notes; calculator carries a confirm-with-authority disclaimer
+
+### /character
+128. External citation: Musnad Ahmad (8952), graded sahih by al-Albani (as-Sahihah 45) — 'I was sent to perfect good character'
+129. Six generically-attributed points across virtues/diseases rails (riya as hidden shirk framing, muhasabah practice, righteous-company application, anger-management steps, tawbah-loop guidance, heart-diseases taxonomy)
+
+### /women
+130. Seerah claims softened to generic attribution (first believer / first martyr / businesswoman supporter)
+131. Nifas basics and istihada edge-cases — majority framings with consult-a-scholar notes
+132. Polygyny/testimony/leadership contexts — positions framed generically

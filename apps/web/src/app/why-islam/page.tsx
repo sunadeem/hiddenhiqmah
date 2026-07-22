@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef, Suspense } from "react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -181,6 +182,90 @@ const proofTopics: Topic[] = [
     },
   },
   {
+    id: "prophet-character",
+    name: "The Prophet Himself",
+    content: {
+      intro:
+        "The Evidence tab argues from the book — but the man who delivered it is evidence in his own right. Before examining a single verse, ask the question a Byzantine emperor asked in 628 CE: what kind of man was this? His enemies' own answers — recorded in the most rigorously authenticated sources — leave only one credible explanation.",
+      verse: {
+        arabic: "وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ",
+        text: "Indeed, you are of a great moral character.",
+        ref: "Quran 68:4",
+      },
+      points: [
+        {
+          title: "Trusted before he was believed",
+          detail:
+            "For forty years before claiming prophethood, Muhammad ﷺ lived among the Quraysh with a reputation for honesty so established that the seerah literature records them calling him al-Amin — the Trustworthy. That reputation was put on the record by his opponents themselves: when he climbed Mount Safa and asked the assembled tribes, 'If I inform you that cavalrymen are proceeding up the side of this mountain, will you believe me?' they answered, 'We have never heard you telling a lie.' Only then did he deliver his warning — and they rejected the message without ever being able to attack the messenger's honesty.",
+          note: "Bukhari 65:493",
+        },
+        {
+          title: "A Byzantine emperor ran the analysis",
+          detail:
+            "In 628 CE, Emperor Heraclius summoned Abu Sufyan — then still the Prophet's enemy and the leader of Quraysh — and cross-examined him: Is he from a noble family? Did anyone claim prophethood before him? Was he ever accused of lying? Does he break treaties? Do his followers abandon him? Abu Sufyan later admitted he would have lied if he could. From the answers, Heraclius reasoned point by point: 'I wondered how a person who does not tell a lie about others could ever tell a lie about Allah' — and concluded, 'If what you have said is true, he will very soon occupy this place underneath my feet.' A hostile witness, examined by a neutral head of state, produced this page's argument thirteen centuries early.",
+          note: "Bukhari 1:7 — the full Heraclius interrogation",
+        },
+        {
+          title: "Liar, deluded, or truthful — the trilemma",
+          detail:
+            "Only three explanations exist for a man who claims revelation: he lied, he was deluded, or he told the truth. The liar hypothesis collapses on the record above — a man who never lied about people for forty years does not begin, at that age, by lying about God, and liars fold under persecution rather than endure boycott, exile, and war for a claim that earned them nothing. The delusion hypothesis collapses on the output: the Quran's legal precision, historical accuracy, and internal consistency over 23 years (Quran 4:82) are not the products of disordered thinking. What remains is the explanation his own scripture gives — and the one Heraclius reached from enemy testimony alone.",
+        },
+        {
+          title: "He gained nothing worldly — and died in debt",
+          detail:
+            "False prophets take wealth and power. Muhammad ﷺ ruled all of Arabia at the end of his life, yet Aisha reported that he 'died while his (iron) armor was mortgaged to a Jew for thirty Sas of barley.' She also described his household to her nephew Urwa: 'We used to see three crescents in two months, and no fire used to be made in the houses of Allah's Messenger' — the family survived on 'the two black things i.e. dates and water.' Every incentive that explains an impostor — money, luxury, dynastic ambition — is absent. He distributed what came to him and kept nothing.",
+          note: "Bukhari 56:129; Bukhari 81:48",
+        },
+      ],
+      source: "Quran 68:4; Bukhari 1:7; Bukhari 65:493; Bukhari 56:129; Bukhari 81:48",
+    },
+  },
+  {
+    id: "miracles",
+    name: "Miracles of the Prophet",
+    content: {
+      intro:
+        "Beyond the Quran itself, the Prophet Muhammad ﷺ performed physical miracles witnessed not by one or two followers in private, but by crowds — believers and enemies alike — and transmitted through the same authenticated chains that preserve the rest of his words. These are not later legends; they sit in the most rigorously verified collections Islam possesses.",
+      verse: {
+        arabic: "ٱقْتَرَبَتِ ٱلسَّاعَةُ وَٱنشَقَّ ٱلْقَمَرُ",
+        text: "The Hour has drawn near and the moon has split asunder.",
+        ref: "Quran 54:1",
+      },
+      points: [
+        {
+          title: "The splitting of the moon — demanded by his enemies",
+          detail:
+            "The people of Mecca themselves asked the Prophet ﷺ to show them a miracle — 'So he showed them the moon split in two halves between which they saw the Hira' mountain.' Ibn Masud narrated that when it happened, the Prophet ﷺ said: 'Bear witness (to this).' The Quran memorializes the event and the reaction of those who saw it and still refused: 'Whenever they see a sign, they turn away and say: Same old magic!' (Quran 54:2). They did not deny seeing it — they could only relabel it.",
+          note: "Bukhari 63:93; Bukhari 61:140; Quran 54:1-2",
+        },
+        {
+          title: "Water flowing from between his fingers",
+          detail:
+            "At al-Hudaybiyyah the entire company ran out of water. The Prophet ﷺ placed his hand into the one vessel that remained, 'and the water started spouting out between his fingers like springs' — the whole army drank and made ablution. Asked how many they were, Jabir answered: 'Even if we had been one hundred thousand, that water would have been sufficient for us.' On another occasion at az-Zaura in Medina, about three hundred companions performed ablution from water flowing from his fingers. This miracle was public, repeated, and narrated by multiple companions.",
+          note: "Bukhari 64:196; Muslim 43:6",
+        },
+        {
+          title: "A few loaves feeding seventy or eighty men",
+          detail:
+            "When Abu Talha noticed feebleness in the Prophet's ﷺ voice and recognized it as hunger, he asked Umm Sulaim for food, and she sent the Prophet ﷺ a few loaves of barley bread. He arrived with the people of the mosque, had the bread broken into pieces, prayed over it, and admitted the men ten at a time — each group 'ate their fill and went out' — until seventy or eighty men had eaten from bread meant for one.",
+          note: "Bukhari 61:87",
+        },
+        {
+          title: "The tree trunk that wept",
+          detail:
+            "The Prophet ﷺ used to deliver his sermons leaning on a date-palm trunk in the mosque. When a pulpit was built and he moved to it, 'the trunk started crying and the Prophet ﷺ went to it, rubbing his hand over it (to stop its crying)' — witnessed by the congregation of the mosque and narrated by Ibn Umar.",
+          note: "Bukhari 61:92",
+        },
+        {
+          title: "Why the mass testimony matters",
+          detail:
+            "A private vision can be claimed by anyone; a crowd cannot be retrofitted. These events were witnessed by hundreds at once — hostile Meccans at the moon-splitting, a whole army at al-Hudaybiyyah, the mosque congregation at the pulpit — and reached us through the isnad system's named, vetted chains (see the Hadith Science topic). No comparable body of mass-witnessed, chain-authenticated miracle reports exists for any other religious founder.",
+        },
+      ],
+      source: "Quran 54:1-2; Bukhari 63:93; Bukhari 61:140; Bukhari 64:196; Muslim 43:6; Bukhari 61:87; Bukhari 61:92",
+    },
+  },
+  {
     id: "science",
     name: "Scientific Consistency",
     content: {
@@ -256,9 +341,21 @@ const proofTopics: Topic[] = [
           note: "Referenced in Tafsir Ibn Kathir; the incident is well-documented in the Seerah",
         },
         {
-          title: "Mathematical and structural patterns",
+          title: "The one man who took up the challenge became a punchline",
           detail:
-            "The Quran contains intricate numerical patterns: the word 'day' (yawm) appears exactly 365 times; 'month' (shahr) appears exactly 12 times; 'sea' (bahr) and 'land' (barr) appear in a ratio matching the actual sea-to-land ratio on Earth (71.1% to 28.9%). These patterns were only discovered with computer analysis.",
+            "Musaylimah of Yamamah claimed prophethood in the Prophet's own lifetime and produced imitation 'revelations' to rival the Quran. Classical historians preserved samples of his verses precisely because contemporaries found them so embarrassingly bad — sing-song lines about frogs and kneading dough that Arabs quoted for laughs. He commanded an army and had every worldly incentive to succeed, yet the language itself defeated him: history remembers him as 'Musaylimah the Liar.' (A note of honesty: popular word-count claims — 'day' appearing 365 times, 'month' 12 times — depend on which word-forms you count and were never part of the classical case. The argument the Quraysh actually faced, and failed, was literary.)",
+          note: "Musaylimah's imitations are preserved in classical history and tafsir works; the word-count caveat reflects standard scholarly critique of popular numerology",
+        },
+        {
+          title: "Ring composition — structure discovered 14 centuries later",
+          detail:
+            "Modern literary analysis has shown that Surah al-Baqarah — 286 verses revealed piecemeal over roughly nine years, addressing events as they happened — forms a precise symmetric ring: its opening themes mirror its closing themes, its second section mirrors its second-to-last, and so on inward. At the surah's literal midpoint sits verse 2:143 — 'Thus We made you a balanced nation' — the verse announcing the change of prayer direction, the pivot of the Muslim community itself placed at the pivot of the text. A human author improvising responses to unfolding events over nine years does not produce concentric symmetry only visible once the whole is laid out.",
+          note: "Raymond Farrin, Structure and Qur'anic Interpretation (2014)",
+        },
+        {
+          title: "The masters of the craft went silent",
+          detail:
+            "Pre-Islamic Arabia's highest art was poetry — its greatest odes, the Mu'allaqat, were honored at the Kaaba itself. Labid ibn Rabi'ah, author of one of those odes, accepted Islam and is famously reported to have essentially stopped composing, indicating that the Quran had taken poetry's place. The generation best equipped in history to beat the Quran's challenge — native masters of its exact medium, many of them its enemies — either failed, converted, or fell silent.",
         },
       ],
       source: "Quran 2:23-24; Quran 17:88",
@@ -383,6 +480,45 @@ const proofTopics: Topic[] = [
         },
       ],
       source: "Quran 49:6; Ibn al-Salah, Muqaddimah; al-Bukhari; al-Dhahabi, Mizan al-I'tidal",
+    },
+  },
+  {
+    id: "seekers-stories",
+    name: "Seekers Who Found Islam",
+    content: {
+      intro:
+        "Argument convinces the mind; stories move the person. From the first generation onward, Islam's most striking converts were not the credulous but the best-informed — a rabbi, a Persian truth-seeker who crossed empires, and a Christian king. Each examined the claim from inside another tradition, and each recognized what he found.",
+      verse: {
+        arabic: "قُلْ أَرَءَيْتُمْ إِن كَانَ مِنْ عِندِ ٱللَّهِ وَكَفَرْتُم بِهِۦ وَشَهِدَ شَاهِدٌ مِّنۢ بَنِىٓ إِسْرَٰٓءِيلَ عَلَىٰ مِثْلِهِۦ فَـَٔامَنَ وَٱسْتَكْبَرْتُمْ ۖ إِنَّ ٱللَّهَ لَا يَهْدِى ٱلْقَوْمَ ٱلظَّـٰلِمِينَ",
+        text: "Say, “What do you think, if this [Qur’an] is really from Allah and yet you reject it, and a witness from the Children of Israel has testified in its favor and believed, whereas you persist in arrogance? Indeed, Allah does not guide the wrongdoing people.”",
+        ref: "Quran 46:10",
+      },
+      points: [
+        {
+          title: "Abdullah ibn Salam — the rabbi who tested him",
+          detail:
+            "Madinah's most learned Jewish scholar did not convert on emotion — he ran a test. He came to the newly arrived Prophet with 'three things which nobody knows except a prophet' and accepted Islam when the answers matched. His first impression is equally telling: 'When I gazed upon the face of the Messenger of Allah, I knew that this face was not the face of a liar' — and the first sermon he heard was simply: spread peace, feed people, pray at night. Sa'd ibn Abi Waqqas later said he never heard the Prophet ﷺ declare of anyone walking the earth that he was from the people of Paradise 'except Abdullah bin Salam' — and the verse about 'a witness from the Children of Israel' was understood to be about him.",
+          note: "Bukhari 60:4; Tirmidhi 37:71; Bukhari 63:37; Quran 46:10",
+        },
+        {
+          title: "Salman al-Farisi — the seeker's journey",
+          detail:
+            "Salman's search is the template for every seeker on this page. Born in Persia — he says in Bukhari, 'I am from Ram-Hurmuz' — he left the religion of his fathers, attached himself to Christian teachers, and, as the classical seerah literature recounts, was directed by the last of them toward a coming prophet in a land of date palms. Betrayed and sold into slavery on the way — Bukhari records he 'was sold (as a slave) by one master to another' more than ten times — he reached Madinah in bondage, checked the signs he had been given, and embraced Islam. A man who personally examined Zoroastrianism and Christianity before Islam chose it with his eyes open — and paid for the search with his freedom.",
+          note: "Bukhari 63:170; Bukhari 63:171; the full journey is recounted in the classical seerah literature",
+        },
+        {
+          title: "The Negus — the king who wept",
+          detail:
+            "When persecuted Muslims fled to Abyssinia, its Christian king heard the Quran's account of Jesus and Mary from Ja'far ibn Abi Talib and, as the seerah recounts, wept and protected them against Makkah's extradition demands. What the strongest sources record is the ending: years later the Prophet ﷺ announced in Madinah, 'Today a pious man from Ethiopia (i.e. An Najashi) has expired, come on to offer the funeral prayer' — and prayed the funeral prayer for him in absentia. Classical commentators read Quran 5:83 — 'you see their eyes overflowing with tears because of recognizing the truth' — in connection with such Christians who recognized what they heard.",
+          note: "Bukhari 23:77; Bukhari 23:8; Quran 5:83",
+        },
+        {
+          title: "The road is still walked",
+          detail:
+            "These journeys did not end in the 7th century. Every year, people from every background — clergy, scientists, skeptics, and the simply curious — study Islam to refute it or explain it away, and end up embracing it. Their reasons are the very topics of this tab: a preserved book, a coherent theology, a prophet whose life withstands scrutiny. If you have read this far, you are already on the same road Salman walked. The difference is that his search took decades and cost him his freedom; yours can start with the next tab.",
+        },
+      ],
+      source: "Quran 46:10; Quran 5:83; Bukhari 60:4; Bukhari 63:37; Bukhari 63:170; Bukhari 23:8; Bukhari 23:77; Tirmidhi 37:71",
     },
   },
 ];
@@ -818,10 +954,10 @@ const judaismTopics: Topic[] = [
           title: "Jewish scholars who accepted Muhammad",
           detail:
             "Abdullah ibn Salam, one of the most learned Jewish scholars in Madinah, accepted Islam immediately upon meeting the Prophet, saying: 'I knew he was a prophet from the moment I saw his face — it was not the face of a liar.' Mukhayriq, a rabbi, fought alongside the Prophet at Uhud and bequeathed his wealth to the Muslim community. These scholars recognized in Muhammad the fulfillment of their own scriptures.",
-          note: "Tirmidhi 47:196; Ibn Hisham, Sirah",
+          note: "Tirmidhi 37:71; Ibn Hisham, Sirah",
         },
       ],
-      source: "Deuteronomy 18:18; Isaiah 42:1-4; Song of Solomon 5:16; Tirmidhi 47:196",
+      source: "Deuteronomy 18:18; Isaiah 42:1-4; Song of Solomon 5:16; Tirmidhi 37:71",
     },
   },
   {
@@ -1097,6 +1233,99 @@ const sikhismTopics: Topic[] = [
   },
 ];
 
+/* ───────────────────────── Worldviews · Agnosticism & Deism ───────────────────────── */
+
+const agnosticismTopics: Topic[] = [
+  {
+    id: "creator-not-enough",
+    name: "A Creator, But No Religion?",
+    content: {
+      intro:
+        "“I believe in something — a higher power — just not organized religion.” This is the most common worldview among the people reading this page. The Quran takes it seriously — because it is exactly where 7th-century Makkah stood. The pagans of Arabia were not atheists; they affirmed a supreme Creator. The Quran's argument to them is its argument to the modern deist: acknowledging the Creator is the beginning, not the destination.",
+      verse: {
+        arabic: "وَلَئِن سَأَلْتَهُم مَّنْ خَلَقَ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ لَيَقُولُنَّ ٱللَّهُ ۚ قُلِ ٱلْحَمْدُ لِلَّهِ ۚ بَلْ أَكْثَرُهُمْ لَا يَعْلَمُونَ",
+        text: "If you ask them who created the heavens and earth, they will surely say, “Allah.” Say, “All praise is for Allah.” Yet most of them do not understand.",
+        ref: "Quran 31:25",
+      },
+      points: [
+        {
+          title: "The Quran's original audience was 'spiritual but not religious'",
+          detail:
+            "Three times the Quran makes the same observation about the Makkan pagans: 'If you ask them who created the heavens and earth and subjected the sun and moon, they will surely say, “Allah.” How are they then deluded?' (29:61); 'If you ask them who created them, they will surely say, “Allah”' (43:87). They believed in the supreme Creator — they simply would not let that belief change how they lived and worshipped. The Quran's critique is not aimed at atheism; it is aimed at believing in the Creator and stopping there.",
+          note: "Quran 29:61; Quran 31:25; Quran 43:87",
+        },
+        {
+          title: "Deism is a conclusion without its consequences",
+          detail:
+            "The deist grants the decisive premise: an intelligent Creator brought this universe into being with evident order and purpose. But a conclusion that big cannot be inert. If a Being created you deliberately, then what that Being wants from you is the most practically urgent question that exists — your origin, your purpose, and what follows death all hang on it. 'Higher power, no religion' treats the most consequential fact in reality as if it had no consequences. That is not neutrality; it is stopping the investigation one step before it becomes personally costly.",
+        },
+        {
+          title: "The Creator you already accept describes Himself",
+          detail:
+            "The gap between 'something is out there' and 'God has spoken' is bridged the same way any claim is settled: by examining the evidence. Islam's claim is testable — a book whose preservation, consistency, and content can be checked (see the Evidence tab). The Quran even names the moment the deist is standing in: 'We will show them Our signs in the universe and in their own selves until it becomes clear to them that this [Qur’an] is the truth' (41:53). If the signs in the universe were enough to convince you a Creator exists, the same standard of evidence applied to revelation is the honest next step.",
+          note: "Quran 41:53",
+        },
+      ],
+      source: "Quran 29:61; Quran 31:25; Quran 43:87; Quran 41:53",
+    },
+  },
+  {
+    id: "silent-creator",
+    name: "Would God Stay Silent?",
+    content: {
+      intro:
+        "The deist's picture is a Creator who builds a universe of staggering precision, places conscious moral beings inside it — and then never says a word to them. Islam's counter-argument is simple: silence is exactly what a wise Creator would not do.",
+      points: [
+        {
+          title: "A wise Creator communicates",
+          detail:
+            "A being powerful enough to fine-tune physical constants and author the genetic code is not incapable of communication — so if He is silent, He is either indifferent or withholding. But indifference contradicts the evident care in creation: a world provisioned for life, and creatures endowed with reason, conscience, and an unshakeable hunger for meaning. Giving beings the capacity to ask 'why am I here?' while making the answer unknowable would be pointless cruelty from a wise Creator. The expectation that God has spoken is not wishful thinking — it follows from the same design inference the deist already accepts.",
+        },
+        {
+          title: "The claim: no nation was left without a messenger",
+          detail:
+            "Islam's account matches that expectation precisely: 'Indeed, We sent to every community a messenger, [saying], “Worship Allah and shun false gods”' (16:36). Prophets are the communication channel — humans chosen to deliver, embody, and demonstrate the message. This is also why revelation, not private intuition, is the medium: a public message through a verifiable messenger can be tested, transmitted, and preserved. A private hunch cannot.",
+          note: "Quran 16:36",
+        },
+        {
+          title: "Communication is also fairness",
+          detail:
+            "The Quran ties revelation to divine justice: 'These messengers were sent as bearers of glad tidings and as warners, so that the people may have no excuse before Allah after [the coming of] the messengers' (4:165). If humans are accountable, they must first be informed — a judge who never published the law could not justly enforce it. The deist's silent God, who will either judge people by rules He never disclosed or not judge at all, is less coherent — and less just — than the God who speaks.",
+          note: "Quran 4:165",
+        },
+      ],
+      source: "Quran 16:36; Quran 4:165",
+    },
+  },
+  {
+    id: "test-revelation",
+    name: "How to Test a Revelation",
+    content: {
+      intro:
+        "'Fine — but every religion claims revelation. How would I know which one is real?' That is the right question, and it has a rational answer: treat claimed revelations the way you treat any competing claims — set criteria in advance and apply them evenly.",
+      points: [
+        {
+          title: "Criterion 1 — Is it preserved?",
+          detail:
+            "A message from God is worthless to you if you cannot access what was actually sent. So the first filter is textual: does the scripture exist today as it was delivered, with a demonstrable chain of transmission? Most candidates fall at this first hurdle — anonymous authors, centuries-late compilation, and manuscript traditions full of variants (see Scripture Preservation in the Evidence tab). The Quran's letter-for-letter preservation, oral and written, is precisely the property a genuine revelation would need — and it is the property the Quran uniquely claims and demonstrates.",
+        },
+        {
+          title: "Criterion 2 — Does it survive hostile scrutiny?",
+          detail:
+            "A real revelation should invite examination rather than forbid it — and it should hold up. The Quran issues both challenges itself: find a contradiction ('If it had been from anyone other than Allah, they would have surely found in it many discrepancies' — 4:82), or produce a comparable chapter (2:23). Fourteen centuries of motivated critics have had both standing challenges. A text that dares its enemies to falsify it, and remains unfalsified, behaves exactly as a divine message would.",
+          note: "Quran 4:82; Quran 2:23",
+        },
+        {
+          title: "Criterion 3 — Does the messenger check out?",
+          detail:
+            "Examine the man who carried the claim: his honesty before the claim, what the claim cost him, and what he gained. By enemy testimony Muhammad ﷺ was never accused of lying before his mission, endured persecution for it, and died with his armor pawned for barley (see 'The Prophet Himself' in the Evidence tab). Then examine the message's fit with what you already accept: one God, no idols, no intermediaries — the pure monotheism the deist position already gravitates toward. Apply these three criteria to every claimed revelation on earth, evenly. Islam is the invitation to run exactly that test.",
+        },
+      ],
+      source: "Quran 4:82; Quran 2:23",
+    },
+  },
+];
+
 /* ───────────────────────── Worldviews · Atheism ───────────────────────── */
 
 const atheismTopics: Topic[] = [
@@ -1238,6 +1467,46 @@ const questionTopics: Topic[] = [
     },
   },
   {
+    id: "hell-justice",
+    name: "Is Eternal Hell Just?",
+    content: {
+      intro:
+        "For many seekers — and quietly, for many believers — this is the hardest question: how can finite sins earn infinite punishment? Islam's answer starts from a fact critics rarely quote: in Islam's own sources, the overwhelmingly dominant attribute of God is not wrath. It is mercy — and the texts define exactly who Hell is for.",
+      verse: {
+        arabic: "۞ قُلْ يَـٰعِبَادِىَ ٱلَّذِينَ أَسْرَفُوا۟ عَلَىٰٓ أَنفُسِهِمْ لَا تَقْنَطُوا۟ مِن رَّحْمَةِ ٱللَّهِ ۚ إِنَّ ٱللَّهَ يَغْفِرُ ٱلذُّنُوبَ جَمِيعًا ۚ إِنَّهُۥ هُوَ ٱلْغَفُورُ ٱلرَّحِيمُ",
+        text: "Say [Allah says], “O My slaves who have transgressed against themselves, do not despair of Allah’s mercy, for indeed Allah forgives all sins. He is indeed the All-Forgiving, the Most Merciful.",
+        ref: "Quran 39:53",
+      },
+      points: [
+        {
+          title: "Mercy is the rule — one part of a hundred",
+          detail:
+            "The Prophet ﷺ taught that Allah created 'one hundred parts of mercy,' and 'out of this mercy endowed one part to the earth' — and that single part accounts for every act of compassion in history: 'it is because of this that the mother shows affection to her child and even the beasts and birds show kindness to one another.' The other ninety-nine are held back for the Day of Resurrection. And Bukhari records that Allah wrote with Him upon His Throne: 'My Mercy has preceded My Anger.' A theology in which mercy structurally outweighs wrath ninety-nine to one is not a theology eager to damn.",
+          note: "Muslim 50:25; Bukhari 97:79",
+        },
+        {
+          title: "More merciful than a mother",
+          detail:
+            "When a captive woman was seen desperately searching for and nursing her lost child, the Prophet ﷺ asked his companions: 'Do you think that this lady can throw her son in the fire?' They said never — not if she could help it. He replied: 'Allah is more merciful to His slaves than this lady to her son.' This is the sourced, textual picture of the Judge — and it must be held alongside every text about the Fire, because both come from the same mouth.",
+          note: "Bukhari 78:30",
+        },
+        {
+          title: "No one is wronged by an atom's weight",
+          detail:
+            "Whatever the outcome of Judgement, the Quran categorically excludes injustice from it: 'Allah does not do injustice as much as an atom’s weight' (4:40), and 'We will place the scales of justice on the Day of Resurrection, and no soul will be wronged in the least. Even if a deed is the weight of a mustard seed, We will bring it forth' (21:47). No one reaches Hell by oversight, technicality, or bad luck. If the Judge is by definition incapable of wronging anyone, then whoever is punished is punished by a standard more exacting and more informed than any objector's.",
+          note: "Quran 4:40; Quran 21:47",
+        },
+        {
+          title: "Who Hell is actually for",
+          detail:
+            "The Quran's warnings target a specific person: not the struggling, the doubting, or the unreached (see 'People Who Never Heard'), but the one who 'embrace[s] disbelief willingly' after the truth reached them (16:106) — and no one is judged without first being warned, 'so that the people may have no excuse before Allah after [the coming of] the messengers' (4:165). The Prophet ﷺ framed it as refusal, not failure: 'All my followers will enter Paradise except those who refuse.' Hell, in the Islamic texts, is not a trap set for the imperfect — it is the end point of a knowing, persistent, final rejection. And until the last breath, the door of 39:53 stands open: 'do not despair of Allah’s mercy, for indeed Allah forgives all sins.'",
+          note: "Quran 16:106; Quran 4:165; Bukhari 96:12",
+        },
+      ],
+      source: "Quran 39:53; Quran 4:40; Quran 21:47; Quran 16:106; Quran 4:165; Muslim 50:25; Bukhari 97:79; Bukhari 78:30; Bukhari 96:12",
+    },
+  },
+  {
     id: "violence",
     name: "What About Violence?",
     content: {
@@ -1274,6 +1543,45 @@ const questionTopics: Topic[] = [
         },
       ],
       source: "Quran 2:190; Quran 2:256; Quran 9:5-6; Bukhari 56:224; Bukhari 64:314; Abu Dawud 15:138",
+    },
+  },
+  {
+    id: "apostasy",
+    name: "What About Apostasy?",
+    content: {
+      intro:
+        "Anyone who reads 'there is no compulsion in religion' will, within one search, find the hadith critics quote against it. Hiding that hadith would forfeit this page's credibility — so here it is, in full, alongside what the Quran itself says and what the Prophet himself did.",
+      verse: {
+        arabic: "لَآ إِكْرَاهَ فِى ٱلدِّينِ ۖ قَد تَّبَيَّنَ ٱلرُّشْدُ مِنَ ٱلْغَىِّ ۚ فَمَن يَكْفُرْ بِٱلطَّـٰغُوتِ وَيُؤْمِنۢ بِٱللَّهِ فَقَدِ ٱسْتَمْسَكَ بِٱلْعُرْوَةِ ٱلْوُثْقَىٰ لَا ٱنفِصَامَ لَهَا ۗ وَٱللَّهُ سَمِيعٌ عَلِيمٌ",
+        text: "There is no compulsion in religion; the truth has been made distinct from falsehood. Whoever rejects Tāghoot [i.e., false gods] and believes in Allah, has indeed grasped the strong handhold that never breaks. And Allah is All-Hearing, All-Knowing.",
+        ref: "Quran 2:256",
+      },
+      points: [
+        {
+          title: "The Quran's own penalty for apostasy is in the Hereafter",
+          detail:
+            "The Quran discusses apostasy repeatedly — and never once prescribes an earthly punishment for it. 'Whoever disbelieves in Allah after having believed... upon them will be the wrath of Allah, and for them there will be a great punishment' (16:106) — the consequence named is divine, not judicial. Most strikingly, 4:137 describes 'those who believe then disbelieve, then believe and then again disbelieve, then increase in disbelief' — a verse that is incoherent if apostates were simply executed on the first lapse, since it presupposes people leaving and re-entering Islam over a lifetime.",
+          note: "Quran 16:106; Quran 4:137; Quran 2:256",
+        },
+        {
+          title: "The hadith critics quote — presented honestly",
+          detail:
+            "The narration exists and is authentic: 'Whoever changes his religion, kill him' (Nasai 37:94, also 37:96). The companion record around it must be reported precisely too: when Ali burned a group of apostates, Ibn Abbas's recorded objection was to execution by fire — 'If it had been me, I would not have burned them; the Messenger of Allah said: “No one should be punished with the punishment of Allah”' — while affirming the ruling itself, citing this very hadith (Nasai 37:95). What the first generation debated, then, was the method of execution, not whether the ruling existed; the questions of who it covers and in what circumstances belong to the juristic discussion below.",
+          note: "Nasai 37:94; Nasai 37:95; Nasai 37:96",
+        },
+        {
+          title: "Treason, not thought-crime — the classical context",
+          detail:
+            "In 7th-century Arabia there was no neutral citizenship: religious affiliation was political allegiance, and 'changing religion' in wartime meant defecting to forces actively fighting the Muslims — the Quran even records enemies plotting exactly this as a tactic, believing in the morning and disbelieving in the evening to demoralize the believers (3:72). Accordingly, many scholars, classical and modern, have understood the hadith as addressing apostasy compounded with treason and taking up arms — the capital crime being betrayal of the polity, not the private change of conviction — while others in premodern law read it more broadly. What no reading can erase is the Quranic layer above: no compulsion, and judgement of belief belonging to Allah.",
+        },
+        {
+          title: "What the Prophet actually did",
+          detail:
+            "Bukhari records a Bedouin who pledged Islam, fell ill in Madinah, and three times demanded of the Prophet ﷺ, 'Cancel my Pledge.' The Prophet refused to release him from it — and then the man simply 'went out (of Medina).' No pursuit, no punishment; the Prophet's only comment was that Madinah, like a furnace, purifies itself of impurities. A man publicly renounced his pledge to the Prophet's face and walked away unharmed. Whatever the hadith of apostasy regulates, the Prophet's own conduct here is part of the evidence for what it does not.",
+          note: "Bukhari 93:71",
+        },
+      ],
+      source: "Quran 2:256; Quran 4:137; Quran 16:106; Nasai 37:94; Nasai 37:95; Nasai 37:96; Bukhari 93:71",
     },
   },
   {
@@ -1314,6 +1622,49 @@ const questionTopics: Topic[] = [
         },
       ],
       source: "Quran 2:228; Quran 4:7; Quran 24:31; Quran 33:59; Tirmidhi 49:295; Muslim 43:108; Ibn Majah 0:224",
+    },
+  },
+  {
+    id: "prophets-marriages",
+    name: "The Prophet's Marriages",
+    content: {
+      intro:
+        "The two objections raised most often about the Prophet ﷺ personally are his marriage to Aisha and his polygamy. A page that scrutinizes other traditions' hardest texts owes you the same honesty about its own — so here are the actual sources, presented without evasion, and the context in which they sit.",
+      verse: {
+        arabic: "وَلَن تَسْتَطِيعُوٓا۟ أَن تَعْدِلُوا۟ بَيْنَ ٱلنِّسَآءِ وَلَوْ حَرَصْتُمْ ۖ فَلَا تَمِيلُوا۟ كُلَّ ٱلْمَيْلِ فَتَذَرُوهَا كَٱلْمُعَلَّقَةِ ۚ وَإِن تُصْلِحُوا۟ وَتَتَّقُوا۟ فَإِنَّ ٱللَّهَ كَانَ غَفُورًا رَّحِيمًا",
+        text: "You will never be able to maintain absolute justice between your wives, no matter how keen you are. So do not completely incline to one leaving the other in suspense. If you do what is right and fear Allah, Allah is surely All-Forgiving, Most Merciful.",
+        ref: "Quran 4:129",
+      },
+      points: [
+        {
+          title: "What the sources actually say about Aisha",
+          detail:
+            "We will not soften the text: Aisha herself narrated 'that the Prophet ﷺ married her when she was six years old and he consummated his marriage when she was nine years old, and then she remained with him for nine years (i.e., till his death).' These narrations come to us from Aisha's own account, preserved in the most authenticated collection Muslims possess — Islam did not hide this; it recorded it.",
+          note: "Bukhari 67:69; Bukhari 67:70",
+        },
+        {
+          title: "The context his own enemies understood",
+          detail:
+            "In the 7th century — and for most of human history, across Europe, Asia, and Arabia alike — betrothal at a young age and marriage upon maturity were unremarkable norms; adulthood was marked by physical maturity, not a birthday. The decisive historical fact is this: the Quraysh attacked the Prophet ﷺ relentlessly — they called him a sorcerer, a madman, a poet, they mocked his son's death — yet no contemporary, Muslim or enemy, is recorded objecting to this marriage. The objection is a projection of modern norms onto a world that shared none of them; judging the 7th century by 21st-century milestones would condemn virtually every civilization in history, including the ancestors of the objectors.",
+        },
+        {
+          title: "Aisha's own voice — scholar, not victim",
+          detail:
+            "Aisha did not disappear into silence; she became one of the most learned figures of the entire generation. She narrated a vast body of hadith, senior companions consulted her on law and inheritance, and she taught for nearly fifty years after the Prophet's death — correcting other companions' reports with textual evidence. Her narrations, including the ones above, are her own testimony: she recounted her marriage without grievance and defended her husband's legacy her whole life. Any honest account must include how the woman herself spoke.",
+        },
+        {
+          title: "Polygamy: permitted, capped, and conditional on justice",
+          detail:
+            "The Quran did not invent polygamy — it found unlimited polygamy in Arabia (and in the Bible: David and Solomon had wives by the hundreds) and restricted it: up to four, with an explicit condition — 'but if you fear that you may not maintain justice, then marry only one' (Quran 4:3). Then it adds a sobering check: 'You will never be able to maintain absolute justice between your wives, no matter how keen you are' (Quran 4:129) — so a man who cannot uphold material fairness has no permission at all. Monogamy is the default; plural marriage is a regulated exception, historically tied to war widows and orphans.",
+          note: "Quran 4:3; Quran 4:129",
+        },
+        {
+          title: "Twenty-five monogamous years with Khadijah",
+          detail:
+            "The clearest evidence that the Prophet's marriages were not driven by desire is his own life: at 25 he married Khadijah, a twice-widowed businesswoman about fifteen years his senior, and remained faithfully monogamous with her for roughly twenty-five years until her death — through his entire youth. Almost all his later marriages, contracted in his fifties, were to widows and divorcees, sealing tribal alliances or sheltering women whose husbands had died — the marriages of a statesman and community leader, not a hedonist. A man seeking pleasure does not wait until age 50 to begin.",
+        },
+      ],
+      source: "Bukhari 67:69; Bukhari 67:70; Quran 4:3; Quran 4:129",
     },
   },
   {
@@ -1412,6 +1763,17 @@ const questionTopics: Topic[] = [
           note: "Quran 12:30 vs Genesis 41:1",
         },
         {
+          title: "Pharaoh's body — 'an example for those who come after you'",
+          detail:
+            "Narrating the Exodus, the Quran adds a detail found nowhere in the Bible: as Pharaoh drowned, Allah declared, 'So today We will preserve your body, so that you will be an example for those who come after you' (10:92). For over a millennium after the Quran's revelation this claim was uncheckable — Egypt's royal mummies lay undiscovered until the Deir el-Bahari cache (1881) and the tomb finds that followed. Today the mummies of the New Kingdom pharaohs — including Ramesses II and Merenptah, the very rulers Egyptologists debate as the pharaoh of the Exodus — are preserved and displayed in Cairo. Bodies drowned or lost at sea are precisely the ones that should not survive; this one, the Quran said, would.",
+          note: "Quran 10:90-92",
+        },
+        {
+          title: "A claim that could only be checked 1,200 years later",
+          detail:
+            "This is what makes the point forensic rather than poetic: a 7th-century author inventing scripture gains nothing by adding a falsifiable physical claim about a corpse — least of all one that contradicts the Biblical account he is supposedly copying, which has no preservation of Pharaoh's body at all. The claim sat in the text, checkable by no one, until modern archaeology could rule on it. It is the same pattern as the al-Aziz title above: where the Quran diverges from the Bible on ancient Egypt, the divergence lands on the side history later confirmed.",
+        },
+        {
           title: "If man-made, where are the errors?",
           detail:
             "Every human text of comparable scope and length contains errors — factual, logical, or internal contradictions. The Quran has been scrutinized for 1,400 years by its enemies and critics. Despite this, no genuine contradiction or factual error has been identified. If it were man-made, this would be statistically impossible across 6,236 verses covering dozens of subjects.",
@@ -1424,7 +1786,346 @@ const questionTopics: Topic[] = [
           note: "Quran 2:23-24",
         },
       ],
-      source: "Quran 17:88; Quran 7:157; Quran 4:82; Quran 2:23-24; Quran 29:48",
+      source: "Quran 17:88; Quran 7:157; Quran 4:82; Quran 2:23-24; Quran 29:48; Quran 10:90-92",
+    },
+  },
+  {
+    id: "evolution",
+    name: "Does Islam Conflict With Evolution?",
+    content: {
+      intro:
+        "This is the science question educated readers actually arrive with. The honest answer has three parts: what the Quran explicitly fixes, what Islam has no quarrel with, and where qualified scholars genuinely differ. Islam does not ask you to choose between your Lord and your biology textbook — but it does draw one line.",
+      verse: {
+        arabic: "ٱلَّذِىٓ أَحْسَنَ كُلَّ شَىْءٍ خَلَقَهُۥ ۖ وَبَدَأَ خَلْقَ ٱلْإِنسَـٰنِ مِن طِينٍ ۝ ثُمَّ جَعَلَ نَسْلَهُۥ مِن سُلَـٰلَةٍ مِّن مَّآءٍ مَّهِينٍ ۝ ثُمَّ سَوَّىٰهُ وَنَفَخَ فِيهِ مِن رُّوحِهِۦ ۖ وَجَعَلَ لَكُمُ ٱلسَّمْعَ وَٱلْأَبْصَـٰرَ وَٱلْأَفْـِٔدَةَ ۚ قَلِيلًا مَّا تَشْكُرُونَ",
+        text: "Who perfected everything He created, and initiated the creation of man from clay. Then He made his progeny from the extract of a worthless fluid. Then He fashioned him and breathed into him of His spirit. He granted you hearing, sight and intellect; yet little it is that you give thanks.",
+        ref: "Quran 32:7-9",
+      },
+      points: [
+        {
+          title: "What the Quran actually fixes: Adam's special creation",
+          detail:
+            "The Quran is explicit that humanity's origin is a deliberate divine act: Allah 'initiated the creation of man from clay,' then made his descendants 'from the extract of a worthless fluid,' then 'fashioned him and breathed into him of His spirit' (Quran 32:7-9); man was created 'from sounding clay, made of aging mud' (Quran 15:26). Adam was created directly, honored with Allah's spirit, and did not have parents. That single point — the special creation of Adam and the ensoulment that makes humans morally accountable — is the theological line. It is a claim about one species' origin, not a rejection of biology.",
+          note: "Quran 32:7-9; Quran 15:26",
+        },
+        {
+          title: "What Islam has no quarrel with",
+          detail:
+            "Notice what the Quran never commits to: no 6,000-year-old earth (it gives no creation date and no genealogical chronology to add up), no denial of natural processes, no claim that species are frozen. 'What is the matter with you that you do not fear the Majesty of Allah, when He has created you in stages?' (Quran 71:13-14) — gradual, staged development is the Quran's own vocabulary for how Allah creates. Deep time, an ancient universe, adaptation, and natural selection as mechanisms operating within creation raise no theological problem: in Islam, natural causes are simply how Allah ordinarily acts.",
+          note: "Quran 71:13-14",
+        },
+        {
+          title: "Where scholars genuinely differ",
+          detail:
+            "On everything outside Adam, Muslim scholars hold a range of positions. Some accept common descent for all non-human life while excepting Adam; some read the 'clay' stages as compatible with a longer developmental process; others are more reserved about evolutionary theory generally. Scholars have also discussed whether other beings walked the earth before Adam. These are live discussions among qualified scholars, not settled dogma — Islam has no Galileo problem and no church council binding believers to a scientific cosmology.",
+        },
+        {
+          title: "The real conflict is with naturalism, not biology",
+          detail:
+            "Strip the debate to its core and the disagreement is not about fossils or genomes — it is about the philosophical add-on that the process was unguided, purposeless, and unsupervised. That claim is metaphysics, not measurement: no experiment can detect 'purposelessness.' A Muslim biologist can accept every observation in the field while affirming that the entire system — its laws, its mechanisms, its outcomes — runs by Allah's decree. The data belongs to science; the meaning of the data was never science's to award.",
+        },
+      ],
+      source: "Quran 32:7-9; Quran 71:13-14; Quran 15:26",
+    },
+  },
+  {
+    id: "slavery",
+    name: "What About Slavery?",
+    content: {
+      intro:
+        "Islam arrived in a world where slavery was the economic bedrock of every civilization — Roman, Persian, African, Arabian. Rather than issue a decree no 7th-century society could survive, Islam did something historically unique: it made freeing slaves an act of worship, wired emancipation into its laws of repentance, and made the slave a brother. Judge the trajectory, not the snapshot.",
+      verse: {
+        arabic: "وَمَآ أَدْرَىٰكَ مَا ٱلْعَقَبَةُ ۝ فَكُّ رَقَبَةٍ",
+        text: "And how do you know what the steep path is? It is freeing a slave.",
+        ref: "Quran 90:12-13",
+      },
+      points: [
+        {
+          title: "Freeing a slave frees you from the Fire",
+          detail:
+            "The Prophet ﷺ said: 'Whoever frees a Muslim slave, Allah will save all the parts of his body from the (Hell) Fire as he has freed the body-parts of the slave.' The narrator of this very hadith relayed it to Ali bin Al-Husain — who promptly freed a slave for whom he had been offered ten thousand dirhams (or, in another wording, a thousand dinars). Islamic law then made manumission the prescribed expiation for a string of common sins — broken oaths, and more — turning the legal system itself into an engine that continuously converted slaves into free believers.",
+          note: "Bukhari 49:1",
+        },
+        {
+          title: "'Your slaves are your brothers'",
+          detail:
+            "A companion found Abu Dhar and his slave wearing identical cloaks and asked why. Abu Dhar explained that after he had once insulted a man through his mother, the Prophet ﷺ rebuked him: 'You still have some characteristics of ignorance. Your slaves are your brothers... whoever has a brother under his command should feed him of what he eats and dress him of what he wears,' and never burden him beyond capacity without helping him yourself. Same food, same clothes, bounded work, and the title 'brother' — no ancient legal system spoke of the enslaved this way.",
+          note: "Bukhari 2:23; Bukhari 49:28",
+        },
+        {
+          title: "Emancipation ranked among the best money you can spend",
+          detail:
+            "The Prophet ﷺ listed spending 'to set free a slave' alongside spending in Allah's path, charity to the needy, and providing for one's own family as the great categories of righteous spending. The Quran itself defines moral heroism by it: 'And how do you know what the steep path is? It is freeing a slave' (Quran 90:12-13). Wealthy companions competed in manumission as an act of devotion — and the Quran additionally allotted a share of zakat itself to freeing people from bondage.",
+          note: "Muslim 12:48; Quran 90:12-13",
+        },
+        {
+          title: "Bilal — from tortured slave to the voice of Islam",
+          detail:
+            "Bilal ibn Rabah, an enslaved Abyssinian, was tortured on the Meccan sands for believing in one God — and was purchased and freed by Abu Bakr. The Prophet ﷺ then chose him, a freed black slave, as the first muezzin of Islam — the voice calling the entire community to prayer, a position of maximal public honor. When Mecca was conquered, Bilal made the call from atop the Kaaba itself, above the heads of the aristocrats who had once owned men like him. That is what Islam did with a slave within one generation.",
+        },
+        {
+          title: "The honest contrast with chattel slavery",
+          detail:
+            "Be precise about what is being compared. Transatlantic chattel slavery was race-based, hereditary by law, treated humans as livestock with no rights, no path to freedom, and no personhood. Islamic law knew nothing of a slave-race, commanded feeding and clothing slaves at the owner's own standard, made mistreatment grounds for mandated release, gave slaves the right to buy their own freedom, and made freeing them a means of salvation. It is also honest to say plainly: where Muslim societies later ran slave trades that betrayed these rules, they violated Islam's trajectory rather than followed it — and today every Muslim authority affirms slavery's abolition. The religion that defined 'the steep path' as freeing a slave got there first in principle.",
+        },
+      ],
+      source: "Quran 90:12-13; Bukhari 49:1; Bukhari 2:23; Bukhari 49:28; Muslim 12:48",
+    },
+  },
+  {
+    id: "doubts",
+    name: "Doubts & Waswas",
+    content: {
+      intro:
+        "This page mostly speaks to seekers — but many readers are Muslims quietly frightened by their own intrusive thoughts, wondering if a doubt means their faith is gone. The Prophet's companions had the same fear, brought it to him directly, and received one of the most comforting answers in the entire tradition.",
+      verse: {
+        arabic: "وَلَقَدْ خَلَقْنَا ٱلْإِنسَـٰنَ وَنَعْلَمُ مَا تُوَسْوِسُ بِهِۦ نَفْسُهُۥ ۖ وَنَحْنُ أَقْرَبُ إِلَيْهِ مِنْ حَبْلِ ٱلْوَرِيدِ",
+        text: "We have created man and know what his soul whispers within him, for We are closer to him than his jugular vein.",
+        ref: "Quran 50:16",
+      },
+      points: [
+        {
+          title: "“That is pure faith”",
+          detail:
+            "Companions of the Prophet ﷺ came to him and confessed: 'Verily we perceive in our minds that which every one of us considers it too grave to express.' He asked if they really experienced that, and when they said yes, he answered: 'That is the faith manifest.' In the parallel narration, asked about these evil promptings, he said simply: 'It is pure faith.' The distress you feel at the thought is itself the proof of your iman — a heart with no faith would not be disturbed. The whisper is the attack; your discomfort is the defense.",
+          note: "Muslim 1:247; Muslim 1:249",
+        },
+        {
+          title: "The 'who created Allah?' whisper — predicted by name",
+          detail:
+            "The single most common intrusive question was described by the Prophet ﷺ fourteen centuries before any internet forum: 'The Satan comes to everyone of you and says: Who created this and that? till he questions: Who created your Lord? When he comes to that, one should seek refuge in Allah and keep away (from such idle thoughts).' Bukhari carries the same teaching. Note what the instruction is not: it is not 'out-argue the whisper.' The question is malformed — everything that begins to exist needs a cause; the eternal Creator, by definition, did not begin — but the prescribed response is practical: seek refuge, and decline the loop.",
+          note: "Muslim 1:252; Bukhari 59:85",
+        },
+        {
+          title: "A thought is not a sin",
+          detail:
+            "The Prophet ﷺ said: 'Allah has forgiven my followers the evil thoughts that occur to their minds, as long as such thoughts are not put into action or uttered.' You are not accountable for what fires uninvited across your mind — only for what you choose. This matters especially for waswas sufferers who fear the thought itself has damned them: the tradition explicitly says otherwise, and the Quran seals it: 'Allah does not burden any soul greater than it can bear' (2:286).",
+          note: "Bukhari 68:19; Quran 2:286",
+        },
+        {
+          title: "Having a question is not losing your religion",
+          detail:
+            "There is a difference between a doubt that visits you and a rejection you choose. Islam's tradition welcomed hard questions — this entire page exists because the Quran invites examination (4:82) — and the companions who voiced their darkest whispers were reassured, not rebuked. If a doubt persists, investigate it: read the relevant topic here, ask someone knowledgeable, and pray the prayer the Quran itself teaches: 'Our Lord, do not let our hearts deviate after You have guided us, and grant us Your mercy' (3:8). Doubts handled honestly have made countless believers stronger; doubts hidden in shame only fester.",
+          note: "Quran 3:8; Quran 4:82",
+        },
+      ],
+      source: "Quran 50:16; Quran 2:286; Quran 3:8; Muslim 1:247; Muslim 1:249; Muslim 1:252; Bukhari 59:85; Bukhari 68:19",
+    },
+  },
+  {
+    id: "sharing-islam",
+    name: "How to Share Islam",
+    content: {
+      intro:
+        "Many readers of this page are already Muslim — parents, friends, coworkers of someone asking these questions. Islam does not just give you answers; it legislates the manner of giving them. The Quran's dawah method is a discipline of wisdom, gentleness, and common ground — and it holds you to it even when the other side does not.",
+      verse: {
+        arabic: "ٱدْعُ إِلَىٰ سَبِيلِ رَبِّكَ بِٱلْحِكْمَةِ وَٱلْمَوْعِظَةِ ٱلْحَسَنَةِ ۖ وَجَـٰدِلْهُم بِٱلَّتِى هِىَ أَحْسَنُ ۚ إِنَّ رَبَّكَ هُوَ أَعْلَمُ بِمَن ضَلَّ عَن سَبِيلِهِۦ ۖ وَهُوَ أَعْلَمُ بِٱلْمُهْتَدِينَ",
+        text: "Call to the way of your Lord with wisdom and goodly exhortation, and reason with them in the best manner. Your Lord knows best who has strayed from His way and knows best those who are rightly guided.",
+        ref: "Quran 16:125",
+      },
+      points: [
+        {
+          title: "The method is commanded, not optional",
+          detail:
+            "Quran 16:125 legislates three registers and their order: wisdom (hikmah — knowing what to say, to whom, and when), goodly exhortation (words that reach the heart, not just the argument), and — only when discussion arises — reasoning 'in the best manner.' Note what the verse rules out: mockery, humiliation, and point-scoring. The same verse ends by reminding the caller that 'Your Lord knows best who has strayed' — assessing hearts is Allah's job, not yours.",
+          note: "Quran 16:125",
+        },
+        {
+          title: "Open with common ground — the Quran's own opener",
+          detail:
+            "When addressing Christians and Jews, the Quran does not begin with the disputes — it begins with the shared foundation: 'O people of the Book, come to a common term between us and you, that we worship none but Allah and associate no partners with Him' (Quran 3:64). Start where you agree: one Creator, love of Jesus and Moses, moral seriousness, prayer. The disagreements on this page matter, but they land only after trust is built on what you hold in common.",
+          note: "Quran 3:64",
+        },
+        {
+          title: "Guidance is not your job — conveying is",
+          detail:
+            "'You cannot guide whoever you like, but Allah guides whom He wills' (Quran 28:56) — revealed about the Prophet ﷺ himself and his beloved uncle. And 'there is no compulsion in religion' (Quran 2:256) — pressure is not just ineffective, it is prohibited. This is liberating: your success is measured by the sincerity and clarity of the conveying, not by whether the person converts. Drop the scoreboard and the desperation disappears from your voice.",
+          note: "Quran 28:56; Quran 2:256; Muslim 1:41",
+        },
+        {
+          title: "Answer questions; don't win arguments",
+          detail:
+            "Practical discipline for real conversations: listen fully before responding — most objections are really one underlying question. Address one idea per conversation and let it breathe. Say 'I don't know, let me find out' rather than improvising — an honest gap builds more credibility than a weak answer. Never fabricate a citation or inflate a claim; this page exists so you can point to sources instead. And know when to stop: a person who is agitated is no longer listening, and 'reasoning in the best manner' includes ending warmly before it becomes a contest.",
+        },
+        {
+          title: "With family and coworkers, your life speaks first",
+          detail:
+            "Do's: share meals, show up for people, let them see prayer and character up close, answer what is asked rather than what you wish they had asked, and offer resources ('read this when you're curious') instead of ultimatums. Don'ts: don't corner people, don't turn every dinner into a debate, don't treat a loved one as a project, and don't take rejection of the message as rejection of you. For most people who eventually embrace Islam, the argument opened the door — but a Muslim they trusted is why they walked through it.",
+        },
+      ],
+      source: "Quran 16:125; Quran 3:64; Quran 28:56; Quran 2:256; Muslim 1:41",
+    },
+  },
+];
+
+/* ───────────────────────── Becoming Muslim ───────────────────────── */
+
+const becomingTopics: Topic[] = [
+  {
+    id: "shahada-meaning",
+    name: "The Shahada & What It Means",
+    content: {
+      intro:
+        "Everything in Islam begins with one sentence — the Shahada, the testimony of faith: “I bear witness that there is no god but Allah, and I bear witness that Muhammad is the Messenger of Allah.” Saying this sincerely is what makes a person Muslim. There is no baptism, no initiation, no ceremony — one honest sentence before your Creator.",
+      verse: {
+        arabic: "فَٱعْلَمْ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱللَّهُ وَٱسْتَغْفِرْ لِذَنۢبِكَ وَلِلْمُؤْمِنِينَ وَٱلْمُؤْمِنَـٰتِ ۗ وَٱللَّهُ يَعْلَمُ مُتَقَلَّبَكُمْ وَمَثْوَىٰكُمْ",
+        text: "Then know [O Prophet] that none has the right to be worshiped except Allah, and seek forgiveness for your sins and for the [the sins of] the believing men and women, for Allah knows your movements and your places of rest.",
+        ref: "Quran 47:19",
+      },
+      points: [
+        {
+          title: "Two halves of one testimony",
+          detail:
+            "The first half — la ilaha illa Allah — clears everything else away: no idol, no saint, no celebrity, no desire deserves your worship; only the One who made you. The second half — Muhammadun rasul Allah — accepts Muhammad ﷺ as Allah's final messenger, which means accepting the Quran he delivered as Allah's own word and his example as the way to live by it.",
+          note: "Quran 47:19",
+        },
+        {
+          title: "The words carry a promise",
+          detail:
+            "The Prophet ﷺ said: “He who died knowing (fully well) that there is no god but Allah entered Paradise.” The testimony is not a formality — it is the key to Paradise itself, and every other teaching in Islam flows from it.",
+          note: "Muslim 1:43",
+        },
+        {
+          title: "Witness, not just words",
+          detail:
+            "To “bear witness” is stronger than to merely say. Scholars explain that the Shahada asks for three things: knowing what you are saying, meaning it sincerely, and intending to live by it. Allah does not ask for perfection from day one — He asks for a truthful heart.",
+        },
+      ],
+      source: "Quran 47:19; Muslim 1:43",
+    },
+  },
+  {
+    id: "how-to-take-it",
+    name: "How to Take It",
+    content: {
+      intro:
+        "Becoming Muslim is deliberately simple. Say the testimony — in Arabic if you can, and in your own language so you know exactly what you are saying: “Ashhadu an la ilaha illa Allah, wa ashhadu anna Muhammadan rasul Allah.” The moment you say it sincerely, you are Muslim.",
+      points: [
+        {
+          title: "No ceremony, no clergy, no waiting period",
+          detail:
+            "Islam has no baptism and no priesthood standing between you and Allah. When Amr ibn al-As — once among the Prophet's fiercest enemies — decided to accept Islam, he simply came to the Prophet ﷺ, took his hand, and pledged. Nothing more was asked of him.",
+          note: "Muslim 1:228",
+        },
+        {
+          title: "Witnesses are not required",
+          detail:
+            "Your Shahada is valid between you and Allah alone — said in your own room with no one watching. Scholars state that witnesses serve a practical purpose only: connecting you to a community that can support you from day one. Saying it at a local mosque is encouraged for exactly that reason — you will find people eager to help, not gatekeepers.",
+        },
+        {
+          title: "A bath (ghusl) is recommended",
+          detail:
+            "When Qays ibn Asim came to accept Islam, the Prophet ﷺ “commanded him to perform Ghusl with water and lotus leaves” — a full-body bath. Scholars state this ghusl is recommended for the new Muslim: a physical marker of the clean start the Shahada has just made. It is a beautiful practice, not a barrier — the testimony itself needs no preparation at all.",
+          note: "Abu Dawud 1:355; Nasai 1:189",
+        },
+      ],
+      source: "Muslim 1:228; Abu Dawud 1:355; Nasai 1:189",
+    },
+  },
+  {
+    id: "sins-wiped",
+    name: "All Past Sins Wiped",
+    content: {
+      intro:
+        "Whatever came before the Shahada — every sin, however heavy — is erased the moment you take it. This is not a hopeful sentiment; it is the Prophet's explicit teaching and the Quran's explicit promise.",
+      verse: {
+        arabic: "قُل لِّلَّذِينَ كَفَرُوٓا۟ إِن يَنتَهُوا۟ يُغْفَرْ لَهُم مَّا قَدْ سَلَفَ وَإِن يَعُودُوا۟ فَقَدْ مَضَتْ سُنَّتُ ٱلْأَوَّلِينَ",
+        text: "Say to those who disbelieve that if they desist, their past will be forgiven, but if they persist, then they have a precedent in those who have passed before them.",
+        ref: "Quran 8:38",
+      },
+      points: [
+        {
+          title: "“Islam wipes out all the previous misdeeds”",
+          detail:
+            "When Amr ibn al-As reached out to pledge his Shahada, he hesitated and pulled his hand back — he wanted a guarantee that his past would be pardoned first. The Prophet ﷺ answered: “Are you not aware of the fact that Islam wipes out all the previous (misdeeds)?” The same narration adds that migration and pilgrimage do the same. Amr needed no condition — the wiping clean is built in.",
+          note: "Muslim 1:228",
+        },
+        {
+          title: "No sin is too great",
+          detail:
+            "Allah addresses precisely the person who feels beyond forgiveness: “O My slaves who have transgressed against themselves, do not despair of Allah’s mercy, for indeed Allah forgives all sins.” Whatever you are carrying, the door is open — and the Shahada walks you through it.",
+          note: "Quran 39:53",
+        },
+        {
+          title: "From enemy of the Prophet to trusted commander",
+          detail:
+            "Amr admitted that before Islam “there was no other desire stronger in me than the one that I should overpower him and kill him.” Yet after his Shahada, the Prophet ﷺ trusted him to lead Muslim armies — Amr himself narrated: “The Prophet ﷺ deputed me to lead the Army of Dhat-as-Salasil.” If a man who once plotted to kill the Messenger of Allah could begin again with a clean slate, so can you.",
+          note: "Muslim 1:228; Bukhari 62:14",
+        },
+      ],
+      source: "Quran 8:38; Quran 39:53; Muslim 1:228; Bukhari 62:14",
+    },
+  },
+  {
+    id: "first-week",
+    name: "Your First Week",
+    content: {
+      intro:
+        "You are not expected to learn everything at once. Revelation itself came gradually over twenty-three years, and whenever the Prophet sent teachers to new Muslims he gave them the same order: a few essentials first, everything else in its own time.",
+      points: [
+        {
+          title: "Learn in the Prophet's order — faith, then prayer, then charity",
+          detail:
+            "Sending Muadh ibn Jabal to teach in Yemen, the Prophet ﷺ told him to “invite them to testify that none has the right to be worshipped except Allah and that Muhammad is His Apostle” — and only “if they obey you in that,” “then tell them that Allah has enjoined on them five prayers to be performed every day and night.” Zakat (charity) came third. That is your syllabus: the testimony you have already made, then the prayer, then the rest step by step.",
+          note: "Bukhari 64:374",
+        },
+        {
+          title: "Focus on the five daily prayers",
+          detail:
+            "Prayer is the first practice to learn because Islam stands on it — the Prophet ﷺ named it immediately after the testimony among the five pillars. Learn the movements first and the words a line at a time; pray with what you know while you learn the rest. No one begins fluent.",
+          note: "Bukhari 2:1",
+        },
+        {
+          title: "The obligations alone are enough",
+          detail:
+            "A Bedouin asked the Prophet ﷺ exactly what was required of him, then vowed to do no more and no less than the obligations. The Prophet ﷺ said: “He will be successful if he has told the truth.” In Muslim's narration: “He is successful, if he is true to what he affirms.” The floor of this religion is genuinely enough to succeed — everything beyond it is voluntary reward.",
+          note: "Bukhari 90:4; Muslim 1:8",
+        },
+        {
+          title: "Take it gently — burnout is not piety",
+          detail:
+            "The Prophet ﷺ warned: “Religion is very easy and whoever overburdens himself in his religion will not be able to continue in that way.” New Muslims who try to adopt everything in a week often exhaust themselves. Steady and small beats intense and short-lived.",
+          note: "Bukhari 2:32",
+        },
+      ],
+      source: "Bukhari 64:374; Bukhari 2:1; Bukhari 90:4; Muslim 1:8; Bukhari 2:32",
+    },
+  },
+  {
+    id: "telling-family",
+    name: "Telling Family & Friends",
+    content: {
+      intro:
+        "For many new Muslims, saying the Shahada is the easy part — telling the people they love is the hard one. The Quran gives direct guidance for exactly this conversation, and you are under no obligation to rush it.",
+      verse: {
+        arabic: "ٱدْعُ إِلَىٰ سَبِيلِ رَبِّكَ بِٱلْحِكْمَةِ وَٱلْمَوْعِظَةِ ٱلْحَسَنَةِ ۖ وَجَـٰدِلْهُم بِٱلَّتِى هِىَ أَحْسَنُ ۚ إِنَّ رَبَّكَ هُوَ أَعْلَمُ بِمَن ضَلَّ عَن سَبِيلِهِۦ ۖ وَهُوَ أَعْلَمُ بِٱلْمُهْتَدِينَ",
+        text: "Call to the way of your Lord with wisdom and goodly exhortation, and reason with them in the best manner. Your Lord knows best who has strayed from His way and knows best those who are rightly guided.",
+        ref: "Quran 16:125",
+      },
+      points: [
+        {
+          title: "Wisdom first — there is no announcement deadline",
+          detail:
+            "The Quran commands calling to Allah's way “with wisdom and goodly exhortation” — and wisdom includes choosing your moment, your words, and your audience. Your Shahada is already complete before Allah. Telling others is a step you take when you are ready, not a condition of your Islam.",
+          note: "Quran 16:125",
+        },
+        {
+          title: "Kindness to parents survives their disapproval",
+          detail:
+            "The Quran addresses the hardest case directly: even if parents actively pressure you to abandon your faith, you do not obey them in that — but you still “keep company with them in this world with kindness.” Becoming Muslim makes you more dutiful to your parents, not less. Let them see that.",
+          note: "Quran 31:15",
+        },
+        {
+          title: "Let your life do the arguing",
+          detail:
+            "Shock, worry, or anger is often the first reaction — and it usually softens with time. Long debates in week one rarely help. What does: becoming visibly more patient, more honest, more present. For many families, the strongest answer to “why Islam?” is watching who you become.",
+        },
+        {
+          title: "You are not alone",
+          detail:
+            "Millions have walked this exact road before you. Seek out your local mosque and ask if there are other converts — most communities have them, and they remember their own first conversations vividly. Their company will steady you through yours.",
+        },
+      ],
+      source: "Quran 16:125; Quran 31:15",
     },
   },
 ];
@@ -1436,6 +2137,7 @@ const sections = [
   { key: "proofs", label: "Evidence for Islam" },
   { key: "worldviews", label: "Other Worldviews" },
   { key: "questions", label: "Common Questions" },
+  { key: "becoming", label: "Becoming Muslim" },
 ] as const;
 
 type SectionKey = (typeof sections)[number]["key"];
@@ -1449,6 +2151,7 @@ const worldviews = [
   { key: "hinduism", label: "Hinduism" },
   { key: "buddhism", label: "Buddhism" },
   { key: "sikhism", label: "Sikhism" },
+  { key: "agnosticism", label: "Agnosticism" },
   { key: "atheism", label: "Atheism" },
 ] as const;
 
@@ -1463,8 +2166,10 @@ const topicGroups = {
   hinduism: hinduismTopics,
   buddhism: buddhismTopics,
   sikhism: sikhismTopics,
+  agnosticism: agnosticismTopics,
   atheism: atheismTopics,
   questions: questionTopics,
+  becoming: becomingTopics,
 };
 
 type GroupKey = keyof typeof topicGroups;
@@ -1481,6 +2186,7 @@ const legacyWorldviewTabs: Record<string, WorldviewKey> = {
   hinduism: "hinduism",
   buddhism: "buddhism",
   sikhism: "sikhism",
+  agnosticism: "agnosticism",
   atheism: "atheism",
 };
 
@@ -1503,7 +2209,7 @@ const startIndex: { key: SectionKey; title: string; count: string; description: 
     title: "Other Worldviews",
     count: `${worldviews.length} worldviews`,
     description:
-      "How the same questions are answered by Christianity, Judaism, Hinduism, Buddhism, Sikhism, and atheism — examined through their own sources.",
+      "How the same questions are answered by Christianity, Judaism, Hinduism, Buddhism, Sikhism, agnosticism, and atheism — examined through their own sources.",
   },
   {
     key: "questions",
@@ -1511,6 +2217,13 @@ const startIndex: { key: SectionKey; title: string; count: string; description: 
     count: `${questionTopics.length} questions`,
     description:
       "Direct answers to the objections people raise most — suffering, violence, women in Islam, religious pluralism, and whether religion is man-made.",
+  },
+  {
+    key: "becoming",
+    title: "Becoming Muslim",
+    count: `${becomingTopics.length} steps`,
+    description:
+      "Convinced, or close to it? What the Shahada means, how to take it, the clean slate it brings, and how to walk your first days as a Muslim.",
   },
 ];
 
@@ -1551,7 +2264,7 @@ function WhyIslamContent() {
           worldview = owner.key;
           if (!asWorldview) topics[owner.key] = rawSub;
         }
-      } else if (tab === "proofs" || tab === "questions") {
+      } else if (tab === "proofs" || tab === "questions" || tab === "becoming") {
         if (topicGroups[tab].some((t) => t.id === rawSub)) topics[tab] = rawSub;
       }
     }
@@ -1603,7 +2316,7 @@ function WhyIslamContent() {
     const sub =
       activeSection === "worldviews"
         ? activeTopics[activeWorldview]
-        : activeSection === "proofs" || activeSection === "questions"
+        : activeSection === "proofs" || activeSection === "questions" || activeSection === "becoming"
           ? activeTopics[activeSection]
           : "";
     router.replace(`${pathname}?tab=${activeSection}${sub ? `&sub=${sub}` : ""}`, { scroll: false });
@@ -1611,6 +2324,7 @@ function WhyIslamContent() {
 
   const activeProof = filtered.proofs.find((t) => t.id === activeTopics.proofs);
   const activeQuestion = filtered.questions.find((t) => t.id === activeTopics.questions);
+  const activeBecoming = filtered.becoming.find((t) => t.id === activeTopics.becoming);
   const worldviewTopics = filtered[activeWorldview];
   const activeWorldviewTopic = worldviewTopics.find((t) => t.id === activeTopics[activeWorldview]);
 
@@ -1655,11 +2369,35 @@ function WhyIslamContent() {
               <h2 className="text-xl font-semibold text-themed mb-4">What this page covers</h2>
               <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
                 <p>
-                  Islam does not ask for blind faith — the Quran repeatedly calls on people to reflect, question, and examine the evidence. This page takes that invitation seriously. It lays out the case for Islam in three parts: the <span className="text-themed font-medium">positive evidence</span> that the Quran is divine revelation, an honest <span className="text-themed font-medium">comparison with other worldviews</span> through their own scriptures and scholarship, and direct answers to the <span className="text-themed font-medium">common questions</span> people ask about Islam.
+                  Islam does not ask for blind faith — the Quran repeatedly calls on people to reflect, question, and examine the evidence. This page takes that invitation seriously. It lays out the case for Islam in three parts: the <span className="text-themed font-medium">positive evidence</span> that the Quran is divine revelation, an honest <span className="text-themed font-medium">comparison with other worldviews</span> through their own scriptures and scholarship, and direct answers to the <span className="text-themed font-medium">common questions</span> people ask about Islam. And for the reader who finds the case convincing, it closes with <span className="text-themed font-medium">becoming Muslim</span> — what the Shahada is and how to take it.
                 </p>
                 <p>
                   Read the sections in order for the full argument, or jump straight to whatever you are curious about — each topic stands on its own, and every claim is tied to its sources so you can verify rather than take our word for it. Use the search box above to find a specific topic across all sections.
                 </p>
+              </div>
+            </ContentCard>
+
+            {/* How to investigate honestly */}
+            <ContentCard delay={0.15}>
+              <h2 className="text-xl font-semibold text-themed mb-4">How to investigate honestly</h2>
+              <div className="space-y-3 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  Before any evidence, the Quran lays down the method — and it applies to everyone, including Muslims:
+                </p>
+                <ul className="space-y-3 list-none">
+                  <li className="rounded-lg p-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <span className="text-themed font-medium">Don&apos;t claim what you haven&apos;t checked.</span>{" "}
+                    &ldquo;Do not follow that of which you have no knowledge. Indeed, the hearing, the sight, and the heart — all of them will be called to account&rdquo; (Quran 17:36). Your senses and your mind are instruments you answer for. Verify this page&apos;s sources; that is what they are cited for.
+                  </li>
+                  <li className="rounded-lg p-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <span className="text-themed font-medium">Inherited belief is not evidence.</span>{" "}
+                    The Quran condemns those who answer truth with &ldquo;we follow what we found our forefathers doing&rdquo; (Quran 2:170) — and the critique cuts both ways. Being born into a religion, including Islam, settles nothing; being born into secularism settles nothing either. Every worldview must earn its keep.
+                  </li>
+                  <li className="rounded-lg p-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <span className="text-themed font-medium">Follow the argument, not the crowd.</span>{" "}
+                    If a claim on this page is wrong, its citation will fail when you check it; if it is right, the discomfort of where it leads is not a rebuttal. Read as a judge weighing evidence, not as a lawyer defending the position you walked in with.
+                  </li>
+                </ul>
               </div>
             </ContentCard>
 
@@ -1703,6 +2441,8 @@ function WhyIslamContent() {
               { ref: "Quran 3:19", desc: "“The true religion with Allah is Islam”" },
               { ref: "Quran 2:256", desc: "“There is no compulsion in religion; the truth has been made distinct from falsehood”" },
               { ref: "Quran 4:82", desc: "the Quran's open invitation to examine it for contradiction" },
+              { ref: "Quran 17:36", desc: "“Do not follow that of which you have no knowledge” — the Quran's own standard of inquiry" },
+              { ref: "Quran 2:170", desc: "the Quran's critique of inherited, unexamined belief" },
             ]} />
           </motion.div>
         )}
@@ -1818,6 +2558,69 @@ function WhyIslamContent() {
             )}
 
             <SourcesCard className="mt-8" sources={groupSourceRefs(activeQuestion ? [activeQuestion] : [])} />
+          </motion.div>
+        )}
+
+        {/* ─── Becoming Muslim ─── */}
+        {activeSection === "becoming" && (
+          <motion.div
+            key="becoming"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {filtered.becoming.length === 0 ? (
+              <p className="text-sm text-themed-muted text-center py-8">No topics match your search.</p>
+            ) : (
+              <SubTabLayout
+                subs={filtered.becoming.map((t) => ({ key: t.id, label: t.name }))}
+                activeSub={activeTopics.becoming}
+                setActiveSub={(id) => setTopic("becoming", id)}
+              >
+                {activeBecoming && (
+                  <div id={`section-${activeBecoming.id}`}>
+                    <TopicInfoCard topic={activeBecoming} showSource={false} />
+                  </div>
+                )}
+              </SubTabLayout>
+            )}
+
+            <SourcesCard className="mt-8" sources={groupSourceRefs(activeBecoming ? [activeBecoming] : [])} />
+
+            {/* Encouraging next steps for the new (or almost-new) Muslim */}
+            <ContentCard className="mt-6" delay={0.2}>
+              <h2 className="text-xl font-semibold text-themed mb-2">Where to go next</h2>
+              <p className="text-sm text-themed-muted leading-relaxed mb-4">
+                The Shahada is a beginning, not a finish line — and you do not have to figure out the rest alone. These pages will walk you through your first months:
+              </p>
+              <div className="space-y-3">
+                <Link
+                  href="/salah"
+                  className="block rounded-lg p-4 border sidebar-border hover:border-gold/30 transition-colors"
+                  style={{ backgroundColor: "var(--color-bg)" }}
+                >
+                  <h3 className="font-semibold text-themed text-sm">Learn the Prayer →</h3>
+                  <p className="text-xs text-themed-muted mt-0.5">Step-by-step guides to wudu and the five daily prayers — your first and most important practice.</p>
+                </Link>
+                <Link
+                  href="/muslim-daily"
+                  className="block rounded-lg p-4 border sidebar-border hover:border-gold/30 transition-colors"
+                  style={{ backgroundColor: "var(--color-bg)" }}
+                >
+                  <h3 className="font-semibold text-themed text-sm">Live a Muslim Day →</h3>
+                  <p className="text-xs text-themed-muted mt-0.5">A gentle daily rhythm — morning to night — showing how worship fits into ordinary life.</p>
+                </Link>
+                <Link
+                  href="/learn-arabic"
+                  className="block rounded-lg p-4 border sidebar-border hover:border-gold/30 transition-colors"
+                  style={{ backgroundColor: "var(--color-bg)" }}
+                >
+                  <h3 className="font-semibold text-themed text-sm">Learn Arabic →</h3>
+                  <p className="text-xs text-themed-muted mt-0.5">Start reading the Quran in its own words — a little at a time, no background needed.</p>
+                </Link>
+              </div>
+            </ContentCard>
           </motion.div>
         )}
       </AnimatePresence>

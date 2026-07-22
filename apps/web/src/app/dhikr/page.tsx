@@ -7,7 +7,7 @@ import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
 import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
-import { RotateCcw, Pencil, Check, Plus } from "lucide-react";
+import { RotateCcw, Pencil, Check, Plus, Play, X } from "lucide-react";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
@@ -45,7 +45,7 @@ type DhikrItem = {
 // or the "Add dhikr" affordance below) are merged in on top of these, and any
 // per-card rep-goal overrides are applied — so this page and the Worship tab
 // show the same custom dhikr, goals, and counts.
-const BASE_DHIKR: DhikrItem[] = [
+const BASE_DHIKR = [
   {
     id: "subhanallah",
     dhikrKey: "subhanallah",
@@ -118,9 +118,93 @@ const BASE_DHIKR: DhikrItem[] = [
     target: 100,
     hadith: "Muslim 4:74",
   },
-];
+] as const satisfies DhikrItem[];
 
-const BASE_KEYS = new Set(BASE_DHIKR.map((d) => d.dhikrKey));
+const BASE_KEYS: Set<string> = new Set(BASE_DHIKR.map((d) => d.dhikrKey));
+const BASE_BY_KEY: Record<string, DhikrItem> = Object.fromEntries(
+  BASE_DHIKR.map((d) => [d.dhikrKey, d])
+);
+
+/** Union of the base dhikr keys, derived from BASE_DHIKR itself — a preset
+    step with a typo'd or stale key now fails tsc instead of silently no-op'ing. */
+type BaseDhikrKey = (typeof BASE_DHIKR)[number]["dhikrKey"];
+
+// ---------- Guided sequences (presets) ----------
+// Each step chains an EXISTING shared dhikrKey, so every tap in a sequence
+// writes through the same counter as the card below — nothing double-counts,
+// and Dhikr Stats / the Worship tab stay in unison.
+
+/** The full tahlil said once to complete the hundred (Muslim 5:188). */
+const FULL_TAHLIL_ARABIC = "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ";
+
+type PresetStep = {
+  dhikrKey: BaseDhikrKey;
+  reps: number;
+  /** Display overrides (e.g. the full tahlil wording for the completion step);
+      falls back to the base card's wording. */
+  arabic?: string;
+  transliteration?: string;
+  english?: string;
+  note?: string;
+};
+
+type DhikrPreset = {
+  id: string;
+  title: string;
+  subtitle: string;
+  refs: string;
+  steps: PresetStep[];
+};
+
+const PRESETS: DhikrPreset[] = [
+  {
+    id: "after-prayer",
+    title: "After every prayer",
+    subtitle:
+      "Istighfar ×3, then SubhanAllah, Alhamdulillah, and Allahu Akbar ×33 each — sealed with the tahlil to complete 100.",
+    refs: "Muslim 5:171; Muslim 5:188",
+    steps: [
+      {
+        dhikrKey: "istighfar",
+        reps: 3,
+        note: "The Prophet ﷺ sought forgiveness three times when he finished the prayer (Muslim 5:171).",
+      },
+      { dhikrKey: "subhanallah", reps: 33 },
+      { dhikrKey: "alhamdulillah", reps: 33 },
+      {
+        dhikrKey: "takbir",
+        reps: 33,
+        note: "Muslim 5:186 also records thirty-four takbirs after every prescribed prayer.",
+      },
+      {
+        dhikrKey: "tahlil",
+        reps: 1,
+        arabic: FULL_TAHLIL_ARABIC,
+        transliteration:
+          "La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadeer",
+        english:
+          "None has the right to be worshipped except Allah alone, without any partner. To Him belongs the dominion and to Him belongs all praise, and He is over all things capable.",
+        note: "Said once to complete the hundred — sins forgiven even if like the foam of the sea (Muslim 5:188).",
+      },
+    ],
+  },
+  {
+    id: "before-sleep",
+    title: "Before sleep",
+    subtitle:
+      "The Tasbih of Fatimah at bedtime — Allahu Akbar ×34, SubhanAllah ×33, Alhamdulillah ×33.",
+    refs: "Bukhari 80:15; Muslim 48:108",
+    steps: [
+      {
+        dhikrKey: "takbir",
+        reps: 34,
+        note: "“Better for you than a servant” — the Prophet ﷺ to Ali and Fatimah (Bukhari 80:15); the 34/33/33 count follows Muslim 48:108.",
+      },
+      { dhikrKey: "subhanallah", reps: 33 },
+      { dhikrKey: "alhamdulillah", reps: 33 },
+    ],
+  },
+];
 
 type DhikrCardModel = {
   id: string;
@@ -310,6 +394,148 @@ function DhikrCard({
   );
 }
 
+function SequencePlayer({
+  preset,
+  onCount,
+  onClose,
+}: {
+  preset: DhikrPreset;
+  /** Routes through the page's shared increment — same counters as the cards. */
+  onCount: (dhikrKey: string) => void;
+  onClose: () => void;
+}) {
+  const [stepIdx, setStepIdx] = useState(0);
+  const [stepDone, setStepDone] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    },
+    []
+  );
+
+  const step = preset.steps[stepIdx];
+  const base = BASE_BY_KEY[step.dhikrKey];
+  const arabic = step.arabic ?? base.arabic;
+  const transliteration = step.transliteration ?? base.transliteration;
+  const english = step.english ?? base.english;
+  const stepComplete = stepDone >= step.reps;
+
+  const tap = () => {
+    if (finished || stepComplete) return;
+    onCount(step.dhikrKey);
+    const next = stepDone + 1;
+    setStepDone(next);
+    if (next >= step.reps) {
+      advanceTimer.current = setTimeout(() => {
+        if (stepIdx + 1 < preset.steps.length) {
+          setStepIdx((i) => i + 1);
+          setStepDone(0);
+        } else {
+          setFinished(true);
+        }
+      }, 700);
+    }
+  };
+
+  return (
+    <ContentCard className="relative overflow-hidden mb-5">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-gold">{preset.title}</p>
+          <p className="text-[11px] text-themed-muted mt-0.5">
+            {finished
+              ? "Sequence complete"
+              : `Step ${stepIdx + 1} of ${preset.steps.length}`}
+          </p>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-1.5 rounded-lg hover:bg-white/10 text-themed-muted hover:text-themed transition-colors shrink-0"
+          title="Exit sequence"
+        >
+          <X size={16} />
+        </button>
+      </div>
+
+      {/* Step dots */}
+      <div className="flex items-center gap-1.5 mt-3">
+        {preset.steps.map((s, i) => (
+          <div
+            key={i}
+            className={`h-1 rounded-full transition-all ${
+              i < stepIdx || finished
+                ? "bg-[var(--color-gold)] flex-1"
+                : i === stepIdx
+                  ? "bg-[var(--color-gold)]/50 flex-[2]"
+                  : "bg-white/10 flex-1"
+            }`}
+          />
+        ))}
+      </div>
+
+      {finished ? (
+        <div className="text-center py-6">
+          <Check size={28} className="mx-auto text-gold" />
+          <p className="text-sm font-semibold text-themed mt-2">
+            Sequence complete
+          </p>
+          <p className="text-[10px] text-themed-muted/60 mt-1.5 italic">
+            <HadithRefText text={preset.refs} />
+          </p>
+          <button
+            onClick={onClose}
+            className="mt-4 px-4 py-2 rounded-lg text-xs font-medium text-gold border sidebar-border hover:bg-white/10 transition-colors"
+          >
+            Done
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* Tap area for the current step */}
+          <button
+            onClick={tap}
+            className="w-full text-left cursor-pointer active:scale-[0.98] transition-transform mt-3"
+          >
+            <div className="flex items-center gap-4">
+              <ProgressRing count={stepDone} target={step.reps} />
+              <div className="flex-1 min-w-0">
+                <p className="text-xl font-arabic text-gold leading-relaxed">
+                  {arabic}
+                </p>
+                <p className="text-sm font-semibold text-themed mt-1">
+                  {transliteration}
+                </p>
+                <p className="text-xs text-themed-muted mt-0.5">{english}</p>
+              </div>
+            </div>
+          </button>
+          {step.note && (
+            <p className="text-[10px] text-themed-muted/60 mt-3 italic">
+              <HadithRefText text={step.note} />
+            </p>
+          )}
+          <AnimatePresence>
+            {stepComplete && (
+              <motion.p
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="mt-2 text-center text-[10px] font-semibold text-gold uppercase tracking-widest"
+              >
+                {stepIdx + 1 < preset.steps.length ? "Next dhikr…" : "Complete"}
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </>
+      )}
+    </ContentCard>
+  );
+}
+
 function DhikrPageInner() {
   const searchParams = useSearchParams();
   const scrollToItem = searchParams.get("item");
@@ -321,6 +547,7 @@ function DhikrPageInner() {
   const [mounted, setMounted] = useState(false);
   const [manage, setManage] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const pending = useRef<Record<string, number>>({});
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -499,7 +726,17 @@ function DhikrPageInner() {
               </button>
             )}
             <button
-              onClick={() => setManage((m) => !m)}
+              onClick={() =>
+                setManage((m) => {
+                  const next = !m;
+                  // Entering manage mode while a guided sequence is running
+                  // would otherwise silently discard its position — clear it
+                  // explicitly so leaving manage mode returns to the preset
+                  // picker instead of quietly resuming a reset sequence.
+                  if (next) setActivePresetId(null);
+                  return next;
+                })
+              }
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors border sidebar-border ${
                 manage
                   ? "text-gold"
@@ -532,7 +769,44 @@ function DhikrPageInner() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:auto-rows-fr">
+          <>
+            {/* Guided sequences — chain the shared counters card-to-card */}
+            {activePresetId ? (
+              <SequencePlayer
+                key={activePresetId}
+                preset={PRESETS.find((p) => p.id === activePresetId)!}
+                onCount={increment}
+                onClose={() => setActivePresetId(null)}
+              />
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+                {PRESETS.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setActivePresetId(p.id)}
+                    className="text-left rounded-2xl border sidebar-border p-4 hover:bg-white/5 active:scale-[0.99] transition touch-manipulation"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="w-7 h-7 rounded-full bg-[var(--color-gold)]/10 flex items-center justify-center shrink-0">
+                        <Play size={12} className="text-gold ml-0.5" />
+                      </span>
+                      <span className="text-sm font-semibold text-themed">
+                        {p.title}
+                      </span>
+                    </div>
+                    <p className="text-xs text-themed-muted mt-2">
+                      {p.subtitle}
+                    </p>
+                    <p className="text-[10px] text-themed-muted/60 mt-1.5 italic">
+                      <HadithRefText text={p.refs} />
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:auto-rows-fr">
             {cards.map((dhikr, i) => (
               <DhikrCard
                 key={dhikr.dhikrKey}
@@ -543,7 +817,8 @@ function DhikrPageInner() {
                 delay={0.05 + i * 0.05}
               />
             ))}
-          </div>
+            </div>
+          </>
         )}
 
         <div className="max-w-2xl mx-auto mt-4">
@@ -558,7 +833,10 @@ function DhikrPageInner() {
 
         {/* Sources */}
         <SourcesCard className="mt-6" sources={[
-          { ref: "Muslim 5:184", desc: "SubhanAllah (33), Alhamdulillah (33), Allahu Akbar (34) after every prayer" },
+          { ref: "Muslim 5:184; Muslim 5:186", desc: "SubhanAllah (33), Alhamdulillah (33), Allahu Akbar (34) after every prayer" },
+          { ref: "Muslim 5:171", desc: "The Prophet ﷺ sought forgiveness three times when he finished the prayer" },
+          { ref: "Muslim 5:188", desc: "Tasbih, tahmid, and takbir 33 each after every prayer, completed to 100 with the tahlil — sins forgiven even if like the foam of the sea" },
+          { ref: "Bukhari 80:15; Muslim 48:108", desc: "Tasbih Fatimah at bedtime — takbir 34, tasbih 33, tahmid 33 — “better for you than a servant”" },
           { ref: "Bukhari 80:98", desc: "La ilaha illallah (tahleel)" },
           { ref: "Bukhari 80:100", desc: "SubhanAllahi wa bihamdihi one hundred times" },
           { ref: "Bukhari 80:4", desc: "Astaghfirullah — seeking forgiveness" },

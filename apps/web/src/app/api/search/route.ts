@@ -432,6 +432,12 @@ MIRACLES: /miracles?tab={category}
 ISLAMIC CALENDAR: /islamic-calendar?tab=months|dates
 WHY ISLAM: /why-islam?tab=start|proofs|worldviews|questions
 SECTS: /sects?tab=sunni|shia|other
+ZAKAT: /zakat?tab=overview|who-pays|assets|recipients|fitr|calculator (nisab, zakatable assets, eight recipients, zakat al-fitr, calculator tool)
+HAJJ & UMRAH: /hajj?tab=overview|ihram|umrah|days|rulings (ihram/miqat/talbiyah, umrah step-by-step, days of hajj 8th-13th, types of hajj, proxy hajj)
+TAWBAH: /tawbah?tab=door|conditions|istighfar|returning|fruits (repentance, Sayyid al-Istighfar, relapse, man who killed 99)
+HALAL LIVING: /halal-living?tab=principles|food|money|dress|work (halal food, alcohol, riba/finance, modest dress, work & entertainment)
+WOMEN IN ISLAM: /women?tab=status|worship|hijab|questions (women's status, menstruation/istihada fiqh, mosque access, hijab, common questions)
+CHARACTER: /character?tab=why|virtues|diseases|purification (akhlaq, sincerity, patience, envy, backbiting, arrogance, purifying the heart)
 OTHER: /hadith, /resources, /learn-arabic`;
 
 // Cache the (large, static) system prompt + tools prefix. It's identical across

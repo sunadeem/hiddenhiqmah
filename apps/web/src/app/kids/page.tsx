@@ -973,23 +973,56 @@ function DailyWordsTab({
    TAB 4: PROPHET STORIES (Paginated Reader)
    ═══════════════════════════════════════════════════════════════════ */
 
+// Chronological order, matching packages/content/prophet-stories.ts
 const prophetList: { slug: string; name: string; emoji: string }[] = [
   { slug: "adam", name: "Adam", emoji: "🌿" },
+  { slug: "shith", name: "Shith (Seth)", emoji: "📜" },
+  { slug: "idris", name: "Idris (Enoch)", emoji: "✍️" },
   { slug: "nuh", name: "Nuh (Noah)", emoji: "🚢" },
+  { slug: "hud", name: "Hud", emoji: "🌬️" },
+  { slug: "salih", name: "Salih", emoji: "🐪" },
   { slug: "ibrahim", name: "Ibrahim (Abraham)", emoji: "⭐" },
+  { slug: "lut", name: "Lut (Lot)", emoji: "🌆" },
   { slug: "ismail", name: "Ismail", emoji: "🐑" },
+  { slug: "ishaq", name: "Ishaq (Isaac)", emoji: "🎁" },
+  { slug: "yaqub", name: "Yaqub (Jacob)", emoji: "🕊️" },
   { slug: "yusuf", name: "Yusuf (Joseph)", emoji: "🌙" },
+  { slug: "ayyub", name: "Ayyub (Job)", emoji: "💧" },
+  { slug: "shuayb", name: "Shuayb", emoji: "⚖️" },
   { slug: "musa", name: "Musa (Moses)", emoji: "🌊" },
+  { slug: "harun", name: "Harun (Aaron)", emoji: "🗣️" },
+  { slug: "yusha", name: "Yusha (Joshua)", emoji: "☀️" },
   { slug: "dawud", name: "Dawud (David)", emoji: "🛡️" },
   { slug: "sulayman", name: "Sulayman (Solomon)", emoji: "👑" },
+  { slug: "ilyas", name: "Ilyas (Elijah)", emoji: "🌧️" },
   { slug: "yunus", name: "Yunus (Jonah)", emoji: "🐋" },
+  { slug: "zakariyya", name: "Zakariyya (Zechariah)", emoji: "🤲" },
+  { slug: "yahya", name: "Yahya (John)", emoji: "📖" },
   { slug: "isa", name: "Isa (Jesus)", emoji: "✨" },
   { slug: "muhammad", name: "Muhammad ﷺ", emoji: "🕌" },
 ];
 
+// Gentle, iconic stories for the youngest readers
+const littleSlugs = ["adam", "nuh", "ibrahim", "musa", "muhammad"];
+// Adds the classic, kid-friendly stories (patience, miracles, family)
+const explorerSlugs = [
+  ...littleSlugs,
+  "salih",
+  "ismail",
+  "yaqub",
+  "yusuf",
+  "ayyub",
+  "harun",
+  "dawud",
+  "sulayman",
+  "yunus",
+  "yahya",
+  "isa",
+];
+
 function getProphetsByAge(age: AgeGroup) {
-  if (age === "little") return prophetList.filter((p) => ["adam", "nuh", "ibrahim", "musa", "muhammad"].includes(p.slug));
-  if (age === "explorer") return prophetList.slice(0, 9);
+  if (age === "little") return prophetList.filter((p) => littleSlugs.includes(p.slug));
+  if (age === "explorer") return prophetList.filter((p) => explorerSlugs.includes(p.slug));
   return prophetList;
 }
 

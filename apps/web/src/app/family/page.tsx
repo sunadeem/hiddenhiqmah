@@ -34,6 +34,10 @@ import {
   Coins,
   HeartHandshake,
   Unlink,
+  Globe,
+  Thermometer,
+  Droplets,
+  Home,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -41,10 +45,10 @@ import {
    ═══════════════════════════════════════════════════════════════════ */
 
 type MainTab = "parents" | "elders" | "children" | "kinship";
-type ParentsSub = "rights" | "quran" | "sunnah" | "duas" | "after";
-type EldersSub = "elderly" | "sick";
-type ChildrenSub = "conceiving" | "pregnancy" | "newborn" | "blessings" | "rights" | "raising" | "daughters";
-type KinshipSub = "why" | "reward" | "severing" | "who" | "cut-off";
+type ParentsSub = "rights" | "quran" | "sunnah" | "duas" | "after" | "non-muslim" | "stories";
+type EldersSub = "elderly" | "sick" | "bearing" | "caring";
+type ChildrenSub = "conceiving" | "pregnancy" | "nursing" | "newborn" | "blessings" | "loss" | "rights" | "raising" | "daughters" | "orphans";
+type KinshipSub = "why" | "reward" | "severing" | "who" | "cut-off" | "neighbors";
 
 const mainTabs: { key: MainTab; label: string; icon: React.ReactNode }[] = [
   { key: "children", label: "Children", icon: <Baby size={16} /> },
@@ -59,21 +63,28 @@ const parentsSubs: { key: ParentsSub; label: string; icon: React.ReactNode }[] =
   { key: "sunnah", label: "From the Sunnah", icon: <Scroll size={16} /> },
   { key: "duas", label: "Du'a for Parents", icon: <HandHeart size={16} /> },
   { key: "after", label: "After They Pass", icon: <Flower size={16} /> },
+  { key: "non-muslim", label: "Non-Muslim Parents", icon: <Globe size={16} /> },
+  { key: "stories", label: "Stories of Birr", icon: <BookOpen size={16} /> },
 ];
 
 const eldersSubs: { key: EldersSub; label: string; icon: React.ReactNode }[] = [
   { key: "elderly", label: "Honoring Elderly", icon: <UserCog size={16} /> },
   { key: "sick", label: "Visiting the Sick", icon: <Stethoscope size={16} /> },
+  { key: "bearing", label: "Bearing Illness", icon: <Thermometer size={16} /> },
+  { key: "caring", label: "Caring for Aging Parents", icon: <HandHeart size={16} /> },
 ];
 
 const childrenSubs: { key: ChildrenSub; label: string; icon: React.ReactNode }[] = [
   { key: "conceiving", label: "Conceiving", icon: <Sprout size={16} /> },
   { key: "pregnancy", label: "Pregnancy", icon: <Heart size={16} /> },
+  { key: "nursing", label: "Nursing & Milk-Kinship", icon: <Droplets size={16} /> },
   { key: "newborn", label: "Newborn", icon: <Baby size={16} /> },
   { key: "blessings", label: "Blessings", icon: <Gift size={16} /> },
+  { key: "loss", label: "Losing a Child", icon: <Flower size={16} /> },
   { key: "rights", label: "Rights of Children", icon: <Scale size={16} /> },
   { key: "raising", label: "Raising Them Right", icon: <GraduationCap size={16} /> },
   { key: "daughters", label: "Virtue of Daughters", icon: <Crown size={16} /> },
+  { key: "orphans", label: "Orphans & Adoption", icon: <Home size={16} /> },
 ];
 
 const kinshipSubs: { key: KinshipSub; label: string; icon: React.ReactNode }[] = [
@@ -82,6 +93,7 @@ const kinshipSubs: { key: KinshipSub; label: string; icon: React.ReactNode }[] =
   { key: "severing", label: "Severity of Cutting Ties", icon: <Unlink size={16} /> },
   { key: "who", label: "Who Counts as Kin", icon: <Users size={16} /> },
   { key: "cut-off", label: "When They Cut You Off", icon: <HandHeart size={16} /> },
+  { key: "neighbors", label: "Beyond Kin: Neighbors", icon: <Home size={16} /> },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -166,7 +178,7 @@ function RightsTab() {
         <ContentCard delay={0.16}>
           <h5 className="text-gold font-medium mb-2">Lower the wing of humility</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            Be humble before them out of mercy, and pray: &quot;My Lord, have mercy on them as they raised me when I was small.&quot;
+            Be humble before them out of mercy, and pray: &quot;My Lord, have mercy upon them as they raised me when I was small.&quot;
           </p>
           <Ref text="Quran 17:24" />
         </ContentCard>
@@ -190,6 +202,13 @@ function RightsTab() {
             &quot;The parent is the middle door of Paradise. So if you wish, keep it or lose it.&quot;
           </p>
           <Ref text="Tirmidhi 27:3" />
+        </ContentCard>
+        <ContentCard delay={0.28}>
+          <h5 className="text-gold font-medium mb-2">&apos;Uquq — the warning</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The Prophet ﷺ asked his companions three times: &quot;Shall I not inform you of the biggest of the great sins?&quot; They said yes. He said: &quot;To join partners in worship with Allah; to be undutiful to one&apos;s parents.&quot; Disobedience and cruelty to parents (&apos;uquq al-walidayn) is named beside shirk itself — there is no stronger way the religion could mark its gravity.
+          </p>
+          <Ref text="Bukhari 78:7; Bukhari 52:18" />
         </ContentCard>
       </div>
     </div>
@@ -223,7 +242,7 @@ function QuranTab() {
         <VerseCard
           arabic="وَاخْفِضْ لَهُمَا جَنَاحَ الذُّلِّ مِنَ الرَّحْمَةِ وَقُلْ رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا"
           transliteration="Wakhfid lahuma janahadh-dhulli mina ar-rahmati wa qul rabbi irhamhuma kama rabbayani saghira"
-          english="Lower to them the wing of humility out of mercy and say: 'My Lord, have mercy on them as they raised me when I was small.'"
+          english="Lower to them the wing of humility out of mercy and say: 'My Lord, have mercy upon them as they raised me when I was small.'"
           source="Quran 17:24"
           delay={0.16}
         />
@@ -299,6 +318,20 @@ function SunnahTab() {
           source="Tirmidhi 27:3"
           delay={0.2}
         />
+        <VerseCard
+          arabic={`جَاءَ رَجُلٌ إِلَى النَّبِيِّ صلى الله عليه وسلم فَاسْتَأْذَنَهُ فِي الْجِهَادِ فَقَالَ ‏"‏ أَحَىٌّ وَالِدَاكَ ‏"‏‏.‏ قَالَ نَعَمْ‏.‏ قَالَ ‏"‏ فَفِيهِمَا فَجَاهِدْ ‏"‏‏.`}
+          transliteration="A-hayyun walidaka? Qala: na'am. Qala: fa-fihima fa-jahid"
+          english="A man came to the Prophet ﷺ asking his permission to take part in Jihad. The Prophet ﷺ asked him, 'Are your parents alive?' He replied in the affirmative. The Prophet ﷺ said to him, 'Then exert yourself in their service.'"
+          source="Bukhari 56:213"
+          delay={0.23}
+        />
+        <ContentCard delay={0.26}>
+          <h5 className="text-gold font-medium mb-2">Service to parents outweighs the battlefield</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The same exchange is recorded in An-Nasa&apos;i: &quot;Are your parents alive?&quot; — &quot;Yes.&quot; — &quot;Then strive for their sake.&quot; The daily grind of serving a mother and father is placed in the vocabulary of jihad itself.
+          </p>
+          <Ref text="Nasai 25:19" />
+        </ContentCard>
       </div>
     </div>
   );
@@ -317,7 +350,7 @@ function DuasTab() {
         <VerseCard
           arabic="رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا"
           transliteration="Rabbi irhamhuma kama rabbayani saghira"
-          english="My Lord, have mercy on them as they raised me when I was small."
+          english="My Lord, have mercy upon them as they raised me when I was small."
           source="Quran 17:24"
           delay={0.08}
         />
@@ -394,6 +427,107 @@ function AfterTab() {
           <Link href="/family?tab=kinship&sub=why" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
             More on kinship ties →
           </Link>
+        </ContentCard>
+        <ContentCard delay={0.23}>
+          <h5 className="text-gold font-medium mb-2">Hajj and Umrah on their behalf</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            A man told the Prophet ﷺ that his father was too old to perform Hajj or Umrah or even ride a mount. He ﷺ said: &quot;Perform hajj and umrah on behalf of your father.&quot; The same applies for a parent who has passed — a woman asked about Hajj on behalf of her deceased mother and the Prophet ﷺ said yes.
+          </p>
+          <Ref text="Abu Dawud 11:90; Nasai 24:15" />
+        </ContentCard>
+        <ContentCard delay={0.26}>
+          <h5 className="text-gold font-medium mb-2">Settle their debts</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            When asked whether Hajj on behalf of a deceased mother would count, the Prophet ﷺ answered with a debt: &quot;If her mother owed a debt and she paid it off, would that not be good enough?&quot; Discharging what a parent owed — to Allah or to people — is among the first duties of the child left behind.
+          </p>
+          <Ref text="Nasai 24:15" />
+        </ContentCard>
+        <ContentCard delay={0.29}>
+          <h5 className="text-gold font-medium mb-2">Fasts they owed</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;Whoever died and he ought to have fasted, then his guardians must fast on his behalf.&quot; If your parent passed with missed fasts or an unfulfilled vow, some scholars hold the heir fasts on their behalf — the Hanbali school applies this especially to vowed fasts — while the Hanafi and Maliki schools direct feeding a poor person for each missed day instead. Consult a scholar for your situation.
+          </p>
+          <Ref text="Bukhari 30:59; Muslim 13:198" />
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function NonMuslimParentsTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <h4 className="text-gold font-semibold text-lg mb-2">Kindness Without Compromise</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          For many who embrace Islam, the first family question is the hardest: how do I treat my mother and father who are not Muslim? The answer of the Quran and Sunnah is remarkably clear — your parents keep their full right to your kindness, service, and companionship. Only one thing is withheld: obedience in anything that contradicts Allah.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="وَإِن جَـٰهَدَاكَ عَلَىٰٓ أَن تُشْرِكَ بِى مَا لَيْسَ لَكَ بِهِۦ عِلْمٌ فَلَا تُطِعْهُمَا ۖ وَصَاحِبْهُمَا فِى ٱلدُّنْيَا مَعْرُوفًا"
+          transliteration="Wa in jahadaka 'ala an tushrika bi ma laysa laka bihi 'ilmun fala tuti'huma, wa sahibhuma fi ad-dunya ma'rufa"
+          english="But if they strive to make you associate partners with Me of what you have no knowledge, then do not obey them. Yet keep company with them in this world with kindness."
+          source="Quran 31:15"
+          delay={0.08}
+        />
+        <VerseCard
+          arabic="لَّا يَنْهَىٰكُمُ ٱللَّهُ عَنِ ٱلَّذِينَ لَمْ يُقَـٰتِلُوكُمْ فِى ٱلدِّينِ وَلَمْ يُخْرِجُوكُم مِّن دِيَـٰرِكُمْ أَن تَبَرُّوهُمْ وَتُقْسِطُوٓا۟ إِلَيْهِمْ ۚ إِنَّ ٱللَّهَ يُحِبُّ ٱلْمُقْسِطِينَ"
+          transliteration="La yanhakumu Allahu 'ani alladhina lam yuqatilukum fi ad-dini wa lam yukhrijukum min diyarikum an tabarruhum wa tuqsitu ilayhim, inna Allaha yuhibbu al-muqsitin"
+          english="Allah does not forbid you from being kind and just to those who did not fight against you nor did they drive you out of your homes. Indeed, Allah loves those who are just."
+          source="Quran 60:8"
+          delay={0.11}
+        />
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">Asma and her pagan mother</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Asma bint Abi Bakr&apos;s mother — still a pagan — came to visit her in Madinah hoping for her daughter&apos;s generosity. Asma went to the Prophet ﷺ and asked: shall I keep good relations with her? He said: &quot;Yes, keep good relations with her.&quot; The word used for that kindness in the verse the commentators connect to her story (Quran 60:8) is <span className="text-gold italic">birr</span> — the same word used for goodness to Muslim parents.
+          </p>
+          <Ref text="Bukhari 51:52" />
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">What this looks like</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Visit them, call them, care for them in sickness and old age, spend on them if they need it, speak gently even when they speak against your faith. The verse commanding refusal in shirk commands kind company in the very same breath — and for many parents, years of a child&apos;s patient, consistent goodness became the strongest da&apos;wah they ever received.
+          </p>
+          <Ref text="Quran 31:15" />
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function StoriesOfBirrTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Three stories the Prophet ﷺ and his companions passed down are the classical curriculum of birr al-walidayn — a shepherd who stood all night holding milk, a worshipper whose mother&apos;s words changed his life, and a Yemeni whose service to his mother made his du&apos;a sought by Umar himself.
+        </p>
+      </ContentCard>
+
+      <div className="space-y-3">
+        <ContentCard delay={0.08}>
+          <h5 className="text-gold font-medium mb-2">The three in the cave</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Three travelers took shelter in a cave, and a rock sealed the entrance. Each begged Allah by his most sincere deed. One said: I had old parents, and I would always give them milk before my own children. One night I returned late and found them asleep — so I stood with the cup in my hand until dawn, my children crying at my feet, unwilling to wake my parents or serve anyone before them. He asked Allah by that deed, and the rock began to move. Birr that Allah accepts moves mountains — it is patient, quiet, and puts parents first even when no one is watching.
+          </p>
+          <Ref text="Bukhari 78:5" />
+        </ContentCard>
+        <ContentCard delay={0.12}>
+          <h5 className="text-gold font-medium mb-2">Juraij and his mother</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Juraij, a devoted worshipper of Bani Israil, was praying in his hermitage when his mother called him. Torn between prayer and her call, he chose to continue praying — three times. Hurt, she prayed: &quot;O Allah, do not let him die until he sees the faces of prostitutes.&quot; Her words were answered: Juraij was falsely accused by a woman of fathering her child, his hermitage torn down, his name disgraced — until Allah cleared him through the infant speaking. The lesson the scholars drew: even a voluntary act of worship does not outrank a mother&apos;s call, and a parent&apos;s hurt is a dangerous thing to earn.
+          </p>
+          <Ref text="Bukhari 46:43; Bukhari 21:10" />
+        </ContentCard>
+        <ContentCard delay={0.16}>
+          <h5 className="text-gold font-medium mb-2">Uways al-Qarani</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The Prophet ﷺ told his companions of a man they would never meet in his lifetime: &quot;Worthy amongst the successors would be a person who would be called Uwais. He would have his mother with him... Ask him to beg pardon for you from Allah.&quot; Umar (RA) would ask the delegations arriving from Yemen for him, and when he found him, asked him — the Khalifah of the Muslims — to pray for his forgiveness. Uways&apos;s station was not built on the battlefield or in gatherings of knowledge the world could see. It was built serving his mother.
+          </p>
+          <Ref text="Muslim 44:319; Muslim 44:320" />
         </ContentCard>
       </div>
     </div>
@@ -546,6 +680,130 @@ function SickTab() {
   );
 }
 
+function BearingIllnessTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <h4 className="text-gold font-semibold text-lg mb-2">When You Are the Sick One</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Islam does not only speak to the visitor at the bedside — it speaks to the one in the bed. Illness borne with patience is never wasted: it erases sins, raises ranks, and puts on your tongue the very words the prophets used in their hardest hours.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="مَا يُصِيبُ الْمُسْلِمَ مِنْ نَصَبٍ وَلاَ وَصَبٍ وَلاَ هَمٍّ وَلاَ حُزْنٍ وَلاَ أَذًى وَلاَ غَمٍّ حَتَّى الشَّوْكَةِ يُشَاكُهَا، إِلاَّ كَفَّرَ اللَّهُ بِهَا مِنْ خَطَايَاهُ"
+          transliteration="Ma yusibu al-muslima min nasabin wa la wasabin wa la hammin wa la huznin wa la adhan wa la ghammin hatta ash-shawkati yushakuha illa kaffara Allahu biha min khatayah"
+          english="No fatigue, nor disease, nor sorrow, nor sadness, nor hurt, nor distress befalls a Muslim, even if it were the prick he receives from a thorn, but that Allah expiates some of his sins for that."
+          source="Bukhari 75:2"
+          delay={0.08}
+        />
+        <VerseCard
+          arabic="ٱلَّذِينَ إِذَآ أَصَـٰبَتْهُم مُّصِيبَةٌ قَالُوٓا۟ إِنَّا لِلَّهِ وَإِنَّآ إِلَيْهِ رَٰجِعُونَ"
+          transliteration="Alladhina idha asabat-hum musibatun qalu inna lillahi wa inna ilayhi raji'un"
+          english="Those when afflicted with a disaster, say, 'We belong to Allah, and to Him we will return.'"
+          source="Quran 2:155-156"
+          delay={0.11}
+        />
+        <VerseCard
+          arabic="وَأَيُّوبَ إِذْ نَادَىٰ رَبَّهُۥٓ أَنِّى مَسَّنِىَ ٱلضُّرُّ وَأَنتَ أَرْحَمُ ٱلرَّٰحِمِينَ"
+          transliteration="Wa Ayyuba idh nada Rabbahu anni massaniya ad-durru wa anta arhamu ar-rahimin"
+          english="And [remember] Job, when he cried out to his Lord, 'I have been struck by adversity, and You are the Most Merciful of those who show mercy.'"
+          source="Quran 21:83"
+          delay={0.14}
+        />
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">Ayyub&apos;s du&apos;a — and Allah&apos;s answer</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Ayyub (Job) did not list demands; he stated his pain and named Allah&apos;s mercy — and Allah says in the very next verse: &quot;So We responded to him and relieved his adversity, and We restored to him his family, twice as many.&quot; This is the model du&apos;a of the sick: honest about the hurt, certain about the One being asked.
+          </p>
+          <Ref text="Quran 21:83-84" />
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">Ask for the cure yourself</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The healing du&apos;a the Prophet ﷺ made over the sick — &quot;O Allah, Lord of the people, remove the harm. Cure — You are the Curer...&quot; — is yours to say for yourself as well. Combine it with the means Allah created: medicine, rest, and treatment are part of trusting Him, not a departure from it.
+          </p>
+          <Ref text="Bukhari 75:35" />
+          <Link href="/family?tab=elders&sub=sick" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            The du&apos;as for the sick →
+          </Link>
+        </ContentCard>
+        <ContentCard delay={0.23}>
+          <h5 className="text-gold font-medium mb-2">Sins falling like leaves</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Ibn Mas&apos;ud visited the Prophet ﷺ burning with fever — &quot;as much fever as two men of you&quot; — and asked if that meant a double reward. He ﷺ said yes: &quot;No Muslim is afflicted with any harm, even if it were the prick of a thorn, but that Allah expiates his sins because of that, as a tree sheds its leaves.&quot;
+          </p>
+          <Ref text="Bukhari 75:8" />
+        </ContentCard>
+        <ContentCard delay={0.26}>
+          <h5 className="text-gold font-medium mb-2">The deen bends around your weakness</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Imran bin Husain, suffering from piles, asked the Prophet ﷺ about the prayer. He said: &quot;Pray while standing and if you can&apos;t, pray while sitting and if you cannot do even that, then pray lying on your side.&quot; Illness never locks you out of salah — the salah reshapes itself around you.
+          </p>
+          <Ref text="Bukhari 18:37" />
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function CaringForParentsTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <h4 className="text-gold font-semibold text-lg mb-2">The Door Standing Open in Your Home</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The Prophet ﷺ declared it a humiliation to find one&apos;s parents in old age and fail to reach Paradise through them. If you are cooking, lifting, driving, repeating answers, and losing sleep for an aging mother or father — you are not falling behind on your deen. You are standing in front of one of its widest doors.
+        </p>
+        <Ref text="Muslim 45:11" />
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.08}>
+          <h5 className="text-gold font-medium mb-2">&quot;Uff&quot; was forbidden for this stage</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The verse forbidding even a sigh of impatience names its context: &quot;If one or both of them reach old age in your care.&quot; Allah legislated for the exhausting years specifically — the repeated questions, the slowness, the reversal of roles where you now do for them what they once did for you. &quot;My Lord, have mercy on them as they raised me when I was small&quot; is the du&apos;a of this season.
+          </p>
+          <Ref text="Quran 17:23-24" />
+        </ContentCard>
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">This service is your jihad</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            When a man sought permission for the battlefield, the Prophet ﷺ asked if his parents were alive, then said: &quot;Then exert yourself in their service.&quot; Caregiving fatigue is not a distraction from great deeds — in the Prophet&apos;s own words, it stands in their highest rank.
+          </p>
+          <Ref text="Bukhari 56:213" />
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">Patience with repetition and decline</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Scholars counsel that a parent&apos;s dementia, confusion, or sharpened temper in old age changes nothing of their right — answer the tenth repetition of a question like the first, and guard their dignity in front of others as fiercely as their health. Every gentle answer is written for you, and none of it is forgotten by the One who watched them once answer your own endless questions.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">Share the load among siblings</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Scholars note that the duty of care falls on the children together — not solely on the one who lives closest or the daughter by default. Speak plainly with siblings about rotations, money, and respite. Enabling a sibling to carry their share is itself birr; quietly burning out alone serves no one, least of all your parents.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">Outside help and care homes</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Scholars state that the obligation is that parents are genuinely cared for, honored, and kept close to their children&apos;s presence and affection — bringing in nurses or professional help to do what you cannot is not a failure of birr. What the tradition warns against is abandonment: outsourcing their care in order to be free of them. The heart of the matter is presence, whoever holds the equipment.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.23}>
+          <h5 className="text-gold font-medium mb-2">Renew the intention</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The same lifting, feeding, and driving can be a chore or an act of worship — the difference is intention. Renew it on the hard days: &quot;O Allah, this is my birr, my service, my door of Paradise.&quot; And keep asking Allah to make you patient with them, as they once asked Him to make them patient with you.
+          </p>
+          <Ref text="Quran 17:24" />
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    CHILDREN TAB CONTENT
    ═══════════════════════════════════════════════════════════════════ */
@@ -664,6 +922,63 @@ function PregnancyTab() {
   );
 }
 
+function NursingTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <h4 className="text-gold font-semibold text-lg mb-2">Rada&apos;ah — Nursing and Milk-Kinship</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The Quran gives breastfeeding its own legislation: a two-year term, a duty of provision on the father, and — unique to this ummah&apos;s law — a kinship created by milk itself, strong enough to prohibit marriage exactly as blood does.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="وَٱلْوَٰلِدَٰتُ يُرْضِعْنَ أَوْلَـٰدَهُنَّ حَوْلَيْنِ كَامِلَيْنِ ۖ لِمَنْ أَرَادَ أَن يُتِمَّ ٱلرَّضَاعَةَ"
+          transliteration="Wal-walidatu yurdi'na awladahunna hawlayni kamilayni liman arada an yutimma ar-rada'ah"
+          english="Mothers may breastfeed their children for two full years, for those who wish to complete the full term of breastfeeding."
+          source="Quran 2:233"
+          delay={0.08}
+        />
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">The father&apos;s duty while she nurses</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The same verse continues: &quot;It is the obligation upon the father of the child that he provides food and clothing [for the mothers] with fairness. No soul is obligated beyond what it can bear.&quot; Nursing is her gift; provision, comfort, and shielding her from hardship during it is his duty. Weaning earlier is permitted &quot;by mutual consent and consultation&quot; — a household decision, not a unilateral one.
+          </p>
+          <Ref text="Quran 2:233" />
+        </ContentCard>
+        <VerseCard
+          arabic="وَأُمَّهَـٰتُكُمُ ٱلَّـٰتِىٓ أَرْضَعْنَكُمْ وَأَخَوَٰتُكُم مِّنَ ٱلرَّضَـٰعَةِ"
+          transliteration="Wa ummahatukumu allati arda'nakum wa akhawatukum mina ar-rada'ah"
+          english="[Prohibited for you in marriage are] ... your foster mothers, your foster sisters ..."
+          source="Quran 4:23"
+          delay={0.14}
+        />
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">Milk-kinship is real kinship</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            When it was suggested the Prophet ﷺ marry the daughter of his uncle Hamzah, he said: &quot;I am not legally permitted to marry her, as foster relations are treated like blood relations — she is the daughter of my foster brother.&quot; A child nursed by a woman becomes her child in the law of marriage: her sons and daughters are the child&apos;s siblings.
+          </p>
+          <Ref text="Bukhari 52:9" />
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">The foster-uncle Aflah</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            When Aisha (RA) veiled herself from her foster-uncle, the Prophet ﷺ corrected her: &quot;Don&apos;t observe veil from him, for he is Mahram on account of fosterage as one is Mahram on account of consanguinity.&quot; The milk-tie extends through the nursing mother&apos;s family — her husband&apos;s brother becomes the child&apos;s uncle.
+          </p>
+          <Ref text="Muslim 17:12" />
+        </ContentCard>
+        <ContentCard delay={0.23}>
+          <h5 className="text-gold font-medium mb-2">What establishes it — and why it matters today</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The madhhabs differ on the details: the Shafi&apos;i and Hanbali schools require five known feedings, while the Hanafi and Maliki schools hold that even less establishes the tie; the majority also restrict it to nursing within the first two years. Families using wet-nursing or sharing expressed milk should keep careful records of who nursed whom — these children may not marry each other, and a scholar should be consulted for specific cases.
+          </p>
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
 function NewbornTab() {
   return (
     <div className="space-y-4">
@@ -710,11 +1025,23 @@ function NewbornTab() {
           </p>
           <Ref text="Bukhari 77:106" />
         </ContentCard>
-        <ContentCard delay={0.23}>
-          <h5 className="text-gold font-medium mb-2">Make du&apos;a for them often</h5>
+      </div>
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">The Protection Du&apos;a Over Children</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="أُعِيذُكُمَا بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ وَمِنْ كُلِّ عَيْنٍ لاَمَّةٍ"
+          transliteration="U'idhukuma bi-kalimatillahi at-tammati min kulli shaytanin wa hammah, wa min kulli 'aynin lammah"
+          english="I seek refuge for the two of you in the Perfect Words of Allah, from every devil and every poisonous pest, and from every harmful eye."
+          source="Tirmidhi 28:25"
+          delay={0.23}
+        />
+        <ContentCard delay={0.26}>
+          <h5 className="text-gold font-medium mb-2">The Prophet&apos;s practice — and Ibrahim&apos;s</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            From the first day: ask Allah for their faith, their health, their guidance, their protection from Shaytan and the evil eye. Recite Surah al-Falaq and an-Nas over them.
+            This is the du&apos;a the Prophet ﷺ recited over his grandsons al-Hasan and al-Husayn, saying: &quot;Your forefather (Abraham) used to seek Refuge with Allah for Ishmael and Isaac&quot; with these words. Recite it over your children — for one child say <span className="text-gold italic">u&apos;idhuka</span> (a boy) or <span className="text-gold italic">u&apos;idhuki</span> (a girl). The evil eye it guards against is real: &quot;Seek refuge with Allah, for the evil eye is real.&quot;
           </p>
+          <Ref text="Bukhari 60:45; Ibn Majah 31:73" />
         </ContentCard>
       </div>
     </div>
@@ -797,9 +1124,70 @@ function BlessingsTab() {
         <ContentCard delay={0.275}>
           <h5 className="text-gold font-medium mb-2">Loss of a child</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            The Prophet ﷺ said that a child who dies before their parents will come on the Day of Judgement and refuse to enter Paradise without their parents — pulling them in by Allah&apos;s mercy. No grief in this life is wasted.
+            The Prophet ﷺ said: &quot;A Muslim whose three children die before the age of puberty will be granted Paradise by Allah due to his mercy for them.&quot; No grief in this life is wasted — the tradition speaks to bereaved parents at length.
           </p>
           <Ref text="Bukhari 23:11" />
+          <Link href="/family?tab=children&sub=loss" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Losing a child — comfort and reward →
+          </Link>
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function LossOfChildTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <h4 className="text-gold font-semibold text-lg mb-2">For the Bereaved Parent</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Whether the loss came before birth, in infancy, or after years of love — the tradition does not pass over it in silence. The Prophet ﷺ buried children of his own. He wept, he named the grief a mercy, and he carried promises for parents like you that exist nowhere else in the religion.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="ابْنُوا لِعَبْدِي بَيْتًا فِي الْجَنَّةِ وَسَمُّوهُ بَيْتَ الْحَمْدِ"
+          transliteration="Ibnu li-'abdi baytan fi al-jannati wa sammuhu bayta al-hamd"
+          english="When a child of the slave (of Allah) dies, Allah says to the angels: 'Have you taken the fruits of his work?' They reply: 'Yes.' So He says: 'What did My slave say?' They reply: 'He praised You and mentioned that to You is the return.' So Allah says: 'Build a house in Paradise for My slave, and name it the House of Praise.'"
+          source="Tirmidhi 10:57"
+          delay={0.08}
+        />
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">Bayt al-Hamd — the House of Praise</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The house is named not for the child, but for what the parent said in the darkest hour: <span className="text-gold italic">alhamdulillah, inna lillahi wa inna ilayhi raji&apos;un</span>. Grief and praise can live in the same heart at the same moment — that is precisely what Allah honors.
+          </p>
+          <Ref text="Tirmidhi 10:57" />
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">A shield from the Fire</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;A Muslim whose three children die before the age of puberty will be granted Paradise by Allah due to his mercy for them.&quot; And when a woman asked the Prophet ﷺ, &quot;If two died?&quot; he replied: &quot;Even two.&quot; The children you could not keep become the very screen between you and the Fire.
+          </p>
+          <Ref text="Bukhari 23:11; Bukhari 23:12" />
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">The Prophet&apos;s tears for Ibrahim</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            As his infant son Ibrahim took his last breaths, the Prophet&apos;s ﷺ eyes flowed. When asked about it, he said: &quot;This is mercy... The eyes are shedding tears and the heart is grieved, and we will not say except what pleases our Lord. O Ibrahim, indeed we are grieved by your separation.&quot; Tears are not a lapse of faith. Grief is permitted; only despair of Allah&apos;s mercy is not.
+          </p>
+          <Ref text="Bukhari 23:61" />
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">Words for the hardest moment</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;Those when afflicted with a disaster, say: We belong to Allah, and to Him we will return&quot; — and the verse before it promises glad tidings to the patient. Istirja&apos; is not pretending it doesn&apos;t hurt; it is placing the one you lost back in the hands of the One who lent them to you.
+          </p>
+          <Ref text="Quran 2:155-156" />
+        </ContentCard>
+        <ContentCard delay={0.23}>
+          <h5 className="text-gold font-medium mb-2">Miscarriage and infant loss count</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The narrations of children shielding their parents speak of those who died &quot;before the age of puberty&quot; — the youngest losses included. Scholars extend the hope of these texts to miscarried children as well, and books of fiqh treat the miscarried child as one who will be a cause of their parents&apos; reward. No loss is too early to matter to Allah.
+          </p>
+          <Ref text="Bukhari 23:12" />
         </ContentCard>
       </div>
     </div>
@@ -885,6 +1273,14 @@ function RaisingTab() {
         </p>
       </ContentCard>
 
+      <VerseCard
+        arabic="يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ قُوٓا۟ أَنفُسَكُمْ وَأَهْلِيكُمْ نَارًا وَقُودُهَا ٱلنَّاسُ وَٱلْحِجَارَةُ"
+        transliteration="Ya ayyuha alladhina amanu qu anfusakum wa ahlikum naran waquduha an-nasu wal-hijarah"
+        english="O you who believe, protect yourselves and your families from a Fire whose fuel is people and stones."
+        source="Quran 66:6"
+        delay={0.06}
+      />
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ContentCard delay={0.08}>
           <h5 className="text-gold font-medium mb-2">Teach tawhid first</h5>
@@ -938,6 +1334,53 @@ function RaisingTab() {
             The parent&apos;s du&apos;a for their child is answered without doubt. Through every age — toddler, teen, adult — never stop asking Allah for their guidance, faith, and protection.
           </p>
           <Ref text="Tirmidhi 27:11" />
+        </ContentCard>
+        <ContentCard delay={0.32}>
+          <h5 className="text-gold font-medium mb-2">Their tears moved his prayer</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The Prophet ﷺ said: &quot;I stand up to pray and intend to prolong it; but when I hear the cry of a boy I shorten it, for fear that his mother might be distressed.&quot; Even the salah of the Messenger bent around a crying child. A home where worship and small children coexist — noise, interruptions and all — is his Sunnah, not a compromise of it.
+          </p>
+          <Ref text="Abu Dawud 2:399; Nasai 10:49; Tirmidhi 2:228" />
+        </ContentCard>
+        <ContentCard delay={0.35}>
+          <h5 className="text-gold font-medium mb-2">Shield them with the protection du&apos;a</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Make the Prophet&apos;s ﷺ nightly armor for al-Hasan and al-Husayn a habit over your own children — seeking refuge for them in Allah&apos;s Perfect Words from every devil, every poisonous pest, and every harmful eye.
+          </p>
+          <Ref text="Tirmidhi 28:25" />
+          <Link href="/family?tab=children&sub=newborn" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            The du&apos;a in full →
+          </Link>
+        </ContentCard>
+      </div>
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Discipline the Prophet&apos;s Way</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.08}>
+          <h5 className="text-gold font-medium mb-2">Gentleness first — always</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;Allah is Gentle and loves gentleness, and He grants reward for it that He does not grant for harshness.&quot; And: &quot;Allah is Gentle and loves gentleness in all things.&quot; Any approach to correcting a child that is built on harshness starts outside the Prophet&apos;s method, whatever result it seems to get.
+          </p>
+          <Ref text="Ibn Majah 33:32; Ibn Majah 33:33; Abu Dawud 43:35" />
+        </ContentCard>
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">Years of teaching before any firmness</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The salah hadith itself is a lesson in gradualness: command at seven, and only at ten — after three full years of patient teaching, modeling, and encouragement — does firmer discipline even enter the picture. Firmness is the last tool in the box, never the first.
+          </p>
+          <Ref text="Abu Dawud 2:104; Abu Dawud 2:105" />
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">What correction is not</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Scholars who allow physical discipline at all hedge it with strict limits: never out of anger, never the face, never anything that injures, bruises, or humiliates, and never for a child too young to understand. Correction in the Prophet&apos;s method exists to teach — the moment it becomes venting a parent&apos;s rage, it is no longer discipline but transgression.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">The common mistakes</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Correcting in public what could be corrected in private; punishing the childishness Allah created them with as if it were sin; demanding of a seven-year-old the composure of an adult; and letting your worst moment become their model of authority. Nowhere is self-restraint harder, or more closely watched, than in front of your own children — and nothing teaches them gentleness like receiving it.
+          </p>
         </ContentCard>
       </div>
     </div>
@@ -999,6 +1442,59 @@ function DaughtersTab() {
           <p className="text-themed-muted text-sm leading-relaxed">
             &quot;Patient with them, teach them, marry them off, treat them well.&quot; This is the framework. Education and a sound deen are not extras — they are the substance of the right.
           </p>
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function OrphansTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <h4 className="text-gold font-semibold text-lg mb-2">Kafalah — Fostering the Orphan</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Can Muslims adopt? The answer is one of Islam&apos;s most distinctive: opening your home, wealth, and heart to a child who has no one is among the greatest deeds in the religion — while the child&apos;s true lineage is honored and preserved, never erased.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="أَنَا وَكَافِلُ الْيَتِيمِ، فِي الْجَنَّةِ هَكَذَا"
+          transliteration="Ana wa kafilu al-yatimi fi al-jannati hakadha"
+          english="I and the person who looks after an orphan and provides for him, will be in Paradise like this — and he put his index and middle fingers together."
+          source="Bukhari 78:36"
+          delay={0.08}
+        />
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">A relative&apos;s orphan — or a stranger&apos;s</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;One who looks after the orphan, whether he is his relative or not, I and he would be together in Paradise like this.&quot; The door is open both ways: the nephew who lost his father, and the child from across the world you have never met.
+          </p>
+          <Ref text="Muslim 55:52" />
+        </ContentCard>
+        <VerseCard
+          arabic="ٱدْعُوهُمْ لِـَٔابَآئِهِمْ هُوَ أَقْسَطُ عِندَ ٱللَّهِ ۚ فَإِن لَّمْ تَعْلَمُوٓا۟ ءَابَآءَهُمْ فَإِخْوَٰنُكُمْ فِى ٱلدِّينِ وَمَوَٰلِيكُمْ"
+          transliteration="Ud'uhum li-aba'ihim huwa aqsatu 'inda Allah, fa-in lam ta'lamu aba'ahum fa-ikhwanukum fi ad-dini wa mawalikum"
+          english="Call these [adopted sons] by their fathers' names; that is more equitable before Allah. But if you do not know their fathers, then they are your brothers in faith and your patronized associates."
+          source="Quran 33:5"
+          delay={0.14}
+        />
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">Why the name is preserved</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The verse before it declares that Allah &quot;has not made your adopted sons your real sons — these are only words that you utter.&quot; Islam abolished the pre-Islamic fiction that adoption rewrites blood. The child keeps their father&apos;s name, their true lineage, and their identity — and gains, on top of it, a family that chose them for the sake of Allah.
+          </p>
+          <Ref text="Quran 33:4-5" />
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">Kafalah in practice</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Because the fostered child remains legally the child of their birth parents, scholars note practical differences from Western adoption: the child does not automatically inherit from the fostering family (though a bequest of up to a third can be made for them), and mahram rules with the household are not automatic — which families historically addressed through milk-kinship when the child arrived in infancy. None of this diminishes the deed; it simply keeps every truth intact. Consult a scholar when setting up a kafalah.
+          </p>
+          <Link href="/family?tab=children&sub=nursing" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Milk-kinship explained →
+          </Link>
         </ContentCard>
       </div>
     </div>
@@ -1217,6 +1713,75 @@ function KinshipCutOffTab() {
           </p>
         </ContentCard>
       </div>
+
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Mending a Broken Tie</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="لاَ يَحِلُّ لِرَجُلٍ أَنْ يَهْجُرَ أَخَاهُ فَوْقَ ثَلاَثِ لَيَالٍ، يَلْتَقِيَانِ فَيُعْرِضُ هَذَا وَيُعْرِضُ هَذَا، وَخَيْرُهُمَا الَّذِي يَبْدَأُ بِالسَّلاَمِ"
+          transliteration="La yahillu li-rajulin an yahjura akhahu fawqa thalathi layal... wa khayruhuma alladhi yabda'u bis-salam"
+          english="It is not lawful for a man to desert his brother Muslim for more than three nights — when they meet, one of them turns his face away from the other, and the other turns his face from the former — and the better of the two will be the one who greets the other first."
+          source="Bukhari 78:105"
+          delay={0.2}
+        />
+        <ContentCard delay={0.23}>
+          <h5 className="text-gold font-medium mb-2">Three nights — then the clock runs out</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;Do not hate one another, nor be jealous of one another; and do not desert one another... it is unlawful for a Muslim to desert his brother Muslim for more than three nights.&quot; If this is the limit between any two Muslims, how much heavier is it between relatives, where the tie itself is a command? Three days is the mercy given to let tempers cool — not a licence to make silence permanent.
+          </p>
+          <Ref text="Bukhari 78:104" />
+        </ContentCard>
+        <ContentCard delay={0.26}>
+          <h5 className="text-gold font-medium mb-2">The first move wins</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;The better of the two is the one who greets the other first.&quot; Reconciliation in the Sunnah does not begin with resolving the grievance — it begins with salam. A greeting, a message on Eid, a du&apos;a for them by name, showing up at their moment of joy or grief. Start smaller than the argument: the salam re-opens the door, and what is behind it can be worked through slowly, or even left with Allah.
+          </p>
+          <Ref text="Bukhari 78:105" />
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+function NeighborsTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <h4 className="text-gold font-semibold text-lg mb-2">The Right Next Door</h4>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          In the verse that commands worship of Allah and goodness to parents and kin, Allah continues in the same breath: orphans, the needy — and neighbors, near and distant. The books of adab place the neighbor&apos;s right beside kinship for a reason: it is the tie you did not choose, renewed at your doorstep every single day.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <VerseCard
+          arabic="مَا زَالَ جِبْرِيلُ يُوصِينِي بِالْجَارِ حَتَّى ظَنَنْتُ أَنَّهُ لَيُوَرِّثَنَّهُ"
+          transliteration="Ma zala Jibrilu yusini bil-jari hatta zanantu annahu la-yuwarrithannahu"
+          english="Gabriel impressed upon me (kind treatment) towards the neighbour (so much) that I thought as if he would confer upon him the (right) of inheritance."
+          source="Muslim 45:182"
+          delay={0.08}
+        />
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">Named beside kin in the Quran</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;Worship Allah and do not associate any partners with Him. Be kind to parents, relatives, orphans, the needy, near and distant neighbors, close friends, wayfarers...&quot; — the neighbor&apos;s right descends from the same verse as the parent&apos;s and the relative&apos;s. Jibril&apos;s insistence was so relentless that the Prophet ﷺ thought neighbors would be written into inheritance itself, the ultimate marker of family.
+          </p>
+          <Ref text="Quran 4:36; Muslim 45:184" />
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">No gift is too small</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;O Muslim women! None of you should look down upon the gift sent by her female neighbor, even if it were the trotters of the sheep.&quot; The currency of neighborliness is not grandeur but constancy — a plate of food, a greeting by name, help carrying what is heavy, checking in on the elderly and the new arrival.
+          </p>
+          <Ref text="Bukhari 51:1" />
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">Every neighbor — of every faith</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The verse names &quot;near and distant&quot; neighbors, and scholars read in that breadth the Muslim neighbor and the non-Muslim, the relative and the stranger, the one beside you and the one streets away — each holding a share of the right, the nearest holding the most. For many people, a Muslim neighbor&apos;s quiet decency is the only page of this religion they will ever read.
+          </p>
+          <Ref text="Quran 4:36" />
+        </ContentCard>
+      </div>
     </div>
   );
 }
@@ -1271,6 +1836,8 @@ const parentsSources: Record<ParentsSub, SourceRef[]> = {
     { ref: "Quran 31:14-15", desc: "Be thankful to Allah and to your parents" },
     { ref: "Bukhari 78:2", desc: "Your mother, your mother, your mother, then your father" },
     { ref: "Tirmidhi 27:3", desc: "Pleasure of the Lord in the pleasure of the parent" },
+    { ref: "Bukhari 78:7", desc: "'Uquq al-walidayn named beside shirk among the greatest sins" },
+    { ref: "Bukhari 52:18", desc: "The warning repeated three times" },
   ],
   quran: [
     { ref: "Quran 17:23-24", desc: "The foundational verses on parents" },
@@ -1283,6 +1850,8 @@ const parentsSources: Record<ParentsSub, SourceRef[]> = {
     { ref: "Muslim 45:11", desc: "Loss for one who does not honor aging parents" },
     { ref: "Tirmidhi 27:3", desc: "Allah's pleasure follows parents' pleasure" },
     { ref: "Tirmidhi 27:11", desc: "Three supplications always answered, including the parent's against their child" },
+    { ref: "Bukhari 56:213", desc: "'Are your parents alive? Then exert yourself in their service'" },
+    { ref: "Nasai 25:19", desc: "'Then strive for their sake' — the same exchange in An-Nasa'i" },
   ],
   duas: [
     { ref: "Quran 17:24", desc: "The most well-known du'a for parents" },
@@ -1294,6 +1863,22 @@ const parentsSources: Record<ParentsSub, SourceRef[]> = {
     { ref: "Muslim 25:20", desc: "Three things that continue after death" },
     { ref: "Muslim 45:13", desc: "Keeping ties with parents' friends" },
     { ref: "Bukhari 55:23", desc: "Charity on behalf of the deceased" },
+    { ref: "Abu Dawud 11:90", desc: "Hajj and Umrah on behalf of the aged father" },
+    { ref: "Nasai 24:15", desc: "Hajj for the deceased mother — like paying off her debt" },
+    { ref: "Bukhari 30:59", desc: "The guardian fasts for one who died with fasts due" },
+    { ref: "Muslim 13:198", desc: "The heir fasts on behalf of the deceased" },
+  ],
+  "non-muslim": [
+    { ref: "Quran 31:15", desc: "Do not obey in shirk — yet keep kind company in this world" },
+    { ref: "Quran 60:8", desc: "Allah does not forbid kindness and justice to the peaceful" },
+    { ref: "Bukhari 51:52", desc: "Asma bint Abi Bakr told to keep ties with her pagan mother" },
+  ],
+  stories: [
+    { ref: "Bukhari 78:5", desc: "The cave — milk held all night for sleeping parents" },
+    { ref: "Bukhari 46:43", desc: "Juraij, his mother's call, and her answered words" },
+    { ref: "Bukhari 21:10", desc: "Juraij — the mother's call during prayer" },
+    { ref: "Muslim 44:319", desc: "Umar seeks out Uways al-Qarani" },
+    { ref: "Muslim 44:320", desc: "'He would have his mother with him' — ask him to pray for you" },
   ],
 };
 
@@ -1311,6 +1896,19 @@ const eldersSources: Record<EldersSub, SourceRef[]> = {
     { ref: "Muslim 45:54", desc: "Allah is with the sick — visit them" },
     { ref: "Bukhari 75:35", desc: "The Prophetic du'a for healing" },
   ],
+  bearing: [
+    { ref: "Bukhari 75:2", desc: "Even a thorn's prick expiates sins" },
+    { ref: "Quran 2:155-156", desc: "Glad tidings to the patient — istirja' in affliction" },
+    { ref: "Quran 21:83-84", desc: "Ayyub's cry and Allah's response" },
+    { ref: "Bukhari 75:35", desc: "The healing du'a — say it for yourself too" },
+    { ref: "Bukhari 75:8", desc: "Sins removed as the leaves of a tree fall down" },
+    { ref: "Bukhari 18:37", desc: "Pray standing; if you can't, sitting; if not, on your side" },
+  ],
+  caring: [
+    { ref: "Muslim 45:11", desc: "Humbled is he who finds aging parents and misses Paradise" },
+    { ref: "Quran 17:23-24", desc: "'If one or both of them reach old age in your care...'" },
+    { ref: "Bukhari 56:213", desc: "Service to parents in the vocabulary of jihad" },
+  ],
 };
 
 const childrenSources: Record<ChildrenSub, SourceRef[]> = {
@@ -1326,12 +1924,21 @@ const childrenSources: Record<ChildrenSub, SourceRef[]> = {
     { ref: "Quran 3:35", desc: "The mother of Maryam's vow during pregnancy" },
     { ref: "Quran 3:38", desc: "Zakariyya's du'a for pure offspring" },
   ],
+  nursing: [
+    { ref: "Quran 2:233", desc: "Two full years — and the father's duty of provision" },
+    { ref: "Quran 4:23", desc: "Foster mothers and foster sisters are mahram" },
+    { ref: "Bukhari 52:9", desc: "Foster relations are treated like blood relations" },
+    { ref: "Muslim 17:12", desc: "The foster-uncle Aflah — mahram through fosterage" },
+  ],
   newborn: [
     { ref: "Abu Dawud 43:142", desc: "Adhan in the newborn's ear" },
     { ref: "Bukhari 71:51", desc: "Tahnik with dates and du'a" },
     { ref: "Muslim 38:2", desc: "Best names: Abdullah and Abdur-Rahman" },
     { ref: "Tirmidhi 22:21", desc: "Aqiqah, naming, shaving on the 7th day" },
     { ref: "Bukhari 77:63", desc: "Khitan as part of the fitrah" },
+    { ref: "Tirmidhi 28:25", desc: "The protection du'a with its Arabic wording" },
+    { ref: "Bukhari 60:45", desc: "The Prophet's refuge-seeking for al-Hasan and al-Husayn" },
+    { ref: "Ibn Majah 31:73", desc: "'Seek refuge with Allah, for the evil eye is real'" },
   ],
   blessings: [
     { ref: "Quran 18:46", desc: "Children are adornment, but enduring good deeds are better" },
@@ -1341,6 +1948,14 @@ const childrenSources: Record<ChildrenSub, SourceRef[]> = {
     { ref: "Quran 102:1-2", desc: "At-Takathur — the warning against competing in numbers" },
     { ref: "Quran 57:20", desc: "Worldly life is competition in wealth and children" },
     { ref: "Muslim 25:20", desc: "A righteous child's du'a reaches the parent" },
+    { ref: "Bukhari 23:11", desc: "Children who die young grant their parents Paradise" },
+  ],
+  loss: [
+    { ref: "Tirmidhi 10:57", desc: "Bayt al-Hamd — the House of Praise built in Paradise" },
+    { ref: "Bukhari 23:11", desc: "Three children who die before puberty — Paradise by His mercy" },
+    { ref: "Bukhari 23:12", desc: "'If two died?' — 'Even two'" },
+    { ref: "Bukhari 23:61", desc: "The Prophet's tears at Ibrahim's death — grief is mercy" },
+    { ref: "Quran 2:155-156", desc: "Glad tidings to the patient — inna lillahi wa inna ilayhi raji'un" },
   ],
   rights: [
     { ref: "Abu Dawud 43:147", desc: "Give children beautiful names" },
@@ -1350,10 +1965,15 @@ const childrenSources: Record<ChildrenSub, SourceRef[]> = {
     { ref: "Bukhari 66:21", desc: "The best is one who learns the Quran and teaches it" },
   ],
   raising: [
+    { ref: "Quran 66:6", desc: "Protect yourselves and your families from a Fire" },
     { ref: "Tirmidhi 37:102", desc: "Be mindful of Allah — the Prophet's advice to a child" },
     { ref: "Bukhari 8:163", desc: "Carrying Umama in prayer — children and worship coexist" },
     { ref: "Tirmidhi 36:75", desc: "A person is upon the religion of their friend" },
     { ref: "Abu Dawud 43:219", desc: "Do not lie to children" },
+    { ref: "Abu Dawud 2:399", desc: "Shortening the prayer at a child's cry" },
+    { ref: "Ibn Majah 33:32", desc: "Allah rewards gentleness as He does not reward harshness" },
+    { ref: "Abu Dawud 43:35", desc: "Allah is gentle and likes gentleness" },
+    { ref: "Abu Dawud 2:104-105", desc: "Salah at seven, firmness only at ten — gradualness" },
   ],
   daughters: [
     { ref: "Quran 16:58-59", desc: "Condemnation of disliking daughters" },
@@ -1361,6 +1981,11 @@ const childrenSources: Record<ChildrenSub, SourceRef[]> = {
     { ref: "Bukhari 78:26", desc: "Daughters as a shield from the Fire" },
     { ref: "Muslim 45:192", desc: "Two fingers held together — companionship with the Prophet ﷺ" },
     { ref: "Abu Dawud 43:375", desc: "Raising three daughters: Paradise" },
+  ],
+  orphans: [
+    { ref: "Bukhari 78:36", desc: "With the Prophet ﷺ in Paradise like two fingers" },
+    { ref: "Muslim 55:52", desc: "Whether the orphan is a relative or not" },
+    { ref: "Quran 33:4-5", desc: "Call them by their fathers' names — brothers in faith" },
   ],
 };
 
@@ -1387,6 +2012,14 @@ const kinshipSources: Record<KinshipSub, SourceRef[]> = {
   "cut-off": [
     { ref: "Bukhari 78:22", desc: "The true wasil keeps ties with those who cut him off" },
     { ref: "Muslim 45:25", desc: "Feeding them hot ashes — Allah's support for the one who persists" },
+    { ref: "Bukhari 78:105", desc: "Not lawful beyond three nights — the better one greets first" },
+    { ref: "Bukhari 78:104", desc: "Do not hate, envy, or desert one another" },
+  ],
+  neighbors: [
+    { ref: "Muslim 45:182", desc: "Jibril's insistence — until inheritance seemed near" },
+    { ref: "Muslim 45:184", desc: "The same from Ibn Umar's narration" },
+    { ref: "Quran 4:36", desc: "Near and distant neighbors named beside parents and kin" },
+    { ref: "Bukhari 51:1", desc: "Do not look down on a neighbor's gift — even sheep's trotters" },
   ],
 };
 
@@ -1398,23 +2031,31 @@ type SearchEntry = { tab: MainTab; sub: string; label: string; keywords: string 
 const searchIndex: SearchEntry[] = [
   { tab: "children", sub: "conceiving", label: "Conceiving", keywords: "conceive trying for a child offspring dua before intimacy zakariyya pure offspring recite quran dhikr patience" },
   { tab: "children", sub: "pregnancy", label: "Pregnancy", keywords: "pregnant mother weakness upon weakness burden maryam vow thirty months reward" },
-  { tab: "children", sub: "newborn", label: "Newborn", keywords: "baby adhan right ear tahnik softened date beautiful name aqiqah seventh day khitan circumcision" },
+  { tab: "children", sub: "nursing", label: "Nursing & Milk-Kinship", keywords: "breastfeeding nursing rada'ah milk kinship two full years wet nurse foster mother foster sister mahram weaning father provides five feedings" },
+  { tab: "children", sub: "newborn", label: "Newborn", keywords: "baby adhan right ear tahnik softened date beautiful name aqiqah seventh day khitan circumcision protection dua perfect words evil eye hasan husayn" },
   { tab: "children", sub: "blessings", label: "Blessings", keywords: "gift adornment trial test loss of a child do not compete takathur child's dua after you" },
+  { tab: "children", sub: "loss", label: "Losing a Child", keywords: "miscarriage infant loss stillbirth grief bereaved house of praise bayt al-hamd three children shield fire ibrahim tears istirja comfort" },
   { tab: "children", sub: "rights", label: "Rights of Children", keywords: "good mother father beautiful name education deen teach salah equal treatment justice provision protection mercy curse" },
-  { tab: "children", sub: "raising", label: "Raising Them Right", keywords: "tarbiyah teach tawhid be the example dua habit play speak gently correct privately company friends don't lie" },
+  { tab: "children", sub: "raising", label: "Raising Them Right", keywords: "tarbiyah teach tawhid be the example dua habit play speak gently correct privately company friends don't lie protect your family fire discipline smack gentleness crying child shorten prayer" },
   { tab: "children", sub: "daughters", label: "Virtue of Daughters", keywords: "girls shield from the fire paradise buried alive condemnation raising daughters" },
-  { tab: "parents", sub: "rights", label: "Rights of Parents", keywords: "birr walidayn goodness obedience uff sigh humility mother three times over pleasing allah door of paradise" },
+  { tab: "children", sub: "orphans", label: "Orphans & Adoption", keywords: "orphan adoption adopt kafalah foster sponsor yateem paradise fingers lineage fathers' names inheritance mahram" },
+  { tab: "parents", sub: "rights", label: "Rights of Parents", keywords: "birr walidayn goodness obedience uff sigh humility mother three times over pleasing allah door of paradise uquq greatest sins warning" },
   { tab: "parents", sub: "quran", label: "In the Quran", keywords: "verses worship none but him old age noble word wing of humility weaning grateful hardship" },
-  { tab: "parents", sub: "sunnah", label: "From the Sunnah", keywords: "hadith prayer on time jihad aging parents supplication answered pleasure anger" },
+  { tab: "parents", sub: "sunnah", label: "From the Sunnah", keywords: "hadith prayer on time jihad aging parents supplication answered pleasure anger exert yourself in their service" },
   { tab: "parents", sub: "duas", label: "Du'a for Parents", keywords: "dua supplication rabbi irhamhuma mercy ibrahim nuh forgiveness" },
-  { tab: "parents", sub: "after", label: "After They Pass", keywords: "after death ongoing dua sadaqah charity on their behalf honor their friends maintain ties" },
+  { tab: "parents", sub: "after", label: "After They Pass", keywords: "after death ongoing dua sadaqah charity on their behalf honor their friends maintain ties hajj umrah debts fasts vows heir" },
+  { tab: "parents", sub: "non-muslim", label: "Non-Muslim Parents", keywords: "non-muslim parents convert revert new muslim kindness asma pagan mother christian shirk do not obey keep ties dawah" },
+  { tab: "parents", sub: "stories", label: "Stories of Birr", keywords: "stories cave rock milk sleeping parents juraij mother's call uways qarani umar forgiveness prayer birr" },
   { tab: "elders", sub: "elderly", label: "Honoring Elderly", keywords: "old age grey hair respect honor let elders speak first practical kindness precious dua" },
   { tab: "elders", sub: "sick", label: "Visiting the Sick", keywords: "illness visit angels garden of paradise keep it short speak hope dua healing bring something" },
+  { tab: "elders", sub: "bearing", label: "Bearing Illness", keywords: "when you are sick illness patience expiation sins thorn istirja ayyub job dua cure ruqyah bearing disease" },
+  { tab: "elders", sub: "caring", label: "Caring for Aging Parents", keywords: "caregiving aging parents dementia repetition patience siblings share load care home nurse burnout intention service" },
   { tab: "kinship", sub: "why", label: "Why Kinship Matters", keywords: "silat rahim womb ties relatives clings to the throne name from ar-rahman fear allah" },
   { tab: "kinship", sub: "reward", label: "Reward of Maintaining Ties", keywords: "provision expanded life extended barakah khadijah first testimony" },
   { tab: "kinship", sub: "severing", label: "Severity of Cutting Ties", keywords: "cutting severing qati will not enter paradise curse corruption what counts as severing" },
   { tab: "kinship", sub: "who", label: "Who Counts as Kin", keywords: "parents first nearest kin relatives in-laws practical upkeep parents' friends" },
-  { tab: "kinship", sub: "cut-off", label: "When They Cut You Off", keywords: "one-sided reconcile hot ashes allah's support reward boundaries harm" },
+  { tab: "kinship", sub: "cut-off", label: "When They Cut You Off", keywords: "one-sided reconcile hot ashes allah's support reward boundaries harm three nights desert salam greet first mend broken tie" },
+  { tab: "kinship", sub: "neighbors", label: "Beyond Kin: Neighbors", keywords: "neighbor neighbour jibril gabriel inheritance rights gift trotters near and distant non-muslim neighbor kindness" },
 ];
 
 function FamilyContent() {
@@ -1525,6 +2166,8 @@ function FamilyContent() {
                   {activeParents === "sunnah" && <SunnahTab />}
                   {activeParents === "duas" && <DuasTab />}
                   {activeParents === "after" && <AfterTab />}
+                  {activeParents === "non-muslim" && <NonMuslimParentsTab />}
+                  {activeParents === "stories" && <StoriesOfBirrTab />}
                 </SubTabLayout>
                 {/* Full-width sources for the active sub-view, below the rail */}
                 <SourcesCard className="mt-6" sources={parentsSources[activeParents]} />
@@ -1535,6 +2178,8 @@ function FamilyContent() {
                 <SubTabLayout subs={eldersSubs.filter((s) => subMatches("elders", s.key))} activeSub={activeElders} setActiveSub={changeSub("elders")}>
                   {activeElders === "elderly" && <ElderlyTab />}
                   {activeElders === "sick" && <SickTab />}
+                  {activeElders === "bearing" && <BearingIllnessTab />}
+                  {activeElders === "caring" && <CaringForParentsTab />}
                 </SubTabLayout>
                 {/* Full-width sources for the active sub-view, below the rail */}
                 <SourcesCard className="mt-6" sources={eldersSources[activeElders]} />
@@ -1545,11 +2190,14 @@ function FamilyContent() {
                 <SubTabLayout subs={childrenSubs.filter((s) => subMatches("children", s.key))} activeSub={activeChildren} setActiveSub={changeSub("children")}>
                   {activeChildren === "conceiving" && <ConceivingTab />}
                   {activeChildren === "pregnancy" && <PregnancyTab />}
+                  {activeChildren === "nursing" && <NursingTab />}
                   {activeChildren === "newborn" && <NewbornTab />}
                   {activeChildren === "blessings" && <BlessingsTab />}
+                  {activeChildren === "loss" && <LossOfChildTab />}
                   {activeChildren === "rights" && <ChildrenRightsTab />}
                   {activeChildren === "raising" && <RaisingTab />}
                   {activeChildren === "daughters" && <DaughtersTab />}
+                  {activeChildren === "orphans" && <OrphansTab />}
                 </SubTabLayout>
                 {/* Full-width sources for the active sub-view, below the rail */}
                 <SourcesCard className="mt-6" sources={childrenSources[activeChildren]} />
@@ -1563,6 +2211,7 @@ function FamilyContent() {
                   {activeKinship === "severing" && <KinshipSeveringTab />}
                   {activeKinship === "who" && <KinshipWhoTab />}
                   {activeKinship === "cut-off" && <KinshipCutOffTab />}
+                  {activeKinship === "neighbors" && <NeighborsTab />}
                 </SubTabLayout>
                 {/* Full-width sources for the active sub-view, below the rail */}
                 <SourcesCard className="mt-6" sources={kinshipSources[activeKinship]} />
