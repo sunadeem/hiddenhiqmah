@@ -448,9 +448,7 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
   {
     heading: "Life",
     items: [
-      { href: "/muslim-daily", icon: ListChecks, title: "Muslim Daily", titleAr: "يوميات المسلم", description: "Morning adhkar, evening routines, checklist" },
       { href: "/duas", icon: HandHeart, title: "Duas", titleAr: "الدعاء", description: "Supplications for every situation" },
-      { href: "/dhikr", icon: Repeat, title: "Dhikr", titleAr: "الذكر", description: "Tasbeeh and daily remembrance" },
       { href: "/family", icon: Users, title: "Family", titleAr: "الأسرة", description: "Parents, children, elders, kinship" },
       { href: "/marriage", icon: HeartHandshake, title: "Marriage", titleAr: "الزواج", description: "Nikah, rights, married life, divorce" },
       { href: "/protection", icon: ShieldCheck, title: "Protection & Ruqyah", titleAr: "الرقية والتحصين", description: "Sihr, the evil eye, and daily protection" },
@@ -464,6 +462,8 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
       { href: "/salah", icon: Clock, title: "Salah", titleAr: "الصلاة", description: "The five daily prayers, step by step" },
       { href: "/prayer-times", icon: Timer, title: "Prayer Times", titleAr: "مواقيت الصلاة", description: "Today's times for your location" },
       { href: "/qiblah", icon: Compass, title: "Qiblah", titleAr: "القبلة", description: "Find the direction of prayer" },
+      { href: "/muslim-daily", icon: ListChecks, title: "Muslim Daily", titleAr: "يوميات المسلم", description: "Morning adhkar, evening routines, checklist" },
+      { href: "/dhikr", icon: Repeat, title: "Dhikr", titleAr: "الذكر", description: "Tasbeeh and daily remembrance" },
       { href: "/ramadan", icon: Moon, title: "Ramadan", titleAr: "رمضان", description: "Fasting, Tarawih, Laylatul Qadr" },
       { href: "/kids", icon: GraduationCap, title: "Kids Learning", titleAr: "تعليم الأطفال", description: "Lessons + stories + quizzes for children" },
       { href: "/quiz", icon: Trophy, title: "Quizzes", titleAr: "اختبارات", description: "Test your Islamic knowledge" },
