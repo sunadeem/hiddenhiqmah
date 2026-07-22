@@ -595,11 +595,15 @@ function ProphetsContent() {
           prophet stories into one message.
         </p>
       )}
-      <Accordion
-        items={(searching ? introFiltered : introItems).map(({ search: _s, ...rest }) => rest)}
-        defaultOpenId={searching ? introFiltered[0]?.id ?? null : null}
-      />
-      {!searching && <SourcesCard sources={introSources} className="mt-4" />}
+      <div className="space-y-4">
+        {(searching ? introFiltered : introItems).map((it) => (
+          <ContentCard key={it.id}>
+            <h3 className="font-semibold text-themed mb-1">{it.title}</h3>
+            {it.subtitle && <p className="text-xs text-gold/70 mb-3">{it.subtitle}</p>}
+            {it.children}
+          </ContentCard>
+        ))}
+      </div>
     </section>
   );
 
@@ -746,7 +750,6 @@ function ProphetsContent() {
           </ContentCard>
         ))}
       </div>
-      {!searching && <SourcesCard sources={figureSources} className="mt-4" />}
     </section>
   );
 
@@ -762,7 +765,6 @@ function ProphetsContent() {
         items={(searching ? faqFiltered : faqItems).map(({ search: _s, ...rest }) => rest)}
         defaultOpenId={searching ? faqFiltered[0]?.id ?? null : null}
       />
-      {!searching && <SourcesCard sources={faqSources} className="mt-4" />}
     </section>
   );
 
@@ -818,11 +820,17 @@ function ProphetsContent() {
       ) : activeTab === "timeline" ? (
         renderTimeline()
       ) : (
-        <SubTabLayout subs={subTabs} activeSub={activeSub} setActiveSub={selectSub}>
-          {activeSub === "beliefs" && renderIntro()}
-          {activeSub === "figures" && renderFigures()}
-          {activeSub === "questions" && renderFaq()}
-        </SubTabLayout>
+        <>
+          <SubTabLayout subs={subTabs} activeSub={activeSub} setActiveSub={selectSub}>
+            {activeSub === "beliefs" && renderIntro()}
+            {activeSub === "figures" && renderFigures()}
+            {activeSub === "questions" && renderFaq()}
+          </SubTabLayout>
+          <SourcesCard
+            className="mt-6"
+            sources={activeSub === "beliefs" ? introSources : activeSub === "figures" ? figureSources : faqSources}
+          />
+        </>
       )}
     </div>
   );

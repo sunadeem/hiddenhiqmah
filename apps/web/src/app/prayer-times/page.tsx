@@ -604,7 +604,7 @@ function PrayerTimesContent() {
         subtitle="Today's prayer times for your location, with a live countdown to the next prayer"
       />
 
-      <div className="space-y-6 max-w-4xl mx-auto">
+      <div className="space-y-6">
         {/* Top tabs pinned LEFT (flex-start) to the content edge — the Times
             tab's hero/day-strip are centered, so the tab row is explicitly
             left-aligned rather than inheriting any centering. */}
@@ -1125,7 +1125,6 @@ function PrayerTimesContent() {
         </ContentCard>
         )}
 
-        {activeSub === "night" && <SourcesCard className="mt-2" sources={NIGHT_SOURCES} />}
 
         {/* 5 — The Hijri date */}
         {activeSub === "calendar" && (
@@ -1208,7 +1207,6 @@ function PrayerTimesContent() {
         </ContentCard>
         )}
 
-        {activeSub === "calendar" && <SourcesCard className="mt-2" sources={CALENDAR_SOURCES} />}
 
         {/* 10 — Adhan response cross-link */}
         {activeSub === "windows" && (
@@ -1228,9 +1226,13 @@ function PrayerTimesContent() {
         </ContentCard>
         )}
 
-        {activeSub === "windows" && <SourcesCard className="mt-2" sources={WINDOWS_SOURCES} />}
         </div>
         </SubTabLayout>
+
+        <SourcesCard
+          className="mt-8"
+          sources={activeSub === "windows" ? WINDOWS_SOURCES : activeSub === "night" ? NIGHT_SOURCES : CALENDAR_SOURCES}
+        />
           </div>
         )}
       </div>

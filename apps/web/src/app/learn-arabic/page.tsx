@@ -174,8 +174,8 @@ const mushafSymbols = [
   { symbol: '∴ ⋯ ∴', name: 'Muʼānaqah (three dots)', meaning: 'The ‘embracing’ stop: these appear as a pair — you will see three dots twice. Stop at one of the two positions, not both.' },
   { symbol: '۩', name: 'Sajdah', meaning: 'A verse of prostration. On reciting it, the reciter (and listeners) make a prostration.' },
   { symbol: '۞', name: 'Rubʼ al-ḥizb', meaning: 'Marks a quarter of a ḥizb — a way of tracking portions for recitation and memorisation.' },
-  { symbol: '◌۟', name: 'Silent zero', meaning: 'A small circle over a letter (usually an alif) meaning it is written but not pronounced.' },
-  { symbol: '◌ۢ', name: 'Iqlāb (small mīm)', meaning: 'A tiny mīm above a nūn or tanwīn: pronounce it as a hidden ‘m’ before the letter bāʾ.' },
+  { symbol: 'ا۟', name: 'Silent zero', meaning: 'A small circle over a letter (usually an alif) meaning it is written but not pronounced.' },
+  { symbol: 'نۢ', name: 'Iqlāb (small mīm)', meaning: 'A tiny mīm above a nūn or tanwīn: pronounce it as a hidden ‘m’ before the letter bāʾ.' },
 ];
 
 /* ───────────────────────── quranic vocabulary ───────────────────────── */
