@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { computePrayerTimes } from "@/lib/prayer-times";
 import { getPrayerSettings, setPrayerSettings, type PrayerCalcMethod } from "@hidden-hiqmah/ui/lib/storage";
 import Link from "next/link";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
-import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import {
   Sunrise,
   Sun,
@@ -255,7 +256,23 @@ function getWindowProgress(timings: PrayerTimings, nextKey: string, timezone?: s
 
 /* ───────────────────────── page ───────────────────────── */
 
-export default function PrayerTimesPage() {
+function PrayerTimesContent() {
+  /* ── Tab state (deep-linkable via ?tab=; default "times") ── */
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [activeTab, setActiveTab] = useState<string>(() =>
+    searchParams.get("tab") === "learn" ? "learn" : "times"
+  );
+  // The live prayer-time logic below (fetch, countdown, geolocation, method
+  // menu, timezone) is INDEPENDENT of the active tab — its effects always run
+  // and the countdown keeps ticking regardless of which tab is shown. Only the
+  // JSX render is gated by `activeTab`, never the hooks.
+  const selectTab = (k: string) => {
+    setActiveTab(k);
+    router.replace(`${pathname}?tab=${k}`, { scroll: false });
+  };
+
   /* ── Prayer Times state ── */
   const [ptTimings, setPtTimings] = useState<PrayerTimings | null>(null);
   const [ptTimezone, setPtTimezone] = useState<string | undefined>(undefined);
@@ -531,6 +548,18 @@ export default function PrayerTimesPage() {
       />
 
       <div className="space-y-6 max-w-4xl mx-auto">
+        <TabBar
+          tabs={[
+            { key: "times", label: "Times" },
+            { key: "learn", label: "Understanding" },
+          ]}
+          activeTab={activeTab}
+          onTabChange={selectTab}
+        />
+
+        {/* ═══════════ Tab: Times (live UI) ═══════════ */}
+        {activeTab === "times" && (
+          <>
         {/* Location & Hijri Date */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -915,7 +944,12 @@ export default function PrayerTimesPage() {
             })}
           </div>
         )}
+          </>
+        )}
 
+        {/* ═══════════ Tab: Learn (educational content) ═══════════ */}
+        {activeTab === "learn" && (
+          <>
         {/* ───────── Educational content ───────── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -945,9 +979,6 @@ export default function PrayerTimesPage() {
           <p className="text-themed-muted text-sm leading-relaxed">
             &ldquo;&hellip; the time for the afternoon prayer is as long as the sun has not become pale; the time of the evening prayer is as long as the twilight has not ended; the time of the night prayer is up to the middle of the average night&hellip;&rdquo;
           </p>
-          <p className="text-xs text-gold/80 mt-2">
-            <HadithRefText text="Abu Dawud 2:3" className="inline" />; <HadithRefText text="Abu Dawud 2:6" className="inline" />; <HadithRefText text="Muslim 5:222" className="inline" />; <HadithRefText text="Muslim 5:223" className="inline" />
-          </p>
           <p className="text-themed-muted text-sm leading-relaxed mt-3">
             The best moment is the <span className="text-gold">start</span> of the window; missing the window entirely without excuse is a serious matter. When two prayers&rsquo; times overlap in your day, keep them in order.
           </p>
@@ -972,9 +1003,6 @@ export default function PrayerTimesPage() {
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
             <span className="text-themed">Exceptions:</span> a missed obligatory prayer is made up as soon as it is remembered, even in these times, and prayers with a cause (such as the two rak&rsquo;ah after wudu, or the funeral prayer at need) are treated differently by the scholars. The details and the madhhab differences are covered fully on the Salah page.
           </p>
-          <p className="text-xs text-gold/80 mb-2">
-            <HadithRefText text="Bukhari 9:61" className="inline" />; <HadithRefText text="Muslim 6:357" className="inline" />; <HadithRefText text="Muslim 6:352" className="inline" />; <HadithRefText text="Muslim 6:353" className="inline" />
-          </p>
           <Link href="/salah?tab=voluntary" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
             Prohibited times &amp; exceptions on the Salah page &rarr;
           </Link>
@@ -997,13 +1025,11 @@ export default function PrayerTimesPage() {
               <p className="text-themed-muted text-sm leading-relaxed">
                 Ibn Mas&rsquo;ud asked which deed is dearest to Allah. The Prophet&nbsp;&#65018; replied, <span className="text-themed italic">&ldquo;To offer the prayers at their early stated fixed times.&rdquo;</span>
               </p>
-              <p className="text-xs text-gold/80 mt-1"><HadithRefText text="Bukhari 9:6" className="inline" /></p>
             </div>
             <div>
               <p className="text-themed-muted text-sm leading-relaxed">
                 <span className="text-themed italic">&ldquo;Whoever prays the two cool prayers (`Asr and Fajr) will go to Paradise.&rdquo;</span> These are two of the prayers most easily neglected. And the Prophet&nbsp;&#65018; named the Fajr and Isha prayers the heaviest upon the hypocrites.
               </p>
-              <p className="text-xs text-gold/80 mt-1"><HadithRefText text="Bukhari 9:50" className="inline" />; <HadithRefText text="Muslim 5:271" className="inline" />; <HadithRefText text="Bukhari 10:51" className="inline" /></p>
             </div>
           </div>
         </ContentCard>
@@ -1021,11 +1047,7 @@ export default function PrayerTimesPage() {
             <p className="text-themed-muted text-sm leading-relaxed italic">
               &ldquo;When it is the last third of the night, our Lord, the Blessed, the Superior, descends every night to the heaven of the world and says, &lsquo;Is there anyone who invokes Me (demand anything from Me), that I may respond to his invocation; Is there anyone who asks Me for something that I may give (it to) him; Is there anyone who asks My forgiveness that I may forgive him?&rsquo;&rdquo;
             </p>
-            <p className="text-xs text-gold/80 mt-2"><HadithRefText text="Bukhari 80:18" className="inline" />; <HadithRefText text="Muslim 6:201" className="inline" /></p>
           </div>
-          <p className="text-xs text-gold/80 mb-2">
-            <HadithRefText text="Muslim 5:222" className="inline" />; <HadithRefText text="Abu Dawud 2:165" className="inline" />
-          </p>
           <Link href="/salah?tab=voluntary&sub=tahajjud" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
             How to pray tahajjud &rarr;
           </Link>
@@ -1043,7 +1065,6 @@ export default function PrayerTimesPage() {
           <p className="text-themed-muted text-sm leading-relaxed">
             One key difference from the Gregorian calendar: the Islamic day begins at <span className="text-gold">Maghrib (sunset)</span>, not at midnight. This is why the night comes before the day in Islam, and why Ramadan and the two Eids &ldquo;begin&rdquo; the evening before their first daytime.
           </p>
-          <p className="text-xs text-gold/80 mt-2">Quran 9:36; Quran 10:5</p>
         </ContentCard>
 
         {/* 6 — Calculation method FAQ */}
@@ -1087,9 +1108,6 @@ export default function PrayerTimesPage() {
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
             If you genuinely oversleep or forget, there is <span className="text-gold">no sin</span> — the sin is in deliberate neglect. The Prophet&nbsp;&#65018; and his companions once slept past Fajr on a journey; when they woke, he simply had them pray it. He said, <span className="text-themed italic">&ldquo;If anyone forgets a prayer he should pray that prayer when he remembers it. There is no expiation except to pray the same.&rdquo;</span> So pray it the moment you wake or remember.
           </p>
-          <p className="text-xs text-gold/80 mb-2">
-            <HadithRefText text="Bukhari 9:72" className="inline" />; <HadithRefText text="Muslim 5:393" className="inline" />; <HadithRefText text="Abu Dawud 2:53" className="inline" />; <HadithRefText text="Bukhari 61:80" className="inline" />
-          </p>
           <Link href="/salah?tab=prayers&sub=missed" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
             Making up missed prayers (qada), in order, and years of backlog &rarr;
           </Link>
@@ -1101,9 +1119,6 @@ export default function PrayerTimesPage() {
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
             On a journey Allah lightened the prayer. The four-rak&rsquo;ah prayers (Dhuhr, Asr, Isha) are <span className="text-gold">shortened to two</span> — this is <span className="text-themed">qasr</span> — while Fajr stays two and Maghrib stays three. The Prophet&nbsp;&#65018; also <span className="text-gold">combined</span> Dhuhr with Asr and Maghrib with Isha on the road (<span className="text-themed">jam&rsquo;</span>), so on a travel day two of the times above effectively merge into one.
           </p>
-          <p className="text-xs text-gold/80 mb-2">
-            Quran 4:101; <HadithRefText text="Bukhari 18:1" className="inline" />; <HadithRefText text="Bukhari 18:2" className="inline" />; <HadithRefText text="Bukhari 18:27" className="inline" />; <HadithRefText text="Bukhari 18:30" className="inline" />
-          </p>
           <Link href="/salah?tab=prayers&sub=traveling" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
             Full rules of qasr &amp; jam&rsquo; for travelers &rarr;
           </Link>
@@ -1114,9 +1129,6 @@ export default function PrayerTimesPage() {
           <h3 className="text-gold font-semibold text-lg mb-3">When the countdown ends, the adhan begins</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
             When you hear the call to prayer: <span className="text-themed">repeat what the muezzin says</span>, then send salawat on the Prophet&nbsp;&#65018; and ask Allah to grant him the wasilah. The moment <span className="text-gold">between the adhan and the iqamah is a time of accepted du&rsquo;a</span> — &ldquo;The supplication made between the adhan and the iqamah is not rejected.&rdquo;
-          </p>
-          <p className="text-xs text-gold/80 mb-2">
-            <HadithRefText text="Muslim 4:12" className="inline" />; <HadithRefText text="Bukhari 10:12" className="inline" />; <HadithRefText text="Abu Dawud 2:139" className="inline" />; <HadithRefText text="Abu Dawud 2:131" className="inline" />
           </p>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             <Link href="/salah?tab=adhan" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
@@ -1155,7 +1167,17 @@ export default function PrayerTimesPage() {
           { ref: "Bukhari 10:12; Abu Dawud 2:139", desc: "The wasilah du'a after the adhan" },
           { ref: "Abu Dawud 2:131", desc: "Du'a between the adhan and iqamah is not rejected" },
         ]} />
+          </>
+        )}
       </div>
     </div>
+  );
+}
+
+export default function PrayerTimesPage() {
+  return (
+    <Suspense>
+      <PrayerTimesContent />
+    </Suspense>
   );
 }

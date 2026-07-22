@@ -165,13 +165,13 @@ const longVowels = [
 ];
 
 const mushafSymbols = [
-  { symbol: '◌ۘ', name: 'Lāzim (mīm)', meaning: 'Compulsory stop. You must stop here; continuing would distort the meaning.' },
-  { symbol: '◌ۙ', name: 'Lā (lām-alif)', meaning: 'Do not stop. Keep reading — pausing here would break the meaning. (If you run out of breath you may stop, then go back and continue.)' },
-  { symbol: '◌ۚ', name: 'Jāʼiz (jīm)', meaning: 'Permissible stop. Stopping and continuing are equally acceptable.' },
-  { symbol: '◌ۖ', name: 'Al-waṣl awlā (ṣlī)', meaning: 'Continuing is preferred, though you may stop.' },
-  { symbol: '◌ۗ', name: 'Al-waqf awlā (qlī)', meaning: 'Stopping is preferred, though you may continue.' },
-  { symbol: '◌ۜ', name: 'Saktah (sīn)', meaning: 'A brief pause — hold for a moment without taking a breath, then continue.' },
-  { symbol: '◌ۛ … ◌ۛ', name: 'Muʼānaqah (three dots)', meaning: 'The ‘embracing’ stop: these appear as a pair. Stop at one of the two positions, not both.' },
+  { symbol: 'مـ', name: 'Lāzim (mīm)', meaning: 'Compulsory stop. You must stop here; continuing would distort the meaning.' },
+  { symbol: 'لا', name: 'Lā (lām-alif)', meaning: 'Do not stop. Keep reading — pausing here would break the meaning. (If you run out of breath you may stop, then go back and continue.)' },
+  { symbol: 'ج', name: 'Jāʼiz (jīm)', meaning: 'Permissible stop. Stopping and continuing are equally acceptable.' },
+  { symbol: 'صلى', name: 'Al-waṣl awlā (ṣlī)', meaning: 'Continuing is preferred, though you may stop.' },
+  { symbol: 'قلى', name: 'Al-waqf awlā (qlī)', meaning: 'Stopping is preferred, though you may continue.' },
+  { symbol: 'س', name: 'Saktah (sīn)', meaning: 'A brief pause — hold for a moment without taking a breath, then continue.' },
+  { symbol: '∴ ⋯ ∴', name: 'Muʼānaqah (three dots)', meaning: 'The ‘embracing’ stop: these appear as a pair — you will see three dots twice. Stop at one of the two positions, not both.' },
   { symbol: '۩', name: 'Sajdah', meaning: 'A verse of prostration. On reciting it, the reciter (and listeners) make a prostration.' },
   { symbol: '۞', name: 'Rubʼ al-ḥizb', meaning: 'Marks a quarter of a ḥizb — a way of tracking portions for recitation and memorisation.' },
   { symbol: '◌۟', name: 'Silent zero', meaning: 'A small circle over a letter (usually an alif) meaning it is written but not pronounced.' },

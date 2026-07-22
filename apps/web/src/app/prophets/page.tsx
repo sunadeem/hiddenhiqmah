@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, Suspense, type ReactNode } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import Accordion from "@hidden-hiqmah/ui/components/Accordion";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import { EmptyState } from "@hidden-hiqmah/ui/components/EmptyState";
@@ -57,7 +59,6 @@ function VerseBlock({ id }: { id: string }) {
     <div className="rounded-lg p-4 my-3" style={{ backgroundColor: "var(--color-bg)" }}>
       <p className="text-base font-arabic text-gold leading-loose mb-2 text-right">{v.ar}</p>
       <p className="text-themed text-sm italic">&ldquo;{v.en}&rdquo;</p>
-      <p className="text-xs text-themed-muted mt-2">{v.ref}</p>
     </div>
   );
 }
@@ -512,7 +513,29 @@ const faqSources = [
   { ref: "Bukhari 60:112", desc: "the Seal of the Prophets" },
 ];
 
-export default function ProphetsPage() {
+const tabs = [
+  { key: "timeline", label: "Timeline" },
+  { key: "about", label: "About the Prophets" },
+] as const;
+
+type TabKey = (typeof tabs)[number]["key"];
+
+function ProphetsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const [activeTab, setActiveTab] = useState<TabKey>(() => {
+    const tab = searchParams.get("tab");
+    return tab && tabs.some((t) => t.key === tab) ? (tab as TabKey) : "timeline";
+  });
+
+  const selectTab = (k: TabKey) => {
+    setActiveTab(k);
+    // Deep-linkable: ?tab=timeline (default) | ?tab=about — scroll preserved.
+    router.replace(`${pathname}?tab=${k}`, { scroll: false });
+  };
+
   const [search, setSearch] = useState("");
   const searching = search.trim() !== "";
 
@@ -529,6 +552,15 @@ export default function ProphetsPage() {
     introFiltered.length === 0 &&
     figuresFiltered.length === 0 &&
     faqFiltered.length === 0;
+
+  // Tab gating: while a search query is active we bypass the tabs and show every
+  // matching section (the original combined-search behaviour is unchanged).
+  // Otherwise each section belongs to a tab — the timeline is the default tab,
+  // and the intro + debated-figures + FAQ live under "About the Prophets".
+  const showIntro = (!searching && activeTab === "about") || (searching && introFiltered.length > 0);
+  const showTimeline = (!searching && activeTab === "timeline") || (searching && filtered.length > 0);
+  const showFigures = (!searching && activeTab === "about") || (searching && figuresFiltered.length > 0);
+  const showFaq = (!searching && activeTab === "about") || (searching && faqFiltered.length > 0);
 
   return (
     <div>
@@ -551,6 +583,16 @@ export default function ProphetsPage() {
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search prophets, figures, questions..." className="mb-6" />
 
+      {/* Section tabs — hidden while searching so results span both tabs. */}
+      {!searching && (
+        <TabBar
+          tabs={tabs.map((t) => ({ key: t.key, label: t.label }))}
+          activeTab={activeTab}
+          onTabChange={(k) => selectTab(k as TabKey)}
+          className="mb-6"
+        />
+      )}
+
       {nothing && (
         <EmptyState
           icon={Users}
@@ -560,7 +602,7 @@ export default function ProphetsPage() {
       )}
 
       {/* What Muslims believe about the prophets */}
-      {(!searching || introFiltered.length > 0) && (
+      {showIntro && (
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles size={18} className="text-gold" />
@@ -570,8 +612,8 @@ export default function ProphetsPage() {
           </div>
           {!searching && (
             <p className="text-themed-muted text-sm leading-relaxed mb-4">
-              Before the timeline: who the prophets were, how many there are, and the beliefs that
-              tie all twenty-seven stories below into one message.
+              Who the prophets were, how many there are, and the beliefs that tie all twenty-seven
+              prophet stories into one message.
             </p>
           )}
           <Accordion
@@ -583,7 +625,7 @@ export default function ProphetsPage() {
       )}
 
       {/* Timeline */}
-      {filtered.length > 0 && (
+      {showTimeline && (
         <>
           {searching && (
             <h2 className="text-lg font-semibold text-themed mb-3">Prophets</h2>
@@ -696,7 +738,7 @@ export default function ProphetsPage() {
       )}
 
       {/* Righteous figures whose prophethood is debated */}
-      {(!searching || figuresFiltered.length > 0) && (
+      {showFigures && (
         <section className="mt-10">
           <div className="flex items-center gap-2 mb-3">
             <Users size={18} className="text-gold" />
@@ -732,7 +774,7 @@ export default function ProphetsPage() {
       )}
 
       {/* FAQ */}
-      {(!searching || faqFiltered.length > 0) && (
+      {showFaq && (
         <section className="mt-10">
           <div className="flex items-center gap-2 mb-3">
             <HelpCircle size={18} className="text-gold" />
@@ -748,5 +790,13 @@ export default function ProphetsPage() {
         </section>
       )}
     </div>
+  );
+}
+
+export default function ProphetsPage() {
+  return (
+    <Suspense>
+      <ProphetsContent />
+    </Suspense>
   );
 }
