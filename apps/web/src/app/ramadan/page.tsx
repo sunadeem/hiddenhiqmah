@@ -53,6 +53,30 @@ const whyItMatters = [
       "In a hadith qudsi, Allah says: 'Every deed of the son of Adam is for him, except fasting — it is for Me, and I shall reward it.' The reward is so immense that only Allah knows its extent.",
     reference: "Bukhari 30:14; Muslim 13:212",
   },
+  {
+    point: "There is a special gate — Ar-Rayyan",
+    detail:
+      "The Prophet (peace be upon him) said: 'There is a gate in Paradise called Ar-Raiyan, and those who observe fasts will enter through it on the Day of Resurrection and none except them will enter through it…' Once the fasting people have entered, the gate is closed and no one else passes through it.",
+    reference: "Bukhari 30:6",
+  },
+  {
+    point: "The fasting person has two joys, and a breath sweeter than musk",
+    detail:
+      "The Prophet (peace be upon him) said: 'There are two joys for the fasting person: the joy when he breaks his fast, and the joy of when he meets his Lord.' And within the hadith qudsi he said: 'The unpleasant smell coming out from the mouth of a fasting person is better in the sight of Allah than the smell of musk.'",
+    reference: "Tirmidhi 8:85; Bukhari 30:14",
+  },
+  {
+    point: "Fasting is not merely giving up food",
+    detail:
+      "The fast is a training in character, not only in hunger. The Prophet (peace be upon him) warned: 'Whoever does not give up forged speech and evil actions, Allah is not in need of his leaving his food and drink…' Guarding the tongue and conduct is part of the fast itself.",
+    reference: "Bukhari 30:13",
+  },
+  {
+    point: "The fasting person's supplication is not turned back",
+    detail:
+      "The Prophet (peace be upon him) said: 'There are three whose supplications are not turned back: A just ruler, and a fasting person until he breaks his fast…' The moments of fasting — especially just before iftar — are a prime time to ask Allah for whatever you need.",
+    reference: "Ibn Majah 7:115",
+  },
 ];
 
 type FastingTopic = {
@@ -66,6 +90,41 @@ type FastingTopic = {
 };
 
 const fastingTopics: FastingTopic[] = [
+  {
+    id: "when-it-begins",
+    name: "When It Begins",
+    content: {
+      intro:
+        "'Is tomorrow Ramadan?' and 'why do the mosques disagree?' are the most-asked questions of the year. Ramadan begins and ends with the sighting of the crescent moon (hilal), and the month is always either 29 or 30 days — never fixed in advance.",
+      points: [
+        {
+          title: "Fasting begins with the crescent",
+          detail:
+            "The month starts when the new crescent of Ramadan is sighted, and ends when the crescent of Shawwal is seen. The Prophet (peace be upon him) said: 'Start fasting on seeing the crescent (of Ramadan), and give up fasting on seeing the crescent (of Shawwal), and if the sky is overcast (and you cannot see it), complete thirty days of Sha'ban'",
+          note: "Bukhari 30:19",
+        },
+        {
+          title: "Always 29 or 30 days",
+          detail:
+            "A lunar month is never longer than 30 days. If the crescent is not sighted on the 29th night, the current month is completed as thirty days. The Prophet (peace be upon him) said: 'We are an illiterate nation; we neither write, nor know accounts. The month is like this and this,' meaning sometimes 29 days and sometimes thirty.",
+          note: "Bukhari 30:23",
+        },
+        {
+          title: "Do not 'jump the gun'",
+          detail:
+            "It is not allowed to start fasting Ramadan a day or two early out of caution. The Prophet (peace be upon him) said: 'None of you should fast a day or two before the month of Ramadan unless he has the habit of fasting…' — the only exception being someone whose regular voluntary fast happens to fall on that day.",
+          note: "Bukhari 30:24",
+        },
+        {
+          title: "Why communities differ",
+          detail:
+            "Scholars differ on whether a single global sighting binds everyone, or whether each region (or country) follows its own local sighting — which is why neighbouring mosques can begin on different days. Both positions are respected; follow your local community or trusted authority and do not let it become a source of division. The full moon-sighting discussion, and how it applies to every Islamic month, is on the Islamic Calendar page.",
+          note: "Differed upon — see /islamic-calendar for the detailed moon-sighting discussion",
+        },
+      ],
+      source: "Bukhari 30:19; Bukhari 30:23; Bukhari 30:24",
+    },
+  },
   {
     id: "basics",
     name: "Basics",
@@ -242,6 +301,24 @@ const fastingTopics: FastingTopic[] = [
             "Women experiencing menstruation or post-natal bleeding (nifas) are prohibited from fasting during those days. They must make up the missed days after Ramadan. Aisha said: 'We were commanded to make up the fasts but not the prayers.'",
           note: "Bukhari 6:9; Muslim 3:85",
         },
+        {
+          title: "Diabetes and time-critical medication",
+          detail:
+            "The classical categories above map onto modern medicine. A person whose diabetes, or any condition, requires food or medication during daylight hours to avoid real harm is treated as 'ill': if the need is temporary, they break the fast and make up the days; if it is permanent, they pay fidyah. Insulin injections themselves are generally held not to break the fast (they are not nutrition), but hypoglycaemia is a genuine danger — the ruling depends entirely on your specific condition.",
+          note: "Quran 2:184-185 — establish the specifics with your doctor and a qualified scholar",
+        },
+        {
+          title: "IV drips, dialysis, and transfusions",
+          detail:
+            "Contemporary fiqh councils distinguish by what enters the body: a nutritional/glucose IV drip is generally held to break the fast because it nourishes like food, whereas non-nutritional injections do not. Kidney dialysis and blood transfusions are differed upon among contemporary scholars. These are exactly the modern specifics that need a case-by-case ruling.",
+          note: "Scholarly-summary — contemporary fiqh-academy positions; consult a scholar for your case",
+        },
+        {
+          title: "Mental-health and other daily medication",
+          detail:
+            "If prescribed medication must be taken at fixed times during fasting hours and cannot safely be rescheduled around suhoor and iftar, the person is excused as one who is ill — do not stop essential medication to fast. Never discontinue psychiatric or life-sustaining medication for the sake of fasting; seek an accommodation from your doctor, and a ruling from a scholar, together.",
+          note: "Quran 2:184-185 — 'Allah wants ease for you and does not want hardship for you'",
+        },
       ],
       source: "Quran 2:184-185; Bukhari 6:9; Bukhari 65:32; Muslim 3:85; Muslim 13:112",
     },
@@ -278,6 +355,88 @@ const fastingTopics: FastingTopic[] = [
         },
       ],
       source: "Quran 2:184-185; Bukhari 30:44; Bukhari 65:32; Muslim 13:101; Muslim 13:193",
+    },
+  },
+  {
+    id: "with-kids",
+    name: "Ramadan with Kids",
+    content: {
+      intro:
+        "Fasting is not obligatory before puberty, but Ramadan is how children fall in love with it. The companions trained their young ones gently, and the goal is a happy first fast — not an exhausted, resentful one.",
+      points: [
+        {
+          title: "The companions' example",
+          detail:
+            "The companions had their children fast on encouraged days and made the day manageable for them. Ar-Rubai' bint Mu'awwidh said: '…and also make our boys fast. We used to make toys of wool for the boys and if anyone of them cried for food, he was given those toys till it was the time of the breaking of the fast.' Distraction, play, and a countdown to iftar were part of the method.",
+          note: "Bukhari 30:67",
+        },
+        {
+          title: "Start gradually",
+          detail:
+            "Build up over a few years rather than all at once: a half-day fast until Dhuhr, then until Asr, then a full day when the child is keen and able. Let the child ask to fast rather than being forced — enthusiasm sustained over years matters more than one hard day. Watch for genuine hunger, thirst, or illness in a growing body and let them break without guilt.",
+          note: "Scholarly-summary — practical parenting guidance",
+        },
+        {
+          title: "Make the month special at home",
+          detail:
+            "Wake for suhoor together, let children help prepare iftar and hand out dates, decorate the home, and keep a simple reward chart or countdown for good deeds and completed fasts. Celebrate the first full fast as a milestone. These rituals are what a child remembers Ramadan by. See the Kids section for family-friendly activities and stories.",
+          note: "Scholarly-summary — see /kids for family activities and first-fast ideas",
+        },
+      ],
+      source: "Bukhari 30:67",
+    },
+  },
+  {
+    id: "common-questions",
+    name: "Common Questions",
+    content: {
+      intro:
+        "The questions people are often too embarrassed to ask a person face-to-face — but which every fasting Muslim eventually wonders about. Where a matter is differed upon or depends on your situation, the safest course is to ask a trusted local scholar.",
+      points: [
+        {
+          title: "I woke up needing a ghusl (in janabah) — is my fast valid?",
+          detail:
+            "Yes. Becoming ritually impure from intimacy or a wet dream during the night does not affect the fast, even if you only perform ghusl after Fajr. Aisha and Umm Salama reported that the Prophet (peace be upon him) 'used to get up in the morning in the state of Janaba after having sexual relations with his wives. He would then take a bath and fast' Rushing the ghusl is better, but a delay does not break the fast.",
+          note: "Bukhari 30:34; Bukhari 30:39",
+        },
+        {
+          title: "Can I kiss or be affectionate with my spouse while fasting?",
+          detail:
+            "Affection short of intercourse is permitted for those who can control themselves. Aisha said the Prophet (peace be upon him) 'used to kiss and embrace (his wives) while he was fasting, and he had more power to control his desires than any of you.' If a person fears it will lead to intercourse or ejaculation, they should avoid it — the concern is where it leads, not the affection itself.",
+          note: "Bukhari 30:35; Bukhari 30:36",
+        },
+        {
+          title: "Does a wet dream or nosebleed break my fast?",
+          detail:
+            "No. Anything involuntary — a wet dream, a nosebleed, involuntary vomiting, or an accidental swallow of dust or water — does not break the fast, because the fast is only broken by deliberate acts. There is no ghusl-related penalty and nothing to make up.",
+          note: "Scholarly-summary — the majority hold involuntary acts do not break the fast",
+        },
+        {
+          title: "Toothpaste, mouthwash, and brushing?",
+          detail:
+            "Using the miswak or a dry toothbrush is fine (see 'What Doesn't Break It'). With toothpaste or mouthwash, take care that nothing is swallowed; some scholars advise leaving strongly-flavoured toothpaste until after iftar out of caution. If a trace is accidentally swallowed, the fast is not broken.",
+          note: "Scholarly-summary — see the miswak point under 'What Doesn't Break It'",
+        },
+        {
+          title: "Inhalers, patches, and vaccines?",
+          detail:
+            "Most contemporary scholars and fiqh councils hold that non-nutritional injections, skin patches, and vaccines do not break the fast (nothing is eaten or drunk). Asthma inhalers are differed upon — a minority treat the spray as entering the throat like a drink, while many permit them, especially where they are medically necessary. If you rely on an inhaler to breathe, do not risk your health over the difference.",
+          note: "Scholarly-summary — see the eye-drops/injections point under 'What Doesn't Break It'; consult a scholar",
+        },
+        {
+          title: "Showering, swimming, and cooling off?",
+          detail:
+            "Showering, bathing, and swimming are all permitted while fasting — pouring water over yourself to cool down does not break the fast. The only caution is not to deliberately swallow water. If some water is swallowed by accident, the fast remains valid.",
+          note: "Scholarly-summary — permitted by the majority; avoid deliberately swallowing water",
+        },
+        {
+          title: "I keep forgetting and eating — did I ruin my fasts?",
+          detail:
+            "No. Every time you eat or drink genuinely forgetting you are fasting, the fast remains valid however many times it happens — the Prophet (peace be upon him) said the one who forgets 'should complete his fast, for it is only Allah Who has fed him and given him drink.' Simply stop the moment you remember, remove what is in your mouth, and continue. There is nothing to make up.",
+          note: "Bukhari 30:40; Muslim 13:222",
+        },
+      ],
+      source: "Bukhari 30:34; Bukhari 30:35; Bukhari 30:39; Bukhari 30:40; Muslim 13:222",
     },
   },
 ];
@@ -325,13 +484,19 @@ const lastTenTopics: LastTenTopic[] = [
           note: "Tirmidhi 48:144; Ibn Majah 34:24",
         },
         {
+          title: "The Prophet's example in the last ten",
+          detail:
+            "This is the model for stepping up. Aisha reported that with the start of the last ten days of Ramadan, the Prophet (peace be upon him) 'used to tighten his waist belt (i.e. work hard) and used to pray all the night, and used to keep his family awake for the prayers.' He gave these nights an intensity unlike the rest of the month, and pulled his household into it with him.",
+          note: "Bukhari 32:11",
+        },
+        {
           title: "What to do",
           detail:
             "Spend the night in prayer (qiyam al-layl), recitation of the Quran, dhikr, du'a, and seeking forgiveness. The Prophet (peace be upon him) said: 'Whoever stands in prayer on Laylatul Qadr out of faith and seeking reward, his previous sins will be forgiven.'",
           note: "Bukhari 2:28; Muslim 6:209",
         },
       ],
-      source: "Quran 97:1-5; Bukhari 2:28; Bukhari 32:4; Muslim 6:209; Muslim 13:272; Tirmidhi 48:144",
+      source: "Quran 97:1-5; Bukhari 2:28; Bukhari 32:4; Bukhari 32:11; Muslim 6:209; Muslim 13:272; Tirmidhi 48:144",
     },
   },
   {
@@ -399,6 +564,12 @@ const lastTenTopics: LastTenTopic[] = [
             "Ibn Abbas said: 'The Messenger of Allah prescribed Zakat al-Fitr as a purification for the fasting person from idle talk and obscenity, and as food for the poor.' It ensures that every Muslim — rich or poor — can celebrate Eid with dignity.",
           note: "Abu Dawud 9:54; Ibn Majah 8:45",
         },
+        {
+          title: "Not the same as annual Zakat",
+          detail:
+            "Do not confuse the two. Zakat al-Fitr is a small, fixed charity of roughly one sa' of food paid per person by every Muslim tied to the end of Ramadan. Annual Zakat (Zakat al-mal) is the third pillar of Islam — 2.5% of qualifying wealth held for a full year, due from those who reach the nisab threshold. They are separate obligations: paying one does not discharge the other. See the Zakat and Pillars pages for the wealth-based Zakat in full.",
+          note: "Bukhari 24:103 (Zakat al-Fitr scope) — see /zakat and /pillars for annual Zakat",
+        },
       ],
       source: "Bukhari 24:103; Bukhari 24:109; Muslim 12:16; Muslim 12:17; Abu Dawud 9:54",
     },
@@ -434,8 +605,180 @@ const lastTenTopics: LastTenTopic[] = [
             "Eid is a time to visit family, exchange gifts, feed others, and spread joy. The Prophet (peace be upon him) said: 'Every nation has its celebration, and this is our celebration.' It is a communal celebration that strengthens the bonds of the ummah.",
           note: "Bukhari 13:4",
         },
+        {
+          title: "Everyone comes out — even women and children",
+          detail:
+            "Eid is meant to gather the whole community. Umm Atiyya said: 'We were ordered to go out (for `Id) and also to take along with us the menstruating women, mature girls and virgins staying in seclusion.' Menstruating women do not pray but attend the gathering and the du'a. Bring the family — first-timers included; the prayer itself and its takbirat are walked through step by step in the Salah section.",
+          note: "Bukhari 13:29; Bukhari 13:30",
+        },
+        {
+          title: "The Eid greeting, and if you arrive late",
+          detail:
+            "The companions would greet one another with 'Taqabbal Allahu minna wa minkum' — 'May Allah accept it from us and from you.' If you miss the Eid prayer entirely, there is no make-up obligation on you; scholars mention you may pray two rak'at on your own if you wish, but it is not required. Simply join the celebration and the day's kindness.",
+          note: "Scholarly-summary — the taqabbal greeting is a companions' practice; missed-Eid ruling is differed",
+        },
       ],
-      source: "Bukhari 13:4; Bukhari 13:8; Muslim 13:178",
+      source: "Bukhari 13:4; Bukhari 13:8; Bukhari 13:29; Bukhari 13:30; Muslim 13:178",
+    },
+  },
+  {
+    id: "after-ramadan",
+    name: "After Ramadan",
+    content: {
+      intro:
+        "The month ends, but the worship shouldn't. The week after Eid brings its own questions — 'the six of Shawwal,' making up missed days, and how to keep the momentum alive once the mosques empty out.",
+      points: [
+        {
+          title: "The six days of Shawwal",
+          detail:
+            "Fasting six days in the month of Shawwal (after Eid) carries an enormous reward. The Prophet (peace be upon him) said that whoever 'observed the fast of Ramadan and then followed it with six (fasts) of Shawwal' — 'it would be as if he fasted perpetually.' They can be any six days of the month, consecutive or spread out. The Islamic Calendar page covers Shawwal and the rest of the year's recommended fasts.",
+          note: "Muslim 13:264",
+        },
+        {
+          title: "Make up missed Ramadan days first",
+          detail:
+            "If you owe make-up (qada) fasts from Ramadan, many scholars hold you should complete those before beginning the voluntary six of Shawwal, since the reward described is for six 'after Ramadan' — i.e. after Ramadan is fully fulfilled. There is flexibility in timing overall: Aisha herself would delay her qada — 'I could not do it but during the month of Sha'ban due to my duties to the Messenger of Allah…' If in doubt about your situation, ask a scholar.",
+          note: "Muslim 13:193",
+        },
+        {
+          title: "Keep the habits alive",
+          detail:
+            "The real test of Ramadan is the eleven months after it. Carry one or two habits forward — a daily portion of Quran, a voluntary prayer, regular charity, guarding the tongue. The Prophet (peace be upon him) taught that 'the most beloved deed to Allah is the most regular and constant even if it were little.' A small deed you keep all year is worth more than a burst that fades by Shawwal.",
+          note: "Bukhari 81:53",
+        },
+      ],
+      source: "Muslim 13:264; Muslim 13:193; Bukhari 81:53",
+    },
+  },
+];
+
+const worshipTopics: FastingTopic[] = [
+  {
+    id: "tarawih",
+    name: "Tarawih & Night Prayer",
+    content: {
+      intro:
+        "Tarawih — the long night prayer of Ramadan — is the defining nightly worship of the month. It is a voluntary prayer of immense reward, prayed in congregation in mosques across the world every night of Ramadan.",
+      points: [
+        {
+          title: "Its reward",
+          detail:
+            "The Prophet (peace be upon him) said: 'Whoever prayed at night in it (the month of Ramadan) out of sincere Faith and hoping for a reward from Allah, then all his previous sins will be forgiven.' Standing the nights of Ramadan in prayer is one of the two great forgivenesses of the month, alongside the fast itself.",
+          note: "Bukhari 31:1; Bukhari 31:2",
+        },
+        {
+          title: "Why the Prophet prayed it, then stopped in congregation",
+          detail:
+            "The Prophet (peace be upon him) led the night prayer in the mosque for a few nights and the crowds grew, then on the fourth night he came out only for the morning prayer and explained: 'your presence was not hidden from me but I was afraid lest the night prayer (Qiyam) should be enjoined on you and you might not be able to carry it on.' He wanted to spare the ummah an obligation, so it remained a beloved voluntary prayer.",
+          note: "Bukhari 31:5",
+        },
+        {
+          title: "How it became congregational again",
+          detail:
+            "Umar ibn al-Khattab later gathered the people to pray behind a single reciter, Ubayy ibn Ka'b. Seeing them united, he said: 'What an excellent Bid'a (i.e. innovation in religion) this is…' — an approved good he revived, since the Prophet himself had prayed it in congregation before withdrawing only out of fear it be made obligatory.",
+          note: "Bukhari 31:3",
+        },
+        {
+          title: "How many rak'at?",
+          detail:
+            "Aisha said the Prophet (peace be upon him) 'did not pray more than eleven rak`at in Ramadan or in any other month.' On this basis some pray eight rak'at plus witr, while others follow the practice established in Umar's time of twenty rak'at plus witr. Both are valid, well-established positions — pray what your mosque prays and focus on presence over counting.",
+          note: "Bukhari 31:6",
+        },
+        {
+          title: "How to pray it",
+          detail:
+            "Tarawih is prayed in sets of two rak'at after the Isha prayer, concluded with witr, any time from Isha until Fajr. The full step-by-step method, timing, and etiquette are covered in the Salah section under voluntary prayers.",
+          note: "See /salah?tab=voluntary&sub=tarawih for the full how-to",
+        },
+      ],
+      source: "Bukhari 31:1; Bukhari 31:2; Bukhari 31:3; Bukhari 31:5; Bukhari 31:6",
+    },
+  },
+  {
+    id: "quran",
+    name: "The Quran Habit",
+    content: {
+      intro:
+        "Ramadan is 'the month of the Quran' — the month in which it was revealed. Reconnecting with the Book, by reading, understanding, and living it, is the heart of the month's worship.",
+      points: [
+        {
+          title: "Ramadan is the month of the Quran",
+          detail:
+            "Allah says the Quran was sent down in Ramadan (Quran 2:185). Every Ramadan, the angel Jibreel would review the entire Quran with the Prophet (peace be upon him). Ibn Abbas reported that 'Gabriel used to meet him every night of Ramadan to teach him the Qur'an' — the month is built around this Book.",
+          note: "Bukhari 1:6",
+        },
+        {
+          title: "A realistic daily plan",
+          detail:
+            "Many Muslims aim to complete the whole Quran at least once during the month — reading roughly one juz (one of thirty parts) each day makes this achievable. If that is too much, set a portion you can keep, whether pages or minutes, and hold to it every day. Consistency matters more than volume.",
+          note: "Scholarly-summary — completing the Quran in Ramadan is a well-established practice",
+        },
+        {
+          title: "Understand, don't just recite",
+          detail:
+            "Pair recitation with meaning: read a translation of what you recite, pause at verses that move you, and carry one lesson into your day. Tarawih is an excellent time to listen attentively as the reciter takes you through the Quran across the nights. Use the Quran reader to follow along with translation and, if you wish, word-by-word meaning.",
+          note: "Scholarly-summary — see the Quran reader for translation and word-by-word",
+        },
+      ],
+      source: "Quran 2:185; Bukhari 1:6",
+    },
+  },
+  {
+    id: "generosity",
+    name: "Generosity & Feeding",
+    content: {
+      intro:
+        "Ramadan is the season of giving. The Prophet (peace be upon him) — already the most generous of people — became more generous still in this month, and feeding others carries a reward multiplied by the fast.",
+      points: [
+        {
+          title: "The Prophet's generosity in Ramadan",
+          detail:
+            "Ibn Abbas said the Prophet (peace be upon him) 'was the most generous of all the people, and he used to reach the peak in generosity in the month of Ramadan when Gabriel met him…' and was 'even more generous than the strong uncontrollable wind.' Increased giving is following his example directly.",
+          note: "Bukhari 1:6",
+        },
+        {
+          title: "Feed a fasting person",
+          detail:
+            "One of the easiest ways to multiply reward in Ramadan: the Prophet (peace be upon him) said: 'Whoever provides the food for a fasting person to break his fast with, then for him is the same reward as his (the fasting person's), without anything being diminished from the reward of the fasting person.' A single date or a cup of water at iftar can earn the reward of the whole fast.",
+          note: "Tirmidhi 8:126; Ibn Majah 7:109",
+        },
+        {
+          title: "Give in every form",
+          detail:
+            "Generosity in Ramadan is broad: sponsoring iftars, giving sadaqah, paying charity to the poor, hosting others, and being easy and kind with family and strangers. Many Muslims also pay their annual Zakat in Ramadan to seek the month's multiplied reward. Small, consistent giving throughout the thirty days builds a lasting habit.",
+          note: "Scholarly-summary — many choose Ramadan to give their annual Zakat",
+        },
+      ],
+      source: "Bukhari 1:6; Tirmidhi 8:126; Ibn Majah 7:109",
+    },
+  },
+  {
+    id: "dua",
+    name: "Du'a in Ramadan",
+    content: {
+      intro:
+        "Ramadan is a month of answered prayer. The fasting person is in a state Allah honours, and the days and nights hold moments when supplication is especially accepted — so ask, and ask abundantly.",
+      points: [
+        {
+          title: "The fasting person's du'a is answered",
+          detail:
+            "The Prophet (peace be upon him) said: 'There are three whose supplications are not turned back: A just ruler, and a fasting person until he breaks his fast…' Every hour you fast is an open window for du'a — keep asking Allah throughout the day, not only at set times.",
+          note: "Ibn Majah 7:115",
+        },
+        {
+          title: "The best moments to ask",
+          detail:
+            "The time just before iftar — while still fasting and at the point of breaking it — is among the most beloved moments to make du'a. So too the last third of every night before Fajr, and above all the odd nights of the last ten in search of Laylatul Qadr. Raise your hands, be specific, and repeat your most important requests.",
+          note: "Scholarly-summary — established times of accepted supplication",
+        },
+        {
+          title: "Allah is near, so call on Him",
+          detail:
+            "Allah placed the verse of du'a in the very middle of the passages on fasting: 'When My slaves ask you concerning Me, I am indeed near. I respond to the call of the supplicant when he calls upon Me…' (Quran 2:186). Its placement within the Ramadan verses is a direct invitation to turn the month into a season of asking.",
+          note: "Quran 2:186",
+        },
+      ],
+      source: "Quran 2:186; Ibn Majah 7:115",
     },
   },
 ];
@@ -457,6 +800,7 @@ const sections = [
   { key: "intro", label: "What is Ramadan?" },
   { key: "importance", label: "Why It Matters" },
   { key: "fasting", label: "Fasting Guide" },
+  { key: "worship", label: "Worship in Ramadan" },
   { key: "last-ten", label: "Last 10 Nights & Eid" },
 ] as const;
 
@@ -561,6 +905,9 @@ function RamadanContent() {
   const [activeFasting, setActiveFasting] = useState(
     subParam && fastingTopics.some((t) => t.id === subParam) ? subParam : "basics"
   );
+  const [activeWorship, setActiveWorship] = useState(
+    subParam && worshipTopics.some((t) => t.id === subParam) ? subParam : "tarawih"
+  );
   const [activeLastTen, setActiveLastTen] = useState(
     subParam && lastTenTopics.some((t) => t.id === subParam) ? subParam : "laylatul-qadr"
   );
@@ -591,10 +938,12 @@ function RamadanContent() {
     if (!search || search.length < 2) return;
     const vf = fastingTopics.filter(topicMatches);
     if (vf.length && !vf.some((t) => t.id === activeFasting)) setActiveFasting(vf[0].id);
+    const vw = worshipTopics.filter(topicMatches);
+    if (vw.length && !vw.some((t) => t.id === activeWorship)) setActiveWorship(vw[0].id);
     const vl = lastTenTopics.filter(topicMatches);
     if (vl.length && !vl.some((t) => t.id === activeLastTen)) setActiveLastTen(vl[0].id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, activeFasting, activeLastTen]);
+  }, [search, activeFasting, activeWorship, activeLastTen]);
 
   return (
     <div>
@@ -707,6 +1056,10 @@ function RamadanContent() {
               { ref: "Bukhari 30:8; Muslim 13:211", desc: "Gates of Paradise opened, Hellfire closed, devils chained" },
               { ref: "Bukhari 30:4; Muslim 13:212", desc: "Fasting as a shield; hadith qudsi on fasting's reward" },
               { ref: "Bukhari 2:31; Muslim 6:209", desc: "Previous sins forgiven for fasting and praying in Ramadan" },
+              { ref: "Bukhari 30:6", desc: "The gate Ar-Rayyan, reserved for those who fast" },
+              { ref: "Tirmidhi 8:85", desc: "The two joys of the fasting person" },
+              { ref: "Bukhari 30:13", desc: "Whoever does not give up forged speech and evil actions" },
+              { ref: "Ibn Majah 7:115", desc: "The fasting person's supplication is not turned back" },
               { ref: "Bukhari 32:4", desc: "Seeking Laylatul Qadr in the last ten nights" },
               { ref: "Bukhari 1:6", desc: "Jibreel reviewing the Quran with the Prophet" },
               { ref: "Quran 2:183-185", desc: "The obligation of fasting and its virtues" },
@@ -770,6 +1123,68 @@ function RamadanContent() {
             {/* Sources & References — scoped to the active selection */}
             {(() => {
               const t = fastingTopics.filter(topicMatches).find((topic) => topic.id === activeFasting);
+              if (!t) return null;
+              const rows = [...topicSourceRefs(t), ...(extraSourceRows[t.id] ?? [])];
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
+          </motion.div>
+        )}
+
+        {/* ─── Worship in Ramadan ─── */}
+        {activeSection === "worship" && (
+          <motion.div
+            key="worship"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="flex flex-col md:flex-row gap-4 items-start">
+              {/* Left side — vertical pills (horizontal scroll on mobile) */}
+              <div className="flex flex-row md:flex-col gap-2 shrink-0 w-full md:w-auto overflow-x-auto md:overflow-visible pb-2 md:pb-0 scrollbar-hide">
+                {worshipTopics.filter(topicMatches).map((topic) => (
+                    <button
+                      key={topic.id}
+                      onClick={() => {
+                        setActiveWorship(topic.id);
+                        syncUrl("worship", topic.id);
+                      }}
+                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all text-left ${
+                        activeWorship === topic.id
+                          ? "bg-gold/20 text-gold border border-gold/40"
+                          : "text-themed-muted hover:text-themed border sidebar-border"
+                      }`}
+                    >
+                      {topic.name}
+                    </button>
+                ))}
+              </div>
+
+              {/* Right side — content */}
+              <div className="flex-1 min-w-0">
+                <AnimatePresence mode="wait">
+                  {worshipTopics.filter(topicMatches).map(
+                    (topic) =>
+                      activeWorship === topic.id && (
+                        <motion.div
+                          key={topic.id}
+                          id={`section-${topic.id}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.25 }}
+                        >
+                          <FastingInfoCard topic={topic} />
+                        </motion.div>
+                      )
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const t = worshipTopics.filter(topicMatches).find((topic) => topic.id === activeWorship);
               if (!t) return null;
               const rows = [...topicSourceRefs(t), ...(extraSourceRows[t.id] ?? [])];
               return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;

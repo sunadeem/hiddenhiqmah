@@ -54,6 +54,18 @@ const months: Month[] = [
           "When the Prophet (peace be upon him) came to Madinah, he found the Jews fasting on Ashura. They said: 'This is the day on which Allah saved Musa and his people, and drowned Pharaoh and his people.' The Prophet said: 'We have more right to Musa than you,' and he fasted it.",
         note: "Bukhari 30:109; Muslim 13:162",
       },
+      {
+        title: "Ashura and Karbala (10th Muharram)",
+        detail:
+          "In 61 AH — decades after the Prophet's death — his grandson al-Husayn ibn Ali (may Allah be pleased with him) was killed at Karbala in Iraq on the 10th of Muharram, a tragedy Sunnis remember with deep grief. The Prophet (peace be upon him) had loved him dearly; he was seen carrying al-Hasan on his shoulder, saying: 'O Allah! I love him, so please love him,' and he called al-Hasan and al-Husayn 'my two sweet basils in this world.' The fast of Ashura, however, was established centuries earlier for the deliverance of Musa (peace be upon him) and is entirely independent of this later event.",
+        note: "Bukhari 62:94; Bukhari 62:98",
+      },
+      {
+        title: "The Islamic New Year (1st Muharram)",
+        detail:
+          "Muharram opens the Hijri year, whose count begins from the Prophet's migration (Hijrah) to Madinah rather than his birth or the first revelation. No specific prayer, celebration, or act of worship is prescribed for the 1st of Muharram in the authentic Sunnah — it is not observed like the two Eids. The month's real virtue lies in its voluntary fasting, above all the Day of Ashura.",
+        note: "Established under Umar ibn al-Khattab (may Allah be pleased with him); the Hijrah itself: Bukhari 63:131",
+      },
     ],
   },
   {
@@ -106,6 +118,12 @@ const months: Month[] = [
           "The Prophet (peace be upon him) also passed away on Monday, 12th Rabi al-Awwal, 11 AH. Anas ibn Malik said: 'The day the Prophet entered Madinah, everything was bright, and the day he died, everything became dark.'",
         note: "Tirmidhi 49:14; graded Sahih",
       },
+      {
+        title: "Do Muslims celebrate the Prophet's birthday?",
+        detail:
+          "Because the 12th of Rabi al-Awwal is remembered as the Prophet's birthday (mawlid), new Muslims often ask whether it should be celebrated — and scholars have long differed. The exact date of his birth is itself not certain in the sources, and there is no report that the Prophet (peace be upon him) or his companions marked the day with a special observance. Some later scholars permitted gatherings of gratitude, remembrance, and sending salawat upon him; others hold that no fixed annual celebration was prescribed. What all agree on is that loving him, following his Sunnah, and sending blessings upon him are acts of worship for every day of the year, not one.",
+        note: "Scholarly positions differ; the date is not fixed in the authentic sources and no annual observance is prescribed in them — a matter to take up with a trusted scholar.",
+      },
     ],
   },
   {
@@ -139,6 +157,12 @@ const months: Month[] = [
         detail:
           "Some historians place the birth of Fatimah, the daughter of the Prophet (peace be upon him), in this month, approximately five years before prophethood. She is the mother of al-Hasan and al-Husayn, and the Prophet said: 'Fatimah is the leader of the women of Paradise.'",
         note: "Bukhari 61:129",
+      },
+      {
+        title: "The Battle of Mu'tah",
+        detail:
+          "The Battle of Mu'tah was fought in Jumada al-Ula of 8 AH near the Byzantine frontier — the first major encounter between the Muslims and the Roman empire. After its three appointed commanders were martyred one after another, Khalid ibn al-Walid took up the banner and skilfully withdrew the vastly outnumbered army, later earning the title 'Sayf Allah' (the Sword of Allah). The month-dating is a matter of the recorded sīrah, and no specific worship is tied to it.",
+        note: "Historical event recorded in the sīrah; no specific worship is attached to this month.",
       },
     ],
   },
@@ -215,6 +239,12 @@ const months: Month[] = [
           "The Prophet (peace be upon him) said: 'When the first half of Sha'ban is over, do not fast.' This is to preserve strength for Ramadan. However, one who has a regular fasting habit (like Monday/Thursday) may continue it.",
         note: "Abu Dawud 14:25; Tirmidhi 8:57",
       },
+      {
+        title: "The night of mid-Sha'ban",
+        detail:
+          "The 15th night of Sha'ban is widely observed in many communities, so it deserves an honest treatment. There is a narration, graded hasan (sound) by a number of scholars, that: 'Allah looks down on the night of the middle of Sha’ban and forgives all His creation, apart from the idolater and the Mushahin' (one who harbours enmity). On its strength, seeking Allah's forgiveness that night is good. However, the popular reports that single out this one night for a special communal vigil and its day for a special fast are weak, and were not the practice of the Prophet (peace be upon him) or his companions. What is authentic is the general instruction to ease off fasting from mid-Sha'ban onward to save strength for Ramadan.",
+        note: "Ibn Majah 5:588 (graded hasan by some); Ibn Majah 5:586 (weak); Ibn Majah 7:14",
+      },
     ],
   },
   {
@@ -250,6 +280,18 @@ const months: Month[] = [
           "The Prophet (peace be upon him) said: 'When Ramadan begins, the gates of Paradise are opened, the gates of Hellfire are closed, and the devils are chained.'",
         note: "Bukhari 30:9; Muslim 13:1",
       },
+      {
+        title: "The Battle of Badr (17 Ramadan, 2 AH)",
+        detail:
+          "The first decisive battle of Islam was fought at Badr during Ramadan of 2 AH, when a small, poorly-equipped band of Muslims defeated a far larger Quraysh army. Allah recalled it to the believers: 'Allah had helped you at Badr when you were weak; then fear Allah so that you may be grateful.' The well-known 17-Ramadan dating comes from the sīrah.",
+        note: "Quran 3:123",
+      },
+      {
+        title: "The Conquest of Makkah (Ramadan, 8 AH)",
+        detail:
+          "In Ramadan of 8 AH the Prophet (peace be upon him) marched on Makkah. Ibn Abbas reported that he set out with 'ten-thousand (Muslim warriors) in (the month of) Ramadan.' He and his companions fasted until they reached a watering-place between Usfan and Qudaid, where he broke his fast so the people would follow his lead. Makkah was taken almost without bloodshed, and the Prophet forgave its people.",
+        note: "Bukhari 64:310; Bukhari 64:313",
+      },
     ],
   },
   {
@@ -279,6 +321,12 @@ const months: Month[] = [
           "The Battle of Uhud took place on the 7th of Shawwal, 3 AH. Seventy companions were martyred, including Hamzah ibn Abdil-Muttalib, the uncle of the Prophet (peace be upon him).",
         note: "Bukhari 64:90",
       },
+      {
+        title: "The Battle of the Trench (5 AH)",
+        detail:
+          "The Battle of the Trench (al-Khandaq), also called the Battle of the Confederates (al-Ahzab), began around Shawwal of 5 AH. On the advice of Salman al-Farisi the Muslims dug a trench to defend Madinah against a besieging coalition, and after weeks of siege Allah scattered the enemy with a bitter wind. Surah al-Ahzab (33) recounts these events. The month-dating follows the sīrah.",
+        note: "Events recounted in Surah al-Ahzab (33); the month-dating follows the sīrah.",
+      },
     ],
   },
   {
@@ -302,6 +350,12 @@ const months: Month[] = [
           "The Prophet (peace be upon him) performed all four of his Umrahs in Dhul Qi'dah. Ibn Abbas said: 'He performed Umrah four times, all of them in Dhul Qi'dah except the one he performed with his Hajj.'",
         note: "Bukhari 64:192",
       },
+      {
+        title: "The Treaty of Hudaybiyyah (6 AH)",
+        detail:
+          "In Dhul Qi'dah of 6 AH the Prophet (peace be upon him) set out for Umrah but was stopped at al-Hudaybiyyah, where he concluded a ten-year truce with Quraysh. Though it looked like a setback, the Quran described it as a clear victory (Surah al-Fath, 48), and the following Dhul Qi'dah he returned to perform the very Umrah he had been prevented from — one of the four Umrahs he offered, all of them in this month.",
+        note: "Bukhari 64:192; the truce is recounted in Surah al-Fath (48).",
+      },
     ],
   },
   {
@@ -320,10 +374,22 @@ const months: Month[] = [
         note: "Bukhari 13:18",
       },
       {
+        title: "For non-pilgrims: what to do in the ten days",
+        detail:
+          "You do not need to be at Hajj to share in these best days. It is recommended to fast the first nine days (ending the day before Eid), to increase in dhikr, du'a and charity, and to raise the takbir — 'Allahu akbar, Allahu akbar, la ilaha illa Allah, Allahu akbar, Allahu akbar, wa lillahil-hamd' — throughout the ten days. The Prophet (peace be upon him) counted the Day of Arafah, the Day of Nahr and the days of Tashriq as 'Eid for us... days of eating and drinking.'",
+        note: "Bukhari 13:18; Tirmidhi 8:68; Tirmidhi 8:92",
+      },
+      {
+        title: "For the one sacrificing: leave hair and nails",
+        detail:
+          "There is a famous ruling most new Muslims have never heard: once the ten days of Dhul Hijjah begin, anyone who intends to offer a sacrifice (udhiyah) should not remove any hair or clip any nails until the animal is slaughtered. The Prophet (peace be upon him) said: 'When any one of you intending to sacrifice the animal enters in the month (of Dhu'l-Hijja) he should not get his hair or nails touched (cut).' Scholars differ on whether this is obligatory or strongly recommended, so follow the guidance of a trusted scholar.",
+        note: "Muslim 35:53; Muslim 35:54",
+      },
+      {
         title: "The Day of Arafah (9th Dhul Hijjah)",
         detail:
-          "The Prophet (peace be upon him) said: 'Fasting the Day of Arafah, I hope from Allah that it will expiate the sins of the year before it and the year after it.' For those not performing Hajj, it is the most recommended day to fast in the entire year.",
-        note: "Muslim 13:253",
+          "The Prophet (peace be upon him) said: 'Fasting on the Day of ‘Arafah, I hope from Allah, expiates for the sins of the year before and the year after.' For those not performing Hajj, it is the most recommended day to fast in the entire year. It is also the best day for supplication — the Prophet called the du'a of the Day of Arafah the best of supplications, so pour out your du'a wherever you are.",
+        note: "Ibn Majah 7:93; Tirmidhi 48:216",
       },
       {
         title: "Eid al-Adha (10th Dhul Hijjah)",
@@ -343,6 +409,12 @@ const months: Month[] = [
           "The rites of Hajj take place on the 8th-12th of Dhul Hijjah. The Prophet (peace be upon him) said: 'An accepted Hajj has no reward except Paradise.' Over two million Muslims gather at Makkah annually to fulfill this pillar.",
         note: "Bukhari 26:1; Muslim 15:493",
       },
+      {
+        title: "The Farewell Hajj (10 AH)",
+        detail:
+          "In Dhul Hijjah of 10 AH the Prophet (peace be upon him) led his only Hajj — the Farewell Pilgrimage — and delivered his Farewell Sermon at Arafah before a vast gathering of companions, affirming the sanctity of life, wealth and honour, the rights of women, and the completion of his message. He passed away less than three months later, in Rabi al-Awwal of 11 AH. The pilgrimage is recorded in detail in the sīrah and the Sunnah.",
+        note: "The Farewell Pilgrimage is recorded in the sīrah and the Sunnah.",
+      },
     ],
   },
 ];
@@ -356,16 +428,85 @@ const keyDates = [
   { date: "1 Ramadan", event: "Beginning of Ramadan", note: "Start of the obligatory fast" },
   { date: "Last 10 nights", event: "Laylatul Qadr", note: "Sought in the odd nights of the last ten days of Ramadan (Bukhari 32:1)" },
   { date: "1 Shawwal", event: "Eid al-Fitr", note: "Celebration after Ramadan — fasting is prohibited" },
-  { date: "1-10 Dhul Hijjah", event: "Best days of the year", note: "Good deeds are most beloved to Allah in these days (Bukhari 13:18)" },
+  { date: "1-10 Dhul Hijjah", event: "Best days of the year", note: "Good deeds are most beloved to Allah in these days (Bukhari 13:18). Non-pilgrims: fast the first nine days, increase dhikr and du'a, raise the takbir, and — if intending to sacrifice — leave hair and nails until Eid (Muslim 35:53)" },
   { date: "9 Dhul Hijjah", event: "Day of Arafah", note: "Fasting expiates sins of two years (Muslim 13:253)" },
   { date: "10 Dhul Hijjah", event: "Eid al-Adha", note: "The Day of Sacrifice — the greatest day of the year" },
   { date: "11-13 Dhul Hijjah", event: "Days of Tashriq", note: "Days of eating, drinking, and dhikr — fasting prohibited (Muslim 13:183)" },
+];
+
+// Weekly and monthly recurring observances — the rhythm most of a practising
+// Muslim's calendar is actually built on (rendered as a group above the annual dates).
+const recurringObservances = [
+  {
+    date: "Every Mon & Thu",
+    event: "Fasting Monday and Thursday",
+    note: "Deeds are presented to Allah on these two days, and the Prophet loved his deeds presented while fasting; Monday is also the day he was born and received revelation (Tirmidhi 8:66; Nasai 22:276; Muslim 13:256)",
+  },
+  {
+    date: "13, 14, 15 each month",
+    event: "The White Days (ayyam al-bid)",
+    note: "The Prophet advised fasting the 13th, 14th and 15th of every lunar month; three days a month equals fasting the whole year in reward (Tirmidhi 8:80; Tirmidhi 8:81; Bukhari 30:88)",
+  },
+  {
+    date: "Every Friday",
+    event: "Jumu'ah — the best day of the week",
+    note: "'The best day on which the sun has risen is Friday' — the weekly congregational prayer (see the Salah guide for its rites); do not single out Friday alone for fasting (Muslim 7:26; Bukhari 30:92)",
+  },
+];
+
+/* ── Hijri ⇄ Gregorian helpers (Umm al-Qura via Intl) ── */
+
+function hijriPartsOf(date: Date): { day: number; month: number; year: number } {
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    calendar: "islamic-umalqura",
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+  });
+  const parts = fmt.formatToParts(date);
+  const get = (t: string) => Number(parts.find((p) => p.type === t)?.value);
+  return { day: get("day"), month: get("month"), year: get("year") };
+}
+
+/** Convert a Hijri (Umm al-Qura) date to its Gregorian Date by scanning around an estimate. */
+function hijriToGregorian(hy: number, hm: number, hd: number): Date | null {
+  const approxYear = Math.floor((hy - 1) * 0.970229 + 622);
+  const d = new Date(approxYear - 1, 0, 1, 12, 0, 0, 0);
+  for (let i = 0; i < 1300; i++) {
+    const p = hijriPartsOf(d);
+    if (p.year === hy && p.month === hm && p.day === hd) return new Date(d);
+    d.setDate(d.getDate() + 1);
+  }
+  return null;
+}
+
+/** Next Gregorian date on/after today whose Hijri month & day match the target. */
+function nextGregorianFor(hm: number, hd: number): Date | null {
+  const d = new Date();
+  d.setHours(12, 0, 0, 0);
+  for (let i = 0; i < 400; i++) {
+    const p = hijriPartsOf(d);
+    if (p.month === hm && p.day === hd) return new Date(d);
+    d.setDate(d.getDate() + 1);
+  }
+  return null;
+}
+
+const upcomingTargets: { label: string; month: number; day: number }[] = [
+  { label: "Islamic New Year (1 Muharram)", month: 1, day: 1 },
+  { label: "Day of Ashura (10 Muharram)", month: 1, day: 10 },
+  { label: "Ramadan begins (1 Ramadan)", month: 9, day: 1 },
+  { label: "Eid al-Fitr (1 Shawwal)", month: 10, day: 1 },
+  { label: "Dhul Hijjah begins (1 Dhul Hijjah)", month: 12, day: 1 },
+  { label: "Day of Arafah (9 Dhul Hijjah)", month: 12, day: 9 },
+  { label: "Eid al-Adha (10 Dhul Hijjah)", month: 12, day: 10 },
 ];
 
 const sections = [
   { key: "overview", label: "Overview" },
   { key: "months", label: "The 12 Months" },
   { key: "sacred", label: "Sacred Months" },
+  { key: "moon", label: "Moon Sighting" },
   { key: "dates", label: "Key Dates" },
   { key: "converter", label: "Date Converter" },
 ] as const;
@@ -391,6 +532,11 @@ function IslamicCalendarContent() {
     const now = new Date();
     return now.toISOString().split("T")[0]; // YYYY-MM-DD
   });
+  const [converterMode, setConverterMode] = useState<"g2h" | "h2g">("g2h");
+  const [hijriInput, setHijriInput] = useState(() => {
+    const p = hijriPartsOf(new Date());
+    return { day: p.day, month: p.month, year: p.year };
+  });
 
   const filteredMonths = useMemo(
     () =>
@@ -415,6 +561,14 @@ function IslamicCalendarContent() {
       search
         ? keyDates.filter((d) => textMatch(search, d.date, d.event, d.note))
         : keyDates,
+    [search]
+  );
+
+  const filteredRecurring = useMemo(
+    () =>
+      search
+        ? recurringObservances.filter((d) => textMatch(search, d.date, d.event, d.note))
+        : recurringObservances,
     [search]
   );
 
@@ -492,6 +646,50 @@ function IslamicCalendarContent() {
     }
   }, [selectedDate]);
 
+  // Hijri → Gregorian (reverse direction)
+  const gregorianResult = useMemo(() => {
+    try {
+      const { year, month, day } = hijriInput;
+      if (!year || !month || !day) return null;
+      const g = hijriToGregorian(year, month, day);
+      // hijriToGregorian only returns a Date when the Hijri parts match exactly,
+      // so a null result means the requested day does not exist in that month.
+      if (!g) return { valid: false, gregorian: "" };
+      return {
+        valid: true,
+        gregorian: new Intl.DateTimeFormat("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }).format(g),
+      };
+    } catch {
+      return null;
+    }
+  }, [hijriInput]);
+
+  // Auto-computed upcoming key dates in Gregorian ("when is Ramadan next year?")
+  const upcomingDates = useMemo(() => {
+    try {
+      return upcomingTargets
+        .map((t) => ({ label: t.label, date: nextGregorianFor(t.month, t.day) }))
+        .filter((x): x is { label: string; date: Date } => x.date !== null)
+        .sort((a, b) => a.date.getTime() - b.date.getTime())
+        .map((x) => ({
+          label: x.label,
+          gregorian: new Intl.DateTimeFormat("en-US", {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }).format(x.date),
+        }));
+    } catch {
+      return [];
+    }
+  }, []);
+
   return (
     <div>
       <PageHeader
@@ -555,6 +753,23 @@ function IslamicCalendarContent() {
                 </p>
                 <p>
                   The Prophet (peace be upon him) explained their arrangement in his Farewell Sermon: <em>&ldquo;Time has come back to its original state, the way it was when Allah created the heavens and the earth. The year is twelve months, of which four are sacred: three consecutive — Dhul Qi&apos;dah, Dhul Hijjah, and Muharram — and Rajab of Mudar, which comes between Jumada and Sha&apos;ban.&rdquo;</em>
+                </p>
+              </div>
+            </ContentCard>
+
+            <ContentCard delay={0.2}>
+              <h2 className="text-xl font-semibold text-themed mb-4">
+                How the Hijri Calendar Was Established
+              </h2>
+              <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  The Islamic calendar was not begun by the Prophet (peace be upon him) himself. Roughly seventeen years after the Hijrah, during the caliphate of <span className="text-themed font-medium">Umar ibn al-Khattab</span> (may Allah be pleased with him), the growing Muslim state needed a fixed way to date its letters and records. Umar gathered the companions to consult them, and they agreed to number the years from a single starting event.
+                </p>
+                <p>
+                  Several options were weighed — the Prophet&apos;s birth, the first revelation, even his death. They chose the <span className="text-themed font-medium">year of the Hijrah</span>, the migration from Makkah to Madinah, because it was the turning point at which the Muslim community first gained a home and a state of its own. <span className="text-themed font-medium">Muharram</span> was set as the first month of that year.
+                </p>
+                <p>
+                  A note for new Muslims: no specific worship, prayer, or celebration is prescribed for the Islamic New Year. The 1st of Muharram is not an Eid and passes without any special ritual in the Sunnah. The month&apos;s virtue lies in voluntary fasting — above all the Day of Ashura on the 10th.
                 </p>
               </div>
             </ContentCard>
@@ -700,18 +915,18 @@ function IslamicCalendarContent() {
             {expandedMonth && (
               <SourcesCard className="mt-6" sources={
                 ({
-                  1: [{ ref: "Muslim 13:261; Muslim 13:253; Muslim 13:173; Bukhari 30:109; Muslim 13:162", desc: "Muharram — the month of Allah, the Day of Ashura, and Musa (peace be upon him)" }],
+                  1: [{ ref: "Muslim 13:261; Muslim 13:253; Muslim 13:173; Bukhari 30:109; Muslim 13:162; Bukhari 62:94; Bukhari 62:98; Bukhari 63:131", desc: "Muharram — the month of Allah, the Day of Ashura, Musa (peace be upon him), Karbala, and the Islamic New Year" }],
                   2: [{ ref: "Bukhari 76:27; Muslim 39:141; Bukhari 63:131", desc: "Safar — no bad omens; the Hijrah journey" }],
                   3: [{ ref: "Muslim 13:256; Bukhari 63:131; Tirmidhi 49:14", desc: "Rabi al-Awwal — the Prophet's birth, arrival in Madinah, and death" }],
                   4: [{ ref: "Bukhari 81:53", desc: "Rabi al-Thani — the most beloved deeds are the most consistent" }],
                   5: [{ ref: "Bukhari 61:129", desc: "Jumada al-Ula — Fatimah, the leader of the women of Paradise" }],
                   6: [{ ref: "Bukhari 23:113; Muslim 1:39", desc: "Jumada al-Thani — the death of Abu Talib, the Year of Sorrow" }],
                   7: [{ ref: "Bukhari 65:184; Bukhari 63:112; Muslim 1:321; Abu Dawud 14:116", desc: "Rajab — the solitary sacred month; al-Isra wal-Mi'raj; fasting in the sacred months" }],
-                  8: [{ ref: "Bukhari 30:76; Muslim 13:229; Nasai 22:268; Abu Dawud 14:25; Tirmidhi 8:57", desc: "Sha'ban — the Prophet's fasting; deeds raised to Allah" }],
-                  9: [{ ref: "Quran 2:183; Quran 2:185; Quran 97:1-5; Bukhari 91:10; Bukhari 32:1; Bukhari 30:9; Muslim 13:1", desc: "Ramadan — the obligation of fasting, the revelation of the Quran, Laylatul Qadr" }],
+                  8: [{ ref: "Bukhari 30:76; Muslim 13:229; Nasai 22:268; Abu Dawud 14:25; Tirmidhi 8:57; Ibn Majah 5:588; Ibn Majah 5:586; Ibn Majah 7:14", desc: "Sha'ban — the Prophet's fasting; deeds raised to Allah; the night of mid-Sha'ban" }],
+                  9: [{ ref: "Quran 2:183; Quran 2:185; Quran 97:1-5; Bukhari 91:10; Bukhari 32:1; Bukhari 30:9; Muslim 13:1; Quran 3:123; Bukhari 64:310; Bukhari 64:313", desc: "Ramadan — the obligation of fasting, the revelation of the Quran, Laylatul Qadr, Badr and the Conquest of Makkah" }],
                   10: [{ ref: "Bukhari 13:5; Muslim 13:264; Bukhari 64:90", desc: "Shawwal — Eid al-Fitr, the six days of Shawwal, the Battle of Uhud" }],
                   11: [{ ref: "Quran 9:36; Bukhari 65:184; Bukhari 64:192", desc: "Dhul Qi'dah — a sacred month; the Prophet's Umrahs" }],
-                  12: [{ ref: "Bukhari 13:18; Muslim 13:253; Abu Dawud 11:45; Bukhari 73:9; Muslim 13:183; Bukhari 26:1; Muslim 15:493", desc: "Dhul Hijjah — the best ten days, Arafah, Eid al-Adha, Tashriq, and Hajj" }],
+                  12: [{ ref: "Bukhari 13:18; Muslim 13:253; Tirmidhi 8:68; Tirmidhi 8:92; Tirmidhi 48:216; Muslim 35:53; Muslim 35:54; Abu Dawud 11:45; Bukhari 73:9; Muslim 13:183; Bukhari 26:1; Muslim 15:493", desc: "Dhul Hijjah — the best ten days, the non-pilgrim's worship, hair and nails, Arafah, Eid al-Adha, Tashriq, and Hajj" }],
                 } as Record<number, { ref: string; desc: string }[]>)[expandedMonth] ?? []
               } />
             )}
@@ -802,6 +1017,12 @@ function IslamicCalendarContent() {
                       "Allah says: 'They ask you about fighting in the sacred month. Say: Fighting therein is a great sin.' This prohibition was recognized even by the pre-Islamic Arabs, and Islam affirmed it.",
                     note: "Quran 2:217",
                   },
+                  {
+                    title: "Do these rulings still apply? (Nasi')",
+                    detail:
+                      "Before Islam the Arabs would 'postpone' a sacred month — swapping it for another to suit their wars and trade. The very next verse condemns this: it is 'an act of disbelief, which leads them further astray… making lawful what Allah has made forbidden' (Quran 9:37). The sacredness Allah fixed at creation still stands: the heightened gravity of sin and the greater reward of good deeds remain in force. The prohibition on fighting is understood by the scholars as a ban on initiating hostilities during these months; consult a trusted scholar on its contemporary application.",
+                    note: "Quran 9:37",
+                  },
                 ].map((point) => (
                   <div
                     key={point.title}
@@ -823,10 +1044,101 @@ function IslamicCalendarContent() {
             {/* Sources */}
             <SourcesCard delay={0.5} sources={[
               { ref: "Quran 2:217", desc: "Fighting in the sacred month is a great sin" },
-              { ref: "Quran 9:36", desc: "Four sacred months ordained by Allah" },
+              { ref: "Quran 9:36; Quran 9:37", desc: "Four sacred months ordained by Allah; the condemnation of nasi'" },
               { ref: "Bukhari 65:184; Muslim 13:261", desc: "The Prophet named the four sacred months" },
               { ref: "Abu Dawud 14:116", desc: "Fasting in the sacred months" },
               { ref: "Tafsir Ibn Kathir", desc: "Sins are graver during sacred months" },
+            ]} />
+          </motion.div>
+        )}
+
+        {/* ─── Moon Sighting ─── */}
+        {activeSection === "moon" && (
+          <motion.div
+            key="moon"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            <ContentCard delay={0.1}>
+              <h2 className="text-xl font-semibold text-themed mb-4">
+                How an Islamic Month Begins
+              </h2>
+              <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  Each Hijri month begins not on a fixed date but with the sighting of the <span className="text-themed font-medium">new crescent moon (hilal)</span> — a thin sliver of light low on the western horizon, just after sunset. Because a lunar cycle lasts about 29.5 days, a month is either <span className="text-themed font-medium">29 or 30 days</span>, never more.
+                </p>
+                <p>
+                  On the evening of the 29th, Muslims look for the crescent. If it is seen, the new month begins the next day. If it is <span className="text-themed font-medium">not</span> seen — whether the moon has not yet appeared or the sky is overcast — the current month is simply completed as a full 30 days, and the new month follows.
+                </p>
+              </div>
+            </ContentCard>
+
+            <ContentCard delay={0.2}>
+              <h3 className="text-base font-semibold text-themed mb-3">
+                What the Sunnah says
+              </h3>
+              <div className="space-y-3">
+                {[
+                  {
+                    title: "Begin and end with the crescent",
+                    detail:
+                      "The Prophet (peace be upon him) said: 'Start fasting on seeing the crescent (of Ramadan), and give up fasting on seeing the crescent (of Shawwal), and if the sky is overcast (and you cannot see it), complete thirty days of Sha'ban.' The month is tied to the sighting of the hilal, not to a printed calendar.",
+                    note: "Bukhari 30:19",
+                  },
+                  {
+                    title: "A month is 29 or 30 days",
+                    detail:
+                      "The Prophet (peace be upon him) said: 'We are an illiterate nation; we neither write, nor know accounts. The month is like this and this' — holding up his hands to show sometimes 29 days and sometimes 30. If the crescent is not sighted on the 29th night, the month is completed as 30.",
+                    note: "Bukhari 30:23",
+                  },
+                  {
+                    title: "No fasting on the 'day of doubt'",
+                    detail:
+                      "To keep the boundary of Ramadan clear, one should not fast just before it as a precaution. The Prophet (peace be upon him) said: 'None of you should fast a day or two before the month of Ramadan unless he has the habit of fasting (Nawafil)…' Fasting begins only once the new month is confirmed.",
+                    note: "Bukhari 30:24",
+                  },
+                ].map((point) => (
+                  <div
+                    key={point.title}
+                    className="rounded-lg p-3 border sidebar-border"
+                    style={{ backgroundColor: "var(--color-bg)" }}
+                  >
+                    <h4 className="text-sm font-semibold text-themed mb-1.5">
+                      {point.title}
+                    </h4>
+                    <p className="text-themed-muted text-sm leading-relaxed">
+                      {point.detail}
+                    </p>
+                    <p className="text-xs text-gold/60 mt-2"><HadithRefText text={point.note} /></p>
+                  </div>
+                ))}
+              </div>
+            </ContentCard>
+
+            <ContentCard delay={0.3}>
+              <h3 className="text-base font-semibold text-themed mb-3">
+                Sighting, calculation, and why communities differ
+              </h3>
+              <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  <span className="text-themed font-medium">Sighting vs calculation.</span> The classical practice, rooted directly in the hadith above, is physical sighting (ru&apos;yah) with the naked eye. Today many scholars and moon-sighting committees also use astronomical calculation to predict and confirm sightings. Scholars differ on how far calculation may stand in for the eye — a recognised difference of opinion, not a matter of right versus wrong.
+                </p>
+                <p>
+                  <span className="text-themed font-medium">Local vs global sighting.</span> Scholars also differ on whether a confirmed sighting <em>anywhere</em> obliges everyone to begin the month together, or whether each region follows its own horizon. This is the real reason your mosque may start Ramadan a day apart from your family abroad — usually a valid difference of scholarly opinion rather than an error by either side.
+                </p>
+                <p>
+                  The safest course is to follow your local mosque or a trusted moon-sighting authority, and not to let these differences become a source of division. For how this plays out at the start of Ramadan and the two Eids, see the <a href="/ramadan?tab=fasting" className="text-gold hover:underline">Ramadan guide</a>.
+                </p>
+              </div>
+            </ContentCard>
+
+            <SourcesCard delay={0.4} sources={[
+              { ref: "Bukhari 30:19", desc: "Begin and end the fast on sighting the crescent" },
+              { ref: "Bukhari 30:23", desc: "The month is 29 or 30 days" },
+              { ref: "Bukhari 30:24", desc: "Do not fast a day of doubt before Ramadan" },
             ]} />
           </motion.div>
         )}
@@ -846,9 +1158,43 @@ function IslamicCalendarContent() {
                 Important Dates in the Islamic Year
               </h2>
               <p className="text-themed-muted text-sm leading-relaxed">
-                These are the key dates and occasions throughout the Hijri year that carry special religious significance — whether for fasting, celebration, or heightened worship.
+                A practising Muslim&apos;s calendar runs on two rhythms: a weekly and monthly cycle of voluntary worship, and the great annual occasions. Both are gathered here — whether for fasting, celebration, or heightened worship.
               </p>
             </ContentCard>
+
+            {/* Weekly & monthly recurring observances */}
+            {filteredRecurring.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-gold/80 uppercase tracking-wider px-1">
+                  Every Week &amp; Every Month
+                </h3>
+                {filteredRecurring.map((item, i) => (
+                  <ContentCard key={item.event} delay={0.03 + i * 0.02} id={`section-${item.event.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
+                    <div className="flex items-start gap-4">
+                      <div className="w-20 shrink-0">
+                        <span className="text-xs text-gold font-medium bg-gold/10 border border-gold/20 rounded-lg px-2 py-1 inline-block">
+                          {item.date}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-themed text-sm">
+                          {item.event}
+                        </h3>
+                        <p className="text-themed-muted text-xs mt-0.5 leading-relaxed">
+                          <HadithRefText text={item.note} />
+                        </p>
+                      </div>
+                    </div>
+                  </ContentCard>
+                ))}
+              </div>
+            )}
+
+            {filteredKeyDates.length > 0 && (
+              <h3 className="text-sm font-semibold text-gold/80 uppercase tracking-wider px-1 pt-2">
+                Once a Year
+              </h3>
+            )}
 
             <div className="space-y-2">
               {filteredKeyDates.map((item, i) => (
@@ -874,10 +1220,13 @@ function IslamicCalendarContent() {
 
             {/* Sources */}
             <SourcesCard delay={0.4} sources={[
+              { ref: "Tirmidhi 8:66; Nasai 22:276; Muslim 13:256", desc: "Fasting Monday and Thursday — deeds presented to Allah" },
+              { ref: "Tirmidhi 8:80; Tirmidhi 8:81; Bukhari 30:88", desc: "The White Days — three days a month equals fasting the year" },
+              { ref: "Muslim 7:26; Bukhari 30:92", desc: "Friday, the best day; do not single it out for fasting" },
               { ref: "Quran 2:183; Quran 2:185", desc: "Fasting prescribed in Ramadan" },
               { ref: "Quran 97:1-5", desc: "Laylatul Qadr better than a thousand months" },
               { ref: "Bukhari 13:5; Bukhari 13:18; Bukhari 32:1", desc: "Eid, best ten days, Laylatul Qadr" },
-              { ref: "Muslim 13:173; Muslim 13:253; Muslim 13:264; Muslim 13:183", desc: "Ashura, Arafah, six days of Shawwal, Tashriq" },
+              { ref: "Muslim 13:173; Muslim 13:253; Muslim 13:264; Muslim 13:183; Muslim 35:53", desc: "Ashura, Arafah, six days of Shawwal, Tashriq, the Dhul Hijjah sacrifice ruling" },
               { ref: "Abu Dawud 11:45", desc: "The Day of Sacrifice is the greatest day" },
             ]} />
           </motion.div>
@@ -894,14 +1243,37 @@ function IslamicCalendarContent() {
           >
             <ContentCard>
               <h2 className="text-xl font-semibold text-themed mb-2">
-                Gregorian to Hijri Converter
+                Date Converter
               </h2>
               <p className="text-themed-muted text-sm leading-relaxed">
-                Select a Gregorian date to see its corresponding Hijri (Islamic) date. This uses the Umm al-Qura calendar system used in Saudi Arabia.
+                Convert in either direction between the Gregorian and Hijri (Islamic) calendars. This uses the Umm al-Qura calendar system used in Saudi Arabia; your local dates may differ by a day or two depending on the moon sighting.
               </p>
             </ContentCard>
 
             <ContentCard delay={0.1}>
+              {/* Direction toggle */}
+              <div className="flex justify-center mb-6">
+                <div className="inline-flex rounded-xl border sidebar-border p-1" style={{ backgroundColor: "var(--color-bg)" }}>
+                  {([
+                    { key: "g2h", label: "Gregorian → Hijri" },
+                    { key: "h2g", label: "Hijri → Gregorian" },
+                  ] as const).map((m) => (
+                    <button
+                      key={m.key}
+                      onClick={() => setConverterMode(m.key)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                        converterMode === m.key
+                          ? "bg-gold/20 text-gold border border-gold/40"
+                          : "text-themed-muted hover:text-gold border border-transparent"
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {converterMode === "g2h" && (
               <div className="flex flex-col items-center gap-6">
                 {/* Date input */}
                 <div className="w-full max-w-xs">
@@ -1002,6 +1374,101 @@ function IslamicCalendarContent() {
                   </div>
                 </div>
               </div>
+              )}
+
+              {converterMode === "h2g" && (
+              <div className="flex flex-col items-center gap-6">
+                {/* Hijri input */}
+                <div className="w-full max-w-md">
+                  <label className="block text-xs text-themed-muted mb-2 uppercase tracking-wider text-center">
+                    Select Hijri Date
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <select
+                      value={hijriInput.day}
+                      onChange={(e) => setHijriInput((h) => ({ ...h, day: Number(e.target.value) }))}
+                      aria-label="Hijri day"
+                      className="w-full px-2 py-2.5 rounded-xl border sidebar-border text-themed text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                      style={{ backgroundColor: "var(--color-bg)" }}
+                    >
+                      {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
+                        <option key={d} value={d}>{d}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={hijriInput.month}
+                      onChange={(e) => setHijriInput((h) => ({ ...h, month: Number(e.target.value) }))}
+                      aria-label="Hijri month"
+                      className="w-full px-2 py-2.5 rounded-xl border sidebar-border text-themed text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                      style={{ backgroundColor: "var(--color-bg)" }}
+                    >
+                      {months.map((m) => (
+                        <option key={m.id} value={m.id}>{m.id}. {m.name}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      value={hijriInput.year}
+                      min={1}
+                      onChange={(e) => setHijriInput((h) => ({ ...h, year: Number(e.target.value) }))}
+                      aria-label="Hijri year"
+                      className="w-full px-2 py-2.5 rounded-xl border sidebar-border text-themed text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                      style={{ backgroundColor: "var(--color-bg)" }}
+                    />
+                  </div>
+                  <p className="text-[11px] text-themed-muted mt-1.5 text-center">Day · Month · Year (AH)</p>
+                </div>
+
+                {/* Result */}
+                {gregorianResult && (
+                  <div className="w-full text-center">
+                    <p className="text-themed-muted text-sm mb-4">
+                      {hijriInput.day} {months.find((m) => m.id === hijriInput.month)?.name} {hijriInput.year} AH
+                    </p>
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <div className="h-px flex-1 max-w-[80px] bg-gold/20" />
+                      <span className="text-gold text-lg">↓</span>
+                      <div className="h-px flex-1 max-w-[80px] bg-gold/20" />
+                    </div>
+                    {gregorianResult.valid ? (
+                      <div className="rounded-2xl border border-gold/20 bg-gold/5 p-6">
+                        <p className="text-themed text-lg font-semibold">
+                          {gregorianResult.gregorian}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-themed-muted text-sm">
+                        That day does not exist in this Hijri month (it has only 29 days). Try the 29th or the 1st of the next month.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+              )}
+            </ContentCard>
+
+            {/* Upcoming key dates — the "when is Ramadan next year?" answer */}
+            <ContentCard delay={0.15}>
+              <h3 className="text-base font-semibold text-themed mb-3">
+                Upcoming Key Dates
+              </h3>
+              <div className="space-y-2">
+                {upcomingDates.map((u) => (
+                  <div
+                    key={u.label}
+                    className="flex items-center justify-between gap-3 rounded-lg p-3 border sidebar-border"
+                    style={{ backgroundColor: "var(--color-bg)" }}
+                  >
+                    <span className="text-themed text-sm font-medium">{u.label}</span>
+                    <span className="text-gold text-xs font-medium bg-gold/10 border border-gold/20 rounded-lg px-2 py-1 whitespace-nowrap">
+                      {u.gregorian}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[11px] text-themed-muted mt-3 leading-relaxed">
+                Next occurrence of each date, estimated by the Umm al-Qura calendar. Actual dates depend on the local moon sighting and may shift by a day or two.
+              </p>
             </ContentCard>
 
             <ContentCard delay={0.2}>

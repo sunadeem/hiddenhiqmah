@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
@@ -105,6 +107,41 @@ const whatHappensTopics: GraveTopic[] = [
     },
   },
   {
+    id: "where-souls-go",
+    name: "Where the Souls Go",
+    content: {
+      intro:
+        "The grave holds the body, but the soul's abode in the Barzakh differs by rank. The texts describe where the greatest souls reside while they await the Day of Resurrection.",
+      verse: {
+        arabic: "وَلَا تَحْسَبَنَّ ٱلَّذِينَ قُتِلُوا۟ فِى سَبِيلِ ٱللَّهِ أَمْوَٰتًۢا ۚ بَلْ أَحْيَآءٌ عِندَ رَبِّهِمْ يُرْزَقُونَ",
+        text: "Never think of those who are killed in Allah's way as dead; rather, they are alive with their Lord, receiving provision,",
+        ref: "Quran 3:169",
+      },
+      points: [
+        {
+          title: "The souls of the martyrs — green birds beneath the Throne",
+          detail:
+            "When the companions asked about the verse 'Think not of those who are slain in Allah's way as dead...', the Prophet (peace be upon him) said that the souls of the martyrs live in the bodies of green birds who have their nests in lamps hung from the Throne of the Almighty. They eat the fruits of Paradise wherever they like, then return to those lamps. When their Lord asked what more they desired, they wished only to be returned to the world to be slain in His way once again.",
+          note: "Muslim 33:181; Quran 3:169; Quran 2:154",
+        },
+        {
+          title: "The prophets are alive in their graves",
+          detail:
+            "The prophets occupy the highest station. Of Musa (Moses), the Prophet (peace be upon him) said, describing his Night Journey: 'I happened to pass by Moses as he was busy in saying prayer in his grave.' The prophets' life in the Barzakh is a special, elevated life that only Allah fully knows.",
+          note: "Muslim 43:216",
+        },
+        {
+          title: "The registers — 'Illiyyin and Sijjin",
+          detail:
+            "The Quran names two records where every soul's book is kept: the register of the righteous, 'Illiyyin — 'a record inscribed, witnessed by those who are close to Allah' — and the register of the wicked, Sijjin. In the hadith of al-Bara' ibn 'Azib, the believer's soul is recorded in 'Illiyyin and the disbeliever's is cast down to Sijjin.",
+          note: "Quran 83:18; Quran 83:20; Quran 83:21; Quran 83:7; Mishkat al-Masabih 1630 (from Musnad Ahmad; graded Sahih by al-Albani)",
+        },
+      ],
+      source:
+        "Muslim 33:181; Muslim 43:216; Quran 3:169; Quran 2:154; Quran 83:7; Quran 83:18; Quran 83:20; Quran 83:21",
+    },
+  },
+  {
     id: "funeral-burial",
     name: "The Funeral & Burial",
     content: {
@@ -120,8 +157,8 @@ const whatHappensTopics: GraveTopic[] = [
         {
           title: "The deceased hears the footsteps",
           detail:
-            "The Prophet (peace be upon him) said: 'When a person is placed in their grave and his companions depart from him, he hears the sound of their sandals.'",
-          note: "Bukhari 23:93; Muslim 53:85",
+            "The Prophet (peace be upon him) said: 'When a person is placed in his grave and his companions depart from him, he hears the sound of their sandals.'",
+          note: "Nasai 21:233",
         },
         {
           title: "The grave squeezes",
@@ -147,6 +184,12 @@ const whatHappensTopics: GraveTopic[] = [
         ref: "Quran 14:27",
       },
       points: [
+        {
+          title: "The two angels: Munkar and Nakir",
+          detail:
+            "The two angels who conduct the questioning are named in the Sunnah. The Prophet (peace be upon him) said that when the deceased is buried, two angels — black and blue-eyed — come to him: one is called al-Munkar and the other an-Nakir, and they ask him what he used to say about this man (the Prophet).",
+          note: "Tirmidhi 10:107; graded Hasan by al-Albani",
+        },
         {
           title: "Three questions",
           detail:
@@ -201,9 +244,15 @@ const whatHappensTopics: GraveTopic[] = [
             "The righteous person will sleep in their grave in comfort, like a bride whom no one wakes except the dearest of her family — until Allah raises them on the Day of Resurrection.",
           note: "Tirmidhi 10:107; graded Hasan by al-Albani",
         },
+        {
+          title: "Children who die young are with Ibrahim",
+          detail:
+            "In the Prophet's dream of the Barzakh, he saw an old man at the base of a great, flourishing tree surrounded by children — 'the old man who was sitting at the base of the tree was Abraham (Ibrahim) and the little children around him were the offspring of the people.' The young children of the believers are in the care of the Friend of Allah (peace be upon him) until the Day of Resurrection.",
+          note: "Bukhari 23:138",
+        },
       ],
       source:
-        "Abu Dawud 42:158; Bukhari 23:93; Mishkat al-Masabih 1630; Tirmidhi 10:107",
+        "Abu Dawud 42:158; Bukhari 23:93; Mishkat al-Masabih 1630; Tirmidhi 10:107; Bukhari 23:138",
     },
   },
   {
@@ -240,6 +289,88 @@ const whatHappensTopics: GraveTopic[] = [
       ],
       source:
         "Abu Dawud 42:158; Mishkat al-Masabih 1630; Quran 40:46; Bukhari 23:114; Muslim 1:198a",
+    },
+  },
+  {
+    id: "prophets-dream",
+    name: "The Prophet's Dream",
+    content: {
+      intro:
+        "In a long, vivid dream, the Prophet (peace be upon him) was taken by two angels — Jibril (Gabriel) and Mika'il (Michael) — and shown souls in the Barzakh being requited for specific sins, alongside scenes of comfort for the righteous. It is the most detailed authentic depiction of Barzakh consequences.",
+      points: [
+        {
+          title: "The liar — his cheek torn open",
+          detail:
+            "The Prophet saw a man whose cheek was being torn from ear to jaw with an iron hook, healing and being torn again. He was told: 'he was a liar and he used to tell lies, and the people would report those lies on his authority till they spread all over the world. So, he will be punished like that till the Day of Resurrection.'",
+          note: "Bukhari 23:138",
+        },
+        {
+          title: "The one who abandoned the Quran — his head crushed",
+          detail:
+            "He saw a man whose head was being crushed with a rock, healing and being crushed again. He was told this was 'the one whom Allah had given the knowledge of Qur'an (i.e. knowing it by heart) but he used to sleep at night (i.e. he did not recite it then) and did not use to act upon it (i.e. upon its orders etc.) by day' — punished thus till the Day of Resurrection.",
+          note: "Bukhari 23:138",
+        },
+        {
+          title: "The adulterers — in the fiery pit",
+          detail:
+            "He passed a hole like an oven, narrow at the top and wide at the bottom, with fire kindling beneath it; naked men and women inside were lifted up as the flames rose and sank back as they subsided. He was told: 'those you saw in the hole were adulterers.'",
+          note: "Bukhari 23:138",
+        },
+        {
+          title: "The riba-eaters — in the river of blood",
+          detail:
+            "He reached a river of blood where a man swam; whenever he tried to climb out, another standing on the bank threw a stone into his mouth and drove him back. He was told: 'those you saw in the river of blood were those dealing in Riba (usury).'",
+          note: "Bukhari 23:138",
+        },
+        {
+          title: "Comfort for the righteous — Ibrahim and the martyrs",
+          detail:
+            "Amid the punishments were scenes of mercy: an old man beneath a flourishing tree surrounded by children was 'Abraham (Ibrahim) and the little children around him were the offspring of the people'; and two beautiful houses were shown to be 'the house of the common believers' and 'the house of the martyrs.'",
+          note: "Bukhari 23:138",
+        },
+      ],
+      source: "Bukhari 23:138",
+    },
+  },
+  {
+    id: "common-questions",
+    name: "Common Questions",
+    content: {
+      intro:
+        "A few questions come up again and again about the Barzakh. Some have clear textual answers; others are matters scholars address by principle — where a ruling is a scholarly position rather than an explicit text, that is noted.",
+      points: [
+        {
+          title: "What about those never buried — cremated, drowned, or lost?",
+          detail:
+            "The Barzakh reaches every soul, not only the buried. Reward and punishment attach to the soul in a manner known to Allah, so a body that was burned, drowned, eaten by beasts, or never found is in no way beyond His reach or His justice. The grave is simply the ordinary setting for what happens to every departed soul. (Scholarly consensus; no single explicit narration is quoted here.)",
+          note: "Scholarly summary; anchored in Quran 40:46 (the soul exposed to the Fire before the grave is even entered by resurrection)",
+        },
+        {
+          title: "Is it the body or the soul that is questioned?",
+          detail:
+            "The mainstream Sunni position is that the punishment and bliss of the Barzakh are experienced primarily by the soul, which Allah reconnects to the body in a manner unlike worldly life and known only to Him — which is why a buried body may appear undisturbed while its soul is in bliss or torment. (This is the summarized position of the scholars, not a verbatim narration.)",
+          note: "Scholarly summary (mainstream Sunni position)",
+        },
+        {
+          title: "Do the dead hear us?",
+          detail:
+            "The Prophet (peace be upon him) said that the deceased, once laid down, 'hears the sound of their sandals' as his companions depart. Beyond such specific texts, whether and how the dead hear the living in general is a matter of scholarly difference — so the safest practice is to benefit them with du'a and charity rather than to address them expecting a reply.",
+          note: "Nasai 21:233",
+        },
+        {
+          title: "How does time pass in the Barzakh?",
+          detail:
+            "However long the Barzakh lasts, the soul's sense of its duration is compressed. On the Day of Resurrection those raised will say, 'We stayed for a day or part of a day,' and it will seem to them 'no more than an evening or a morning' — the whole interval between death and rising will feel brief.",
+          note: "Quran 23:112; Quran 23:113; Quran 79:46",
+        },
+        {
+          title: "How does the Barzakh end?",
+          detail:
+            "The Barzakh closes with the second blowing of the Trumpet: 'The Trumpet will be blown and all those in the heavens and all those on earth will fall dead ... Then it will be blown again, and at once they will be standing, looking on.' At that, souls return to reassembled bodies and the Resurrection begins.",
+          note: "Quran 39:68",
+        },
+      ],
+      source: "Bukhari 23:93; Quran 40:46; Quran 23:112; Quran 23:113; Quran 79:46; Quran 39:68",
     },
   },
 ];
@@ -331,6 +462,12 @@ const protectionTopics: GraveTopic[] = [
           note: "Abu Dawud 21:28; graded Sahih by al-Albani",
         },
         {
+          title: "Prompting the dying (talqin) — the family's role",
+          detail:
+            "The other half of that teaching is a duty on those present. The Prophet (peace be upon him) said: 'Exhort to recite “There is no god but Allah” to those of you who are dying.' Gently and without pressuring, the family prompts the shahadah so it is the dying person's last word.",
+          note: "Muslim 11:1; Muslim 11:3",
+        },
+        {
           title: "Sweat on the forehead at death",
           detail:
             "The Prophet (peace be upon him) said: 'The believer dies with sweat on his forehead.' This is considered one of the signs of a good ending.",
@@ -349,8 +486,32 @@ const protectionTopics: GraveTopic[] = [
         },
       ],
       source:
-        "Abu Dawud 21:28; Tirmidhi 10:18; Tirmidhi 32:10; Nasai 21:11",
+        "Abu Dawud 21:28; Muslim 11:1; Muslim 11:3; Tirmidhi 10:18; Tirmidhi 32:10; Nasai 21:11",
     },
+  },
+];
+
+// "Helping the Dead" — the souls-in-Barzakh receiving end lives here; the full
+// mechanics of deeds performed on the deceased's behalf are owned by /death-rites
+// ("What Reaches the Dead"), which this tab cross-links.
+const helpingDead = [
+  {
+    point: "Three deeds continue after death",
+    detail:
+      "The Prophet (peace be upon him) said: 'When a man dies, his acts come to an end, but three, recurring charity, or knowledge (by which people) benefit, or a pious son, who prays for him (for the deceased)' These keep reaching a person in the Barzakh long after they are gone.",
+    reference: "Muslim 25:20",
+  },
+  {
+    point: "Charity given on their behalf reaches them",
+    detail:
+      "A man told the Prophet (peace be upon him) that his mother had died suddenly and asked whether giving charity on her behalf would benefit her; the Prophet replied in the affirmative. Sa'd ibn 'Ubadah likewise gave a garden in charity for his deceased mother on the Prophet's instruction. Charity given for the dead reaches them.",
+    reference: "Bukhari 23:140; Bukhari 55:19",
+  },
+  {
+    point: "Du'a for the dead is a gift they receive",
+    detail:
+      "A'ishah (may Allah be pleased with her) reported that the Prophet (peace be upon him) would go out to al-Baqi' toward the end of the night and pray for its people: 'Peace be upon you, abode of a people who are believers ... O Allah, grant forgiveness to the inhabitants of Baqi' al-Gharqad.' Sincere supplication for the deceased reaches and benefits them.",
+    reference: "Muslim 11:131",
   },
 ];
 
@@ -359,9 +520,35 @@ const sections = [
   { key: "importance", label: "Why It Matters" },
   { key: "what-happens", label: "What Happens" },
   { key: "protection", label: "Protection" },
+  { key: "helping-dead", label: "Helping the Dead" },
 ] as const;
 
 type SectionKey = (typeof sections)[number]["key"];
+
+// Go-deeper cross-links (house pattern) — this page owns the Barzakh; the
+// mechanics of janazah, the deathbed and what reaches the dead live on the
+// dedicated pages, so overlapping rail topics link out instead of restating.
+const whatHappensGoDeeper: Record<string, { href: string; label: string }> = {
+  "funeral-burial": {
+    href: "/death-rites?tab=washing-janazah",
+    label: "Go deeper: Death & Janazah — washing, shrouding, the funeral prayer and burial in detail",
+  },
+  "believer-experience": {
+    href: "/death-rites?tab=types-of-death&sub=children",
+    label: "Go deeper: Children Who Die Young — the full pastoral treatment on Death & Rites",
+  },
+  "common-questions": {
+    href: "/day-of-judgement?tab=events",
+    label: "Go deeper: Day of Judgement — the Trumpet, resurrection and what follows the Barzakh",
+  },
+};
+
+const protectionGoDeeper: Record<string, { href: string; label: string }> = {
+  "good-ending": {
+    href: "/death-rites?tab=dying&sub=bedside",
+    label: "Go deeper: At the Bedside — prompting the shahadah and the moment of death",
+  },
+};
 
 /* ───────────────────────── page ───────────────────────── */
 
@@ -515,6 +702,18 @@ function TheGraveContent() {
               { ref: "Tirmidhi 36:5", desc: "The grave is the first stage of the Hereafter" },
               { ref: "Muslim 10:9", desc: "Seeking refuge from the punishment of the grave in prayer" },
             ]} />
+
+            {/* Go deeper — how the Barzakh ends: the second Trumpet and resurrection */}
+            <Link href="/day-of-judgement?tab=events" className="block group">
+              <ContentCard>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-medium text-themed">
+                    Go deeper: Day of Judgement — how the Barzakh ends with the second Trumpet and the resurrection
+                  </span>
+                  <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </ContentCard>
+            </Link>
           </motion.div>
         )}
 
@@ -619,6 +818,20 @@ function TheGraveContent() {
               </div>
             </div>
 
+            {/* Go deeper — dedicated pages that own the overlapping material */}
+            {whatHappensGoDeeper[activeWhatHappens] && (
+              <Link href={whatHappensGoDeeper[activeWhatHappens].href} className="block mt-4 group">
+                <ContentCard>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-medium text-themed">
+                      {whatHappensGoDeeper[activeWhatHappens].label}
+                    </span>
+                    <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </ContentCard>
+              </Link>
+            )}
+
             {/* Sources & References — scoped to the active selection */}
             {(() => {
               const t = whatHappensTopics.find((x) => x.id === activeWhatHappens);
@@ -680,12 +893,89 @@ function TheGraveContent() {
               </div>
             </div>
 
+            {/* Go deeper — dedicated page that owns the deathbed material */}
+            {protectionGoDeeper[activeProtection] && (
+              <Link href={protectionGoDeeper[activeProtection].href} className="block mt-4 group">
+                <ContentCard>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-medium text-themed">
+                      {protectionGoDeeper[activeProtection].label}
+                    </span>
+                    <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </ContentCard>
+              </Link>
+            )}
+
             {/* Sources & References — scoped to the active selection */}
             {(() => {
               const t = protectionTopics.find((x) => x.id === activeProtection);
               const rows = t ? topicSourceRefs(t) : [];
               return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
             })()}
+          </motion.div>
+        )}
+
+        {/* ─── Helping the Dead ─── */}
+        {activeSection === "helping-dead" && (
+          <motion.div
+            key="helping-dead"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4"
+          >
+            <ContentCard delay={0.05}>
+              <h2 className="text-xl font-semibold text-themed mb-2">
+                Can I still help them?
+              </h2>
+              <p className="text-themed-muted text-sm leading-relaxed">
+                The most-asked question after losing someone is whether anything
+                we do still reaches them. It does. The Barzakh is not sealed off
+                from the living — the deceased continues to receive the fruit of
+                deeds they set in motion and the good the living send on their
+                behalf.
+              </p>
+            </ContentCard>
+
+            {helpingDead.filter(mattersMatches).map((item, i) => (
+              <ContentCard key={i} delay={0.1 + i * 0.05}>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-gold font-semibold text-sm">{i + 1}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-themed mb-1">{item.point}</h3>
+                    <p className="text-themed-muted text-sm leading-relaxed">
+                      {item.detail}
+                    </p>
+                    <p className="text-xs text-gold/60 mt-2">
+                      <HadithRefText text={item.reference} />
+                    </p>
+                  </div>
+                </div>
+              </ContentCard>
+            ))}
+
+            {/* Go deeper — /death-rites owns the full mechanics of what reaches the dead */}
+            <Link href="/death-rites?tab=grief-visiting&sub=reaches" className="block group">
+              <ContentCard>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-medium text-themed">
+                    Go deeper: What Reaches the Dead — Hajj and fasting on their behalf, unpaid debts, and more on Death &amp; Rites
+                  </span>
+                  <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </ContentCard>
+            </Link>
+
+            <SourcesCard delay={0.35} sources={[
+              { ref: "Muslim 25:20", desc: "When a man dies his deeds end except three" },
+              { ref: "Bukhari 23:140", desc: "Charity on behalf of a deceased mother benefits her" },
+              { ref: "Bukhari 55:19", desc: "Sa'd gives his garden in charity for his deceased mother" },
+              { ref: "Muslim 11:131", desc: "The Prophet's du'a for the people of al-Baqi'" },
+            ]} />
           </motion.div>
         )}
       </AnimatePresence>

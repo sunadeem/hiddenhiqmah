@@ -419,8 +419,8 @@ SALAH: /salah?tab=prayers|voluntary|wudu (wudu = purification incl. ghusl: ?tab=
 PRAYER TIMES: /prayer-times
 QIBLAH: /qiblah
 DUAS: /duas?tab={category}
-RAMADAN: /ramadan?tab=fasting|last-ten
-BARZAKH: /barzakh?tab=what-happens|protection
+RAMADAN: /ramadan?tab=fasting|worship|last-ten (fasting incl. when-it-begins moon sighting, common-questions FAQ, ramadan-with-kids; worship = tarawih/night prayer, quran habit, generosity/feeding, du'a; last-ten incl. after-ramadan = six of Shawwal)
+BARZAKH: /barzakh?tab=what-happens|protection|helping-dead (what-happens incl. where-souls-go = martyrs as green birds + prophets alive in graves + 'Illiyyin/Sijjin, the Prophet's dream of the Barzakh, and Common Questions = cremation/unburied, body-or-soul, do the dead hear us, how the Barzakh ends; helping-dead = du'a + charity that reach the deceased)
 DAY OF JUDGEMENT: /day-of-judgement?tab=signs|events|salvation|preparing (signs incl. dajjal/antichrist + protection; events incl. reckoning, settling-scores = qisas/huquq/bankrupt muflis, final-separation = death slaughtered; preparing = practical deeds, salawat, refuge du'a)
 JANNAH: /jannah?tab=descriptions|how-to
 PROTECTION & RUQYAH: /protection?tab=sihr|evil-eye|ruqyah|daily|waswas (sihr/magic, evil eye, self-ruqyah how-to, daily protection adhkar, waswas = intrusive whispers / doubts / distraction in prayer — reassurance that these are excused)
@@ -429,7 +429,7 @@ FAMILY: /family?tab=children|parents|elders|kinship (kinship = silat al-rahim)
 DEATH & JANAZAH: /death-rites?tab=preparing|dying|types-of-death|washing-janazah|burial|grief-visiting (types-of-death = martyrdom/shaheed categories, dying in childbirth/plague, husn al-khatimah)
 INHERITANCE: /inheritance?tab=foundations|shares|heirs|wasiyyah-faqs
 MIRACLES: /miracles?tab={category}
-ISLAMIC CALENDAR: /islamic-calendar?tab=months|dates
+ISLAMIC CALENDAR: /islamic-calendar?tab=months|sacred|moon|dates|converter (moon = how a lunar month begins, hilal crescent sighting vs calculation, local vs global, why communities differ on Ramadan/Eid; dates incl. weekly/monthly recurring sunnah fasts = Monday/Thursday, white days ayyam al-bid, Friday jumu'ah, plus Dhul Hijjah for non-pilgrims = takbir, fasting nine days, no hair/nails for the one sacrificing; converter = Gregorian↔Hijri both directions + upcoming Ramadan/Eid dates)
 WHY ISLAM: /why-islam?tab=start|proofs|worldviews|questions
 SECTS: /sects?tab=sunni|shia|other
 ZAKAT: /zakat?tab=overview|who-pays|assets|recipients|fitr|calculator (nisab, zakatable assets, eight recipients, zakat al-fitr, calculator tool)

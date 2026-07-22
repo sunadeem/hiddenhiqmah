@@ -68,8 +68,20 @@ const beforeCreationTopics: Topic[] = [
             "Allah knew everything that would ever happen before creating anything. He knew every soul that would exist, every leaf that would fall, every word that would be spoken. Nothing occurs except that He already knew it and wrote it. He says: 'Did you not know that Allah knows what is in the heaven and the earth? Indeed, that is in a Record. Indeed that, for Allah, is easy.'",
           note: "Quran 22:70",
         },
+        {
+          title: "So why did He create at all?",
+          detail:
+            "If Allah is free of all need, why create anything? The Quran gives the answer directly: creation exists to know Him and worship Him — 'I have not created the jinn and mankind except to worship Me.' Through what He made, His names and attributes become manifest: His mercy, His generosity, His wisdom, His justice. Creation is not a sign of need or loneliness — it is a gift, and an expression of His perfect names.",
+          note: "Quran 51:56",
+        },
+        {
+          title: "A caution: 'I was a hidden treasure'",
+          detail:
+            "A saying often quoted as a hadith — 'I was a hidden treasure and I loved to be known, so I created the creation that I might be known' — is not authentically traced to the Prophet (peace be upon him). It has no chain of narration and has been graded fabricated by hadith scholars. The wisdom behind creation is established by the Quran itself, so there is no need to lean on unverified words.",
+          note: "Not an authentic hadith — graded fabricated by hadith scholars",
+        },
       ],
-      source: "Quran 57:3; Quran 35:15; Quran 22:70; Tirmidhi 48:31",
+      source: "Quran 57:3; Quran 35:15; Quran 22:70; Quran 51:56; Tirmidhi 48:31",
     },
   },
   {
@@ -168,6 +180,46 @@ const penTabletTopics: Topic[] = [
       source: "Quran 85:21-22; Quran 13:39; Quran 6:38; Muslim 46:27",
     },
   },
+  {
+    id: "qadar-choices",
+    name: "Decree & Your Choices",
+    content: {
+      intro:
+        "If everything was written before creation, am I really responsible for what I do? This is the first question the decree raises for almost everyone. Belief in qadar (divine decree) is one of the six pillars of faith — and it does not cancel your free will. (Articles of Faith covers the six pillars in full.)",
+      verse: {
+        arabic: "إِنَّا كُلَّ شَىْءٍ خَلَقْنَـٰهُ بِقَدَرٍ",
+        text: "We have surely created everything in a determined measure.",
+        ref: "Quran 54:49",
+      },
+      points: [
+        {
+          title: "The decree has four levels",
+          detail:
+            "Scholars summarise belief in the decree in four levels, all of which must be affirmed: (1) Knowledge — Allah knew everything before it happened. (2) Writing — He wrote it all in the Preserved Tablet. (3) Will — nothing happens except that He willed it. (4) Creation — He is the Creator of all things, including our actions. Yet the fourth level does not make us puppets: Allah gave us real choice and holds us to account for it. 'Indeed, We showed him the way, whether he is grateful or ungrateful.'",
+          note: "Quran 54:49; Quran 76:3",
+        },
+        {
+          title: "It is written while you are still in the womb",
+          detail:
+            "The Prophet (peace be upon him) said that after the stages of the womb, 'Allah sends His angel to it with instructions concerning four things, so the angel writes down his livelihood, his death, his deeds, his fortune and misfortune.' Your provision and your lifespan are already settled — which is a reason for contentment, not anxiety.",
+          note: "Muslim 46:1",
+        },
+        {
+          title: "The decree is no excuse for sin — the argument of Adam and Musa",
+          detail:
+            "The Prophet (peace be upon him) described Musa blaming Adam for the fall that expelled humanity from Paradise. Adam answered that he was blamed 'for an act which Allah had ordained for me forty years before He created me' — and 'This is how Adam came the better of Moses.' The lesson is subtle: Adam did not use the decree to excuse a sin he clung to (he had repented). No one may commit a sin and then blame the decree; you do not know what is written, and your duty is to choose good.",
+          note: "Muslim 46:20",
+        },
+        {
+          title: "So why am I responsible?",
+          detail:
+            "Because the decree is hidden and your choice is real. You are never shown your record in advance, so at every moment you act by your own will — and Allah judges that will. He says: 'The truth is from your Lord. Whoever wills may believe, and whoever wills may disbelieve.' Your striving is itself part of the decree; you reach what is written by choosing it.",
+          note: "Quran 18:29",
+        },
+      ],
+      source: "Quran 18:29; Quran 54:49; Quran 76:3; Muslim 46:1; Muslim 46:20",
+    },
+  },
 ];
 
 /* ───────────────────────── 3. The Throne & Water ───────────────────────── */
@@ -204,8 +256,14 @@ const throneWaterTopics: Topic[] = [
             "After creating the heavens and the earth, Allah rose over (istawa) the Throne in a manner that befits His majesty. This is mentioned seven times in the Quran. Imam Malik was asked about it and said: 'The istiwaa is known, the how is unknown, belief in it is obligatory, and asking about its nature is an innovation.'",
           note: "Quran 7:54; Quran 20:5",
         },
+        {
+          title: "Above it is written: 'My Mercy prevails over My Wrath'",
+          detail:
+            "The most famous words associated with the Throne reframe the whole story of creation around mercy. The Prophet (peace be upon him) said: 'When Allah completed the creation, He wrote in His Book which is with Him on His Throne, \"My Mercy overpowers My Anger.\"' In another wording: 'My Mercy preceded My Anger.' The universe was begun, and will be judged, by a Lord whose defining trait is mercy.",
+          note: "Bukhari 59:5; Bukhari 97:50; Muslim 50:18",
+        },
       ],
-      source: "Quran 2:255; Quran 7:54; Quran 40:7; Abu Dawud 42:132",
+      source: "Quran 2:255; Quran 7:54; Quran 40:7; Abu Dawud 42:132; Bukhari 59:5; Bukhari 97:50; Muslim 50:18",
     },
   },
   {
@@ -306,6 +364,34 @@ const heavensEarthTopics: Topic[] = [
       source: "Quran 67:5; Quran 71:15-16; Bukhari 59:10; Muslim 1:309",
     },
   },
+  {
+    id: "furnished-earth",
+    name: "Sun, Moon & Mountains",
+    content: {
+      intro:
+        "Once the heavens were raised, Allah furnished the world we actually see — the sun on its course, the moon in its stations, and the mountains anchoring the earth. Each is a sign pointing back to its Maker.",
+      verse: {
+        arabic: "وَٱلشَّمْسُ تَجْرِى لِمُسْتَقَرٍّ لَّهَا ۚ ذَٰلِكَ تَقْدِيرُ ٱلْعَزِيزِ ٱلْعَلِيمِ",
+        text: "The sun is running to its determined course. That is the design of the All-Mighty, All-Knowing.",
+        ref: "Quran 36:38",
+      },
+      points: [
+        {
+          title: "The sun runs a fixed course and prostrates to its Lord",
+          detail:
+            "Allah says the sun 'is running to its determined course.' The Prophet (peace be upon him) drew out the deeper reality: he asked Abu Dharr at sunset, 'Do you know where the sun goes (at the time of sunset)?' and answered, 'It goes (i.e. travels) till it prostrates Itself underneath the Throne and takes the permission to rise again.' Even the sun is in submission to Allah.",
+          note: "Quran 36:38; Bukhari 59:10",
+        },
+        {
+          title: "The mountains are stakes that steady the earth",
+          detail:
+            "Allah furnished the earth with towering mountains and describes their purpose in a single vivid image: 'And the mountains as stakes.' Like tent-pegs driven into the ground, they hold the earth firm — a detail the Quran gives among its reminders of Allah's care in shaping our world.",
+          note: "Quran 78:7",
+        },
+      ],
+      source: "Quran 36:38; Quran 78:7; Bukhari 59:10",
+    },
+  },
 ];
 
 /* ───────────────────────── 5. The Angels ───────────────────────── */
@@ -386,6 +472,46 @@ const angelsTopics: Topic[] = [
       source: "Quran 2:97-98; Quran 32:11; Quran 50:17-18; Tirmidhi 47:295",
     },
   },
+  {
+    id: "around-you",
+    name: "Angels Around You",
+    content: {
+      intro:
+        "Angels are not distant beings confined to the heavens — they are woven through your daily life: guarding you, seeking out gatherings of remembrance, and honouring the seeker of knowledge. 'Do I have a guardian angel?' The answer is yes, and more than one.",
+      verse: {
+        arabic: "لَهُۥ مُعَقِّبَـٰتٌ مِّنۢ بَيْنِ يَدَيْهِ وَمِنْ خَلْفِهِۦ يَحْفَظُونَهُۥ مِنْ أَمْرِ ٱللَّهِ ۗ إِنَّ ٱللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا۟ مَا بِأَنفُسِهِمْ ۗ وَإِذَآ أَرَادَ ٱللَّهُ بِقَوْمٍ سُوٓءًا فَلَا مَرَدَّ لَهُۥ ۚ وَمَا لَهُم مِّن دُونِهِۦ مِن وَالٍ",
+        text: "For each person there are successive angels in front of him and behind him, guarding him by the command of Allah.…",
+        ref: "Quran 13:11",
+      },
+      points: [
+        {
+          title: "Successive angels guard you",
+          detail:
+            "Allah says that for every person 'there are successive angels in front of him and behind him, guarding him by the command of Allah.' Angels take turns protecting you, by day and by night, keeping from you what Allah has not decreed to reach you.",
+          note: "Quran 13:11",
+        },
+        {
+          title: "Roaming squads seek out gatherings of dhikr",
+          detail:
+            "The Prophet (peace be upon him) said: 'Allah has mobile (squads) of angels, who have no other work (to attend to but) to follow the assemblies of Dhikr and when they find such assemblies in which there is Dhikr (of Allah) they sit in them and some of them surround the others with their wings till the space between them and the sky of the world is fully covered.' Sit in remembrance of Allah and the angels gather around you.",
+          note: "Muslim 48:35",
+        },
+        {
+          title: "They lower their wings for the seeker of knowledge",
+          detail:
+            "The Prophet (peace be upon him) said that 'the angels lower their wings in approval to the one seeking knowledge.' Studying the deen is not an ordinary act — it draws the honour of the angels themselves.",
+          note: "Tirmidhi 41:38",
+        },
+        {
+          title: "Why angels avoid some homes",
+          detail:
+            "The Prophet (peace be upon him) said: 'Angels do not enter a house that has either a dog or a picture in it.' This is one reason the scholars caution against keeping images of living beings or dogs (other than for a permitted need) inside the home — it keeps away the mercy the angels bring.",
+          note: "Bukhari 59:128",
+        },
+      ],
+      source: "Quran 13:11; Muslim 48:35; Tirmidhi 41:38; Bukhari 59:128",
+    },
+  },
 ];
 
 /* ───────────────────────── 6. The Jinn ───────────────────────── */
@@ -460,6 +586,34 @@ const jinnTopics: Topic[] = [
       source: "Quran 7:12-17; Quran 15:27-42; Quran 18:50; Quran 38:76",
     },
   },
+  {
+    id: "qarin",
+    name: "The Qarin (Your Companion)",
+    content: {
+      intro:
+        "Talk of jinn can make new Muslims anxious. The Sunnah actually brings reassurance: yes, every person has an assigned jinn companion — the qarin — but the believer is never left defenceless, and a passing whisper is not itself a sin.",
+      verse: {
+        arabic: "وَمَن يَعْشُ عَن ذِكْرِ ٱلرَّحْمَـٰنِ نُقَيِّضْ لَهُۥ شَيْطَـٰنًا فَهُوَ لَهُۥ قَرِينٌ",
+        text: "Whoever turns away from the Reminder of the Most Compassionate [i.e., the Qur’an], We assign to him a devil to be his close associate,",
+        ref: "Quran 43:36",
+      },
+      points: [
+        {
+          title: "Every person has an assigned companion",
+          detail:
+            "The Prophet (peace be upon him) said: 'There is none amongst you with whom is not an attache from amongst the jinn.' The Companions asked, 'Allah's Messenger, with you too?' He replied: 'Yes, but Allah helps me against him and so I am safe from his hand and he does not command me but for good.' Even the Prophet had a qarin — and Allah aided him against it. The believer who turns to Allah is never left to face it alone.",
+          note: "Muslim 52:62",
+        },
+        {
+          title: "A whisper is not a sin",
+          detail:
+            "The qarin's tool is waswas — intrusive whispers and suggestions. These are not held against you. The Prophet (peace be upon him) said: 'Allah has forgiven my nation for the evil suggestions of their hearts, so long as they do not act upon it or speak of it.' You are accountable for what you choose and do, not for the unwanted thoughts that pass through your mind and that you push away.",
+          note: "Ibn Majah 10:29",
+        },
+      ],
+      source: "Quran 43:36; Muslim 52:62; Ibn Majah 10:29",
+    },
+  },
 ];
 
 /* ───────────────────────── 7. Adam & Hawa ───────────────────────── */
@@ -502,8 +656,54 @@ const adamHawaTopics: Topic[] = [
             "The Prophet (peace be upon him) said: 'Allah created Adam in His image, sixty cubits tall.' He was given the best of forms. Every human being descends from this noble origin — a reminder that every person carries inherent dignity.",
           note: "Bukhari 79:1; Quran 95:4",
         },
+        {
+          title: "Created on a Friday",
+          detail:
+            "The Prophet (peace be upon him) said: 'The best day on which the sun has risen is Friday' — and on that same day, he explained, Adam was created, admitted into Paradise, and expelled from it. The great turning points of Adam's story, and the honour of the weekly day of gathering, all fall on Jumu'ah.",
+          note: "Muslim 7:26",
+        },
+        {
+          title: "A handful taken from all the earth",
+          detail:
+            "The Prophet (peace be upon him) said: 'Allah created Adam from a handful which he took from the whole of the earth,' and so 'the children of Adam are in accordance with the earth': 'some red, some white, some black, some a mixture.' The diversity of humanity — every colour and temperament — was built into us from the first handful of clay. No race is above another; we are all one earth.",
+          note: "Abu Dawud 42:98; Tirmidhi 47:7",
+        },
       ],
-      source: "Quran 2:31-34; Quran 15:28-31; Quran 38:71-76; Bukhari 79:1",
+      source: "Quran 2:31-34; Quran 15:28-31; Quran 38:71-76; Bukhari 79:1; Muslim 7:26; Abu Dawud 42:98; Tirmidhi 47:7",
+    },
+  },
+  {
+    id: "covenant-alast",
+    name: "The Covenant of All Souls",
+    content: {
+      intro:
+        "Before a single one of us was placed on earth, Allah gathered the souls of all Adam's descendants and took a covenant from them. This is al-Mithaq — the primordial pledge — and it is why, deep down, every human being is born already knowing their Lord.",
+      verse: {
+        arabic: "وَإِذْ أَخَذَ رَبُّكَ مِنۢ بَنِىٓ ءَادَمَ مِن ظُهُورِهِمْ ذُرِّيَّتَهُمْ وَأَشْهَدَهُمْ عَلَىٰٓ أَنفُسِهِمْ أَلَسْتُ بِرَبِّكُمْ ۖ قَالُوا۟ بَلَىٰ ۛ شَهِدْنَآ ۛ أَن تَقُولُوا۟ يَوْمَ ٱلْقِيَـٰمَةِ إِنَّا كُنَّا عَنْ هَـٰذَا غَـٰفِلِينَ",
+        text: "And [remember] when your Lord brought forth from the loins of the children of Adam their offspring and made them testify about themselves [asking], “Am I not your Lord?” They said, “Yes indeed; We testify.”…",
+        ref: "Quran 7:172",
+      },
+      points: [
+        {
+          title: "'Am I not your Lord?' — and every soul said yes",
+          detail:
+            "Allah extracted the descendants of Adam 'from the loins of the children of Adam' and made them bear witness against themselves: 'Am I not your Lord?' They answered, 'Yes indeed; We testify.' This testimony was taken 'lest you should say on the Day of Resurrection' that 'We were unaware of this.' No one will be able to plead ignorance of their Creator.",
+          note: "Quran 7:172",
+        },
+        {
+          title: "Born upon the fitrah",
+          detail:
+            "This is why belief in Allah is not something foreign bolted onto us — it is our original nature (fitrah). The Prophet (peace be upon him) said: 'No child is born but upon Fitra,' and then recited: 'The nature made by Allah in which He created man…' Guidance is, at its heart, a return to what the soul already recognised at the covenant.",
+          note: "Muslim 46:36",
+        },
+        {
+          title: "Souls knew one another before their bodies",
+          detail:
+            "That the souls existed and met before this life explains a mystery of human connection. The Prophet (peace be upon him) said: 'Souls are like recruited troops: Those who are like qualities are inclined to each other, but those who have dissimilar qualities, differ.' The pull we feel toward some people, and the distance we feel from others, traces back to how these souls first were.",
+          note: "Bukhari 60:11",
+        },
+      ],
+      source: "Quran 7:172; Muslim 46:36; Bukhari 60:11",
     },
   },
   {
@@ -526,6 +726,12 @@ const adamHawaTopics: Topic[] = [
           note: "Quran 4:1",
         },
         {
+          title: "'Treat women nicely' — created from a rib",
+          detail:
+            "The Prophet (peace be upon him) tied Hawa's origin to a lasting instruction: 'Treat women nicely, for a woman is created from a rib, and the most curved portion of the rib is its upper portion, so, if you should try to straighten it, it will break, but if you leave it as it is, it will remain crooked. So treat women nicely.' The lesson is not a flaw in women but a call to gentleness and acceptance rather than harshness.",
+          note: "Bukhari 60:6",
+        },
+        {
           title: "Forbidden from one tree",
           detail:
             "They were given complete freedom in Paradise except for one restriction: 'Do not approach this tree, or you will be among the wrongdoers.' Iblis whispered to them, swearing by Allah that he was a sincere advisor, and told them the tree would make them angels or grant them immortality.",
@@ -544,7 +750,7 @@ const adamHawaTopics: Topic[] = [
           note: "Quran 2:38; Quran 2:30",
         },
       ],
-      source: "Quran 2:30-38; Quran 4:1; Quran 7:19-25",
+      source: "Quran 2:30-38; Quran 4:1; Quran 7:19-25; Bukhari 60:6",
     },
   },
 ];
@@ -552,6 +758,74 @@ const adamHawaTopics: Topic[] = [
 /* ───────────────────────── 8. Life on Earth ───────────────────────── */
 
 const lifeOnEarthTopics: Topic[] = [
+  {
+    id: "first-sons",
+    name: "The First Sons of Adam",
+    content: {
+      intro:
+        "The very first human story after the descent to earth is one of two brothers — the sons of Adam, known in tradition as Habil and Qabil (Abel and Cain). It gave the world its first act of worship rejected, its first murder, and its first burial.",
+      verse: {
+        arabic: "۞ وَٱتْلُ عَلَيْهِمْ نَبَأَ ٱبْنَىْ ءَادَمَ بِٱلْحَقِّ إِذْ قَرَّبَا قُرْبَانًا فَتُقُبِّلَ مِنْ أَحَدِهِمَا وَلَمْ يُتَقَبَّلْ مِنَ ٱلْـَٔاخَرِ قَالَ لَأَقْتُلَنَّكَ ۖ قَالَ إِنَّمَا يَتَقَبَّلُ ٱللَّهُ مِنَ ٱلْمُتَّقِينَ",
+        text: "Relate to them the story of the two sons of Adam in truth, when both offered a sacrifice; it was accepted from one [i.e., Abel] but not accepted from the other [i.e., Cain]. The latter said, “I will kill you.” The former said, “Allah only accepts from those who fear Him.”",
+        ref: "Quran 5:27",
+      },
+      points: [
+        {
+          title: "Two offerings — one accepted",
+          detail:
+            "Each brother offered a sacrifice to Allah. It was accepted from one and not from the other. Instead of examining himself, the rejected brother turned on the other in envy: 'I will kill you.' The righteous brother answered with the timeless principle: 'Allah only accepts from those who fear Him' — acceptance depends on taqwa, not on the size of the gift.",
+          note: "Quran 5:27",
+        },
+        {
+          title: "'I fear Allah, the Lord of the worlds'",
+          detail:
+            "Threatened with death, the righteous brother refused to answer violence with violence: 'Even if you stretch your hand forward to kill me, I will not stretch my hand forward to kill you, for I fear Allah, the Lord of the worlds. I would rather let you bear your sin against me and your own sin…' His restraint, not his death, was his victory.",
+          note: "Quran 5:28-29",
+        },
+        {
+          title: "The first murder ever committed",
+          detail:
+            "'But the former justified to himself the killing of his brother and killed him, and thus became one of the losers.' This was the first death and first bloodshed among humankind. The Prophet (peace be upon him) said: 'Whenever a person is murdered unjustly, there is a share from the burden of the crime on the first son of Adam for he was the first to start the tradition of murdering.'",
+          note: "Quran 5:30; Bukhari 60:10",
+        },
+        {
+          title: "A crow taught him how to bury",
+          detail:
+            "Standing over his brother's body, the murderer did not know what to do with it. 'Then Allah sent a crow scratching the ground to show him how to bury the corpse of his brother.' He cried: 'Woe to me! Have I failed even to be like this crow to bury the corpse of my brother?' — and became one of the remorseful. Even the burial of the dead was first taught by Allah.",
+          note: "Quran 5:31",
+        },
+      ],
+      source: "Quran 5:27-31; Bukhari 60:10",
+    },
+  },
+  {
+    id: "your-creation",
+    name: "Your Own Creation",
+    content: {
+      intro:
+        "Creation did not end with Adam. Allah describes the making of every single human being — a journey from a drop of fluid to a formed body with a soul breathed into it. It is among the most quoted signs in the Quran.",
+      verse: {
+        arabic: "ثُمَّ خَلَقْنَا ٱلنُّطْفَةَ عَلَقَةً فَخَلَقْنَا ٱلْعَلَقَةَ مُضْغَةً فَخَلَقْنَا ٱلْمُضْغَةَ عِظَـٰمًا فَكَسَوْنَا ٱلْعِظَـٰمَ لَحْمًا ثُمَّ أَنشَأْنَـٰهُ خَلْقًا ءَاخَرَ ۚ فَتَبَارَكَ ٱللَّهُ أَحْسَنُ ٱلْخَـٰلِقِينَ",
+        text: "…then We made the sperm drop into a clinging clot, then We made the clinging clot into a lump, then We made the lump into bones, and We clothed the bones with flesh, and then We developed it into another creation. So Blessed is Allah, the Best of Creators.",
+        ref: "Quran 23:14",
+      },
+      points: [
+        {
+          title: "From a drop to a formed being",
+          detail:
+            "Allah traces our creation stage by stage: 'then We placed him as a sperm-drop in a safe place, then We made the sperm drop into a clinging clot, then We made the clinging clot into a lump, then We made the lump into bones, and We clothed the bones with flesh, and then We developed it into another creation.' These same stages — nutfah, ʿalaqah, mudghah — are described in the Quran fourteen centuries before they could be observed.",
+          note: "Quran 23:12-14",
+        },
+        {
+          title: "The soul is breathed in",
+          detail:
+            "After the body is fashioned, Allah 'fashioned him and breathed into him of His spirit.' The Prophet (peace be upon him) described the three forty-day stages in the womb, then the angel who writes the four decrees, and then: 'the soul is breathed into his body.' Every person is body given form and a soul given life — both from Allah.",
+          note: "Quran 32:9; Bukhari 60:7",
+        },
+      ],
+      source: "Quran 23:12-14; Quran 32:9; Bukhari 60:7",
+    },
+  },
   {
     id: "purpose",
     name: "The Purpose of Life",
@@ -601,6 +875,18 @@ const lifeOnEarthTopics: Topic[] = [
       },
       points: [
         {
+          title: "Mankind began as one nation",
+          detail:
+            "Adam and his early descendants were upon a single truth: worship of Allah alone. Allah says: 'Mankind was just one nation. Then Allah sent prophets with glad tidings and warnings…' The prophets were not sent to a world that had always been divided — they were sent to restore a unity that had been lost.",
+          note: "Quran 2:213",
+        },
+        {
+          title: "How shirk first entered the world",
+          detail:
+            "So how did idol-worship begin? Ibn Abbas explained that the idols later worshipped by the Arabs — Wadd, Suwaʿ, Yaghuth, Yaʿuq, and Nasr — 'formerly belonged to some pious men of the people of Noah, and when they died Satan inspired their people' to set up images 'at the places where they used to sit' and to call them by their names. Veneration of the righteous slowly hardened, over generations, into worship — which is exactly why Nuh, the first messenger, was sent. (The prophets are covered in full in Prophets & Messengers.)",
+          note: "Bukhari 65:440",
+        },
+        {
           title: "Every nation received a warner",
           detail:
             "Allah says: 'There was no nation but that there passed within it a warner.' The message of tawhid was delivered to every people in every era. No community was left without guidance — and this is part of Allah's perfect justice.",
@@ -619,7 +905,7 @@ const lifeOnEarthTopics: Topic[] = [
           note: "Quran 33:40; Muslim 43:7",
         },
       ],
-      source: "Quran 16:36; Quran 33:40; Quran 35:24; Muslim 43:7",
+      source: "Quran 2:213; Quran 16:36; Quran 33:40; Quran 35:24; Bukhari 65:440; Muslim 43:7",
     },
   },
   {
@@ -801,8 +1087,14 @@ const endTimesTopics: Topic[] = [
             "Israfil will blow the Trumpet twice. The first blowing will cause everything to perish — every living thing in the heavens and the earth will die. The second blowing will resurrect all of creation for judgement.",
           note: "Quran 39:68",
         },
+        {
+          title: "All ten signs, in one hadith",
+          detail:
+            "The classic list comes from Hudhayfah b. Usayd, who reported that the Prophet (peace be upon him) said the Hour 'will not come until you see ten signs': the smoke, the Dajjal, the Beast, the rising of the sun from the west, the descent of Jesus son of Mary, Gog and Magog, three landslides — one in the east, one in the west, and one in Arabia — and finally a fire that drives the people to their final gathering. The Mahdi, the Beast, and the landslides are covered in detail on the Day of Judgement page.",
+          note: "Muslim 54:51; Muslim 54:52",
+        },
       ],
-      source: "Quran 18:94-98; Quran 39:68; Bukhari 60:118; Bukhari 65:234; Muslim 1:375; Muslim 54:1; Muslim 54:134",
+      source: "Quran 18:94-98; Quran 39:68; Bukhari 60:118; Bukhari 65:234; Muslim 1:375; Muslim 54:1; Muslim 54:51; Muslim 54:52; Muslim 54:134",
     },
   },
 ];
@@ -1028,6 +1320,9 @@ const tabDataMap: Record<TabKey, { topics: Topic[] }> = {
 
 /* The four afterlife stages have dedicated pages — link out at the bottom */
 const goDeeperLinks: Partial<Record<TabKey, { href: string; label: string }>> = {
+  "pen-tablet": { href: "/articles-of-faith?tab=articles&sub=qadr", label: "Go deeper: Divine Decree — the four levels of qadar in detail" },
+  jinn: { href: "/protection?tab=daily", label: "Go deeper: Daily Protection — adhkar that shield you from the jinn" },
+  "life-on-earth": { href: "/prophets", label: "Go deeper: Prophets & Messengers — the chain from Adam to Muhammad" },
   "death-grave": { href: "/barzakh", label: "Go deeper: Barzakh — the grave in detail" },
   "end-times": { href: "/day-of-judgement", label: "Go deeper: Day of Judgement — the signs of the Hour in detail" },
   "day-of-judgement": { href: "/day-of-judgement", label: "Go deeper: Day of Judgement — the events of the Day in detail" },

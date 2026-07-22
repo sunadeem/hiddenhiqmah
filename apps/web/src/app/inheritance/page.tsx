@@ -22,6 +22,9 @@ import {
   PieChart,
   FileText,
   HelpCircle,
+  Calculator,
+  Sparkles,
+  Gavel,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -29,9 +32,10 @@ import {
    ═══════════════════════════════════════════════════════════════════ */
 
 type MainTab = "foundations" | "shares" | "heirs" | "wasiyyah-faqs";
-type RailTab = "foundations" | "wasiyyah-faqs";
+type RailTab = "foundations" | "shares" | "wasiyyah-faqs";
 type FoundationsSub = "foundations" | "verses" | "before";
-type WasiyyahFaqsSub = "wasiyyah" | "wisdom";
+type SharesSub = "shares" | "special-cases" | "calculator";
+type WasiyyahFaqsSub = "wasiyyah" | "making-legal" | "wisdom";
 
 const mainTabs: { key: MainTab; label: string; icon: React.ReactNode }[] = [
   { key: "foundations", label: "Foundations", icon: <Landmark size={16} /> },
@@ -46,8 +50,15 @@ const foundationsSubs: { key: FoundationsSub; label: string; icon: React.ReactNo
   { key: "before", label: "Before Distribution", icon: <ListChecks size={16} /> },
 ];
 
+const sharesSubs: { key: SharesSub; label: string; icon: React.ReactNode }[] = [
+  { key: "shares", label: "The Shares", icon: <PieChart size={16} /> },
+  { key: "special-cases", label: "Special Cases", icon: <Sparkles size={16} /> },
+  { key: "calculator", label: "Calculator", icon: <Calculator size={16} /> },
+];
+
 const wasiyyahFaqsSubs: { key: WasiyyahFaqsSub; label: string; icon: React.ReactNode }[] = [
   { key: "wasiyyah", label: "Wasiyyah (Will)", icon: <FileText size={16} /> },
+  { key: "making-legal", label: "Making It Legal", icon: <Gavel size={16} /> },
   { key: "wisdom", label: "Wisdom & FAQs", icon: <HelpCircle size={16} /> },
 ];
 
@@ -150,6 +161,13 @@ function FoundationsInheritanceTab() {
           </p>
         </ContentCard>
         <ContentCard delay={0.23}>
+          <h5 className="text-gold font-medium mb-2">Fire in the bellies — the orphans&apos; wealth</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Three verses before the shares are set out, Allah gives one of the sternest warnings in the Quran: those who devour orphans&apos; property unjustly &quot;only consume fire into their bellies.&quot; Mishandling an estate is not a paperwork error — it is swallowing fire. When a family divides wealth, the most vulnerable heirs (orphaned grandchildren, minor children, widows) are exactly the ones Allah shields here.
+          </p>
+          <Ref text="Quran 4:10" />
+        </ContentCard>
+        <ContentCard delay={0.26}>
           <h5 className="text-gold font-medium mb-2">Wealth belongs to Allah</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
             The estate is not &quot;ours&quot; to distribute as we please. We are temporary stewards. Allah lays out the shares of His wealth among His servants — our job is to faithfully transmit it according to His instruction.
@@ -203,6 +221,36 @@ function VersesInheritanceTab() {
         />
       </div>
 
+      <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Quran 4:8-10 — The verses beside the shares</h3>
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Right before the fixed shares, the mushaf places three commands the fara&apos;id student meets first: gift the non-heirs who show up at the division (4:8), fear for helpless offspring as you would your own (4:9), and never devour orphans&apos; property (4:10). They frame the shares in mercy and fear of Allah.
+        </p>
+      </ContentCard>
+      <div className="grid grid-cols-1 gap-3">
+        <VerseCard
+          arabic={"وَإِذَا حَضَرَ ٱلْقِسْمَةَ أُو۟لُوا۟ ٱلْقُرْبَىٰ وَٱلْيَتَـٰمَىٰ وَٱلْمَسَـٰكِينُ فَٱرْزُقُوهُم مِّنْهُ وَقُولُوا۟ لَهُمْ قَوْلًا مَّعْرُوفًا"}
+          transliteration="Wa idha hadara al-qismata ulu al-qurba wal-yatama wal-masakinu farzuquhum minhu wa qulu lahum qawlan ma'rufa"
+          english={"If at the time of distribution, [other] relatives, orphans, and the needy are present, give them something too, and speak to them kindly."}
+          source="Quran 4:8"
+          delay={0.08}
+        />
+        <VerseCard
+          arabic={"وَلْيَخْشَ ٱلَّذِينَ لَوْ تَرَكُوا۟ مِنْ خَلْفِهِمْ ذُرِّيَّةً ضِعَـٰفًا خَافُوا۟ عَلَيْهِمْ فَلْيَتَّقُوا۟ ٱللَّهَ وَلْيَقُولُوا۟ قَوْلًا سَدِيدًا"}
+          transliteration="Walyakhsha alladhina law taraku min khalfihim dhurriyyatan di'afan khafu 'alayhim, falyattaqu Allaha walyaqulu qawlan sadida"
+          english={"And let those [in charge of orphans] be cautious just as they themselves would be concerned had they left helpless offspring behind; let them fear Allah and say words of justice."}
+          source="Quran 4:9"
+          delay={0.11}
+        />
+        <VerseCard
+          arabic={"إِنَّ ٱلَّذِينَ يَأْكُلُونَ أَمْوَٰلَ ٱلْيَتَـٰمَىٰ ظُلْمًا إِنَّمَا يَأْكُلُونَ فِى بُطُونِهِمْ نَارًا ۖ وَسَيَصْلَوْنَ سَعِيرًا"}
+          transliteration="Inna alladhina ya'kuluna amwala al-yatama zulman innama ya'kuluna fi butunihim nara, wa sayaslawna sa'ira"
+          english={"Indeed, those who consume the orphans’ property unjustly, only consume fire into their bellies, and they will burn in a Blazing Fire."}
+          source="Quran 4:10"
+          delay={0.14}
+        />
+      </div>
+
     </div>
   );
 }
@@ -224,11 +272,25 @@ function BeforeDistributionTab() {
           </p>
         </ContentCard>
         <ContentCard delay={0.11}>
-          <h5 className="text-gold font-medium mb-2">2. Debts (Duyun)</h5>
+          <h5 className="text-gold font-medium mb-2">2. Debts to people (Duyun al-&apos;ibad)</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
             Debts owed to people <span className="text-gold">must be paid in full</span> before any inheritance distribution — even if it consumes the entire estate. The Prophet ﷺ refused to pray janazah over someone with unpaid debt until it was settled. The soul of a believer remains attached to debt until cleared.
           </p>
           <Ref text="Tirmidhi 10:114" />
+        </ContentCard>
+        <ContentCard delay={0.125}>
+          <h5 className="text-gold font-medium mb-2">2b. Debts to Allah (Huquq Allah)</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            A practicing family must also settle the deceased&apos;s unpaid obligations of worship, treated as a debt owed to Allah: outstanding <span className="text-gold">zakah</span>, an unfulfilled <span className="text-gold">obligatory or vowed Hajj</span>, expiations (<span className="text-gold italic">kaffarah</span>), and missed obligatory fasts.
+          </p>
+          <ul className="text-themed-muted text-sm leading-relaxed list-disc pl-5 mt-2 space-y-1">
+            <li><span className="text-gold">Vowed / obligatory Hajj:</span> when a woman said her mother died before performing a vowed Hajj, the Prophet ﷺ told her to perform it on her behalf and said &quot;…pay Allah&apos;s debt as He has more right to be paid.&quot;</li>
+            <li><span className="text-gold">Missed fasts:</span> &quot;If anyone dies when some fast due from him has been unfulfilled, his heir must fast on his behalf&quot; — and Hajj may likewise be performed for a deceased parent who never fulfilled it.</li>
+          </ul>
+          <p className="text-themed-muted text-sm leading-relaxed mt-2">
+            The schools differ on the details (e.g. whether heirs fast for the deceased or feed the poor from the estate); scholars agree these <span className="text-gold italic">huquq Allah</span> are not simply forgiven by death. For a specific estate, ask a scholar which obligations bind and how to discharge them.
+          </p>
+          <Ref text="Bukhari 28:32; Bukhari 28:33; Bukhari 30:59; Bukhari 30:60; Abu Dawud 22:70; Muslim 15:455; Muslim 15:456; Nasai 24:21" />
         </ContentCard>
         <ContentCard delay={0.14}>
           <h5 className="text-gold font-medium mb-2">3. Wasiyyah (Bequest)</h5>
@@ -252,7 +314,7 @@ function BeforeDistributionTab() {
         </p>
         <ol className="text-themed-muted text-sm leading-relaxed list-decimal pl-5 mt-2 space-y-1">
           <li>Funeral expenses</li>
-          <li>Debts to people</li>
+          <li>Debts (to people, and the debts to Allah — zakah, obligatory/vowed Hajj, kaffarah, missed fasts)</li>
           <li>Wasiyyah (≤ 1/3)</li>
           <li>Inheritance distribution</li>
         </ol>
@@ -365,6 +427,13 @@ function SharesTab() {
           delay={0.14}
         />
       </div>
+
+      <ContentCard delay={0.05} className="mt-3 border-gold/40">
+        <h5 className="text-gold font-medium mb-2">What about the children of a son who died first?</h5>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          A grandson or granddaughter through a son inherits <span className="text-gold">only when no son of the deceased is alive</span>. So if a man&apos;s son dies before him and that man later dies leaving other living sons, the orphaned grandchildren are blocked and take nothing by fixed shares. This painful, common case — and the remedy the tradition offers (a wasiyyah for them, and the <span className="text-gold italic">wasiyyah wajibah</span> statutes) — is covered under <span className="text-gold">Wasiyyah &amp; FAQs → Wisdom &amp; FAQs</span>.
+        </p>
+      </ContentCard>
 
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Parents</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -515,19 +584,312 @@ function SharesTab() {
         </p>
       </ContentCard>
 
+      <ContentCard delay={0.05}>
+        <h5 className="text-gold font-medium mb-2">Example 4 — A man dies leaving: wife, mother, father, no children</h5>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          This is the famous <span className="text-gold italic">Umariyyatan</span> (al-gharrawayn) case — spouse + both parents, no descendants.
+        </p>
+        <ol className="text-themed-muted text-sm leading-relaxed list-decimal pl-5 space-y-1">
+          <li><span className="text-gold">Wife:</span> no descendants → <span className="font-mono text-gold">1/4</span></li>
+          <li><span className="text-gold">Mother:</span> takes <span className="font-mono text-gold">1/3 of what remains after the wife</span>, not 1/3 of the whole — that is 1/3 × 3/4 = <span className="font-mono text-gold">1/4</span> (Umar&apos;s ruling, the majority view)</li>
+          <li><span className="text-gold">Father:</span> asaba → the rest = 3/4 − 1/4 = <span className="font-mono text-gold">1/2</span></li>
+        </ol>
+        <p className="text-themed-muted text-sm leading-relaxed mt-3">
+          On a $120,000 net estate: Wife = $30,000. Mother = $30,000. Father = $60,000. (With a husband instead of a wife the mother&apos;s slice becomes 1/3 of the remaining 1/2, i.e. 1/6 of the whole.)
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.05}>
+        <h5 className="text-gold font-medium mb-2">Example 5 — A man dies leaving: 3 daughters, a paternal uncle (no sons)</h5>
+        <ol className="text-themed-muted text-sm leading-relaxed list-decimal pl-5 space-y-1">
+          <li><span className="text-gold">Three daughters:</span> no son, so they share the fixed <span className="font-mono text-gold">2/3</span> equally</li>
+          <li><span className="text-gold">Paternal uncle:</span> the nearest male asaba → takes the remaining <span className="font-mono text-gold">1/3</span></li>
+        </ol>
+        <p className="text-themed-muted text-sm leading-relaxed mt-3">
+          On a $90,000 net estate: Each daughter = $20,000. Uncle = $30,000. If there had been <span className="text-gold">no asaba at all</span> (no father, brother, uncle, etc.), that leftover 1/3 would return to the daughters by <span className="text-gold italic">radd</span> — see Example 7.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.05}>
+        <h5 className="text-gold font-medium mb-2">Example 6 — A woman dies leaving: husband, mother, one maternal sister (kalalah)</h5>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          No children and no father, so the deceased is <span className="text-gold italic">kalalah</span> and the maternal side inherits by fixed share.
+        </p>
+        <ol className="text-themed-muted text-sm leading-relaxed list-decimal pl-5 space-y-1">
+          <li><span className="text-gold">Husband:</span> no descendants → <span className="font-mono text-gold">1/2</span></li>
+          <li><span className="text-gold">Mother:</span> no descendants and fewer than two siblings → <span className="font-mono text-gold">1/3</span></li>
+          <li><span className="text-gold">Maternal sister:</span> one alone → <span className="font-mono text-gold">1/6</span></li>
+        </ol>
+        <p className="text-themed-muted text-sm leading-relaxed mt-3">
+          Shares total 1/2 + 1/3 + 1/6 = 1 exactly. On a $60,000 net estate: Husband = $30,000. Mother = $20,000. Maternal sister = $10,000.
+        </p>
+      </ContentCard>
+
+      <ContentCard delay={0.05}>
+        <h5 className="text-gold font-medium mb-2">Example 7 — A woman dies leaving: one daughter, mother, no spouse and no asaba (radd)</h5>
+        <ol className="text-themed-muted text-sm leading-relaxed list-decimal pl-5 space-y-1">
+          <li><span className="text-gold">Daughter:</span> only one, no son → <span className="font-mono text-gold">1/2</span></li>
+          <li><span className="text-gold">Mother:</span> descendant present → <span className="font-mono text-gold">1/6</span></li>
+          <li>Fixed shares total 1/2 + 1/6 = <span className="font-mono">2/3</span>. With no asaba to take the leftover 1/3, the surplus returns to the fixed-share heirs in proportion — this is <span className="text-gold italic">radd</span>. Reduce the base to the sum of shares (3/6 + 1/6 = 4/6): daughter <span className="font-mono text-gold">3/4</span>, mother <span className="font-mono text-gold">1/4</span>.</li>
+        </ol>
+        <p className="text-themed-muted text-sm leading-relaxed mt-3">
+          On an $80,000 net estate: Daughter = $60,000. Mother = $20,000. (A spouse never shares in radd — the surplus would then pass on to the state treasury / be handled per the local scholarly view. The Hanafi and much of the later tradition apply radd; consult a specialist.)
+        </p>
+      </ContentCard>
+
       <ContentCard delay={0.05} className="mt-4 border-gold/40">
         <h5 className="text-gold font-medium mb-2">When in doubt, consult a specialist</h5>
         <p className="text-themed-muted text-sm leading-relaxed">
           The shares are simple in theory but the interactions can be intricate — <span className="text-gold italic">awl</span> (when shares exceed 1, all are reduced proportionally), <span className="text-gold italic">radd</span> (when shares total less than 1 and there are no asaba, fixed-share heirs receive the surplus proportionally), and special cases like the <span className="text-gold italic">gharrawayn</span> (the two glittering ones) all require care. For any actual death, consult a Muslim scholar trained in <span className="text-gold italic">fara&apos;id</span> or an Islamic estate planner.
         </p>
       </ContentCard>
+    </div>
+  );
+}
 
-      <SourcesCard className="mt-6" sources={[
-        { ref: "Quran 4:11", desc: "Shares of children and parents" },
-        { ref: "Quran 4:12", desc: "Shares of spouses and kalalah" },
-        { ref: "Quran 4:176", desc: "Full and paternal sisters' shares" },
-        { ref: "Bukhari 85:9", desc: "Give fixed shares first, remainder to nearest male relative" },
-      ]} />
+/* ═══════════════════════════════════════════════════════════════════
+   THE SHARES → SPECIAL CASES (classical fara'id doctrine; framed as
+   positions, no invented narrations — see genericItems)
+   ═══════════════════════════════════════════════════════════════════ */
+
+function SpecialCasesTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05} className="border-gold/40">
+        <p className="text-themed-muted text-sm leading-relaxed">
+          The moment you try a real calculation you meet the classical &quot;hard cases.&quot; These are matters of <span className="text-gold">fiqh reasoning</span> where the schools sometimes differ — the summaries below are teaching positions, <span className="text-gold">not a fatwa</span> for any specific estate. For an actual death, a trained <span className="text-gold italic">fara&apos;id</span> scholar must run the numbers.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.08}>
+          <h5 className="text-gold font-medium mb-2">Awl — when the shares overflow</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Sometimes the fixed fractions add up to <span className="text-gold">more than one</span> (e.g. husband 1/2 + two full sisters 2/3). Rather than favour one heir, the base is enlarged and every share is reduced in the same proportion — so all heirs shrink together fairly. This is <span className="text-gold italic">awl</span>, first applied by Umar (RA) in consultation with the Companions.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">Radd — when shares fall short</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The opposite case: fixed shares total <span className="text-gold">less than one</span> and there is no asaba to absorb the remainder. The surplus is returned (<span className="text-gold italic">radd</span>) to the fixed-share heirs in proportion — with the majority excluding the <span className="text-gold">spouse</span> from the return. Some early scholars sent the surplus to the treasury instead; most of the later tradition applies radd.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">Al-Gharrawayn / Umariyyatan</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &quot;The two glittering ones&quot; — spouse + both parents, no descendants. Here the mother takes <span className="text-gold">1/3 of the remainder after the spouse</span>, not 1/3 of the whole, so she and the father keep the 2:1 relationship. This is Umar&apos;s ruling and the majority view; Ibn Abbas (RA) held she takes 1/3 of the entire estate. Worked in full as Example 4.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">Grandfather with siblings</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            When a grandfather inherits alongside the deceased&apos;s brothers and sisters, the Companions themselves differed. Abu Bakr (RA) treated the grandfather like a father, fully blocking the siblings; Ali and Zayd ibn Thabit (RA) let him share with them by intricate rules. The Hanafis follow the first view, the Shafi&apos;is and Hanbalis the second — a textbook case for a specialist.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">Simultaneous deaths</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            When two heirs die together (a car crash, a disaster) and it cannot be known who died first, the majority ruling — from Abu Bakr and Umar (RA) — is that <span className="text-gold">neither inherits from the other</span>; each estate passes only to the surviving heirs. A minority historically assumed an order. This is a live modern question best taken to a scholar with the facts.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.23}>
+          <h5 className="text-gold font-medium mb-2">The unborn child (al-haml)</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            A child in the womb at the time of death inherits <span className="text-gold">if it is born alive</span>. Distribution is paused, or a share is held back assuming the most favourable outcome (often reserving for twins), and settled once the child is born. The share is void if the child is stillborn.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.26}>
+          <h5 className="text-gold font-medium mb-2">The missing person (al-mafqud)</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            An heir whose life or death is unknown is treated as alive for his own potential share (it is reserved) while the estate around him is settled cautiously. The schools set different waiting periods before he is judged legally dead and his own estate divided — again, a matter for a qualified judge or scholar.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.29} className="border-gold/40">
+          <h5 className="text-gold font-medium mb-2">This is not a fatwa</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Every case above turns on details a page cannot see. Use these summaries to understand the questions — never to settle a real inheritance. For an actual estate, consult a scholar trained in <span className="text-gold italic">fara&apos;id</span> or a qualified Islamic estate planner.
+          </p>
+        </ContentCard>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   THE SHARES → CALCULATOR (exact rational arithmetic; deliberately scoped
+   to spouse + children + parents. Any case outside this set — grandchildren,
+   siblings, grandparents, awl among many heirs — is NOT computed; the tool
+   says so and defers to a specialist. Logic verified against onsite
+   Examples 1, 2, 4, 5, 7.)
+   ═══════════════════════════════════════════════════════════════════ */
+
+type Fraction = { n: number; d: number };
+const cgcd = (a: number, b: number): number => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a || 1; };
+const cfr = (n: number, d = 1): Fraction => { if (d < 0) { n = -n; d = -d; } const g = cgcd(n, d); return { n: n / g, d: d / g }; };
+const cadd = (a: Fraction, b: Fraction) => cfr(a.n * b.d + b.n * a.d, a.d * b.d);
+const csub = (a: Fraction, b: Fraction) => cfr(a.n * b.d - b.n * a.d, a.d * b.d);
+const cmul = (a: Fraction, b: Fraction) => cfr(a.n * b.n, a.d * b.d);
+const csign = (a: Fraction, b: Fraction) => a.n * b.d - b.n * a.d;
+const cstr = (a: Fraction) => (a.n === 0 ? "0" : a.d === 1 ? `${a.n}` : `${a.n}/${a.d}`);
+const cpct = (a: Fraction) => `${((a.n / a.d) * 100).toFixed(a.n % a.d === 0 ? 0 : 2)}%`;
+
+type CalcInput = { spouse: "none" | "husband" | "wife"; sons: number; daughters: number; father: boolean; mother: boolean };
+type CalcRow = { label: string; share: string; pct: string; each?: string };
+type CalcResult = { ok: false; message: string } | { ok: true; rows: CalcRow[]; flags: string[] };
+
+function computeShares(inp: CalcInput): CalcResult {
+  const { spouse, sons, daughters, father, mother } = inp;
+  const hasChild = sons > 0 || daughters > 0;
+  const hasMale = sons > 0;
+  const heirCount = (spouse !== "none" ? 1 : 0) + sons + daughters + (father ? 1 : 0) + (mother ? 1 : 0);
+  if (heirCount === 0) return { ok: false, message: "Select at least one surviving heir to see the split." };
+  if (spouse !== "none" && !hasChild && !father && !mother)
+    return { ok: false, message: "A surviving spouse as the sole heir is a contested case (the surplus goes to the treasury or is returned by some scholars). Consult a fara'id specialist." };
+
+  const fixed: Record<string, Fraction> = {};
+  const flags = new Set<string>();
+  const wifeLabel = "Wife (or wives, sharing equally)";
+
+  let spouseShare = cfr(0);
+  let spouseKey = "";
+  if (spouse === "husband") { spouseShare = hasChild ? cfr(1, 4) : cfr(1, 2); spouseKey = "Husband"; fixed[spouseKey] = spouseShare; }
+  else if (spouse === "wife") { spouseShare = hasChild ? cfr(1, 8) : cfr(1, 4); spouseKey = wifeLabel; fixed[spouseKey] = spouseShare; }
+
+  const umar = !hasChild && spouse !== "none" && father && mother;
+  if (mother) fixed["Mother"] = umar ? cmul(csub(cfr(1), spouseShare), cfr(1, 3)) : hasChild ? cfr(1, 6) : cfr(1, 3);
+  if (umar) flags.add("umar");
+
+  const dLabel = "Daughter" + (daughters > 1 ? `s (${daughters}, sharing equally)` : "");
+  if (daughters > 0 && !hasMale) fixed[dLabel] = daughters === 1 ? cfr(1, 2) : cfr(2, 3);
+  if (father && hasChild) fixed["Father"] = cfr(1, 6);
+
+  let sumFixed = cfr(0);
+  for (const k in fixed) sumFixed = cadd(sumFixed, fixed[k]);
+  const residue = csub(cfr(1), sumFixed);
+
+  const result: Record<string, Fraction> = { ...fixed };
+  const eachOf: Record<string, Fraction> = {};
+
+  if (hasMale) {
+    const parts = sons * 2 + daughters;
+    const perPart = cmul(residue, cfr(1, parts));
+    if (sons > 0) { const t = cmul(perPart, cfr(sons * 2)); result[`Son${sons > 1 ? `s (${sons})` : ""}`] = t; if (sons > 1) eachOf[`Son${sons > 1 ? `s (${sons})` : ""}`] = cmul(perPart, cfr(2)); }
+    if (daughters > 0) { const t = cmul(perPart, cfr(daughters)); result[`Daughter${daughters > 1 ? `s (${daughters})` : ""}`] = t; if (daughters > 1) eachOf[`Daughter${daughters > 1 ? `s (${daughters})` : ""}`] = perPart; }
+  } else if (!hasChild) {
+    if (father) { if (csign(residue, cfr(0)) < 0) flags.add("awl"); else result["Father"] = cadd(result["Father"] || cfr(0), residue); }
+    else if (csign(residue, cfr(0)) > 0) flags.add("radd");
+  } else {
+    if (father) { if (csign(residue, cfr(0)) < 0) flags.add("awl"); else result["Father"] = cadd(result["Father"], residue); }
+    else if (csign(residue, cfr(0)) > 0) flags.add("radd");
+    else if (csign(residue, cfr(0)) < 0) flags.add("awl");
+  }
+
+  if (flags.has("awl")) for (const k in result) result[k] = cmul(result[k], cfr(sumFixed.d, sumFixed.n));
+
+  if (flags.has("radd")) {
+    let nonSpouseSum = cfr(0);
+    for (const k in result) if (k !== spouseKey) nonSpouseSum = cadd(nonSpouseSum, result[k]);
+    const target = spouseKey ? csub(cfr(1), result[spouseKey]) : cfr(1);
+    if (nonSpouseSum.n !== 0) { const factor = cmul(target, cfr(nonSpouseSum.d, nonSpouseSum.n)); for (const k in result) if (k !== spouseKey) result[k] = cmul(result[k], factor); }
+  }
+
+  // per-daughter for the fixed (no-son) case
+  if (daughters > 1 && !hasMale && result[dLabel]) eachOf[dLabel] = cmul(result[dLabel], cfr(1, daughters));
+
+  const rows: CalcRow[] = Object.entries(result).map(([label, f]) => ({
+    label, share: cstr(f), pct: cpct(f), each: eachOf[label] ? `${cstr(eachOf[label])} each` : undefined,
+  }));
+  return { ok: true, rows, flags: [...flags] };
+}
+
+function Stepper({ label, value, set, max = 12 }: { label: string; value: number; set: (n: number) => void; max?: number }) {
+  return (
+    <div className="flex items-center justify-between gap-3 py-1.5">
+      <span className="text-themed-muted text-sm">{label}</span>
+      <div className="flex items-center gap-2">
+        <button type="button" onClick={() => set(Math.max(0, value - 1))} className="w-7 h-7 rounded border sidebar-border text-gold text-lg leading-none flex items-center justify-center hover:bg-gold/10" aria-label={`Decrease ${label}`}>−</button>
+        <span className="font-mono text-gold w-6 text-center">{value}</span>
+        <button type="button" onClick={() => set(Math.min(max, value + 1))} className="w-7 h-7 rounded border sidebar-border text-gold text-lg leading-none flex items-center justify-center hover:bg-gold/10" aria-label={`Increase ${label}`}>+</button>
+      </div>
+    </div>
+  );
+}
+
+function CalculatorTab() {
+  const [inp, setInp] = useState<CalcInput>({ spouse: "none", sons: 0, daughters: 0, father: false, mother: false });
+  const res = computeShares(inp);
+  const upd = (patch: Partial<CalcInput>) => setInp((p) => ({ ...p, ...patch }));
+
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05} className="border-gold/40">
+        <h5 className="text-gold font-medium mb-2">A teaching calculator — not a fatwa</h5>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          This computes the exact Quranic shares for the <span className="text-gold">most common household</span>: a spouse, children, and parents. It deliberately does <span className="text-gold">not</span> handle grandchildren, siblings, grandparents, or other relatives — those (and the special cases) need a trained <span className="text-gold italic">fara&apos;id</span> scholar. Shares are shown before funeral costs, debts (to people and to Allah), and any wasiyyah are removed. For any real estate, verify with a specialist.
+        </p>
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.08}>
+          <h5 className="text-gold font-medium mb-3">Who survives the deceased?</h5>
+          <div className="mb-3">
+            <p className="text-themed-muted text-sm mb-2">Spouse</p>
+            <div className="flex gap-2 flex-wrap">
+              {(["none", "husband", "wife"] as const).map((s) => (
+                <button key={s} type="button" onClick={() => upd({ spouse: s })}
+                  className={`px-3 py-1.5 rounded text-sm border transition-colors ${inp.spouse === s ? "bg-gold/20 border-gold text-gold" : "sidebar-border text-themed-muted hover:bg-gold/10"}`}>
+                  {s === "none" ? "None" : s === "husband" ? "Husband" : "Wife"}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="border-t sidebar-border pt-2">
+            <Stepper label="Sons" value={inp.sons} set={(n) => upd({ sons: n })} />
+            <Stepper label="Daughters" value={inp.daughters} set={(n) => upd({ daughters: n })} />
+          </div>
+          <div className="border-t sidebar-border pt-2 mt-1">
+            <label className="flex items-center justify-between gap-3 py-1.5 cursor-pointer">
+              <span className="text-themed-muted text-sm">Father alive</span>
+              <input type="checkbox" checked={inp.father} onChange={(e) => upd({ father: e.target.checked })} className="accent-gold w-4 h-4" />
+            </label>
+            <label className="flex items-center justify-between gap-3 py-1.5 cursor-pointer">
+              <span className="text-themed-muted text-sm">Mother alive</span>
+              <input type="checkbox" checked={inp.mother} onChange={(e) => upd({ mother: e.target.checked })} className="accent-gold w-4 h-4" />
+            </label>
+          </div>
+        </ContentCard>
+
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-3">The split</h5>
+          {!res.ok ? (
+            <p className="text-themed-muted text-sm leading-relaxed">{res.message}</p>
+          ) : (
+            <>
+              <div className="space-y-2">
+                {res.rows.map((r) => (
+                  <div key={r.label} className="flex items-start justify-between gap-3 text-sm">
+                    <span className="text-themed-muted leading-relaxed">{r.label}{r.each && <span className="text-themed-muted/70"> — {r.each}</span>}</span>
+                    <span className="font-mono text-gold shrink-0 text-right">{r.share}<span className="text-themed-muted/60"> · {r.pct}</span></span>
+                  </div>
+                ))}
+              </div>
+              {(res.flags.includes("awl") || res.flags.includes("radd") || res.flags.includes("umar")) && (
+                <div className="mt-3 pt-3 border-t sidebar-border space-y-1.5">
+                  {res.flags.includes("awl") && <p className="text-xs text-themed-muted"><span className="text-gold/80 font-medium">Awl:</span> the fixed shares overflowed one, so all were reduced proportionally. See Special Cases.</p>}
+                  {res.flags.includes("radd") && <p className="text-xs text-themed-muted"><span className="text-gold/80 font-medium">Radd:</span> shares fell short of one with no residuary heir, so the surplus returned to the fixed-share heirs (the spouse is excluded from radd). See Special Cases.</p>}
+                  {res.flags.includes("umar") && <p className="text-xs text-themed-muted"><span className="text-gold/80 font-medium">Umariyyatan:</span> spouse + both parents — the mother took a third of the remainder after the spouse (the majority view). See Special Cases.</p>}
+                </div>
+              )}
+            </>
+          )}
+        </ContentCard>
+      </div>
+
+      <ContentCard delay={0.14} className="border-gold/40">
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Selecting a sibling, grandchild, or grandparent is intentionally not possible here — their presence can block or change every share above. If your family includes anyone beyond a spouse, children, and parents, treat this result as incomplete and take the full facts to a <span className="text-gold italic">fara&apos;id</span> scholar or Islamic estate planner.
+        </p>
+      </ContentCard>
     </div>
   );
 }
@@ -671,6 +1033,15 @@ function WasiyyahTab() {
           </p>
           <Ref text="Tirmidhi 30:5" />
         </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">The consent exception, and going over 1/3</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Most fiqh manuals attach an exception to the two rules above: a bequest to an heir — or one exceeding a third — is <span className="text-gold">valid if the other heirs freely consent after the death</span>, once they own their shares and can waive part of them. The same principle governs a bequest above 1/3: the excess is void unless the heirs agree to let it stand. Some transmissions of the hadith add &quot;unless the heirs consent&quot;; scholars weigh this addition rather than treat it as firmly established, and it is the underlying <span className="text-gold italic">fiqh</span> — not one graded wording — that the schools rely on.
+          </p>
+          <p className="text-themed-muted text-sm leading-relaxed mt-2">
+            Consent must be genuine and given <span className="text-gold">after</span> the death, never pressured. For a specific will, confirm the details with a scholar.
+          </p>
+        </ContentCard>
       </div>
 
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">What to Include in Your Wasiyyah</h3>
@@ -711,8 +1082,79 @@ function WasiyyahTab() {
             Appoint a trustworthy Muslim — knowledgeable in fiqh of inheritance — to execute your wasiyyah. Get witnesses. In most countries, the document needs to meet local legal requirements (witnessed, notarized, etc.) to be enforceable.
           </p>
         </ContentCard>
+        <ContentCard delay={0.38}>
+          <h5 className="text-gold font-medium mb-2">Guardian for minor children (Wasi)</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            For most young Muslim parents this is the single biggest reason to write a will: <span className="text-gold">who raises your children if you die while they are minors</span>. Name a guardian (and a backup) you trust to bring them up upon Islam, and record your wishes for their upbringing, education, and the management of the wealth they inherit until they come of age.
+          </p>
+          <ul className="text-themed-muted text-sm leading-relaxed list-disc pl-5 mt-2 space-y-1">
+            <li>The person who raises the child and the person who manages the child&apos;s inherited wealth can be two different, trusted people.</li>
+            <li>Civil courts have the final say on custody — but a clearly stated preference in a valid will carries real weight with a judge.</li>
+            <li>The scholars discuss <span className="text-gold italic">wisayah</span> (guardianship) in detail; arrangements vary by school and by country.</li>
+          </ul>
+          <p className="text-themed-muted text-sm leading-relaxed mt-2">
+            This is a general summary, <span className="text-gold">not a fatwa</span> — settle the specifics of guardianship with a scholar and a local family-law professional.
+          </p>
+        </ContentCard>
       </div>
 
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   WASIYYAH & FAQs → MAKING IT LEGAL (civil-process guidance; framed
+   with the onsite Bukhari 55:1 command — no religious citations invented)
+   ═══════════════════════════════════════════════════════════════════ */
+
+function MakingLegalTab() {
+  return (
+    <div className="space-y-4">
+      <ContentCard delay={0.05}>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          A wasiyyah only protects your family if a court will actually enforce it. In the US, UK, Canada, and similar jurisdictions, an Islamic will has no special status — it is a civil document that must meet civil formalities. The Prophet ﷺ told every Muslim not to pass even two nights without a written will; the steps below turn that command into an enforceable document.
+        </p>
+        <Ref text="Bukhari 55:1" />
+      </ContentCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ContentCard delay={0.08}>
+          <h5 className="text-gold font-medium mb-2">1. Meet the witnessing / signing rules</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Most jurisdictions require the will to be signed by you and witnessed by two adults who are not beneficiaries (some also allow or expect notarization). Get this wrong and the whole document can be thrown out — so follow your state or country&apos;s exact wording, or use a solicitor/attorney.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.11}>
+          <h5 className="text-gold font-medium mb-2">2. Use a vetted Islamic-will template</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Several Muslim legal organizations publish country-specific Islamic wills reviewed by both scholars and lawyers. Starting from one of these — rather than a generic form — makes sure the fara&apos;id shares, the ≤ 1/3 bequest, the executor, and the guardian clauses are all worded in a way local courts accept.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.14}>
+          <h5 className="text-gold font-medium mb-2">3. Mind beneficiary designations</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Retirement accounts (401(k), IRA, pensions), life insurance, and &quot;payable on death&quot; accounts usually pass by their <span className="text-gold">named beneficiary and bypass the will entirely</span>. Update those forms to match your Islamic distribution, or the money will go outside fara&apos;id no matter what your will says.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.17}>
+          <h5 className="text-gold font-medium mb-2">4. Joint ownership and trusts</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Jointly-owned property with a right of survivorship, and assets held in certain trusts, can also skip the will. A Muslim estate planner can structure these (tenancy in common, revocable trusts, etc.) so that your share still flows through the Islamic distribution.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.2}>
+          <h5 className="text-gold font-medium mb-2">5. Update after any move or major change</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            A will valid in one state or country may fail the formalities of another. Re-check it whenever you move jurisdictions, and revoke and replace (rather than scribble on) the old one — an outdated or ambiguously amended will invites disputes.
+          </p>
+        </ContentCard>
+        <ContentCard delay={0.23} className="border-gold/40">
+          <h5 className="text-gold font-medium mb-2">Get qualified help</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            This is general guidance, <span className="text-gold">not legal advice</span>. Laws differ by state, province, and country and change over time. Have your final will reviewed by a licensed attorney/solicitor in your jurisdiction and, for the shares, a scholar trained in <span className="text-gold italic">fara&apos;id</span>.
+          </p>
+        </ContentCard>
+      </div>
     </div>
   );
 }
@@ -782,10 +1224,28 @@ function WisdomInheritanceTab() {
           <Ref text="Bukhari 51:20" />
         </ContentCard>
         <ContentCard delay={0.29}>
+          <h5 className="text-gold font-medium mb-2">My son died before me — do his children inherit?</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            By the fixed shares, <span className="text-gold">no</span>: grandchildren through a son are blocked whenever a son of the deceased is still alive (their uncles inherit, they do not). This is one of the most painful, common questions families face. The tradition&apos;s remedy is the wasiyyah: Allah tells us to give present non-heir relatives something and speak to them kindly (4:8), so a grandparent can leave the orphaned grandchildren up to a third of the estate by will.
+          </p>
+          <ul className="text-themed-muted text-sm leading-relaxed list-disc pl-5 mt-2 space-y-1">
+            <li>Several Muslim-majority countries legislate a <span className="text-gold italic">wasiyyah wajibah</span> — an obligatory bequest to such grandchildren up to a third — but this is a modern statutory ijtihad, applied differently from place to place.</li>
+            <li>Other heirs may also, after the death, gift part of their own shares to the grandchildren.</li>
+          </ul>
+          <p className="text-themed-muted text-sm leading-relaxed mt-2">
+            This is a general answer, <span className="text-gold">not a fatwa</span>. The rulings differ by school and country — consult a scholar for your family&apos;s exact situation.
+          </p>
+          <Ref text="Quran 4:8" />
+        </ContentCard>
+        <ContentCard delay={0.32}>
           <h5 className="text-gold font-medium mb-2">Learn the rules — they will affect you</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            Most Muslims encounter inheritance only when someone dies — when emotions are high and clarity is low. Learn the basics now: who inherits, what fractions apply, what must happen before distribution. The Prophet ﷺ encouraged learning the laws of inheritance. Then put your own will in writing while you are healthy.
+            Most Muslims encounter inheritance only when someone dies — when emotions are high and clarity is low. Learn the basics now: who inherits, what fractions apply, what must happen before distribution. Two narrations urge exactly this: &quot;Learn the laws of inheritance and the Quran, and teach the people…&quot; and &quot;Learn about the inheritance and teach it, for it is half of knowledge…&quot;
           </p>
+          <p className="text-themed-muted text-xs leading-relaxed mt-2 italic">
+            Both narrations are graded weak (da&apos;if) by many hadith scholars, so they are taken as encouragement rather than binding proof; the obligation to learn what one needs still stands. Then put your own will in writing while you are healthy.
+          </p>
+          <Ref text="Tirmidhi 29:2; Ibn Majah 23:1" />
         </ContentCard>
       </div>
 
@@ -803,11 +1263,15 @@ function WisdomInheritanceTab() {
 const foundationsSources: Record<FoundationsSub, SourceRef[]> = {
   foundations: [
     { ref: "Quran 4:7", desc: "Men and women each have an ordained share" },
+    { ref: "Quran 4:10", desc: "Consuming orphans' property unjustly is fire in the bellies" },
     { ref: "Quran 4:11-12", desc: "The detailed shares of children, parents, and spouses" },
     { ref: "Quran 4:13", desc: "These are Allah's limits — obey and enter Paradise" },
     { ref: "Quran 4:14", desc: "Transgress His limits — enter the Fire" },
   ],
   verses: [
+    { ref: "Quran 4:8", desc: "Give present non-heir relatives, orphans, and the needy something too" },
+    { ref: "Quran 4:9", desc: "Fear for helpless offspring; say words of justice" },
+    { ref: "Quran 4:10", desc: "Devouring orphans' wealth is swallowing fire" },
     { ref: "Quran 4:11", desc: "Shares of children and parents" },
     { ref: "Quran 4:12", desc: "Shares of spouses; kalalah (no descendants/ascendants)" },
     { ref: "Quran 4:176", desc: "Full sisters and siblings when no children or parents exist" },
@@ -817,7 +1281,23 @@ const foundationsSources: Record<FoundationsSub, SourceRef[]> = {
     { ref: "Quran 4:12", desc: "After any bequest and any debt — spouses/kalalah" },
     { ref: "Bukhari 55:5", desc: "Wasiyyah limited to one-third — Sa'd ibn Abi Waqqas" },
     { ref: "Tirmidhi 10:114", desc: "Soul of believer attached to debt until paid" },
+    { ref: "Bukhari 28:32", desc: "Perform the deceased's vowed Hajj — Allah's debt has more right to be paid" },
+    { ref: "Bukhari 30:59", desc: "Whoever dies owing missed fasts, his guardian fasts on his behalf" },
+    { ref: "Abu Dawud 22:70", desc: "The heir fasts on behalf of one who died with fasts unfulfilled" },
+    { ref: "Muslim 15:455", desc: "Hajj performed on behalf of an aged/deceased parent" },
+    { ref: "Nasai 24:21", desc: "The debt owed to Allah is more deserving of being paid" },
   ],
+};
+
+const sharesSources: Record<SharesSub, SourceRef[]> = {
+  shares: [
+    { ref: "Quran 4:11", desc: "Shares of children and parents" },
+    { ref: "Quran 4:12", desc: "Shares of spouses and kalalah" },
+    { ref: "Quran 4:176", desc: "Full and paternal sisters' shares" },
+    { ref: "Bukhari 85:9", desc: "Give fixed shares first, remainder to nearest male relative" },
+  ],
+  "special-cases": [],
+  calculator: [],
 };
 
 const wasiyyahFaqsSources: Record<WasiyyahFaqsSub, SourceRef[]> = {
@@ -826,21 +1306,29 @@ const wasiyyahFaqsSources: Record<WasiyyahFaqsSub, SourceRef[]> = {
     { ref: "Bukhari 55:5", desc: "Sa'd ibn Abi Waqqas — bequest limited to one-third" },
     { ref: "Tirmidhi 30:5", desc: "No bequest for an heir" },
   ],
+  "making-legal": [
+    { ref: "Bukhari 55:1", desc: "The command to keep a written will — the basis for making it legal" },
+  ],
   wisdom: [
+    { ref: "Quran 4:8", desc: "Give present non-heir relatives something — basis of the wasiyyah for orphaned grandchildren" },
     { ref: "Quran 4:11", desc: "Lidh-dhakari mithlu hazzi al-unthayayn — and the financial context" },
     { ref: "Quran 4:14", desc: "Transgressing Allah's limits = the Fire" },
     { ref: "Bukhari 51:20", desc: "Be just among your children — Nu'man ibn Bashir" },
     { ref: "Bukhari 55:1", desc: "Keep your wasiyyah written down" },
+    { ref: "Tirmidhi 29:2", desc: "Learn the laws of inheritance and teach them (graded weak)" },
+    { ref: "Ibn Majah 23:1", desc: "Inheritance is half of knowledge (graded weak)" },
   ],
 };
 
 const subsByTab: Record<RailTab, readonly { key: string }[]> = {
   foundations: foundationsSubs,
+  shares: sharesSubs,
   "wasiyyah-faqs": wasiyyahFaqsSubs,
 };
 
 const defaultSubs: Record<RailTab, string> = {
   foundations: "foundations",
+  shares: "shares",
   "wasiyyah-faqs": "wasiyyah",
 };
 
@@ -853,14 +1341,17 @@ const searchIndex: SearchEntry[] = [
   { tab: "foundations", sub: "foundations", label: "Foundations", keywords: "ordained share sons daughters both inherit warning wealth belongs to allah faraid" },
   { tab: "foundations", sub: "verses", label: "The Verses", keywords: "quran 4:11 4:12 4:176 children parents spouses kalalah verses of inheritance" },
   { tab: "foundations", sub: "before", label: "Before Distribution", keywords: "order funeral expenses takfin debts duyun wasiyyah bequest distribution among heirs" },
-  { tab: "shares", label: "The Shares", keywords: "fixed shares fractions husband wife spouses children parents grandparents siblings kalalah asaba residuary worked examples half quarter eighth two-thirds sixth male double" },
+  { tab: "shares", sub: "shares", label: "The Shares", keywords: "fixed shares fractions husband wife spouses children parents grandparents siblings kalalah asaba residuary worked examples half quarter eighth two-thirds sixth male double orphaned grandchild" },
+  { tab: "shares", sub: "special-cases", label: "Special Cases", keywords: "awl radd gharrawayn umariyyatan grandfather with siblings simultaneous deaths unborn child al-haml missing person mafqud madhhab differences" },
+  { tab: "shares", sub: "calculator", label: "Calculator", keywords: "inheritance calculator compute shares split spouse sons daughters father mother estate divide fractions tool" },
   { tab: "heirs", label: "Heirs", keywords: "categories ashab al-furud fixed-share asaba residuary dhu al-arham distant relatives who does not inherit non-muslim killer illegitimate divorced adopted" },
-  { tab: "wasiyyah-faqs", sub: "wasiyyah", label: "Wasiyyah (Will)", keywords: "will command to have a will one third rule bequest no bequest to an heir executor wasiy debts declaration of faith update" },
-  { tab: "wasiyyah-faqs", sub: "wisdom", label: "Wisdom & FAQs", keywords: "faq why male double female equal or more exclude daughter wife redistribute non-muslim country trusts joint property hibah gifts" },
+  { tab: "wasiyyah-faqs", sub: "wasiyyah", label: "Wasiyyah (Will)", keywords: "will command to have a will one third rule bequest no bequest to an heir consent exception executor wasiy guardian minor children wisayah debts declaration of faith update debts to allah zakah hajj fasting" },
+  { tab: "wasiyyah-faqs", sub: "making-legal", label: "Making It Legal", keywords: "legally binding will us uk canada witnessing notarization template beneficiary designation retirement account life insurance trust joint ownership revocation jurisdiction attorney solicitor" },
+  { tab: "wasiyyah-faqs", sub: "wisdom", label: "Wisdom & FAQs", keywords: "faq why male double female equal or more exclude daughter wife redistribute non-muslim country trusts joint property hibah gifts orphaned grandchild son died before father wasiyyah wajibah learn faraid half of knowledge" },
 ];
 
 const isRailTab = (tab: MainTab): tab is RailTab =>
-  tab === "foundations" || tab === "wasiyyah-faqs";
+  tab === "foundations" || tab === "shares" || tab === "wasiyyah-faqs";
 
 function InheritanceContent() {
   const searchParams = useSearchParams();
@@ -898,6 +1389,7 @@ function InheritanceContent() {
   };
 
   const activeFoundations = activeSubOf("foundations") as FoundationsSub;
+  const activeShares = activeSubOf("shares") as SharesSub;
   const activeWasiyyahFaqs = activeSubOf("wasiyyah-faqs") as WasiyyahFaqsSub;
 
   // Page search over the searchIndex rail entries (Rule 2).
@@ -970,12 +1462,25 @@ function InheritanceContent() {
                 <SourcesCard className="mt-6" sources={foundationsSources[activeFoundations]} />
               </>
             )}
-            {activeMain === "shares" && <SharesTab />}
+            {activeMain === "shares" && (
+              <>
+                <SubTabLayout subs={sharesSubs.filter((s) => subMatches("shares", s.key))} activeSub={activeShares} setActiveSub={changeSub("shares")}>
+                  {activeShares === "shares" && <SharesTab />}
+                  {activeShares === "special-cases" && <SpecialCasesTab />}
+                  {activeShares === "calculator" && <CalculatorTab />}
+                </SubTabLayout>
+                {/* Full-width, per-selection sources with empty-list guard */}
+                {sharesSources[activeShares].length > 0 && (
+                  <SourcesCard className="mt-6" sources={sharesSources[activeShares]} />
+                )}
+              </>
+            )}
             {activeMain === "heirs" && <HeirsTab />}
             {activeMain === "wasiyyah-faqs" && (
               <>
                 <SubTabLayout subs={wasiyyahFaqsSubs.filter((s) => subMatches("wasiyyah-faqs", s.key))} activeSub={activeWasiyyahFaqs} setActiveSub={changeSub("wasiyyah-faqs")}>
                   {activeWasiyyahFaqs === "wasiyyah" && <WasiyyahTab />}
+                  {activeWasiyyahFaqs === "making-legal" && <MakingLegalTab />}
                   {activeWasiyyahFaqs === "wisdom" && <WisdomInheritanceTab />}
                 </SubTabLayout>
                 {/* Full-width sources for the active sub-view, below the rail */}

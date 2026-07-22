@@ -285,3 +285,62 @@ _Batch 2 pages (prophet-muhammad, duas, muslim-daily, protection, jannah, day-of
 29. Arabic Letters — 28 letter names and sound approximations: reference material, uncited (audio assets noted as external).
 30. Parents' Guide — pedagogical orientation (age tiers, weekly rhythm, learn-together, celebrate-progress): no citations needed.
 31. Challenges — 31 new quiz questions/answers: derived from the page's own cited lesson content, no independent citations.
+
+---
+
+## EXPANSION BATCH 3 (Opus-built, 2026-07-22) — generic-attribution items
+
+_Batch 3 pages (death-rites, story-of-creation, inheritance, barzakh, ramadan, islamic-calendar), built on Opus 4.8, adversarially verified (defects fixed), awaiting Fable re-review. Usual keep/cite/remove review._
+
+### /death-rites
+1. Practical Checklist sub (PreparingChecklistSub): all civil-process guidance — call the masjid janazah service, obtaining the death certificate, declining embalming/cremation, autopsy handling, hasten-vs-repatriate, Muslim cemetery sections, costs — is scholarly/procedural summary with no hadith refs beyond the Bukhari 23:73 'hasten the funeral' anchor. This is correct per spec (do not invent refs for civil-process steps).
+2. Ghusl volunteer 6-step walkthrough (WashingTab): anchored to Bukhari 23:15/23:18, but the operational details (press the abdomen, gloved hands, perform wudu without mouth/nose water, camphor in final wash, braid a woman's hair into three plaits) are scholarly-summary; the three-plaits detail is authentic (Bukhari 23:16, Umm 'Atiyya) but not separately cited.
+3. 'Forgiven forty times' narration (WashingTab 'Cover what should be covered'): correctly reframed as "reported outside the primary collections and graded acceptable by a number of scholars" — proper generic attribution; the primary claim is anchored to Muslim 48:48.
+4. Lahd vs shaqq card (BurialGraveSub): "both are valid; the lahd is preferred... and it was the Prophet's own grave" is scholarly summary with no ref (the lahd-for-the-Prophet report is in Ibn Majah/Tirmidhi, not cited here).
+5. Consoling — three-day window (ConsolingSub 'Keep it three days'): the ~3-day condolence window and the warning against fixed ceremonial gatherings (third/fortieth night) are scholarly summary, no direct ref.
+6. Widow ihdad (GriefTab 'What ihdad actually involves'): "stays in the marital home, going out only for genuine need" is scholarly-derived (from other evidence); the beautification restrictions are anchored to Bukhari 68:86/Muslim 18:85.
+7. Salat al-gha'ib scope (SpecialCasesSub Najashi card): "Scholars differ on when it applies — most restrict it to one who had no janazah prayed where they died" is scholarly framing, appropriately noted as a differed position.
+8. Women visiting graves conclusions (VisitingGravesTab): the zawwarat 'frequent-visitor' reading and the balanced 'safest, widely-held position' are scholarly summary — well-supported by Tirmidhi 10:92's own attached commentary, with a consult-your-community-scholars note.
+
+### /story-of-creation
+9. Four levels of qadar (Knowledge, Writing, Will, Creation) in topic 'qadar-choices' (line ~44): framed as 'Scholars summarise...' — a standard aqidah framework given generic scholarly attribution, backed by verse refs (54:49, 76:3). No single narration cited; correct handling.
+10. 'I was a hidden treasure' caution in topic 'allah-alone' (line ~81): stated as 'not authentically traced to the Prophet... graded fabricated by hadith scholars' — a generic scholarly grading with no invented citation, exactly as the spec directed. Correct handling.
+
+### /inheritance
+11. Fiqh of wisayah / guardianship of minor children (Guardian for minor children card) — scholarly summary, framed 'not a fatwa'.
+12. Wasiyyah wajibah statutory obligatory-bequest to orphaned grandchildren (orphaned-grandchild FAQ + cross-link note) — modern statutory ijtihad, generic.
+13. Special Cases: awl mechanics; radd mechanics incl. spouse exclusion and the minority treasury view; al-gharrawayn/umariyyatan (Umar majority vs Ibn Abbas position); grandfather-with-siblings (Abu Bakr vs Ali/Zayd madhhab split); simultaneous deaths; unborn child (al-haml); missing person (al-mafqud) — all classical fiqh positions with no invented hadith, framed 'not a fatwa'.
+14. Consent exception to 'no bequest to an heir' and handling of bequests over 1/3 — fiqh; the 'unless the heirs consent' hadith addition graded honestly rather than cited as sahih.
+15. Making It Legal tab — civil-process guidance (witnessing/notarization, vetted templates, beneficiary designations, joint ownership/trusts, jurisdiction updates), non-religious, framed 'not legal advice'.
+16. Calculator methodology and scope disclaimer — implements onsite Quran 4:11/12/176 + Bukhari 85:9 rules, explicitly excludes grandchildren/siblings/grandparents and the special cases.
+17. Debts to Allah card — madhhab differences on how huquq Allah are discharged (heirs fast vs feed the poor from the estate), framed with consult-a-scholar.
+
+### /barzakh
+18. Common Questions → 'What about those never buried — cremated, drowned, or lost?' (line ~345): answer is a scholarly-consensus summary, explicitly marked in-text '(Scholarly consensus; no single explicit narration is quoted here)' and note 'Scholarly summary; anchored in Quran 40:46'. Properly flagged; no invented citation.
+19. Common Questions → 'Is it the body or the soul that is questioned?' (line ~351): mainstream Sunni position, marked in-text '(This is the summarized position of the scholars, not a verbatim narration)' with note 'Scholarly summary (mainstream Sunni position)'. Properly flagged; no invented citation.
+20. Common Questions → 'Do the dead hear us?' (line ~357): the general question is framed as 'a matter of scholarly difference' with a safest-practice note — generic/careful framing (though the specific hadith quote it anchors has the citation defect noted in byteFailures).
+
+### /ramadan
+21. exemptions > 'IV drips, dialysis, and transfusions' — nutritional-vs-non-nutritional IV / dialysis / transfusion rulings (note marked 'Scholarly-summary — contemporary fiqh-academy positions; consult a scholar').
+22. exemptions > 'Mental-health and other daily medication' — fixed-time medication as an illness excuse (specific ruling is scholarly-summary).
+23. common-questions > 'Does a wet dream or nosebleed break my fast?' — involuntary acts do not break the fast (note 'Scholarly-summary — the majority hold...').
+24. common-questions > 'Toothpaste, mouthwash, and brushing?' — scholarly-summary, no direct citation.
+25. common-questions > 'Inhalers, patches, and vaccines?' — non-nutritional injections/patches/vaccines; asthma inhaler differed (note 'Scholarly-summary — consult a scholar').
+26. common-questions > 'Showering, swimming, and cooling off?' — permitted by majority (note 'Scholarly-summary').
+27. with-kids > 'Start gradually' and 'Make the month special at home' — parenting guidance (notes 'Scholarly-summary — practical parenting guidance').
+28. worship/quran > 'A realistic daily plan' (juz-a-day completion) and 'Understand, don't just recite' — notes 'Scholarly-summary'.
+29. worship/generosity > 'Give in every form' — paying annual Zakat in Ramadan (note 'Scholarly-summary').
+30. worship/dua > 'The best moments to ask' — pre-iftar / last-third-of-night accepted-du'a times (note 'Scholarly-summary — established times of accepted supplication').
+31. eid > 'The Eid greeting, and if you arrive late' — Taqabbal-Allahu-minna greeting (companions' athar) + missed-Eid make-up differed (note correctly flags 'Scholarly-summary — companions' practice; missed-Eid ruling is differed').
+32. when-it-begins > 'Why communities differ' — global-vs-local moon-sighting framed as two respected positions with a cross-link (appropriate, not a citation claim).
+
+### /islamic-calendar
+33. Mawlid FAQ (Rabi al-Awwal, id 3): scholarly positions on celebrating the Prophet's birthday and uncertainty of the exact date — no hadith citation, honestly framed as scholar-differed.
+34. Battle of Mu'tah, Jumada al-Ula 8 AH, and Khalid ibn al-Walid earning 'Sayf Allah' (id 5): sira, explicitly noted as such, no local citation.
+35. Battle of the Trench / al-Khandaq ~Shawwal 5 AH and Salman al-Farisi's trench advice (id 10): sira, month-dating noted as sira, anchored only to Surah al-Ahzab.
+36. Treaty of Hudaybiyyah, Dhul Qi'dah 6 AH, and the ten-year truce terms (id 11): sira; Bukhari 64:192 supports only the four Dhul Qi'dah Umrahs, not the truce itself (correctly cross-referenced to Surah al-Fath as narrative).
+37. Farewell Hajj 10 AH and the contents of the Farewell Sermon (id 12): sira, generically attributed.
+38. Battle of Badr '17-Ramadan 2 AH' dating (id 9): explicitly flagged as sira; Quran 3:123 supports only the divine help at Badr, not the date.
+39. Karbala martyrdom of al-Husayn, 10 Muharram 61 AH dating (id 1): historical/sira, generically framed.
+40. Establishment of the Hijri calendar under Umar's consultation and the epoch-choice deliberation (Overview 'How the Hijri Calendar Was Established' card + Muharram New Year point): generic (Tabari/Ibn Hajar), loosely anchored to Bukhari 63:131 for the Hijrah itself.
+41. Mid-Sha'ban narration 'graded hasan by some scholars' (id 8): grading claim attributed generically, honestly paired with the weak-report caveat.
