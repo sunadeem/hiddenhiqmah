@@ -621,7 +621,7 @@ function PrayerTimesContent() {
 
         {/* ═══════════ Tab: Times (live UI) ═══════════ */}
         {activeTab === "times" && (
-          <>
+          <div className="max-w-4xl mx-auto space-y-6">
         {/* Location & Hijri Date */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1006,7 +1006,7 @@ function PrayerTimesContent() {
             })}
           </div>
         )}
-          </>
+          </div>
         )}
 
         {/* ═══════════ Tab: Learn (educational content) ═══════════ */}

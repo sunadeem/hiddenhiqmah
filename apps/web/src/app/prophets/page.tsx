@@ -584,7 +584,6 @@ function ProphetsContent() {
   const renderIntro = () => (
     <section className="mb-8">
       <div className="flex items-center gap-2 mb-3">
-        <Sparkles size={18} className="text-gold" />
         <h2 className="text-lg sm:text-xl font-semibold text-themed">
           What Muslims believe about the prophets
         </h2>
@@ -722,7 +721,6 @@ function ProphetsContent() {
   const renderFigures = () => (
     <section>
       <div className="flex items-center gap-2 mb-3">
-        <Users size={18} className="text-gold" />
         <h2 className="text-lg sm:text-xl font-semibold text-themed">
           Righteous figures in the Quran
         </h2>
@@ -756,7 +754,6 @@ function ProphetsContent() {
   const renderFaq = () => (
     <section>
       <div className="flex items-center gap-2 mb-3">
-        <HelpCircle size={18} className="text-gold" />
         <h2 className="text-lg sm:text-xl font-semibold text-themed">
           Common questions about the prophets
         </h2>
