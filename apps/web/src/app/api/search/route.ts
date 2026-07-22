@@ -412,12 +412,12 @@ HADITH: /hadith/{collection}/{bookId}?highlight={hadithId}
 QURAN: /quran/{surah_number}
 PROPHETS: /prophets/{slug}
 PROPHET MUHAMMAD: /prophet-muhammad?tab=timeline|character|his-person|family|prophecies|worship-sunnah (prophecies incl. his miracles → /miracles; family incl. household = ahl al-bayt + women-companions beyond the wives; worship-sunnah incl. sending salawat upon him)
-TAWHID: /tawhid?tab=categories
-ARTICLES OF FAITH: /articles-of-faith?tab=articles
+TAWHID: /tawhid?tab=intro|importance|categories|shirk|names (intro incl. the virtue of La ilaha illallah = the bitaqah/card hadith + the daily 100x tahleel, and the Prophet's advice to Ibn Abbas; shirk = major/minor/hidden shirk with modern practices = amulets/charms, fortune-tellers/horoscopes, swearing by other than Allah, riya/showing off, plus permissible-vs-forbidden tawassul; categories = Rububiyyah/Uluhiyyah incl. worship of the heart = love/fear/hope/tawakkul/Asma-wa-Sifat; names = 99 Names of Allah + what 'enumerating' them means)
+ARTICLES OF FAITH: /articles-of-faith?tab=intro|importance|articles|living (intro incl. Ihsan/muraqabah — the third level; articles = the six ?sub=allah|angels|books|messengers|last-day|qadr; belief-in-Allah incl. dealing with doubts/waswas → links /protection?tab=waswas; angels incl. scribes/guardians in daily life; qadr incl. does dua change the decree; living = iman rises & falls, branches & sweetness of faith, signs of hypocrisy)
 PILLARS: /pillars?tab=pillars
 SALAH: /salah?tab=prayers|voluntary|wudu (wudu = purification incl. ghusl: ?tab=wudu&sub=ghusl; jumu'ah: ?tab=prayers&sub=jumuah)
 PRAYER TIMES: /prayer-times
-QIBLAH: /qiblah
+QIBLAH: /qiblah (live compass to the Ka'bah; why we face the Ka'bah + do Muslims worship it, the day the qiblah changed = Bara's narration + Quba turning mid-prayer + Masjid al-Qiblatayn, mistakes & tolerances = jihat al-Ka'bah, praying in a car/plane/train/on a mount, finding the qiblah without a phone = sun/shadow/Pole Star/mosque, qiblah beyond salah = du'a/burial/toilet etiquette)
 DUAS: /duas?tab={category}
 RAMADAN: /ramadan?tab=fasting|worship|last-ten (fasting incl. when-it-begins moon sighting, common-questions FAQ, ramadan-with-kids; worship = tarawih/night prayer, quran habit, generosity/feeding, du'a; last-ten incl. after-ramadan = six of Shawwal)
 BARZAKH: /barzakh?tab=what-happens|protection|helping-dead (what-happens incl. where-souls-go = martyrs as green birds + prophets alive in graves + 'Illiyyin/Sijjin, the Prophet's dream of the Barzakh, and Common Questions = cremation/unburied, body-or-soul, do the dead hear us, how the Barzakh ends; helping-dead = du'a + charity that reach the deceased)

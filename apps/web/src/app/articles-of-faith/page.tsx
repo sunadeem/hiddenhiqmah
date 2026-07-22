@@ -166,6 +166,11 @@ const articles: Article[] = [
         arabic: "لَّا يَعْصُونَ ٱللَّهَ مَآ أَمَرَهُمْ وَيَفْعَلُونَ مَا يُؤْمَرُونَ",
         text: "They do not disobey Allah in what He commands them and they do what they are commanded.",
       },
+      {
+        ref: "Quran 50:17-18",
+        arabic: "إِذْ يَتَلَقَّى ٱلْمُتَلَقِّيَانِ عَنِ ٱلْيَمِينِ وَعَنِ ٱلشِّمَالِ قَعِيدٌ مَّا يَلْفِظُ مِن قَوْلٍ إِلَّا لَدَيْهِ رَقِيبٌ عَتِيدٌ",
+        text: "When the two angel scribes, constantly accompanying him, one on the right, and the other on the left. Not a single word he utters but there is with him a vigilant watcher, ready [to record it].",
+      },
     ],
     hadith: [
       {
@@ -175,6 +180,10 @@ const articles: Article[] = [
       {
         ref: "Muslim 53:33",
         text: "On the Day of Judgement, Hell will be brought with seventy thousand reins, each rein held by seventy thousand angels.",
+      },
+      {
+        ref: "Ibn Majah 32:100",
+        text: "The angels do not enter a house in which there is a dog or an image",
       },
     ],
     points: [
@@ -187,6 +196,11 @@ const articles: Article[] = [
       "The Angel of Death — takes souls at the appointed time",
       "Munkar and Nakir — question the deceased in the grave",
       "Their number is known only to Allah — the Ka'bah in heaven (al-Bayt al-Ma'mur) is visited by 70,000 angels daily who never return (Bukhari 59:18)",
+      "In your daily life — two scribes accompany you, one on the right and one on the left, so that not a word is uttered without a watcher recording it (Quran 50:17-18)",
+      "Successive guardian angels are appointed over every person, in front of him and behind him, guarding him by the command of Allah (Quran 13:11)",
+      "The angels who bear the Throne, and those around it, glorify Allah and seek forgiveness for those who believe (Quran 40:7)",
+      "Upon those who say 'Our Lord is Allah' and then remain steadfast, the angels descend with reassurance: do not fear, nor grieve (Quran 41:30)",
+      "The angels of mercy do not enter a house in which there is a dog or an image — a common reason to keep the home free of statues and pictures of living beings (Tirmidhi 43:77; Ibn Majah 32:100)",
     ],
     misconceptions: [
       {
@@ -203,8 +217,9 @@ const articles: Article[] = [
     sources: [
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on belief in the angels",
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on angels",
-      "Tafsir Ibn Kathir — Commentary on Quran 2:285; Quran 35:1; Quran 66:6",
+      "Tafsir Ibn Kathir — Commentary on Quran 2:285; Quran 35:1; Quran 66:6; Quran 50:17-18; Quran 13:11; Quran 40:7; Quran 41:30",
       "Muslim 55:78; Muslim 53:33 — On the creation of angels and their immense number",
+      "Tirmidhi 43:77; Ibn Majah 32:100 — Angels do not enter a house with a dog or an image",
     ],
   },
   {
@@ -443,6 +458,14 @@ const articles: Article[] = [
         ref: "Bukhari 59:19",
         text: "The creation of each one of you is brought together in his mother's womb for forty days as a drop, then he becomes a clot for the same period, then a morsel of flesh. Then an angel is sent to him who blows the soul into him and is commanded to write four things: his provision, his lifespan, his deeds, and whether he will be wretched or blessed.",
       },
+      {
+        ref: "Tirmidhi 32:7",
+        text: "Nothing turns back the Decree except supplication, and nothing increases the life-span except righteousness",
+      },
+      {
+        ref: "Tirmidhi 37:102",
+        text: "O boy! I will teach you a statement: Be mindful of Allah and He will protect you. Be mindful of Allah and you will find Him before you. When you ask, ask Allah, and when you seek aid, seek Allah's aid. Know that if the entire creation were to gather together to do something to benefit you- you would never get any benefit except that Allah had written for you. And if they were to gather to do something to harm you- you would never be harmed except that Allah had written for you. The pens are lifted and the pages are dried",
+      },
     ],
     points: [
       "First level: Knowledge — Allah knows everything past, present, and future",
@@ -453,6 +476,9 @@ const articles: Article[] = [
       "We are accountable for our choices because we have genuine ability and will",
       "Qadr is not an excuse for sinning — the Prophet (peace be upon him) rebuked those who used it as such",
       "The believer's response to good is gratitude (shukr) and to hardship is patience (sabr)",
+      "Does dua change the decree? The Prophet (peace be upon him) said that 'nothing turns back the Decree except supplication' (Tirmidhi 32:7) — dua is itself part of the decree, and Allah may have decreed an outcome conditional upon the very supplication you make",
+      "Ibn Majah reports the same from Thawban: nothing repels the decree except dua, and a man may be deprived of provision by a sin he commits (Ibn Majah 36:97)",
+      "Striving and taking the means is commanded, yet the outcome rests with Allah alone — 'the pens are lifted and the pages are dried' (Tirmidhi 37:102)",
     ],
     misconceptions: [
       {
@@ -471,8 +497,69 @@ const articles: Article[] = [
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on qadr",
       "Shifa al-Alil fi Masa'il al-Qada wal-Qadr, Ibn al-Qayyim",
       "Tafsir Ibn Kathir — Commentary on Quran 54:49; Quran 57:22; Quran 76:30",
-      "Muslim 46:11, Bukhari 59:19 — Hadith on writing of decree",
+      "Muslim 46:11; Bukhari 59:19 — Hadith on writing of decree",
+      "Tirmidhi 32:7; Ibn Majah 36:97 — Only supplication turns back the decree",
+      "Tirmidhi 37:102 — Advice to Ibn Abbas: the pens are lifted and the pages are dried",
     ],
+  },
+];
+
+type LivingItem = {
+  title: string;
+  body: string;
+  hadith: { ref: string; text: string }[];
+  note?: string;
+};
+
+const livingYourIman: LivingItem[] = [
+  {
+    title: "Iman rises and falls",
+    body:
+      "Faith is not a fixed quantity you either have or lack — it grows and shrinks. It increases with obedience, remembrance, and knowledge, and it weakens with sin and heedlessness. Allah describes the believers as those whose “faith increases when His verses are recited to them” (Quran 8:2). So when you feel your iman is low, that is not proof it is broken — it is a signal to renew it: return to the Quran, keep the tongue moist with dhikr, pray on time, sit with righteous company, and do a small good deed. Iman is watered by action, and a low state is meant to be answered, not despaired over.",
+    hadith: [],
+  },
+  {
+    title: "The branches of faith",
+    body:
+      "Iman is not a single act but a whole tree of them — from the greatest word ever spoken down to the smallest kindness. Every act of obedience, inward and outward, is a branch of your faith, which is why there is always a next step to climb.",
+    hadith: [
+      {
+        ref: "Muslim 1:59",
+        text: "Iman has over seventy branches, and modesty is a branch of Iman",
+      },
+      {
+        ref: "Ibn Majah 0:57",
+        text: "Faith has sixty-some or seventy parts, the least of which is to remove a harmful thing from the road and the greatest of which is to say La ilaha illalah (none has the right to be worshipped but Allah). And modesty is a branch of faith.",
+      },
+    ],
+  },
+  {
+    title: "The sweetness of faith",
+    body:
+      "Beyond merely holding the belief, faith has a taste — a felt sweetness the believer experiences when Allah and His Messenger come first in the heart. It is reached not by wishing but by what you love and for whose sake you love it.",
+    hadith: [
+      {
+        ref: "Muslim 1:72",
+        text: "There are three qualities for which anyone who is characterised by them will relish the sweetness of faith: he to whom Allah and His Messenger are dearer than all else; he who loves a man for Allah's sake alone; and he who has as great an abhorrence of returning to unbelief after Allah has rescued him from it as he has of being cast into Hell",
+      },
+      {
+        ref: "Tirmidhi 40:18",
+        text: "Whoever is pleased with Allah as (his) Lord, and Islam as (his) religion, and Muhammad as (his) Prophet, then he has tasted the sweetness of faith",
+      },
+    ],
+    note: "The same three qualities are reported from Anas in Ibn Majah 36:108.",
+  },
+  {
+    title: "The warning: signs of hypocrisy in action",
+    body:
+      "Just as faith has signs that strengthen it, there are habits of the tongue and dealings that eat away at it. These three do not by themselves make a person a disbeliever, but they are the practical marks of nifaq (hypocrisy) that a believer must guard against in himself before pointing at others.",
+    hadith: [
+      {
+        ref: "Bukhari 2:26",
+        text: "The signs of a hypocrite are three: 1. Whenever he speaks, he tells a lie. 2. Whenever he promises, he always breaks it (his promise ). 3. If you trust him, he proves to be dishonest. (If you keep something as a trust with him, he will not return it)",
+      },
+    ],
+    note: "The same three signs are reported by Muslim (Muslim 1:117).",
   },
 ];
 
@@ -480,6 +567,7 @@ const sections = [
   { key: "intro", label: "What are the Articles?" },
   { key: "importance", label: "Why They Matter" },
   { key: "articles", label: "The Six Articles" },
+  { key: "living", label: "Living Your Iman" },
 ] as const;
 
 type SectionKey = (typeof sections)[number]["key"];
@@ -608,6 +696,17 @@ function ArticlesOfFaithContent() {
     return textMatch(search, item.point, item.detail, item.reference);
   };
 
+  const livingMatches = (item: LivingItem) => {
+    if (!search || search.length < 2) return true;
+    return textMatch(
+      search,
+      item.title,
+      item.body,
+      item.note ?? "",
+      ...item.hadith.flatMap((h) => [h.ref, h.text]),
+    );
+  };
+
   const articleMatches = (article: Article) => {
     if (!search || search.length < 2) return true;
     return textMatch(
@@ -703,6 +802,25 @@ function ArticlesOfFaithContent() {
                 </div>
                 <p>
                   Every mu'min (believer) is a muslim (one who submits), but not every muslim has attained the full level of Iman. The articles of faith are what elevate a person from mere outward compliance to true, heartfelt belief.
+                </p>
+              </div>
+            </ContentCard>
+
+            {/* Ihsan — the third level of the religion */}
+            <ContentCard delay={0.25}>
+              <h2 className="text-xl font-semibold text-themed mb-4">Ihsan — the third level</h2>
+              <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  The Hadith of Jibril names three levels of the religion: <span className="text-themed font-medium">Islam</span> (submission — the outward acts), <span className="text-themed font-medium">Iman</span> (faith — the six articles), and above them <span className="text-themed font-medium">Ihsan</span> (excellence). Ihsan is not a fourth set of beliefs but the quality with which the first two are lived — worship performed as if in Allah&rsquo;s very sight.
+                </p>
+                <div className="rounded-lg p-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                  <p className="text-themed text-sm italic text-center">
+                    &ldquo;{"That you worship Allah as if you are seeing Him, for though you don't see Him, He, verily, sees you."}&rdquo;
+                  </p>
+                  <p className="text-xs text-themed-muted mt-2 text-center">Muslim 1:1</p>
+                </div>
+                <p>
+                  This is the station of <span className="text-themed font-medium">muraqabah</span> — the constant awareness that Allah watches you. The one who prays, gives, speaks, and deals with others feeling seen by Allah worships with a sincerity and care that mere habit can never reach. Iman tells you Allah exists and sees all; Ihsan is to actually live as though you feel it.
                 </p>
               </div>
             </ContentCard>
@@ -850,6 +968,81 @@ function ArticlesOfFaithContent() {
                     >
                       <ArticleCard article={article} />
 
+                      {/* Belief in Allah — dealing with intrusive doubts (waswas) */}
+                      {article.id === "allah" && (
+                        <div className="mt-4">
+                          <ContentCard>
+                            <h4 className="text-sm font-semibold text-themed mb-2 flex items-center gap-2">
+                              <Shield size={14} className="text-gold" /> Dealing with doubts and waswas
+                            </h4>
+                            <p className="text-themed-muted text-sm leading-relaxed mb-3">
+                              Almost every believer, at some point, is struck by intrusive thoughts about Allah — even the notorious &ldquo;who created Allah?&rdquo; The Prophet (peace be upon him) told us this would happen, and that it is an attack on faith, not the loss of it. The horror you feel at the thought is itself a sign that faith owns your heart. The response is not to argue the whisper down, but to affirm your faith, seek refuge in Allah, and stop.
+                            </p>
+                            <div className="space-y-3">
+                              <div className="rounded-lg p-4 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+                                <p className="text-themed text-sm italic">
+                                  &ldquo;Men will continue to question one another till this is propounded: Allah created all things but who created Allah? He who found himself confronted with such a situation should say: I affirm my faith in Allah&rdquo;
+                                </p>
+                                <p className="text-xs text-themed-muted mt-2"><HadithRefText text="Muslim 1:250" /></p>
+                              </div>
+                              <div className="rounded-lg p-4 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+                                <p className="text-themed text-sm italic">
+                                  &ldquo;&hellip;Who created this and that? till he questions: Who created your Lord? When he comes to that, one should seek refuge in Allah and keep away (from such idle thoughts)&rdquo;
+                                </p>
+                                <p className="text-xs text-themed-muted mt-2"><HadithRefText text="Muslim 1:252" /></p>
+                              </div>
+                            </div>
+                            <p className="text-themed-muted text-sm leading-relaxed mt-3">
+                              This is why belief in Allah rests on the fitrah — the pure natural disposition every person is born with: &ldquo;There is none born but is created to his true nature (Islam). It is his parents who make him a Jew or a Christian or a Magian&hellip;&rdquo; (Muslim 46:34; also Tirmidhi 32:6). The doubt is external noise over a belief that is native to you.
+                            </p>
+                            <Link href="/protection?tab=waswas&sub=whispers-about-faith" className="block group mt-3">
+                              <div className="flex items-center justify-between gap-3 rounded-lg p-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+                                <span className="text-sm font-medium text-themed">Full prophetic protocol for whispers &amp; doubts — Protection</span>
+                                <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                              </div>
+                            </Link>
+                          </ContentCard>
+                        </div>
+                      )}
+
+                      {/* Belief in Divine Decree — go deeper on the writing of qadr + istikhara */}
+                      {article.id === "qadr" && (
+                        <div className="mt-4 space-y-3">
+                          {[
+                            { href: "/story-of-creation?tab=pen-tablet", label: "Go deeper: The Pen & the Preserved Tablet — how the decree was written" },
+                            { href: "/duas", label: "Practice: Istikhara — asking Allah to choose the good for you" },
+                          ].map((link) => (
+                            <Link key={link.href} href={link.href} className="block group">
+                              <ContentCard>
+                                <div className="flex items-center justify-between gap-3">
+                                  <span className="text-sm font-medium text-themed">{link.label}</span>
+                                  <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                                </div>
+                              </ContentCard>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Belief in the Messengers — dedicated pages */}
+                      {article.id === "messengers" && (
+                        <div className="mt-4 space-y-3">
+                          {[
+                            { href: "/prophets", label: "Go deeper: The Prophets — their stories, one by one" },
+                            { href: "/miracles", label: "Go deeper: Miracles of the Prophets — the signs Allah gave them" },
+                          ].map((link) => (
+                            <Link key={link.href} href={link.href} className="block group">
+                              <ContentCard>
+                                <div className="flex items-center justify-between gap-3">
+                                  <span className="text-sm font-medium text-themed">{link.label}</span>
+                                  <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                                </div>
+                              </ContentCard>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+
                       {/* Go deeper — the stages of the Last Day have dedicated pages */}
                       {article.id === "last-day" && (
                         <div className="mt-4 space-y-3">
@@ -880,6 +1073,66 @@ function ArticlesOfFaithContent() {
                   )
               )}
             </AnimatePresence>
+          </motion.div>
+        )}
+
+        {/* ─── Living Your Iman ─── */}
+        {activeSection === "living" && (
+          <motion.div
+            key="living"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4"
+          >
+            {livingYourIman.filter(livingMatches).map((item, i) => (
+              <ContentCard key={item.title} delay={0.05 + i * 0.05}>
+                <h3 className="font-semibold text-themed mb-2">{item.title}</h3>
+                <p className="text-themed-muted text-sm leading-relaxed mb-3">{item.body}</p>
+                {item.hadith.length > 0 && (
+                  <div className="space-y-3">
+                    {item.hadith.map((h) => (
+                      <div
+                        key={h.ref}
+                        className="rounded-lg p-4 border-l-2 border-gold/30"
+                        style={{ backgroundColor: "var(--color-bg)" }}
+                      >
+                        <p className="text-themed text-sm italic">&ldquo;{h.text}&rdquo;</p>
+                        <p className="text-xs text-themed-muted mt-2"><HadithRefText text={h.ref} /></p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {item.note && <p className="text-xs text-themed-muted mt-3">{item.note}</p>}
+              </ContentCard>
+            ))}
+            {livingYourIman.filter(livingMatches).length === 0 && (
+              <ContentCard>
+                <p className="text-themed-muted text-sm text-center py-4">No results match your search.</p>
+              </ContentCard>
+            )}
+
+            {/* Cross-link: intrusive doubts are treated in detail on /protection */}
+            <Link href="/protection?tab=waswas&sub=whispers-about-faith" className="block group">
+              <ContentCard>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-medium text-themed">Struggling with intrusive doubts or whispers? See Protection — Waswas &amp; the Shaytan</span>
+                  <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </ContentCard>
+            </Link>
+
+            <SourcesCard delay={0.3} sources={[
+              { ref: "Muslim 1:59", desc: "Iman has over seventy branches" },
+              { ref: "Ibn Majah 0:57", desc: "Faith has sixty-some or seventy parts" },
+              { ref: "Muslim 1:72", desc: "The three qualities of the sweetness of faith" },
+              { ref: "Tirmidhi 40:18", desc: "Pleased with Allah as Lord — tasting the sweetness of faith" },
+              { ref: "Ibn Majah 36:108", desc: "The sweetness of faith (from Anas)" },
+              { ref: "Bukhari 2:26", desc: "The three signs of a hypocrite" },
+              { ref: "Muslim 1:117", desc: "The three signs of a hypocrite" },
+              { ref: "Quran 8:2", desc: "Faith increases when Allah's verses are recited" },
+            ]} />
           </motion.div>
         )}
       </AnimatePresence>

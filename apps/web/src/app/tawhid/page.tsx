@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState, useRef, useCallback, useEffect, Suspense } from "react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -56,6 +57,108 @@ const whyItMatters = [
       "The Prophet (peace be upon him) told Mu'adh ibn Jabal: \"The right of Allah upon His servants is that they worship Him alone and do not associate anything with Him.\"",
     reference: "Bukhari 56:72",
   },
+];
+
+/* ── Shirk: major / minor / hidden, with the narrations that define each ── */
+
+type ShirkType = {
+  id: string;
+  title: string;
+  titleAr: string;
+  severity: string;
+  description: string;
+  verses?: { ref: string; arabic?: string; text: string }[];
+  hadith?: { ref: string; text: string }[];
+  examples: string[];
+};
+
+const shirkTypes: ShirkType[] = [
+  {
+    id: "major",
+    title: "Major Shirk",
+    titleAr: "الشرك الأكبر",
+    severity: "Takes a person out of Islam",
+    description:
+      "Directing any act of worship — supplication, sacrifice, vows, ultimate love, fear, or hope — to other than Allah, or believing that another shares in what belongs to Allah alone. This is the shirk that nullifies all of a person's deeds, and if one dies upon it without repenting, it is never forgiven.",
+    verses: [
+      {
+        ref: "Quran 39:65",
+        arabic:
+          "وَلَقَدْ أُوحِىَ إِلَيْكَ وَإِلَى ٱلَّذِينَ مِن قَبْلِكَ لَئِنْ أَشْرَكْتَ لَيَحْبَطَنَّ عَمَلُكَ وَلَتَكُونَنَّ مِنَ ٱلْخَـٰسِرِينَ",
+        text: "It has already been revealed to you and to those who came before you that if you associate others with Allah, your deeds will surely become worthless, and you will certainly be among the losers.",
+      },
+    ],
+    examples: [
+      "Praying to, or seeking rescue from, the dead, saints, or those in graves",
+      "Sacrificing an animal, or making a vow, for anyone besides Allah",
+      "Believing any created being independently controls benefit, harm, life, or death",
+    ],
+  },
+  {
+    id: "minor",
+    title: "Minor Shirk",
+    titleAr: "الشرك الأصغر",
+    severity: "A grave sin, but does not by itself expel from Islam",
+    description:
+      "Words and deeds the texts label shirk which do not on their own take a person out of Islam — yet they are more serious than any major sin and are a doorway to major shirk. The two most-mentioned forms are showing off in worship (riya) and swearing by other than Allah.",
+    hadith: [
+      {
+        ref: "Tirmidhi 20:13",
+        text: "Ibn 'Umar heard a man saying: \"No by the Ka'bah\" so Ibn 'Umar said: \"Nothing is sworn by other than Allah, for I heard the Messenger of Allah (ﷺ) say: 'Whoever swears by other than Allah, he has committed disbelief or shirk'\"",
+      },
+    ],
+    examples: [
+      "Swearing an oath by the Prophet, one's honour, one's parents, or one's life — swear only by Allah",
+      "Showing off (riya): performing an act of worship so that people will see and praise it",
+      "Saying \"had it not been for Allah and you\" — say instead \"had it not been for Allah, then you\"",
+    ],
+  },
+  {
+    id: "hidden",
+    title: "Hidden Shirk",
+    titleAr: "الشرك الخفي",
+    severity: "Subtle — it hides in the intention",
+    description:
+      "Shirk of the heart: performing outwardly correct worship for the sake of being seen, praised, or thanked rather than for Allah. The Prophet warned that this quiet showing off was the thing he feared most for his righteous followers, precisely because it is so easy to miss in oneself. It overlaps with minor shirk (riya) and, when a deed is done wholly for other than Allah, can become major.",
+    examples: [
+      "Praying longer or giving more generously only because others are watching",
+      "Seeking reputation, status, or a good name through acts of worship",
+      "Correcting the intention repeatedly, and asking Allah for sincerity (ikhlas), is the cure",
+    ],
+  },
+];
+
+/* ── Common practices today that fall under shirk or lead to it ── */
+const modernShirkPractices: { title: string; text: string; ref: string }[] = [
+  {
+    title: "Amulets, charms & \"lucky\" objects",
+    text:
+      "Wearing a taweez, a blue eye-bead, a horseshoe, or a red thread believing it wards off harm or brings fortune. The Prophet warned that whoever \"practices magic, he has committed Shirk; and whoever hangs up something (as an amulet) will be entrusted to it.\" Zainab, the wife of Ibn Mas'ud, reported the Prophet saying that \"amulets and Tiwalah (charms) are polytheism.\"",
+    ref: "Nasai 37:114; Ibn Majah 31:95",
+  },
+  {
+    title: "Fortune-tellers, horoscopes & \"knowing\" the future",
+    text:
+      "Consulting a psychic, palm-reader, or star-sign column to learn the unseen. The Prophet said: \"He who visits a diviner ('Arraf) and asks him about anything, his prayers extending to forty nights will not be accepted.\" Believing such a person actually knows the future is graver still, for knowledge of the unseen belongs to Allah alone.",
+    ref: "Muslim 39:173",
+  },
+  {
+    title: "Swearing by other than Allah",
+    text:
+      "Everyday oaths \"by my life,\" \"by the Prophet,\" or \"by my mother's grave\" are a form of minor shirk. Reverence expressed through an oath is due to Allah alone; if you must swear, swear by Allah.",
+    ref: "Tirmidhi 20:13",
+  },
+];
+
+/* ── Tawassul: seeking nearness — what is allowed, what crosses into shirk ── */
+const tawassulPermissible: string[] = [
+  "By Allah's own names and attributes — e.g. \"O Most Merciful, have mercy on me\" (Quran 7:180)",
+  "By a righteous deed you yourself have done — as the three men trapped by the rock each begged Allah by their sincerest deed until it rolled away (Bukhari 78:5)",
+  "By asking a living, present, righteous person to make du'a for you — as the companions asked the Prophet",
+];
+const tawassulImpermissible: string[] = [
+  "Calling upon the dead — a prophet or saint in his grave — to fulfil a need or remove harm",
+  "Believing anyone must be an intermediary between you and Allah, when Allah says \"Call upon Me; I will respond to you\" (Quran 40:60)",
 ];
 
 type Category = {
@@ -172,6 +275,18 @@ const categories: Category[] = [
         arabic: "وَأَنَّ ٱلْمَسَـٰجِدَ لِلَّهِ فَلَا تَدْعُوا مَعَ ٱللَّهِ أَحَدًۭا",
         text: "The mosques are for Allah alone, so do not invoke anyone along with Allah.",
       },
+      {
+        ref: "Quran 2:165",
+        arabic:
+          "وَمِنَ ٱلنَّاسِ مَن يَتَّخِذُ مِن دُونِ ٱللَّهِ أَندَادًا يُحِبُّونَهُمْ كَحُبِّ ٱللَّهِ ۖ وَٱلَّذِينَ ءَامَنُوٓا۟ أَشَدُّ حُبًّا لِّلَّهِ ۗ وَلَوْ يَرَى ٱلَّذِينَ ظَلَمُوٓا۟ إِذْ يَرَوْنَ ٱلْعَذَابَ أَنَّ ٱلْقُوَّةَ لِلَّهِ جَمِيعًا وَأَنَّ ٱللَّهَ شَدِيدُ ٱلْعَذَابِ",
+        text: "And among people, there are some who take others as equals to Allah: they love them as they should love Allah. But those who believe are stronger in their love for Allah. If only the wrongdoers could see the punishment, they would surely realize that all power belongs to Allah and that Allah is severe in punishment.",
+      },
+      {
+        ref: "Quran 65:3",
+        arabic:
+          "وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ ۚ وَمَن يَتَوَكَّلْ عَلَى ٱللَّهِ فَهُوَ حَسْبُهُۥٓ ۚ إِنَّ ٱللَّهَ بَـٰلِغُ أَمْرِهِۦ ۚ قَدْ جَعَلَ ٱللَّهُ لِكُلِّ شَىْءٍ قَدْرًا",
+        text: "and He will provide for him from where he does not expect. Whoever puts his trust in Allah, He is sufficient for him. Indeed, Allah will surely accomplish His purpose, for Allah has set a destiny for everything.",
+      },
     ],
     hadith: [
       {
@@ -188,7 +303,10 @@ const categories: Category[] = [
       "All acts of worship must be directed to Allah alone: prayer, dua, sacrifice, vowing, seeking help in matters only Allah can provide",
       "This was the primary call of every prophet from Adam to Muhammad (peace be upon them)",
       "The Quraysh believed in Allah as Creator but worshipped idols as intermediaries — Islam rejected this",
-      "Love, fear, and hope in worship must be directed to Allah alone",
+      "Worship is not only outward acts — the acts of the heart are its core: love, fear, hope, and reliance (tawakkul) must all rest in Allah alone",
+      "Love: the believer loves Allah above all else; loving anything the way one should love Allah is a form of shirk (Quran 2:165)",
+      "Fear and hope: one fears Allah's punishment and hopes in His mercy directly, not through any created being",
+      "Reliance (tawakkul): the heart depends on Allah for every outcome — \"Whoever puts his trust in Allah, He is sufficient for him\" (Quran 65:3)",
       "Violating this category is shirk — the greatest sin",
     ],
     violations: [
@@ -212,7 +330,7 @@ const categories: Category[] = [
       "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — Chapters on the meaning of La ilaha illallah, types of shirk, and intercession",
       "Al-Qawa'id al-Muthla, Ibn Uthaymeen — Section on Tawhid al-Uluhiyyah",
       "Majmu al-Fatawa, Ibn Taymiyyah — Vol. 1, on the distinction between Rububiyyah and Uluhiyyah",
-      "Tafsir Ibn Kathir — Commentary on Quran 21:25; Quran 1:5; Quran 6:162-163",
+      "Tafsir Ibn Kathir — Commentary on Quran 21:25; Quran 1:5; Quran 6:162-163; Quran 2:165; Quran 65:3 (on love and reliance as worship of the heart)",
     ],
   },
   {
@@ -293,6 +411,7 @@ const sections = [
   { key: "intro", label: "What is Tawheed?" },
   { key: "importance", label: "Why It Matters" },
   { key: "categories", label: "Three Categories" },
+  { key: "shirk", label: "Shirk" },
   { key: "names", label: "99 Names of Allah" },
 ] as const;
 
@@ -677,8 +796,36 @@ function TawhidContent() {
                   Tawheed is the single most important concept in Islam. It is the first thing a person declares when entering Islam (<span className="text-themed font-medium">La ilaha illallah</span> — there is no god worthy of worship except Allah), and it should be the last thing on a person&apos;s tongue before death.
                 </p>
                 <p>
+                  Saying the words is only the beginning: scholars derived <Link href="/pillars?tab=pillars&sub=shahada" className="text-gold hover:underline">seven conditions of the shahada</Link> — such as knowledge, certainty, and sincerity — that give the testimony its meaning and make it truly benefit the one who says it.
+                </p>
+                <p>
                   The Prophet (peace be upon him) said: <span className="text-themed italic">&ldquo;Whoever&apos;s last words are La ilaha illallah will enter Paradise.&rdquo;</span> <span className="text-xs text-gold/60">(Abu Dawud 21:28, graded Sahih)</span>
                 </p>
+              </div>
+            </ContentCard>
+
+            {/* The virtue of La ilaha illallah */}
+            <ContentCard delay={0.15}>
+              <h2 className="text-xl font-semibold text-themed mb-4">The Virtue of La ilaha illallah</h2>
+              <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  No words are weightier on the Day of Judgement than a sincere testimony of Allah&apos;s oneness. The Prophet (peace be upon him) described a man whose record of sin filled ninety-nine scrolls, each as far as the eye can see — yet one small card outweighed them all:
+                </p>
+                <div className="rounded-lg p-4 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+                  <p className="text-themed text-sm italic">
+                    &ldquo;Then He will bring out a card (Bitaqah); on it will be: &lsquo;I testify to La Ilaha Illallah, and I testify that Muhammad is His servant and Messenger.&rsquo; … The scrolls will be put on a pan (of the scale), and the card on (the other) pan: the scrolls will be light, and the card will be heavy, nothing is heavier than the Name of Allah.&rdquo;
+                  </p>
+                  <p className="text-xs text-themed-muted mt-2"><HadithRefText text="Tirmidhi 40:34" />; <HadithRefText text="Ibn Majah 37:201" /></p>
+                </div>
+                <p>
+                  And its reward is offered every single day. The Prophet (peace be upon him) said:
+                </p>
+                <div className="rounded-lg p-4 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+                  <p className="text-themed text-sm italic">
+                    &ldquo;Whoever says: &lsquo;There is none worthy of worship except Allah, Alone, without partner, to Him belongs all that exists and to Him belongs the praise, He gives life and causes death, and He is Powerful over all things&rsquo; … a hundred times in a day, it will be for him the equivalent of freeing ten slaves, and there shall be written for him a hundred good deeds, and a hundred bad deeds shall be wiped out for him, and it will be a protection for him from Shaitan on that day, until he reaches the evening.&rdquo;
+                  </p>
+                  <p className="text-xs text-themed-muted mt-2"><HadithRefText text="Tirmidhi 48:99" />; <HadithRefText text="Ibn Majah 33:142" /></p>
+                </div>
               </div>
             </ContentCard>
 
@@ -701,6 +848,12 @@ function TawhidContent() {
                 <p>
                   However, shirk can be repented from during one&apos;s lifetime. Allah&apos;s mercy encompasses everything, and He accepts the repentance of those who sincerely turn back to Him. Many of the greatest companions of the Prophet (peace be upon him) were once polytheists who accepted Tawheed.
                 </p>
+                <button
+                  onClick={() => { setActiveSection("shirk"); syncUrl("shirk"); }}
+                  className="text-gold text-sm font-medium hover:underline"
+                >
+                  What counts as shirk today? See the Shirk tab &rarr;
+                </button>
               </div>
             </ContentCard>
 
@@ -737,6 +890,25 @@ function TawhidContent() {
               </div>
             </ContentCard>
 
+            {/* Teaching Tawhid to a child — the Prophet's advice to Ibn Abbas */}
+            <ContentCard delay={0.32}>
+              <h2 className="text-xl font-semibold text-themed mb-4">Teaching Tawhid to a Child</h2>
+              <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  The most quoted lesson in tawhid was taught by the Prophet (peace be upon him) to a young Ibn Abbas, riding behind him — a text every parent and teacher can pass on:
+                </p>
+                <div className="rounded-lg p-4 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+                  <p className="text-themed text-sm italic">
+                    &ldquo;O boy! I will teach you a statement: Be mindful of Allah and He will protect you. Be mindful of Allah and you will find Him before you. When you ask, ask Allah, and when you seek aid, seek Allah&apos;s aid…&rdquo;
+                  </p>
+                  <p className="text-xs text-themed-muted mt-2"><HadithRefText text="Tirmidhi 37:102" /></p>
+                </div>
+                <p>
+                  He went on to teach that if the whole of creation gathered to benefit the boy, they could not benefit him with anything Allah had not already written for him; and were they to gather to harm him, they could not — for &ldquo;The pens are lifted and the pages are dried.&rdquo; The lesson roots a child&apos;s hope, fear, and asking in Allah alone. See also the Prophet&apos;s way of teaching on <Link href="/prophet-muhammad?tab=character" className="text-gold hover:underline">his character</Link>.
+                </p>
+              </div>
+            </ContentCard>
+
             {/* Sources for intro */}
             <SourcesCard delay={0.35} sources={[
               { ref: "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab", desc: "Chapter 1: On the virtue and necessity of Tawheed" },
@@ -744,6 +916,11 @@ function TawhidContent() {
               { ref: "Al-Qawa'id al-Muthla, Ibn Uthaymeen", desc: "Introduction defining Tawheed and its categories" },
               { ref: "Tafsir Ibn Kathir", desc: "Commentary on Surah Al-Ikhlas (112:1-4) and Quran 4:48" },
               { ref: "Abu Dawud 21:28", desc: "Hadith on the virtue of La ilaha illallah as last words" },
+              { ref: "Tirmidhi 40:34", desc: "The card (bitaqah) that outweighs ninety-nine scrolls of sins" },
+              { ref: "Ibn Majah 37:201", desc: "Parallel narration of the bitaqah on the Scale" },
+              { ref: "Tirmidhi 48:99", desc: "Saying La ilaha illallah 100x — the reward of freeing ten slaves" },
+              { ref: "Ibn Majah 33:142", desc: "Parallel narration of the daily hundredfold tahleel" },
+              { ref: "Tirmidhi 37:102", desc: "The Prophet's advice to Ibn Abbas: Be mindful of Allah" },
             ]} />
           </motion.div>
         )}
@@ -838,6 +1015,144 @@ function TawhidContent() {
           </motion.div>
         )}
 
+        {/* ─── Shirk ─── */}
+        {activeSection === "shirk" && (
+          <motion.div
+            key="shirk"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            {/* Framing */}
+            <ContentCard delay={0.1}>
+              <h2 className="text-xl font-semibold text-themed mb-4">What Counts as Shirk?</h2>
+              <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
+                <p>
+                  <span className="text-themed font-medium">Shirk</span> (شرك) is the opposite of Tawheed: giving to someone or something other than Allah what belongs to Allah alone. Because it is named the one sin never forgiven if a person dies upon it (Quran 4:48), it is worth knowing exactly what it looks like — not as an abstraction, but in the choices and habits of everyday life. Scholars describe it in three degrees.
+                </p>
+              </div>
+            </ContentCard>
+
+            {/* The three degrees */}
+            {shirkTypes.map((st, i) => (
+              <ContentCard key={st.id} delay={0.15 + i * 0.05}>
+                <div className="mb-3">
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <h3 className="text-lg font-semibold text-themed">{st.title}</h3>
+                    <span className="text-base font-arabic text-gold">{st.titleAr}</span>
+                  </div>
+                  <p className="text-xs text-gold/80 font-medium mt-1">{st.severity}</p>
+                </div>
+                <p className="text-themed-muted text-sm leading-relaxed mb-4">{st.description}</p>
+
+                {st.verses?.map((v) => (
+                  <div key={v.ref} className="rounded-lg p-4 mb-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                    {v.arabic && (
+                      <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">{v.arabic}</p>
+                    )}
+                    <p className="text-themed text-sm italic">&ldquo;{v.text}&rdquo;</p>
+                    <p className="text-xs text-themed-muted mt-2"><HadithRefText text={v.ref} /></p>
+                  </div>
+                ))}
+
+                {st.hadith?.map((h) => (
+                  <div key={h.ref} className="rounded-lg p-4 mb-4 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <p className="text-themed text-sm italic">&ldquo;{h.text}&rdquo;</p>
+                    <p className="text-xs text-themed-muted mt-2"><HadithRefText text={h.ref} /></p>
+                  </div>
+                ))}
+
+                <ul className="space-y-2">
+                  {st.examples.map((ex) => (
+                    <li key={ex} className="flex items-start gap-2 text-sm text-themed-muted">
+                      <span className="text-gold mt-0.5">&#9670;</span>
+                      {ex}
+                    </li>
+                  ))}
+                </ul>
+              </ContentCard>
+            ))}
+
+            {/* Common practices today */}
+            <ContentCard delay={0.35}>
+              <h3 className="text-lg font-semibold text-themed mb-2 flex items-center gap-2">
+                <AlertTriangle size={16} className="text-red-400" />
+                Common Practices Today
+              </h3>
+              <p className="text-themed-muted text-sm leading-relaxed mb-4">
+                Much of what people treat as harmless custom is, in the texts, shirk or a doorway to it — the questions parents most often face about charms, horoscopes, and casual oaths:
+              </p>
+              <div className="space-y-3">
+                {modernShirkPractices.map((p) => (
+                  <div key={p.title} className="rounded-lg p-4 border border-red-500/10" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <p className="text-themed text-sm font-medium mb-1">{p.title}</p>
+                    <p className="text-themed-muted text-sm leading-relaxed">{p.text}</p>
+                    <p className="text-xs text-themed-muted mt-2"><HadithRefText text={p.ref} /></p>
+                  </div>
+                ))}
+              </div>
+            </ContentCard>
+
+            {/* Tawassul */}
+            <ContentCard delay={0.4}>
+              <h3 className="text-lg font-semibold text-themed mb-2">Seeking Nearness (Tawassul): Permissible vs. Shirk</h3>
+              <p className="text-themed-muted text-sm leading-relaxed mb-4">
+                Islam forbids taking intermediaries in worship, but it does not forbid every way of seeking to draw near to Allah. The distinction is crucial — and often blurred:
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-lg p-4 border border-gold/20" style={{ backgroundColor: "var(--color-bg)" }}>
+                  <p className="text-sm font-semibold text-themed mb-2">Permissible tawassul</p>
+                  <ul className="space-y-2">
+                    {tawassulPermissible.map((t) => (
+                      <li key={t} className="flex items-start gap-2 text-sm text-themed-muted">
+                        <span className="text-gold mt-0.5">&#9670;</span>
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="rounded-lg p-4 border border-red-500/10" style={{ backgroundColor: "var(--color-bg)" }}>
+                  <p className="text-sm font-semibold text-themed mb-2 flex items-center gap-2">
+                    <AlertTriangle size={14} className="text-red-400" /> Crosses into shirk
+                  </p>
+                  <ul className="space-y-2">
+                    {tawassulImpermissible.map((t) => (
+                      <li key={t} className="flex items-start gap-2 text-sm text-themed-muted">
+                        <span className="text-red-400/70 mt-0.5">&#9670;</span>
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <p className="text-themed-muted text-xs leading-relaxed mt-3">
+                The permissible forms are established in the Sunnah — Bukhari 78:5 (the three men and the rock) and Quran 7:180. Where a practice sits close to the line, the rulings are detailed; consult a knowledgeable scholar rather than judging by feeling.
+              </p>
+            </ContentCard>
+
+            {/* Hope / repentance */}
+            <ContentCard delay={0.45}>
+              <h3 className="text-lg font-semibold text-themed mb-2">The Door of Repentance Is Open</h3>
+              <p className="text-themed-muted text-sm leading-relaxed">
+                Naming these dangers is not meant to crush hope. Shirk — even the major kind — is forgiven the moment a person sincerely turns back to Allah in this life; the companions themselves were once idol-worshippers. What is unforgivable is only dying upon it without repentance. Learn it, leave it, and ask Allah for a heart devoted to Him alone.
+              </p>
+            </ContentCard>
+
+            <SourcesCard delay={0.5} sources={[
+              { ref: "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab", desc: "Chapters on the types of shirk, amulets, diviners, and oaths" },
+              { ref: "Nasai 37:114", desc: "Tying and blowing on knots, and hanging amulets, is magic and shirk" },
+              { ref: "Ibn Majah 31:95", desc: "Ibn Mas'ud: amulets, incantations and charms are shirk" },
+              { ref: "Muslim 39:173", desc: "Visiting a diviner: prayers not accepted for forty nights" },
+              { ref: "Tirmidhi 20:13", desc: "Swearing by other than Allah is disbelief or shirk" },
+              { ref: "Bukhari 78:5", desc: "The three men and the rock — tawassul by one's righteous deeds" },
+              { ref: "Musnad Ahmad (Mahmud ibn Labid)", desc: "Minor shirk / riya — graded sahih by al-Albani (Musnad Ahmad 23630); not in this app's local collection" },
+              { ref: "Al-Qawa'id al-Muthla, Ibn Uthaymeen; Majmu al-Fatawa, Ibn Taymiyyah", desc: "On the categories of shirk and permissible vs. forbidden tawassul" },
+            ]} />
+          </motion.div>
+        )}
+
         {/* ─── 99 Names ─── */}
         {activeSection === "names" && (
           <motion.div
@@ -863,6 +1178,30 @@ function TawhidContent() {
                   The Prophet (peace be upon him) said: <span className="text-themed italic">&ldquo;Allah has ninety-nine names — one hundred minus one. Whoever enumerates them (learns them, understands their meanings, and acts upon them) will enter Paradise.&rdquo;</span>
                 </p>
                 <p className="text-xs text-gold/60 mt-2">Bukhari 97:21</p>
+              </div>
+            </ContentCard>
+
+            <ContentCard delay={0.08} className="mt-4">
+              <h3 className="text-base font-semibold text-themed mb-3">What does &ldquo;enumerating&rdquo; them mean?</h3>
+              <p className="text-themed-muted text-sm leading-relaxed mb-3">
+                Scholars explain that to enumerate (ihsa) the names is more than counting them. It has three levels, each deeper than the last:
+              </p>
+              <ul className="space-y-2 mb-4">
+                {[
+                  "Memorise them — hold the ninety-nine on the tongue and in memory.",
+                  "Understand their meanings — know what each name says about Allah, so it shapes how you see Him.",
+                  "Act upon them — call on Allah by the name that fits your need (\"O Provider, provide for me\"; \"O Forgiver, forgive me\"), and let each name mould your character: knowing He is the All-Seeing breeds watchfulness, knowing He is the Most Merciful breeds hope.",
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2 text-sm text-themed">
+                    <span className="text-gold mt-0.5">&#9670;</span>
+                    <span className="text-themed-muted">{t}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="rounded-lg p-4 border-l-2 border-gold/30" style={{ backgroundColor: "var(--color-bg)" }}>
+                <p className="text-themed-muted text-sm leading-relaxed">
+                  A note on the list itself: the hadith fixes the <span className="text-themed">count</span> at ninety-nine, but it does not itself list the names. The familiar enumerated list is a later scholarly compilation (most famously the one narrated by Tirmidhi), and scholars differ slightly on which names it contains. What is agreed upon is the count and the promise attached to truly living by them.
+                </p>
               </div>
             </ContentCard>
 

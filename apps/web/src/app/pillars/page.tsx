@@ -338,6 +338,9 @@ const pillars: Pillar[] = [
       "Suhoor (pre-dawn meal) is a blessed sunnah — the Prophet encouraged it (Bukhari 30:32)",
       "Exemptions: the traveler, the sick, pregnant/nursing women, the elderly, and menstruating women",
       "Those exempt due to temporary reasons must make up the days; those permanently unable give fidyah (feeding a poor person per day)",
+      "Missed fasts (qada) should be made up before the next Ramadan — Aisha would complete hers by Sha'ban (Bukhari 30:57)",
+      "Deliberately breaking a Ramadan fast through intercourse requires kaffarah — freeing a slave, then fasting two consecutive months, then feeding sixty poor persons; the majority hold this order is followed in sequence while some scholars allow a choice among them, so consult a scholar (Bukhari 30:44)",
+      "Following Ramadan with six days of Shawwal is as if one fasted perpetually — for a lifetime (Muslim 13:264, Ibn Majah 7:79)",
       "Laylatul Qadr falls in the last ten nights of Ramadan — the Prophet would increase his worship during these nights (Bukhari 32:11)",
       "Voluntary fasting outside Ramadan is highly encouraged — Mondays and Thursdays, the white days (13th-15th), and the day of Arafah",
     ],
@@ -358,6 +361,8 @@ const pillars: Pillar[] = [
       "Al-Mughni, Ibn Qudamah — Section on the rulings of sawm",
       "Majalis Shahr Ramadan, Ibn Uthaymeen — Lessons on fasting and Ramadan",
       "Bukhari 30:4; Bukhari 32:11 — Hadith on fasting",
+      "Bukhari 30:44; Bukhari 30:57 — Hadith on kaffarah and making up missed fasts",
+      "Muslim 13:264; Ibn Majah 7:79 — Hadith on the six days of Shawwal",
       "Tafsir Ibn Kathir — Commentary on Quran 2:183-185, Surah al-Qadr (97)",
     ],
   },
@@ -541,28 +546,46 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
       </div>
 
       {PILLAR_DEEP_DIVES[pillar.id] && (
-        <Link
-          href={PILLAR_DEEP_DIVES[pillar.id].href}
-          className="mt-5 w-full text-left rounded-xl p-4 card-bg border sidebar-border hover:border-gold/40 transition-colors flex items-center justify-between gap-3"
-        >
-          <div>
-            <p className="text-sm font-medium text-themed">{PILLAR_DEEP_DIVES[pillar.id].title}</p>
-            <p className="text-xs text-themed-muted mt-0.5">{PILLAR_DEEP_DIVES[pillar.id].desc}</p>
-          </div>
-          <ChevronRight size={16} className="text-gold shrink-0" />
-        </Link>
+        <div className="mt-5 space-y-2">
+          {PILLAR_DEEP_DIVES[pillar.id].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="w-full text-left rounded-xl p-4 card-bg border sidebar-border hover:border-gold/40 transition-colors flex items-center justify-between gap-3"
+            >
+              <div>
+                <p className="text-sm font-medium text-themed">{link.title}</p>
+                <p className="text-xs text-themed-muted mt-0.5">{link.desc}</p>
+              </div>
+              <ChevronRight size={16} className="text-gold shrink-0" />
+            </Link>
+          ))}
+        </div>
       )}
     </ContentCard>
   );
 }
 
 
-const PILLAR_DEEP_DIVES: Record<string, { href: string; title: string; desc: string }> = {
-  shahada: { href: "/tawhid", title: "Go deeper: Tawheed", desc: "What the Shahada declares — the Oneness of Allah in full" },
-  salah: { href: "/salah", title: "Go deeper: Salah", desc: "The five prayers step by step, purification, and every situation" },
-  zakat: { href: "/zakat", title: "Go deeper: Zakat", desc: "Who pays, what counts, the eight recipients — and the calculator" },
-  sawm: { href: "/ramadan", title: "Go deeper: Ramadan", desc: "Fasting, Tarawih, and the last ten nights" },
-  hajj: { href: "/hajj", title: "Go deeper: Hajj & Umrah", desc: "Ihram, umrah walkthrough, and the days of Hajj" },
+const PILLAR_DEEP_DIVES: Record<string, { href: string; title: string; desc: string }[]> = {
+  shahada: [
+    { href: "/why-islam", title: "Ready to take the Shahada?", desc: "How to actually become a Muslim — witnesses, your past sins, and what comes next" },
+    { href: "/tawhid", title: "Go deeper: Tawheed", desc: "What the Shahada declares — the Oneness of Allah in full" },
+  ],
+  salah: [
+    { href: "/salah", title: "Go deeper: Salah", desc: "The five prayers step by step, purification, and every situation" },
+    { href: "/prayer-times", title: "Prayer times", desc: "When each prayer begins and ends, and today's times for your location" },
+    { href: "/qiblah", title: "Find the Qiblah", desc: "The direction of the Ka'bah from wherever you are" },
+  ],
+  zakat: [
+    { href: "/zakat", title: "Go deeper: Zakat", desc: "Who pays, what counts, the eight recipients — and the calculator" },
+  ],
+  sawm: [
+    { href: "/ramadan", title: "Go deeper: Ramadan", desc: "Fasting, Tarawih, and the last ten nights" },
+  ],
+  hajj: [
+    { href: "/hajj", title: "Go deeper: Hajj & Umrah", desc: "Ihram, umrah walkthrough, and the days of Hajj" },
+  ],
 };
 
 /* ───────────────────────── page ───────────────────────── */

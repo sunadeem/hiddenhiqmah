@@ -403,3 +403,38 @@ _Batch 4 (sects, learn-arabic, hadith, prophets, miracles, prayer-times), Opus-b
 39. Card 2 exceptions ('missed obligatory made up even in prohibited times'; 'prayers with a cause such as two rak'ah after wudu or funeral prayer treated differently by scholars') — madhhab-differed, framed to scholars. Correct.
 40. Card 4 'Islamic midnight = midpoint between Maghrib and Fajr' and 'start of the last third' — generic astronomical/fiqh convention, uncited. Standard.
 41. Card 5 'the Islamic day begins at Maghrib (sunset), not midnight' — generic well-established point, uncited. Standard.
+
+---
+
+## EXPANSION BATCH 5 (Opus-built, final, 2026-07-22) — generic-attribution items
+
+_Batch 5 (qiblah, tawhid, articles-of-faith, pillars, prophet-stories), Opus-built + verified, awaiting Fable re-review. FINAL batch — the 314-item plan is now built. Usual keep/cite/remove._
+
+### /qiblah
+1. Masjid al-Qiblatayn is 'still called the Mosque of the Two Qiblahs' — well-known historical fact, stated without a hadith citation (correct handling).
+2. Plane/train practical guidance (face qiblah at opening takbir if feasible, otherwise pray toward direction of travel; pray standing if able, sit and gesture if not) — scholarly-summary-generic, no invented citation; anchored only by Quran 2:286 for the burden framing.
+3. Whether an obligatory prayer prayed in a moving vehicle must be repeated on landing — explicitly framed as a point 'the schools of fiqh differ on' with a consult-a-trusted-local-scholar note (madhhab framing correct).
+4. Non-device qiblah-finding techniques (sun rise/set east–west line, solar-noon shadow north–south, Pole Star/Polaris, local mosque orientation, hotel-ceiling/drawer qiblah arrows) — generic navigation knowledge, no citation.
+5. 'jihat al-Ka'bah' (facing the general direction) vs facing its exact point — attributed generically as 'scholars call this'; the practical ruling that a degree or two of compass error does not invalidate prayer is generic.
+6. Facing the qiblah is recommended for du'a, dhikr, and when slaughtering an animal — generic fiqh, no citation.
+7. The deceased are laid in the grave facing the qiblah on their right side — generic, cross-linked to /death-rites?tab=burial rather than citing.
+8. 'the scholars discuss the indoor case in detail' regarding the toilet-etiquette indoor nuance (Bukhari 4:11) — generic framing.
+9. 'If you tried your best... your prayer stands — you are not required to repeat it' — mainstream position stated generically (spec sanctioned keeping madhhab nuance generic); reassurance anchored to Quran 2:143.
+
+### /tawhid
+10. Hidden-shirk card: 'The Prophet warned that this quiet showing off was the thing he feared most for his righteous followers' — paraphrase of the Mahmud ibn Labid riya narration, which is NOT in the local corpus; attributed generically in prose and cited only via the external SourcesCard entry 'Musnad Ahmad (Mahmud ibn Labid) — graded sahih by al-Albani (Musnad Ahmad 23630); not in this app's local collection'.
+11. Names tab: 'the familiar enumerated list is a later scholarly compilation (most famously the one narrated by Tirmidhi), and scholars differ slightly on which names it contains' — scholarly-summary claim with generic attribution, no single verified local citation for the enumeration itself.
+12. Tawassul card: the permissible-tawassul framework, including 'By asking a living, present, righteous person to make du'a for you — as the companions asked the Prophet', is a scholarly-summary attributed to Kitab at-Tawhid / Ibn Uthaymeen / Ibn Taymiyyah in the SourcesCard; only the by-deeds form (Bukhari 78:5) and by-names form (Quran 7:180) carry specific verified citations.
+13. Names tab: the three levels of 'enumerating' (ihsa) — memorise / understand / act upon — is a generic scholarly treatment (Ibn al-Qayyim / Ibn Uthaymeen), no direct citation.
+14. Standard aqidah framings (major shirk 'takes a person out of Islam' / nullifies deeds; minor shirk 'does not by itself expel from Islam but is more serious than any major sin') are presented as settled scholarly positions without per-claim citation — conventional and uncontroversial.
+
+### /articles-of-faith
+15. Ihsan card (intro tab, lines 810-826): the muraqabah elaboration prose ('constant awareness that Allah watches you... worships with a sincerity and care that mere habit can never reach') is generic scholarly framing. Its one direct quotation ('That you worship Allah as if you are seeing Him...') IS local-verified as an exact substring of Muslim 1:1 — only the surrounding explanation is generic, which is acceptable descriptive content with no invented citation.
+16. 'Iman rises and falls' card (lines 516-519): the practical counsel (return to Quran, dhikr, pray on time, righteous company, small good deeds) is generic scholarly advice anchored to the local-verified Quran 8:2 quote 'faith increases when His verses are recited to them'. No invented citation.
+
+### /prophet-stories
+17. Ibrahim / 'The Debate with Nimrod': the king is 'identified by scholars as Nimrod' — Nimrod is not named in the Quran; correctly hedged as a scholarly identification.
+18. Ibrahim / 'The Three Statements': 'Scholars explain these were not blameworthy lies but words of double meaning (maʿarid)…' — orthodox scholarly framing given generic attribution (no specific citation), which is the correct treatment.
+19. Yusuf / 'Forgiveness and Reunion': 'Commentators note that when the Prophet ﷺ entered Makkah victorious… he pardoned them in the very spirit of Yusuf's words' — an interpretive homiletic link attributed generically to commentators; no invented citation.
+20. Dawud / 'The Two Disputants': 'The Bathsheba tale found in earlier scriptures is a later fabrication that Islam rejects; the Quran's test concerns only hastiness in judgment' — mainstream Islamic position stated with generic attribution (no source cited), correctly framing the rejected Israʼiliyyat.
+21. Adam / 'Habil and Qabil' and the Nimrod/Azar narratives use the traditional proper names Habil, Qabil, Nimrod (not named in the Quranic text) — conventional traditional naming, parenthetically qualified.

@@ -42,6 +42,18 @@ export const prophetStories: Record<string, ProphetStory> = {
             reference: "Quran 2:34",
           },
         ],
+        hadith: [
+          {
+            text:
+              "The Prophet ﷺ said: ‘Allah created Adam sixty cubits tall. Whoever enters Paradise will be in the form of Adam — and human stature has kept diminishing since then.’",
+            source: "Bukhari 79:1; 60:2",
+          },
+          {
+            text:
+              "The Prophet ﷺ said: ‘The best day on which the sun has risen is Friday; on it Adam was created, on it he was made to enter Paradise, and on it he was expelled from it.’",
+            source: "Muslim 7:26; 7:27",
+          },
+        ],
       },
       {
         title: "Knowledge Given to Adam",
@@ -85,6 +97,31 @@ export const prophetStories: Record<string, ProphetStory> = {
             translation:
               "We said, 'Go down from it, all of you. And when guidance comes to you from Me, whoever follows My guidance — there will be no fear concerning them, nor will they grieve.'",
             reference: "Quran 2:38",
+          },
+        ],
+      },
+      {
+        title: "Habil and Qabil — The First Murder",
+        content:
+          "Adam’s two sons each offered a sacrifice; it was accepted from one (Habil) but not from the other (Qabil). Consumed by envy, Qabil threatened to kill his brother. Habil refused to raise his hand in return, saying he feared Allah and would rather his brother carry the sin. Qabil murdered him — the first bloodshed on earth — then did not know how to hide the body, until Allah sent a crow scratching the ground to show him how to bury it, and he was left in remorse.",
+        verses: [
+          {
+            arabic: "۞ وَٱتْلُ عَلَيْهِمْ نَبَأَ ٱبْنَىْ ءَادَمَ بِٱلْحَقِّ إِذْ قَرَّبَا قُرْبَانًا فَتُقُبِّلَ مِنْ أَحَدِهِمَا وَلَمْ يُتَقَبَّلْ مِنَ ٱلْـَٔاخَرِ قَالَ لَأَقْتُلَنَّكَ ۖ قَالَ إِنَّمَا يَتَقَبَّلُ ٱللَّهُ مِنَ ٱلْمُتَّقِينَ",
+            translation:
+              "Relate to them the story of the two sons of Adam in truth, when both offered a sacrifice; it was accepted from one [i.e., Abel] but not accepted from the other [i.e., Cain]. The latter said, “I will kill you.” The former said, “Allah only accepts from those who fear Him.",
+            reference: "Quran 5:27",
+          },
+          {
+            arabic: "لَئِنۢ بَسَطتَ إِلَىَّ يَدَكَ لِتَقْتُلَنِى مَآ أَنَا۠ بِبَاسِطٍ يَدِىَ إِلَيْكَ لِأَقْتُلَكَ ۖ إِنِّىٓ أَخَافُ ٱللَّهَ رَبَّ ٱلْعَـٰلَمِينَ",
+            translation:
+              "Even if you stretch your hand forward to kill me, I will not stretch my hand forward to kill you, for I fear Allah, the Lord of the worlds.",
+            reference: "Quran 5:28",
+          },
+          {
+            arabic: "فَبَعَثَ ٱللَّهُ غُرَابًا يَبْحَثُ فِى ٱلْأَرْضِ لِيُرِيَهُۥ كَيْفَ يُوَٰرِى سَوْءَةَ أَخِيهِ ۚ قَالَ يَـٰوَيْلَتَىٰٓ أَعَجَزْتُ أَنْ أَكُونَ مِثْلَ هَـٰذَا ٱلْغُرَابِ فَأُوَٰرِىَ سَوْءَةَ أَخِى ۖ فَأَصْبَحَ مِنَ ٱلنَّـٰدِمِينَ",
+            translation:
+              "Then Allah sent a crow scratching the ground to show him how to bury the corpse of his brother. He said, “Woe to me! Have I failed even to be like this crow to bury the corpse of my brother?” And he became one of the remorseful.",
+            reference: "Quran 5:31",
           },
         ],
       },
@@ -399,6 +436,37 @@ export const prophetStories: Record<string, ProphetStory> = {
         ],
       },
       {
+        title: "Inviting His Father Azar",
+        content:
+          "Ibrahim gently called his father Azar away from idols, asking why he worshipped what could neither hear, nor see, nor benefit him. His father threatened to stone him and ordered him to leave. Ibrahim answered only with peace and a promise to seek forgiveness for him — a model of patient, respectful da’wah to family. He later disassociated from that plea once it was clear his father had died an enemy of Allah.",
+        verses: [
+          {
+            arabic: "۞ وَإِذْ قَالَ إِبْرَٰهِيمُ لِأَبِيهِ ءَازَرَ أَتَتَّخِذُ أَصْنَامًا ءَالِهَةً ۖ إِنِّىٓ أَرَىٰكَ وَقَوْمَكَ فِى ضَلَـٰلٍ مُّبِينٍ",
+            translation:
+              "And [remember] when Abraham said to his father, Āzar, “Do you take idols as gods? I see that you and your people are clearly misguided.”",
+            reference: "Quran 6:74",
+          },
+          {
+            arabic: "إِذْ قَالَ لِأَبِيهِ يَـٰٓأَبَتِ لِمَ تَعْبُدُ مَا لَا يَسْمَعُ وَلَا يُبْصِرُ وَلَا يُغْنِى عَنكَ شَيْـًٔا",
+            translation:
+              "When he said to his father, “O my dear father, why do you worship something that neither hears nor sees nor benefits you in any way?",
+            reference: "Quran 19:42",
+          },
+          {
+            arabic: "قَالَ أَرَاغِبٌ أَنتَ عَنْ ءَالِهَتِى يَـٰٓإِبْرَٰهِيمُ ۖ لَئِن لَّمْ تَنتَهِ لَأَرْجُمَنَّكَ ۖ وَٱهْجُرْنِى مَلِيًّا",
+            translation:
+              "He said, “Are you turning away from my gods, O Abraham? If you do not desist, I will surely stone you. Keep away from me for a long time!”",
+            reference: "Quran 19:46",
+          },
+          {
+            arabic: "قَالَ سَلَـٰمٌ عَلَيْكَ ۖ سَأَسْتَغْفِرُ لَكَ رَبِّىٓ ۖ إِنَّهُۥ كَانَ بِى حَفِيًّا",
+            translation:
+              "Abraham said, “Peace be on you. I will seek my Lord’s forgiveness for you. Indeed, He is Most Gracious to me.",
+            reference: "Quran 19:47",
+          },
+        ],
+      },
+      {
         title: "Challenging the Idolaters",
         content:
           "Ibrahim smashed the idols in the temple, leaving only the largest one intact, to prove to his people that their idols could not defend themselves. When confronted, he pointed to the largest idol and said, 'Ask him.' The people knew their idols could not speak, yet still refused to abandon them. As punishment, they threw Ibrahim into a massive fire.",
@@ -408,6 +476,44 @@ export const prophetStories: Record<string, ProphetStory> = {
             translation:
               "We said, 'O fire, be coolness and safety upon Ibrahim.'",
             reference: "Quran 21:69",
+          },
+        ],
+      },
+      {
+        title: "The Debate with Nimrod",
+        content:
+          "Ibrahim confronted a tyrant king — identified by scholars as Nimrod — whom Allah had given kingship and who claimed the power over life and death. When Ibrahim said his Lord is the One Who gives life and causes death, the king boasted that he too could kill and spare. Ibrahim then silenced him: Allah brings the sun from the east, so bring it from the west. The disbeliever was left dumbfounded.",
+        verses: [
+          {
+            arabic: "أَلَمْ تَرَ إِلَى ٱلَّذِى حَآجَّ إِبْرَٰهِـۧمَ فِى رَبِّهِۦٓ أَنْ ءَاتَىٰهُ ٱللَّهُ ٱلْمُلْكَ إِذْ قَالَ إِبْرَٰهِـۧمُ رَبِّىَ ٱلَّذِى يُحْىِۦ وَيُمِيتُ قَالَ أَنَا۠ أُحْىِۦ وَأُمِيتُ ۖ قَالَ إِبْرَٰهِـۧمُ فَإِنَّ ٱللَّهَ يَأْتِى بِٱلشَّمْسِ مِنَ ٱلْمَشْرِقِ فَأْتِ بِهَا مِنَ ٱلْمَغْرِبِ فَبُهِتَ ٱلَّذِى كَفَرَ ۗ وَٱللَّهُ لَا يَهْدِى ٱلْقَوْمَ ٱلظَّـٰلِمِينَ",
+            translation:
+              "Have you not considered the one who argued with Abraham about his Lord, as Allah had given him kingship? When Abraham said, “My Lord is the One Who gives life and causes death.” He said, “I give life and cause death.” Abraham said, “It is Allah Who brings the sun from the east, so bring it from the west.” Thus the disbeliever was dumbfounded, and Allah does not guide the wrongdoing people.",
+            reference: "Quran 2:258",
+          },
+        ],
+      },
+      {
+        title: "The Four Birds",
+        content:
+          "Seeking the tranquillity of certainty, Ibrahim asked Allah to show him how He brings the dead to life. Allah affirmed that Ibrahim already believed, then told him to take four birds, cut them, place a portion of each on a separate hill, and call them — and they came rushing back to him. His request was not doubt, but a longing for his heart to be at rest.",
+        verses: [
+          {
+            arabic: "وَإِذْ قَالَ إِبْرَٰهِـۧمُ رَبِّ أَرِنِى كَيْفَ تُحْىِ ٱلْمَوْتَىٰ ۖ قَالَ أَوَلَمْ تُؤْمِن ۖ قَالَ بَلَىٰ وَلَـٰكِن لِّيَطْمَئِنَّ قَلْبِى ۖ قَالَ فَخُذْ أَرْبَعَةً مِّنَ ٱلطَّيْرِ فَصُرْهُنَّ إِلَيْكَ ثُمَّ ٱجْعَلْ عَلَىٰ كُلِّ جَبَلٍ مِّنْهُنَّ جُزْءًا ثُمَّ ٱدْعُهُنَّ يَأْتِينَكَ سَعْيًا ۚ وَٱعْلَمْ أَنَّ ٱللَّهَ عَزِيزٌ حَكِيمٌ",
+            translation:
+              "And [remember] when Abraham said: “My Lord, show me how You give life to the dead.” He said: “Do you not believe?’’ He said: “I do believe, but just to reassure my heart.’’ Allah said: “Then take four birds and cut them into pieces, then put a piece of each of them on each mountain, then call them; they will come swiftly to you. And know that Allah is All-Mighty, All-Wise.”",
+            reference: "Quran 2:260",
+          },
+        ],
+      },
+      {
+        title: "The Three Statements of Ibrahim",
+        content:
+          "The Prophet ﷺ mentioned that Ibrahim spoke only three words that outwardly departed from the literal: twice for the sake of Allah (‘I am sick’ and ‘the big idol did it’), and once when he called his wife Sarah his sister before a tyrant to protect her. Scholars explain these were not blameworthy lies but words of double meaning (ma’arid) that shielded faith and life; on the Day of Judgment Ibrahim recalls them only out of his intense humility before Allah.",
+        hadith: [
+          {
+            text:
+              "The Prophet ﷺ said: ‘Ibrahim never told a lie except on three occasions’ — two for the sake of Allah (‘I am sick’ and ‘the big idol did it’), and once when he called Sarah his sister before a tyrant king.",
+            source: "Bukhari 60:32; 60:33",
           },
         ],
       },
@@ -434,6 +540,12 @@ export const prophetStories: Record<string, ProphetStory> = {
             translation:
               "And [mention] when Ibrahim was raising the foundations of the House and Ismail, [saying], 'Our Lord, accept [this] from us. Indeed, You are the Hearing, the Knowing.'",
             reference: "Quran 2:127",
+          },
+          {
+            arabic: "رَبِّ ٱجْعَلْنِى مُقِيمَ ٱلصَّلَوٰةِ وَمِن ذُرِّيَّتِى ۚ رَبَّنَا وَتَقَبَّلْ دُعَآءِ",
+            translation:
+              "My Lord, make me steadfast in prayer and those of my offspring. Our Lord, accept my supplication.",
+            reference: "Quran 14:40",
           },
         ],
       },
@@ -717,13 +829,20 @@ export const prophetStories: Record<string, ProphetStory> = {
       {
         title: "Forgiveness and Reunion",
         content:
-          "During the famine, Yusuf's brothers came to Egypt seeking food, not recognizing him. After testing them, Yusuf revealed his identity and forgave them, saying, 'No blame upon you today. Allah will forgive you.' He then sent for his father and family, and Yaqub's dream was fulfilled when they all bowed before him in gratitude.",
+          "During the famine, Yusuf's brothers came to Egypt seeking food, not recognizing him. After testing them, Yusuf revealed his identity and forgave them, saying, 'No blame upon you today. Allah will forgive you.' He then sent for his father and family, and Yaqub's dream was fulfilled when they all bowed before him in gratitude. Commentators note that when the Prophet ﷺ entered Makkah victorious over those who had persecuted him, he pardoned them in the very spirit of Yusuf's words of forgiveness.",
         verses: [
           {
             arabic: "قَالَ لَا تَثْرِيبَ عَلَيْكُمُ الْيَوْمَ ۖ يَغْفِرُ اللَّهُ لَكُمْ ۖ وَهُوَ أَرْحَمُ الرَّاحِمِينَ",
             translation:
               "He said, 'No blame upon you today. Allah will forgive you; and He is the most merciful of the merciful.'",
             reference: "Quran 12:92",
+          },
+        ],
+        hadith: [
+          {
+            text:
+              "The Prophet ﷺ said: ‘The honourable, the son of the honourable, the son of the honourable, the son of the honourable — Yusuf, the son of Yaqub, the son of Ishaq, the son of Ibrahim.’",
+            source: "Bukhari 60:56; 60:64",
           },
         ],
       },
@@ -892,6 +1011,30 @@ export const prophetStories: Record<string, ProphetStory> = {
               "Indeed, I am your Lord, so remove your sandals. Indeed, you are in the sacred valley of Tuwa.",
             reference: "Quran 20:12",
           },
+          {
+            arabic: "قَالَ رَبِّ ٱشْرَحْ لِى صَدْرِى",
+            translation:
+              "He said, “My Lord, reassure my heart for me,",
+            reference: "Quran 20:25",
+          },
+          {
+            arabic: "وَيَسِّرْ لِىٓ أَمْرِى",
+            translation:
+              "and ease my task for me,",
+            reference: "Quran 20:26",
+          },
+          {
+            arabic: "وَٱحْلُلْ عُقْدَةً مِّن لِّسَانِى",
+            translation:
+              "and loosen the knot from my tongue,",
+            reference: "Quran 20:27",
+          },
+          {
+            arabic: "يَفْقَهُوا۟ قَوْلِى",
+            translation:
+              "so that they may understand my speech.",
+            reference: "Quran 20:28",
+          },
         ],
       },
       {
@@ -930,6 +1073,88 @@ export const prophetStories: Record<string, ProphetStory> = {
             translation:
               "And We made an appointment with Musa for thirty nights and perfected them by [the addition of] ten; so the term of his Lord was completed as forty nights.",
             reference: "Quran 7:142",
+          },
+        ],
+      },
+      {
+        title: "The Cow of Bani Israel",
+        content:
+          "A man among the Israelites was murdered and his killers concealed the crime. Through Musa, Allah commanded the people to slaughter a cow. Instead of simply obeying, they interrogated Musa again and again about its age, colour and condition — making the command harder upon themselves — until they finally slaughtered it. When they struck the dead man with a piece of it, Allah restored him to life to name his killer: a living proof of the resurrection. This episode gives Surah Al-Baqarah (‘The Cow’) its name.",
+        verses: [
+          {
+            arabic: "وَإِذْ قَالَ مُوسَىٰ لِقَوْمِهِۦٓ إِنَّ ٱللَّهَ يَأْمُرُكُمْ أَن تَذْبَحُوا۟ بَقَرَةً ۖ قَالُوٓا۟ أَتَتَّخِذُنَا هُزُوًا ۖ قَالَ أَعُوذُ بِٱللَّهِ أَنْ أَكُونَ مِنَ ٱلْجَـٰهِلِينَ",
+            translation:
+              "And [remember] when Moses said to his people, “Allah commands you to slaughter a cow.” They said, “Are you mocking us?” Moses said, “I seek refuge in Allah from being among the ignorant!”",
+            reference: "Quran 2:67",
+          },
+          {
+            arabic: "فَقُلْنَا ٱضْرِبُوهُ بِبَعْضِهَا ۚ كَذَٰلِكَ يُحْىِ ٱللَّهُ ٱلْمَوْتَىٰ وَيُرِيكُمْ ءَايَـٰتِهِۦ لَعَلَّكُمْ تَعْقِلُونَ",
+            translation:
+              "We said, “Strike the slain with a piece of it.” This is how Allah brings the dead to life and shows you His signs, so that you may understand.",
+            reference: "Quran 2:73",
+          },
+        ],
+      },
+      {
+        title: "The Journey with Al-Khidr",
+        content:
+          "When Musa was asked whether anyone was more knowledgeable than him and answered no, Allah corrected him and directed him to a servant at the junction of the two seas — Al-Khidr — who had been given knowledge Musa did not possess. Musa travelled to learn from him and witnessed three baffling acts: Al-Khidr damaged a ship, took the life of a boy, and rebuilt a collapsing wall without pay. Unable to restrain his objections, Musa parted from him, but not before Al-Khidr revealed the hidden mercy and wisdom behind each act. The story is a lesson in humility before Allah’s greater knowledge.",
+        verses: [
+          {
+            arabic: "وَإِذْ قَالَ مُوسَىٰ لِفَتَىٰهُ لَآ أَبْرَحُ حَتَّىٰٓ أَبْلُغَ مَجْمَعَ ٱلْبَحْرَيْنِ أَوْ أَمْضِىَ حُقُبًا",
+            translation:
+              "And [remember] when Moses said to his servant, “I will not give up until I reach the junction of the two seas, or I travel for ages.”",
+            reference: "Quran 18:60",
+          },
+          {
+            arabic: "فَوَجَدَا عَبْدًا مِّنْ عِبَادِنَآ ءَاتَيْنَـٰهُ رَحْمَةً مِّنْ عِندِنَا وَعَلَّمْنَـٰهُ مِن لَّدُنَّا عِلْمًا",
+            translation:
+              "There they found one of Our slaves upon whom We bestowed Our mercy and We taught him from Our Own knowledge.",
+            reference: "Quran 18:65",
+          },
+        ],
+        hadith: [
+          {
+            text:
+              "Ibn ‘Abbas asked Ubai ibn Ka‘b about the companion of Musa. Ubai reported that the Prophet ﷺ said: a man once asked Musa if anyone was more learned than him, and Musa said no; so Allah revealed that His slave Al-Khidr was more learned, and made a fish the sign of their meeting place.",
+            source: "Bukhari 3:16; 3:20",
+          },
+        ],
+      },
+      {
+        title: "Qarun and His Treasure",
+        content:
+          "Qarun was a man of Musa’s own people whom Allah had blessed with treasures so vast that their very keys would weigh down a band of strong men. He grew arrogant, insisting his wealth was owed to his own knowledge, and paraded his splendour before the people. When he refused gratitude and correction, Allah caused the earth to swallow him and his house — and no party could help him against Allah. Qarun became a byword for wealth that breeds tyranny.",
+        verses: [
+          {
+            arabic: "۞ إِنَّ قَـٰرُونَ كَانَ مِن قَوْمِ مُوسَىٰ فَبَغَىٰ عَلَيْهِمْ ۖ وَءَاتَيْنَـٰهُ مِنَ ٱلْكُنُوزِ مَآ إِنَّ مَفَاتِحَهُۥ لَتَنُوٓأُ بِٱلْعُصْبَةِ أُو۟لِى ٱلْقُوَّةِ إِذْ قَالَ لَهُۥ قَوْمُهُۥ لَا تَفْرَحْ ۖ إِنَّ ٱللَّهَ لَا يُحِبُّ ٱلْفَرِحِينَ",
+            translation:
+              "Indeed, Korah was one of the people of Moses, but he behaved arrogantly towards them. We had given him such treasures that their keys would weigh down a group of strong men. When his people said to him, “Do not exult, for Allah does not like the exultant.",
+            reference: "Quran 28:76",
+          },
+          {
+            arabic: "قَالَ إِنَّمَآ أُوتِيتُهُۥ عَلَىٰ عِلْمٍ عِندِىٓ ۚ أَوَلَمْ يَعْلَمْ أَنَّ ٱللَّهَ قَدْ أَهْلَكَ مِن قَبْلِهِۦ مِنَ ٱلْقُرُونِ مَنْ هُوَ أَشَدُّ مِنْهُ قُوَّةً وَأَكْثَرُ جَمْعًا ۚ وَلَا يُسْـَٔلُ عَن ذُنُوبِهِمُ ٱلْمُجْرِمُونَ",
+            translation:
+              "He said, “I have been given all this because of the knowledge that I have.” Did he not know that Allah destroyed some generations before him who were superior to him in power and greater in accumulating [wealth]? There will be no need for the wicked to be asked about their sins.",
+            reference: "Quran 28:78",
+          },
+          {
+            arabic: "فَخَسَفْنَا بِهِۦ وَبِدَارِهِ ٱلْأَرْضَ فَمَا كَانَ لَهُۥ مِن فِئَةٍ يَنصُرُونَهُۥ مِن دُونِ ٱللَّهِ وَمَا كَانَ مِنَ ٱلْمُنتَصِرِينَ",
+            translation:
+              "Then We caused the earth to swallow him and his house. There was no one to help him against Allah, nor was he able to help himself.",
+            reference: "Quran 28:81",
+          },
+        ],
+      },
+      {
+        title: "The Death of Musa",
+        content:
+          "Near the end of his life, when the Angel of Death came to Musa, Musa struck him. The angel returned to Allah, Who sent him back with an offer: for every hair his hand would cover on the back of an ox, a year of added life. Learning that death would still follow, Musa asked to die at once — praying to be brought near the Holy Land. The Prophet ﷺ said that were he there, he would show Musa’s grave by the roadside near the red sand hill.",
+        hadith: [
+          {
+            text:
+              "The Prophet ﷺ said that the Angel of Death was sent to Musa, and Musa struck him. The angel returned to his Lord, Who sent him back offering a year of life for every hair his hand covered on an ox’s back. Learning death would still come, Musa asked to die then, near the Holy Land.",
+            source: "Bukhari 60:80",
           },
         ],
       },
@@ -1132,6 +1357,48 @@ export const prophetStories: Record<string, ProphetStory> = {
           {
             text: "The Prophet ﷺ said: 'The most beloved fasting to Allah is the fasting of Dawud — he would fast one day and not fast the next.'",
             source: "Bukhari 19:11, Muslim 13:261",
+          },
+        ],
+      },
+      {
+        title: "A Living Sunnah — the Fast and Night Prayer of Dawud",
+        content:
+          "Dawud’s worship remains a practical model a Muslim can adopt today. He fasted every other day, which the Prophet ﷺ called the most beloved fasting to Allah and the most balanced of fasts. He also divided his night: sleeping half, praying a third, and sleeping a sixth — which the Prophet ﷺ named the most beloved prayer to Allah. Rather than exhaust oneself, the sunnah of Dawud teaches steady, sustainable devotion. (See the fasting guidance in /salah and Muslim daily worship.)",
+        hadith: [
+          {
+            text:
+              "The Prophet ﷺ said: ‘The most beloved prayer to Allah is the prayer of Dawud, and the most beloved fasting to Allah is the fasting of Dawud. He used to sleep half the night, pray a third, then sleep a sixth, and he would fast one day and not the next.’",
+            source: "Bukhari 19:11",
+          },
+          {
+            text:
+              "When Abdullah ibn Amr wished to fast every day and pray all night, the Prophet ﷺ directed him: ‘Fast like the fasting of Dawud — fast one day and not the next — and do not exceed it.’",
+            source: "Bukhari 30:81; 30:86",
+          },
+        ],
+      },
+      {
+        title: "The Two Disputants",
+        content:
+          "Two men climbed the wall of Dawud’s prayer chamber, startling him, and asked him to judge between them: one had ninety-nine ewes yet coveted his brother’s single ewe. Dawud ruled at once that the man had been wronged — then realised Allah was testing him over haste in judgment, and fell down in prostration seeking forgiveness. Allah forgave him and reaffirmed the trust of just rule. (The Bathsheba tale found in earlier scriptures is a later fabrication that Islam rejects; the Quran’s test concerns only hastiness in judging.)",
+        verses: [
+          {
+            arabic: "إِذْ دَخَلُوا۟ عَلَىٰ دَاوُۥدَ فَفَزِعَ مِنْهُمْ ۖ قَالُوا۟ لَا تَخَفْ ۖ خَصْمَانِ بَغَىٰ بَعْضُنَا عَلَىٰ بَعْضٍ فَٱحْكُم بَيْنَنَا بِٱلْحَقِّ وَلَا تُشْطِطْ وَٱهْدِنَآ إِلَىٰ سَوَآءِ ٱلصِّرَٰطِ",
+            translation:
+              "When they entered upon David, he was frightened. They said, “Do not be afraid. We are two adversaries: one of us has wronged the other, so judge between us with fairness, and do not be unjust, and guide us to the straight path.",
+            reference: "Quran 38:22",
+          },
+          {
+            arabic: "قَالَ لَقَدْ ظَلَمَكَ بِسُؤَالِ نَعْجَتِكَ إِلَىٰ نِعَاجِهِۦ ۖ وَإِنَّ كَثِيرًا مِّنَ ٱلْخُلَطَآءِ لَيَبْغِى بَعْضُهُمْ عَلَىٰ بَعْضٍ إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّـٰلِحَـٰتِ وَقَلِيلٌ مَّا هُمْ ۗ وَظَنَّ دَاوُۥدُ أَنَّمَا فَتَنَّـٰهُ فَٱسْتَغْفَرَ رَبَّهُۥ وَخَرَّ رَاكِعًا وَأَنَابَ ۩",
+            translation:
+              "David said, “He has certainly wronged you by demanding that your ewe be added to his flock. Indeed, many partners oppress one another, except those who believe and do righteous deeds – and how few they are.” Then David realized that We were only testing him, so he asked his Lord for forgiveness, fell down in prostration, and turned to Him in repentance.",
+            reference: "Quran 38:24",
+          },
+          {
+            arabic: "يَـٰدَاوُۥدُ إِنَّا جَعَلْنَـٰكَ خَلِيفَةً فِى ٱلْأَرْضِ فَٱحْكُم بَيْنَ ٱلنَّاسِ بِٱلْحَقِّ وَلَا تَتَّبِعِ ٱلْهَوَىٰ فَيُضِلَّكَ عَن سَبِيلِ ٱللَّهِ ۚ إِنَّ ٱلَّذِينَ يَضِلُّونَ عَن سَبِيلِ ٱللَّهِ لَهُمْ عَذَابٌ شَدِيدٌۢ بِمَا نَسُوا۟ يَوْمَ ٱلْحِسَابِ",
+            translation:
+              "“O David, We have made you a ruler on earth, so judge between people with justice, and do not follow your desires lest they lead you astray from Allah’s way. Those who go astray from Allah’s way will have a severe punishment because of their forgetting the Day of Reckoning.”",
+            reference: "Quran 38:26",
           },
         ],
       },
@@ -1546,6 +1813,16 @@ export const prophetStories: Record<string, ProphetStory> = {
           {
             text: "The Prophet ﷺ said: 'By Him in Whose Hand is my life, the son of Maryam will soon descend among you as a just judge. He will break the cross, kill the swine, and abolish the jizyah.'",
             source: "Bukhari 34:169, Muslim 1:321",
+          },
+          {
+            text:
+              "The Prophet ﷺ listed ten major signs before the Last Hour, among them ‘the descent of Jesus son of Mary,’ alongside the Dajjal, Gog and Magog, and the rising of the sun from the west — his return being one of the great signs of the end times.",
+            source: "Muslim 54:51; 54:52",
+          },
+          {
+            text:
+              "The Prophet ﷺ said: ‘I am the nearest of all people to the son of Mary. The prophets are paternal brothers, and there has been no prophet between me and him.’",
+            source: "Bukhari 60:112; 60:113",
           },
         ],
       },

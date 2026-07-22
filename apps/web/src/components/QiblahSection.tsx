@@ -576,15 +576,55 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
         )}
       </ContentCard>
 
-      {/* If you're not sure */}
+      {/* Why the Ka'bah — and the "do Muslims worship it?" misconception */}
       {!compact && <ContentCard delay={0.11}>
+        <h3 className="text-gold font-semibold text-lg mb-3">Why the Ka&apos;bah — and do Muslims worship it?</h3>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          The <span className="text-gold">Ka&apos;bah</span> is not an idol and Muslims do not worship it. It is a direction, not a deity — a single point the whole ummah turns toward so that worship is united and ordered. Worship itself is for <span className="text-gold">Allah alone</span>.
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          The Qur&apos;an calls it the first house of worship ever set up for humanity:
+        </p>
+        <div className="my-3">
+          <p className="text-themed-muted text-sm leading-relaxed italic">
+            &ldquo;The first House [of worship] established for mankind was the one at Bakkah…&rdquo;
+          </p>
+          <p className="text-xs text-gold/80 mt-1"><HadithRefText text="Quran 3:96" className="inline" /></p>
+        </div>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          Its foundations were raised by the Prophet <span className="text-gold">Ibrahim</span> and his son <span className="text-gold">Isma&apos;il</span> — <span className="italic">&ldquo;…Abraham was raising the foundations of the House and Ishmael…&rdquo;</span> (<HadithRefText text="Quran 2:127" className="inline" />) — and the Prophet ﷺ named it the first mosque ever built on earth. When Abu Dharr asked <span className="italic">&ldquo;Which mosque was first built on the surface of the earth?&rdquo;</span> he answered that it was the Sacred Mosque (al-Masjid al-Haram), built forty years before al-Aqsa (<HadithRefText text="Bukhari 60:40" className="inline" />).
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          That the direction is obedience — not stone-veneration — is captured by <span className="text-gold">Umar ibn al-Khattab</span>, who kissed the Black Stone of the Ka&apos;bah and said: <span className="italic">&ldquo;you are a stone and can neither benefit anyone nor harm anyone&rdquo;</span> — he did so only in following the Prophet ﷺ, not because the stone itself holds any power (<HadithRefText text="Bukhari 25:83" className="inline" />).
+        </p>
+      </ContentCard>}
+
+      {/* The day the qiblah changed */}
+      {!compact && <ContentCard delay={0.14}>
+        <h3 className="text-gold font-semibold text-lg mb-3">The day the qiblah changed</h3>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          Al-Bara&apos; ibn &apos;Azib remembered it vividly. The Prophet ﷺ prayed toward Jerusalem <span className="italic">&ldquo;…for sixteen or seventeen months, but he wished that he could pray facing the Ka&apos;ba…&rdquo;</span> The command came during an &apos;Asr prayer, and word spread quickly (<HadithRefText text="Bukhari 2:33" className="inline" />).
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          The next morning the congregation at the <span className="text-gold">Quba mosque</span> was mid-prayer when a passer-by announced the revelation; they pivoted from Jerusalem toward the Ka&apos;bah without breaking their prayer (<HadithRefText text="Bukhari 65:15" className="inline" />; <HadithRefText text="Bukhari 65:17" className="inline" />; <HadithRefText text="Bukhari 65:18" className="inline" />). The mosque in Madinah where an earlier turn is remembered is still called <span className="text-gold">Masjid al-Qiblatayn</span> — &ldquo;the Mosque of the Two Qiblahs.&rdquo;
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          Allah foretold the objection and answered it: <span className="italic">&ldquo;To Allah belong the east and west…&rdquo;</span> (<HadithRefText text="Quran 2:142" className="inline" />), and the change was <span className="italic">&ldquo;…except to distinguish those who would follow the Messenger from those who would turn back on their heels…&rdquo;</span> (<HadithRefText text="Quran 2:143" className="inline" />).
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Some believers had died while still facing Jerusalem, and people worried about their prayers — so Allah reassured them that <span className="italic">&ldquo;…Allah would never let your [acts of] faith go to waste…&rdquo;</span> (<HadithRefText text="Quran 2:143" className="inline" />). A prayer offered in sincere obedience is never lost.
+        </p>
+      </ContentCard>}
+
+      {/* If you're not sure */}
+      {!compact && <ContentCard delay={0.17}>
         <h3 className="text-gold font-semibold text-lg mb-3">What if I&apos;m not sure which way to face?</h3>
         <p className="text-themed-muted text-sm leading-relaxed mb-3">
           Do your best. If you genuinely tried to determine the qiblah and prayed in good faith, your prayer is valid even if you later discover you were facing the wrong direction. The Prophet ﷺ said:
         </p>
         <div className="my-3">
           <p className="text-themed-muted text-sm leading-relaxed italic">
-            &ldquo;What is between the east and the west is qiblah.&rdquo;
+            &ldquo;What is between the east and the west is Qiblah.&rdquo;
           </p>
           <p className="text-xs text-gold/80 mt-1">
             <HadithRefText text="Tirmidhi 2:194" className="inline" />
@@ -598,9 +638,91 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
         </p>
       </ContentCard>}
 
+      {/* Mistakes & tolerances FAQ */}
+      {!compact && <ContentCard delay={0.20}>
+        <h3 className="text-gold font-semibold text-lg mb-3">Mistakes and tolerances</h3>
+        <div className="space-y-4 text-sm leading-relaxed">
+          <div>
+            <p className="text-themed font-medium mb-1">Someone corrected me mid-prayer — do I start over?</p>
+            <p className="text-themed-muted">
+              No. Turn to the correct direction and continue — exactly what the congregation at Quba did when the qiblah changed while they were praying (<HadithRefText text="Bukhari 65:15" className="inline" />). Your prayer is not broken.
+            </p>
+          </div>
+          <div>
+            <p className="text-themed font-medium mb-1">I found out afterward that I was facing the wrong way.</p>
+            <p className="text-themed-muted">
+              If you tried your best to work out the direction and prayed in good faith, your prayer stands — you are not required to repeat it. Allah reassured the early Muslims that faith offered sincerely is never wasted (<HadithRefText text="Quran 2:143" className="inline" />).
+            </p>
+          </div>
+          <div>
+            <p className="text-themed font-medium mb-1">How exact do I have to be? My compass reads a degree or two off.</p>
+            <p className="text-themed-muted">
+              At a distance, facing the <span className="text-gold">general direction</span> of the Ka&apos;bah is what is required — scholars call this facing <span className="italic">jihat al-Ka&apos;bah</span> (its direction) rather than its exact point. The Prophet ﷺ told the people of Madinah, <span className="italic">&ldquo;What is between the east and the west is Qiblah&rdquo;</span> (<HadithRefText text="Tirmidhi 2:194" className="inline" />). A small margin of compass error will not affect the validity of your prayer.
+            </p>
+          </div>
+        </div>
+      </ContentCard>}
+
+      {/* Praying in a car, plane, train, or on a mount */}
+      {!compact && <ContentCard delay={0.23}>
+        <h3 className="text-gold font-semibold text-lg mb-3">Praying in a car, plane, train, or on a mount</h3>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          The Prophet ﷺ drew a clear line between voluntary and obligatory prayer while travelling. For <span className="text-gold">voluntary (nafl) prayer</span> he prayed on his mount whichever way it happened to face — Ibn &apos;Umar reported he prayed <span className="italic">&ldquo;…facing its direction by signals, but not the compulsory prayer…&rdquo;</span> (<HadithRefText text="Bukhari 14:11" className="inline" />), and another companion saw him <span className="italic">&ldquo;…offering the prayer on his mount (Rahila) whatever direction it took…&rdquo;</span> (<HadithRefText text="Bukhari 18:13" className="inline" />). For the <span className="text-gold">obligatory prayer</span> he would dismount and face the qiblah.
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          In practice, for a <span className="text-gold">fard</span> prayer on a plane or train: face the qiblah at the opening takbir if you can (an in-flight qiblah screen or this compass on the ground before boarding helps), then pray in the direction of travel if the vehicle turns. Pray standing if you are able; sit if standing is genuinely not possible, and pray by gesture — Allah <span className="italic">&ldquo;does not burden any soul greater than it can bear&rdquo;</span> (<HadithRefText text="Quran 2:286" className="inline" />).
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Whether an obligatory prayer prayed this way should be repeated once you can stand and face the qiblah is a point the schools of fiqh differ on. If you regularly pray while travelling, ask a trusted local scholar which position to follow.
+        </p>
+      </ContentCard>}
+
+      {/* Finding the qiblah without your phone */}
+      {!compact && <ContentCard delay={0.26}>
+        <h3 className="text-gold font-semibold text-lg mb-3">Finding the qiblah without your phone</h3>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          A dead battery or a device with no compass is never an obstacle to prayer. The Prophet ﷺ said the whole earth has been made a place of worship: <span className="italic">&ldquo;…whenever the time of prayer comes for any one of you he should pray whenever he is…&rdquo;</span> (<HadithRefText text="Muslim 5:3" className="inline" />), and <span className="italic">&ldquo;To Allah belong the east and the west; wherever you turn, there is the Face of Allah…&rdquo;</span> (<HadithRefText text="Quran 2:115" className="inline" />).
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          To estimate the direction without a device, scholars and travellers rely on natural signs:
+        </p>
+        <ul className="text-themed-muted text-sm leading-relaxed space-y-1.5 list-disc pl-5 mb-3">
+          <li>The <span className="text-gold">sun</span> rises roughly in the east and sets roughly in the west, giving you an east–west line to orient from.</li>
+          <li>At <span className="text-gold">solar noon</span> the sun is at its highest and shadows are shortest, pointing along the north–south line.</li>
+          <li>At night the <span className="text-gold">Pole Star (Polaris)</span> marks true north in the northern hemisphere.</li>
+          <li>A nearby <span className="text-gold">mosque&apos;s orientation</span>, or the qiblah arrow marked on many hotel-room ceilings or drawers, gives the local direction directly.</li>
+        </ul>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Do your honest best with what you have — a sincere estimate is exactly what is asked of you.
+        </p>
+      </ContentCard>}
+
+      {/* The qiblah beyond salah */}
+      {!compact && <ContentCard delay={0.29}>
+        <h3 className="text-gold font-semibold text-lg mb-3">The qiblah beyond salah</h3>
+        <p className="text-themed-muted text-sm leading-relaxed mb-3">
+          Facing the qiblah is loved in more than the prayer. It is recommended when making <span className="text-gold">du&apos;a</span> and <span className="text-gold">dhikr</span>, and when slaughtering an animal. The deceased are laid in the grave <span className="text-gold">facing the qiblah</span> on their right side — see the burial guidance on the{" "}
+          <Link href="/death-rites?tab=burial" className="text-gold hover:text-gold/80 underline underline-offset-2">Death &amp; Janazah</Link> page.
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          There is also an etiquette of <span className="text-gold">not</span> facing or turning your back to the qiblah when relieving oneself in open ground. The Prophet ﷺ said one should <span className="italic">&ldquo;neither face nor turn his back towards the Qibla; he should either face the east or the west&rdquo;</span> (<HadithRefText text="Bukhari 4:10" className="inline" />). Ibn &apos;Umar noted from seeing the Prophet ﷺ on a rooftop that within the shelter of walls this is eased (<HadithRefText text="Bukhari 4:11" className="inline" />); the scholars discuss the indoor case in detail.
+        </p>
+      </ContentCard>}
+
       {!compact && <SourcesCard className="mt-6" sources={[
         { ref: "Quran 2:142-145", desc: "The change of qiblah from Jerusalem to the Ka'bah" },
         { ref: "Quran 2:144", desc: "Turn your face toward al-Masjid al-Haram" },
+        { ref: "Quran 2:127", desc: "Ibrahim and Isma'il raising the foundations of the House" },
+        { ref: "Quran 3:96", desc: "The first House established for mankind, at Bakkah" },
+        { ref: "Quran 2:115", desc: "To Allah belong the east and the west" },
+        { ref: "Bukhari 60:40", desc: "Al-Masjid al-Haram, the first mosque built on earth" },
+        { ref: "Bukhari 25:83", desc: "Umar at the Black Stone: 'a stone that can neither benefit nor harm'" },
+        { ref: "Bukhari 2:33", desc: "Al-Bara': sixteen or seventeen months facing Jerusalem" },
+        { ref: "Bukhari 65:15", desc: "The Quba congregation turning toward the Ka'bah mid-prayer" },
+        { ref: "Bukhari 14:11", desc: "Voluntary prayer on his mount, but not the obligatory prayer" },
+        { ref: "Bukhari 18:13", desc: "Praying on his mount whatever direction it took" },
+        { ref: "Muslim 5:3", desc: "The earth made a mosque; pray wherever the time comes" },
+        { ref: "Bukhari 4:10", desc: "Not facing or backing the qiblah when relieving oneself" },
         { ref: "Tirmidhi 2:194", desc: "What is between east and west is qiblah" },
         { ref: "Quran 2:286", desc: "Allah does not burden a soul beyond its capacity" },
       ]} />}
