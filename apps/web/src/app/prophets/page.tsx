@@ -59,7 +59,7 @@ function VerseBlock({ id }: { id: string }) {
   return (
     <div className="rounded-lg p-4 my-3" style={{ backgroundColor: "var(--color-bg)" }}>
       <p className="text-base font-arabic text-gold leading-loose mb-2 text-right">{v.ar}</p>
-      <p className="text-themed text-sm italic">&ldquo;{v.en}&rdquo;</p>
+      <p className="text-themed text-sm italic">{v.en}</p>
     </div>
   );
 }
