@@ -3,7 +3,7 @@ import { KeyboardResize, KeyboardStyle } from '@capacitor/keyboard';
 
 const config: CapacitorConfig = {
   appId: 'com.hiddenhiqmah.app',
-  appName: 'Hidden Hiqmah',
+  appName: 'Hiqmah',
   webDir: 'out',
   // WebView background — eliminates the white flash between splash and first paint
   backgroundColor: '#000000',
