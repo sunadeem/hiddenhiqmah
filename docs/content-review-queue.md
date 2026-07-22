@@ -231,3 +231,6 @@ _From the 314-item expansion build (salah cluster, kids, why-islam, family, marr
 130. Seerah claims softened to generic attribution (first believer / first martyr / businesswoman supporter)
 131. Nifas basics and istihada edge-cases — majority framings with consult-a-scholar notes
 132. Polygyny/testimony/leadership contexts — positions framed generically
+
+### /hajj — post-batch addition (2026-07-22)
+133. Women & the Mahram > 'If she has no mahram' — the four-school survey (Hanafi/Hanbali: mahram is a condition of obligation; Maliki/Shafi'i: secure company suffices for the obligatory Hajj; contemporary organized-group discussions) — scholarly-summary-generic with consult-a-scholar note; all quoted narrations locally verified (Bukhari 18:9, 28:41, 28:42, 6:1; Muslim 15:464, 15:472, 15:476).

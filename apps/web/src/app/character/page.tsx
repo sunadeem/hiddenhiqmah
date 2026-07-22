@@ -590,7 +590,7 @@ function CharacterContent() {
         activeSub={activeSub}
         setActiveSub={onSubChange}
       >
-        {active && <TopicInfoCard topic={active} />}
+        {active && <TopicInfoCard topic={active} showSource={false} />}
       </SubTabLayout>
     );
   };

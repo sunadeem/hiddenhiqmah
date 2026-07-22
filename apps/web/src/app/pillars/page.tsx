@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
@@ -12,7 +13,7 @@ import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
-import {
+import { ChevronRight,
   BookOpen,
   AlertTriangle,
   MessageCircle,
@@ -538,9 +539,31 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
           </div>
         ))}
       </div>
+
+      {PILLAR_DEEP_DIVES[pillar.id] && (
+        <Link
+          href={PILLAR_DEEP_DIVES[pillar.id].href}
+          className="mt-5 w-full text-left rounded-xl p-4 card-bg border sidebar-border hover:border-gold/40 transition-colors flex items-center justify-between gap-3"
+        >
+          <div>
+            <p className="text-sm font-medium text-themed">{PILLAR_DEEP_DIVES[pillar.id].title}</p>
+            <p className="text-xs text-themed-muted mt-0.5">{PILLAR_DEEP_DIVES[pillar.id].desc}</p>
+          </div>
+          <ChevronRight size={16} className="text-gold shrink-0" />
+        </Link>
+      )}
     </ContentCard>
   );
 }
+
+
+const PILLAR_DEEP_DIVES: Record<string, { href: string; title: string; desc: string }> = {
+  shahada: { href: "/tawhid", title: "Go deeper: Tawheed", desc: "What the Shahada declares — the Oneness of Allah in full" },
+  salah: { href: "/salah", title: "Go deeper: Salah", desc: "The five prayers step by step, purification, and every situation" },
+  zakat: { href: "/zakat", title: "Go deeper: Zakat", desc: "Who pays, what counts, the eight recipients — and the calculator" },
+  sawm: { href: "/ramadan", title: "Go deeper: Ramadan", desc: "Fasting, Tarawih, and the last ten nights" },
+  hajj: { href: "/hajj", title: "Go deeper: Hajj & Umrah", desc: "Ihram, umrah walkthrough, and the days of Hajj" },
+};
 
 /* ───────────────────────── page ───────────────────────── */
 

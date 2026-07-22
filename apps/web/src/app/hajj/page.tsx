@@ -586,6 +586,47 @@ const rulingsTopics: Topic[] = [
     },
   },
   {
+    id: "women-mahram",
+    name: "Women & the Mahram",
+    content: {
+      intro:
+        "Hajj is obligatory on women exactly as it is on men — when Aisha (may Allah be pleased with her) asked the Prophet (peace be upon him) whether women should join the military jihad, he answered: 'The best and the most superior jihad (for women) is Hajj' (Bukhari 28:41). One condition attaches to the journey itself.",
+      points: [
+        {
+          title: "No journey without a mahram",
+          detail:
+            "The Prophet (peace be upon him) said: 'It is not permissible for a woman who believes in Allah and the Last Day to travel for one day and night except with a Mahram.' In Muslim's narrations the wording covers journeys of a night, a day, and three nights — the point is the journey itself, not its exact length.",
+          note: "Bukhari 18:9; Muslim 15:464; Muslim 15:472",
+        },
+        {
+          title: "'Go and perform Hajj with your wife'",
+          detail:
+            "The ruling was applied to Hajj by the Prophet (peace be upon him) himself. In a sermon he said: 'No person should be alone with a woman except when there is a Mahram with her, and the woman should not undertake journey except with a Mahram.' A man stood and said: Allah's Messenger, my wife has set out for pilgrimage, whereas I am enlisted to fight in such and such battle — whereupon he said: 'You go and perform Hajj with your wife.' The Prophet (peace be upon him) pulled a man out of a military expedition to accompany his wife on Hajj.",
+          note: "Muslim 15:476",
+        },
+        {
+          title: "Who counts as a mahram",
+          detail:
+            "Her husband, or a man she can never marry — father, grandfather, brother, son, uncle, nephew, father-in-law, or a milk-relative in the same degrees. An adult, trustworthy mahram accompanies her for the journey itself; within the rites she moves among the pilgrims like everyone else.",
+          note: "Bukhari 28:42",
+        },
+        {
+          title: "If she has no mahram",
+          detail:
+            "The schools differ. The Hanafi and Hanbali schools hold the mahram is a condition of the obligation itself — a woman with no mahram is not required to make the journey, and defers Hajj without sin. The Maliki and Shafi'i schools hold that for the obligatory Hajj she may travel in secure, trustworthy company — classically a group of reliable women — and contemporary scholars discuss organized, secure Hajj groups on the same basis. Both directions are established; a woman in this situation should ask a scholar she trusts rather than rule for herself.",
+        },
+        {
+          title: "Her ihram, her rites",
+          detail:
+            "A woman's ihram is her ordinary modest clothing — only the face-veil and gloves are set aside (see the Ihram tab). Her rites are identical to the men's, and if menses begin she completes every rite except tawaf, which waits until she is pure — as the Prophet (peace be upon him) instructed Aisha when her menses began on the road to Mecca during the Farewell Hajj.",
+          note: "Bukhari 6:1",
+        },
+      ],
+      source:
+        "Bukhari 6:1; Bukhari 18:9; Bukhari 28:41; Bukhari 28:42; Muslim 15:464; Muslim 15:472; Muslim 15:476; the no-mahram positions as stated by the schools.",
+    },
+  },
+  {
     id: "common-mistakes",
     name: "Common Mistakes",
     content: {
@@ -658,7 +699,7 @@ const tabs = [
   { key: "overview", label: "Overview" },
   { key: "ihram", label: "Ihram" },
   { key: "umrah", label: "Umrah Step-by-Step" },
-  { key: "days", label: "The Days of Hajj" },
+  { key: "days", label: "Hajj Step-by-Step" },
   { key: "rulings", label: "Types & Rulings" },
 ] as const;
 
@@ -777,7 +818,7 @@ function HajjContent() {
         activeSub={activeSub}
         setActiveSub={onSubChange}
       >
-        {active && <TopicInfoCard topic={active} />}
+        {active && <TopicInfoCard topic={active} showSource={false} />}
       </SubTabLayout>
     );
   };
@@ -1065,6 +1106,10 @@ function HajjContent() {
                 { ref: "Bukhari 25:49", desc: "Ali: 'Labbaik for Umra and Hajj' — refusing to leave the Sunnah" },
                 { ref: "Bukhari 25:1; Bukhari 28:33", desc: "The woman of Khath'am — Hajj on behalf of her aged father" },
                 { ref: "Abu Dawud 11:91", desc: "'Perform hajj on your own behalf, then on behalf of Shubrumah'" },
+                { ref: "Bukhari 28:41", desc: "The best jihad for women is Hajj" },
+                { ref: "Bukhari 18:9; Muslim 15:464; Muslim 15:472", desc: "A woman does not travel except with a mahram" },
+                { ref: "Muslim 15:476", desc: "'Go and perform Hajj with your wife'" },
+                { ref: "Bukhari 6:1", desc: "Aisha's menses on the road — every rite except tawaf" },
                 { ref: "Bukhari 25:199; Bukhari 25:200", desc: "'There is no harm, there is no harm'" },
                 { ref: "Bukhari 25:83", desc: "The Stone neither benefits nor harms" },
                 { ref: "Quran 2:197", desc: "No obscenity, wickedness, or quarrels in Hajj" },

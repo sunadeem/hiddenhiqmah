@@ -2759,7 +2759,7 @@ function SalahContent() {
                 {activePurificationTopic.id === "steps" ? (
                   <WuduStepsCard topic={activePurificationTopic} />
                 ) : (
-                  <TopicInfoCard topic={activePurificationTopic} />
+                  <TopicInfoCard topic={activePurificationTopic} showSource={false} />
                 )}
 
                 {/* Ghusl cross-links */}
@@ -2867,7 +2867,7 @@ function SalahContent() {
                 {activePrayer === "jumuah" ? (
                   <JumuahSection onOpenGhusl={openGhusl} />
                 ) : prayerSituationTopics.some((t) => t.id === activePrayer) ? (
-                  <TopicInfoCard topic={prayerSituationTopics.find((t) => t.id === activePrayer)!} />
+                  <TopicInfoCard topic={prayerSituationTopics.find((t) => t.id === activePrayer)!} showSource={false} />
                 ) : (
                   <PrayerInfoCard
                     prayer={prayers.find((p) => p.id === activePrayer) || prayers[0]}
