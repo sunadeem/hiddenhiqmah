@@ -9,7 +9,7 @@ import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
-import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs, type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
@@ -710,6 +710,24 @@ function HalalLivingContent() {
   );
   const [search, setSearch] = useState("");
 
+  // House rule: the Sources & References card below a rail lists ONLY the
+  // active selection's sources (derived from its verse ref + point notes).
+  const activePrinciplesTopic =
+    principlesTopics.find((t) => t.id === principlesSub) ?? principlesTopics[0];
+  const activeFoodTopic = foodTopics.find((t) => t.id === foodSub) ?? foodTopics[0];
+  const activeMoneyTopic = moneyTopics.find((t) => t.id === moneySub) ?? moneyTopics[0];
+  const activeDressTopic = dressTopics.find((t) => t.id === dressSub) ?? dressTopics[0];
+  const activeWorkTopic = workTopics.find((t) => t.id === workSub) ?? workTopics[0];
+  // "Bukhari 8:103" (A'isha watching the Ethiopians' spear-play) is cited in the
+  // entertainment topic's intro text, so topicSourceRefs (verse + point notes)
+  // cannot derive it — appended here to keep the selection's list complete.
+  const workSourceRows = [
+    ...topicSourceRefs(activeWorkTopic),
+    ...(activeWorkTopic.id === "entertainment"
+      ? [{ ref: "Bukhari 8:103", desc: "A'isha watching the Ethiopians' spear-play in the mosque" }]
+      : []),
+  ];
+
   const replaceUrl = (tab: TabKey, sub?: string) => {
     router.replace(`${pathname}?tab=${tab}${sub ? `&sub=${sub}` : ""}`, { scroll: false });
   };
@@ -824,18 +842,9 @@ function HalalLivingContent() {
               </div>
             </ContentCard>
 
-            <SourcesCard
-              className="mt-6"
-              sources={[
-                { ref: "Bukhari 2:45; Muslim 22:133", desc: "The halal is clear and the haram is clear; the doubtful in between" },
-                { ref: "Quran 2:168", desc: "Eat from what is lawful and good on earth" },
-                { ref: "Quran 7:31-32", desc: "Who has forbidden the adornments Allah brought forth?" },
-                { ref: "Nasai 51:173", desc: "Leave that which makes you doubt" },
-                { ref: "Quran 2:172", desc: "Eat of the good things We have provided for you" },
-                { ref: "Muslim 12:83", desc: "Allah is Good and accepts only the good; the traveler whose du'a cannot rise" },
-                { ref: "Quran 16:114", desc: "Eat from the lawful and good things and be grateful" },
-              ]}
-            />
+            {topicSourceRefs(activePrinciplesTopic).length > 0 && (
+              <SourcesCard className="mt-6" sources={topicSourceRefs(activePrinciplesTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -850,21 +859,9 @@ function HalalLivingContent() {
           >
             {renderTopicRail(foodTopics, foodSub, handleSubChange("food", setFoodSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Quran 2:173", desc: "Carrion, blood, swine, and what is dedicated to other than Allah" },
-                { ref: "Quran 5:3", desc: "The full list of prohibited meats" },
-                { ref: "Quran 5:5", desc: "The food of the People of the Book is lawful" },
-                { ref: "Muslim 34:84", desc: "Slaughter in a good way; sharpen the blade" },
-                { ref: "Quran 5:90-91", desc: "Intoxicants and gambling are of Satan's work" },
-                { ref: "Muslim 36:92", desc: "Every intoxicant is khamr and every intoxicant is forbidden" },
-                { ref: "Abu Dawud 27:9", desc: "Wine from any source; every intoxicant forbidden" },
-                { ref: "Nasai 51:69", desc: "What intoxicates in large amounts — a small amount is unlawful" },
-                { ref: "Abu Dawud 27:6", desc: "The curse on wine and all nine involved with it" },
-                { ref: "Nasai 51:173", desc: "Leave that which makes you doubt" },
-              ]}
-            />
+            {topicSourceRefs(activeFoodTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeFoodTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -879,21 +876,9 @@ function HalalLivingContent() {
           >
             {renderTopicRail(moneyTopics, moneySub, handleSubChange("money", setMoneySub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Quran 2:275", desc: "Allah has permitted trade and forbidden usury" },
-                { ref: "Quran 2:278-279", desc: "Give up remaining usury — or a declaration of war from Allah" },
-                { ref: "Muslim 22:132", desc: "The curse on riba's accepter, payer, scribe, and witnesses" },
-                { ref: "Bukhari 55:29", desc: "Riba among the seven destructive sins" },
-                { ref: "Quran 4:29", desc: "Consume not wealth unlawfully — trade by mutual consent" },
-                { ref: "Bukhari 34:32", desc: "Truthful buyer and seller are blessed in their transaction" },
-                { ref: "Muslim 1:190", desc: "He who deceives is not of me" },
-                { ref: "Ibn Majah 12:3; Ibn Majah 12:10", desc: "The honest merchant with the martyrs; the heedless raised as immoral" },
-                { ref: "Bukhari 34:29", desc: "Allah's mercy on the lenient in buying, selling, and collecting" },
-                { ref: "Ibn Majah 16:8", desc: "Give the worker his wages before his sweat dries" },
-              ]}
-            />
+            {topicSourceRefs(activeMoneyTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeMoneyTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -908,21 +893,9 @@ function HalalLivingContent() {
           >
             {renderTopicRail(dressTopics, dressSub, handleSubChange("dress", setDressSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Muslim 1:60", desc: "Modesty is a branch of faith" },
-                { ref: "Abu Dawud 43:23", desc: "Leave him alone, for modesty is a part of faith" },
-                { ref: "Quran 7:31", desc: "Dress well for every prayer" },
-                { ref: "Tirmidhi 24:1; Nasai 48:109", desc: "Silk and gold — unlawful for the men of this Ummah, lawful for its women" },
-                { ref: "Bukhari 77:82", desc: "The Prophet discarded the gold ring and wore silver" },
-                { ref: "Bukhari 77:9", desc: "Dragging one's garment out of pride" },
-                { ref: "Quran 24:30-31", desc: "Lower the gaze; draw the veils over the chests" },
-                { ref: "Quran 33:59", desc: "The outer garment — known and not harassed" },
-                { ref: "Muslim 37:190", desc: "Dressed but appearing naked — the warning" },
-                { ref: "Muslim 38:59", desc: "The sudden glance — turn away your eyes" },
-              ]}
-            />
+            {topicSourceRefs(activeDressTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeDressTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -937,22 +910,9 @@ function HalalLivingContent() {
           >
             {renderTopicRail(workTopics, workSub, handleSubChange("work", setWorkSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Quran 62:10", desc: "Disperse in the land and seek from the bounty of Allah" },
-                { ref: "Bukhari 34:25", desc: "No better meal than what one's own hands earned" },
-                { ref: "Tirmidhi 14:11", desc: "O Allah bless my Ummah in what they do early" },
-                { ref: "Muslim 12:83", desc: "Haram income and the du'a that cannot rise" },
-                { ref: "Bukhari 74:16", desc: "Those who will consider instruments (with silk, wine, zina) lawful" },
-                { ref: "Bukhari 13:4", desc: "The Eid singing — 'There is an Eid for every nation'" },
-                { ref: "Muslim 1:190", desc: "He who deceives is not of me" },
-                { ref: "Muslim 15:476", desc: "No man alone with a non-mahram woman" },
-                { ref: "Bukhari 8:103", desc: "A'isha watching the Ethiopians' spear-play in the mosque" },
-                { ref: "Quran 5:90", desc: "Gambling is of Satan's work" },
-                { ref: "Quran 7:31", desc: "Eat and drink, but do not waste" },
-              ]}
-            />
+            {workSourceRows.length > 0 && (
+              <SourcesCard className="mt-8" sources={workSourceRows} />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

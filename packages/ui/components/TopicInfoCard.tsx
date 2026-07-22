@@ -20,6 +20,25 @@ export type Topic = {
   };
 };
 
+/** Derive a per-selection SourcesCard list from a single topic: its verse ref
+ *  plus each point's note refs. House rule: the References card below a rail
+ *  shows only the ACTIVE topic's sources, never the whole tab's. */
+export function topicSourceRefs(topic: Topic): { ref: string; desc: string }[] {
+  const rows: { ref: string; desc: string }[] = [];
+  const seen = new Set<string>();
+  if (topic.content.verse?.ref) {
+    rows.push({ ref: topic.content.verse.ref, desc: `${topic.name} — the cited verse` });
+    seen.add(topic.content.verse.ref);
+  }
+  for (const p of topic.content.points) {
+    if (p.note && !seen.has(p.note)) {
+      rows.push({ ref: p.note, desc: p.title });
+      seen.add(p.note);
+    }
+  }
+  return rows;
+}
+
 export default function TopicInfoCard({
   topic,
   showSource = true,

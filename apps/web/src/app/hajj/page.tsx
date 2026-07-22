@@ -9,7 +9,7 @@ import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
-import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs, type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
@@ -695,6 +695,21 @@ const rulingsTopics: Topic[] = [
   },
 ];
 
+/* House rule: the Sources & References card below a rail lists ONLY the active
+   selection's refs (never the whole tab's). Rows derive from the active topic's
+   verse + point notes via topicSourceRefs; the rows below are cited in a topic's
+   prose without appearing in a point note, so they are appended to that topic's
+   list rather than dropped. */
+const extraSourceRows: Record<string, { ref: string; desc: string }[]> = {
+  // Cited in the Women & the Mahram intro ("The best and the most superior jihad...").
+  "women-mahram": [{ ref: "Bukhari 28:41", desc: "The best jihad for women is Hajj" }],
+};
+
+function topicSources(topics: Topic[], activeId: string): { ref: string; desc: string }[] {
+  const t = topics.find((x) => x.id === activeId);
+  return t ? [...topicSourceRefs(t), ...(extraSourceRows[t.id] ?? [])] : [];
+}
+
 const tabs = [
   { key: "overview", label: "Overview" },
   { key: "ihram", label: "Ihram" },
@@ -1006,21 +1021,11 @@ function HajjContent() {
           >
             {renderTopicRail(ihramTopics, ihramSub, handleSubChange("ihram", setIhramSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Quran 2:196-197", desc: "Complete Hajj and Umrah for Allah; the conduct of ihram" },
-                { ref: "Quran 5:95", desc: "No hunting while on pilgrimage" },
-                { ref: "Bukhari 25:12", desc: "The mawaqit fixed for each direction" },
-                { ref: "Bukhari 25:29", desc: "What a muhrim may not wear" },
-                { ref: "Abu Dawud 11:106", desc: "The muhrima does not veil her face or wear gloves" },
-                { ref: "Muslim 16:51", desc: "A muhrim neither marries nor proposes" },
-                { ref: "Bukhari 25:35", desc: "The talbiyah of Allah's Messenger, word for word" },
-                { ref: "Bukhari 25:2", desc: "The talbiyah begun at Dhul-Hulaifa" },
-                { ref: "Bukhari 25:165", desc: "Talbiyah continues until the stoning of Jamrat al-Aqabah" },
-                { ref: "Muslim 15:159", desc: "Jabir's narration of the Farewell Hajj" },
-              ]}
-            />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const rows = topicSources(ihramTopics, ihramSub);
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1035,18 +1040,11 @@ function HajjContent() {
           >
             {renderTopicRail(umrahTopics, umrahSub, handleSubChange("umrah", setUmrahSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Muslim 15:159", desc: "The Prophet's tawaf, two rak'ahs, sa'i and Zamzam — Jabir's narration" },
-                { ref: "Bukhari 25:83", desc: "Umar at the Black Stone: 'you are a stone'" },
-                { ref: "Quran 2:125", desc: "Take the Station of Abraham as a place for prayer" },
-                { ref: "Quran 2:158", desc: "Safa and Marwah are among the symbols of Allah" },
-                { ref: "Bukhari 25:206", desc: "'O Allah! Forgive those who get their heads shaved'" },
-                { ref: "Abu Dawud 11:264", desc: "Women clip; shaving is not for them" },
-                { ref: "Bukhari 26:1", desc: "Umrah is an expiation for what is between it and the last" },
-              ]}
-            />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const rows = topicSources(umrahTopics, umrahSub);
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1061,28 +1059,11 @@ function HajjContent() {
           >
             {renderTopicRail(daysTopics, daysSub, handleSubChange("days", setDaysSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Muslim 15:159", desc: "Jabir's day-by-day narration of the Farewell Hajj" },
-                { ref: "Bukhari 25:134; Bukhari 18:3", desc: "Prayers at Mina on the 8th, shortened to two rak'ahs" },
-                { ref: "Tirmidhi 47:27; Nasai 24:399", desc: "'The Hajj is Arafat' — and the days of Mina" },
-                { ref: "Muslim 15:492", desc: "No day Allah frees more servants from the Fire than Arafah" },
-                { ref: "Tirmidhi 48:216", desc: "The best supplication is that of the Day of Arafah (hasan)" },
-                { ref: "Muslim 13:141; Ibn Majah 7:93", desc: "The Prophet did not fast at Arafah; its fast for those at home" },
-                { ref: "Quran 2:198", desc: "Remember Allah at the Mash'ar al-Haram" },
-                { ref: "Bukhari 25:152", desc: "Maghrib and Isha joined at Muzdalifah" },
-                { ref: "Bukhari 25:158", desc: "The weak sent ahead from Muzdalifah by night" },
-                { ref: "Bukhari 25:227; Bukhari 25:231", desc: "Seven pebbles with takbir; the Prophet's way at the jamarat" },
-                { ref: "Quran 22:37", desc: "Neither flesh nor blood reaches Allah — but your piety" },
-                { ref: "Bukhari 25:190", desc: "Eid al-Adha: the Prophet's camels and two horned rams" },
-                { ref: "Bukhari 25:200", desc: "'There is no harm' — flexibility in the order of Eid-day rites" },
-                { ref: "Bukhari 68:74", desc: "Tawaf al-Ifadah is indispensable — Safiyya's story" },
-                { ref: "Quran 2:203; Bukhari 25:224", desc: "The appointed days; stoning after the sun declines" },
-                { ref: "Bukhari 25:233", desc: "The farewell tawaf, the last act before leaving" },
-                { ref: "Muslim 15:341", desc: "'Learn your rituals from me'" },
-              ]}
-            />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const rows = topicSources(daysTopics, daysSub);
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1097,26 +1078,11 @@ function HajjContent() {
           >
             {renderTopicRail(rulingsTopics, rulingsSub, handleSubChange("rulings", setRulingsSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Bukhari 25:48", desc: "The companions entered ihram in all three forms" },
-                { ref: "Muslim 15:159", desc: "'Treat it as an Umra' — tamattu' commanded; qiran kept with the hadi" },
-                { ref: "Quran 2:196", desc: "The tamattu' sacrifice, or ten days of fasting" },
-                { ref: "Bukhari 25:49", desc: "Ali: 'Labbaik for Umra and Hajj' — refusing to leave the Sunnah" },
-                { ref: "Bukhari 25:1; Bukhari 28:33", desc: "The woman of Khath'am — Hajj on behalf of her aged father" },
-                { ref: "Abu Dawud 11:91", desc: "'Perform hajj on your own behalf, then on behalf of Shubrumah'" },
-                { ref: "Bukhari 28:41", desc: "The best jihad for women is Hajj" },
-                { ref: "Bukhari 18:9; Muslim 15:464; Muslim 15:472", desc: "A woman does not travel except with a mahram" },
-                { ref: "Muslim 15:476", desc: "'Go and perform Hajj with your wife'" },
-                { ref: "Bukhari 6:1", desc: "Aisha's menses on the road — every rite except tawaf" },
-                { ref: "Bukhari 25:199; Bukhari 25:200", desc: "'There is no harm, there is no harm'" },
-                { ref: "Bukhari 25:83", desc: "The Stone neither benefits nor harms" },
-                { ref: "Quran 2:197", desc: "No obscenity, wickedness, or quarrels in Hajj" },
-                { ref: "Bukhari 25:9", desc: "Returning as if born anew" },
-                { ref: "Quran 2:200-201", desc: "After the rites: remember Allah with greater remembrance" },
-              ]}
-            />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const rows = topicSources(rulingsTopics, rulingsSub);
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
       </AnimatePresence>

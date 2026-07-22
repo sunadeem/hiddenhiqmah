@@ -9,7 +9,7 @@ import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
-import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs, type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
@@ -575,6 +575,21 @@ const fitrTopics: Topic[] = [
   },
 ];
 
+/* House rule: the Sources & References card below a rail lists ONLY the active
+   selection's refs (never the whole tab's). Rows derive from the active topic's
+   verse + point notes via topicSourceRefs; the rows below are supported by a
+   topic's content without appearing in a point note, so they are appended to
+   that topic's list rather than dropped. */
+const extraSourceRows: Record<string, { ref: string; desc: string }[]> = {
+  // Parallel narration of the nisab thresholds (five uqiyas of silver).
+  nisab: [{ ref: "Bukhari 24:10", desc: "The same thresholds — five uqiyas of silver" }],
+};
+
+function topicSources(topics: Topic[], activeId: string): { ref: string; desc: string }[] {
+  const t = topics.find((x) => x.id === activeId);
+  return t ? [...topicSourceRefs(t), ...(extraSourceRows[t.id] ?? [])] : [];
+}
+
 const tabs = [
   { key: "overview", label: "Overview" },
   { key: "who-pays", label: "Who Pays" },
@@ -989,25 +1004,11 @@ function ZakatContent() {
               </div>
             </ContentCard>
 
-            <SourcesCard
-              className="mt-6"
-              sources={[
-                { ref: "Quran 9:103", desc: "Take charity from their wealth to cleanse and purify them" },
-                { ref: "Quran 2:110; Quran 2:277", desc: "Prayer and zakat paired in the Quran" },
-                { ref: "Bukhari 2:1; Muslim 1:19", desc: "Islam is based on five — zakat among them" },
-                { ref: "Bukhari 24:1; Ibn Majah 8:1", desc: "Muadh sent to Yemen — taken from the wealthy, given to the poor" },
-                { ref: "Quran 30:39", desc: "Riba does not increase with Allah; charity is multiplied" },
-                { ref: "Muslim 45:90", desc: "Charity does not decrease wealth" },
-                { ref: "Bukhari 24:14", desc: "A date-fruit from honest earning, grown like a mountain" },
-                { ref: "Quran 2:261", desc: "A grain that sprouts seven ears, each with a hundred grains" },
-                { ref: "Bukhari 24:27", desc: "Secret charity — shaded on the Day of Resurrection" },
-                { ref: "Bukhari 24:31", desc: "The upper hand is better than the lower hand" },
-                { ref: "Quran 70:24-25", desc: "A due share of their wealth for the beggar and the dispossessed" },
-                { ref: "Quran 9:34; Quran 9:35", desc: "The hoarders of gold and silver — branded with their treasure" },
-                { ref: "Muslim 12:28", desc: "Plates of fire for the one who does not pay what is due" },
-                { ref: "Bukhari 24:8; Quran 3:180", desc: "The withheld wealth made a snake around its owner's neck" },
-              ]}
-            />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const rows = topicSources(overviewTopics, overviewSub);
+              return rows.length > 0 ? <SourcesCard className="mt-6" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1022,14 +1023,11 @@ function ZakatContent() {
           >
             {renderTopicRail(whoTopics, whoSub, handleSubChange("who-pays", setWhoSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Bukhari 24:61", desc: "No zakat on less than five awsuq, five awaq of silver, five camels" },
-                { ref: "Bukhari 24:10", desc: "The same thresholds — five uqiyas of silver" },
-                { ref: "Abu Dawud 9:18", desc: "200 dirhams → 5; 20 dinars → half a dinar; after a year passes" },
-              ]}
-            />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const rows = topicSources(whoTopics, whoSub);
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1044,16 +1042,11 @@ function ZakatContent() {
           >
             {renderTopicRail(assetTopics, assetSub, handleSubChange("assets", setAssetSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Abu Dawud 9:18", desc: "The 2.5% rate — five dirhams on every two hundred" },
-                { ref: "Quran 9:34", desc: "Those who hoard gold and silver and do not spend in Allah's way" },
-                { ref: "Muslim 12:28", desc: "What is due on the owner of gold and silver" },
-                { ref: "Bukhari 24:65", desc: "No zakat on a Muslim's horse or slave — personal use is exempt" },
-                { ref: "Muslim 45:90", desc: "Charity does not decrease wealth" },
-              ]}
-            />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const rows = topicSources(assetTopics, assetSub);
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1068,18 +1061,11 @@ function ZakatContent() {
           >
             {renderTopicRail(recipientTopics, recipientSub, handleSubChange("recipients", setRecipientSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Quran 9:60", desc: "The eight categories — as ordained by Allah" },
-                { ref: "Abu Dawud 9:78", desc: "No share in it for a rich man or one strong and able to earn" },
-                { ref: "Muslim 12:218", desc: "Sadaqat are not fitting for the family of Muhammad" },
-                { ref: "Quran 2:267", desc: "Spend from the good things you have earned" },
-                { ref: "Bukhari 24:14", desc: "Allah accepts only the honestly earned" },
-                { ref: "Bukhari 24:31", desc: "Start with your dependents" },
-                { ref: "Bukhari 24:27", desc: "Charity so secret the left hand does not know" },
-              ]}
-            />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const rows = topicSources(recipientTopics, recipientSub);
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1110,16 +1096,11 @@ function ZakatContent() {
               </div>
             </ContentCard>
 
-            <SourcesCard
-              className="mt-6"
-              sources={[
-                { ref: "Ibn Majah 8:45", desc: "Purification for the fasting person; before the prayer it is accepted zakah" },
-                { ref: "Bukhari 24:103", desc: "One sa' of dates or barley, on every Muslim, before the Eid prayer" },
-                { ref: "Bukhari 24:106", desc: "The foods the companions gave — meal, barley, dates, cheese, raisins" },
-                { ref: "Bukhari 24:109", desc: "Ordered to be paid before going to the Eid prayer" },
-                { ref: "Bukhari 24:111", desc: "Ibn Umar gave for young and old — even a day or two before Eid" },
-              ]}
-            />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const rows = topicSources(fitrTopics, fitrSub);
+              return rows.length > 0 ? <SourcesCard className="mt-6" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 

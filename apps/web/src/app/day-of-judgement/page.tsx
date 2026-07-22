@@ -9,7 +9,7 @@ import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
-import TopicInfoCard from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
@@ -578,6 +578,12 @@ function DayOfJudgementContent() {
   const filteredSalvation = salvationTopics.filter(topicMatches);
   const filteredWhyItMatters = whyItMatters.filter(topicMatches);
 
+  // House rule: the References card below a rail shows only the ACTIVE
+  // selection's sources, never the whole tab's aggregate.
+  const activeSignsTopic = signsTopics.find((t) => t.id === activeSigns);
+  const activeEventsTopic = eventsTopics.find((t) => t.id === activeEvents);
+  const activeSalvationTopic = salvationTopics.find((t) => t.id === activeSalvation);
+
   // Auto-select first visible topic if current selection is filtered out
   useEffect(() => {
     if (filteredSigns.length > 0 && !filteredSigns.find(t => t.id === activeSigns)) {
@@ -804,21 +810,10 @@ function DayOfJudgementContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Bukhari 3:22; Muslim 47:11", desc: "Knowledge taken away, ignorance prevails" },
-              { ref: "Bukhari 81:85", desc: "When trust is lost, wait for the Hour" },
-              { ref: "Bukhari 81:92; Muslim 7:55", desc: "The Prophet and the Hour sent like two fingers" },
-              { ref: "Bukhari 92:65", desc: "A fire from Hijaz illuminating camels at Busra" },
-              { ref: "Muslim 1:1", desc: "Hadith of Jibril: slave woman, tall buildings" },
-              { ref: "Muslim 54:23", desc: "Widespread killing (al-harj)" },
-              { ref: "Muslim 54:51", desc: "Ten major signs mentioned together" },
-              { ref: "Muslim 54:134; Muslim 15:146", desc: "The Dajjal, descent of 'Isa, Ya'juj and Ma'juj" },
-              { ref: "Bukhari 60:118", desc: "The descent of 'Isa ibn Maryam" },
-              { ref: "Bukhari 65:157", desc: "The sun rising from the west" },
-              { ref: "Abu Dawud 38:6", desc: "The Mahdi from the descendants of Fatimah" },
-              { ref: "Quran 6:158; Quran 18:94-99; Quran 21:96; Quran 27:82; Quran 44:10-11", desc: "Major signs in the Quran" },
-            ]} />
+            {/* Sources — active selection only */}
+            {activeSignsTopic && topicSourceRefs(activeSignsTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeSignsTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -874,14 +869,10 @@ function DayOfJudgementContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 14:48; Quran 17:13; Quran 21:47; Quran 24:24; Quran 39:68; Quran 57:12-13; Quran 69:19-26; Quran 70:4; Quran 70:43; Quran 83:6; Quran 84:7-9", desc: "Quranic verses on the events of the Day" },
-              { ref: "Bukhari 46:8; Bukhari 97:65", desc: "Resurrection, reckoning, scale, bridge" },
-              { ref: "Muslim 1:102; Muslim 55:23", desc: "Events of the Day" },
-              { ref: "Tirmidhi 27:108; Tirmidhi 40:34", desc: "Good character, four questions, the card hadith" },
-              { ref: "Tirmidhi 37:3", desc: "Five questions on the Day of Judgement" },
-            ]} />
+            {/* Sources — active selection only */}
+            {activeEventsTopic && topicSourceRefs(activeEventsTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeEventsTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -937,17 +928,10 @@ function DayOfJudgementContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 2:255", desc: "No one intercedes except by His permission" },
-              { ref: "Quran 17:79", desc: "The Praised Station (al-Maqam al-Mahmud)" },
-              { ref: "Quran 108:1-3", desc: "Surah al-Kawthar" },
-              { ref: "Bukhari 65:234; Muslim 1:381", desc: "The great intercession" },
-              { ref: "Bukhari 81:167; Bukhari 81:172; Muslim 43:33", desc: "The Hawd (Pool) of the Prophet" },
-              { ref: "Bukhari 81:169", desc: "The Prophet seeing al-Kawthar during the Night Journey" },
-              { ref: "Muslim 1:90", desc: "Others permitted to intercede by Allah's leave" },
-              { ref: "Tirmidhi 47:413; Ibn Majah 37:235", desc: "Description of al-Kawthar" },
-            ]} />
+            {/* Sources — active selection only */}
+            {activeSalvationTopic && topicSourceRefs(activeSalvationTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeSalvationTopic)} />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

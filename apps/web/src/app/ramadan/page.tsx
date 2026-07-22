@@ -11,6 +11,7 @@ import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import { topicSourceRefs } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 
 /* ───────────────────────── data ───────────────────────── */
@@ -439,6 +440,19 @@ const lastTenTopics: LastTenTopic[] = [
   },
 ];
 
+/* Rows from the old tab-wide aggregate cards whose refs no point note of any
+   sub cites — kept with their most relevant selection so no reference is
+   dropped (house rule: the card below a rail lists ONLY the active
+   selection's sources). All other old rows are covered by topicSourceRefs. */
+const extraSourceRows: Record<string, { ref: string; desc: string }[]> = {
+  basics: [
+    { ref: "Bukhari 30:4; Muslim 13:211", desc: "Fasting as a shield; conduct while fasting" },
+  ],
+  "zakat-al-fitr": [
+    { ref: "Muslim 12:16; Muslim 12:17", desc: "Zakat al-Fitr obligation and amount" },
+  ],
+};
+
 const sections = [
   { key: "intro", label: "What is Ramadan?" },
   { key: "importance", label: "Why It Matters" },
@@ -753,19 +767,13 @@ function RamadanContent() {
               </div>
             </div>
 
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 2:183-187", desc: "The obligation of fasting, its timing, and exemptions" },
-              { ref: "Bukhari 30:4; Muslim 13:211", desc: "Fasting as a shield; conduct while fasting" },
-              { ref: "Bukhari 30:32; Muslim 13:55", desc: "Blessing of suhoor" },
-              { ref: "Bukhari 30:40; Muslim 13:222", desc: "Eating out of forgetfulness does not break the fast" },
-              { ref: "Bukhari 30:44; Muslim 13:101", desc: "Kaffarah for intentionally breaking the fast" },
-              { ref: "Bukhari 6:9; Muslim 3:85", desc: "Women making up missed fasts" },
-              { ref: "Bukhari 30:64", desc: "Hastening to break the fast" },
-              { ref: "Bukhari 65:32", desc: "Ibn Abbas on fidyah for the elderly" },
-              { ref: "Abu Dawud 14:68; Tirmidhi 8:39", desc: "Ruling on deliberate vomiting" },
-              { ref: "Nasai 22:242; Abu Dawud 14:142", desc: "Intention for fasting" },
-              { ref: "Fiqh us-Sunnah", desc: "General fasting rulings and scholarly differences (Sayyid Sabiq)" },
-            ]} />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const t = fastingTopics.filter(topicMatches).find((topic) => topic.id === activeFasting);
+              if (!t) return null;
+              const rows = [...topicSourceRefs(t), ...(extraSourceRows[t.id] ?? [])];
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -821,18 +829,13 @@ function RamadanContent() {
               </div>
             </div>
 
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 97:1-5", desc: "Surah Al-Qadr: Laylatul Qadr is better than a thousand months" },
-              { ref: "Quran 2:185", desc: "Basis for the takbirat of Eid" },
-              { ref: "Bukhari 2:28; Muslim 6:209", desc: "Sins forgiven for standing in prayer on Laylatul Qadr" },
-              { ref: "Bukhari 32:4; Muslim 13:272", desc: "Seek Laylatul Qadr in the odd nights of the last ten" },
-              { ref: "Bukhari 33:1; Muslim 14:3", desc: "The Prophet's i'tikaf in the last ten days" },
-              { ref: "Bukhari 24:103; Bukhari 24:106; Muslim 12:16; Muslim 12:17", desc: "Zakat al-Fitr obligation and amount" },
-              { ref: "Bukhari 13:5; Bukhari 13:8", desc: "Sunnahs of the Eid prayer" },
-              { ref: "Bukhari 30:98; Muslim 13:178", desc: "Prohibition of fasting on the day of Eid" },
-              { ref: "Tirmidhi 48:144; Ibn Majah 34:24", desc: "The du'a for Laylatul Qadr" },
-              { ref: "Abu Dawud 9:54; Ibn Majah 8:45", desc: "Purpose and timing of Zakat al-Fitr" },
-            ]} />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const t = lastTenTopics.filter(topicMatches).find((topic) => topic.id === activeLastTen);
+              if (!t) return null;
+              const rows = [...topicSourceRefs(t), ...(extraSourceRows[t.id] ?? [])];
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
       </AnimatePresence>

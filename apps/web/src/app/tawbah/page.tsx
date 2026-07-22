@@ -9,7 +9,7 @@ import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
-import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs, type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
@@ -515,6 +515,17 @@ function TawbahContent() {
   );
   const [search, setSearch] = useState("");
 
+  // House rule: the Sources & References card below a rail lists ONLY the
+  // active selection's sources (derived from its verse ref + point notes).
+  const activeDoorTopic = doorTopics.find((t) => t.id === doorSub) ?? doorTopics[0];
+  const activeConditionsTopic =
+    conditionsTopics.find((t) => t.id === conditionsSub) ?? conditionsTopics[0];
+  const activeIstighfarTopic =
+    istighfarTopics.find((t) => t.id === istighfarSub) ?? istighfarTopics[0];
+  const activeReturningTopic =
+    returningTopics.find((t) => t.id === returningSub) ?? returningTopics[0];
+  const activeFruitsTopic = fruitsTopics.find((t) => t.id === fruitsSub) ?? fruitsTopics[0];
+
   const replaceUrl = (tab: TabKey, sub?: string) => {
     router.replace(`${pathname}?tab=${tab}${sub ? `&sub=${sub}` : ""}`, { scroll: false });
   };
@@ -728,20 +739,9 @@ function TawbahContent() {
           >
             {renderTopicRail(doorTopics, doorSub, handleSubChange("door", setDoorSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Muslim 50:2; Bukhari 80:6", desc: "Allah more pleased with His servant's tawbah than the man who found his lost camel" },
-                { ref: "Muslim 50:1", desc: "Draw near a hand-span, He draws near a cubit; walking — He comes hurriedly" },
-                { ref: "Muslim 50:4; Muslim 50:9", desc: "The full desert parable — 'O Lord, Thou art my servant and I am Thine Lord…' from boundless joy" },
-                { ref: "Tirmidhi 48:171", desc: "Hadith qudsi: 'O son of Adam…' — sins to the clouds, forgiveness to match" },
-                { ref: "Quran 42:25", desc: "He accepts repentance from His slaves and pardons sins" },
-                { ref: "Bukhari 60:137; Muslim 50:54", desc: "The man who killed ninety-nine — forgiven a hand-span closer to mercy" },
-                { ref: "Tirmidhi 48:168", desc: "Repentance accepted until the soul reaches the throat" },
-                { ref: "Quran 4:17; Quran 4:18", desc: "Repent soon — not at the moment death arrives" },
-                { ref: "Muslim 48:55", desc: "Repentance accepted before the sun rises from the west" },
-              ]}
-            />
+            {topicSourceRefs(activeDoorTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeDoorTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -760,19 +760,9 @@ function TawbahContent() {
               handleSubChange("conditions", setConditionsSub)
             )}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Quran 3:135", desc: "They seek forgiveness and do not persist knowingly" },
-                { ref: "Quran 66:8", desc: "Turn to Allah in sincere repentance (tawbatan nasuha)" },
-                { ref: "Quran 4:17", desc: "Repentance is for those who repent soon thereafter" },
-                { ref: "Bukhari 81:123", desc: "Whoever wronged his brother — settle it before the Day without dinars" },
-                { ref: "Bukhari 78:99", desc: "All forgiven except those who sin openly and tear off Allah's screen" },
-                { ref: "Quran 24:31", desc: "A command to all believers together" },
-                { ref: "Quran 20:82", desc: "Forgiving to those who repent, believe, act — then stay on the path" },
-                { ref: "Quran 5:39", desc: "Whoever repents and mends his way, Allah accepts his repentance" },
-              ]}
-            />
+            {topicSourceRefs(activeConditionsTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeConditionsTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -813,17 +803,9 @@ function TawbahContent() {
               </div>
             </ContentCard>
 
-            <SourcesCard
-              className="mt-6"
-              sources={[
-                { ref: "Bukhari 80:3", desc: "Sayyid al-Istighfar — the most superior way of asking forgiveness, and its promise" },
-                { ref: "Bukhari 80:4", desc: "The Prophet sought forgiveness more than seventy times a day" },
-                { ref: "Muslim 48:52; Muslim 48:53", desc: "'I seek forgiveness from Allah a hundred times a day' — and the command to the people" },
-                { ref: "Quran 71:10-12", desc: "Nuh: seek forgiveness — rain, wealth, children, gardens, rivers" },
-                { ref: "Quran 11:3", desc: "Istighfar and tawbah — a good life for an appointed term" },
-                { ref: "Quran 4:110", desc: "Whoever seeks Allah's forgiveness finds Him All-Forgiving" },
-              ]}
-            />
+            {topicSourceRefs(activeIstighfarTopic).length > 0 && (
+              <SourcesCard className="mt-6" sources={topicSourceRefs(activeIstighfarTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -864,17 +846,9 @@ function TawbahContent() {
               </div>
             </ContentCard>
 
-            <SourcesCard
-              className="mt-6"
-              sources={[
-                { ref: "Quran 4:110", desc: "Whoever commits evil, then seeks forgiveness, finds Allah All-Forgiving" },
-                { ref: "Muslim 50:33", desc: "The servant who sinned and returned again and again — 'I have granted you forgiveness'" },
-                { ref: "Muslim 50:13", desc: "If you did not sin, Allah would replace you with people who sin and seek forgiveness" },
-                { ref: "Tirmidhi 37:85; Ibn Majah 37:152", desc: "The best of sinners are the repentant" },
-                { ref: "Quran 39:53", desc: "Do not despair of Allah's mercy" },
-                { ref: "Muslim 50:54", desc: "The monk's 'no' was false; the scholar's door stood open" },
-              ]}
-            />
+            {topicSourceRefs(activeReturningTopic).length > 0 && (
+              <SourcesCard className="mt-6" sources={topicSourceRefs(activeReturningTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -905,17 +879,9 @@ function TawbahContent() {
               </div>
             </ContentCard>
 
-            <SourcesCard
-              className="mt-6"
-              sources={[
-                { ref: "Quran 25:68-71", desc: "Allah will change their evil deeds into good deeds" },
-                { ref: "Bukhari 65:287", desc: "Ibn Abbas: the exchange verse was revealed for the heaviest of sinners" },
-                { ref: "Quran 2:222", desc: "Allah loves those who frequently repent" },
-                { ref: "Quran 40:3; Quran 110:3", desc: "Forgiver of sin, Accepter of repentance — ever Accepting of Repentance" },
-                { ref: "Quran 11:114; Muslim 50:47", desc: "Good deeds wipe out evil deeds — 'it concerns every one of my Ummah'" },
-                { ref: "Quran 3:133-136", desc: "Hasten to forgiveness and a Paradise as wide as the heavens and earth" },
-              ]}
-            />
+            {topicSourceRefs(activeFruitsTopic).length > 0 && (
+              <SourcesCard className="mt-6" sources={topicSourceRefs(activeFruitsTopic)} />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

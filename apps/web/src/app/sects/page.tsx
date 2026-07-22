@@ -651,15 +651,18 @@ function TopicInfoCard({ topic }: { topic: SectTopic }) {
       </div>
 
       {/* Aggregated source footer suppressed — the point cards above carry
-          their own refs, and each tab ends with a full SourcesCard. */}
+          their own refs, and the rail ends with a SourcesCard scoped to the
+          active topic. */}
     </ContentCard>
   );
 }
 
-/* Aggregated "Sources & References" rows for a topic group — reuses each
-   topic's existing source line (the per-card footer is suppressed above). */
-const groupSourceRefs = (topics: SectTopic[]) =>
-  topics.flatMap((t) => (t.content.source ? [{ ref: t.content.source, desc: t.name }] : []));
+/* "Sources & References" rows for the ACTIVE topic only — house rule: the
+   card below a rail lists just the current selection's sources (its curated
+   source line), never an aggregate of the whole tab. Point notes are not used
+   here because some are commentary (e.g. madhhab share estimates), not refs. */
+const topicSourceRows = (topic?: SectTopic) =>
+  topic?.content.source ? [{ ref: topic.content.source, desc: topic.name }] : [];
 
 /* ───────────────────────── page ───────────────────────── */
 
@@ -729,6 +732,7 @@ function SectsContent() {
   ) => {
     const activeTopic = topics.find((t) => t.id === active);
     return (
+      <>
       <div className="flex flex-col md:flex-row gap-4 items-start">
         <div className="flex md:flex-col flex-row gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 scrollbar-hide md:w-48 w-full shrink-0">
           {topics.map((topic) => (
@@ -761,6 +765,12 @@ function SectsContent() {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Sources & References — scoped to the active selection */}
+      {topicSourceRows(activeTopic).length > 0 && (
+        <SourcesCard className="mt-8" sources={topicSourceRows(activeTopic)} />
+      )}
+      </>
     );
   };
 
@@ -902,8 +912,6 @@ function SectsContent() {
                 </p>
               </ContentCard>
             )}
-
-            <SourcesCard className="mt-8" sources={groupSourceRefs(sunniTopics)} />
           </motion.div>
         )}
 
@@ -928,8 +936,6 @@ function SectsContent() {
                 </p>
               </ContentCard>
             )}
-
-            <SourcesCard className="mt-8" sources={groupSourceRefs(shiaTopics)} />
           </motion.div>
         )}
 
@@ -954,8 +960,6 @@ function SectsContent() {
                 </p>
               </ContentCard>
             )}
-
-            <SourcesCard className="mt-8" sources={groupSourceRefs(otherSects)} />
           </motion.div>
         )}
       </AnimatePresence>

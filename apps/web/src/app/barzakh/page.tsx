@@ -7,7 +7,7 @@ import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
-import TopicInfoCard from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
@@ -619,18 +619,12 @@ function TheGraveContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 14:27", desc: "Allah keeps firm those who believe with the firm word" },
-              { ref: "Quran 32:11", desc: "The angel of death will take your souls" },
-              { ref: "Quran 40:46", desc: "Pharaoh's people exposed to Fire morning and evening" },
-              { ref: "Bukhari 23:72; Muslim 4:106", desc: "Hasten the funeral" },
-              { ref: "Bukhari 23:93; Muslim 53:85", desc: "The questioning in the grave; hearing footsteps" },
-              { ref: "Bukhari 23:114; Muslim 1:198a", desc: "Punishment for not avoiding urine and gossip" },
-              { ref: "Mishkat al-Masabih 1630 (from Musnad Ahmad)", desc: "Full hadith of al-Bara' ibn 'Azib on the soul's journey" },
-              { ref: "Nasai 21:238", desc: "Sa'd ibn Mu'adh and the squeezing of the grave" },
-              { ref: "Tirmidhi 10:107", desc: "The righteous sleeps like a bride" },
-            ]} />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const t = whatHappensTopics.find((x) => x.id === activeWhatHappens);
+              const rows = t ? topicSourceRefs(t) : [];
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -686,19 +680,12 @@ function TheGraveContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Bukhari 23:129; Muslim 10:9; Muslim 2:56", desc: "Seeking refuge from the punishment of the grave in prayer" },
-              { ref: "Abu Dawud 21:28", desc: "Dying with La ilaha illallah on one's lips" },
-              { ref: "Abu Dawud 21:133", desc: "Supplication after burial for firmness" },
-              { ref: "Tirmidhi 10:18; Nasai 21:11", desc: "Sweat on the forehead at death" },
-              { ref: "Tirmidhi 10:100", desc: "Dying from a stomach ailment" },
-              { ref: "Tirmidhi 10:110", desc: "Dying on Friday (graded Hasan)" },
-              { ref: "Tirmidhi 22:46; Ibn Majah 24:47", desc: "The shaheed is protected" },
-              { ref: "Tirmidhi 22:48", desc: "Guarding the frontier (ribat)" },
-              { ref: "Tirmidhi 32:10", desc: "Allah guides to a righteous deed before death (graded Sahih)" },
-              { ref: "Tirmidhi 45:17; Abu Dawud 6:30", desc: "Surah al-Mulk intercedes" },
-            ]} />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const t = protectionTopics.find((x) => x.id === activeProtection);
+              const rows = t ? topicSourceRefs(t) : [];
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
       </AnimatePresence>

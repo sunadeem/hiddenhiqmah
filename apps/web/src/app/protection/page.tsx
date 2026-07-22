@@ -9,7 +9,7 @@ import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
-import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs, type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
@@ -626,6 +626,13 @@ function ProtectionContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, sihrSub, eyeSub, ruqyahSub, dailySub]);
 
+  // Active topic per rail — the Sources card below each rail lists ONLY the
+  // currently selected topic's refs (house rule), never the whole tab's.
+  const activeSihrTopic = sihrTopics.find((t) => t.id === sihrSub) ?? sihrTopics[0];
+  const activeEyeTopic = evilEyeTopics.find((t) => t.id === eyeSub) ?? evilEyeTopics[0];
+  const activeRuqyahTopic = ruqyahTopics.find((t) => t.id === ruqyahSub) ?? ruqyahTopics[0];
+  const activeDailyTopic = dailyTopics.find((t) => t.id === dailySub) ?? dailyTopics[0];
+
   const renderTopicRail = (
     topics: Topic[],
     activeSub: string,
@@ -774,19 +781,9 @@ function ProtectionContent() {
           >
             {renderTopicRail(sihrTopics, sihrSub, handleSubChange("sihr", setSihrSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Quran 2:102", desc: "The devils taught people magic; no harm except by Allah's permission" },
-                { ref: "Quran 113:4", desc: "Refuge from the sorceresses who blow on knots" },
-                { ref: "Bukhari 55:29; Bukhari 86:79", desc: "Sorcery among the seven destructive sins" },
-                { ref: "Nasai 37:114", desc: "Tying knots and blowing is magic; magic is shirk" },
-                { ref: "Muslim 39:173", desc: "Visiting a diviner — prayers not accepted for forty nights" },
-                { ref: "Abu Dawud 29:29", desc: "Spells, charms and love-potions are polytheism" },
-                { ref: "Bukhari 76:27", desc: "No adwa, no bad omens — superstition rejected" },
-                { ref: "Muslim 6:319", desc: "The revelation of al-Falaq and an-Nas" },
-              ]}
-            />
+            {topicSourceRefs(activeSihrTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeSihrTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -801,20 +798,9 @@ function ProtectionContent() {
           >
             {renderTopicRail(evilEyeTopics, eyeSub, handleSubChange("evil-eye", setEyeSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Bukhari 76:55; Muslim 39:55", desc: "The effect of an evil eye is a fact" },
-                { ref: "Muslim 39:56", desc: "If anything would precede the destiny; washing as a cure" },
-                { ref: "Bukhari 76:53; Bukhari 76:54", desc: "The Prophet ordered ruqyah for the evil eye" },
-                { ref: "Bukhari 66:38", desc: "Reciting the Mu'awwidhat and blowing over the body when sick" },
-                { ref: "Quran 18:39", desc: "Ma sha' Allah, la quwwata illa billah — when seeing a blessing" },
-                { ref: "Quran 113:5", desc: "Refuge from the harm of the envier when he envies" },
-                { ref: "Bukhari 23:138", desc: "The Prophet would say 'Ma sha' Allah' upon hearing good" },
-                { ref: "Ibn Majah 31:74", desc: "Sahl bin Hunayf — invoke blessing on what you admire; the washing procedure" },
-                { ref: "Abu Dawud 43:131", desc: "Envy devours good deeds as fire devours fuel" },
-              ]}
-            />
+            {topicSourceRefs(activeEyeTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeEyeTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -829,21 +815,9 @@ function ProtectionContent() {
           >
             {renderTopicRail(ruqyahTopics, ruqyahSub, handleSubChange("ruqyah", setRuqyahSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Muslim 39:86; Abu Dawud 29:32", desc: "No harm in the incantation free of polytheism" },
-                { ref: "Bukhari 66:29; Bukhari 76:52", desc: "Al-Fatiha as ruqyah for the scorpion sting" },
-                { ref: "Bukhari 66:28", desc: "Al-Fatiha — the most superior surah in the Quran" },
-                { ref: "Quran 2:255", desc: "Ayat al-Kursi" },
-                { ref: "Bukhari 66:32", desc: "Ayat al-Kursi at night — a guard from Allah till dawn" },
-                { ref: "Bukhari 66:39; Bukhari 76:63", desc: "The three Quls blown into the hands before sleep" },
-                { ref: "Bukhari 66:38", desc: "The Prophet's practice when sick" },
-                { ref: "Bukhari 76:58; Bukhari 75:35", desc: "Wiping the sick with 'Remove the trouble, Lord of the people'" },
-                { ref: "Nasai 37:114", desc: "What is never permissible — knots, magic, amulets" },
-                { ref: "Muslim 39:173", desc: "The warning against diviners" },
-              ]}
-            />
+            {topicSourceRefs(activeRuqyahTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeRuqyahTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -888,18 +862,9 @@ function ProtectionContent() {
               </div>
             </ContentCard>
 
-            <SourcesCard
-              className="mt-6"
-              sources={[
-                { ref: "Abu Dawud 43:310", desc: "The three Quls, three times morning and evening" },
-                { ref: "Abu Dawud 43:316", desc: "'In the name of Allah, when Whose name is mentioned nothing can cause harm'" },
-                { ref: "Bukhari 66:32", desc: "Ayat al-Kursi before sleep — a guard from Allah till dawn" },
-                { ref: "Nasai, al-Sunan al-Kubra 9928 (sahih — Ibn Hibban; al-Albani, as-Sahihah 972)", desc: "Ayat al-Kursi after every obligatory prayer" },
-                { ref: "Muslim 36:136", desc: "Bismillah when entering the home and eating" },
-                { ref: "Abu Dawud 43:323; Tirmidhi 48:57", desc: "The du'a upon leaving the home" },
-                { ref: "Quran 43:13-14; Muslim 15:479", desc: "The du'a of travel — 'Glory to Him who has subjected this to us'" },
-              ]}
-            />
+            {topicSourceRefs(activeDailyTopic).length > 0 && (
+              <SourcesCard className="mt-6" sources={topicSourceRefs(activeDailyTopic)} />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

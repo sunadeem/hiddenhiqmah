@@ -10,7 +10,7 @@ import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
-import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs, type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import Accordion from "@hidden-hiqmah/ui/components/Accordion";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
@@ -1464,6 +1464,36 @@ function WuduStepsCard({ topic }: { topic: Topic }) {
 
 /* ───────────────────────── jumu'ah (friday prayer) data ───────────────────────── */
 
+
+/* Per-selection source rows (house rule: the References card shows only the
+   active rail selection's sources). */
+const JUMUAH_SOURCE_ROWS = [
+  { ref: "Abu Dawud 2:678", desc: "Jumu'ah — Who must attend" },
+  { ref: "Bukhari 11:28", desc: "Jumu'ah — When it is prayed" },
+  { ref: "Muslim 7:39", desc: "Jumu'ah — When it is prayed" },
+  { ref: "Bukhari 11:29", desc: "Jumu'ah — When it is prayed" },
+  { ref: "Bukhari 11:63; Muslim 7:41", desc: "Jumu'ah — When it is prayed" },
+  { ref: "Ibn Majah 5:261", desc: "Jumu'ah — How it is prayed" },
+  { ref: "Muslim 7:15; Bukhari 11:58", desc: "Jumu'ah — How it is prayed" },
+  { ref: "Muslim 7:74", desc: "Jumu'ah — How it is prayed" },
+  { ref: "Ibn Majah 5:328", desc: "Jumu'ah — How it is prayed" },
+  { ref: "Bukhari 11:5", desc: "Jumu'ah — The Friday sunnahs" },
+  { ref: "Abu Dawud 1:343", desc: "Jumu'ah — The Friday sunnahs" },
+  { ref: "Muslim 7:14", desc: "Jumu'ah — The Friday sunnahs" },
+  { ref: "Abu Dawud 39:33", desc: "Jumu'ah — The Friday sunnahs" },
+  { ref: "Abu Dawud 2:658", desc: "Jumu'ah — The Friday sunnahs" },
+  { ref: "Bukhari 11:59", desc: "Jumu'ah — The Friday sunnahs" },
+  { ref: "Nasai 14:6", desc: "Jumu'ah — If you miss it or cannot attend" },
+  { ref: "Ibn Majah 5:321", desc: "Jumu'ah — If you miss it or cannot attend" },
+];
+
+function prayerRefRows(p: Prayer): { ref: string; desc: string }[] {
+  const rows: { ref: string; desc: string }[] = [];
+  if (p.verse?.ref) rows.push({ ref: p.verse.ref, desc: `${p.name} — the cited verse` });
+  if (p.hadith?.ref && p.hadith.ref !== p.verse?.ref) rows.push({ ref: p.hadith.ref, desc: `${p.name} — the cited hadith` });
+  return rows;
+}
+
 const jumuahAccordion = [
   {
     id: "who",
@@ -2807,26 +2837,8 @@ function SalahContent() {
               </div>
             </SubTabLayout>
 
-            {/* Sources — the Tayammum pill carries its own source set */}
-            {activePurificationTopic.id === "tayammum" ? (
-              <SourcesCard delay={0.3} className="mt-8" sources={[
-                { ref: "Quran 5:6", desc: "The tayammum clause — clean earth when ill, traveling, or without water" },
-                { ref: "Bukhari 7:1", desc: "The revelation of tayammum — Aisha's lost necklace on a journey" },
-                { ref: "Bukhari 7:5; Bukhari 7:10", desc: "The hadith of Ammar ibn Yasir — strike the earth, blow off the dust, wipe the face and hands" },
-                { ref: "Abu Dawud 1:334", desc: "Amr ibn al-As — tayammum instead of ghusl when water would cause harm" },
-                { ref: "Tirmidhi 1:124", desc: "Clean earth is a purifier even for ten years; use water once it is found" },
-                { ref: "Abu Dawud 1:338", desc: "Prayers prayed with valid tayammum need not be repeated when water is found" },
-              ]} />
-            ) : (
-            <SourcesCard delay={0.3} className="mt-8" sources={[
-              { ref: "Quran 5:6", desc: "The verse of purification — wudu, ghusl for janabah, and tayammum" },
-              { ref: "Bukhari 1:1; Bukhari 4:1; Bukhari 4:25; Bukhari 11:12", desc: "Niyyah, nullifiers, the Prophet's ﷺ wudu, right-side preference, miswak" },
-              { ref: "Bukhari 5:1; Bukhari 5:26; Bukhari 5:43; Bukhari 6:35; Bukhari 11:5; Bukhari 23:22", desc: "The Prophet's ﷺ ghusl (Aisha and Maymunah), when ghusl is obligatory, ghusl for Jumu'ah, washing the deceased" },
-              { ref: "Muslim 2:1; Muslim 2:20; Muslim 2:44; Muslim 2:46; Muslim 3:17; Muslim 3:32; Muslim 3:123", desc: "Cleanliness, dua after wudu, sins washed away, madhy requires only wudu, emission requires ghusl, camel meat" },
-              { ref: "Abu Dawud 1:60; Abu Dawud 1:101; Abu Dawud 1:200", desc: "Passing wind, Bismillah, ears, washing three times, interlacing fingers, deep sleep" },
-              { ref: "Tirmidhi 1:31; Tirmidhi 1:82", desc: "Beard, ears are part of head, interlacing toes, dua after wudu, touching private parts" },
-              { ref: "Ibn Majah 1:133; Ibn Majah 1:159", desc: "Bismillah obligation discussion, moderation with water" },
-            ]} />
+            {topicSourceRefs(activePurificationTopic).length > 0 && (
+              <SourcesCard delay={0.3} className="mt-8" sources={topicSourceRefs(activePurificationTopic)} />
             )}
           </motion.div>
         )}
@@ -2887,31 +2899,16 @@ function SalahContent() {
               </AnimatePresence>
             )}
 
-            {/* Sources & References for the Prayers */}
-            {!showGuide && (
-              <SourcesCard delay={0.3} className="mt-8" sources={[
-                { ref: "Bukhari 9:50", desc: "Fajr & Asr: whoever prays the two cool prayers will enter Paradise" },
-                { ref: "Muslim 6:118", desc: "Fajr sunnah: better than the world and everything in it" },
-                { ref: "Tirmidhi 2:281", desc: "Dhuhr: reward for praying four rak'at before and after" },
-                { ref: "Bukhari 9:29", desc: "Asr: missing it is like losing family and property" },
-                { ref: "Muslim 5:223", desc: "Maghrib: timing of the sunset prayer" },
-                { ref: "Muslim 6:124", desc: "Rawatib sunnah: the 12 confirmed sunnah prayers" },
-                { ref: "Bukhari 10:51", desc: "Isha & Fajr: reward for attending them in congregation" },
-                { ref: "Bukhari 14:9", desc: "Witr: make the last of your night prayer Witr" },
-                { ref: "Quran 62:9", desc: "Jumu'ah: hasten to the remembrance of Allah and leave off trading" },
-                { ref: "Abu Dawud 2:678", desc: "Jumu'ah: a duty upon every Muslim in congregation, with four exceptions" },
-                { ref: "Bukhari 11:28; Muslim 7:39", desc: "Jumu'ah time: prayed immediately after midday, when the sun passes the meridian" },
-                { ref: "Bukhari 11:29; Bukhari 11:63; Muslim 7:41", desc: "Jumu'ah time: praying early; the nap and meal only after Jumu'ah" },
-                { ref: "Muslim 7:14; Muslim 7:15", desc: "Jumu'ah: reward of going early; silence during the khutbah" },
-                { ref: "Bukhari 11:5; Bukhari 11:59", desc: "Jumu'ah: the Friday ghusl; the hour of accepted du'a" },
-                { ref: "Abu Dawud 2:658", desc: "Jumu'ah: invoke abundant blessings on the Prophet ﷺ on Friday" },
-                { ref: "Ibn Majah 5:261; Ibn Majah 5:321", desc: "Jumu'ah: two rak'ah complete not shortened; catching a rak'ah" },
-                { ref: "Nasai 14:6", desc: "Jumu'ah: warning about neglecting the Friday prayer" },
-                { ref: "Quran 17:78", desc: "Establish prayer from the decline of the sun until the darkness of night" },
-                { ref: "Quran 2:238", desc: "Guard the prayers, especially the middle prayer (Asr)" },
-                { ref: "Sifat Salat an-Nabi by Shaykh al-Albani", desc: "Description of the Prophet's prayer" },
-              ]} />
-            )}
+            {/* Sources & References — scoped to the active selection */}
+            {!showGuide && (() => {
+              const sit = prayerSituationTopics.find((t) => t.id === activePrayer);
+              const rows = sit
+                ? topicSourceRefs(sit)
+                : activePrayer === "jumuah"
+                ? JUMUAH_SOURCE_ROWS
+                : prayerRefRows(prayers.find((p) => p.id === activePrayer) || prayers[0]);
+              return rows.length > 0 ? <SourcesCard delay={0.3} className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -2992,31 +2989,12 @@ function SalahContent() {
               </AnimatePresence>
             )}
 
-            {/* Sources & References for Voluntary Prayers */}
-            {!showGuide && (
-              <SourcesCard delay={0.3} className="mt-8" sources={[
-                { ref: "Bukhari 19:26; Bukhari 19:28", desc: "Tahajjud: Allah descends to the lowest heaven; the Prophet's night prayer practice" },
-                { ref: "Muslim 13:261", desc: "Tahajjud: night prayer is the best prayer after the obligatory ones" },
-                { ref: "Muslim 6:101", desc: "Duha: two rak'at of Duha suffice as charity for every joint" },
-                { ref: "Tirmidhi 6:43", desc: "Duha/Ishraq: reward like Hajj and Umrah for praying after sunrise (graded da'if by some; widely practiced)" },
-                { ref: "Abu Dawud 8:106; Tirmidhi 2:259", desc: "Tawbah: forgiveness for praying 2 rak'at after sinning" },
-                { ref: "Bukhari 19:45", desc: "Istikhara: the du'a and method taught by the Prophet (peace be upon him)" },
-                { ref: "Bukhari 31:6", desc: "Tarawih: Aisha's narration of the Prophet's night prayer in Ramadan" },
-                { ref: "Bukhari 2:30; Muslim 6:207", desc: "Tarawih: forgiveness for standing in prayer during Ramadan" },
-                { ref: "Bukhari 13:8", desc: "Eid: the Prophet's practice of praying in the musalla" },
-                { ref: "Bukhari 23:81; Muslim 11:67", desc: "Janazah: reward for attending the funeral prayer" },
-                { ref: "Nasai 20:148; Abu Dawud 8:10; Tirmidhi 3:12", desc: "Witr: the Qunut supplication taught to al-Hasan ibn Ali" },
-                { ref: "Bukhari 14:9; Abu Dawud 5:101", desc: "Witr: the last prayer of the night; Aisha's description of thirteen rak'at" },
-                { ref: "Abu Dawud 2:77; Bukhari 56:292", desc: "Tahiyyat al-Masjid: two rak'at before sitting down" },
-                { ref: "Bukhari 16:1; Bukhari 16:4; Bukhari 16:11; Bukhari 16:24", desc: "Eclipse prayer: not for anyone's death; two bowings per rak'ah, recited aloud" },
-                { ref: "Bukhari 15:7; Bukhari 15:14; Bukhari 15:17; Bukhari 15:19; Bukhari 15:20", desc: "Istisqa: cloak inside out, two rak'at aloud, no adhan; rain asked during the khutbah" },
-                { ref: "Muslim 6:357; Bukhari 9:61", desc: "The three forbidden times; no voluntary prayer after Fajr and Asr" },
-                { ref: "Bukhari 13:5; Tirmidhi 5:13; Ibn Majah 5:496; Ibn Majah 5:498", desc: "Eid-day sunnahs: dates before Fitr prayer, eating after Adha prayer, walking, returning by a different route" },
-                { ref: "Ibn Majah 6:66; Tirmidhi 10:60; Nasai 21:169", desc: "Janazah: the du'a for the deceased after the third takbir" },
-                { ref: "Fiqh us-Sunnah by Sayyid Sabiq", desc: "General reference for voluntary prayer rulings" },
-                { ref: "Sifat Salat an-Nabi by Shaykh al-Albani", desc: "Description of the Prophet's prayer" },
-              ]} />
-            )}
+            {/* Sources & References — scoped to the active selection */}
+            {!showGuide && (() => {
+              const pr = voluntaryPrayers.find((p) => p.id === activeVoluntary);
+              const rows = pr ? prayerRefRows(pr) : [];
+              return rows.length > 0 ? <SourcesCard delay={0.3} className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
       </AnimatePresence>

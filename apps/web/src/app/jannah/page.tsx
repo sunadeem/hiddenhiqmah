@@ -7,7 +7,7 @@ import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
-import TopicInfoCard from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
@@ -1131,19 +1131,12 @@ function JannahContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 47:15", desc: "The four rivers of Paradise" },
-              { ref: "Quran 55:52-74", desc: "Fruits, companions, and gardens of Paradise" },
-              { ref: "Quran 56:17-37", desc: "The food, drink, and companions of the foremost" },
-              { ref: "Quran 75:22-23; Quran 10:26", desc: "Seeing the Face of Allah" },
-              { ref: "Bukhari 59:62; Muslim 53:7", desc: "Trees whose shade takes 100 years to cross" },
-              { ref: "Bukhari 65:400; Muslim 53:27", desc: "Tents of hollow pearls" },
-              { ref: "Bukhari 81:169; Muslim 4:56", desc: "Al-Kawthar river" },
-              { ref: "Bukhari 59:56", desc: "No envy or rancor in the hearts of Paradise's people" },
-              { ref: "Muslim 1:88", desc: "The greatest reward: looking at the Face of Allah" },
-              { ref: "Tirmidhi 38:4", desc: "Bricks of gold and silver, soil of saffron; Muslim 53:19 — Soil of white musk" },
-            ]} />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const t = descriptionTopics.find((x) => x.id === activeDescription);
+              const rows = t ? topicSourceRefs(t) : [];
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1199,22 +1192,12 @@ function JannahContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 2:82", desc: "Those who believe and do righteous deeds are the companions of Paradise" },
-              { ref: "Quran 4:48", desc: "Allah does not forgive shirk" },
-              { ref: "Quran 4:69", desc: "Being with the prophets, the truthful, and the righteous" },
-              { ref: "Quran 39:53", desc: "Do not despair of the mercy of Allah" },
-              { ref: "Quran 83:26", desc: "For this let the competitors compete" },
-              { ref: "Bukhari 1:1; Muslim 6:335", desc: "Actions are judged by intentions" },
-              { ref: "Bukhari 17:3; Muslim 1:14", desc: "Deeds that admit to Paradise" },
-              { ref: "Bukhari 56:8", desc: "One hundred degrees of Paradise; al-Firdaus" },
-              { ref: "Bukhari 10:12", desc: "Al-Wasilah: the highest station for the Prophet" },
-              { ref: "Bukhari 10:53", desc: "Sponsoring an orphan: together in Paradise" },
-              { ref: "Bukhari 81:159; Muslim 1:93-95", desc: "The last person to enter Paradise" },
-              { ref: "Muslim 1:178", desc: "Whoever dies upon tawhid will enter Paradise" },
-              { ref: "Tirmidhi 27:110", desc: "The most common cause of admission: taqwa and good character" },
-            ]} />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const t = howToTopics.find((x) => x.id === activeHowTo);
+              const rows = t ? topicSourceRefs(t) : [];
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1427,29 +1410,12 @@ function JannahContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 4:56", desc: "Skins renewed so the punishment is tasted anew" },
-              { ref: "Quran 4:145", desc: "The hypocrites in the lowest depths of the Fire" },
-              { ref: "Quran 39:71", desc: "Driven in groups; the keepers' question" },
-              { ref: "Quran 43:77", desc: "'O Malik, let your Lord put an end to us'" },
-              { ref: "Quran 74:26-31", desc: "Saqar and its nineteen keepers" },
-              { ref: "Quran 37:62-68; Quran 44:43-46; Quran 56:51-55", desc: "The tree of Zaqqum" },
-              { ref: "Quran 47:15; Quran 78:24-25", desc: "Scalding water and the drink of its people" },
-              { ref: "Quran 69:30-32; Quran 76:4", desc: "Chains and shackles" },
-              { ref: "Quran 23:107-108; Quran 35:36-37; Quran 40:49-50", desc: "What its people will say" },
-              { ref: "Muslim 53:34; Tirmidhi 39:17", desc: "Seventy times hotter than worldly fire" },
-              { ref: "Bukhari 59:70", desc: "The Fire's complaint and its two breaths" },
-              { ref: "Bukhari 81:151; Muslim 1:421", desc: "The least punishment in the Fire" },
-              { ref: "Muslim 1:419; Bukhari 81:153", desc: "The shallow part of the Fire — Abu Talib" },
-              { ref: "Quran 6:132", desc: "Ranks assigned according to deeds" },
-              { ref: "Tirmidhi 47:175", desc: "A gate of Jahannam for whoever carries a sword against this Ummah" },
-              { ref: "Quran 70:15; Quran 104:4-5; Quran 74:26-27; Quran 101:9-11", desc: "The Quranic names of the Fire" },
-              { ref: "Bukhari 78:101; Ibn Majah 37:74", desc: "The proud and arrogant; a mustard seed of pride" },
-              { ref: "Bukhari 2:15; Bukhari 81:149; Bukhari 97:134", desc: "Those with a mustard seed of faith brought out" },
-              { ref: "Muslim 1:178", desc: "Whoever dies upon tawhid will enter Paradise" },
-              { ref: "Bukhari 81:159", desc: "The last person to leave the Fire" },
-            ]} />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const t = jahannamTopics.find((x) => x.id === activeJahannam);
+              const rows = t ? topicSourceRefs(t) : [];
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
 
@@ -1505,21 +1471,12 @@ function JannahContent() {
               </div>
             </div>
 
-            {/* Sources */}
-            <SourcesCard className="mt-8" sources={[
-              { ref: "Quran 66:6", desc: "Protect yourselves and your families from the Fire" },
-              { ref: "Quran 3:185", desc: "Whoever is spared from the Fire has truly won" },
-              { ref: "Quran 3:16; Quran 3:191; Quran 25:65-66", desc: "The du'as of the believers against the Fire" },
-              { ref: "Quran 39:53", desc: "Do not despair of the mercy of Allah" },
-              { ref: "Bukhari 24:21", desc: "Save yourself from the Fire even with half a date" },
-              { ref: "Muslim 5:329; Bukhari 88:20", desc: "La ilaha illallah, said seeking Allah's Face" },
-              { ref: "Bukhari 56:56; Muslim 13:217; Tirmidhi 22:6", desc: "Fasting distances the face from the Fire" },
-              { ref: "Bukhari 84:8", desc: "Freeing a slave ransoms the body from the Fire" },
-              { ref: "Tirmidhi 22:22", desc: "Two eyes the Fire will not touch" },
-              { ref: "Muslim 5:162", desc: "Refuge from the punishment of the Fire in the tashahhud" },
-              { ref: "Tirmidhi 38:50; Nasai 50:94", desc: "Ask for Paradise and refuge from the Fire three times" },
-              { ref: "Muslim 45:196; Bukhari 23:11", desc: "Children who pass away as a shield from the Fire" },
-            ]} />
+            {/* Sources & References — scoped to the active selection */}
+            {(() => {
+              const t = protectionTopics.find((x) => x.id === activeProtection);
+              const rows = t ? topicSourceRefs(t) : [];
+              return rows.length > 0 ? <SourcesCard className="mt-8" sources={rows} /> : null;
+            })()}
           </motion.div>
         )}
       </AnimatePresence>

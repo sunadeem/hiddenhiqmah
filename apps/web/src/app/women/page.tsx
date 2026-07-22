@@ -9,7 +9,7 @@ import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
-import TopicInfoCard, { type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
+import TopicInfoCard, { topicSourceRefs, type Topic } from "@hidden-hiqmah/ui/components/TopicInfoCard";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
@@ -643,6 +643,23 @@ function WomenContent() {
   );
   const [search, setSearch] = useState("");
 
+  // House rule: the Sources & References card below a rail lists ONLY the
+  // active selection's sources (derived from its verse ref + point notes).
+  const activeStatusTopic = statusTopics.find((t) => t.id === statusSub) ?? statusTopics[0];
+  const activeWorshipTopic = worshipTopics.find((t) => t.id === worshipSub) ?? worshipTopics[0];
+  const activeHijabTopic = hijabTopics.find((t) => t.id === hijabSub) ?? hijabTopics[0];
+  const activeQuestionTopic =
+    questionTopics.find((t) => t.id === questionSub) ?? questionTopics[0];
+  // "Bukhari 4:94" (Book of Wudu version of the Fatimah bint Abi Hubaysh istihada
+  // hadith) was cited in the old tab-wide list but appears in no point note, so
+  // topicSourceRefs cannot derive it — appended here to keep the list complete.
+  const worshipSourceRows = [
+    ...topicSourceRefs(activeWorshipTopic),
+    ...(activeWorshipTopic.id === "istihada"
+      ? [{ ref: "Bukhari 4:94", desc: "Fatimah bint Abi Hubaysh — istihada is not menses" }]
+      : []),
+  ];
+
   const replaceUrl = (tab: TabKey, sub?: string) => {
     router.replace(`${pathname}?tab=${tab}${sub ? `&sub=${sub}` : ""}`, { scroll: false });
   };
@@ -732,20 +749,9 @@ function WomenContent() {
           >
             {renderTopicRail(statusTopics, statusSub, handleSubChange("status", setStatusSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Quran 33:35", desc: "Ten qualities — women named alongside men throughout" },
-                { ref: "Quran 16:97; Quran 3:195; Quran 4:124", desc: "Identical reward for male and female" },
-                { ref: "Quran 9:71", desc: "Believing men and women are allies of one another" },
-                { ref: "Tirmidhi 1:113", desc: "'Indeed women are the partners of men'" },
-                { ref: "Quran 31:14; Bukhari 78:2; Nasai 25:20; Bukhari 43:23", desc: "The honor of mothers" },
-                { ref: "Quran 81:8-9; Bukhari 78:26; Muslim 45:190; Tirmidhi 27:19; Ibn Majah 33:13; Bukhari 78:6", desc: "Daughters — a shield from the Fire" },
-                { ref: "Bukhari 63:40; Bukhari 63:45; Bukhari 63:43", desc: "Khadijah — the best of women, greeted by her Lord" },
-                { ref: "Bukhari 62:114; Tirmidhi 3:5; Tirmidhi 2:289; Tirmidhi 49:283", desc: "A'isha — her virtue and her students" },
-                { ref: "Bukhari 62:63; Bukhari 79:58; Tirmidhi 49:272", desc: "Fatimah — part of the Prophet, chief of believing women" },
-              ]}
-            />
+            {topicSourceRefs(activeStatusTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeStatusTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -784,20 +790,9 @@ function WomenContent() {
               </div>
             </ContentCard>
 
-            <SourcesCard
-              className="mt-6"
-              sources={[
-                { ref: "Quran 2:222", desc: "The verse of menstruation — one restriction, not exile" },
-                { ref: "Muslim 3:85; Tirmidhi 8:106", desc: "Fasts made up; prayers not made up" },
-                { ref: "Abu Dawud 1:258", desc: "'Do everything except sexual intercourse'" },
-                { ref: "Bukhari 6:11; Bukhari 6:30; Bukhari 4:94", desc: "Fatimah bint Abi Hubaysh — istihada is not menses" },
-                { ref: "Ibn Majah 1:354; Ibn Majah 1:355; Ibn Majah 1:358", desc: "Istihada — habit days, ghusl, wudu for each prayer" },
-                { ref: "Abu Dawud 1:311", desc: "Nifas — refraining forty days" },
-                { ref: "Bukhari 11:24; Muslim 4:150; Muslim 4:151; Muslim 4:152", desc: "'Do not stop Allah's women-slaves from Allah's Mosques'" },
-                { ref: "Abu Dawud 2:177", desc: "'…but their houses are better for them'" },
-                { ref: "Tirmidhi 1:113; Abu Dawud 1:316", desc: "Umm Salamah and Asma ask; the Prophet answers" },
-              ]}
-            />
+            {worshipSourceRows.length > 0 && (
+              <SourcesCard className="mt-6" sources={worshipSourceRows} />
+            )}
           </motion.div>
         )}
 
@@ -812,16 +807,9 @@ function WomenContent() {
           >
             {renderTopicRail(hijabTopics, hijabSub, handleSubChange("hijab", setHijabSub))}
 
-            <SourcesCard
-              className="mt-8"
-              sources={[
-                { ref: "Quran 24:30", desc: "Believing men commanded first — lower the gaze" },
-                { ref: "Quran 24:31", desc: "The khimar over the chest; beauty for close family only" },
-                { ref: "Quran 33:59", desc: "The outer garment — 'known and not harassed'" },
-                { ref: "Bukhari 2:2", desc: "Haya is a branch of faith" },
-                { ref: "Bukhari 78:144", desc: "'Haya does not bring anything except good'" },
-              ]}
-            />
+            {topicSourceRefs(activeHijabTopic).length > 0 && (
+              <SourcesCard className="mt-8" sources={topicSourceRefs(activeHijabTopic)} />
+            )}
           </motion.div>
         )}
 
@@ -864,17 +852,9 @@ function WomenContent() {
               </div>
             </ContentCard>
 
-            <SourcesCard
-              className="mt-6"
-              sources={[
-                { ref: "Quran 4:3; Quran 4:129", desc: "Polygamy capped and bound to justice" },
-                { ref: "Quran 4:7; Quran 4:19; Quran 4:11", desc: "Women made heirs; why some shares differ" },
-                { ref: "Quran 2:282", desc: "The debt-documentation verse in context" },
-                { ref: "Quran 9:71", desc: "Men and women enjoin good together" },
-                { ref: "Bukhari 92:50", desc: "The head-of-state hadith and its context" },
-                { ref: "Bukhari 63:40; Tirmidhi 1:113; Bukhari 11:24", desc: "Women present in the first community" },
-              ]}
-            />
+            {topicSourceRefs(activeQuestionTopic).length > 0 && (
+              <SourcesCard className="mt-6" sources={topicSourceRefs(activeQuestionTopic)} />
+            )}
           </motion.div>
         )}
       </AnimatePresence>
