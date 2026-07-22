@@ -18,6 +18,7 @@ import {
   markNotificationsRead,
   timeAgo,
   type CircleNotification,
+  CIRCLES_CHAT_ENABLED,
 } from "@/lib/circles";
 import { hapticLight } from "@/lib/mobile/haptics";
 
@@ -105,7 +106,7 @@ export default function CircleNotificationsSheet({
       /* non-fatal — still try to open */
     }
     if (n.circle_id && n.kind !== "removed") {
-      const tab = n.kind === "message" || n.kind === "dua" ? "chat" : "activity";
+      const tab = CIRCLES_CHAT_ENABLED && (n.kind === "message" || n.kind === "dua") ? "chat" : "activity";
       onClose();
       onOpenCircle(n.circle_id, tab);
     } else {

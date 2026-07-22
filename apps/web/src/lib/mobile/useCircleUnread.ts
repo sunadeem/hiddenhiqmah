@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { App as CapApp } from "@capacitor/app";
-import { getUnreadCount } from "@/lib/circles";
+import { getUnreadCount, CIRCLES_CHAT_ENABLED } from "@/lib/circles";
 
 /**
  * Live unread-count of the signed-in user's circle notifications — for the More
@@ -16,6 +16,7 @@ export function useCircleUnread(): number {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    if (!CIRCLES_CHAT_ENABLED) return;
     let alive = true;
     const sync = () => {
       getUnreadCount()
@@ -51,5 +52,5 @@ export function useCircleUnread(): number {
     };
   }, []);
 
-  return count;
+  return CIRCLES_CHAT_ENABLED ? count : 0;
 }

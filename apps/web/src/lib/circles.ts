@@ -3,6 +3,13 @@ import { supabase } from "@/lib/supabase";
 // Client data layer for Circles (migration 007). All writes go through the
 // SECURITY DEFINER RPCs; reads are RLS-scoped to the caller's circles.
 
+// Free-text member chat is gated OFF for the initial App Store release so the
+// app carries no user-generated messaging (keeps the age rating at 4+). The
+// rest of Circles — khatmah tracking, invites, the activity feed, duʿā — stays
+// live. Flip to `true` (and declare Messaging/UGC in the age rating) to ship
+// chat in a later version. The backend RPCs are untouched.
+export const CIRCLES_CHAT_ENABLED = false;
+
 /** Notify same-session listeners (the More-tab badge + the Home card) to refresh
  *  after a local mutation. SPA navigation never fires visibilitychange, so screens
  *  that cache circle data can't rely on it — they listen for this event instead. */

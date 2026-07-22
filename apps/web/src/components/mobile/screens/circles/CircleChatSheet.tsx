@@ -24,6 +24,7 @@ import {
 import {
   getCircleMessages,
   sendCircleMessage,
+  CIRCLES_CHAT_ENABLED,
   deleteCircleMessage,
   reportCircleMessage,
   blockCircleUser,
@@ -110,7 +111,7 @@ function Sheet({
   isOwner: boolean;
   initialTab: Tab;
 }) {
-  const [tab, setTab] = useState<Tab>(initialTab);
+  const [tab, setTab] = useState<Tab>(CIRCLES_CHAT_ENABLED ? initialTab : "activity");
   const [messages, setMessages] = useState<CircleMessage[] | null>(null);
   const [activity, setActivity] = useState<CircleActivity[] | null>(null);
   const [err, setErr] = useState("");
@@ -289,7 +290,7 @@ function Sheet({
         </div>
         {/* Tabs */}
         <div className="flex px-3 gap-1">
-          {(["chat", "activity"] as Tab[]).map((t) => (
+          {(CIRCLES_CHAT_ENABLED ? (["chat", "activity"] as Tab[]) : (["activity"] as Tab[])).map((t) => (
             <button
               key={t}
               type="button"

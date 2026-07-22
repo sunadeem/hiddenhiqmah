@@ -36,6 +36,7 @@ import {
   leaveCircle,
   removeCircleMember,
   getUnreadCount,
+  CIRCLES_CHAT_ENABLED,
   type CircleDetail,
   type CircleMember,
 } from "@/lib/circles";
@@ -141,6 +142,7 @@ function CircleListCard({ d, onOpen, onChat }: { d: CircleDetail; onOpen: () => 
         </span>
         <ChevronRight size={17} className="text-themed-muted/60 shrink-0" />
       </button>
+      {CIRCLES_CHAT_ENABLED && (
       <button
         type="button"
         onClick={onChat}
@@ -149,6 +151,7 @@ function CircleListCard({ d, onOpen, onChat }: { d: CircleDetail; onOpen: () => 
       >
         <MessageSquare size={17} />
       </button>
+      )}
     </div>
   );
 }
@@ -473,7 +476,7 @@ export default function CirclesScreen() {
           className="relative shrink-0 w-10 h-10 rounded-full border sidebar-border card-bg flex items-center justify-center text-themed touch-manipulation active:bg-[var(--overlay-subtle)]"
         >
           <Bell size={17} className="text-gold" />
-          {unread > 0 && (
+          {CIRCLES_CHAT_ENABLED && unread > 0 && (
             <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
               {unread > 99 ? "99+" : unread}
             </span>
@@ -699,14 +702,16 @@ export default function CirclesScreen() {
 
             <div className="relative h-px bg-[var(--overlay-medium)] my-3" />
 
-            {/* Chat + Activity */}
-            <div className="relative grid grid-cols-2 gap-2 mb-2">
+            {/* Chat (gated off for launch) + Activity */}
+            <div className={`relative grid ${CIRCLES_CHAT_ENABLED ? "grid-cols-2" : "grid-cols-1"} gap-2 mb-2`}>
+              {CIRCLES_CHAT_ENABLED && (
               <button
                 onClick={() => setChat({ id: d.circle.id, tab: "chat" })}
                 className="flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-[var(--overlay-subtle)] touch-manipulation"
               >
                 <MessageSquare size={15} className="text-gold" /> Chat
               </button>
+              )}
               <button
                 onClick={() => setChat({ id: d.circle.id, tab: "activity" })}
                 className="flex items-center justify-center gap-2 text-sm font-semibold text-themed rounded-xl border sidebar-border py-2.5 active:bg-[var(--overlay-subtle)] touch-manipulation"
