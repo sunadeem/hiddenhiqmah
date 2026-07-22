@@ -10,8 +10,9 @@ import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
-import { BookOpen, Telescope, Clock, MapPin, Hash } from "lucide-react";
+import { BookOpen, Telescope, Clock, MapPin, Moon, Sparkles } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+import Link from "next/link";
 
 type Strength = "strong" | "moderate" | "debated";
 
@@ -28,16 +29,88 @@ type Miracle = {
   strengthNote?: string;
 };
 
+// Pills shown in the TabBar. To stay within ~6 tabs while adding the Prophet's
+// sensory miracles, the "numerical" cards are folded under the combined
+// Linguistic & Textual pill (each pill lists the card-categories it matches).
 const categories = [
-  { key: "all", label: "All", icon: null },
-  { key: "linguistic", label: "Linguistic Miracle", icon: BookOpen },
-  { key: "prophecy", label: "Fulfilled Prophecies", icon: Clock },
-  { key: "scientific", label: "Scientific References", icon: Telescope },
-  { key: "historical", label: "Historical & Archaeological", icon: MapPin },
-  { key: "numerical", label: "Numerical Patterns", icon: Hash },
+  { key: "all", label: "All", icon: null, cats: null as string[] | null },
+  { key: "prophetic", label: "Prophet's Miracles ﷺ", icon: Moon, cats: ["prophetic"] },
+  { key: "linguistic", label: "Linguistic & Textual", icon: BookOpen, cats: ["linguistic", "numerical"] },
+  { key: "prophecy", label: "Fulfilled Prophecies", icon: Clock, cats: ["prophecy"] },
+  { key: "scientific", label: "Scientific References", icon: Telescope, cats: ["scientific"] },
+  { key: "historical", label: "Historical & Archaeological", icon: MapPin, cats: ["historical"] },
 ];
 
+// Per-card display labels (distinct from the pills above, since two card
+// categories now share one pill).
+const categoryLabels: Record<string, string> = {
+  prophetic: "Miracle of the Prophet ﷺ",
+  linguistic: "Linguistic Miracle",
+  numerical: "Numerical Pattern",
+  prophecy: "Fulfilled Prophecy",
+  scientific: "Scientific Reference",
+  historical: "Historical & Archaeological",
+};
+
+// Honest strength grading surfaced on every card. Inline colours keep the badge
+// legible in both light and dark themes without touching shared CSS.
+const strengthMeta: Record<Strength, { label: string; color: string; bg: string }> = {
+  strong: { label: "Well-established", color: "#059669", bg: "rgba(16,185,129,0.14)" },
+  moderate: { label: "Reasonable / secondary", color: "#d97706", bg: "rgba(217,119,6,0.16)" },
+  debated: { label: "Contested", color: "#9ca3af", bg: "rgba(148,163,184,0.18)" },
+};
+
 const miracles: Miracle[] = [
+  // === PROPHETIC — MIRACLES OF THE PROPHET ﷺ ===
+  {
+    category: "prophetic",
+    title: "The Splitting of the Moon",
+    reference: "Quran 54:1; Bukhari 63:94",
+    arabic: "ٱقْتَرَبَتِ ٱلسَّاعَةُ وَٱنشَقَّ ٱلْقَمَرُ",
+    translation: "The Hour has drawn near and the moon has split asunder.",
+    explanation: "Before the pagans of Mecca demanded a sign, the moon was split into two visible halves — one part appearing over the mountain of Mina and the other beside it — after which the Quran recorded the event and the Meccans' dismissal of it as “magic.” It is the physical miracle most associated with the Prophet ﷺ, narrated by several companions (Ibn Masʿud, Ibn ʿAbbas, and Anas) through many independent chains in the two most authentic collections.",
+    historicalContext: "Al-Qamar (chapter 54) opens with the event and the immediate reaction of the onlookers, and the multiple companion narrations in Bukhari and Muslim place it at Mina during the Meccan period.",
+    sources: ["Quran 54:1-2", "Bukhari 61:140", "Bukhari 61:142", "Bukhari 63:94", "Muslim 52:27", "Muslim 52:34"],
+    strength: "strong",
+    strengthNote: "Reported through numerous independent companion chains in both Bukhari and Muslim (near-mutawatir), which is why the classical scholars treated it as one of the most firmly established sensory miracles.",
+  },
+  {
+    category: "prophetic",
+    title: "Water Flowing From Between His Fingers",
+    reference: "Bukhari 64:196; Muslim 43:6",
+    explanation: "On more than one occasion, when the companions had no water, the Prophet ﷺ placed his hand in a vessel and water spouted out from between his fingers — enough for an entire company to drink and make ablution. Jabir ibn ʿAbdullah narrated it from the day of Hudaybiyah (where he estimated the people at around 1,500), and Anas ibn Malik narrated a separate incident at az-Zawraʾ near Medina.",
+    sources: ["Bukhari 64:196", "Muslim 43:6"],
+    strength: "strong",
+    strengthNote: "Established in both Bukhari and Muslim through separate companions (Jabir and Anas) describing distinct occasions.",
+  },
+  {
+    category: "prophetic",
+    title: "A Little Food Feeding a Multitude",
+    reference: "Bukhari 61:87; Muslim 36:190; Bukhari 9:77",
+    explanation: "Several authentic reports describe small quantities of food being blessed to feed far more people than it should have. In Abu Talha's house a small meal of barley bread, touched and blessed by the Prophet ﷺ, fed roughly seventy to eighty men in groups of ten until all were satisfied; the food of Abu Bakr's household likewise multiplied while feeding the poor companions of the Suffah.",
+    sources: ["Bukhari 61:87", "Muslim 36:190", "Bukhari 9:77"],
+    strength: "strong",
+    strengthNote: "Multiple independent narrations of food-multiplication appear across Bukhari and Muslim; those cited are among the most detailed.",
+  },
+  {
+    category: "prophetic",
+    title: "The Weeping Palm-Trunk (al-Hannanah)",
+    reference: "Bukhari 34:48",
+    explanation: "The Prophet ﷺ used to deliver the Friday sermon leaning against the trunk of a date-palm in his mosque. When a pulpit (minbar) was built and he moved to it, the abandoned trunk audibly cried out — “like a child being quieted” — until he came down, embraced it, and it fell silent. The event was witnessed by the congregation and narrated by Jabir ibn ʿAbdullah and others.",
+    sources: ["Bukhari 34:48", "Bukhari 61:93"],
+    strength: "strong",
+    strengthNote: "Narrated by several companions who were present in the mosque; recorded in Bukhari among the Prophet's signs.",
+  },
+  {
+    category: "prophetic",
+    title: "The Opening of the Chest and the Night Journey",
+    reference: "Bukhari 60:17",
+    explanation: "Among the extraordinary events of the Prophet's ﷺ life was the splitting open of his chest by the angel Jibril, who washed his heart with Zamzam water and filled it with wisdom and faith — recounted in the narration of the Israʾ (Night Journey) and Miʿraj (Ascension), when he was carried from Mecca to Jerusalem and then through the heavens. This sits alongside the wider narrative of the Israʾ wal-Miʿraj referenced in Surah al-Israʾ (17:1).",
+    sources: ["Bukhari 60:17", "Quran 17:1"],
+    strength: "strong",
+    strengthNote: "The chest-opening and ascension are established in Bukhari; details differ across narrations, and scholars discuss whether the journey was in body and soul (the majority view) or in vision.",
+  },
+
   // === LINGUISTIC MIRACLE ===
   {
     category: "linguistic",
@@ -414,11 +487,132 @@ const miracles: Miracle[] = [
     strength: "debated",
     strengthNote: "The count of 5 is only achieved by restricting to a very specific grammatical form and context (commands to establish). The word 'salah' and its derivatives appear far more than 5 times overall. The five daily prayers are established through hadith, not the Quran directly.",
   },
+
+  // === FULFILLED PROPHECIES (additions) ===
+  {
+    category: "prophecy",
+    title: "Rome Will Prevail Within a Few Years (Surah Ar-Rum)",
+    reference: "Quran 30:2-4; Tirmidhi 47:243",
+    arabic: "غُلِبَتِ ٱلرُّومُ فِىٓ أَدْنَى ٱلْأَرْضِ وَهُم مِّنۢ بَعْدِ غَلَبِهِمْ سَيَغْلِبُونَ",
+    translation: "The Romans have been defeated in a nearby land, but they will gain victory after their defeat",
+    explanation: "When the Sasanian Persians crushed the Byzantine (“Roman”) Empire around 614–619 CE, the Meccan pagans rejoiced, since the Persians were idolaters like themselves. The Quran then declared that the defeated Romans would themselves be victorious “within a few years” (bidʿ, i.e. three to nine). Abu Bakr publicly staked a wager with the Quraysh on it — and the Byzantines under Heraclius decisively defeated Persia by 627–628 CE, within the window. This is the clearest fulfilled prophecy in the Quran itself, rather than in hadith. (See also the 'Lowest Point on Earth' card, which reads the same passage geographically.)",
+    historicalContext: "Tirmidhi narrates that the verse was revealed after the Persian victory and that the Prophet ﷺ advised Abu Bakr to raise both the stake and the term of his wager to the full ‘bidʿ’ of up to nine years — the Byzantine reconquest fell exactly within it.",
+    sources: ["Quran 30:2-4", "Tirmidhi 46:9", "Tirmidhi 47:243"],
+    strength: "strong",
+    strengthNote: "The Quranic prophecy is explicit and its historical fulfillment (Byzantine–Sasanian War, 602–628 CE) is well documented; the wager narration is in Tirmidhi.",
+  },
+  {
+    category: "prophecy",
+    title: "“Be Firm, O Uhud” — Foretelling the Two Martyrs",
+    reference: "Bukhari 62:25",
+    explanation: "As the Prophet ﷺ stood on Mount Uhud with Abu Bakr, ʿUmar, and ʿUthman, the mountain trembled and he said: “Be firm, O Uhud! For on you there are no more than a Prophet, a Siddiq and two martyrs” (the Siddiq being Abu Bakr). At that moment none of the three companions had been killed — yet ʿUmar and ʿUthman were both later assassinated, fulfilling the prophecy within the lifetime of those who heard it.",
+    sources: ["Bukhari 62:25"],
+    strength: "strong",
+    strengthNote: "A prophecy fulfilled within living memory of its narrators — evidentially stronger than distant-future signs — recorded in Sahih al-Bukhari.",
+  },
+  {
+    category: "prophecy",
+    title: "The Earth Folded Up — Islam Spreading East and West",
+    reference: "Abu Dawud 37:13",
+    explanation: "The Prophet ﷺ said that the earth was “folded up” for him so that he saw its easts and its wests, and that the dominion of his community would reach as far as he had been shown. Within roughly a century, Muslim rule extended from the Atlantic coast of Spain in the west to the frontiers of China and India in the east — closely matching the reach he described.",
+    sources: ["Abu Dawud 37:13", "Muslim 54:24"],
+    strength: "strong",
+    strengthNote: "Narrated by Thawban; the “earth drawn together, east and west” wording is also in Sahih Muslim, and the eastward–westward reach of early Muslim rule is a matter of documented history.",
+  },
+  {
+    category: "prophecy",
+    title: "Abu Lahab's Decade of Open Falsification (Surah al-Masad)",
+    reference: "Quran 111:1-3",
+    arabic: "تَبَّتْ يَدَآ أَبِى لَهَبٍ وَتَبَّ",
+    translation: "May the hands of Abu Lahab perish, and may he perish!",
+    explanation: "Surah al-Masad condemned the Prophet's ﷺ uncle Abu Lahab by name, declaring that he would die a disbeliever and enter the Fire. This was revealed years before his death, leaving him an obvious way to “falsify” the Quran: he needed only to feign acceptance of Islam. He never did — he remained hostile until he died shortly after the Battle of Badr, exactly as foretold.",
+    sources: ["Quran 111:1-3"],
+    strength: "strong",
+    strengthNote: "The verse is explicit; the surrounding biographical detail (Abu Lahab's death shortly after Badr without ever professing Islam) rests on the standard seerah accounts rather than a single graded narration.",
+  },
+  {
+    category: "prophecy",
+    title: "The Greening of the Arabian Peninsula",
+    reference: "Sahih Muslim, Kitab al-Zakat",
+    explanation: "A well-known prophecy states that the Hour will not come until the land of the Arabs once again becomes meadows and rivers — a striking image given the arid Peninsula. Some contemporary writers connect it with modern pivot-irrigation agriculture and satellite imagery of greening in parts of Saudi Arabia. This reading is recent and interpretive.",
+    sources: ["Sahih Muslim, Book of Zakat (commonly cited as Sahih Muslim 157) — external; wording not verified against this app's local corpus"],
+    strength: "moderate",
+    strengthNote: "The narration is attributed to Sahih Muslim but its exact wording is not available in this app's local hadith set; the ‘fulfillment’ is a modern interpretation, not a classical one.",
+  },
+
+  // === LINGUISTIC (additions) ===
+  {
+    category: "linguistic",
+    title: "The Preservation of the Quran",
+    reference: "Quran 15:9",
+    arabic: "إِنَّا نَحْنُ نَزَّلْنَا ٱلذِّكْرَ وَإِنَّا لَهُۥ لَحَـٰفِظُونَ",
+    translation: "It is We Who have sent down the Reminder, and it is We Who will preserve it.",
+    explanation: "The Quran declares that Allah Himself will guard the “Reminder” from corruption. Unlike earlier scriptures, the Quran has been continuously preserved both in writing and in the memory of huffaz — individuals who memorize the entire text — in an unbroken chain since revelation. Early manuscripts and the living oral tradition agree on a single consonantal text across the Muslim world, an outcome believers hold up as the fulfillment of this promise.",
+    sources: ["Quran 15:9"],
+    strength: "strong",
+    strengthNote: "The verse is explicit; the supporting detail about the manuscript record and the global huffaz tradition is a scholarly summary rather than a claim from a single graded narration.",
+  },
+  {
+    category: "linguistic",
+    title: "No Contradictions — The Consistency Challenge",
+    reference: "Quran 4:82",
+    arabic: "أَفَلَا يَتَدَبَّرُونَ ٱلْقُرْءَانَ ۚ وَلَوْ كَانَ مِنْ عِندِ غَيْرِ ٱللَّهِ لَوَجَدُوا۟ فِيهِ ٱخْتِلَـٰفًا كَثِيرًا",
+    translation: "Do they not then ponder on the Qur’an? If it had been from anyone other than Allah, they would have surely found in it many discrepancies.",
+    explanation: "The Quran invites its readers to search it for internal contradiction, arguing that a book revealed over twenty-three years amid war, migration, and changing circumstances — yet free of discrepancy — could only come from Allah. This is a distinct challenge from the literary ‘tahaddi’ (produce a chapter like it): here the test is coherence rather than eloquence.",
+    sources: ["Quran 4:82"],
+    strength: "strong",
+  },
+  {
+    category: "linguistic",
+    title: "The Unlettered Prophet",
+    reference: "Quran 29:48",
+    arabic: "وَمَا كُنتَ تَتْلُوا۟ مِن قَبْلِهِۦ مِن كِتَـٰبٍ وَلَا تَخُطُّهُۥ بِيَمِينِكَ ۖ إِذًا لَّٱرْتَابَ ٱلْمُبْطِلُونَ",
+    translation: "You [O Prophet] never recited any book before this, nor did you write with your hand. Otherwise, the people of falsehood would have raised suspicions.",
+    explanation: "The Quran points out that the Prophet ﷺ neither read nor wrote before it was revealed — so its account of earlier prophets, its legal and moral system, and its literary power could not be attributed to prior study or authorship. Had he been known as a reader of books, the Quran notes, doubters would have had grounds to dismiss it as copied.",
+    sources: ["Quran 29:48", "Quran 7:157"],
+    strength: "strong",
+  },
+
+  // === SCIENTIFIC (additions) ===
+  {
+    category: "scientific",
+    title: "The Restoration of the Fingertips",
+    reference: "Quran 75:3-4",
+    arabic: "بَلَىٰ قَـٰدِرِينَ عَلَىٰٓ أَن نُّسَوِّىَ بَنَانَهُۥ",
+    translation: "In fact, We are able to restore even his very fingertips.",
+    explanation: "Answering those who doubted the resurrection, the Quran says Allah is able to restore even the person's ‘banan’ (fingertips) — singling out the very part of the body whose ridge patterns are, we now know, unique to every individual and used for identification. The primary meaning is the perfection of Allah's power to recreate; the fingerprint-uniqueness observation is a modern, secondary reading.",
+    sources: ["Quran 75:3-4"],
+    strength: "moderate",
+    strengthNote: "The verse's primary subject is the resurrection. Fingerprints were shown to be unique only in the 19th–20th centuries, so the scientific parallel is a modern observation, not the classical interpretation.",
+  },
+  {
+    category: "scientific",
+    title: "Milk Produced Between Excretion and Blood",
+    reference: "Quran 16:66",
+    arabic: "وَإِنَّ لَكُمْ فِى ٱلْأَنْعَـٰمِ لَعِبْرَةً ۖ نُّسْقِيكُم مِّمَّا فِى بُطُونِهِۦ مِنۢ بَيْنِ فَرْثٍ وَدَمٍ لَّبَنًا خَالِصًا سَآئِغًا لِّلشَّـٰرِبِينَ",
+    translation: "And there is surely a lesson for you in livestock. We give you drink from what is in their bellies – produced between excretion and blood – pure and pleasant milk for those who drink.",
+    explanation: "The Quran locates the origin of milk ‘between excretion (farth) and blood.’ In the ruminant's digestive system, nutrients released from digested food are carried by the bloodstream to the mammary glands, which synthesize milk — a process physically situated between the contents of the gut and the blood, and only understood in detail with modern physiology.",
+    sources: ["Quran 16:66"],
+    strength: "moderate",
+    strengthNote: "The description is a widely cited scientific-reference point; the detailed physiology of nutrient transport to the mammary glands is a modern understanding read onto the verse.",
+  },
+
+  // === HISTORICAL (additions) ===
+  {
+    category: "historical",
+    title: "“The King” of Yusuf's Egypt vs “Pharaoh” of Musa's",
+    reference: "Quran 12:43; Quran 12:50; Quran 7:103",
+    explanation: "In the story of Yusuf (Joseph), the Egyptian ruler is consistently called ‘al-Malik’ (the King), never ‘Firʿawn’ (Pharaoh). In the story of Musa (Moses), centuries later, the ruler is always called ‘Firʿawn.’ This tracks a real historical shift: the title ‘Pharaoh’ as a designation for the ruler came into common use in the later New Kingdom period, after the era in which Yusuf is placed — a distinction the Bible does not preserve, since it calls both rulers ‘Pharaoh.’",
+    sources: ["Quran 12:43", "Quran 12:50", "Quran 7:103"],
+    strength: "moderate",
+    strengthNote: "The Quran's consistent use of ‘King’ for Yusuf's era and ‘Pharaoh’ for Musa's is a textual fact; the Egyptological dating of when ‘Pharaoh’ became a royal title is a scholarly summary and debated in its particulars.",
+  },
 ];
 
 
-// Page hero — the Quran's open challenge, taken verbatim from the first miracle card.
-const heroMiracle = miracles[0];
+// Page hero — the Quran's open challenge (Tahaddī), located by title so the
+// array order can change without moving the hero.
+const heroMiracle = miracles.find((m) => m.title.startsWith("The Quran's Challenge")) ?? miracles[0];
 
 function MiraclesContent() {
   useScrollToSection();
@@ -427,9 +621,16 @@ function MiraclesContent() {
   const [search, setSearch] = useState("");
 
   const searchLower = search.toLowerCase().trim();
-  const categoryFiltered = activeCategory === "all"
+  // A pill may map to several card-categories (e.g. Linguistic & Textual covers
+  // both "linguistic" and "numerical"). Fall back to treating the active key as
+  // a raw card-category so deep links like ?tab=numerical still resolve.
+  const activePill = categories.find((c) => c.key === activeCategory);
+  const activeCats = activeCategory === "all"
+    ? null
+    : activePill?.cats ?? [activeCategory];
+  const categoryFiltered = !activeCats
     ? miracles
-    : miracles.filter((m) => m.category === activeCategory);
+    : miracles.filter((m) => activeCats.includes(m.category));
 
   // Searching spans ALL categories, not just the active pill.
   const filtered = searchLower.length < 2
@@ -442,14 +643,12 @@ function MiraclesContent() {
         (m.historicalContext && m.historicalContext.toLowerCase().includes(searchLower))
       );
 
-  const counts = {
-    all: miracles.length,
-    linguistic: miracles.filter((m) => m.category === "linguistic").length,
-    prophecy: miracles.filter((m) => m.category === "prophecy").length,
-    scientific: miracles.filter((m) => m.category === "scientific").length,
-    historical: miracles.filter((m) => m.category === "historical").length,
-    numerical: miracles.filter((m) => m.category === "numerical").length,
-  };
+  const counts = Object.fromEntries(
+    categories.map((c) => [
+      c.key,
+      c.cats ? miracles.filter((m) => c.cats!.includes(m.category)).length : miracles.length,
+    ])
+  ) as Record<string, number>;
 
   return (
     <div>
@@ -465,6 +664,30 @@ function MiraclesContent() {
         text={heroMiracle.translation ?? ""}
         reference={heroMiracle.reference}
       />
+
+      {/* Framing: what a miracle (mu'jizah) is */}
+      <ContentCard className="mb-4">
+        <div className="flex items-start gap-2 mb-2">
+          <Sparkles size={16} className="text-gold mt-0.5 shrink-0" />
+          <h2 className="text-lg font-semibold text-themed">What is a miracle (muʿjizah)?</h2>
+        </div>
+        <p className="text-themed text-sm leading-relaxed mb-3">
+          A <span className="font-medium">muʿjizah</span> is an extraordinary act that breaks the normal
+          laws of nature, granted by Allah to a prophet as proof of his truthfulness — something no
+          human could match or counter. It differs from a <span className="font-medium">karamah</span>{" "}
+          (a lesser wonder granted to a righteous person) and from magic or sleight of hand, which are
+          learned tricks. Every prophet was given signs suited to his people; the Prophet Muhammad ﷺ said:
+          &ldquo;Every Prophet was given miracles because of which people believed, but what I have been
+          given, is Divine Inspiration which Allah has revealed to me&rdquo; (Bukhari 66:3) — which is why
+          the Quran itself, still recited and unchanged, is regarded as his greatest and lasting miracle,
+          while the sensory miracles below were witnessed by the people of his own time.
+        </p>
+        <p className="text-xs text-themed-muted leading-relaxed">
+          The miracles of earlier prophets — and the biography behind these events — are told on the{" "}
+          <Link href="/prophets" className="text-gold underline">Prophets</Link> and{" "}
+          <Link href="/prophet-muhammad?tab=prophecies" className="text-gold underline">Prophet Muhammad ﷺ</Link> pages.
+        </p>
+      </ContentCard>
 
       <PageSearch value={search} onChange={setSearch} placeholder="Search miracles..." className="mb-6" />
 
@@ -484,6 +707,28 @@ function MiraclesContent() {
         className="mb-6"
       />
 
+      {/* How we grade these — intellectual-honesty legend */}
+      <div className="rounded-xl border sidebar-border card-bg p-4 mb-6">
+        <p className="text-sm font-semibold text-themed mb-2">How we grade these</p>
+        <p className="text-xs text-themed-muted leading-relaxed mb-3">
+          Not every claim carries the same weight. Each entry is labelled with an honest assessment so you
+          can weigh it for yourself. Sensory miracles and explicit prophecies rest on the strength of their
+          narrations; &ldquo;scientific&rdquo; and numerical readings are often modern interpretations laid
+          onto the text, and we say so rather than overstate them.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {(["strong", "moderate", "debated"] as Strength[]).map((s) => (
+            <span
+              key={s}
+              className="text-[11px] font-medium px-2 py-1 rounded-full"
+              style={{ color: strengthMeta[s].color, backgroundColor: strengthMeta[s].bg }}
+            >
+              {strengthMeta[s].label}
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* Miracles list */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -495,16 +740,23 @@ function MiraclesContent() {
           className="space-y-5"
         >
           {filtered.map((miracle, i) => {
-            const catLabel = categories.find((c) => c.key === miracle.category)?.label ?? miracle.category;
+            const catLabel = categoryLabels[miracle.category] ?? miracle.category;
+            const grade = strengthMeta[miracle.strength];
 
             return (
               <ContentCard key={`${miracle.category}-${i}`} delay={Math.min(i * 0.05, 0.4)} id={`section-${miracle.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`}>
                 {/* Header */}
                 <div className="mb-3">
-                  <div>
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs text-gold font-medium">{catLabel}</span>
-                    <h2 className="text-xl font-semibold text-themed mt-1">{miracle.title}</h2>
+                    <span
+                      className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+                      style={{ color: grade.color, backgroundColor: grade.bg }}
+                    >
+                      {grade.label}
+                    </span>
                   </div>
+                  <h2 className="text-xl font-semibold text-themed mt-1">{miracle.title}</h2>
                 </div>
 
                 {/* Arabic + Translation */}
@@ -536,6 +788,18 @@ function MiraclesContent() {
                   </div>
                 )}
 
+                {/* Honesty footnote — how strongly this claim holds up */}
+                {miracle.strengthNote && (
+                  <div className="rounded-lg p-3 mb-4 border-l-2" style={{ backgroundColor: "var(--color-bg)", borderLeftColor: grade.color }}>
+                    <p className="text-[11px] font-semibold text-themed-muted mb-1 uppercase tracking-wide">
+                      Assessment · {grade.label}
+                    </p>
+                    <p className="text-xs text-themed-muted leading-relaxed">
+                      {miracle.strengthNote}
+                    </p>
+                  </div>
+                )}
+
                 {/* Sources */}
                 <div className="border-t sidebar-border pt-3">
                   <p className="text-xs text-themed-muted font-medium mb-1">Sources:</p>
@@ -561,6 +825,33 @@ function MiraclesContent() {
           )}
         </motion.div>
       </AnimatePresence>
+
+      {/* Cross-link: miracles of earlier prophets (told in full on the Prophets page) */}
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold text-themed mb-1">Miracles of Earlier Prophets</h2>
+        <p className="text-xs text-themed-muted mb-3 leading-relaxed">
+          The Quran records mighty signs given to the prophets before Muhammad ﷺ. Their full stories,
+          with verses, are on the Prophets page.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[
+            { slug: "salih", name: "Salih", sign: "The she-camel drawn from the rock", ref: "Quran 7:73" },
+            { slug: "ibrahim", name: "Ibrahim", sign: "The fire made cool and safe", ref: "Quran 21:69" },
+            { slug: "musa", name: "Musa", sign: "The staff, and the parting of the sea", ref: "Quran 26:63" },
+            { slug: "isa", name: "Isa", sign: "Forming a bird from clay, and healing the blind", ref: "Quran 3:49" },
+          ].map((p) => (
+            <Link
+              key={p.slug}
+              href={`/prophets/${p.slug}`}
+              className="block rounded-xl border sidebar-border card-bg p-4 card-hover"
+            >
+              <p className="text-sm font-semibold text-themed">{p.name}</p>
+              <p className="text-xs text-themed-muted mt-0.5 leading-relaxed">{p.sign}</p>
+              <p className="text-[11px] text-gold mt-1">{p.ref}</p>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

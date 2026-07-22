@@ -431,7 +431,7 @@ INHERITANCE: /inheritance?tab=foundations|shares|heirs|wasiyyah-faqs
 MIRACLES: /miracles?tab={category}
 ISLAMIC CALENDAR: /islamic-calendar?tab=months|sacred|moon|dates|converter (moon = how a lunar month begins, hilal crescent sighting vs calculation, local vs global, why communities differ on Ramadan/Eid; dates incl. weekly/monthly recurring sunnah fasts = Monday/Thursday, white days ayyam al-bid, Friday jumu'ah, plus Dhul Hijjah for non-pilgrims = takbir, fasting nine days, no hair/nails for the one sacrificing; converter = Gregorian↔Hijri both directions + upcoming Ramadan/Eid dates)
 WHY ISLAM: /why-islam?tab=start|proofs|worldviews|questions
-SECTS: /sects?tab=sunni|shia|other
+SECTS: /sects?tab=sunni|shia|other|modern (sunni incl. aqeedah, four fiqh schools + 'do I have to follow a madhhab', hadith sciences, companions, sunnah-bidah = what innovation is, jamaah = holding to the main body; shia incl. origins, beliefs, practices, branches = Zaidi/Ismaili/Alawite/Druze, the sunni position; other = khawarij, ibadiyyah, qadariyyah-murjiah, mutazilah, sufism, asharis-maturidis, quranists = hadith rejection, ahmadiyyah, nation-of-islam; modern = salafiyyah/wahhabi label, deobandi-barelwi, tablighi, political-movements = ikhwan/hizb ut-tahrir, sufi-orders, warning-signs = cult checklist; importance tab covers takfir danger)
 ZAKAT: /zakat?tab=overview|who-pays|assets|recipients|fitr|calculator (nisab, zakatable assets, eight recipients, zakat al-fitr, calculator tool)
 HAJJ & UMRAH: /hajj?tab=overview|ihram|umrah|days|rulings (ihram/miqat/talbiyah, umrah step-by-step, days of hajj 8th-13th, types of hajj, proxy hajj)
 TAWBAH: /tawbah?tab=door|conditions|istighfar|returning|fruits (repentance, Sayyid al-Istighfar, relapse, man who killed 99)

@@ -58,7 +58,6 @@ const sections = [
   { key: "vocabulary", label: "Quranic Vocabulary" },
   { key: "grammar", label: "Basic Grammar" },
   { key: "phrases", label: "Essential Phrases" },
-  { key: "numbers", label: "Numbers" },
   { key: "tips", label: "Learning Tips" },
 ] as const;
 
@@ -106,6 +105,37 @@ const alphabet: Letter[] = [
   { letter: "ي", name: "Yā'", transliteration: "y / ī", sound: "Like English 'y' in 'yes'. Also serves as a long 'ee' vowel.", position: { isolated: "ي", initial: "يـ", medial: "ـيـ", final: "ـي" }, example: { word: "يَوْم", meaning: "Day" } },
 ];
 
+const specialLetters = [
+  { char: 'ء', name: 'Hamza', translit: 'ʾ', note: 'The glottal stop (a catch in the throat, like the middle of ‘uh-oh’). It is not one of the 28 letters but a mark that rides on a ‘seat’ — an alif (أ / إ), a wāw (ؤ), or a yāʾ (ئ) — or sits on the line by itself (ء).', example: { word: 'شَىْءٍ', translit: 'shayin', meaning: 'thing' } },
+  { char: 'ة', name: 'Tāʾ Marbūṭah', translit: '-ah / -at', note: 'The ‘tied tāʾ’ — a hāʾ with two dots. It ends most feminine words. Pronounced as a soft ‘h’ when you stop on it, and as ‘t’ when the word continues into the next.', example: { word: 'رَحْمَةً', translit: 'raḥmatan', meaning: 'Mercy' } },
+  { char: 'ى', name: 'Alif Maqṣūrah', translit: 'ā', note: 'The ‘dotless yāʾ’ at the end of a word. It looks like a yāʾ (ئ) but has no dots and is pronounced as a long ‘ā’, not ‘ī’.', example: { word: 'هُدًى', translit: 'hudan', meaning: 'guidance' } },
+  { char: 'آ', name: 'Alif Maddah', translit: 'ā', note: 'An alif carrying a wavy sign (~). It marks a long ‘ā’ at the start of a word — a hamza followed by a long alif merged into one. In the Uthmani script of the muṣḥaf it is often written as hamza-then-alif.', example: { word: 'ءَادَمَ', translit: 'ādama', meaning: 'Adam' } },
+  { char: 'ٱ', name: 'Hamzat al-Waṣl', translit: '(silent)', note: 'A ‘connecting’ alif carrying a small ṣād-head (ٱ). You pronounce it only when starting fresh on the word; when the previous word runs into it, it is skipped. It begins the definite article ‘al-’ and words like this one.', example: { word: 'ٱسْمُ', translit: 'us\'mu', meaning: '(the) name' } },
+  { char: 'ٰ', name: 'Dagger Alif', translit: 'ā', note: 'A tiny vertical stroke above a letter (ٰ) standing in for a long ‘ā’ that is not written with a full alif. You see it in the Names Allāh, ar-Raḥmān, and in words like hādhā.', example: { word: 'هَـٰذَا', translit: 'hādhā', meaning: 'this' } },
+  { char: 'لا', name: 'Lām-Alif', translit: 'lā', note: 'Not a separate letter but the special joined shape lām + alif takes whenever they meet. Worth knowing on sight because it appears constantly (in lā ilāha illā Allāh).', example: { word: 'لَا', translit: 'lā', meaning: '(Do) not' } },
+];
+
+const confusedSounds = [
+  { a: { ar: 'قَلْب', tr: 'qalb', m: 'heart' }, b: { ar: 'كَلْب', tr: 'kalb', m: 'dog' }, note: 'ق (deep, from the throat) vs ك (light, like English k). The classic pair — a slip here turns ‘heart’ into ‘dog’.' },
+  { a: { ar: 'حَبّ', tr: 'ḥabb', m: 'seeds / grain' }, b: { ar: 'هَبّ', tr: 'habb', m: 'it blew (wind)' }, note: 'ح (deep, breathy H from the throat) vs ه (soft English h).' },
+  { a: { ar: 'سَيْف', tr: 'sayf', m: 'sword' }, b: { ar: 'صَيْف', tr: 'ṣayf', m: 'summer' }, note: 'س (light s) vs ص (heavy, emphatic s with the tongue low and back).' },
+  { a: { ar: 'تِين', tr: 'tīn', m: 'figs' }, b: { ar: 'طِين', tr: 'ṭīn', m: 'clay' }, note: 'ت (light t) vs ط (heavy, emphatic t). Both words occur in the Qurʼan.' },
+  { a: { ar: 'عَلَم', tr: 'ʿalam', m: 'flag / banner' }, b: { ar: 'أَلَم', tr: 'alam', m: 'pain' }, note: 'ع (deep ʿayn from the throat) vs ء / أ (a plain glottal stop). One of the hardest contrasts for new learners.' },
+];
+
+const joiningDemo = [
+  { parts: ['ب', 'ي', 'ت'], joined: 'بيت', tr: 'bayt', m: 'house' },
+  { parts: ['ك', 'ت', 'ب'], joined: 'كتب', tr: 'kataba', m: 'he wrote' },
+  { parts: ['ق', 'ل', 'م'], joined: 'قلم', tr: 'qalam', m: 'pen' },
+];
+
+const readingDecode = [
+  { ref: 'Al-Fātiḥah 1:1', arabic: 'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ', english: 'In the name of Allah, the Most Compassionate, the Most Merciful.', words: [{ t: 'بِسْمِ', tr: 'bis\'mi', m: 'In (the) name' }, { t: 'ٱللَّهِ', tr: 'l-lahi', m: '(of) Allah' }, { t: 'ٱلرَّحْمَـٰنِ', tr: 'l-raḥmāni', m: 'the Most Gracious' }, { t: 'ٱلرَّحِيمِ', tr: 'l-raḥīmi', m: 'the Most Merciful' }] },
+  { ref: 'Al-Fātiḥah 1:2', arabic: 'ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ', english: 'All praise be to Allah, the Lord of the worlds,', words: [{ t: 'ٱلْحَمْدُ', tr: 'al-ḥamdu', m: 'All praises and thanks' }, { t: 'لِلَّهِ', tr: 'lillahi', m: '(be) to Allah' }, { t: 'رَبِّ', tr: 'rabbi', m: 'the Lord' }, { t: 'ٱلْعَـٰلَمِينَ', tr: 'l-ʿālamīna', m: 'of the universe' }] },
+  { ref: 'Al-Ikhlāṣ 112:1', arabic: 'قُلْ هُوَ ٱللَّهُ أَحَدٌ', english: 'Say: “He is Allah, the One;', words: [{ t: 'قُلْ', tr: 'qul', m: 'Say' }, { t: 'هُوَ', tr: 'huwa', m: 'He' }, { t: 'ٱللَّهُ', tr: 'l-lahu', m: '(is) Allah' }, { t: 'أَحَدٌ', tr: 'aḥadun', m: 'the One' }] },
+  { ref: 'Al-Ikhlāṣ 112:3', arabic: 'لَمْ يَلِدْ وَلَمْ يُولَدْ', english: 'He neither begets nor is He begotten,', words: [{ t: 'لَمْ', tr: 'lam', m: 'Not' }, { t: 'يَلِدْ', tr: 'yalid', m: 'He begets' }, { t: 'وَلَمْ', tr: 'walam', m: 'and not' }, { t: 'يُولَدْ', tr: 'yūlad', m: 'He is begotten' }] },
+];
+
 /* ───────────────────────── vowels & diacritics ───────────────────────── */
 
 type Diacritic = {
@@ -132,6 +162,20 @@ const longVowels = [
   { letters: "ـَا", name: "Alif after Fatḥah", sound: "ā", description: "Long 'aa' — like 'father'. Hold the 'a' sound twice as long.", example: { word: "كِتَاب", transliteration: "kitāb", meaning: "Book" } },
   { letters: "ـِي", name: "Yā' after Kasrah", sound: "ī", description: "Long 'ee' — like 'see'. Hold the 'i' sound twice as long.", example: { word: "كَرِيم", transliteration: "karīm", meaning: "Generous" } },
   { letters: "ـُو", name: "Wāw after Ḍammah", sound: "ū", description: "Long 'oo' — like 'moon'. Hold the 'u' sound twice as long.", example: { word: "نُور", transliteration: "nūr", meaning: "Light" } },
+];
+
+const mushafSymbols = [
+  { symbol: '◌ۘ', name: 'Lāzim (mīm)', meaning: 'Compulsory stop. You must stop here; continuing would distort the meaning.' },
+  { symbol: '◌ۙ', name: 'Lā (lām-alif)', meaning: 'Do not stop. Keep reading — pausing here would break the meaning. (If you run out of breath you may stop, then go back and continue.)' },
+  { symbol: '◌ۚ', name: 'Jāʼiz (jīm)', meaning: 'Permissible stop. Stopping and continuing are equally acceptable.' },
+  { symbol: '◌ۖ', name: 'Al-waṣl awlā (ṣlī)', meaning: 'Continuing is preferred, though you may stop.' },
+  { symbol: '◌ۗ', name: 'Al-waqf awlā (qlī)', meaning: 'Stopping is preferred, though you may continue.' },
+  { symbol: '◌ۜ', name: 'Saktah (sīn)', meaning: 'A brief pause — hold for a moment without taking a breath, then continue.' },
+  { symbol: '◌ۛ … ◌ۛ', name: 'Muʼānaqah (three dots)', meaning: 'The ‘embracing’ stop: these appear as a pair. Stop at one of the two positions, not both.' },
+  { symbol: '۩', name: 'Sajdah', meaning: 'A verse of prostration. On reciting it, the reciter (and listeners) make a prostration.' },
+  { symbol: '۞', name: 'Rubʼ al-ḥizb', meaning: 'Marks a quarter of a ḥizb — a way of tracking portions for recitation and memorisation.' },
+  { symbol: '◌۟', name: 'Silent zero', meaning: 'A small circle over a letter (usually an alif) meaning it is written but not pronounced.' },
+  { symbol: '◌ۢ', name: 'Iqlāb (small mīm)', meaning: 'A tiny mīm above a nūn or tanwīn: pronounce it as a hidden ‘m’ before the letter bāʾ.' },
 ];
 
 /* ───────────────────────── quranic vocabulary ───────────────────────── */
@@ -285,6 +329,117 @@ const vocabularyCategories: VocabCategory[] = [
       { arabic: "أَرْسَلَ", transliteration: "Arsala", meaning: "He sent" },
     ],
   },
+  {
+    id: "particles",
+    name: "Particles & Connectors",
+    words: [
+        { arabic: 'مِنْ', transliteration: 'min', meaning: 'from / of', notes: 'Among the most frequent words in the Qurʼan' },
+        { arabic: 'فِي', transliteration: 'fī', meaning: 'in / within' },
+        { arabic: 'عَلَى', transliteration: 'ʿalā', meaning: 'on / upon / against' },
+        { arabic: 'إِلَى', transliteration: 'ilā', meaning: 'to / towards' },
+        { arabic: 'عَنْ', transliteration: 'ʿan', meaning: 'from / about' },
+        { arabic: 'مَعَ', transliteration: 'maʿa', meaning: 'with (together with)' },
+        { arabic: 'عِنْدَ', transliteration: 'ʿinda', meaning: 'with / at / in the sight of' },
+        { arabic: 'بِـ', transliteration: 'bi-', meaning: 'with / by / in', notes: 'A prefix attached to the next word' },
+        { arabic: 'لِـ', transliteration: 'li-', meaning: 'for / to / belonging to', notes: 'A prefix — also ‘so that’' },
+        { arabic: 'وَ', transliteration: 'wa', meaning: 'and', notes: 'The most common connector; a prefix' },
+        { arabic: 'فَـ', transliteration: 'fa-', meaning: 'so / then', notes: 'A prefix showing sequence or result' },
+        { arabic: 'ثُمَّ', transliteration: 'thumma', meaning: 'then (after a while)' },
+        { arabic: 'أَوْ', transliteration: 'aw', meaning: 'or' },
+        { arabic: 'إِنَّ', transliteration: 'inna', meaning: 'indeed / verily', notes: 'Emphasises the sentence that follows' },
+        { arabic: 'أَنَّ', transliteration: 'anna', meaning: 'that (indeed)' },
+        { arabic: 'لَا', transliteration: 'lā', meaning: 'no / not', notes: 'Negates the present tense and forbids (‘do not’)' },
+        { arabic: 'مَا', transliteration: 'mā', meaning: 'not / what', notes: 'Negates the past tense; also means ‘what’' },
+        { arabic: 'لَمْ', transliteration: 'lam', meaning: 'did not', notes: 'Negates the past using a present-tense verb' },
+        { arabic: 'لَنْ', transliteration: 'lan', meaning: 'will never', notes: 'Negates the future' },
+        { arabic: 'إِلَّا', transliteration: 'illā', meaning: 'except / but', notes: 'Pairs with lā/mā: ‘no god except…’' },
+        { arabic: 'الَّذِي', transliteration: 'alladhī', meaning: 'who / which (m.)', notes: 'Relative pronoun; feminine is allatī' },
+        { arabic: 'هَـٰذَا', transliteration: 'hādhā', meaning: 'this (m.)', notes: '‘this’ near; dhālika = ‘that’ far' },
+        { arabic: 'كُلّ', transliteration: 'kull', meaning: 'every / all' },
+        { arabic: 'بَعْض', transliteration: 'baʿḍ', meaning: 'some / part of' },
+        { arabic: 'قَدْ', transliteration: 'qad', meaning: 'indeed / already', notes: 'Before a past verb = ‘has already’' },
+        { arabic: 'إِذَا', transliteration: 'idhā', meaning: 'when / whenever' },
+        { arabic: 'يَا', transliteration: 'yā', meaning: 'O…', notes: 'The calling word: ‘O Allah’, ‘O people’' },
+    ],
+  },
+  {
+    id: "numbers",
+    name: "Numbers",
+    words: [
+        { arabic: 'صِفْر', transliteration: 'Ṣifr', meaning: 'Zero', notes: '٠ / 0 — English ‘zero’ comes from this word, meaning ‘empty’' },
+        { arabic: 'وَاحِد', transliteration: 'Wāḥid', meaning: 'One', notes: '١ / 1' },
+        { arabic: 'اِثْنَان', transliteration: 'Ithnān', meaning: 'Two', notes: '٢ / 2' },
+        { arabic: 'ثَلَاثَة', transliteration: 'Thalāthah', meaning: 'Three', notes: '٣ / 3' },
+        { arabic: 'أَرْبَعَة', transliteration: 'Arbaʿah', meaning: 'Four', notes: '٤ / 4' },
+        { arabic: 'خَمْسَة', transliteration: 'Khamsah', meaning: 'Five', notes: '٥ / 5' },
+        { arabic: 'سِتَّة', transliteration: 'Sittah', meaning: 'Six', notes: '٦ / 6' },
+        { arabic: 'سَبْعَة', transliteration: 'Sabʿah', meaning: 'Seven', notes: '٧ / 7' },
+        { arabic: 'ثَمَانِيَة', transliteration: 'Thamāniyah', meaning: 'Eight', notes: '٨ / 8' },
+        { arabic: 'تِسْعَة', transliteration: 'Tisʿah', meaning: 'Nine', notes: '٩ / 9' },
+        { arabic: 'عَشَرَة', transliteration: 'ʿAsharah', meaning: 'Ten', notes: '١٠ / 10' },
+        { arabic: 'أَحَدَ عَشَر', transliteration: 'Aḥada ʿashar', meaning: 'Eleven', notes: '١١ / 11' },
+        { arabic: 'اِثْنَا عَشَر', transliteration: 'Ithnā ʿashar', meaning: 'Twelve', notes: '١٢ / 12' },
+        { arabic: 'ثَلَاثَةَ عَشَر', transliteration: 'Thalāthata ʿashar', meaning: 'Thirteen', notes: '١٣ / 13' },
+        { arabic: 'أَرْبَعَةَ عَشَر', transliteration: 'Arbaʿata ʿashar', meaning: 'Fourteen', notes: '١٤ / 14' },
+        { arabic: 'خَمْسَةَ عَشَر', transliteration: 'Khamsata ʿashar', meaning: 'Fifteen', notes: '١٥ / 15' },
+        { arabic: 'سِتَّةَ عَشَر', transliteration: 'Sittata ʿashar', meaning: 'Sixteen', notes: '١٦ / 16' },
+        { arabic: 'سَبْعَةَ عَشَر', transliteration: 'Sabʿata ʿashar', meaning: 'Seventeen', notes: '١٧ / 17' },
+        { arabic: 'ثَمَانِيَةَ عَشَر', transliteration: 'Thamāniyata ʿashar', meaning: 'Eighteen', notes: '١٨ / 18' },
+        { arabic: 'تِسْعَةَ عَشَر', transliteration: 'Tisʿata ʿashar', meaning: 'Nineteen', notes: '١٩ / 19' },
+        { arabic: 'عِشْرُون', transliteration: 'ʿIshrūn', meaning: 'Twenty', notes: '٢٠ / 20' },
+        { arabic: 'ثَلَاثُون', transliteration: 'Thalāthūn', meaning: 'Thirty', notes: '٣٠ / 30' },
+        { arabic: 'أَرْبَعُون', transliteration: 'Arbaʿūn', meaning: 'Forty', notes: '٤٠ / 40' },
+        { arabic: 'خَمْسُون', transliteration: 'Khamsūn', meaning: 'Fifty', notes: '٥٠ / 50' },
+        { arabic: 'سِتُّون', transliteration: 'Sittūn', meaning: 'Sixty', notes: '٦٠ / 60' },
+        { arabic: 'سَبْعُون', transliteration: 'Sabʿūn', meaning: 'Seventy', notes: '٧٠ / 70' },
+        { arabic: 'ثَمَانُون', transliteration: 'Thamānūn', meaning: 'Eighty', notes: '٨٠ / 80' },
+        { arabic: 'تِسْعُون', transliteration: 'Tisʿūn', meaning: 'Ninety', notes: '٩٠ / 90' },
+        { arabic: 'مِائَة', transliteration: 'Miʾah', meaning: 'One hundred', notes: '١٠٠ / 100' },
+        { arabic: 'أَلْف', transliteration: 'Alf', meaning: 'One thousand', notes: '١٠٠٠ / 1000' },
+    ],
+  },
+  {
+    id: "ordinals",
+    name: "Ordinal Numbers",
+    words: [
+        { arabic: 'أَوَّل', transliteration: 'Awwal', meaning: 'First', notes: 'e.g. ‘the first sūrah’' },
+        { arabic: 'ثَانِي', transliteration: 'Thānī', meaning: 'Second', notes: 'e.g. ‘the second juz’' },
+        { arabic: 'ثَالِث', transliteration: 'Thālith', meaning: 'Third' },
+        { arabic: 'رَابِع', transliteration: 'Rābiʿ', meaning: 'Fourth' },
+        { arabic: 'خَامِس', transliteration: 'Khāmis', meaning: 'Fifth' },
+        { arabic: 'سَادِس', transliteration: 'Sādis', meaning: 'Sixth' },
+        { arabic: 'سَابِع', transliteration: 'Sābiʿ', meaning: 'Seventh' },
+        { arabic: 'ثَامِن', transliteration: 'Thāmin', meaning: 'Eighth' },
+        { arabic: 'تَاسِع', transliteration: 'Tāsiʿ', meaning: 'Ninth' },
+        { arabic: 'عَاشِر', transliteration: 'ʿĀshir', meaning: 'Tenth' },
+    ],
+  },
+  {
+    id: "calendar",
+    name: "Days & Months",
+    words: [
+        { arabic: 'يَوْم', transliteration: 'Yawm', meaning: 'Day' },
+        { arabic: 'الأَحَد', transliteration: 'Al-Aḥad', meaning: 'Sunday', notes: 'yawm al-aḥad — ‘the first day’' },
+        { arabic: 'الاِثْنَيْن', transliteration: 'Al-Ithnayn', meaning: 'Monday' },
+        { arabic: 'الثُّلَاثَاء', transliteration: 'Ath-Thulāthāʾ', meaning: 'Tuesday' },
+        { arabic: 'الأَرْبِعَاء', transliteration: 'Al-Arbiʿāʾ', meaning: 'Wednesday' },
+        { arabic: 'الخَمِيس', transliteration: 'Al-Khamīs', meaning: 'Thursday' },
+        { arabic: 'الجُمُعَة', transliteration: 'Al-Jumuʿah', meaning: 'Friday', notes: 'yawm al-jumuʿah — the day of congregational prayer' },
+        { arabic: 'السَّبْت', transliteration: 'As-Sabt', meaning: 'Saturday' },
+        { arabic: 'مُحَرَّم', transliteration: 'Muḥarram', meaning: '1st month', notes: 'A sacred month' },
+        { arabic: 'صَفَر', transliteration: 'Ṣafar', meaning: '2nd month' },
+        { arabic: 'رَبِيع الأَوَّل', transliteration: 'Rabīʿ al-Awwal', meaning: '3rd month' },
+        { arabic: 'رَبِيع الآخِر', transliteration: 'Rabīʿ al-Ākhir', meaning: '4th month' },
+        { arabic: 'جُمَادَى الأُولَى', transliteration: 'Jumādā al-ūlā', meaning: '5th month' },
+        { arabic: 'جُمَادَى الآخِرَة', transliteration: 'Jumādā al-Ākhirah', meaning: '6th month' },
+        { arabic: 'رَجَب', transliteration: 'Rajab', meaning: '7th month', notes: 'A sacred month' },
+        { arabic: 'شَعْبَان', transliteration: 'Shaʿbān', meaning: '8th month' },
+        { arabic: 'رَمَضَان', transliteration: 'Ramaḍān', meaning: '9th month', notes: 'The month of fasting' },
+        { arabic: 'شَوَّال', transliteration: 'Shawwāl', meaning: '10th month' },
+        { arabic: 'ذُو القَعْدَة', transliteration: 'Dhū al-Qaʿdah', meaning: '11th month', notes: 'A sacred month' },
+        { arabic: 'ذُو الحِجَّة', transliteration: 'Dhū al-Ḥijjah', meaning: '12th month', notes: 'The month of Ḥajj; a sacred month' },
+    ],
+  },
 ];
 
 /* ───────────────────────── grammar data ───────────────────────── */
@@ -387,6 +542,74 @@ const grammarTopics: GrammarTopic[] = [
       { arabic: "كِتَابُنَا", transliteration: "Kitābunā", meaning: "Our book", note: "ـنَا = our" },
     ],
   },
+  {
+    id: "verb-present",
+    title: "Present & Future Tense",
+    content: "The present tense (al-muḍāriʿ) is built by adding prefixes to the root — most often ya- for ‘he’. From kataba (he wrote) comes yaktubu (he writes / is writing). To make it future, add the prefix sa- for the near future or the word sawfa for the more distant future.",
+    examples: [
+        { arabic: 'كَتَبَ', transliteration: 'kataba', meaning: 'He wrote', note: 'Past tense' },
+        { arabic: 'يَكْتُبُ', transliteration: 'yaktubu', meaning: 'He writes / is writing', note: 'Present — prefix ya-' },
+        { arabic: 'يَعْلَمُ', transliteration: 'yaʿlamu', meaning: 'He knows', note: 'Present (this exact form occurs in the Qurʼan)' },
+        { arabic: 'سَيَكْتُبُ', transliteration: 'sayaktubu', meaning: 'He will write', note: 'Near future — prefix sa-' },
+        { arabic: 'سَوْفَ تَعْلَمُون', transliteration: 'sawfa taʿlamūn', meaning: 'You will come to know', note: 'Distant future — sawfa' },
+    ],
+  },
+  {
+    id: "commands",
+    title: "Commands & Prohibitions",
+    content: "A command (imperative) tells someone to do something — qul! means ‘Say!’ and appears hundreds of times addressing the Prophet. A prohibition uses lā + the verb: lā taqul means ‘do not say’.",
+    examples: [
+        { arabic: 'قُلْ', transliteration: 'qul', meaning: 'Say!', note: 'A command — opens Sūrah al-Ikhlāṣ (112)' },
+        { arabic: 'ٱقْرَأْ', transliteration: 'iqraʾ', meaning: 'Read! / Recite!', note: 'The very first word revealed (96:1)' },
+        { arabic: 'ٱدْعُ', transliteration: 'udʿu', meaning: 'Call! / Invite!' },
+        { arabic: 'لَا تَقُلْ', transliteration: 'lā taqul', meaning: 'Do not say', note: 'Prohibition — lā + verb' },
+        { arabic: 'لَا تَحْزَنْ', transliteration: 'lā taḥzan', meaning: 'Do not grieve' },
+    ],
+  },
+  {
+    id: "idafah",
+    title: "Possession (Iḍāfah)",
+    content: "Arabic shows possession by simply placing two nouns side by side: ‘Lord (of) the worlds’, ‘Master (of the) Day (of) Judgment’. The first noun never takes ‘al-’; the second carries the sense of ‘of’. Iḍāfah appears twice in the very first sūrah.",
+    examples: [
+        { arabic: 'رَبِّ ٱلْعَـٰلَمِينَ', transliteration: 'rabbi l-ʿālamīn', meaning: 'Lord of the worlds', note: 'Al-Fātiḥah 1:2 — two nouns, no ‘al-’ on the first' },
+        { arabic: 'يَوْمِ ٱلدِّينِ', transliteration: 'yawmi d-dīn', meaning: 'the Day of Judgment', note: 'Al-Fātiḥah 1:4' },
+        { arabic: 'كِتَابُ ٱللَّهِ', transliteration: 'kitābu llāh', meaning: 'the Book of Allah' },
+    ],
+  },
+  {
+    id: "negation",
+    title: "Negation (Not / Never)",
+    content: "Arabic uses different words for ‘not’ depending on tense. lā negates the present and forms ‘do not’ commands. mā negates the past. lam negates the past but attaches to a present-tense verb. lan negates the future (‘will never’).",
+    examples: [
+        { arabic: 'لَا يَعْلَمُ', transliteration: 'lā yaʿlamu', meaning: 'He does not know', note: 'Present' },
+        { arabic: 'مَا قَالَ', transliteration: 'mā qāla', meaning: 'He did not say', note: 'Past — with mā' },
+        { arabic: 'لَمْ يَلِدْ', transliteration: 'lam yalid', meaning: 'He does not beget', note: 'Past meaning — lam + present form (Al-Ikhlāṣ 112:3)' },
+        { arabic: 'لَنْ نُؤْمِنَ', transliteration: 'lan nuʾmina', meaning: 'We will never believe', note: 'Future — lan' },
+    ],
+  },
+  {
+    id: "inna",
+    title: "Inna & Its Sisters",
+    content: "A small family of words (inna, anna, lākinna, layta, laʿalla) come at the head of a sentence to add emphasis or shades of meaning. inna means ‘indeed / truly’ and is extremely common. The noun right after it takes the ending -a.",
+    examples: [
+        { arabic: 'إِنَّ ٱللَّهَ', transliteration: 'inna llāha', meaning: 'Indeed Allah…', note: 'inna + Allāh (note the -a ending)' },
+        { arabic: 'إِنَّآ', transliteration: 'innā', meaning: 'Indeed We', note: 'inna + ‘we’ — opens Sūrah al-Kawthar (108:1)' },
+        { arabic: 'لَعَلَّ', transliteration: 'laʿalla', meaning: 'so that / perhaps', note: 'A ‘sister’ of inna' },
+        { arabic: 'لَـٰكِنَّ', transliteration: 'lākinna', meaning: 'but / however' },
+    ],
+  },
+  {
+    id: "plurals-duals",
+    title: "Plurals & the Dual",
+    content: "Besides singular and plural, Arabic has a special ‘dual’ form for exactly two. Sound plurals add -ūn/-īn (masculine) or -āt (feminine); many words instead take an irregular ‘broken’ plural. The dual adds -āni/-ayni — the refrain of Sūrah ar-Raḥmān, rabbikumā, means ‘the Lord of you two’.",
+    examples: [
+        { arabic: 'مُسْلِم', transliteration: 'muslim', meaning: 'a Muslim', note: 'Singular' },
+        { arabic: 'مُسْلِمُون', transliteration: 'muslimūn', meaning: 'Muslims', note: 'Sound masculine plural (-ūn)' },
+        { arabic: 'مُسْلِمَات', transliteration: 'muslimāt', meaning: 'Muslim women', note: 'Sound feminine plural (-āt)' },
+        { arabic: 'كُتُب', transliteration: 'kutub', meaning: 'books', note: 'Broken plural of kitāb — the inner pattern changes' },
+        { arabic: 'رَبِّكُمَا', transliteration: 'rabbikumā', meaning: 'your Lord (of you two)', note: 'Dual — the refrain of Sūrah ar-Raḥmān (55:13)' },
+    ],
+  },
 ];
 
 /* ───────────────────────── phrases data ───────────────────────── */
@@ -405,6 +628,7 @@ const phraseCategories: PhraseCategory[] = [
       { arabic: "بِسْمِ اللَّه", transliteration: "Bismillāh", meaning: "In the name of Allah", usage: "Said before starting any action — eating, drinking, entering a place, beginning work." },
       { arabic: "الحَمْدُ لِلَّه", transliteration: "Al-ḥamdu lillāh", meaning: "All praise is for Allah", usage: "Said to express gratitude — after eating, sneezing, receiving good news, or in any situation." },
       { arabic: "سُبْحَانَ اللَّه", transliteration: "Subḥān Allāh", meaning: "Glory be to Allah", usage: "Said in amazement, wonder, or to glorify Allah. Common in dhikr." },
+      { arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", transliteration: "Subḥān Allāhi wa bi-ḥamdih", meaning: "Glory be to Allah and praise is His", usage: "A short, weighty dhikr. The Prophet ﷺ said these are two expressions \u201clight on the tongue, but heavy in scale, dear to the Compassionate One\u201d (Muslim 48:41)." },
       { arabic: "اللَّهُ أَكْبَر", transliteration: "Allāhu Akbar", meaning: "Allah is the Greatest", usage: "The opening of every prayer, said in adhan, and to express awe at Allah's greatness." },
       { arabic: "لَا إِلَٰهَ إِلَّا اللَّه", transliteration: "Lā ilāha illā Allāh", meaning: "There is no god but Allah", usage: "The declaration of faith (shahada, first part). The most important phrase in Islam." },
       { arabic: "إِنْ شَاءَ اللَّه", transliteration: "In shā' Allāh", meaning: "If Allah wills", usage: "Said when speaking about future plans. Acknowledges that all outcomes are in Allah's hands." },
@@ -451,28 +675,17 @@ const phraseCategories: PhraseCategory[] = [
       { arabic: "صَلَّى اللَّهُ عَلَيْهِ وَسَلَّم", transliteration: "Ṣalla Allāhu 'alayhi wa sallam", meaning: "May Allah's peace and blessings be upon him", usage: "Said after mentioning Prophet Muhammad." },
     ],
   },
-];
-
-/* ───────────────────────── numbers data ───────────────────────── */
-
-const numbers = [
-  { arabic: "٠", numeral: "0", word: "صِفْر", transliteration: "Ṣifr" },
-  { arabic: "١", numeral: "1", word: "وَاحِد", transliteration: "Wāḥid" },
-  { arabic: "٢", numeral: "2", word: "اِثْنَان", transliteration: "Ithnān" },
-  { arabic: "٣", numeral: "3", word: "ثَلَاثَة", transliteration: "Thalāthah" },
-  { arabic: "٤", numeral: "4", word: "أَرْبَعَة", transliteration: "Arba'ah" },
-  { arabic: "٥", numeral: "5", word: "خَمْسَة", transliteration: "Khamsah" },
-  { arabic: "٦", numeral: "6", word: "سِتَّة", transliteration: "Sittah" },
-  { arabic: "٧", numeral: "7", word: "سَبْعَة", transliteration: "Sab'ah" },
-  { arabic: "٨", numeral: "8", word: "ثَمَانِيَة", transliteration: "Thamāniyah" },
-  { arabic: "٩", numeral: "9", word: "تِسْعَة", transliteration: "Tis'ah" },
-  { arabic: "١٠", numeral: "10", word: "عَشَرَة", transliteration: "'Asharah" },
-  { arabic: "٢٠", numeral: "20", word: "عِشْرُون", transliteration: "'Ishrūn" },
-  { arabic: "٣٠", numeral: "30", word: "ثَلَاثُون", transliteration: "Thalāthūn" },
-  { arabic: "٤٠", numeral: "40", word: "أَرْبَعُون", transliteration: "Arba'ūn" },
-  { arabic: "٥٠", numeral: "50", word: "خَمْسُون", transliteration: "Khamsūn" },
-  { arabic: "١٠٠", numeral: "100", word: "مِائَة", transliteration: "Mi'ah" },
-  { arabic: "١٠٠٠", numeral: "1,000", word: "أَلْف", transliteration: "Alf" },
+  {
+    id: "responses",
+    name: "Responses & Etiquette",
+    phrases: [
+      { arabic: 'يَرْحَمُكَ اللَّه', transliteration: 'Yarḥamuk Allāh', meaning: 'May Allah have mercy on you', usage: 'Said to someone who sneezes and praises Allah. The exchange has three steps: the sneezer says Al-ḥamdu lillāh, you reply Yarḥamuk Allāh, and they answer Yahdīkum Allāh (Bukhari 78:248). See Daily Life for the full sunnah of sneezing.' },
+      { arabic: 'يَهْدِيكُمُ اللَّه', transliteration: 'Yahdīkum Allāh', meaning: 'May Allah guide you', usage: 'The sneezer’s reply to ‘Yarḥamuk Allāh’ (Bukhari 78:248).' },
+      { arabic: 'وَعَلَيْكُمُ السَّلَامُ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُه', transliteration: 'Wa ʿalaykum us-salām wa raḥmatullāhi wa barakātuh', meaning: 'And upon you be peace, and the mercy of Allah and His blessings', usage: 'The fullest reply to the greeting of salām — each added phrase carries more reward.' },
+      { arabic: 'فِي أَمَانِ اللَّه', transliteration: 'Fī amāni llāh', meaning: 'In the protection of Allah', usage: 'A warm way to say farewell — ‘may you be in Allah’s care’.' },
+      { arabic: 'لَا بَأْسَ طَهُورٌ إِنْ شَاءَ اللَّه', transliteration: 'Lā baʾsa ṭahūrun in shāʾ Allāh', meaning: 'No harm, it is a purification, Allah willing', usage: 'Said when visiting someone who is ill — the Prophet would comfort the sick with these words.' },
+    ],
+  },
 ];
 
 /* ───────────────────────── component ───────────────────────── */
@@ -616,6 +829,135 @@ function LearnArabicContent() {
                 </AnimatePresence>
               )}
             </ContentCard>
+
+            {/* Special letters & forms */}
+            <ContentCard delay={0.15}>
+              <h2 className="text-lg font-semibold text-themed mb-2">Special Letters &amp; Forms</h2>
+              <p className="text-sm text-themed-muted mb-4">
+                Open any surah and you immediately meet characters that are not in the 28-letter grid. These are not new letters to memorise — they are forms and marks built from letters you already know. Knowing them on sight is the difference between stumbling and reading smoothly.
+              </p>
+              <div className="space-y-3">
+                {specialLetters.map((s) => (
+                  <div key={s.name} className="rounded-lg border sidebar-border p-3 sm:p-4 flex flex-col sm:flex-row gap-3 sm:gap-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <div className="text-center sm:w-20 shrink-0">
+                      <p className="text-3xl sm:text-4xl font-arabic text-gold leading-none">{s.char}</p>
+                      <p className="text-[10px] text-themed-muted mt-1 italic">{s.translit}</p>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-sm text-themed mb-1">{s.name}</h3>
+                      <p className="text-xs text-themed-muted leading-relaxed mb-2">{s.note}</p>
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
+                        <span className="font-arabic text-gold text-sm sm:text-base">{s.example.word}</span>
+                        <SpeakButton text={s.example.word} className="p-1" />
+                        <span className="text-themed-muted">—</span>
+                        <span className="text-themed italic">{s.example.translit}</span>
+                        <span className="text-themed-muted">({s.example.meaning})</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ContentCard>
+
+            {/* Easily confused sounds */}
+            <ContentCard delay={0.2}>
+              <h2 className="text-lg font-semibold text-themed mb-2">Easily Confused Sounds</h2>
+              <p className="text-sm text-themed-muted mb-4">
+                Several Arabic letters sound similar to an English ear but are pronounced from different places — and mixing them up changes the meaning of the word (and of what you recite). Tap each word to compare.
+              </p>
+              <div className="space-y-2.5">
+                {confusedSounds.map((c, i) => (
+                  <div key={i} className="rounded-lg border sidebar-border p-3 sm:p-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <div className="flex items-center justify-center gap-3 sm:gap-6 mb-2">
+                      {[c.a, c.b].map((x, j) => (
+                        <div key={j} className="flex items-center gap-1.5 text-center">
+                          <div>
+                            <p className="text-xl sm:text-2xl font-arabic text-gold">{x.ar}</p>
+                            <p className="text-[11px] text-themed italic">{x.tr}</p>
+                            <p className="text-[10px] text-themed-muted">{x.m}</p>
+                          </div>
+                          <SpeakButton text={x.ar} className="p-1.5" />
+                          {j === 0 && <span className="text-themed-muted mx-1 sm:mx-2">vs</span>}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-themed-muted/90 leading-relaxed text-center">{c.note}</p>
+                  </div>
+                ))}
+              </div>
+            </ContentCard>
+
+            {/* Put it together — first reading */}
+            <ContentCard delay={0.25}>
+              <h2 className="text-lg font-semibold text-themed mb-2">Put It Together — Your First Reading</h2>
+              <p className="text-sm text-themed-muted mb-4">
+                Reading Arabic is simply joining a consonant to its vowel, then joining letters into a word. Letters connect within a word and are read right-to-left. Start with these, then decode two short surahs you likely already know.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-5">
+                {joiningDemo.map((d) => (
+                  <div key={d.joined} className="rounded-lg border sidebar-border p-3 text-center" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <p className="text-lg font-arabic text-themed-muted mb-1" dir="rtl">{d.parts.join("  +  ")}</p>
+                    <p className="text-themed-muted text-xs mb-1">→</p>
+                    <div className="flex items-center justify-center gap-1.5">
+                      <p className="text-2xl font-arabic text-gold">{d.joined}</p>
+                      <SpeakButton text={d.joined} className="p-1" />
+                    </div>
+                    <p className="text-[11px] text-themed italic mt-0.5">{d.tr} — {d.m}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-3">
+                {readingDecode.map((r) => (
+                  <div key={r.ref} className="rounded-lg border sidebar-border p-3 sm:p-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <p className="text-[11px] text-gold/70 uppercase tracking-wider">{r.ref}</p>
+                      <SpeakButton text={r.arabic} className="p-1.5" />
+                    </div>
+                    <div className="flex flex-wrap gap-x-3 gap-y-2 justify-end mb-2" dir="rtl">
+                      {r.words.map((w, k) => (
+                        <div key={k} className="text-center">
+                          <p className="text-lg sm:text-xl font-arabic text-gold">{w.t}</p>
+                          <p className="text-[10px] text-themed italic" dir="ltr">{w.tr}</p>
+                          <p className="text-[10px] text-themed-muted" dir="ltr">{w.m}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-themed-muted">{r.english}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-themed-muted mt-4">
+                Keep going with the word-by-word mode in the{" "}
+                <a href="/quran" className="text-gold hover:underline">Quran reader</a>{" "}
+                — tap any verse to see each word broken down like the examples above.
+              </p>
+            </ContentCard>
+
+            {/* Writing the letters */}
+            <ContentCard delay={0.3}>
+              <h2 className="text-lg font-semibold text-themed mb-2">Writing the Letters</h2>
+              <p className="text-sm text-themed-muted mb-3">
+                Recognising letters is only half of it — writing them fixes them in memory, which is why this is where children (and many adults) begin. A few starting points, especially for parents teaching kids:
+              </p>
+              <ul className="space-y-2">
+                {[
+                  "Write right-to-left. Each letter — and the whole word — is built starting from the right side.",
+                  "Most letters sit on the line (the baseline). A few descend below it, like ج ح خ ع ن ق, which dip under the line.",
+                  "Write the main body of the letter first, then add the dots and marks afterwards — just as you dot an ‘i’ last in English.",
+                  "Learn the four forms together (isolated, initial, medial, final) rather than one at a time, so joining feels natural from the start.",
+                  "For young children, trace large letters first, say the letter’s sound aloud while writing, and keep sessions short and daily.",
+                ].map((t) => (
+                  <li key={t} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
+                    <span className="text-gold/50 mt-0.5">&#8226;</span>
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs text-themed-muted mt-3">
+                Teaching children? See the{" "}
+                <a href="/kids" className="text-gold hover:underline">Kids</a> section for age-appropriate activities.
+              </p>
+            </ContentCard>
           </motion.div>
         )}
 
@@ -685,6 +1027,28 @@ function LearnArabicContent() {
                   </div>
                 ))}
               </div>
+            </ContentCard>
+
+            {/* Mushaf symbols — waqf & markers */}
+            <ContentCard delay={0.2}>
+              <h2 className="text-lg font-semibold text-themed mb-2">Symbols in the Muṣḥaf</h2>
+              <p className="text-sm text-themed-muted mb-4">
+                Alongside the vowels, a printed muṣḥaf carries a set of small symbols that guide recitation — mainly the <em>waqf</em> (stopping) signs that tell you where it is best to pause or continue. These come from the science of tajwīd and appear on the very first page. Here are the ones you will meet most:
+              </p>
+              <div className="space-y-2">
+                {mushafSymbols.map((s) => (
+                  <div key={s.name} className="flex items-center gap-3 sm:gap-4 rounded-lg border sidebar-border p-2.5 sm:p-3" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <span className="text-2xl sm:text-3xl font-arabic text-gold w-14 sm:w-16 text-center shrink-0 leading-none">{s.symbol}</span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-xs sm:text-sm text-themed">{s.name}</h3>
+                      <p className="text-[11px] sm:text-xs text-themed-muted leading-relaxed">{s.meaning}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-themed-muted mt-3">
+                Stopping signs are guidance for beautiful, meaning-preserving recitation, not strict obligations (except the compulsory stop). Learning them well is part of tajwīd — see the Learning Tips tab.
+              </p>
             </ContentCard>
           </motion.div>
         )}
@@ -853,51 +1217,30 @@ function LearnArabicContent() {
           </motion.div>
         )}
 
-        {/* ═══════════════ NUMBERS ═══════════════ */}
-        {activeSection === "numbers" && (
-          <motion.div key="numbers" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="space-y-6">
-            <ContentCard>
-              <h2 className="text-lg font-semibold text-themed mb-2">Arabic Numbers</h2>
-              <p className="text-sm text-themed-muted mb-4">
-                Arabic numerals (the ones used in the Arab world) are the ancestors of the Western numerals we use today. They read left-to-right, even though Arabic text reads right-to-left.
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                {numbers.map((n, i) => (
-                  <motion.div
-                    key={n.numeral}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.03 }}
-                    className="rounded-lg border sidebar-border p-2.5 sm:p-3 text-center"
-                    style={{ backgroundColor: "var(--color-bg)" }}
-                  >
-                    <div className="flex items-center justify-center gap-2 sm:gap-3 mb-1">
-                      <span className="text-xl sm:text-2xl font-arabic text-gold">{n.arabic}</span>
-                      <span className="text-lg text-themed-muted">=</span>
-                      <span className="text-lg text-themed font-mono">{n.numeral}</span>
-                    </div>
-                    <div className="flex items-center justify-center gap-1">
-                      <p className="text-sm sm:text-base font-arabic text-themed">{n.word}</p>
-                      <SpeakButton text={n.word} className="p-1" />
-                    </div>
-                    <p className="text-[10px] text-themed-muted italic">{n.transliteration}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </ContentCard>
-
-            <ContentCard delay={0.1}>
-              <h3 className="text-sm font-semibold text-themed mb-2">Fun Fact</h3>
-              <p className="text-xs text-themed-muted leading-relaxed">
-                The word &ldquo;zero&rdquo; in English comes from the Arabic &ldquo;صِفْر&rdquo; (ṣifr), meaning &ldquo;empty.&rdquo; Muslim mathematicians, including al-Khwarizmi (from whose name we get the word &ldquo;algorithm&rdquo;), were instrumental in developing the numeral system that the entire world uses today. The word &ldquo;algebra&rdquo; also comes from Arabic: &ldquo;الجَبْر&rdquo; (al-jabr), the title of al-Khwarizmi&apos;s famous mathematical treatise.
-              </p>
-            </ContentCard>
-          </motion.div>
-        )}
-
         {/* ═══════════════ LEARNING TIPS ═══════════════ */}
         {activeSection === "tips" && (
           <motion.div key="tips" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="space-y-6">
+            {/* Why learn Quranic Arabic */}
+            <ContentCard>
+              <h2 className="text-lg font-semibold text-themed mb-2">Why Learn the Language of the Qur&rsquo;an?</h2>
+              <p className="text-sm text-themed-muted leading-relaxed mb-4">
+                Learning Arabic lets you meet Allah&rsquo;s words directly, without a translator standing between you and the speech of your Lord. The Qur&rsquo;an itself was sent in Arabic precisely so it could be understood, and the reward for engaging with it is immense:
+              </p>
+              <ul className="space-y-2 mb-3">
+                <li className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"><span className="text-gold/50 mt-0.5">&#8226;</span><span>&ldquo;The best among you (Muslims) are those who learn the Qur'an and teach it&rdquo; <span className="text-gold/70">(Bukhari 66:49)</span></span></li>
+                <li className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"><span className="text-gold/50 mt-0.5">&#8226;</span><span>&ldquo;One who is proficient in the Qur'an is associated with the noble, upright, recording angels; and he who falters in it, and finds it difficult for him, will have two rewards&rdquo; <span className="text-gold/70">(Muslim 6:290)</span></span></li>
+                <li className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"><span className="text-gold/50 mt-0.5">&#8226;</span><span>&ldquo;Recite the Qur'an, for on the Day of Resurrection it will come as an intercessor for those who recite It…&rdquo; <span className="text-gold/70">(Muslim 6:302)</span></span></li>
+                <li className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"><span className="text-gold/50 mt-0.5">&#8226;</span><span>&ldquo;[Whoever recites a letter] from Allah's Book, then he receives the reward from it, and the reward of ten the like of it…&rdquo; <span className="text-gold/70">(Tirmidhi 45:36)</span></span></li>
+              </ul>
+              <ul className="space-y-2">
+                <li className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"><span className="text-gold/50 mt-0.5">&#8226;</span><span>&ldquo;We have sent it down as an Arabic Qur’an so that you may understand.&rdquo; <span className="text-gold/70">(Quran 12:2)</span></span></li>
+                <li className="text-xs text-themed-muted leading-relaxed flex items-start gap-2"><span className="text-gold/50 mt-0.5">&#8226;</span><span>&ldquo;We have certainly made the Qur’an easy to understand and remember; is there anyone to take heed?&rdquo; <span className="text-gold/70">(Quran 54:17)</span></span></li>
+              </ul>
+              <p className="text-xs text-themed-muted leading-relaxed mt-4">
+                And Allah has promised the effort is achievable &mdash; that last verse <span className="text-gold/70">(Quran 54:17)</span> is repeated four times in Sūrah al-Qamar. You are not expected to master it overnight &mdash; every letter you learn is a step closer to His words.
+              </p>
+            </ContentCard>
+
             {[
               {
                 title: "1. Start with the Alphabet & Sounds",
@@ -921,7 +1264,7 @@ function LearnArabicContent() {
               },
               {
                 title: "6. Study Tajwīd (Recitation Rules)",
-                detail: "Tajwīd is the science of pronouncing every letter from its correct place of articulation, with its proper characteristics. Basic rules include: iẓhār (clear pronunciation), idghām (merging letters), ikhfā' (hiding nasalization), iqlab (converting), madd (elongation), and waqf (stopping). Find a teacher — tajwīd is best learned through oral instruction.",
+                detail: "Tajwīd is the science of reciting every letter from its correct place of articulation (makhraj) with its proper qualities — Allah commands \u2018…recite the Qur’an at a measured pace\u2019 (Quran 73:4), and the reward is high: \u2018One who is proficient in the Qur'an is associated with the noble, upright, recording angels; and he who falters in it, and finds it difficult for him, will have two rewards\u2019 (Muslim 6:290). The core rules cover nūn sākinah and tanwīn (iẓhār = clear; idghām = merging; iqlāb = turning n into m before bāʼ; ikhfāʼ = light nasalisation), the rules of mīm sākinah, qalqalah (a slight \u2018echo\u2019 on the letters qāf, ṭāʾ, bāʾ, jīm, dāl when they carry sukūn), ghunnah (nasalisation held about two counts), and madd (elongation held 2, 4, or 6 counts). Common beginner mistakes: rushing the long vowels, softening the heavy/emphatic letters, and slipping a vowel onto a sukūn. Because it is judged by the ear, tajwīd is best learned face-to-face — find a qualified teacher, in person or online, and recite back to them.",
               },
               {
                 title: "7. Be Consistent — Even 10 Minutes Daily",
@@ -937,6 +1280,29 @@ function LearnArabicContent() {
                 <p className="text-xs text-themed-muted leading-relaxed">{tip.detail}</p>
               </ContentCard>
             ))}
+
+            {/* Reading our transliteration */}
+            <ContentCard delay={0.45}>
+              <h3 className="text-sm font-semibold text-themed mb-2">Reading Our Transliteration</h3>
+              <p className="text-xs text-themed-muted leading-relaxed mb-3">
+                This app (and the Quran reader) uses a standard academic transliteration. A dot under a letter or a line over a vowel is not decoration — it tells you exactly which Arabic sound is meant. Here is the key:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                {[
+                  ["ā, ī, ū", "A line (macron) means a long vowel — hold it for two beats: ā (father), ī (see), ū (moon)."],
+                  ["ḥ vs h", "ḥ (dot below) is the deep, breathy ح from the throat; plain h is the soft ه."],
+                  ["ṣ, ḍ, ṭ, ẓ", "A dot below marks an emphatic (heavy) letter — ص ض ط ظ — pronounced deeper than the light s, d, t, dh."],
+                  ["ʿ vs ʾ", "ʿ (open half-ring) is the letter ع (a deep throat sound); ʾ (closed half-ring) is the hamza ء (a glottal stop)."],
+                  ["th, dh, kh, sh, gh", "Two letters standing for one Arabic sound: th (ث), dh (ذ), kh (خ), sh (ش), gh (غ) — not t+h, etc."],
+                  ["doubled letters", "A doubled consonant (e.g. rabb, Allāh) is a shaddah — held or stressed longer."],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex items-start gap-2">
+                    <span className="text-xs font-semibold text-gold shrink-0 w-24">{k}</span>
+                    <span className="text-[11px] text-themed-muted leading-relaxed flex-1">{v}</span>
+                  </div>
+                ))}
+              </div>
+            </ContentCard>
 
             <ContentCard delay={0.5}>
               <h3 className="text-sm font-semibold text-themed mb-3">Recommended Resources</h3>

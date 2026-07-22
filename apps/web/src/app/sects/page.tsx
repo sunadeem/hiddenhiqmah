@@ -12,6 +12,7 @@ import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import Accordion from "@hidden-hiqmah/ui/components/Accordion";
 
 /* ───────────────────────── types ───────────────────────── */
 
@@ -52,6 +53,18 @@ const whyItMatters = [
     detail:
       "Understanding the origins and beliefs of different sects — with fairness and scholarly rigour — helps Muslims identify innovations (bid'ah) and protect their creed. The early scholars wrote extensively on this topic to safeguard the Ummah.",
     reference: "Al-Milal wan-Nihal by ash-Shahrastani",
+  },
+  {
+    point: "Declaring a Muslim a disbeliever (takfir) is the gravest of accusations",
+    detail:
+      "Ahl al-Sunnah warn sternly against loosely branding fellow Muslims as disbelievers — the very instinct that drove the first sect, the Khawarij. The Prophet ﷺ said: 'If a man says to his brother, O Kafir (disbeliever)!' Then surely one of them is such (i.e., a Kafir).' In another wording: 'When a man calls his brother an unbeliever, it returns (at least) to one of them.' If the accusation is untrue, its weight falls back on the one who made it. This is why takfir of a specific person is a ruling that belongs to qualified scholars — never to an app, an online argument, or an individual acting alone.",
+    reference: "Bukhari 78:130; Muslim 1:121; Muslim 1:122",
+  },
+  {
+    point: "Conditions and barriers must be established before anyone is judged",
+    detail:
+      "Even where a belief or statement is clearly disbelief, judging that a particular person has left Islam requires meeting strict conditions and removing every barrier (such as ignorance, misinterpretation, or coercion) — a task for scholars, in the same way a judge, not a bystander, issues a verdict. The Prophet ﷺ said: 'If any believing man calls another believing man an unbeliever, if he is actually an infidel, it is all right ; if not, he will become an infidel.' The safe path for the ordinary Muslim is to clarify the truth about ideas while withholding verdicts on individuals.",
+    reference: "Abu Dawud 42:92",
   },
 ];
 
@@ -133,8 +146,32 @@ const sunniTopics: SectTopic[] = [
             "The four schools agree on the vast majority of issues. Their differences lie in secondary matters — how to place hands in prayer, the wording of qunut, specific inheritance scenarios, etc. None of these differences involve the fundamentals of the religion. The Prophet ﷺ said: 'If a judge makes a ruling, striving to reach the correct verdict, and he is right, he has two rewards. If he is wrong, he has one reward.'",
           note: "Bukhari 96:79; Muslim 30:18",
         },
+        {
+          title: "Do I have to follow a madhhab?",
+          detail:
+            "For most Muslims — especially newcomers who cannot yet weigh evidence directly — the practical answer of the majority of scholars is to learn and act upon one of the four schools, because a reliable school is a tested path back to the Quran and Sunnah, not a rival to them. A person is not sinful for following the ruling of qualified scholars in good faith. What matters is sincerity to the evidence, not loyalty to a name: if an authentic proof clearly shows a school's position on a point is weaker, the truth is followed. This is a question worth putting to a trusted local scholar rather than settling from the internet.",
+          note: "A practical orientation, not a fifth ruling — consult a qualified scholar for your situation",
+        },
+        {
+          title: "Switching schools and mixing rulings",
+          detail:
+            "Following one school does not bind a person to it for life; scholars permit moving to another school, and a layperson may take a different school's ruling in a specific need. What scholars caution against is 'talfiq' — assembling a single act of worship from several schools purely to chase the easiest option in each step, in a way none of the schools would accept. The guiding principle is to seek the correct ruling, not the most convenient one.",
+          note: "The four schools each represent disciplined ijtihad — cherry-picking to escape obligation is discouraged; ask a scholar when unsure",
+        },
+        {
+          title: "Praying behind a different madhhab",
+          detail:
+            "The next mosque may raise the hands differently, say the qunut aloud, or hold that touching one's spouse breaks wudu — all valid positions within the four schools. Ahl al-Sunnah pray behind one another without objection; the Companions and the early scholars did the same despite their fiqh differences. Minor variations in a congregation are a sign of the richness of the tradition, not a reason to split from it.",
+          note: "Secondary (furu') differences never justify boycotting a fellow Muslim's prayer",
+        },
+        {
+          title: "Legitimate disagreement: the Banu Qurayzah precedent",
+          detail:
+            "When the Prophet ﷺ sent the Companions to Banu Qurayzah he said: 'None should offer the 'Asr prayer but at Bani Quraiza.' Asr became due on the way. Some prayed at once, reasoning the command meant 'hurry,' while others delayed until they arrived, taking the words literally. When it was mentioned to the Prophet ﷺ, 'he did not blame anyone of them.' This is the classic proof that two sincere, evidence-based readings of the same text can both be within the fold — the very basis of respectful fiqh disagreement.",
+          note: "Bukhari 12:5; Bukhari 64:163",
+        },
       ],
-      source: "Al-Madhahib al-Arba'ah, Abdur-Rahman al-Jaziri; Siyar A'lam an-Nubala, adh-Dhahabi",
+      source: "Al-Madhahib al-Arba'ah, Abdur-Rahman al-Jaziri; Siyar A'lam an-Nubala, adh-Dhahabi; Bukhari 12:5; Bukhari 64:163",
     },
   },
   {
@@ -210,6 +247,86 @@ const sunniTopics: SectTopic[] = [
         },
       ],
       source: "Al-Aqidah at-Tahawiyyah; Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah; Bukhari 52:16; Bukhari 62:7; Bukhari 62:21",
+    },
+  },
+  {
+    id: "sunnah-bidah",
+    name: "Sunnah & Bid'ah",
+    content: {
+      intro:
+        "The whole subject of sects rests on one tool: the ability to tell the Sunnah (the Prophet's way) from bid'ah (religious innovation). Every deviant group deviated by adding to, or subtracting from, what the Prophet ﷺ and his Companions were upon. Understanding what bid'ah actually is — and what it is not — is how a Muslim recognises deviation without falling into the opposite extreme of branding every new thing 'haram.'",
+      verse: {
+        arabic: "وَكُلُّ بِدْعَةٍ ضَلاَلَةٌ",
+        text: "…and every innovation is error.",
+        ref: "Muslim 7:55",
+      },
+      points: [
+        {
+          title: "What bid'ah means",
+          detail:
+            "In the religious sense, bid'ah is introducing into the religion a way of worship or belief that has no basis in the Quran, the Sunnah, or the practice of the Companions — while treating it as part of the religion. In his Friday sermons the Prophet ﷺ would warn: 'The best of the speech is embodied in the Book of Allah, and the best of the guidance is the guidance given by Muhammad. And the most evil affairs are their innovations; and every innovation is error.'",
+          note: "Muslim 7:55",
+        },
+        {
+          title: "The farewell advice of al-'Irbad ibn Sariyah",
+          detail:
+            "The Prophet ﷺ gave a moving exhortation that made hearts tremble and eyes weep. Asked for a parting injunction, he said: '…those of you who live after me will see great disagreement. You must then follow my sunnah and that of the rightly-guided caliphs. Hold to it and stick fast to it. Avoid novelties, for every novelty is an innovation, and every innovation is an error.' This hadith is the charter of the whole subject: in times of confusion, cling to the established Sunnah and the way of the Rightly-Guided Caliphs.",
+          note: "Abu Dawud 42:12; Ibn Majah 0:42",
+        },
+        {
+          title: "What bid'ah is NOT",
+          detail:
+            "Innovation in the blameworthy sense concerns matters of religion. New worldly inventions — cars, printing, microphones, schools, cataloguing hadith, or compiling the Quran into one book — are not bid'ah, because they are not offered as acts of worship with their own reward. The Companions themselves undertook worldly and organisational novelties. Confusing beneficial worldly development with religious innovation is itself a mistake, and the balanced Sunni position avoids both extremes.",
+          note: "The Companions gathered the Quran into one mushaf and organised the standing tarawih congregation — worldly means serving the Sunnah, not additions to worship",
+        },
+        {
+          title: "Why bid'ah is treated so seriously",
+          detail:
+            "A person who innovates in worship implicitly claims the religion was incomplete — yet Allah declared: 'Today I have perfected your religion for you' (Quran 5:3). Bid'ah is also more dangerous than ordinary sin because the innovator rarely repents, believing he is doing good. This is why the Salaf guarded the boundaries of worship so carefully, and why recognising bid'ah is the reader's core defence against every sect on this page.",
+          note: "Quran 5:3; every group surveyed here departed from the Sunnah by innovation in creed or worship",
+        },
+      ],
+      source: "Muslim 7:55; Abu Dawud 42:12; Ibn Majah 0:42; Quran 5:3; Al-I'tisam, ash-Shatibi",
+    },
+  },
+  {
+    id: "jamaah",
+    name: "Holding to the Jama'ah",
+    content: {
+      intro:
+        "'The saved group' is identified with 'the Jama'ah' — the main body of the Muslims following the Prophet ﷺ and his Companions. These narrations are the canonical proof-texts behind the instruction to 'stay with the main body,' and they include the Prophet's practical guidance for times of confusion when the community seems fractured.",
+      verse: {
+        arabic: "يَدُ اللَّهِ مَعَ الْجَمَاعَةِ",
+        text: "Allah's Hand is with the Jama'ah",
+        ref: "Tirmidhi 33:9",
+      },
+      points: [
+        {
+          title: "Do not separate from the main body",
+          detail:
+            "The Prophet ﷺ said: 'One who found in his Amir something which he disliked should hold his patience, for one who separated from the main body of the Muslims even to the extent of a handspan and then he died would die the death of one belonging to the days of Jahiliyya.' Splitting away is treated as a grave matter — even a handspan's separation from the united body of Muslims is warned against.",
+          note: "Muslim 33:87",
+        },
+        {
+          title: "The Ummah will not unite on misguidance",
+          detail:
+            "Anas ibn Malik reported the Prophet ﷺ saying: 'My nation will not unite on misguidance, so if you see them differing, follow the great majority.' In another wording: 'Indeed Allah will not gather my Ummah … upon deviation, and Allah's Hand is over the Jama'ah, and whoever deviates, he deviates to the Fire.' The collective, guided body of the Ummah is divinely protected from agreeing upon error.",
+          note: "Ibn Majah 36:25; Tirmidhi 33:10",
+        },
+        {
+          title: "Hudhayfah's hadith — the callers at the gates of Hell",
+          detail:
+            "Hudhayfah ibn al-Yaman asked the Prophet ﷺ about coming evil. He described 'people standing and inviting at the gates of Hell. Whoso responds to their call they will throw them into the fire… a people having the same complexion as ours and speaking our language.' Asked what to do, he ﷺ said: 'You should stick to the main body of the Muslims and their leader.' And if there were none? 'Separate yourself from all these factions…' This is the practical protocol for confusing times.",
+          note: "Muslim 33:81",
+        },
+        {
+          title: "What 'the Jama'ah' actually means",
+          detail:
+            "The scholars explained that the Jama'ah is defined by truth, not mere numbers: it is the body of Muslims upon the way of the Prophet ﷺ and his Companions, and its people are the scholars of fiqh, knowledge, and hadith. Abdullah ibn al-Mubarak was asked, 'Who is the Jama'ah?' — and named the scholars of the Sunnah of his day. So holding to the Jama'ah means holding to the established, evidence-based understanding carried by trustworthy scholars, not simply following whichever crowd is largest.",
+          note: "Explained by at-Tirmidhi in his Sunan after 33:10; Al-I'tisam, ash-Shatibi",
+        },
+      ],
+      source: "Muslim 33:87; Muslim 33:81; Tirmidhi 33:9; Tirmidhi 33:10; Ibn Majah 36:25",
     },
   },
 ];
@@ -333,6 +450,41 @@ const shiaTopics: SectTopic[] = [
     },
   },
   {
+    id: "branches",
+    name: "Branches & Sub-sects",
+    content: {
+      intro:
+        "'Shia' is not a single body. Over disputes about which Imam to follow, the movement divided into branches whose beliefs range from very close to Sunni positions to esoteric doctrines that most scholars place outside Islam entirely. Naming them fairly matters, because the differences between them are large and practically relevant.",
+      points: [
+        {
+          title: "Twelvers (Ithna 'Ashariyyah)",
+          detail:
+            "By far the largest branch, dominant in Iran, Iraq, Azerbaijan, Bahrain, and southern Lebanon. They follow a line of twelve Imams ending with Muhammad al-Mahdi, whom they believe went into occultation. Their creed and practices are the ones described in the Key Beliefs and Distinct Practices sections of this page.",
+          note: "The largest Shia branch; see the Key Beliefs and Distinct Practices topics above",
+        },
+        {
+          title: "Zaidis (Fivers)",
+          detail:
+            "Named for Zayd ibn Ali, and concentrated historically in Yemen. Zaidis are widely regarded as the closest of the Shia branches to Ahl al-Sunnah: they do not hold the Imams to be infallible, do not curse or excommunicate the earlier Companions, accept the caliphates of Abu Bakr and Umar as valid, and their fiqh is close to the Sunni schools. Their disagreement with Sunnis is comparatively narrow.",
+          note: "Historically dominant in Yemen; the branch nearest to Sunni positions",
+        },
+        {
+          title: "Ismailis (Seveners): Nizari and Musta'li-Bohra",
+          detail:
+            "Ismailis split from the Twelvers over the seventh Imam. The Nizari Ismailis follow a living hereditary Imam, the Aga Khan, and are known for a highly interpretive (batini, 'inner-meaning') approach to religious texts. The Musta'li line includes the Dawoodi Bohras, led by a Da'i al-Mutlaq. Both hold doctrines of esoteric interpretation that differ substantially from mainstream Islam.",
+          note: "Al-Milal wan-Nihal, ash-Shahrastani — the batini (esoteric) schools",
+        },
+        {
+          title: "Alawites and Druze",
+          detail:
+            "The Alawites (Nusayris) of Syria and the Druze of the Levant grew out of Shia currents but developed secret, esoteric belief systems — including, among some, the near-deification of Ali or of other figures, and (among the Druze) belief in the transmigration of souls. Because these doctrines contradict the foundations of Tawhid, the majority of Muslim scholars — both Sunni and mainstream Shia — regard them as separate from Islam rather than a branch within it.",
+          note: "Al-Farq bayn al-Firaq, al-Baghdadi; classical heresiographies place the ghulat (extremists) outside Islam",
+        },
+      ],
+      source: "Al-Milal wan-Nihal, ash-Shahrastani; Al-Farq bayn al-Firaq, al-Baghdadi",
+    },
+  },
+  {
     id: "sunni-response",
     name: "The Sunni Position",
     content: {
@@ -393,6 +545,24 @@ const otherSects: SectTopic[] = [
           note: "Bukhari 61:118; Muslim 12:196",
         },
         {
+          title: "The founding incident: Dhul-Khuwaysirah",
+          detail:
+            "While the Prophet ﷺ was distributing wealth, a man of Banu Tamim named Dhul-Khuwaysirah objected: 'Be just, O Allah's Messenger!' The Prophet ﷺ replied: 'Woe to you ! Who would be just if I were not?' When Umar sought permission to strike his neck, the Prophet ﷺ refused and foretold: '…he has companions, and if you compare your prayers with their prayers and your fasting with theirs, you will look down upon your prayers and fasting… Yet they will go out of the religion as an arrow darts through the game's body.' Their hallmark — self-righteous zeal that presumes to correct even the Prophet ﷺ — was present from the very first.",
+          note: "Bukhari 88:15; Bukhari 78:189",
+        },
+        {
+          title: "Impressive worship, empty of guidance",
+          detail:
+            "The Prophet ﷺ said: 'There will appear some people among you whose prayer will make you look down upon yours, and whose fasting will make you look down upon yours, but they will recite the Qur'an which will not exceed their throats … and they will go out of Islam as an arrow goes out through the game.' Intense devotion is no proof of being upon the truth; the Khawarij were famous for their prayer and recitation, yet it did not reach their hearts.",
+          note: "Bukhari 66:83; Bukhari 88:14",
+        },
+        {
+          title: "'The dogs of the Hellfire'",
+          detail:
+            "The Prophet ﷺ said of them, as Ibn Abi Awfa reported: 'The Khawarij are the dogs of Hell.' He also described how at the end of time 'a people with new teeth (i.e., young in age), with foolish minds' would arise, speaking the finest words yet passing through Islam like an arrow — 'Whoever meets them, let him kill them, for killing them will bring a reward from Allah…' These are the strongest warnings issued against any group in the hadith corpus.",
+          note: "Ibn Majah 0:173; Tirmidhi 47:52; Ibn Majah 0:168; Bukhari 66:82",
+        },
+        {
           title: "They assassinated Ali ibn Abi Talib",
           detail:
             "In 40 AH, the Kharijite Abd al-Rahman ibn Muljam assassinated Ali (may Allah be pleased with him) while he was leading the Fajr prayer. They also plotted to kill Mu'awiyah and Amr ibn al-As on the same day but failed in those attempts.",
@@ -405,7 +575,82 @@ const otherSects: SectTopic[] = [
           note: "Bukhari 61:117; Muslim 12:196; fatawa of contemporary scholars",
         },
       ],
-      source: "Bukhari 61:117; Muslim 12:196; Maqalat al-Islamiyyin, al-Ash'ari",
+      source: "Bukhari 61:117; Bukhari 88:15; Bukhari 78:189; Bukhari 88:14; Bukhari 66:82; Bukhari 66:83; Tirmidhi 47:52; Ibn Majah 0:173; Ibn Majah 0:168; Muslim 12:196; Maqalat al-Islamiyyin, al-Ash'ari",
+    },
+  },
+  {
+    id: "ibadiyyah",
+    name: "Ibadiyyah",
+    content: {
+      intro:
+        "The Ibadiyyah are the third living branch of Islam alongside Sunnis and Shia — today the majority in Oman and present in parts of North and East Africa. They emerged from the moderate wing of the early Kharijite movement, though modern Ibadis firmly reject the 'Khariji' label and distance themselves from the extremism described above. They have their own school of law and their own creed.",
+      points: [
+        {
+          title: "Origins and the Kharijite question",
+          detail:
+            "The Ibadiyyah trace their name to Abdullah ibn Ibad al-Tamimi (2nd century AH) and their scholarly heritage to Jabir ibn Zayd, a student of Ibn Abbas. Classical Sunni heresiographies count them among the more moderate offshoots of the Khawarij who broke with the violent factions — declining to declare mainstream Muslims disbelievers or to sanction killing them. Contemporary Ibadis, however, reject any Kharijite descent and present themselves simply as a distinct madhhab.",
+          note: "Al-Milal wan-Nihal, ash-Shahrastani; modern Ibadi scholarship disputes the classical genealogy",
+        },
+        {
+          title: "Distinct creed points",
+          detail:
+            "Ibadi theology overlaps with the Mu'tazilah on several points that Ahl al-Sunnah differ with: they hold that the Quran is created rather than the uncreated speech of Allah, and they deny that the believers will see Allah with their eyes in the Hereafter. They also, like the early Khawarij, take a severe view of the Muslim who dies unrepentant from a major sin — though far more moderately expressed than the extremist factions.",
+          note: "Contrast Ahl al-Sunnah on the beatific vision: Quran 75:22-23; Bukhari 10:201",
+        },
+        {
+          title: "Their own hadith corpus",
+          detail:
+            "The Ibadiyyah do not rely on the six Sunni collections as their primary references. Their best-known compilation is the Musnad al-Rabi' ibn Habib, which they hold in high esteem. As with any tradition, Ahl al-Sunnah weigh such narrations against the established, rigorously authenticated Sunnah preserved through the science of isnad.",
+          note: "Musnad al-Rabi' ibn Habib is the principal Ibadi hadith reference",
+        },
+        {
+          title: "How they differ from the extremist Khawarij",
+          detail:
+            "It would be unjust to equate today's Ibadis with the arrow-through-the-game Khawarij of the hadith. Ibadi communities have historically been peaceable, do not practise takfir of the broader Ummah, and coexist within the wider Muslim world. Their differences with Ahl al-Sunnah are real and creedal, but they are engaged as a distinct school — not as the violent sect the Prophet ﷺ warned against.",
+          note: "Fairness ('adl) requires distinguishing the moderate living community from the historical extremists",
+        },
+      ],
+      source: "Al-Milal wan-Nihal, ash-Shahrastani; Al-Farq bayn al-Firaq, al-Baghdadi; Quran 75:22-23; Bukhari 10:201",
+    },
+  },
+  {
+    id: "qadariyyah-murjiah",
+    name: "Qadariyyah & Murji'ah",
+    content: {
+      intro:
+        "After the Khawarij, the next great fitna of creed concerned two opposite errors about faith and destiny: the Qadariyyah, who denied Allah's decree (qadar), and the Murji'ah, who emptied faith of actions. Ahl al-Sunnah define themselves against both by name — so it helps to know who they actually were.",
+      verse: {
+        arabic: "صِنْفَانِ مِنْ أُمَّتِي لَيْسَ لَهُمَا فِي الإِسْلاَمِ نَصِيبٌ الْمُرْجِئَةُ وَالْقَدَرِيَّةُ",
+        text: "There are two groups in my Ummah for whom there is no share in Islam: The Murji'ah and the Qadariyyah.",
+        ref: "Tirmidhi 32:17",
+      },
+      points: [
+        {
+          title: "The Qadariyyah — deniers of divine decree",
+          detail:
+            "The Qadariyyah claimed that man's actions are entirely his own and 'there is no such thing as Divine Decree.' The very first hadith of Sahih Muslim records that the first to speak this doctrine in Basra was Ma'bad al-Juhani. When it was reported to Abdullah ibn Umar, he disowned them completely: '…tell them that I have nothing to do with them and they have nothing to do with me,' swearing that Allah would not accept the charity of one who does not believe in the decree. That same chain then relates the famous hadith of Jibril, in which belief 'in the Divine Decree about good and evil' is named a pillar of faith.",
+          note: "Muslim 1:1; Abu Dawud 42:100",
+        },
+        {
+          title: "'The Magians of this community'",
+          detail:
+            "By making man an independent creator of his own acts alongside Allah, the Qadariyyah echoed the dualism of the Magians (who posited two creators, of good and of evil). The Prophet ﷺ said: 'The Qadariyyah are the Magians of this community.' Ahl al-Sunnah affirm both that Allah decrees all things and that man has real, accountable choice — holding the two truths together without denying either.",
+          note: "Abu Dawud 42:96",
+        },
+        {
+          title: "The Murji'ah — faith without actions",
+          detail:
+            "At the opposite extreme, the Murji'ah 'postponed' (irja') actions out of the definition of faith, holding that iman is mere belief in the heart which neither increases nor decreases, so that sin does no harm to one's faith. Ahl al-Sunnah reject this: iman is belief, speech, and action together, rising with obedience and falling with sin — the balanced position between the Murji'ah and the Khawarij (who made major sin outright disbelief).",
+          note: "See the Core Creed topic — 'Faith is belief, speech, and action' (Bukhari 2:2)",
+        },
+        {
+          title: "Two errors, one prophetic warning",
+          detail:
+            "The Prophet ﷺ named both together: 'There are two groups in my Ummah for whom there is no share in Islam: The Murji'ah and the Qadariyyah.' They err in opposite directions — one denies the decree, the other empties faith of works — and Ahl al-Sunnah steer the middle course between them, as they do between all extremes.",
+          note: "Tirmidhi 32:17",
+        },
+      ],
+      source: "Muslim 1:1; Abu Dawud 42:96; Abu Dawud 42:100; Tirmidhi 32:17; Maqalat al-Islamiyyin, al-Ash'ari",
     },
   },
   {
@@ -513,6 +758,46 @@ const otherSects: SectTopic[] = [
     },
   },
   {
+    id: "quranists",
+    name: "Quranists (Hadith Rejection)",
+    content: {
+      intro:
+        "'Quranists' or 'Quran-only' groups claim to follow the Quran while rejecting the Sunnah and the hadith entirely. It is one of the most common deviations an English-speaking Muslim meets online today — and, remarkably, the Prophet ﷺ described it almost word for word. This topic is the mirror image of the Hadith Sciences tab: it shows why the Sunnah is indispensable.",
+      verse: {
+        arabic: "وَمَآ ءَاتَىٰكُمُ ٱلرَّسُولُ فَخُذُوهُ وَمَا نَهَىٰكُمْ عَنْهُ فَٱنتَهُوا۟",
+        text: "Whatever the Messenger gives you, accept it, and whatever he forbids you, refrain from it…",
+        ref: "Quran 59:7",
+      },
+      points: [
+        {
+          title: "The Prophet ﷺ foretold this exact claim",
+          detail:
+            "He ﷺ said: 'Let me not find one of you reclining on his couch when he hears something regarding me which I have commanded or forbidden and saying: We do not know. What we found in Allah's Book we have followed.' The 'man on his couch' who accepts only what is in the Book and waves away the Prophet's own commands is described fourteen centuries before the modern movement appeared.",
+          note: "Abu Dawud 42:10; Tirmidhi 41:19",
+        },
+        {
+          title: "The Prophet's word carries the weight of revelation",
+          detail:
+            "In al-Miqdam's narration the Prophet ﷺ warned of the man who says, 'Between us and you is Allah's Book. So whatever we find in it that is lawful, we consider lawful, and whatever we find in it that is unlawful, we consider it unlawful,' and then declared: 'whatever the Messenger of Allah made unlawful, it is the same as what Allah made unlawful.' The Quran itself commands obedience to what the Messenger gives and forbids (Quran 59:7).",
+          note: "Tirmidhi 41:20; Quran 59:7",
+        },
+        {
+          title: "The Quran cannot be practised without the Sunnah",
+          detail:
+            "The Quran commands the prayer but never states its units or times; it commands zakat without fixing its rates; it commands Hajj without detailing its rites. The Prophet ﷺ said, 'Pray as you have seen me praying.' Rejecting the Sunnah does not leave 'pure Quran' — it leaves a religion that cannot actually be performed, which is why the science of hadith exists in the first place.",
+          note: "Bukhari 10:28 — 'Pray as you have seen me praying' (cross-reference the Hadith Sciences topic)",
+        },
+        {
+          title: "Not the same as critical scholarship",
+          detail:
+            "Rejecting authentic hadith wholesale is very different from the rigorous science of narrator criticism (see Hadith Sciences), which itself sifts weak and fabricated reports from sound ones. Ahl al-Sunnah do not accept every narration uncritically — they accept what is authenticated and act on it. The Quranist error is not scepticism about a weak chain; it is the rejection of the Prophet's authority as a source of the religion.",
+          note: "The remedy is the isnad system, not the discarding of the Sunnah",
+        },
+      ],
+      source: "Abu Dawud 42:10; Tirmidhi 41:19; Tirmidhi 41:20; Quran 59:7; Bukhari 10:28",
+    },
+  },
+  {
     id: "ahmadiyyah",
     name: "Ahmadiyyah",
     content: {
@@ -537,6 +822,12 @@ const otherSects: SectTopic[] = [
           note: "Tirmidhi 34:3",
         },
         {
+          title: "The Prophet ﷺ foretold false claimants",
+          detail:
+            "Far from catching Muslims off guard, movements built on a post-Muhammadan prophet were prophesied. The Prophet ﷺ said: 'The Last Hour will not come before there come forth thirty Dajjals (fraudulents), everyone presuming himself that he is an apostle of Allah,' and elsewhere: '…the Hour will not be established till there appear about thirty liars, all of whom will be claiming to be the messengers of Allah.' A claim to prophethood is thus a foretold sign of falsehood, not evidence of truth — a frame that applies to every false-prophet movement, not one group alone.",
+          note: "Abu Dawud 39:43; Bukhari 61:116",
+        },
+        {
           title: "Collaboration with colonial powers",
           detail:
             "Mirza Ghulam Ahmad publicly declared loyalty to the British Empire and prohibited jihad, at a time when the British were colonizing Muslim lands. He wrote that he had been 'raised to support the British government.' This context is relevant to understanding the movement's origins.",
@@ -549,7 +840,7 @@ const otherSects: SectTopic[] = [
           note: "Resolution of Muslim World League, 1974; Constitution of Pakistan, Second Amendment",
         },
       ],
-      source: "Quran 33:40; Bukhari 60:122; Tirmidhi 34:3; Resolution of Muslim World League, 1974",
+      source: "Quran 33:40; Bukhari 60:122; Tirmidhi 34:3; Abu Dawud 39:43; Bukhari 61:116; Resolution of Muslim World League, 1974",
     },
   },
   {
@@ -589,12 +880,196 @@ const otherSects: SectTopic[] = [
   },
 ];
 
+const modernTopics: SectTopic[] = [
+  {
+    id: "warning-signs",
+    name: "Reading the Landscape (& Warning Signs)",
+    content: {
+      intro:
+        "Walk into real mosques and you will hear labels immediately — Salafi, Deobandi, Barelwi, Tablighi, Ikhwani, Sufi. Most of these are not sects; they are orientations, movements, or trends within Ahl al-Sunnah that emphasise different things while sharing the same creed, the same five pillars, and the same qiblah. This tab describes them calmly. It opens with a protective checklist, because new Muslims are the prime recruiting target of the small number of genuinely deviant or cult-like fringe groups.",
+      points: [
+        {
+          title: "Movements are not sects",
+          detail:
+            "A sect departs from the creed of Ahl al-Sunnah; a movement is a way of prioritising within it — one stresses creed and evidence, another spiritual reform, another grassroots preaching, another political activism. Muslims across these currents pray together, marry one another, and make Hajj side by side. Treat the labels as descriptions of emphasis, not as walls, and never let a label become a reason to break from the wider body of Muslims.",
+          note: "Cross-reference the Ahl al-Sunnah tab — Holding to the Jama'ah",
+        },
+        {
+          title: "Warning sign: claims of special revelation or infallibility",
+          detail:
+            "A leader who claims private revelation, prophethood, or that he cannot err is the clearest danger sign. The Prophet ﷺ foretold 'thirty Dajjals (fraudulents), everyone presuming himself that he is an apostle of Allah.' No one after the Prophet ﷺ receives revelation or is infallible; a group built around such a claim has already left the path.",
+          note: "Abu Dawud 39:43",
+        },
+        {
+          title: "Warning sign: isolation and blanket takfir",
+          detail:
+            "Fringe groups cut recruits off from mainstream mosques, scholars, and even family, and declare everyone outside the group to be disbelievers. This is the Kharijite instinct the Prophet ﷺ condemned: 'If a man says to his brother, O Kafir (disbeliever)!' Then surely one of them is such (i.e., a Kafir).' Hudhayfah was told that in times of confusion the safe course is to 'stick to the main body of the Muslims and their leader' — the opposite of retreating into a closed faction.",
+          note: "Bukhari 78:130; Muslim 33:81",
+        },
+        {
+          title: "Warning sign: secrecy, control, and exploitation",
+          detail:
+            "Be wary of secret teachings revealed only to insiders, unquestioning obedience demanded to a leader, pressure to hand over money, and control over marriage or movement. The religion of the Prophet ﷺ was public and its knowledge open. Hudhayfah described the misguided callers as 'a people having the same complexion as ours and speaking our language' — they look and sound like ordinary Muslims, so the test is their teaching and conduct, not their appearance.",
+          note: "Muslim 33:81 — measure any group against open, scholar-anchored, mainstream Islam",
+        },
+      ],
+      source: "Muslim 33:81; Bukhari 78:130; Abu Dawud 39:43",
+    },
+  },
+  {
+    id: "salafiyyah",
+    name: "Salafiyyah & the 'Wahhabi' Label",
+    content: {
+      intro:
+        "'Salafiyyah' refers to a call to return to the understanding of the Salaf — the first three generations praised by the Prophet ﷺ — in creed and worship, giving primacy to the Quran and authentic Sunnah over later theological or juristic accretions. It is best understood as an orientation within Ahl al-Sunnah, not a separate sect.",
+      points: [
+        {
+          title: "Origin and emphasis",
+          detail:
+            "As a self-conscious modern movement it is associated with the 18th-century revivalist Muhammad ibn Abd al-Wahhab in Arabia and, more broadly, with reform currents that sought to strip away practices they viewed as innovations — especially at graves and shrines — and to reconnect worship directly to textual evidence. Its emphasis is on Tawhid, adherence to authentic hadith, and following the Salaf's creed.",
+          note: "The name derives from al-Salaf al-Salih, the righteous early generations (Bukhari 52:16)",
+        },
+        {
+          title: "The 'Wahhabi' label",
+          detail:
+            "'Wahhabi' is a label applied by others — often polemically — to those influenced by Ibn Abd al-Wahhab's call; adherents themselves generally reject it, since they claim to follow no man but the Salaf. As with any broad label, it lumps together a wide spectrum, from mainstream scholars to a fringe that drifts toward the harshness and takfir of the Khawarij. Judging individuals by a label rather than their actual beliefs is exactly what this page cautions against.",
+          note: "A label is not a verdict — weigh people by their stated creed and conduct",
+        },
+        {
+          title: "Where it sits relative to Ahl al-Sunnah",
+          detail:
+            "In creed, the Salafi call is squarely within Ahl al-Sunnah and overlaps heavily with the Hanbali tradition and the school of Ibn Taymiyyah. Points of tension with other Sunnis are usually about method — the role of the four madhhabs, attitudes to Sufism and to Ash'ari theology, and tone toward differing Muslims — rather than the fundamentals of the faith.",
+          note: "Differences here are largely of manhaj (method) within Sunni Islam, not of core creed",
+        },
+      ],
+      source: "Scholarly summary; see Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah for the underlying creed",
+    },
+  },
+  {
+    id: "deobandi-barelwi",
+    name: "Deobandi & Barelwi",
+    content: {
+      intro:
+        "Two of the largest movements in the South Asian Muslim world (and its global diaspora) emerged from 19th-century British India. Both are Sunni and Hanafi in fiqh and Maturidi in creed; their long-running rivalry is about spirituality, saint-veneration, and attitudes to certain practices — not about the pillars of Islam.",
+      points: [
+        {
+          title: "The Deobandi movement",
+          detail:
+            "Named after the seminary founded at Deoband in 1866, the Deobandi movement arose to preserve Islamic scholarship under colonial rule through a network of madrasas. It is Hanafi in fiqh, respects tasawwuf (Sufism) within the bounds of the Shariah, and tends toward caution against practices it views as innovations around graves and celebrations. It has produced vast scholarly output and many of the world's traditional seminaries follow its curriculum.",
+          note: "Hanafi-Maturidi, seminary-based, reformist toward popular practices",
+        },
+        {
+          title: "The Barelwi movement",
+          detail:
+            "Named after Ahmad Raza Khan of Bareilly (d. 1921), the Barelwi movement centres devotion to the Prophet ﷺ, celebration of the Mawlid, and a warm embrace of Sufi orders, saints, and their shrines. It too is Hanafi in fiqh and Maturidi in creed. Its differences with the Deobandis turn on the permissibility and framing of these devotional practices.",
+          note: "Hanafi-Maturidi, Sufi-devotional, Prophet-centred piety",
+        },
+        {
+          title: "Where they sit relative to Ahl al-Sunnah",
+          detail:
+            "Both are within Sunni Islam and share creed and worship at the fundamental level. Their disputes — over Mawlid, seeking blessings at shrines, and how far to venerate the righteous dead — echo the wider Sunni conversation about the boundary between honouring the pious and innovation. They are two orientations of the same Ummah, not two religions, and treating either community with contempt is contrary to the fairness this page calls for.",
+          note: "Intra-Sunni difference over devotional practice, not a break in creed",
+        },
+      ],
+      source: "Scholarly summary of modern South Asian Islamic movements",
+    },
+  },
+  {
+    id: "tablighi",
+    name: "Tablighi Jama'at",
+    content: {
+      intro:
+        "The Tablighi Jama'at is a grassroots revivalist and missionary movement — one of the largest voluntary religious movements in the world — focused on calling Muslims back to practising their faith through peer-to-peer preaching. It is a method of activism within Sunni Islam, not a sect with its own creed.",
+      points: [
+        {
+          title: "Origin and emphasis",
+          detail:
+            "Founded by Muhammad Ilyas al-Kandhlawi in India in 1926, and rooted in the Deobandi tradition, its method centres on small groups of ordinary Muslims who volunteer time to travel, stay in mosques, and gently encourage fellow Muslims toward prayer and good character. Its emphasis is deliberately non-political and non-controversial: personal reform, worship, and manners rather than doctrine or debate.",
+          note: "Grassroots self-reform and da'wah, Deobandi-linked, deliberately apolitical",
+        },
+        {
+          title: "Common critiques",
+          detail:
+            "Scholars who value the movement's sincerity have still raised concerns: a reliance on some weak narrations in popular texts used for motivation, over-emphasis on travelling for da'wah at the expense of seeking grounded knowledge, and men spending long periods away from families. These are critiques of method and balance offered from within Sunni Islam, not a charge of deviation in creed.",
+          note: "Critiques concern method and sourcing, not the fundamentals of the faith",
+        },
+        {
+          title: "Where it sits relative to Ahl al-Sunnah",
+          detail:
+            "The Tablighi Jama'at is squarely Sunni; its participants pray in ordinary mosques and hold mainstream beliefs. It is best seen as a channel for encouraging practice, most beneficial when paired with sound knowledge from qualified scholars.",
+          note: "A da'wah movement within Ahl al-Sunnah, not a distinct sect",
+        },
+      ],
+      source: "Scholarly summary of modern da'wah movements",
+    },
+  },
+  {
+    id: "political-movements",
+    name: "Islamic Political Movements",
+    content: {
+      intro:
+        "Some modern movements are defined less by a distinct creed than by a political project — the revival of Islamic governance and society. The Muslim Brotherhood and Hizb ut-Tahrir are the best known. Their members are generally Sunni; what distinguishes them is a programme and strategy, and they are engaged here descriptively.",
+      points: [
+        {
+          title: "The Muslim Brotherhood (al-Ikhwan al-Muslimun)",
+          detail:
+            "Founded by Hasan al-Banna in Egypt in 1928, the Brotherhood began as a movement of religious revival, education, and social welfare that grew into a major political and civic force across the Arab world. It is broadly Sunni and typically accommodates a range of theological and juristic backgrounds under a shared emphasis on gradual reform, activism, and organisation. Assessments of it vary widely across the Muslim world and are often bound up with local politics.",
+          note: "A revivalist-political movement spanning diverse Sunni backgrounds",
+        },
+        {
+          title: "Hizb ut-Tahrir",
+          detail:
+            "Founded by Taqi al-Din al-Nabhani in Jerusalem in 1953, Hizb ut-Tahrir is a political party whose single defining goal is the re-establishment of a global caliphate. It is known for intellectual and organisational activism and for rejecting participation in existing political systems. Some of its theological positions (for instance on certain questions of creed and the acceptance of khabar al-ahad in belief) have drawn criticism from mainstream Sunni scholars.",
+          note: "A caliphate-focused political party; some creedal positions are contested by mainstream scholars",
+        },
+        {
+          title: "Where they sit relative to Ahl al-Sunnah",
+          detail:
+            "These are principally political orientations rather than new sects; their followers are overwhelmingly Sunni Muslims. Sincere Muslims differ over their methods, priorities, and specific rulings, and this page takes no political side. The consistent Sunni counsel is to anchor any activism in sound knowledge and the unity of the Ummah, and to avoid the slide into declaring other Muslims disbelievers over political disagreement.",
+          note: "Political method, not a separate creed — keep disagreement from becoming takfir (Bukhari 78:130)",
+        },
+      ],
+      source: "Scholarly summary of modern Islamic political movements",
+    },
+  },
+  {
+    id: "sufi-orders",
+    name: "Contemporary Sufi Orders",
+    content: {
+      intro:
+        "Beyond the historical account of Sufism in the Other Groups tab, organised Sufi orders (turuq, singular tariqah) remain a living part of the Muslim landscape a newcomer will encounter — the Naqshbandi, Qadiri, Shadhili, Tijani, Chishti and others. They range from orders firmly within the Sunnah to some whose practices scholars critique.",
+      points: [
+        {
+          title: "What a tariqah is",
+          detail:
+            "A tariqah is a spiritual order organised around a chain of teachers (silsilah) and a set of litanies (awrad) and gatherings for remembrance (dhikr). Many observant Sunni Muslims belong to one while holding entirely mainstream creed and fiqh, using it as a structured framework for worship, discipline, and character.",
+          note: "An organised path of spiritual training within, ideally, the bounds of the Shariah",
+        },
+        {
+          title: "The spectrum of practice",
+          detail:
+            "Ahl al-Sunnah affirm the goal of purifying the soul (tazkiyah) but measure the means against the Sunnah. Orders whose gatherings stay within authentic dhikr and worship are unobjectionable; concerns arise where practices seen earlier appear — treating a shaykh as infallible, extreme claims, or seeking from the dead what may only be sought from Allah. The judgement is practice-by-practice, order-by-order, not a blanket verdict.",
+          note: "See the Sufism (Tasawwuf) topic in the Other Groups tab for the fuller treatment",
+        },
+        {
+          title: "Where they sit relative to Ahl al-Sunnah",
+          detail:
+            "Contemporary Sufi orders are, in the main, a devotional current within Sunni Islam rather than a sect apart. The balanced approach is neither to romanticise every practice nor to condemn tasawwuf wholesale, but to keep spiritual striving tethered to the Quran and the authentic Sunnah — the complete spiritual programme the Prophet ﷺ left behind.",
+          note: "Cross-reference Other Groups — Sufism (Tasawwuf)",
+        },
+      ],
+      source: "Scholarly summary; see Madarij as-Salikin, Ibn al-Qayyim on disciplined tazkiyah",
+    },
+  },
+];
+
 const sections = [
   { key: "intro", label: "Overview" },
   { key: "importance", label: "Why It Matters" },
   { key: "sunni", label: "Ahl al-Sunnah" },
   { key: "shia", label: "Shia Islam" },
   { key: "other", label: "Other Groups" },
+  { key: "modern", label: "Modern Movements" },
 ] as const;
 
 type SectionKey = (typeof sections)[number]["key"];
@@ -685,11 +1160,28 @@ function SectsContent() {
   const [activeOther, setActiveOther] = useState(
     subParam && otherSects.some((t) => t.id === subParam) ? subParam : "khawarij"
   );
+  const [activeModern, setActiveModern] = useState(
+    subParam && modernTopics.some((t) => t.id === subParam) ? subParam : "warning-signs"
+  );
   const [search, setSearch] = useState("");
 
   // Keep ?tab= / ?sub= in sync so the current view is shareable
   const syncUrl = (tab: SectionKey, sub?: string) => {
     router.replace(sub ? `${pathname}?tab=${tab}&sub=${sub}` : `${pathname}?tab=${tab}`, { scroll: false });
+  };
+
+  // Jump to a tab (and, where relevant, select a rail topic) — used by the
+  // Overview timeline so each era links to the section that covers it.
+  const goTo = (tab: SectionKey, sub?: string) => {
+    setSearch("");
+    setActiveSection(tab);
+    if (sub) {
+      if (tab === "sunni") setActiveSunni(sub);
+      else if (tab === "shia") setActiveShia(sub);
+      else if (tab === "other") setActiveOther(sub);
+      else if (tab === "modern") setActiveModern(sub);
+    }
+    syncUrl(tab, sub);
   };
 
   const topicMatches = (t: SectTopic) => {
@@ -713,6 +1205,7 @@ function SectsContent() {
   const filteredSunni = useMemo(() => sunniTopics.filter(topicMatches), [search]);
   const filteredShia = useMemo(() => shiaTopics.filter(topicMatches), [search]);
   const filteredOther = useMemo(() => otherSects.filter(topicMatches), [search]);
+  const filteredModern = useMemo(() => modernTopics.filter(topicMatches), [search]);
   const filteredMatters = useMemo(() => whyItMatters.filter(mattersMatches), [search]);
 
   // Auto-select first visible topic when active is filtered out
@@ -723,7 +1216,9 @@ function SectsContent() {
       setActiveShia(filteredShia[0].id);
     if (filteredOther.length > 0 && !filteredOther.find((t) => t.id === activeOther))
       setActiveOther(filteredOther[0].id);
-  }, [filteredSunni, filteredShia, filteredOther, activeSunni, activeShia, activeOther]);
+    if (filteredModern.length > 0 && !filteredModern.find((t) => t.id === activeModern))
+      setActiveModern(filteredModern[0].id);
+  }, [filteredSunni, filteredShia, filteredOther, filteredModern, activeSunni, activeShia, activeOther, activeModern]);
 
   const renderTopicWithNav = (
     topics: SectTopic[],
@@ -852,6 +1347,51 @@ function SectsContent() {
               </div>
             </ContentCard>
 
+            {/* Timeline — the chronological skeleton, each era linking to the
+                section that covers it (deep-links via goTo → ?tab=&sub=). */}
+            <ContentCard delay={0.15}>
+              <h3 className="text-lg font-semibold text-themed mb-1">
+                When the groups emerged
+              </h3>
+              <p className="text-themed-muted text-xs leading-relaxed mb-4">
+                A rough chronological map. Dates are approximate; tap any era to
+                jump to where it is covered.
+              </p>
+              <div className="space-y-2">
+                {[
+                  { era: "11 AH / 632 CE", title: "Saqifah — the succession debated", desc: "The Companions choose Abu Bakr by consultation; the seed of the later Shia–Sunni divide.", tab: "shia" as SectionKey, sub: "origins" },
+                  { era: "37 AH / 657 CE", title: "Siffin & the Khawarij", desc: "The first sect breaks from Ali over arbitration and pronounces takfir.", tab: "other" as SectionKey, sub: "khawarij" },
+                  { era: "61 AH / 680 CE", title: "Karbala", desc: "The killing of Husayn — a tragedy that becomes foundational to Shia identity.", tab: "shia" as SectionKey, sub: "origins" },
+                  { era: "late 1st c. AH", title: "Qadariyyah & Murji'ah", desc: "Opposite errors on divine decree and on faith-without-works.", tab: "other" as SectionKey, sub: "qadariyyah-murjiah" },
+                  { era: "2nd c. AH", title: "Mu'tazilah & the Ibadiyyah", desc: "Rationalist theology in Basra; the Ibadi school consolidates, later centred in Oman.", tab: "other" as SectionKey, sub: "mutazilah" },
+                  { era: "218 AH / 833 CE", title: "The Mihnah (inquisition)", desc: "The 'created Quran' doctrine imposed by the state; Imam Ahmad withstands it.", tab: "other" as SectionKey, sub: "mutazilah" },
+                  { era: "3rd–4th c. AH", title: "Ash'ari & Maturidi schools", desc: "Kalam-based theology arises to answer the Mu'tazilah.", tab: "other" as SectionKey, sub: "asharis-maturidis" },
+                  { era: "18th–20th c. CE", title: "Modern reform & revival movements", desc: "Salafiyyah, Deobandi/Barelwi, Tablighi, and political movements take shape.", tab: "modern" as SectionKey, sub: "salafiyyah" },
+                  { era: "1889 CE", title: "Ahmadiyyah", desc: "Mirza Ghulam Ahmad claims prophethood in Qadian, India.", tab: "other" as SectionKey, sub: "ahmadiyyah" },
+                  { era: "1930 CE", title: "Nation of Islam", desc: "A racial-theological movement founded in the United States.", tab: "other" as SectionKey, sub: "nation-of-islam" },
+                ].map((row) => (
+                  <button
+                    key={row.title}
+                    onClick={() => goTo(row.tab, row.sub)}
+                    className="w-full text-left rounded-lg p-3 border sidebar-border hover:bg-gold/5 transition-colors flex gap-3 items-start"
+                    style={{ backgroundColor: "var(--color-bg)" }}
+                  >
+                    <span className="text-xs font-semibold text-gold whitespace-nowrap shrink-0 w-24 pt-0.5">
+                      {row.era}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-themed">
+                        {row.title}
+                      </span>
+                      <span className="block text-xs text-themed-muted leading-relaxed mt-0.5">
+                        {row.desc}
+                      </span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </ContentCard>
+
             {/* Sources */}
             <SourcesCard sources={[
               { ref: "Tirmidhi 40:36", desc: "The Ummah will split into 73 sects" },
@@ -862,6 +1402,30 @@ function SectsContent() {
               { ref: "Al-Farq bayn al-Firaq, al-Baghdadi", desc: "Differences between the sects" },
               { ref: "Minhaj as-Sunnah an-Nabawiyyah, Ibn Taymiyyah", desc: "Response to sectarian claims" },
             ]} />
+
+            {/* Glossary of recurring technical terms (bottom of Overview) */}
+            <ContentCard delay={0.2}>
+              <h3 className="text-lg font-semibold text-themed mb-1">
+                Glossary of key terms
+              </h3>
+              <p className="text-themed-muted text-xs leading-relaxed mb-4">
+                Terms that recur across this page, in one place.
+              </p>
+              <Accordion
+                items={[
+                  { id: "aqeedah", title: "Aqeedah", subtitle: "creed", children: <p className="text-themed-muted text-sm leading-relaxed">The core beliefs of the religion — what a Muslim affirms about Allah, the angels, the books, the messengers, the Last Day, and divine decree. It is the foundation on which everything else rests, and the level at which true sects differ from Ahl al-Sunnah.</p> },
+                  { id: "manhaj", title: "Manhaj", subtitle: "methodology", children: <p className="text-themed-muted text-sm leading-relaxed">The method or approach used to arrive at religious conclusions — which sources are relied upon, in what order, and how they are understood. Many differences between Muslim movements are differences of manhaj rather than of creed.</p> },
+                  { id: "bidah", title: "Bid'ah", subtitle: "religious innovation", children: <p className="text-themed-muted text-sm leading-relaxed">Introducing into the religion an act of worship or belief with no basis in the Quran, Sunnah, or the practice of the Companions, while treating it as part of the religion. It does not refer to worldly inventions. See the Ahl al-Sunnah tab, "Sunnah &amp; Bid'ah."</p> },
+                  { id: "takfir", title: "Takfir", subtitle: "declaring someone a disbeliever", children: <p className="text-themed-muted text-sm leading-relaxed">Ruling that a specific person has left Islam. It is a grave, conditions-bound verdict reserved for qualified scholars, not something an individual pronounces in an argument. Reckless takfir is the defining error of the Khawarij.</p> },
+                  { id: "kalam", title: "Kalam", subtitle: "speculative theology", children: <p className="text-themed-muted text-sm leading-relaxed">Reasoning about God and creed using philosophical argument and logic. The Mu'tazilah were its early champions; the Ash'aris and Maturidis used it to defend Sunni positions. The Salaf generally preferred to keep creed anchored directly in the texts.</p> },
+                  { id: "tawil", title: "Ta'wil", subtitle: "figurative interpretation", children: <p className="text-themed-muted text-sm leading-relaxed">Interpreting a text away from its apparent meaning to a figurative one — for example, reading Allah's "Hand" as "power." Ahl al-Sunnah affirm the attributes as they came, without distortion; some theological schools applied ta'wil to certain attributes.</p> },
+                  { id: "tatil", title: "Ta'til", subtitle: "denial / stripping of meaning", children: <p className="text-themed-muted text-sm leading-relaxed">Emptying Allah's names and attributes of their real meanings — the error Ahl al-Sunnah charged against the Mu'tazilah, who denied the attributes to avoid likening Allah to creation, and ended up stripping the texts of meaning altogether.</p> },
+                  { id: "salaf", title: "Salaf", subtitle: "the righteous early generations", children: <p className="text-themed-muted text-sm leading-relaxed">The first three generations of Muslims — the Companions, their successors, and those after them — whom the Prophet ﷺ praised as the best of people. "Following the Salaf" means adopting their understanding of the religion.</p> },
+                  { id: "ijma", title: "Ijma'", subtitle: "scholarly consensus", children: <p className="text-themed-muted text-sm leading-relaxed">The agreement of the qualified scholars of the Ummah on a religious ruling. It is a recognised source of Islamic law, and the Prophet ﷺ indicated the Ummah as a whole would not unite upon misguidance.</p> },
+                  { id: "ghuluww", title: "Ghuluww", subtitle: "excess / extremism", children: <p className="text-themed-muted text-sm leading-relaxed">Going beyond the proper bounds in religion — whether in praising the righteous (elevating them toward divinity) or in harshness (as the Khawarij did). Ahl al-Sunnah hold the middle path between excess and neglect.</p> },
+                ]}
+              />
+            </ContentCard>
           </motion.div>
         )}
 
@@ -952,6 +1516,42 @@ function SectsContent() {
               renderTopicWithNav(filteredOther, activeOther, (id) => {
                 setActiveOther(id);
                 syncUrl("other", id);
+              })
+            ) : (
+              <ContentCard>
+                <p className="text-themed-muted text-sm text-center py-8">
+                  No results match your search.
+                </p>
+              </ContentCard>
+            )}
+          </motion.div>
+        )}
+
+        {/* ─── Modern Movements ─── */}
+        {activeSection === "modern" && (
+          <motion.div
+            key="modern"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Calm framing: these are mostly orientations within Ahl al-Sunnah,
+                not sects — described even-handedly, no verdicts on individuals. */}
+            <div className="mb-6 rounded-xl border border-gold/20 bg-gold/5 p-4 text-sm leading-relaxed text-themed-muted">
+              <p>
+                <strong className="text-themed">A note on labels.</strong> Most of
+                the names below are movements, orientations, or trends{" "}
+                <strong className="text-themed">within</strong> Sunni Islam — they
+                share the same creed and pillars while emphasising different things.
+                They are not, as a rule, separate sects, and this section describes
+                them fairly rather than ranking them.
+              </p>
+            </div>
+            {filteredModern.length > 0 ? (
+              renderTopicWithNav(filteredModern, activeModern, (id) => {
+                setActiveModern(id);
+                syncUrl("modern", id);
               })
             ) : (
               <ContentCard>

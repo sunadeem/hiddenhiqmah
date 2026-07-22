@@ -4,8 +4,11 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { computePrayerTimes } from "@/lib/prayer-times";
 import { getPrayerSettings, setPrayerSettings, type PrayerCalcMethod } from "@hidden-hiqmah/ui/lib/storage";
+import Link from "next/link";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
+import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
+import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import {
   Sunrise,
   Sun,
@@ -912,6 +915,246 @@ export default function PrayerTimesPage() {
             })}
           </div>
         )}
+
+        {/* ───────── Educational content ───────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.35 }}
+          className="pt-2"
+        >
+          <h2 className="text-themed font-semibold text-lg mb-1">Understanding your prayer times</h2>
+          <p className="text-themed-muted text-sm">What the times mean, when each window ends, and where they come from.</p>
+        </motion.div>
+
+        {/* 1 — Every prayer is a window */}
+        <ContentCard delay={0.38}>
+          <h3 className="text-gold font-semibold text-lg mb-3">Every prayer is a window, not just a start time</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            The times above mark when each prayer <span className="text-gold">begins</span>. But every prayer also has an <span className="text-gold">end</span> — a window you must pray within. The Angel Jibril led the Prophet&nbsp;&#65018; in prayer over two days to teach exactly where each window opens and closes: on the first day at the very start of each time, on the second at its very end. He then said, <span className="text-themed italic">&ldquo;the time is anywhere between two times.&rdquo;</span>
+          </p>
+          <div className="rounded-lg p-4 mb-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+            <ul className="text-themed-muted text-sm leading-relaxed space-y-1.5">
+              <li><span className="text-themed font-medium">Fajr</span> — from dawn until the sun begins to rise.</li>
+              <li><span className="text-themed font-medium">Dhuhr</span> — from just after midday until the Asr time enters.</li>
+              <li><span className="text-themed font-medium">Asr</span> — until the sun turns yellow (its preferred time; it may be prayed in necessity until sunset).</li>
+              <li><span className="text-themed font-medium">Maghrib</span> — from sunset until the red twilight disappears.</li>
+              <li><span className="text-themed font-medium">Isha</span> — from the end of twilight until the middle of the night.</li>
+            </ul>
+          </div>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            &ldquo;&hellip; the time for the afternoon prayer is as long as the sun has not become pale; the time of the evening prayer is as long as the twilight has not ended; the time of the night prayer is up to the middle of the average night&hellip;&rdquo;
+          </p>
+          <p className="text-xs text-gold/80 mt-2">
+            <HadithRefText text="Abu Dawud 2:3" className="inline" />; <HadithRefText text="Abu Dawud 2:6" className="inline" />; <HadithRefText text="Muslim 5:222" className="inline" />; <HadithRefText text="Muslim 5:223" className="inline" />
+          </p>
+          <p className="text-themed-muted text-sm leading-relaxed mt-3">
+            The best moment is the <span className="text-gold">start</span> of the window; missing the window entirely without excuse is a serious matter. When two prayers&rsquo; times overlap in your day, keep them in order.
+          </p>
+        </ContentCard>
+
+        {/* 2 — Forbidden times / why Sunrise is "Not a prayer" */}
+        <ContentCard delay={0.41}>
+          <h3 className="text-gold font-semibold text-lg mb-3">Why the Sunrise card says &ldquo;Not a prayer&rdquo;</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            Sunrise is shown so you know Fajr has ended — it is not itself a prayer. It also opens one of the <span className="text-gold">three brief times each day</span> when voluntary prayer is prohibited. Uqbah ibn Amir said there were three times the Prophet&nbsp;&#65018; forbade praying or burying the dead:
+          </p>
+          <div className="rounded-lg p-4 mb-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+            <ul className="text-themed-muted text-sm leading-relaxed space-y-1.5">
+              <li><span className="text-themed font-medium">As the sun rises</span>, until it is fully up.</li>
+              <li><span className="text-themed font-medium">When the sun is at its zenith</span> at midday, until it passes the meridian (just before Dhuhr).</li>
+              <li><span className="text-themed font-medium">As the sun sets</span>, until it has fully set.</li>
+            </ul>
+          </div>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            Two further windows are for voluntary prayer: there is no (voluntary) prayer <span className="text-themed">after Fajr until the sun has risen</span>, nor <span className="text-themed">after Asr until the sun has set</span>. The reason given is that the sun &ldquo;rises between the horns of Satan,&rdquo; a time the worshippers of the sun turn to it.
+          </p>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            <span className="text-themed">Exceptions:</span> a missed obligatory prayer is made up as soon as it is remembered, even in these times, and prayers with a cause (such as the two rak&rsquo;ah after wudu, or the funeral prayer at need) are treated differently by the scholars. The details and the madhhab differences are covered fully on the Salah page.
+          </p>
+          <p className="text-xs text-gold/80 mb-2">
+            <HadithRefText text="Bukhari 9:61" className="inline" />; <HadithRefText text="Muslim 6:357" className="inline" />; <HadithRefText text="Muslim 6:352" className="inline" />; <HadithRefText text="Muslim 6:353" className="inline" />
+          </p>
+          <Link href="/salah?tab=voluntary" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Prohibited times &amp; exceptions on the Salah page &rarr;
+          </Link>
+        </ContentCard>
+
+        {/* 3 — Virtue of praying on time */}
+        <ContentCard delay={0.44}>
+          <h3 className="text-gold font-semibold text-lg mb-3">The reward of praying on time</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            Praying at the appointed time is not a formality — Allah made it an obligation fixed to the clock, and the Prophet&nbsp;&#65018; named it the dearest deed to Allah.
+          </p>
+          <div className="rounded-lg p-4 mb-4" style={{ backgroundColor: "var(--color-bg)" }}>
+            <p className="font-arabic text-gold text-lg leading-loose mb-1 text-right">فَإِذَا قَضَيْتُمُ ٱلصَّلَوٰةَ فَٱذْكُرُوا۟ ٱللَّهَ قِيَـٰمًا وَقُعُودًا وَعَلَىٰ جُنُوبِكُمْ ۚ فَإِذَا ٱطْمَأْنَنتُمْ فَأَقِيمُوا۟ ٱلصَّلَوٰةَ ۚ إِنَّ ٱلصَّلَوٰةَ كَانَتْ عَلَى ٱلْمُؤْمِنِينَ كِتَـٰبًا مَّوْقُوتًا</p>
+            <p className="text-themed text-sm leading-relaxed mb-1">Fa izaa qadaitumus Salaata fazkurul laaha qiyaamanw wa qu'oodanw wa 'alaa junoobikum; fa izat maanantum fa aqeemus Salaah; innas Salaata kaanat 'alal mu'mineena kitaabam mawqootaa</p>
+            <p className="text-themed-muted text-sm leading-relaxed italic">&ldquo;&hellip; Indeed, prayer is prescribed for the believers at specific times.&rdquo;</p>
+            <p className="text-xs text-gold/80 mt-1">Quran 4:103</p>
+          </div>
+          <div className="space-y-3">
+            <div>
+              <p className="text-themed-muted text-sm leading-relaxed">
+                Ibn Mas&rsquo;ud asked which deed is dearest to Allah. The Prophet&nbsp;&#65018; replied, <span className="text-themed italic">&ldquo;To offer the prayers at their early stated fixed times.&rdquo;</span>
+              </p>
+              <p className="text-xs text-gold/80 mt-1"><HadithRefText text="Bukhari 9:6" className="inline" /></p>
+            </div>
+            <div>
+              <p className="text-themed-muted text-sm leading-relaxed">
+                <span className="text-themed italic">&ldquo;Whoever prays the two cool prayers (`Asr and Fajr) will go to Paradise.&rdquo;</span> These are two of the prayers most easily neglected. And the Prophet&nbsp;&#65018; named the Fajr and Isha prayers the heaviest upon the hypocrites.
+              </p>
+              <p className="text-xs text-gold/80 mt-1"><HadithRefText text="Bukhari 9:50" className="inline" />; <HadithRefText text="Muslim 5:271" className="inline" />; <HadithRefText text="Bukhari 10:51" className="inline" /></p>
+            </div>
+          </div>
+        </ContentCard>
+
+        {/* 4 — Midnight, last third, tahajjud */}
+        <ContentCard delay={0.47}>
+          <h3 className="text-gold font-semibold text-lg mb-3">Islamic midnight &amp; the last third of the night</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            &ldquo;Islamic midnight&rdquo; is not 12:00 on the clock — it is the <span className="text-gold">midpoint between Maghrib and Fajr</span>. That midpoint is when the preferred time for Isha ends, and it also marks the start of the night&rsquo;s final third, the time of tahajjud. The Prophet&nbsp;&#65018; said whoever prays Isha in congregation is like one who kept vigil till midnight.
+          </p>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            The last third of the night is the most beloved time to stand in prayer:
+          </p>
+          <div className="rounded-lg p-4 mb-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+            <p className="text-themed-muted text-sm leading-relaxed italic">
+              &ldquo;When it is the last third of the night, our Lord, the Blessed, the Superior, descends every night to the heaven of the world and says, &lsquo;Is there anyone who invokes Me (demand anything from Me), that I may respond to his invocation; Is there anyone who asks Me for something that I may give (it to) him; Is there anyone who asks My forgiveness that I may forgive him?&rsquo;&rdquo;
+            </p>
+            <p className="text-xs text-gold/80 mt-2"><HadithRefText text="Bukhari 80:18" className="inline" />; <HadithRefText text="Muslim 6:201" className="inline" /></p>
+          </div>
+          <p className="text-xs text-gold/80 mb-2">
+            <HadithRefText text="Muslim 5:222" className="inline" />; <HadithRefText text="Abu Dawud 2:165" className="inline" />
+          </p>
+          <Link href="/salah?tab=voluntary&sub=tahajjud" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            How to pray tahajjud &rarr;
+          </Link>
+        </ContentCard>
+
+        {/* 5 — The Hijri date */}
+        <ContentCard delay={0.50}>
+          <h3 className="text-gold font-semibold text-lg mb-3">What the Hijri date means</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            The date shown at the top is the <span className="text-gold">Islamic (Hijri) calendar</span> — a purely lunar calendar of twelve months, each 29 or 30 days, counted from the Prophet&nbsp;&#65018;&rsquo;s migration (hijrah) from Makkah to Madinah. Because it is lunar, it is about 11 days shorter than the solar year, so Islamic dates move earlier each year.
+          </p>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            Allah set the moon&rsquo;s phases as the measure of time — <span className="text-themed italic">&ldquo;&hellip; and the moon a reflected light, and precisely determined its phases, so that you may know the number of years and account [of time]&rdquo;</span> (Quran 10:5) — and fixed the year at twelve months, <span className="text-themed italic">&ldquo;of which four are sacred&rdquo;</span> (Quran 9:36): Dhul-Qa&rsquo;dah, Dhul-Hijjah, Muharram, and Rajab.
+          </p>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            One key difference from the Gregorian calendar: the Islamic day begins at <span className="text-gold">Maghrib (sunset)</span>, not at midnight. This is why the night comes before the day in Islam, and why Ramadan and the two Eids &ldquo;begin&rdquo; the evening before their first daytime.
+          </p>
+          <p className="text-xs text-gold/80 mt-2">Quran 9:36; Quran 10:5</p>
+        </ContentCard>
+
+        {/* 6 — Calculation method FAQ */}
+        <ContentCard delay={0.53}>
+          <h3 className="text-gold font-semibold text-lg mb-3">Which calculation method should I choose?</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            The menu offers methods like ISNA, Muslim World League, Umm al-Qura, and Karachi. They agree almost exactly on <span className="text-themed">Dhuhr, Asr, and Maghrib</span> — those depend on the sun&rsquo;s visible position, which no method disputes. They differ mainly on <span className="text-gold">Fajr and Isha</span>, because dawn and the end of twilight are gradual: each method uses a slightly different sun-depression angle (how far below the horizon the sun sits) to define them, so Fajr and Isha can vary by 10&ndash;20 minutes between methods.
+          </p>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            The practical rule: <span className="text-gold">match your local masjid or community</span>, so your times line up with the congregation you pray with. If unsure, the method most common in your region is a safe default.
+          </p>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Separately, <span className="text-themed">Asr</span> has two valid timings: the majority (Shafi&rsquo;i, Maliki, Hanbali) begin it when an object&rsquo;s shadow equals its own length, while the Hanafi position begins it when the shadow is twice the object&rsquo;s length (a later Asr). You can set this in Settings; both are established positions.
+          </p>
+        </ContentCard>
+
+        {/* 7 — High-latitude FAQ */}
+        <ContentCard delay={0.56}>
+          <h3 className="text-gold font-semibold text-lg mb-3">Why is Isha near midnight (or Fajr at 3&nbsp;a.m.) in summer?</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            In the UK, Canada, northern US, and Scandinavia, high-summer nights are short and the true twilight never fully leaves the sky — so the astronomical Fajr and Isha bunch up near midnight, or in the far north cannot be observed at all. The app is not broken; this is a real feature of high latitudes.
+          </p>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            Contemporary scholarly councils give several estimation approaches for such places, including:
+          </p>
+          <div className="rounded-lg p-4 mb-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+            <ul className="text-themed-muted text-sm leading-relaxed space-y-1.5">
+              <li><span className="text-themed font-medium">Nearest latitude</span> — use the times of the closest location (e.g. 45&deg;) where the signs still appear normally.</li>
+              <li><span className="text-themed font-medium">Middle of the night</span> — divide Maghrib-to-Fajr in half; Isha and Fajr are estimated around that midpoint.</li>
+              <li><span className="text-themed font-medium">One-seventh of the night</span> — allot the last seventh of the night to Fajr and the first portion to Isha.</li>
+            </ul>
+          </div>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            The councils differ on which to apply, so follow the ruling of your local trusted authority or masjid. This is a point of ongoing scholarship, not a settled single answer.
+          </p>
+        </ContentCard>
+
+        {/* 8 — Missed prayer cross-link */}
+        <ContentCard delay={0.59}>
+          <h3 className="text-gold font-semibold text-lg mb-3">Slept through a prayer? What to do</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            If you genuinely oversleep or forget, there is <span className="text-gold">no sin</span> — the sin is in deliberate neglect. The Prophet&nbsp;&#65018; and his companions once slept past Fajr on a journey; when they woke, he simply had them pray it. He said, <span className="text-themed italic">&ldquo;If anyone forgets a prayer he should pray that prayer when he remembers it. There is no expiation except to pray the same.&rdquo;</span> So pray it the moment you wake or remember.
+          </p>
+          <p className="text-xs text-gold/80 mb-2">
+            <HadithRefText text="Bukhari 9:72" className="inline" />; <HadithRefText text="Muslim 5:393" className="inline" />; <HadithRefText text="Abu Dawud 2:53" className="inline" />; <HadithRefText text="Bukhari 61:80" className="inline" />
+          </p>
+          <Link href="/salah?tab=prayers&sub=missed" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Making up missed prayers (qada), in order, and years of backlog &rarr;
+          </Link>
+        </ContentCard>
+
+        {/* 9 — Traveler cross-link */}
+        <ContentCard delay={0.62}>
+          <h3 className="text-gold font-semibold text-lg mb-3">Traveling? Your times change</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            On a journey Allah lightened the prayer. The four-rak&rsquo;ah prayers (Dhuhr, Asr, Isha) are <span className="text-gold">shortened to two</span> — this is <span className="text-themed">qasr</span> — while Fajr stays two and Maghrib stays three. The Prophet&nbsp;&#65018; also <span className="text-gold">combined</span> Dhuhr with Asr and Maghrib with Isha on the road (<span className="text-themed">jam&rsquo;</span>), so on a travel day two of the times above effectively merge into one.
+          </p>
+          <p className="text-xs text-gold/80 mb-2">
+            Quran 4:101; <HadithRefText text="Bukhari 18:1" className="inline" />; <HadithRefText text="Bukhari 18:2" className="inline" />; <HadithRefText text="Bukhari 18:27" className="inline" />; <HadithRefText text="Bukhari 18:30" className="inline" />
+          </p>
+          <Link href="/salah?tab=prayers&sub=traveling" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Full rules of qasr &amp; jam&rsquo; for travelers &rarr;
+          </Link>
+        </ContentCard>
+
+        {/* 10 — Adhan response cross-link */}
+        <ContentCard delay={0.65}>
+          <h3 className="text-gold font-semibold text-lg mb-3">When the countdown ends, the adhan begins</h3>
+          <p className="text-themed-muted text-sm leading-relaxed mb-3">
+            When you hear the call to prayer: <span className="text-themed">repeat what the muezzin says</span>, then send salawat on the Prophet&nbsp;&#65018; and ask Allah to grant him the wasilah. The moment <span className="text-gold">between the adhan and the iqamah is a time of accepted du&rsquo;a</span> — &ldquo;The supplication made between the adhan and the iqamah is not rejected.&rdquo;
+          </p>
+          <p className="text-xs text-gold/80 mb-2">
+            <HadithRefText text="Muslim 4:12" className="inline" />; <HadithRefText text="Bukhari 10:12" className="inline" />; <HadithRefText text="Abu Dawud 2:139" className="inline" />; <HadithRefText text="Abu Dawud 2:131" className="inline" />
+          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <Link href="/salah?tab=adhan" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+              Adhan &amp; how to answer it &rarr;
+            </Link>
+            <Link href="/duas?d=responding-to-the-adhan" className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+              The du&rsquo;a after the adhan &rarr;
+            </Link>
+          </div>
+        </ContentCard>
+
+        <SourcesCard className="mt-2" sources={[
+          { ref: "Quran 4:103", desc: "Prayer is prescribed for the believers at fixed times" },
+          { ref: "Quran 9:36", desc: "Twelve lunar months, of which four are sacred" },
+          { ref: "Quran 10:5", desc: "The moon's phases as the measure of years and time" },
+          { ref: "Quran 4:101", desc: "Shortening the prayer while traveling" },
+          { ref: "Abu Dawud 2:3", desc: "Jibril leads the Prophet — each prayer's window, start and end" },
+          { ref: "Abu Dawud 2:6", desc: "The end of each prayer's window (Abdullah b. Amr)" },
+          { ref: "Muslim 5:222", desc: "Prayer window times; Isha until the middle of the night" },
+          { ref: "Muslim 5:223", desc: "The times of the prayers defined by the sun" },
+          { ref: "Bukhari 9:61", desc: "No prayer after Fajr till sunrise, nor after Asr till sunset" },
+          { ref: "Muslim 6:357", desc: "Three times prayer and burial are forbidden" },
+          { ref: "Muslim 6:352; Muslim 6:353", desc: "The sun rises between the horns of Satan" },
+          { ref: "Bukhari 9:6", desc: "Prayer on time is the dearest deed to Allah" },
+          { ref: "Bukhari 9:50", desc: "Whoever prays the two cool prayers enters Paradise" },
+          { ref: "Muslim 5:271", desc: "The two cool prayers and Paradise" },
+          { ref: "Bukhari 10:51", desc: "Fajr and Isha heaviest on the hypocrites" },
+          { ref: "Bukhari 80:18; Muslim 6:201", desc: "Allah descends in the last third of the night" },
+          { ref: "Abu Dawud 2:165", desc: "Isha in congregation like keeping vigil till midnight" },
+          { ref: "Bukhari 9:72", desc: "Pray a forgotten prayer when you remember it" },
+          { ref: "Muslim 5:393", desc: "The Prophet and companions sleep past Fajr at Khaybar" },
+          { ref: "Abu Dawud 2:53; Bukhari 61:80", desc: "Sleeping past Fajr on a journey" },
+          { ref: "Bukhari 18:1; Bukhari 18:2", desc: "Shortening prayers on a journey" },
+          { ref: "Bukhari 18:27; Bukhari 18:30", desc: "Combining Dhuhr with Asr and Maghrib with Isha while traveling" },
+          { ref: "Muslim 4:12", desc: "Repeat what the muezzin says" },
+          { ref: "Bukhari 10:12; Abu Dawud 2:139", desc: "The wasilah du'a after the adhan" },
+          { ref: "Abu Dawud 2:131", desc: "Du'a between the adhan and iqamah is not rejected" },
+        ]} />
       </div>
     </div>
   );

@@ -344,3 +344,62 @@ _Batch 3 pages (death-rites, story-of-creation, inheritance, barzakh, ramadan, i
 39. Karbala martyrdom of al-Husayn, 10 Muharram 61 AH dating (id 1): historical/sira, generically framed.
 40. Establishment of the Hijri calendar under Umar's consultation and the epoch-choice deliberation (Overview 'How the Hijri Calendar Was Established' card + Muharram New Year point): generic (Tabari/Ibn Hajar), loosely anchored to Bukhari 63:131 for the Hijrah itself.
 41. Mid-Sha'ban narration 'graded hasan by some scholars' (id 8): grading claim attributed generically, honestly paired with the weak-report caveat.
+
+---
+
+## EXPANSION BATCH 4 (Opus-built, 2026-07-22) — generic-attribution items
+
+_Batch 4 (sects, learn-arabic, hadith, prophets, miracles, prayer-times), Opus-built + verified, awaiting Fable re-review. NOTE: sects Modern-Movements founders/dates and Shia/Ibadi heresiography are scholarly-summary — founder should sanity-check names & dates. Usual keep/cite/remove._
+
+### /sects
+1. Modern Movements tab (salafiyyah, deobandi-barelwi, tablighi, political-movements, sufi-orders): all founding dates/founders and movement descriptions are scholarly-summary-generic (Ibn Abd al-Wahhab 18th c.; Deoband 1866; Ahmad Raza Khan d.1921; M. Ilyas al-Kandhlawi 1926; Hasan al-Banna 1928; Taqi al-Din al-Nabhani 1953) — no local corpus citation, correctly framed as summary; founder should sanity-check names/dates.
+2. Shia branches topic (Twelvers, Zaidis/Zayd ibn Ali, Ismailis Nizari-Aga Khan & Dawoodi Bohra/Da'i al-Mutlaq, Alawites/Druze): heresiography-generic (Al-Milal wan-Nihal, Al-Farq bayn al-Firaq), no local citation.
+3. Ibadiyyah topic (Abdullah ibn Ibad, Jabir ibn Zayd, created-Quran & denial of beatific vision, Musnad al-Rabi' ibn Habib, Kharijite-descent dispute): scholarly-generic; only the beatific-vision contrast is anchored to local refs (Quran 75:22-23; Bukhari 10:201).
+4. Fiqh practical-guide points 1-3 (do-I-follow-a-madhhab, switching/mixing/talfiq, praying-behind-another-madhhab): generic fiqh orientation, framed with explicit consult-a-scholar notes; only point 4 (Banu Qurayzah) carries a local citation.
+5. Overview glossary (10 terms) and Overview timeline (dates 11 AH–1930 CE): definitions and dates are generic, no citations (as specified).
+6. Salafiyyah 'Wahhabi label' and 'where it sits' framing, and all 'where they sit relative to Ahl al-Sunnah' concluding points across the Modern tab: interpretive/editorial framing, not citation-bearing.
+
+### /learn-arabic
+7. Mushaf waqf/marker symbol meanings (lazim, la, ja'iz, wasl/waqf awla, saktah, mu'anaqah, sajdah, rub' al-hizb, silent-zero, iqlab) — standard Hafs mushaf conventions, spec-sanctioned as needing no citation.
+8. Special-letter orthographic explanations (hamza+seats, ta marbutah, alif maqsurah, alif maddah, hamzat al-wasl, dagger alif, lam-alif) — generic orthography; example words verified present in corpus.
+9. Easily-confused-sound minimal pairs and articulation descriptions — generic pedagogy. Note 'Both words occur in the Qurʼan' for tin/tin (تِين/طِين) was verified TRUE against corpus.
+10. Tajwid rule specifics in tip #6 (makhraj, nun-sakinah/mim-sakinah rules, qalqalah letters, ghunnah ~2 counts, madd 2/4/6 counts, beginner mistakes) — generic tajwid pedagogy; the two framing texts (Quran 73:4, Muslim 6:290) ARE cited and verified.
+11. Writing-the-letters stroke-order / RTL / baseline / dots-last / four-forms / teaching-kids tips — generic handwriting pedagogy.
+12. 'Reading Our Transliteration' key (macrons, dot-below emphatics, ʿayn vs hamza, digraphs, shaddah) — documents the app's own convention.
+13. Number words 0–1000, ordinals awwal–ashir, day names, 12 hijri month names — generic language content; Ṣifr zero-etymology ('English zero comes from this word, meaning empty') is generic well-known.
+14. Particle/connector meanings and the frequency framing ('Among the most frequent words in the Qurʼan', 'roughly 40% of tokens' motivation) — generic corpus-frequency claim.
+15. Lā baʾsa ṭahūr entry: 'the Prophet would comfort the sick with these words' — authentic (Bukhari) but presented with generic attribution, no citation given.
+16. Full salām reply entry: 'each added phrase carries more reward' — hadith-based but framed generically without citation.
+17. Sneezing third reply rendered as short 'Yahdīkum Allāh' = 'May Allah guide you' while cited Bukhari 78:248 gives the fuller 'Yahdikumul-lah wa Yuslih balakum' (May Allah give you guidance and improve your condition) — a real shortened variant, paraphrased (not quoted), citation supports the three-step exchange.
+
+### /hadith
+18. Compiler biographies (all 7, compilerBios): birth/death years and narrative facts (Bukhari sifting 600,000→~7,275; Abu Dawud 500,000→~4,800; the mihna; Nasa'i's Mujtaba; etc.) are scholarly-summary-generic with no corpus citation — permitted by spec sourcing.
+19. 'How It Reached Us' timeline: 'Umar ibn 'Abd al-'Aziz's compilation directive (~100 AH) and the 'era of the Six Books' are stated without citation (scholarly-generic). The two hadith anchors it does cite (Bukhari 3:55, Bukhari 3:27) are corpus-verified.
+20. Grading definitions (sahih/hasan/da'if/mawdu' conditions, mutawatir vs ahad) are generic mustalah al-hadith framework; only the mawdu' warning is anchored (Bukhari 3:48/3:49).
+21. Narrator profiles for A'isha, Ibn 'Umar, Ibn 'Abbas, Anas, Jabir are scholarly-generic biographical summaries; only Abu Huraira is anchored (Bukhari 3:55).
+22. Reader's Guide (4 points) and FAQ (4 answers) are methodological/app-usage guidance with no citations — appropriately generic.
+23. Nawawi #30 (ad-Daraqutni, hasan by an-Nawawi), #33 (al-Bayhaqi), #41 (Kitab al-Hujjah, da'if) — external attributions, generically stated but correctly flagged as outside the local corpus with no deep-link, exactly as the contract requires for non-corpus citations.
+
+### /prophets
+24. The ~124,000-prophets figure — attributed to Ibn Hibban 361 (external; not in local corpus), correctly framed as a disputed report 'graded Sahih by some scholars and Hasan by others', not as a fixed article of belief.
+25. 'Iṣmah / sinlessness (prophets protected from major sins; whether minor slips occurred is debated; mainstream view they were minor and corrected) — scholarly summary, generically attributed, no fabricated citation.
+26. Scholarly positions on prophethood for the debated figures (Khidr: most commentators lean prophet vs righteous walī; Dhul-Qarnayn: most classical commentators say righteous king, some prophet; Luqman: majority a ḥakīm not prophet, minority prophet; Maryam: mainstream not a prophet, minority received revelation; Uzair: prophethood debated/unsettled) — all generic 'majority/minority/most commentators' attributions, no invented references.
+27. Prophets alive in their graves in a special barzakh life — attributed generically to 'authentic reports'; no specific citation given (cross-linked to /barzakh).
+28. Maryam as a ṣiddīqah (from Quran 5:75, not individually cited) — standard descriptor, generic.
+29. Muhammad ﷺ as 'the Seal of the Prophets' (Quran 33:40, not cited) — universally-known belief asserted, with Bukhari 60:112 supplying the supporting 'no prophet after/between' sub-claim.
+
+### /miracles
+30. Greening of the Arabian Peninsula card: attributed to "Sahih Muslim, Kitab al-Zakat" but the exact wording is NOT present in the local corpus (searched; not found). Card honestly discloses this and grades it 'moderate' with a modern-interpretation caveat. Correctly handled as external/generic.
+31. Preservation of the Quran card (15:9): the manuscript-record + global huffaz-tradition supporting detail is a scholarly summary, not a single graded narration. Card's strengthNote discloses this.
+32. Abu Lahab card (111:1-3): 'died shortly after Badr without ever professing Islam' rests on standard seerah, not one graded hadith. Card's strengthNote discloses this.
+33. King vs Pharaoh card (12:43/12:50/7:103): the Egyptological dating of when 'Pharaoh' became a royal title is a scholarly summary, debated in particulars. Card's strengthNote discloses this and grades 'moderate'.
+34. Mu'jizah intro explainer: the muʿjizah-vs-karamah-vs-magic framing is a scholarly summary; its only hard citation, Bukhari 66:3, was verified and supports the quoted hadith.
+
+### /prayer-times
+35. Card 6 calculation-method explanation (sun-depression angles; Dhuhr/Asr/Maghrib agree, Fajr/Isha vary 10-20 min) — astronomical/scholarly-summary, no hadith claim, correctly generic.
+36. Card 6 Hanafi (shadow = 2x) vs majority Shafi'i/Maliki/Hanbali (shadow = 1x) Asr timing — framed as two established positions, consult-Settings note. Correct.
+37. Card 7 high-latitude estimation methods (nearest latitude / middle-of-night / one-seventh) — framed as differing council positions with 'follow your local trusted authority'; no specific council invented (spec's needs-external-source handled safely by generic attribution). Correct.
+38. Card 1 'Asr... may be prayed in necessity until sunset' — generic fiqh nuance layered onto Abu Dawud 2:6/Muslim 5:222, framed as preferred-vs-necessity. Acceptable.
+39. Card 2 exceptions ('missed obligatory made up even in prohibited times'; 'prayers with a cause such as two rak'ah after wudu or funeral prayer treated differently by scholars') — madhhab-differed, framed to scholars. Correct.
+40. Card 4 'Islamic midnight = midpoint between Maghrib and Fajr' and 'start of the last third' — generic astronomical/fiqh convention, uncited. Standard.
+41. Card 5 'the Islamic day begins at Maghrib (sunset), not midnight' — generic well-established point, uncited. Standard.
