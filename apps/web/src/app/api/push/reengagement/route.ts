@@ -8,7 +8,6 @@ import {
 } from "@/lib/push/apns";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const INACTIVE_DAYS = 3;
 
@@ -72,11 +71,8 @@ async function handle(req: NextRequest) {
   });
 }
 
+// POST-only (see daily/route.ts). Scheduled via Supabase pg_cron; triggerable
+// manually with a POST + x-cron-secret header.
 export async function POST(req: NextRequest) {
-  return handle(req);
-}
-
-// Vercel Cron triggers a GET; support both so the schedule fires end-to-end.
-export async function GET(req: NextRequest) {
   return handle(req);
 }

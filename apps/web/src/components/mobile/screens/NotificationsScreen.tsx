@@ -23,6 +23,7 @@ import {
   SettingsRow,
   SettingsExpandableRow,
 } from "./SettingsUI";
+import DebugPushCard from "./DebugPushCard";
 
 // Only notifications the on-device scheduler (scheduleAllNotifications) actually
 // emits are exposed here — a toggle that does nothing is an App Store 2.3.1 risk
@@ -56,6 +57,8 @@ export default function NotificationsScreen() {
       <div className="text-center pt-1">
         <h1 className="text-2xl font-bold text-themed">Notifications</h1>
       </div>
+
+      <DebugPushCard />
 
       <SettingsSection heading="Prayer">
         <SettingsRow

@@ -8,7 +8,6 @@ import {
 } from "@/lib/push/apns";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 export async function OPTIONS() {
   return corsPreflight();

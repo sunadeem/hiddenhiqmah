@@ -10,7 +10,6 @@ import { pickDailyContent } from "@/lib/dailyContent";
 import { dailyIndex } from "@hidden-hiqmah/ui/lib/reminders";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 // Cron-invoked. Accepts the contract's `x-cron-secret` header, and also the
 // `Authorization: Bearer <secret>` form Vercel Cron sends automatically.
@@ -83,11 +82,10 @@ async function handle(req: NextRequest) {
   });
 }
 
+// POST-only: a GET route handler can't live in the mobile output:export build
+// (Next static-analyzes GET handlers; POST/OPTIONS pass through inert, like
+// /api/search). Scheduled via Supabase pg_cron (net.http_post) — see migration
+// 026 — and triggerable manually with a POST + x-cron-secret header.
 export async function POST(req: NextRequest) {
-  return handle(req);
-}
-
-// Vercel Cron triggers a GET; support both so the schedule fires end-to-end.
-export async function GET(req: NextRequest) {
   return handle(req);
 }
