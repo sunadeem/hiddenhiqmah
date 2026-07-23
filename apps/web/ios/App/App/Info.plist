@@ -39,6 +39,8 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Hidden Hiqmah uses your location to show accurate prayer times and the Qiblah direction for where you are. You can also enter a city manually instead.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Hidden Hiqmah uses your location to show accurate prayer times and the Qiblah direction for where you are. You can also enter a city manually instead.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Hidden Hiqmah uses the microphone so you can record your Qur'an recitation and play it back while memorizing.</string>
 	<key>NSMotionUsageDescription</key>
