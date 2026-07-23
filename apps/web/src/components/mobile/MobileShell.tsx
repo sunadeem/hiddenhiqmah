@@ -14,6 +14,7 @@ import { hapticLight } from "@/lib/mobile/haptics";
 import { applyNativeSetup } from "@/lib/mobile/setup";
 import { registerNotificationTapHandler, scheduleAllNotifications } from "@/lib/mobile/notifications";
 import { registerDeepLinkHandler } from "@/lib/mobile/deeplinks";
+import { registerPush, flushPendingPushToken } from "@/lib/mobile/push";
 import { App as CapApp } from "@capacitor/app";
 import { useLegacyImport } from "@/lib/daily/useLegacyImport";
 import { useHifzImport } from "@/lib/hifz/hifzImport";
@@ -52,6 +53,12 @@ export default function MobileShell({ children }: { children: React.ReactNode })
     return registerNotificationTapHandler((url) => router.push(url));
   }, [router]);
 
+  // Register for remote push (APNs) and route push taps to the same deep links.
+  // Safe on web (no-op) and when signed out (token cached, persisted on sign-in).
+  useEffect(() => {
+    void registerPush((url) => router.push(url));
+  }, [router]);
+
   // Route inbound deep links (circle invite links) into the app.
   useEffect(() => {
     return registerDeepLinkHandler((url) => router.push(url));
@@ -63,7 +70,13 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   useEffect(() => {
     let cleanup: (() => void) | undefined;
     CapApp.addListener("appStateChange", ({ isActive }) => {
-      if (isActive) void scheduleAllNotifications(false);
+      if (isActive) {
+        void scheduleAllNotifications(false);
+        // Re-assert the APNs token (covers permission granted after launch, and
+        // re-persists a token cached while signed out once a session exists).
+        void registerPush();
+        void flushPendingPushToken();
+      }
     }).then((handle) => {
       cleanup = () => void handle.remove();
     });

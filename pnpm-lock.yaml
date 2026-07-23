@@ -50,6 +50,9 @@ importers:
       '@capacitor/motion':
         specifier: ^8.0.0
         version: 8.0.0(@capacitor/core@8.4.0)
+      '@capacitor/push-notifications':
+        specifier: ^8.1.2
+        version: 8.1.2(@capacitor/core@8.4.0)
       '@capacitor/share':
         specifier: ^8.0.1
         version: 8.0.1(@capacitor/core@8.4.0)
@@ -330,6 +333,11 @@ packages:
 
   '@capacitor/motion@8.0.0':
     resolution: {integrity: sha512-eCTe9+ZSVw2dQLQLvq5vfp2GGnMmsAy5jn4boKB93CHEenD9ZZojXZYJn1u4zUWhfj9cGXSxu+2j7WaQbkMlPg==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+
+  '@capacitor/push-notifications@8.1.2':
+    resolution: {integrity: sha512-TQl4XxqJfNF+KbSYBFMXYYT5WXUaleVKXlByhh/8+KySMVNjp+l5OqAUoGe/sY1IAnGXEuUeCjA/WLZEVvGwrA==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
@@ -3913,6 +3921,10 @@ snapshots:
       '@capacitor/core': 8.4.0
 
   '@capacitor/motion@8.0.0(@capacitor/core@8.4.0)':
+    dependencies:
+      '@capacitor/core': 8.4.0
+
+  '@capacitor/push-notifications@8.1.2(@capacitor/core@8.4.0)':
     dependencies:
       '@capacitor/core': 8.4.0
 
