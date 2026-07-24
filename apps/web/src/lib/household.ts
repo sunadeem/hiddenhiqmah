@@ -128,3 +128,13 @@ export function dailyStoreKeyForProfile(id: string): string | undefined {
 export function hifzStoreKeyForProfile(id: string): string | undefined {
   return id === PRIMARY_ID ? undefined : `hiqmah-hifz-v1:p:${id}`;
 }
+
+/**
+ * The local Journal-store key for a profile. `undefined` = the primary profile,
+ * which uses the normal adapter (default local key, or Supabase when signed in).
+ * Mirrors dailyStoreKeyForProfile so child profiles keep their own device-only
+ * reflection journal.
+ */
+export function journalStoreKeyForProfile(id: string): string | undefined {
+  return id === PRIMARY_ID ? undefined : `hiqmah-journal-v1:p:${id}`;
+}

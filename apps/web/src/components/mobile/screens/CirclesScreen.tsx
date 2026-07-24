@@ -303,6 +303,57 @@ export default function CirclesScreen() {
     })();
   }, [user, reload]);
 
+  // Open a specific circle's chat, if it's one of mine and chat is enabled.
+  const openCircleChat = useCallback(
+    (chatId: string | null | undefined, list: CircleDetail[]) => {
+      if (!chatId) return;
+      if (CIRCLES_CHAT_ENABLED && list.some((c) => c.circle.id === chatId)) {
+        setOpenId(chatId); // land in that circle's detail behind the sheet
+        setChat({ id: chatId, tab: "chat" });
+      }
+    },
+    []
+  );
+
+  // Consume a deep-link into a specific circle's chat (?chat=CIRCLE_ID). A tapped
+  // circle-message push routes here via router.push (see /api/push/circle-message
+  // + lib/mobile/push.ts). This handles the cold-start / cross-route case: we wait
+  // until the circles are loaded so the chat sheet has its target, open that
+  // circle's chat, then strip the param.
+  const handledChatParam = useRef<string | null>(null);
+  useEffect(() => {
+    if (!user || circles === null) return;
+    const chatId =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search).get("chat")
+        : null;
+    if (!chatId || handledChatParam.current === chatId) return;
+    handledChatParam.current = chatId;
+    openCircleChat(chatId, circles);
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", "/circles");
+    }
+  }, [user, circles, openCircleChat]);
+
+  // Handles the already-mounted case the URL effect can't: when a circle push is
+  // tapped while the app is already foregrounded on /circles, router.push is a
+  // same-route soft nav that doesn't remount this screen, so the effect above
+  // never re-runs. push.ts also broadcasts every tap as a "hiqmah:push-nav" event
+  // — parse ?chat= from its url and open the chat directly. Re-attached when
+  // `circles` changes so the closure always sees the latest list.
+  useEffect(() => {
+    if (!circles) return;
+    const onPushNav = (e: Event) => {
+      const url = (e as CustomEvent<{ url?: string }>).detail?.url ?? "";
+      const q = url.indexOf("?");
+      if (q < 0) return;
+      const chatId = new URLSearchParams(url.slice(q)).get("chat");
+      openCircleChat(chatId, circles);
+    };
+    window.addEventListener("hiqmah:push-nav", onPushNav);
+    return () => window.removeEventListener("hiqmah:push-nav", onPushNav);
+  }, [circles, openCircleChat]);
+
   const run = async (fn: () => Promise<unknown>) => {
     setBusy(true);
     setErr("");

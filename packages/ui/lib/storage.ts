@@ -76,8 +76,16 @@ export type NotificationPrefs = {
   jumuah: boolean;
   ramadan: boolean;
   laylatulQadr: boolean;
+  /** Islamic events & occasions (New Year, ʿĀshūrāʾ, Ramadan, Dhul-Ḥijjah, Eid…)
+   *  computed on-device from the Hijri calendar. Default on. */
+  islamicEvents: boolean;
+  /** The recurring monthly White Days (13th–15th) fasting reminder. Default on. */
+  whiteDays: boolean;
   aiChatResponses: boolean;
   continueReading: boolean;
+  /** Remote push when someone posts in one of your Circles. Opt-in — default
+   *  FALSE. Mirrored server-side to profiles.circle_push via set_my_circle_push. */
+  circleChat: boolean;
 };
 
 const defaultNotificationPrefs: NotificationPrefs = {
@@ -100,8 +108,13 @@ const defaultNotificationPrefs: NotificationPrefs = {
   jumuah: true,
   ramadan: true,
   laylatulQadr: true,
+  islamicEvents: true,
+  whiteDays: true,
   aiChatResponses: true,
   continueReading: true,
+  // Opt-in per founder instruction — circle-chat push is OFF until the user turns
+  // it on (which also flips the server-side profiles.circle_push flag).
+  circleChat: false,
 };
 
 export function getNotificationPrefs(): NotificationPrefs {

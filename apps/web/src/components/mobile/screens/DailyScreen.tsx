@@ -20,6 +20,7 @@ import { ChecklistEditor } from "@hidden-hiqmah/ui/components/daily/ChecklistEdi
 import WorshipDhikrSection from "./WorshipDhikrSection";
 import PageTip from "@/components/mobile/PageTip";
 import { ReflectionsFeed } from "@hidden-hiqmah/ui/components/daily/ReflectionsFeed";
+import JournalSection, { type JournalDraft } from "@/components/mobile/screens/JournalSection";
 import { reminderShareText, type Reminder } from "@hidden-hiqmah/ui/lib/reminders";
 import remindersData from "@hidden-hiqmah/content/reminders.json";
 import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
@@ -93,6 +94,20 @@ export default function DailyScreen() {
   );
 }
 
+// Checklist category filter. Derived purely from item identity (isPrayer =
+// kind === "prayer"), so no schema change is needed:
+//   • Prayer — the five fard prayers (Fajr…Isha).
+//   • Extra  — everything else: dhikr + sunnah/task items (Ḍuḥā, Witr, Quran,
+//              sadaqah…) plus every user-added custom item (added as kind "task").
+//   • All    — the full list (current behavior; default so nothing changes on load).
+type ChecklistFilter = "prayer" | "extra" | "all";
+
+const CHECKLIST_FILTERS: { key: ChecklistFilter; label: string }[] = [
+  { key: "prayer", label: "Prayer" },
+  { key: "extra", label: "Extra" },
+  { key: "all", label: "All" },
+];
+
 function ChecklistTab() {
   const router = useRouter();
   const { adapter, signedIn, authLoading } = useDailyAdapter();
@@ -100,7 +115,14 @@ function ChecklistTab() {
   const list = useChecklist(adapter, today);
   const [calOpen, setCalOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [filter, setFilter] = useState<ChecklistFilter>("all");
   const [week, setWeek] = useState<DayRollup[]>([]);
+
+  const filteredRows = useMemo(() => {
+    if (filter === "prayer") return list.rows.filter((r) => r.isPrayer);
+    if (filter === "extra") return list.rows.filter((r) => !r.isPrayer);
+    return list.rows;
+  }, [list.rows, filter]);
 
   useEffect(() => {
     adapter.getDayRollups(mondayOf(today), today).then(setWeek).catch(() => setWeek([]));
@@ -185,12 +207,44 @@ function ChecklistTab() {
         </button>
       </div>
 
-      <Checklist
-        rows={list.rows}
-        onCheck={list.check}
-        onBump={list.bump}
-        onHaptic={hapticSelection}
-      />
+      {/* Category filter (Prayer / Extra / All) — reuses the app's segmented
+          tab pattern. Categories are inferred from item identity; check/uncheck,
+          streaks, edit and sync all operate on the same rows unchanged. */}
+      {list.rows.length > 0 && (
+        <div className="flex bg-[var(--overlay-medium)] rounded-2xl p-1 gap-1">
+          {CHECKLIST_FILTERS.map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              onClick={() => {
+                hapticSelection();
+                setFilter(f.key);
+              }}
+              className={`flex-1 text-center text-[13px] font-semibold py-2 rounded-xl transition-colors touch-manipulation ${
+                filter === f.key ? "bg-[var(--color-gold)]/18 text-gold" : "text-themed-muted"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {list.rows.length > 0 && filteredRows.length === 0 ? (
+        // A filter is active and hides every row (e.g. all prayers deleted).
+        // The full-list empty case still falls through to <Checklist/> below,
+        // preserving the original empty-list rendering.
+        <p className="card-bg rounded-2xl border sidebar-border px-4 py-6 text-center text-sm text-themed-muted">
+          {filter === "prayer" ? "No prayers on your list." : "No extra items on your list."}
+        </p>
+      ) : (
+        <Checklist
+          rows={filteredRows}
+          onCheck={list.check}
+          onBump={list.bump}
+          onHaptic={hapticSelection}
+        />
+      )}
 
       {calOpen && (
         <StreakCalendar
@@ -335,26 +389,71 @@ async function shareReminder(r: Reminder) {
   }
 }
 
+type ReminderSub = "reflections" | "journal";
+
+const REMINDER_SUBS: { key: ReminderSub; label: string }[] = [
+  { key: "reflections", label: "Reflections" },
+  { key: "journal", label: "Journal" },
+];
+
 function RemindersTab() {
   const today = useMemo(() => todayLocalDate(), []);
   const { saved, toggle } = useReminderSaves();
   const router = useRouter();
+  // Sub-section within Reminders: the reflections deck vs the personal journal.
+  const [sub, setSub] = useState<ReminderSub>("reflections");
+  // A pending "Write a reflection" handoff from a reminder card → opens the
+  // journal composer pre-linked to that reminder.
+  const [draft, setDraft] = useState<JournalDraft | null>(null);
+
   const openReminder = (r: Reminder) => {
     if (r.sourceKind === "quran") {
       const [s, v] = r.sourceRef.split(":");
       if (s && v) router.push(`/quran/${s}?v=${v}`);
     }
   };
+
+  const reflectOn = (r: Reminder) => {
+    const label = r.sourceKind === "quran" ? `Qur'an ${r.sourceRef}` : r.sourceRef;
+    setDraft({ ref: r.id, label, nonce: Date.now() });
+    setSub("journal");
+  };
+
   return (
-    <ReflectionsFeed
-      reminders={ALL_REMINDERS}
-      today={today}
-      savedIds={saved}
-      onToggleSave={toggle}
-      onShare={shareReminder}
-      onOpen={openReminder}
-      onHaptic={hapticSelection}
-    />
+    <div className="space-y-4">
+      <div className="flex bg-[var(--overlay-medium)] rounded-2xl p-1 gap-1">
+        {REMINDER_SUBS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => {
+              hapticSelection();
+              setSub(t.key);
+            }}
+            className={`flex-1 text-center text-[13px] font-semibold py-2 rounded-xl transition-colors touch-manipulation ${
+              sub === t.key ? "bg-[var(--color-gold)]/18 text-gold" : "text-themed-muted"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {sub === "reflections" ? (
+        <ReflectionsFeed
+          reminders={ALL_REMINDERS}
+          today={today}
+          savedIds={saved}
+          onToggleSave={toggle}
+          onShare={shareReminder}
+          onOpen={openReminder}
+          onReflect={reflectOn}
+          onHaptic={hapticSelection}
+        />
+      ) : (
+        <JournalSection draft={draft} onDraftConsumed={() => setDraft(null)} />
+      )}
+    </div>
   );
 }
 

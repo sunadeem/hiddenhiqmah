@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Heart, Share2, Sparkles, ChevronLeft, ChevronRight, ChevronDown, Check, ArrowRight } from "lucide-react";
+import { Heart, Share2, Sparkles, ChevronLeft, ChevronRight, ChevronDown, Check, ArrowRight, PenLine } from "lucide-react";
 import { REMINDER_THEMES, dailyIndex, themeLabel, type Reminder } from "../../lib/reminders";
 
 /**
@@ -17,6 +17,7 @@ export function ReflectionsFeed({
   onToggleSave,
   onShare,
   onOpen,
+  onReflect,
   onHaptic,
 }: {
   reminders: Reminder[];
@@ -25,6 +26,8 @@ export function ReflectionsFeed({
   onToggleSave: (id: string) => void;
   onShare?: (r: Reminder) => void;
   onOpen?: (r: Reminder) => void;
+  /** When provided, cards show a "Write a reflection" action that opens the journal pre-linked. */
+  onReflect?: (r: Reminder) => void;
   onHaptic?: () => void;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -213,6 +216,7 @@ export function ReflectionsFeed({
               onToggleSave={onToggleSave}
               onShare={onShare}
               onOpen={onOpen}
+              onReflect={onReflect}
               onHaptic={onHaptic}
             />
           </div>
@@ -255,6 +259,7 @@ function ReflectionCard({
   onToggleSave,
   onShare,
   onOpen,
+  onReflect,
   onHaptic,
 }: {
   r: Reminder;
@@ -263,6 +268,7 @@ function ReflectionCard({
   onToggleSave: (id: string) => void;
   onShare?: (r: Reminder) => void;
   onOpen?: (r: Reminder) => void;
+  onReflect?: (r: Reminder) => void;
   onHaptic?: () => void;
 }) {
   return (
@@ -316,6 +322,19 @@ function ReflectionCard({
           </span>
         )}
         <div className="flex items-center gap-1">
+          {onReflect && (
+            <button
+              type="button"
+              onClick={() => {
+                onHaptic?.();
+                onReflect(r);
+              }}
+              aria-label="Write a reflection"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-gold text-xs font-semibold touch-manipulation"
+            >
+              <PenLine size={14} /> Reflect
+            </button>
+          )}
           {onShare && (
             <button
               type="button"

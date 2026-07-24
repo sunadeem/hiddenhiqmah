@@ -1,4 +1,10 @@
 import { supabase } from "@/lib/supabase";
+import { friendlyName } from "@/lib/friendly-name";
+
+// Re-export so existing importers keep resolving `friendlyName` from "@/lib/circles"
+// while the pure implementation lives in a server-safe util (the push route also
+// uses it — see @/lib/friendly-name).
+export { friendlyName };
 
 // Client data layer for Circles (migration 007). All writes go through the
 // SECURITY DEFINER RPCs; reads are RLS-scoped to the caller's circles.
@@ -417,7 +423,10 @@ export async function getCircleActivity(circleId: string, limit = 100): Promise<
   return rows.map((r) => ({
     ...r,
     meta: (r.meta ?? {}) as Record<string, unknown>,
-    actor_name: (r.actor_id && names.get(r.actor_id)?.display_name) || "Someone",
+    // Render a friendly first name, not the raw display_name — for magic-link
+    // signups that value is the email local part (a username, e.g.
+    // "subhan.s.nadeem"), which shouldn't surface in the activity line.
+    actor_name: friendlyName(r.actor_id ? names.get(r.actor_id)?.display_name : null),
   }));
 }
 
