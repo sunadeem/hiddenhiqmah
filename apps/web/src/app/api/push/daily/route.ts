@@ -69,6 +69,11 @@ async function handle(req: NextRequest) {
     data: { audience: "daily" },
   });
 
+  await Promise.all(
+    result.corrected.map((c) =>
+      supa.from("device_tokens").update({ environment: c.environment }).eq("token", c.token)
+    )
+  );
   if (result.staleTokens.length) {
     await supa.from("device_tokens").delete().in("token", result.staleTokens);
   }
@@ -78,6 +83,7 @@ async function handle(req: NextRequest) {
     kind: kinds[idx],
     sent: result.sent,
     failed: result.failed,
+    corrected: result.corrected.length,
     removed: result.staleTokens.length,
   });
 }

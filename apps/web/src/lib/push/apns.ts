@@ -38,9 +38,12 @@ export type SendResult = {
 export type SendManyResult = {
   sent: number;
   failed: number;
-  /** Tokens APNs reported as dead (410 / BadDeviceToken / Unregistered) —
+  /** Tokens dead on BOTH APNs environments (410 / Unregistered / bad on both) —
    *  callers should delete these from device_tokens. */
   staleTokens: string[];
+  /** Tokens that only succeeded on the OTHER environment than declared — callers
+   *  should update device_tokens.environment to this value (self-correction). */
+  corrected: Array<{ token: string; environment: PushEnvironment }>;
   results: SendResult[];
 };
 
@@ -115,8 +118,14 @@ export function buildApnsBody(payload: PushPayload): Record<string, unknown> {
   };
 }
 
-function isStale(status: number, reason?: string): boolean {
-  return status === 410 || reason === "BadDeviceToken" || reason === "Unregistered";
+function otherEnv(env: PushEnvironment): PushEnvironment {
+  return env === "sandbox" ? "production" : "sandbox";
+}
+
+function pushToMap<K, V>(m: Map<K, V[]>, k: K, v: V): void {
+  const arr = m.get(k);
+  if (arr) arr.push(v);
+  else m.set(k, [v]);
 }
 
 function connect(host: string): Promise<http2.ClientHttp2Session> {
@@ -214,9 +223,42 @@ async function runWithConcurrency<T>(
   await Promise.all(workers);
 }
 
+/** Send a batch of raw tokens to ONE host; returns per-token status. */
+async function sendGroupToHost(
+  host: string,
+  tokens: string[],
+  bodyBuf: Buffer,
+  jwt: string,
+  topic: string
+): Promise<Map<string, { status: number; reason?: string }>> {
+  const out = new Map<string, { status: number; reason?: string }>();
+  if (!tokens.length) return out;
+  let session: http2.ClientHttp2Session;
+  try {
+    session = await connect(host);
+  } catch (e) {
+    const reason = e instanceof Error ? e.message : "connect failed";
+    for (const t of tokens) out.set(t, { status: 0, reason });
+    return out;
+  }
+  // Swallow post-connect session errors so one bad stream can't crash the run.
+  session.on("error", () => {});
+  try {
+    await runWithConcurrency(tokens, MAX_CONCURRENCY, async (t) => {
+      out.set(t, await sendOnSession(session, t, bodyBuf, jwt, topic));
+    });
+  } finally {
+    session.close();
+  }
+  return out;
+}
+
 /**
- * Send one push to many tokens. Groups by APNs host (prod/sandbox), multiplexes
- * over one HTTP/2 session per host, and collects dead tokens for deletion.
+ * Send one push to many tokens. Sends each token to its declared APNs env, then
+ * — because a client can't reliably tell a sandbox (TestFlight/dev) token from a
+ * production one — RETRIES any `BadDeviceToken` on the OTHER env. Tokens that
+ * then succeed are reported in `corrected` (caller fixes device_tokens.environment);
+ * tokens dead on both envs (or 410/Unregistered) are `staleTokens` (caller deletes).
  */
 export async function sendToMany(
   targets: ApnsTarget[],
@@ -224,45 +266,62 @@ export async function sendToMany(
 ): Promise<SendManyResult> {
   const results: SendResult[] = [];
   const staleTokens: string[] = [];
-  if (!targets.length) return { sent: 0, failed: 0, staleTokens, results };
+  const corrected: Array<{ token: string; environment: PushEnvironment }> = [];
+  if (!targets.length) return { sent: 0, failed: 0, staleTokens, corrected, results };
 
   const jwt = getProviderToken();
   const topic = process.env.APNS_TOPIC || DEFAULT_TOPIC;
   const bodyBuf = Buffer.from(JSON.stringify(buildApnsBody(payload)));
 
-  const groups = new Map<string, ApnsTarget[]>();
+  const envOf = new Map<string, PushEnvironment>();
   for (const t of targets) {
-    const host = hostFor(t.environment);
-    const list = groups.get(host);
-    if (list) list.push(t);
-    else groups.set(host, [t]);
+    envOf.set(t.token, t.environment === "sandbox" ? "sandbox" : "production");
   }
 
-  for (const [host, group] of groups) {
-    let session: http2.ClientHttp2Session;
-    try {
-      session = await connect(host);
-    } catch (e) {
-      const reason = e instanceof Error ? e.message : "connect failed";
-      for (const t of group) results.push({ token: t.token, ok: false, reason });
-      continue;
+  // ── Pass 1: each token to its declared env's host ──
+  const byHost = new Map<string, string[]>();
+  for (const [token, env] of envOf) pushToMap(byHost, hostFor(env), token);
+  const retry: string[] = []; // BadDeviceToken → maybe just the wrong env
+  for (const [host, tokens] of byHost) {
+    const res = await sendGroupToHost(host, tokens, bodyBuf, jwt, topic);
+    for (const [token, r] of res) {
+      if (r.status === 200) {
+        results.push({ token, ok: true, status: 200 });
+      } else if (r.status === 410 || r.reason === "Unregistered") {
+        results.push({ token, ok: false, status: r.status, reason: r.reason });
+        staleTokens.push(token);
+      } else if (r.reason === "BadDeviceToken") {
+        retry.push(token);
+      } else {
+        // transient/auth/network failure — not a dead token
+        results.push({ token, ok: false, status: r.status, reason: r.reason });
+      }
     }
-    // Swallow post-connect session errors so one bad stream can't crash the run.
-    session.on("error", () => {});
-    try {
-      await runWithConcurrency(group, MAX_CONCURRENCY, async (t) => {
-        const { status, reason } = await sendOnSession(session, t.token, bodyBuf, jwt, topic);
-        const ok = status === 200;
-        results.push({ token: t.token, ok, status, reason });
-        if (isStale(status, reason)) staleTokens.push(t.token);
-      });
-    } finally {
-      session.close();
+  }
+
+  // ── Pass 2: retry BadDeviceToken tokens on the OTHER env ──
+  if (retry.length) {
+    const byOther = new Map<string, string[]>();
+    for (const token of retry) {
+      pushToMap(byOther, hostFor(otherEnv(envOf.get(token)!)), token);
+    }
+    for (const [host, tokens] of byOther) {
+      const res = await sendGroupToHost(host, tokens, bodyBuf, jwt, topic);
+      for (const [token, r] of res) {
+        if (r.status === 200) {
+          results.push({ token, ok: true, status: 200 });
+          corrected.push({ token, environment: otherEnv(envOf.get(token)!) });
+        } else {
+          // bad on both envs → truly dead
+          results.push({ token, ok: false, status: r.status, reason: r.reason });
+          staleTokens.push(token);
+        }
+      }
     }
   }
 
   const sent = results.filter((r) => r.ok).length;
-  return { sent, failed: results.length - sent, staleTokens, results };
+  return { sent, failed: results.length - sent, staleTokens, corrected, results };
 }
 
 /** Send one push to a single token. */
