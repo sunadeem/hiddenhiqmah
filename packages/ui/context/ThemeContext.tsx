@@ -1,54 +1,80 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { getThemeCSSVariables } from "../lib/themes";
+import {
+  THEMES,
+  DEFAULT_THEME_ID,
+  getThemeById,
+  getThemeVariablesById,
+  type ThemeDef,
+} from "../lib/themes";
 
 interface ThemeContextType {
+  /** Active theme id (one of THEMES). */
+  themeId: string;
+  /** Active theme definition (colours, mode, name). */
+  theme: ThemeDef;
+  /** All selectable themes, for the Appearance picker. */
+  themes: ThemeDef[];
+  /** Select a theme by id (persists + applies). */
+  setTheme: (id: string) => void;
+  /** Convenience: is the active theme dark? (derived from theme.mode) */
   isDark: boolean;
-  toggleDarkMode: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [isDark, setIsDark] = useState(true);
+const STORAGE_KEY = "hiqmah-theme";
 
-  const applyTheme = useCallback((dark: boolean) => {
-    const vars = getThemeCSSVariables(dark);
+// Old builds stored "dark" | "light"; map those onto named themes so existing
+// users keep a sensible palette on upgrade.
+function normalizeSaved(saved: string | null): string {
+  if (!saved) return DEFAULT_THEME_ID;
+  if (saved === "dark") return DEFAULT_THEME_ID;
+  if (saved === "light") return "daylight";
+  return THEMES.some((t) => t.id === saved) ? saved : DEFAULT_THEME_ID;
+}
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [themeId, setThemeId] = useState<string>(DEFAULT_THEME_ID);
+
+  const applyTheme = useCallback((id: string) => {
+    const vars = getThemeVariablesById(id);
     const root = document.documentElement;
-    Object.entries(vars).forEach(([key, value]) => {
-      root.style.setProperty(key, value);
-    });
+    Object.entries(vars).forEach(([key, value]) => root.style.setProperty(key, value));
   }, []);
 
-  // Load saved theme preference on mount
+  // Load saved preference on mount.
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("hiqmah-theme");
-      if (saved !== null) {
-        const dark = saved === "dark";
-        setIsDark(dark);
-        applyTheme(dark);
-      }
+      const id = normalizeSaved(localStorage.getItem(STORAGE_KEY));
+      setThemeId(id);
+      applyTheme(id);
     } catch {
-      // localStorage unavailable
+      applyTheme(DEFAULT_THEME_ID);
     }
   }, [applyTheme]);
 
-  useEffect(() => {
-    applyTheme(isDark);
-  }, [isDark, applyTheme]);
+  const setTheme = useCallback(
+    (id: string) => {
+      const next = getThemeById(id).id; // validate
+      setThemeId(next);
+      applyTheme(next);
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch {
+        /* ignore */
+      }
+    },
+    [applyTheme]
+  );
 
-  const toggleDarkMode = () => {
-    setIsDark((prev) => {
-      const next = !prev;
-      try { localStorage.setItem("hiqmah-theme", next ? "dark" : "light"); } catch {}
-      return next;
-    });
-  };
+  const theme = getThemeById(themeId);
 
   return (
-    <ThemeContext.Provider value={{ isDark, toggleDarkMode }}>
+    <ThemeContext.Provider
+      value={{ themeId, theme, themes: THEMES, setTheme, isDark: theme.mode === "dark" }}
+    >
       {children}
     </ThemeContext.Provider>
   );
