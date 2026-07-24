@@ -26,6 +26,15 @@ const client = new Anthropic({
 const SEARCH_MODEL = "claude-haiku-4-5";
 const ANSWER_MODEL = "claude-opus-4-8";
 
+// Cap on sequential search-refinement rounds on the fast model. Each round is
+// another blocking round-trip the user waits through (shown as "Thinking…"/
+// "Searching…") before any answer token streams, so we keep it low for
+// perceived speed. One round still yields TWO waves of search — the initial
+// call plus one refinement whose tools are executed after the loop — and
+// parallel tool calls let a single round issue several searches at once. Bump
+// back to 2 if answer grounding regresses on hard questions.
+const MAX_SEARCH_ROUNDS = 1;
+
 // Find the @hidden-hiqmah/content workspace package at runtime. Layouts:
 //   - dev (pnpm dev from apps/web)    → cwd = apps/web → ../../packages/content
 //   - Vercel (Root Directory=apps/web,
@@ -401,6 +410,11 @@ CRITICAL RULES FOR TOOL RESULTS:
 
 Always aim to be genuinely helpful — a grounded, honest answer that says "I couldn't verify a specific narration" is far better than a confident answer built on a fabricated or out-of-context source.
 
+LENGTH & TONE — short and conversational:
+Answer like a knowledgeable friend in a chat, not an essay. Lead with the direct answer in your first sentence or two, in warm plain language. Keep it SHORT — usually 1–3 short paragraphs. No preamble, no restating the question, no filler.
+When a topic has real depth you couldn't fully cover (different scholarly views, a longer story, extra detail, the specific narrations), DON'T dump it all — give the essential answer, then end with ONE brief, natural follow-up offer inviting the user to go deeper, tailored to what you held back — e.g. "Want me to go into the different scholarly views?", "Would you like the full story?", or "I can share the specific hadith if that helps." If the question is simple and fully answered, just answer and stop — no forced follow-up.
+A short, grounded, conversational answer that invites a follow-up beats a long one. Stay accurate and never mislead by omission — but trust the follow-up to carry the depth.
+
 FORMATTING:
 Write plain text. You may use **bold** for emphasis and line breaks for structure. No headers, lists, or code blocks.
 
@@ -679,15 +693,23 @@ export async function POST(req: NextRequest) {
 
         // Streaming ANSWER pass on the quality model: writes the grounded,
         // user-facing answer from the sources gathered above.
-        // max_tokens raised 1024 → 4096: long fiqh/tafsir answers were being
-        // cut off mid-sentence at 1024. Well within the model's streaming
-        // output ceiling; typical answers stop far short of it.
+        // max_tokens is a CEILING, not a target: the prompt makes answers short &
+        // conversational, so a high cap adds NO latency (generation stops at the
+        // model's own stop token) but guarantees the rare long, multi-citation
+        // contested-ruling reply never truncates mid-sentence. (Previously 2048,
+        // which risked cutoff — restored to 4096.)
+        // effort "medium" (Opus default is "high") trims the model's
+        // deliberation and verbosity for a faster, tighter reply. Thinking stays
+        // OFF — adaptive thinking is not enabled on Opus 4.8 unless requested —
+        // so this only dials the non-thinking token spend down a notch without
+        // sacrificing the grounding/citation behavior enforced by the prompt.
         const answerStream = async (
           msgs: Anthropic.Messages.MessageParam[]
         ): Promise<void> => {
           const s = client.messages.stream({
             model: ANSWER_MODEL,
             max_tokens: 4096,
+            output_config: { effort: "medium" },
             system: SYSTEM_BLOCKS,
             messages: msgs,
           });
@@ -727,7 +749,7 @@ export async function POST(req: NextRequest) {
         const messageChain: Anthropic.Messages.MessageParam[] = [...apiMessages];
         let rounds = 0;
 
-        while (response.stop_reason === "tool_use" && rounds < 2) {
+        while (response.stop_reason === "tool_use" && rounds < MAX_SEARCH_ROUNDS) {
           rounds++;
           const toolBlocks = response.content.filter(
             (b): b is Anthropic.Messages.ToolUseBlock => b.type === "tool_use"
@@ -775,7 +797,7 @@ export async function POST(req: NextRequest) {
 
         await answerStream([
           ...apiMessages,
-          { role: "user" as const, content: `[SEARCH RESULTS]\n${searchSummary}\n\n[REMINDER] Now answer the user's question above. Be helpful and conversational, but stay grounded: only quote or cite a verse/hadith that appears in the results above (with [[cite:N]]); never invent a reference. Give full-context, non-cherry-picked explanations, and flag any scholarly differences. Include [[link:Label|/path]] at the end.` },
+          { role: "user" as const, content: `[SEARCH RESULTS]\n${searchSummary}\n\n[REMINDER] Now answer the user's question above. Keep it SHORT and conversational — like a knowledgeable friend in a chat, not an essay: open with the direct answer, 1–3 short paragraphs, no preamble. Stay grounded: only quote or cite a verse/hadith that appears in the results above (with [[cite:N]]); never invent a reference. If there's real depth you held back (scholarly views, a longer story, the specific narrations), end with ONE brief, natural follow-up offer instead of dumping it all; if it's simple, just answer and stop. Include [[link:Label|/path]] at the end.` },
         ]);
 
         let text = raw;
