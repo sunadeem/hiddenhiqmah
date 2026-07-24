@@ -13,9 +13,10 @@
  * so when signed out we cache the token and re-persist on the next foreground /
  * after sign-in (register() re-fires on every foreground).
  *
- * NOTE: the `diag` / getPushDiag() / forceRegisterPush() below are a temporary
- * diagnostic surface (DebugPushCard) to trace registration on-device. Remove
- * once push delivery is verified.
+ * The token's declared `environment` (production by default; sandbox for dev
+ * builds via .env) is a best-effort guess — the SERVER (apns.ts) tries both
+ * environments and self-corrects device_tokens.environment, so a mislabel just
+ * costs one retry on the first send.
  */
 
 import { Capacitor } from "@capacitor/core";
@@ -27,36 +28,6 @@ const TOKEN_CACHE_KEY = "hiqmah-apns-token-pending";
 const APNS_ENV: "production" | "sandbox" =
   process.env.NEXT_PUBLIC_APNS_ENVIRONMENT === "sandbox" ? "sandbox" : "production";
 
-// ─── diagnostics (temporary) ───────────────────────────────────────────────
-export type PushDiag = {
-  native: boolean;
-  apnsEnv: string;
-  permission: string;
-  registerCalled: boolean;
-  token: string | null;
-  registrationError: string | null;
-  sessionPresent: boolean | null;
-  lastPersist: string | null;
-  updatedAt: number;
-};
-const diag: PushDiag = {
-  native: false,
-  apnsEnv: APNS_ENV,
-  permission: "?",
-  registerCalled: false,
-  token: null,
-  registrationError: null,
-  sessionPresent: null,
-  lastPersist: null,
-  updatedAt: 0,
-};
-function record(patch: Partial<PushDiag>): void {
-  Object.assign(diag, patch, { updatedAt: Date.now() });
-}
-export function getPushDiag(): PushDiag {
-  return { ...diag };
-}
-
 let navigateFn: ((url: string) => void) | null = null;
 let listenersReady = false;
 
@@ -65,14 +36,13 @@ async function persistToken(token: string): Promise<void> {
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    record({ sessionPresent: !!session });
     if (!session) {
+      // Signed out — stash it; re-persisted once a session exists.
       try {
         localStorage.setItem(TOKEN_CACHE_KEY, token);
       } catch {
         /* ignore */
       }
-      record({ lastPersist: "cached (signed out)" });
       return;
     }
     const { error } = await supabase.rpc("upsert_device_token", {
@@ -86,22 +56,19 @@ async function persistToken(token: string): Promise<void> {
       } catch {
         /* ignore */
       }
-      record({ lastPersist: "rpc error: " + error.message });
     } else {
       try {
         localStorage.removeItem(TOKEN_CACHE_KEY);
       } catch {
         /* ignore */
       }
-      record({ lastPersist: "saved ✓" });
     }
-  } catch (e) {
+  } catch {
     try {
       localStorage.setItem(TOKEN_CACHE_KEY, token);
     } catch {
       /* ignore */
     }
-    record({ lastPersist: "exception: " + String(e) });
   }
 }
 
@@ -111,11 +78,10 @@ async function ensureListeners(): Promise<void> {
   // Await the attaches BEFORE register() so a fast token event can't slip through
   // before a listener exists.
   await PushNotifications.addListener("registration", (t) => {
-    record({ token: t.value.slice(0, 16) + "…", registrationError: null });
     void persistToken(t.value);
   });
-  await PushNotifications.addListener("registrationError", (err) => {
-    record({ registrationError: JSON.stringify(err) });
+  await PushNotifications.addListener("registrationError", () => {
+    /* token unavailable; nothing to persist */
   });
   await PushNotifications.addListener("pushNotificationActionPerformed", (a) => {
     const url = (a?.notification?.data as { url?: string } | undefined)?.url;
@@ -131,41 +97,16 @@ async function ensureListeners(): Promise<void> {
 export async function registerPush(
   navigate?: (url: string) => void
 ): Promise<void> {
-  if (!Capacitor.isNativePlatform()) {
-    record({ native: false });
-    return;
-  }
-  record({ native: true });
+  if (!Capacitor.isNativePlatform()) return;
   if (navigate) navigateFn = navigate;
   try {
     await ensureListeners();
     const perm = await PushNotifications.checkPermissions();
-    record({ permission: perm.receive });
     if (perm.receive === "granted") {
-      record({ registerCalled: true });
       await PushNotifications.register();
     }
-  } catch (e) {
-    record({ registrationError: "register threw: " + String(e) });
-  }
-}
-
-/** Debug/force path: prompt for permission if needed, then register. */
-export async function forceRegisterPush(): Promise<void> {
-  if (!Capacitor.isNativePlatform()) return;
-  try {
-    await ensureListeners();
-    let perm = await PushNotifications.checkPermissions();
-    if (perm.receive !== "granted") {
-      perm = await PushNotifications.requestPermissions();
-    }
-    record({ permission: perm.receive });
-    if (perm.receive === "granted") {
-      record({ registerCalled: true });
-      await PushNotifications.register();
-    }
-  } catch (e) {
-    record({ registrationError: "force threw: " + String(e) });
+  } catch {
+    /* ignore — no-op on web / plugin unavailable */
   }
 }
 
