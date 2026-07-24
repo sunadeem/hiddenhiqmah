@@ -18,6 +18,8 @@ import {
   Square,
   Eye,
   ChevronRight,
+  ChevronsRight,
+  Languages,
   Play,
   RotateCcw,
 } from "lucide-react";
@@ -39,6 +41,7 @@ import { todayLocalDate } from "@hidden-hiqmah/ui/lib/daily/types";
 import type { Grade, HifzCard, HifzStation } from "@hidden-hiqmah/ui/lib/hifz/types";
 import type { NameOfAllah } from "@hidden-hiqmah/content/names-of-allah";
 import type { HifzPath } from "@/lib/hifz/useHifzPath";
+import { useTranslitPref } from "@/lib/hifz/useTranslitPref";
 import {
   hapticLight,
   hapticMedium,
@@ -117,6 +120,8 @@ function returnsLabel(card: HifzCard, grade: Grade, today: string): string {
 export default function LearnLadder({ path, nav, params }: LearnLadderProps) {
   const native = useIsNative();
   const today = useMemo(() => todayLocalDate(), []);
+  // Latin-script transliteration under the Arabic — OFF by default, persisted.
+  const [showTranslit, toggleTranslit] = useTranslitPref();
 
   // Learn a SPECIFIC station when Today (or the Path sheet) hands one forward via
   // params.stationKey — this is how the Qur'ān track and the Names track each launch
@@ -454,15 +459,25 @@ export default function LearnLadder({ path, nav, params }: LearnLadderProps) {
 
   return (
     <div className="flex flex-col min-h-full">
-      <FlowHeader label={stationLabel} step={step} onClose={() => nav("today")} />
+      <FlowHeader
+        label={stationLabel}
+        step={step}
+        onClose={() => nav("today")}
+        translit={
+          content.kind === "quran"
+            ? { on: showTranslit, onToggle: toggleTranslit }
+            : undefined
+        }
+      />
 
       <div className="flex-1 overflow-y-auto px-6 pb-8">
-        {step === 0 && <Meet content={content} />}
+        {step === 0 && <Meet content={content} showTranslit={showTranslit} />}
         {step === 1 && (
           <Absorb
             content={content}
             ai={ai}
             echoes={echoes}
+            showTranslit={showTranslit}
             onEcho={(i) =>
               setEchoes((e) => ({ ...e, [i]: Math.min(3, (e[i] ?? 0) + 1) }))
             }
@@ -487,6 +502,7 @@ export default function LearnLadder({ path, nav, params }: LearnLadderProps) {
           <Recite
             content={content}
             native={native}
+            showTranslit={showTranslit}
             recState={recState}
             recUrl={recUrl}
             recErr={recErr}
@@ -519,6 +535,12 @@ export default function LearnLadder({ path, nav, params }: LearnLadderProps) {
             fadeStage={fadeStage}
             itemCount={itemCount}
             contentKind={content.kind}
+            onSkipToRecite={() => {
+              hapticLight();
+              setStep(3);
+              setAi(0);
+              setFadeStage(0);
+            }}
             onBack={() => {
               hapticLight();
               if (step === 0) {
@@ -577,10 +599,13 @@ function FlowHeader({
   label,
   step,
   onClose,
+  translit,
 }: {
   label: string;
   step: number;
   onClose: () => void;
+  /** When present, renders the "Show transliteration" toggle (Qur'ān content only). */
+  translit?: { on: boolean; onToggle: () => void };
 }) {
   return (
     <div className="px-6 pt-2 pb-3">
@@ -621,6 +646,47 @@ function FlowHeader({
           </div>
         ))}
       </div>
+
+      {/* transliteration toggle — for users who can't yet read Arabic script */}
+      {translit && (
+        <div className="mt-3 flex justify-end">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={translit.on}
+            onClick={() => {
+              hapticSelection();
+              translit.onToggle();
+            }}
+            className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] tracking-wide touch-manipulation active:opacity-80"
+            style={{
+              borderColor: translit.on
+                ? "var(--color-gold-line, rgba(201,168,76,0.28))"
+                : "var(--overlay-soft, rgba(255,255,255,0.10))",
+              background: translit.on
+                ? "var(--color-gold-dim, rgba(201,168,76,0.10))"
+                : "transparent",
+              color: translit.on ? "var(--color-gold)" : "var(--color-themed-muted, #808aa0)",
+            }}
+          >
+            <Languages size={13} />
+            Show transliteration
+            <span
+              className="relative inline-block h-4 w-7 rounded-full transition-colors"
+              style={{
+                background: translit.on
+                  ? "var(--color-gold)"
+                  : "var(--overlay-strong, rgba(255,255,255,0.18))",
+              }}
+            >
+              <span
+                className="absolute top-0.5 h-3 w-3 rounded-full bg-white transition-all"
+                style={{ left: translit.on ? "14px" : "2px" }}
+              />
+            </span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -633,6 +699,7 @@ function LadderFooter({
   contentKind,
   onBack,
   onNext,
+  onSkipToRecite,
 }: {
   step: Step;
   ai: number;
@@ -641,6 +708,8 @@ function LadderFooter({
   contentKind: "quran" | "asma";
   onBack: () => void;
   onNext: () => void;
+  /** Jump straight to the Recite rung, past the step-by-step Fade. */
+  onSkipToRecite: () => void;
 }) {
   const noun = contentKind === "asma" ? "Name" : "āyah";
   let label = "Continue";
@@ -652,29 +721,54 @@ function LadderFooter({
   } else if (step === 3) label = "To the Seal";
 
   return (
-    <div className="flex gap-2.5">
-      <button
-        type="button"
-        onClick={onBack}
-        className="rounded-xl border sidebar-border text-themed-muted font-medium px-5 py-3.5 touch-manipulation active:opacity-80"
-      >
-        {step === 0 ? "Today" : "Back"}
-      </button>
-      <button
-        type="button"
-        onClick={onNext}
-        className="flex-1 rounded-xl bg-[var(--color-gold)] text-black font-semibold py-3.5 flex items-center justify-center gap-1.5 touch-manipulation active:opacity-90"
-      >
-        {label}
-        <ChevronRight size={18} />
-      </button>
-    </div>
+    <>
+      <div className="flex gap-2.5">
+        <button
+          type="button"
+          onClick={onBack}
+          className="rounded-xl border sidebar-border text-themed-muted font-medium px-5 py-3.5 touch-manipulation active:opacity-80"
+        >
+          {step === 0 ? "Today" : "Back"}
+        </button>
+        <button
+          type="button"
+          onClick={onNext}
+          className="flex-1 rounded-xl bg-[var(--color-gold)] text-black font-semibold py-3.5 flex items-center justify-center gap-1.5 touch-manipulation active:opacity-90"
+        >
+          {label}
+          <ChevronRight size={18} />
+        </button>
+      </div>
+
+      {/* Big, obvious jump-ahead for anyone who doesn't want the step-by-step fade. */}
+      {step < 3 && (
+        <button
+          type="button"
+          onClick={onSkipToRecite}
+          className="w-full rounded-xl border py-3.5 flex items-center justify-center gap-1.5 font-semibold touch-manipulation active:opacity-80"
+          style={{
+            borderColor: "var(--color-gold-line, rgba(201,168,76,0.28))",
+            background: "var(--color-gold-dim, rgba(201,168,76,0.06))",
+            color: "var(--color-gold)",
+          }}
+        >
+          Skip to Recite
+          <ChevronsRight size={18} />
+        </button>
+      )}
+    </>
   );
 }
 
 // ═══════════════ Rung 0 · MEET ═══════════════
 
-function Meet({ content }: { content: NonNullable<Content> }) {
+function Meet({
+  content,
+  showTranslit,
+}: {
+  content: NonNullable<Content>;
+  showTranslit: boolean;
+}) {
   return (
     <div className="pt-1">
       <p className="text-themed-muted text-sm leading-relaxed mb-4">
@@ -684,7 +778,13 @@ function Meet({ content }: { content: NonNullable<Content> }) {
 
       {content.kind === "quran" ? (
         <div className="rounded-2xl card-bg border sidebar-border p-4">
-          <AudioAssistedPlayer ayahs={content.items} wordSync showTranslation defaultLoop={false} />
+          <AudioAssistedPlayer
+            ayahs={content.items}
+            wordSync
+            showTranslation
+            showTransliteration={showTranslit}
+            defaultLoop={false}
+          />
         </div>
       ) : (
         <div className="space-y-3">
@@ -712,11 +812,13 @@ function Absorb({
   content,
   ai,
   echoes,
+  showTranslit,
   onEcho,
 }: {
   content: NonNullable<Content>;
   ai: number;
   echoes: Record<number, number>;
+  showTranslit: boolean;
   onEcho: (i: number) => void;
 }) {
   const count = content.items.length;
@@ -742,6 +844,7 @@ function Absorb({
             ayahs={[content.items[ai]]}
             wordSync
             showTranslation
+            showTransliteration={showTranslit}
             defaultLoop
           />
         ) : (
@@ -944,6 +1047,7 @@ function Fade({
 function Recite({
   content,
   native,
+  showTranslit,
   recState,
   recUrl,
   recErr,
@@ -954,6 +1058,7 @@ function Recite({
 }: {
   content: NonNullable<Content>;
   native: boolean;
+  showTranslit: boolean;
   recState: "idle" | "recording" | "recorded";
   recUrl: string | null;
   recErr: string | null;
@@ -995,6 +1100,23 @@ function Recite({
               : (content.items as AItem[]).map((a) => (
                   <span key={a.nameIndex}>{a.name.nameAr} · </span>
                 ))}
+          </div>
+        )}
+
+        {/* transliteration under the reveal — for users who can't read Arabic yet */}
+        {revealed && showTranslit && isQuran && (
+          <div className="mt-3 space-y-1 text-left">
+            {(content.items as QItem[]).map((a) =>
+              a.transliteration ? (
+                <p
+                  key={`tr-${a.surah}:${a.ayah}`}
+                  dir="ltr"
+                  className="text-gold/80 text-sm italic leading-relaxed"
+                >
+                  {a.transliteration}
+                </p>
+              ) : null
+            )}
           </div>
         )}
 
