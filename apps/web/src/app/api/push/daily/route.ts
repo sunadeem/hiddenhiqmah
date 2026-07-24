@@ -67,6 +67,9 @@ async function handle(req: NextRequest) {
     body: item.reference ? `${item.english} — ${item.reference}` : item.english,
     url: item.url,
     data: { audience: "daily" },
+    // One daily push per device per day, even if the device has a stale second
+    // token or the cron double-fires — iOS collapses same-id notifications.
+    collapseId: `daily-${dateStr}`,
   });
 
   await Promise.all(

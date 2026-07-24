@@ -57,6 +57,8 @@ async function handle(req: NextRequest) {
     body: "Come back for today's verse, hadith, and du'a — a moment of reflection awaits.",
     url: "/",
     data: { audience: "reengagement" },
+    // One nudge per device per run, even with a stale second token / double fire.
+    collapseId: `reengage-${new Date().toISOString().slice(0, 10)}`,
   });
 
   await Promise.all(

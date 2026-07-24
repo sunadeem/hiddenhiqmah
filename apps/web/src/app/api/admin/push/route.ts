@@ -47,6 +47,9 @@ export async function POST(req: NextRequest) {
       body: bodyText,
       url,
       data: { audience: "announcement" },
+      // Unique per send: dedupes THIS announcement across a device's tokens, while
+      // two separate announcements (different timestamps) still each show.
+      collapseId: `announce-${Date.now().toString(36)}`,
     });
 
     await Promise.all(

@@ -129,6 +129,7 @@ async function handle(req: NextRequest) {
   const preview =
     messageBody.length > PREVIEW_MAX ? messageBody.slice(0, PREVIEW_MAX).trimEnd() + "…" : messageBody;
 
+  const messageId = (payload.message_id ?? "").trim();
   const result = await sendToMany(targets, {
     title: `${senderName} in ${circleName}`,
     body: preview || "New message",
@@ -136,6 +137,9 @@ async function handle(req: NextRequest) {
     // ?chat=<id> and opens that circle's chat.
     url: `/circles?chat=${encodeURIComponent(circleId)}`,
     data: { audience: "circle", circleId },
+    // Per-message collapse id: the SAME message can't show twice on a device with
+    // a stale second token, but DISTINCT messages still each get their own banner.
+    ...(messageId ? { collapseId: `circle-msg-${messageId}` } : {}),
   });
 
   await Promise.all(
