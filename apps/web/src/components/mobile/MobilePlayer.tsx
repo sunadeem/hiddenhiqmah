@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import {
@@ -175,13 +175,6 @@ function FullSheet({
   const duration = isQuran ? quran.audioDuration : adhan.duration;
   const dragControls = useDragControls();
 
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const fraction = (e.clientX - rect.left) / rect.width;
-    if (isQuran) quran.seekTo(fraction);
-    else adhan.seekTo(fraction);
-  };
-
   return (
     <motion.div
       key="full-sheet"
@@ -282,22 +275,11 @@ function FullSheet({
         className="shrink-0 px-6"
         style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1.5rem)" }}
       >
-        <div
-          className="h-1.5 bg-[var(--overlay-medium)] rounded-full cursor-pointer mb-2 touch-manipulation"
-          onClick={handleSeek}
-          role="slider"
-          aria-label="Seek"
-          aria-valuenow={duration > 0 ? (progress / duration) * 100 : 0}
-        >
-          <div
-            className="h-full bg-[var(--color-gold)] rounded-full transition-[width] duration-100"
-            style={{ width: `${duration > 0 ? (progress / duration) * 100 : 0}%` }}
-          />
-        </div>
-        <div className="flex justify-between text-xs text-themed-muted mb-6">
-          <span>{formatTime(progress)}</span>
-          <span>{formatTime(duration)}</span>
-        </div>
+        <SeekBar
+          progress={progress}
+          duration={duration}
+          onSeek={(fraction) => (isQuran ? quran.seekTo(fraction) : adhan.seekTo(fraction))}
+        />
 
         <div className="flex items-center justify-between max-w-md mx-auto">
           {isQuran ? (
@@ -361,5 +343,101 @@ function FullSheet({
         </div>
       </div>
     </motion.div>
+  );
+}
+
+// Scrubbable progress bar. Pointer-events (mouse + touch, incl. WKWebView on
+// Capacitor) drive a live seek: the visual track follows the finger via local
+// `scrub` state while dragging, and the underlying audio position is updated on
+// every move AND on release via `onSeek` (which maps to quran/adhan `seekTo`,
+// both of which set the HTMLAudioElement's `currentTime`). While scrubbing we
+// display `scrub` instead of the incoming `progress` so live `timeupdate`s can't
+// fight the finger; on release we hand control back to `progress`.
+function SeekBar({
+  progress,
+  duration,
+  onSeek,
+}: {
+  progress: number;
+  duration: number;
+  onSeek: (fraction: number) => void;
+}) {
+  const barRef = useRef<HTMLDivElement>(null);
+  const [scrub, setScrub] = useState<number | null>(null);
+
+  const fractionFromClientX = (clientX: number): number => {
+    const el = barRef.current;
+    if (!el) return 0;
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0) return 0;
+    return Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    const f = fractionFromClientX(e.clientX);
+    setScrub(f);
+    onSeek(f);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (scrub === null) return;
+    const f = fractionFromClientX(e.clientX);
+    setScrub(f);
+    onSeek(f);
+  };
+
+  const endScrub = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (scrub === null) return;
+    onSeek(fractionFromClientX(e.clientX));
+    setScrub(null);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* pointer already released */
+    }
+  };
+
+  const pct =
+    scrub !== null
+      ? scrub * 100
+      : duration > 0
+      ? (progress / duration) * 100
+      : 0;
+  const displayProgress = scrub !== null ? scrub * duration : progress;
+
+  return (
+    <>
+      <div
+        ref={barRef}
+        className="relative h-6 flex items-center cursor-pointer mb-2 select-none touch-none"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endScrub}
+        onPointerCancel={endScrub}
+        role="slider"
+        aria-label="Seek"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(pct)}
+      >
+        <div className="h-1.5 w-full bg-[var(--overlay-medium)] rounded-full">
+          <div
+            className={`h-full bg-[var(--color-gold)] rounded-full ${
+              scrub === null ? "transition-[width] duration-100" : ""
+            }`}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <div
+          className="absolute w-3.5 h-3.5 rounded-full bg-[var(--color-gold)] shadow -translate-x-1/2 pointer-events-none"
+          style={{ left: `${pct}%` }}
+        />
+      </div>
+      <div className="flex justify-between text-xs text-themed-muted mb-6">
+        <span>{formatTime(displayProgress)}</span>
+        <span>{formatTime(duration)}</span>
+      </div>
+    </>
   );
 }

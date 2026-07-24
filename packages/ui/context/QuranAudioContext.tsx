@@ -469,7 +469,20 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     if (!vrs || playingVerse === null) return;
     const idx = vrs.findIndex((v) => v.number === playingVerse);
     const prev = vrs[idx - 1];
-    if (prev) startAudio(prev);
+    if (prev) {
+      startAudio(prev);
+    } else if (audioRef.current) {
+      // First āyah of the surah (idx 0): there is no prior āyah, so instead of a
+      // no-op, restart the current āyah from 0:00 — the expected "previous"
+      // behaviour of a media player. Resume playback if it was paused so this
+      // mirrors the play-immediately behaviour of the idx ≥ 1 branch above.
+      audioRef.current.currentTime = 0;
+      setAudioProgress(0);
+      if (audioRef.current.paused) {
+        audioRef.current.play().catch(() => {});
+        setAudioPaused(false);
+      }
+    }
   }, [playingVerse, startAudio]);
 
   const seekTo = useCallback((fraction: number) => {

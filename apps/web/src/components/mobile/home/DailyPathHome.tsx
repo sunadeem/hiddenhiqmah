@@ -15,7 +15,6 @@ import {
   Heart,
   Check,
   ChevronRight,
-  SlidersHorizontal,
 } from "lucide-react";
 import {
   NextPrayerCard,
@@ -39,14 +38,6 @@ type Step = {
   // Maps to a daily-checklist item (sourceKey) so the step can show live
   // completion. Steps without one stay as plain suggestions.
   itemKey?: string;
-};
-
-const TUNED_LABEL: Record<TunedFor, string> = {
-  prayer: "Prayer",
-  hifz: "Hifz",
-  "new-muslim": "New Muslim",
-  family: "Family",
-  exploring: "Exploring",
 };
 
 function hijriToday(): string {
@@ -189,15 +180,6 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
         </h1>
         {hijri && <p className="text-themed-muted text-sm mt-1">{hijri}</p>}
       </div>
-
-      {/* Tuned-for chip → deep-links Settings to the Tuned-for section */}
-      <Link
-        href="/settings?section=tuned-for"
-        className="inline-flex items-center gap-2 self-start rounded-full bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/30 px-3 py-1.5 text-xs font-semibold text-gold touch-manipulation active:scale-[0.98] transition-transform"
-      >
-        <SlidersHorizontal size={13} />
-        Tuned for: {TUNED_LABEL[tunedFor]}
-      </Link>
 
       {/* Next prayer — the time-anchored hero */}
       <NextPrayerCard />
