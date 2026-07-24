@@ -16,6 +16,11 @@
 --   daily        = '0 14 * * *'   (14:00 UTC every day)
 --   reengagement = '0 15 * * 1'   (15:00 UTC every Monday)
 -- Re-running this file is safe: it unschedules the jobs by name first.
+--
+-- ⚠️ SUPERSEDED BY MIGRATION 029: the hard-coded prod URL below caused non-prod
+--    DBs that ran this file to fire their crons at PRODUCTION. Migration 029 routes
+--    pushes through push_post() + a per-DB push_settings row instead. Always apply
+--    029 after this file; on a dev DB, 029 (unseeded) makes these crons inert.
 -- ============================================================================
 
 create extension if not exists pg_cron;

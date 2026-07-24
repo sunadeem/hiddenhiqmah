@@ -26,6 +26,7 @@ import { computePrayerTimes } from "@/lib/prayer-times";
 import { dailyInspirations } from "@/data/home-content";
 import { dailyIndex, type Reminder } from "@hidden-hiqmah/ui/lib/reminders";
 import remindersData from "@hidden-hiqmah/content/reminders.json";
+import { buildIslamicEventNotifications } from "@/lib/mobile/islamic-events";
 
 const REMINDERS = remindersData as unknown as Reminder[];
 
@@ -88,14 +89,18 @@ const JUMUAH_HOUR = 9; // 9:30 AM Friday — before most congregations
 const JUMUAH_MINUTE = 30;
 const LAST_ACTIVE_KEY = "hiqmah-daily-last-active"; // YYYY-MM-DD of last checklist activity
 const DAYS_AHEAD = 10;
-const MAX_NOTIFICATIONS = 60; // stay under iOS's 64 pending cap
+const MAX_NOTIFICATIONS = 63; // stay under iOS's 64 pending cap (1 slot margin)
 // Engagement notifs (verse/hadith/reminder/streak) only cover a short window so
 // they can never crowd out the adhan within the 64-pending cap.
 const ENGAGEMENT_DAYS = 3;
-// Per-tier slot budgets (sum <= MAX_NOTIFICATIONS). Adhan is protected first,
-// then pre-prayer, then at most a few engagement nudges. Unused higher-tier
-// budget is NOT borrowed down — adhan coverage is guaranteed.
-const TIER_CAPS: Record<number, number> = { 1: 40, 2: 14, 3: 6 };
+// Per-tier slot budgets (filled in tier order, each also bounded by
+// MAX_NOTIFICATIONS). Adhan is protected first, then pre-prayer, then a few
+// engagement nudges, then Islamic-event notices last. Unused higher-tier budget
+// is NOT borrowed down — adhan coverage is guaranteed. Events are sparse (a
+// handful across 60 days), so tier 4 never approaches its cap in practice.
+// Sum = MAX_NOTIFICATIONS so every tier gets its share (events would otherwise be
+// starved — adhan trimmed 40→35 = a still-generous 7 days, refilled on each open).
+const TIER_CAPS: Record<number, number> = { 1: 35, 2: 14, 3: 6, 4: 8 };
 
 type Timings = Record<string, string>;
 
@@ -269,6 +274,9 @@ export async function scheduleAllNotifications(
   const wantPrayerNotif = prefs.prayerNotif !== false;
   const wantDaily = prefs.todaysVerse || prefs.todaysHadith;
   const wantReminder = prefs.todaysReminder && REMINDERS.length > 0;
+  // Islamic-event notices are location-independent (they're purely calendar-based),
+  // so they keep scheduling even when every prayer/engagement toggle is off.
+  const wantEvents = prefs.islamicEvents !== false || prefs.whiteDays !== false;
   if (
     !anyAdhan &&
     !wantPrayerNotif &&
@@ -276,7 +284,8 @@ export async function scheduleAllNotifications(
     !wantDaily &&
     !wantReminder &&
     !prefs.jumuah &&
-    !prefs.streak
+    !prefs.streak &&
+    !wantEvents
   )
     return;
 
@@ -288,7 +297,7 @@ export async function scheduleAllNotifications(
     schedule: { at: Date };
     sound?: string;
     url?: string; // deep-link target on tap
-    tier: 1 | 2 | 3; // 1=adhan (protected), 2=pre-prayer, 3=engagement
+    tier: 1 | 2 | 3 | 4; // 1=adhan (protected), 2=pre-prayer, 3=engagement, 4=Islamic events
     // iOS delivery priority. Adhan is time-sensitive so Focus/Sleep/DND don't
     // silence it (Sleep Focus at Fajr is the common culprit). NOTE: this does NOT
     // bypass the hardware ring/silent switch — that needs a Critical Alert
@@ -462,12 +471,34 @@ export async function scheduleAllNotifications(
     }
   }
 
+  // ── Islamic events & occasions (calendar-based, no location needed) ──
+  // New Year, ʿĀshūrāʾ, Ramadan, the last 10 nights, Eid, the first 10 days of
+  // Dhul-Ḥijjah + Arafah, and (separately gated) the monthly White Days. Computed
+  // on-device from the Hijri calendar for the next ~60 days. See islamic-events.ts.
+  if (wantEvents) {
+    const events = buildIslamicEventNotifications(now, {
+      islamicEvents: prefs.islamicEvents !== false,
+      whiteDays: prefs.whiteDays !== false,
+    });
+    for (const ev of events) {
+      notifs.push({
+        id: id++,
+        title: ev.title,
+        body: ev.body,
+        schedule: { at: ev.at },
+        url: ev.url,
+        tier: 4,
+      });
+    }
+  }
+
   // iOS 64-pending cap. Fill by priority tier (adhan first, then pre-prayer, then
-  // engagement) so engagement nudges can never push out the adhan. Soonest-first
-  // within each tier; per-tier budgets guarantee adhan coverage.
+  // engagement, then Islamic events) so lower-priority nudges can never push out
+  // the adhan. Soonest-first within each tier; per-tier budgets guarantee adhan
+  // coverage.
   notifs.sort((a, b) => a.schedule.at.getTime() - b.schedule.at.getTime());
   const toSchedule: Notif[] = [];
-  for (const tier of [1, 2, 3] as const) {
+  for (const tier of [1, 2, 3, 4] as const) {
     let taken = 0;
     for (const n of notifs) {
       if (n.tier !== tier) continue;

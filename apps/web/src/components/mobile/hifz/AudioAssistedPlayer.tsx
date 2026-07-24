@@ -48,6 +48,8 @@ export interface AudioAssistedPlayerProps {
   wordSync?: boolean;
   /** Show the English translation under each āyah. Default true. */
   showTranslation?: boolean;
+  /** Show the Latin transliteration under each āyah (for non-Arabic readers). Default false. */
+  showTransliteration?: boolean;
   /** Start with loop enabled. Default false. */
   defaultLoop?: boolean;
   className?: string;
@@ -57,6 +59,7 @@ export default function AudioAssistedPlayer({
   ayahs,
   wordSync = true,
   showTranslation = true,
+  showTransliteration = false,
   defaultLoop = false,
   className,
 }: AudioAssistedPlayerProps) {
@@ -173,6 +176,11 @@ export default function AudioAssistedPlayer({
                   <span>{ay.arabic}</span>
                 )}
               </p>
+              {showTransliteration && ay.transliteration && (
+                <p dir="ltr" className="text-gold/80 text-sm italic mt-2 leading-relaxed">
+                  {ay.transliteration}
+                </p>
+              )}
               {showTranslation && (
                 <p className="text-themed-muted text-sm mt-2">{ay.translation}</p>
               )}

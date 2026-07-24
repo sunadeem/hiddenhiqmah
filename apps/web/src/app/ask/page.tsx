@@ -101,7 +101,9 @@ export default function AskPage() {
     }
     if (q && submit) setAutoSend(q);
     else if (q) setQuery(q);
-    else inputRef.current?.focus();
+    // Don't auto-focus on native — it pops the keyboard and covers half the
+    // screen the instant the Ask tab opens. Web keeps the click-saving focus.
+    else if (!document.documentElement.classList.contains("native")) inputRef.current?.focus();
   }, []);
 
   useEffect(() => {

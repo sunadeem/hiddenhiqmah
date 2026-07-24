@@ -85,7 +85,19 @@ async function ensureListeners(): Promise<void> {
   });
   await PushNotifications.addListener("pushNotificationActionPerformed", (a) => {
     const url = (a?.notification?.data as { url?: string } | undefined)?.url;
-    if (url && navigateFn) navigateFn(url);
+    if (!url) return;
+    if (navigateFn) navigateFn(url);
+    // Also broadcast the tap. A same-route navigation (e.g. tapping a circle push
+    // while already on /circles) does NOT remount the target screen, so its
+    // deep-link effect never re-runs. Screens that resolve their own params
+    // (CirclesScreen ?chat=) listen for this and react even without a remount.
+    try {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("hiqmah:push-nav", { detail: { url } }));
+      }
+    } catch {
+      /* ignore */
+    }
   });
 }
 

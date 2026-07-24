@@ -10,15 +10,18 @@
    imported in app/layout.tsx — bundled into the app so they work offline. */
 
 :root {
-  --color-bg: #0a1628;
-  --color-sidebar: #0d1f3c;
-  --color-card: #111d33;
-  --color-border: #1a2d4d;
-  --color-text: #e8e0d0;
-  --color-text-muted: #8a9bbd;
-  --color-accent: #4a8fe7;
-  --color-accent-hover: #6aa3f0;
+  /* Pre-JS fallback = the default "Onyx & Gold" theme. ThemeProvider applies the
+     user's saved palette onto <html> on mount — see packages/ui/lib/themes.ts. */
+  --color-bg: #0a0a0c;
+  --color-sidebar: #101014;
+  --color-card: #17171b;
+  --color-border: #28282e;
+  --color-text: #f1ece0;
+  --color-text-muted: #8d887c;
+  --color-accent: #d4a843;
+  --color-accent-hover: #e0b84e;
   --color-gold: #d4a843;
+  --color-accent2: #c98f2e;
   /* Theme-aware subtle-surface overlays (dark defaults; flipped for light
      in packages/ui/lib/themes.ts). Use via bg-[var(--overlay-subtle)] etc. */
   --overlay-subtle: rgba(255, 255, 255, 0.05);

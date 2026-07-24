@@ -26,6 +26,12 @@ export type PushPayload = {
   body: string;
   url?: string;
   data?: Record<string, unknown>;
+  /** APNs `apns-collapse-id` (≤64 bytes). Notifications sharing this id on the
+   *  same device coalesce into ONE banner — so a device that ended up with two
+   *  live tokens (a rebuild rotated the token before the old one was pruned), or
+   *  a cron that fired twice, can never show the same push twice. Use a stable id
+   *  per logical push (e.g. `daily-2026-07-24`, `circle-msg-<uuid>`). */
+  collapseId?: string;
 };
 
 export type SendResult = {
@@ -149,7 +155,8 @@ function sendOnSession(
   token: string,
   bodyBuf: Buffer,
   jwt: string,
-  topic: string
+  topic: string,
+  collapseId?: string
 ): Promise<{ status: number; reason?: string }> {
   return new Promise((resolve) => {
     let settled = false;
@@ -169,6 +176,9 @@ function sendOnSession(
         "apns-push-type": "alert",
         "apns-priority": "10",
         "apns-expiration": String(Math.floor(Date.now() / 1000) + 3600),
+        // Same-collapse-id notifications coalesce to one banner on a device — so a
+        // device with two live tokens (or a double cron fire) can't show a dup.
+        ...(collapseId ? { "apns-collapse-id": collapseId } : {}),
         "content-type": "application/json",
         "content-length": bodyBuf.length,
       });
@@ -229,7 +239,8 @@ async function sendGroupToHost(
   tokens: string[],
   bodyBuf: Buffer,
   jwt: string,
-  topic: string
+  topic: string,
+  collapseId?: string
 ): Promise<Map<string, { status: number; reason?: string }>> {
   const out = new Map<string, { status: number; reason?: string }>();
   if (!tokens.length) return out;
@@ -245,7 +256,7 @@ async function sendGroupToHost(
   session.on("error", () => {});
   try {
     await runWithConcurrency(tokens, MAX_CONCURRENCY, async (t) => {
-      out.set(t, await sendOnSession(session, t, bodyBuf, jwt, topic));
+      out.set(t, await sendOnSession(session, t, bodyBuf, jwt, topic, collapseId));
     });
   } finally {
     session.close();
@@ -272,6 +283,7 @@ export async function sendToMany(
   const jwt = getProviderToken();
   const topic = process.env.APNS_TOPIC || DEFAULT_TOPIC;
   const bodyBuf = Buffer.from(JSON.stringify(buildApnsBody(payload)));
+  const collapseId = payload.collapseId;
 
   const envOf = new Map<string, PushEnvironment>();
   for (const t of targets) {
@@ -283,7 +295,7 @@ export async function sendToMany(
   for (const [token, env] of envOf) pushToMap(byHost, hostFor(env), token);
   const retry: string[] = []; // BadDeviceToken → maybe just the wrong env
   for (const [host, tokens] of byHost) {
-    const res = await sendGroupToHost(host, tokens, bodyBuf, jwt, topic);
+    const res = await sendGroupToHost(host, tokens, bodyBuf, jwt, topic, collapseId);
     for (const [token, r] of res) {
       if (r.status === 200) {
         results.push({ token, ok: true, status: 200 });
@@ -306,7 +318,7 @@ export async function sendToMany(
       pushToMap(byOther, hostFor(otherEnv(envOf.get(token)!)), token);
     }
     for (const [host, tokens] of byOther) {
-      const res = await sendGroupToHost(host, tokens, bodyBuf, jwt, topic);
+      const res = await sendGroupToHost(host, tokens, bodyBuf, jwt, topic, collapseId);
       for (const [token, r] of res) {
         if (r.status === 200) {
           results.push({ token, ok: true, status: 200 });

@@ -11,6 +11,9 @@ import {
   Sparkles,
   Flame,
   Sparkle,
+  MoonStar,
+  Moon,
+  MessageSquare,
 } from "lucide-react";
 import {
   getNotificationPrefs,
@@ -18,6 +21,7 @@ import {
   type NotificationPrefs,
 } from "@hidden-hiqmah/ui/lib/storage";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
+import { supabase } from "@/lib/supabase";
 import {
   SettingsSection,
   SettingsRow,
@@ -41,6 +45,22 @@ export default function NotificationsScreen() {
     setNotif((n) => (n ? { ...n, ...patch } : n));
     // Re-schedule local notifications; prompts for OS permission the first time.
     rescheduleNotificationsDebounced(true);
+  };
+
+  // Circle-chat push is a REMOTE (APNs) preference, so besides persisting the
+  // local pref we mirror it to the server (profiles.circle_push) — that flag is
+  // what the /api/push/circle-message fan-out reads. Fire-and-forget; if the RPC
+  // fails (offline / signed out) the local pref still reflects the user's choice
+  // and next successful toggle re-syncs it.
+  const updateCircleChat = (v: boolean) => {
+    updateNotif({ circleChat: v });
+    void (async () => {
+      try {
+        await supabase.rpc("set_my_circle_push", { p_enabled: v });
+      } catch {
+        /* offline or signed out — local pref kept; re-synced on next toggle */
+      }
+    })();
   };
 
   if (!notif) {
@@ -151,6 +171,35 @@ export default function NotificationsScreen() {
           subtitle="Friday morning, 9:30 AM"
           toggle={notif.jumuah}
           onToggle={(v) => updateNotif({ jumuah: v })}
+        />
+      </SettingsSection>
+
+      <SettingsSection heading="Circles">
+        <SettingsRow
+          icon={MessageSquare}
+          title="Chat messages"
+          subtitle="Get notified when someone posts in your circles."
+          toggle={notif.circleChat === true}
+          onToggle={(v) => updateCircleChat(v)}
+        />
+      </SettingsSection>
+
+      {/* Calendar-based occasions, computed on-device from the Hijri calendar
+          (lib/mobile/islamic-events.ts) — no location or network needed. */}
+      <SettingsSection heading="Islamic events">
+        <SettingsRow
+          icon={MoonStar}
+          title="Events & occasions"
+          subtitle="Ramadan, ʿĀshūrāʾ, the last 10 nights, Dhul-Ḥijjah, Arafah & the two Eids"
+          toggle={notif.islamicEvents !== false}
+          onToggle={(v) => updateNotif({ islamicEvents: v })}
+        />
+        <SettingsRow
+          icon={Moon}
+          title="White Days fasting"
+          subtitle="A monthly nudge — the Prophet ﷺ encouraged fasting the 13th–15th of each month"
+          toggle={notif.whiteDays !== false}
+          onToggle={(v) => updateNotif({ whiteDays: v })}
         />
       </SettingsSection>
     </div>
