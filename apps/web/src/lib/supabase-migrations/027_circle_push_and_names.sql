@@ -93,6 +93,9 @@ grant execute on function public.set_my_circle_push(boolean) to authenticated;
 
 -- ============================================================================
 -- 3. MESSAGE TRIGGER — fire-and-forget push fan-out on a new circle message.
+-- ⚠️ SUPERSEDED BY MIGRATION 029: the hard-coded prod URL here made a non-prod DB's
+--    message inserts POST to PRODUCTION. Migration 029 re-points this trigger at
+--    push_post() (per-DB push_settings). Apply 029 after this file.
 -- ============================================================================
 -- Vercel Cron/routes are POST-only here (a GET handler can't live in the mobile
 -- output:export build), so — like migration 026 — we drive the route from Postgres
