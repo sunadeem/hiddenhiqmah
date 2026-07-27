@@ -28,12 +28,13 @@ const ANSWER_MODEL = "claude-opus-4-8";
 
 // Cap on sequential search-refinement rounds on the fast model. Each round is
 // another blocking round-trip the user waits through (shown as "Thinking…"/
-// "Searching…") before any answer token streams, so we keep it low for
-// perceived speed. One round still yields TWO waves of search — the initial
-// call plus one refinement whose tools are executed after the loop — and
-// parallel tool calls let a single round issue several searches at once. Bump
-// back to 2 if answer grounding regresses on hard questions.
-const MAX_SEARCH_ROUNDS = 1;
+// "Searching…") before any answer token streams, so we keep it minimal for
+// speed. At 0 the refinement loop is skipped entirely: the FIRST gather call's
+// tool requests are still executed (see the post-loop block), so we get one full
+// search wave — the model picks keywords, we run the tools, then the answer pass
+// grounds on those results. Bump to 1 (adds one refinement wave) if grounding
+// regresses on hard questions.
+const MAX_SEARCH_ROUNDS = 0;
 
 // Find the @hidden-hiqmah/content workspace package at runtime. Layouts:
 //   - dev (pnpm dev from apps/web)    → cwd = apps/web → ../../packages/content
@@ -650,9 +651,9 @@ export async function POST(req: NextRequest) {
         // Stream the answer to the client token-by-token. We accumulate the raw
         // model text across calls, and emit only the marker-free incremental
         // text as `delta` events — holding back any in-progress [[cite:N]] /
-        // [[link:..]] marker so the user never sees them. (Web reads deltas
-        // live; the native WKWebView buffers the whole response and uses the
-        // final `answer` event, so this is purely additive there.)
+        // [[link:..]] marker so the user never sees them. BOTH clients now read
+        // these live: web via a streaming fetch body, native via XHR progress
+        // events (see streamChatNative in packages/ui/components/AskHiqmah.tsx).
         let raw = "";
         let emittedLen = 0;
         const cleanForStream = (s: string): string => {
@@ -668,9 +669,11 @@ export async function POST(req: NextRequest) {
             emittedLen = clean.length;
           }
         };
-        // Non-streaming SEARCH pass on the fast/cheap model: pick keywords, run
-        // the tools, judge relevance. Any prose it produces is intentionally
-        // discarded — the user-facing answer is written by the ANSWER pass.
+        // Non-streaming SEARCH pass on the fast/cheap model: it picks the search
+        // keywords and issues the tool calls. Any prose it produces is discarded.
+        // With MAX_SEARCH_ROUNDS = 0 it never sees the tool RESULTS, so judging
+        // relevance is entirely the answer model's job (the system prompt's
+        // "CRITICAL RULES FOR TOOL RESULTS" is what enforces it).
         const gather = async (
           msgs: Anthropic.Messages.MessageParam[]
         ): Promise<Anthropic.Messages.Message> => {
@@ -744,7 +747,7 @@ export async function POST(req: NextRequest) {
           }
         };
 
-        // ── Search phase (fast model, up to 2 tool rounds) ──────────────────
+        // ── Search phase (fast model; MAX_SEARCH_ROUNDS refinement rounds) ──
         let response = await gather(apiMessages);
         const messageChain: Anthropic.Messages.MessageParam[] = [...apiMessages];
         let rounds = 0;
@@ -777,11 +780,16 @@ export async function POST(req: NextRequest) {
         }
 
         // If we hit the round cap still requesting tools, execute those too so
-        // their sources are available to the answer pass (for citations).
+        // their sources are available to the answer pass (for citations). With
+        // MAX_SEARCH_ROUNDS = 0 this is the ONLY place tools run, so it also owns
+        // the "Searching the Qur'an…" status the user sees during the wait.
         if (response.stop_reason === "tool_use") {
           const toolBlocks = response.content.filter(
             (b): b is Anthropic.Messages.ToolUseBlock => b.type === "tool_use"
           );
+          for (const block of toolBlocks) {
+            send("status", { text: STATUS_MESSAGES[block.name] || "Searching..." });
+          }
           for (const block of toolBlocks) {
             const { result, citations } = executeTool(block, citationCounter);
             allCitations.push(...citations);

@@ -198,6 +198,123 @@ function getApiBaseUrl(): string {
   return ""; // relative on web
 }
 
+/**
+ * Native (WKWebView) SSE reader — XMLHttpRequest instead of fetch.
+ *
+ * WKWebView won't hand us a readable stream from `fetch` (res.body is null or
+ * never yields until completion), which meant the whole answer had to finish
+ * generating before ANY of it appeared in the app — the single biggest reason
+ * Ask felt slow on device. XHR's `progress` event, however, DOES fire
+ * incrementally with the bytes received so far, so we parse SSE out of
+ * `responseText` as it grows and emit deltas live.
+ *
+ * Resolves true if it handled the response; false to fall back to fetch.
+ */
+function streamChatNative(
+  url: string,
+  headers: Record<string, string>,
+  body: string,
+  handlePart: (part: string) => string | null,
+  onError: (reason?: StreamChatErrorReason) => void,
+): Promise<boolean> {
+  return new Promise((resolve) => {
+    let xhr: XMLHttpRequest;
+    try {
+      xhr = new XMLHttpRequest();
+      xhr.open("POST", url, true);
+      // The server caps itself at maxDuration=60s; give it headroom, but never
+      // hang forever — without this the promise could never settle and the UI
+      // would spin indefinitely with no way to recover.
+      xhr.timeout = 90_000;
+      for (const [k, v] of Object.entries(headers)) xhr.setRequestHeader(k, v);
+    } catch {
+      resolve(false); // XHR unavailable — let the caller use fetch
+      return;
+    }
+
+    let consumed = 0; // chars of responseText already parsed
+    let answered = false;
+    let emitted = false; // did we dispatch ANY event to the UI?
+    let settled = false;
+    const finish = (v: boolean) => {
+      if (settled) return;
+      settled = true;
+      resolve(v);
+    };
+
+    // Parse whatever complete "\n\n"-terminated event blocks have arrived.
+    const drain = (final: boolean) => {
+      const text = xhr.responseText || "";
+      if (text.length <= consumed && !final) return;
+      const fresh = text.slice(consumed);
+      const parts = fresh.split("\n\n");
+      // The last chunk may be a partial event — keep it buffered unless we're
+      // done (when final, `parts` already holds every remaining block).
+      const tail = final ? "" : parts.pop() ?? "";
+      for (const part of parts) {
+        const dispatched = handlePart(part);
+        if (dispatched) emitted = true;
+        if (dispatched === "answer") answered = true;
+      }
+      consumed = text.length - tail.length;
+    };
+
+    xhr.onprogress = () => drain(false);
+    xhr.onload = () => {
+      if (xhr.status === 429) {
+        try {
+          const parsed = JSON.parse(xhr.responseText);
+          if (parsed?.error === "quota_exceeded" && parsed?.quota) {
+            onError({ type: "quota_exceeded", quota: parsed.quota });
+            finish(true);
+            return;
+          }
+        } catch {
+          /* fall through */
+        }
+        onError({ type: "generic", detail: "HTTP 429 (rate/quota)" });
+        finish(true);
+        return;
+      }
+      if (xhr.status < 200 || xhr.status >= 300) {
+        onError({ type: "generic", detail: `HTTP ${xhr.status} from ${url}` });
+        finish(true);
+        return;
+      }
+      drain(true);
+      if (!answered) {
+        onError({
+          type: "generic",
+          detail: `no answer event. bodyLen=${(xhr.responseText || "").length}`,
+        });
+      }
+      finish(true);
+    };
+    // Network-level failure. If NOTHING was emitted yet, treat it as "XHR didn't
+    // work here" and let the caller retry via fetch. But once we've already
+    // streamed events to the UI, falling back would re-POST the whole question —
+    // burning a second quota slot + LLM call, and appending a duplicate answer on
+    // top of the partial one. So mid-stream drops surface as an error instead.
+    const failed = (detail: string) => {
+      if (emitted) {
+        onError({ type: "generic", detail });
+        finish(true);
+      } else {
+        finish(false);
+      }
+    };
+    xhr.onerror = () => failed("stream interrupted");
+    xhr.ontimeout = () => failed("stream timed out");
+    xhr.onabort = () => failed("stream aborted");
+
+    try {
+      xhr.send(body);
+    } catch {
+      finish(false);
+    }
+  });
+}
+
 export async function streamChat(
   messages: { role: string; content: string }[],
   onStatus: (text: string) => void,
@@ -224,12 +341,50 @@ export async function streamChat(
   }
 
   const url = `${getApiBaseUrl()}/api/search`;
+  const payload = JSON.stringify({ messages });
+
+  // Parse one SSE "event:/data:" block and fire the matching callback. Returns
+  // the event name it ACTUALLY dispatched (null if none) — callers use that to
+  // decide whether a real answer arrived. Deliberately not a regex test on the
+  // caller's side: a stream cut mid-`answer` still has a complete "event: answer"
+  // line, but its JSON won't parse, so a regex would report success for an answer
+  // that was never delivered.
+  const handlePart = (part: string): string | null => {
+    if (!part.trim()) return null;
+    const eventMatch = part.match(/^event:\s*(.+)$/m);
+    const dataMatch = part.match(/^data:\s*(.+)$/m);
+    if (!eventMatch || !dataMatch) return null;
+    const event = eventMatch[1].trim();
+    try {
+      const data = JSON.parse(dataMatch[1]);
+      if (event === "status") onStatus(data.text);
+      else if (event === "delta") onDelta?.(data.text);
+      else if (event === "answer") onAnswer(data);
+      else if (event === "error") onError({ type: "generic" });
+      else return null;
+      return event;
+    } catch {
+      // Malformed / truncated event — not dispatched.
+      return null;
+    }
+  };
+
+  const isNative =
+    typeof window !== "undefined" && !!window.Capacitor?.isNativePlatform?.();
+
+  // Native: stream via XHR (WKWebView delivers responseText incrementally).
+  // Returns false only if XHR itself failed — then we fall through to fetch.
+  if (isNative) {
+    const handled = await streamChatNative(url, headers, payload, handlePart, onError);
+    if (handled) return;
+  }
+
   let res: Response;
   try {
     res = await fetch(url, {
       method: "POST",
       headers,
-      body: JSON.stringify({ messages }),
+      body: payload,
     });
   } catch (e) {
     onError({
@@ -258,33 +413,12 @@ export async function streamChat(
     return;
   }
 
-  // Parse one SSE "event:/data:" block and fire the matching callback.
-  const handlePart = (part: string) => {
-    if (!part.trim()) return;
-    const eventMatch = part.match(/^event:\s*(.+)$/m);
-    const dataMatch = part.match(/^data:\s*(.+)$/m);
-    if (!eventMatch || !dataMatch) return;
-    const event = eventMatch[1].trim();
-    try {
-      const data = JSON.parse(dataMatch[1]);
-      if (event === "status") onStatus(data.text);
-      else if (event === "delta") onDelta?.(data.text);
-      else if (event === "answer") onAnswer(data);
-      else if (event === "error") onError({ type: "generic" });
-    } catch {
-      // Skip malformed events
-    }
-  };
-
-  const isNative =
-    typeof window !== "undefined" && !!window.Capacitor?.isNativePlatform?.();
-
   // iOS/Android WKWebView can't reliably read a streaming fetch body for SSE
-  // (res.body is often null or never delivers incrementally). On native, and
-  // whenever res.body is unavailable, buffer the whole response and parse it
-  // at once. The server closes the stream after the final event, so res.text()
-  // resolves with the complete payload.
-  if (isNative || !res.body) {
+  // (res.body is often null or never delivers incrementally), so `fetch` there
+  // used to mean waiting for the ENTIRE answer before anything appeared. This
+  // path is now only the fallback — native streams via XHR above (see
+  // streamChatNative), which does deliver incrementally in WKWebView.
+  if (!res.body) {
     let text = "";
     try {
       text = await res.text();
@@ -295,11 +429,12 @@ export async function streamChat(
       });
       return;
     }
+    // Derive `answered` from what was actually DISPATCHED, not from a regex on
+    // the raw text: a body cut mid-`answer` still contains a complete
+    // "event: answer" line whose JSON won't parse.
     let answered = false;
     for (const part of text.split("\n\n")) {
-      const evt = part.match(/^event:\s*(.+)$/m)?.[1]?.trim();
-      if (evt === "answer") answered = true;
-      handlePart(part);
+      if (handlePart(part) === "answer") answered = true;
     }
     if (!answered) {
       onError({
@@ -313,6 +448,7 @@ export async function streamChat(
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
+  let answered = false;
 
   while (true) {
     const { done, value } = await reader.read();
@@ -320,10 +456,17 @@ export async function streamChat(
     buffer += decoder.decode(value, { stream: true });
     const parts = buffer.split("\n\n");
     buffer = parts.pop() || "";
-    for (const part of parts) handlePart(part);
+    for (const part of parts) {
+      if (handlePart(part) === "answer") answered = true;
+    }
   }
   // Flush any trailing buffered event
-  if (buffer.trim()) handlePart(buffer);
+  if (buffer.trim() && handlePart(buffer) === "answer") answered = true;
+  // A stream that ended without delivering an answer must surface an error —
+  // otherwise the caller's spinner never clears.
+  if (!answered) {
+    onError({ type: "generic", detail: "stream ended without an answer event" });
+  }
 }
 
 // ── Placeholder questions ─────────────────────────────────────────────────
