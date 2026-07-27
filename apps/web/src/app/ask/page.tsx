@@ -61,6 +61,9 @@ export default function AskPage() {
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  // True once the answer has begun streaming in — swaps the "Thinking…" bubble
+  // for the live text while `loading` (which gates the composer) stays on.
+  const [streaming, setStreaming] = useState(false);
   const [statusText, setStatusText] = useState("Thinking...");
   const [hydrated, setHydrated] = useState(false);
   const [autoSend, setAutoSend] = useState<string | null>(null);
@@ -106,9 +109,12 @@ export default function AskPage() {
     else if (!document.documentElement.classList.contains("native")) inputRef.current?.focus();
   }, []);
 
+  // Persist only when NOT mid-stream: otherwise every streamed chunk would
+  // synchronously re-serialize the whole conversation to localStorage (a
+  // disk-backed write in WKWebView) dozens of times per answer.
   useEffect(() => {
-    if (hydrated) saveMessages(messages);
-  }, [messages, hydrated]);
+    if (hydrated && !streaming) saveMessages(messages);
+  }, [messages, hydrated, streaming]);
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
@@ -151,9 +157,13 @@ export default function AskPage() {
     return () => clearTimeout(timer);
   }, [placeholderIdx, query]);
 
+  // Instant scroll while streaming — a smooth animation restarted on every chunk
+  // never settles and hijacks the view as the user tries to read.
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+    messagesEndRef.current?.scrollIntoView({
+      behavior: streaming ? "auto" : "smooth",
+    });
+  }, [messages, loading, streaming]);
 
   // Disarm the Clear confirm if the second tap never comes.
   useEffect(() => {
@@ -179,8 +189,10 @@ export default function AskPage() {
     const newMessages: Message[] = [...prevMessages, { role: "user", content: userMessage }];
     setMessages(newMessages);
     setLoading(true);
+    setStreaming(false);
     setStatusText("Thinking...");
 
+    let streamed = "";
     try {
       await streamChat(
         newMessages.map((m) => ({ role: m.role, content: m.content })),
@@ -193,13 +205,31 @@ export default function AskPage() {
             citations: data.citations,
           }]);
           setLoading(false);
+          setStreaming(false);
         },
         (reason) => {
+          // Keep any text already streamed — an interrupted answer shouldn't be
+          // replaced wholesale by the error when the user can still read it.
           setMessages([...newMessages, {
             role: "assistant",
-            content: streamChatErrorMessage(reason),
+            content: streamed
+              ? `${streamed.trimEnd()}\n\n${streamChatErrorMessage(reason)}`
+              : streamChatErrorMessage(reason),
           }]);
           setLoading(false);
+          setStreaming(false);
+        },
+        // onDelta — render tokens as they arrive instead of waiting for the whole
+        // answer. This is what makes Ask feel fast; the final `answer` event then
+        // replaces this text with the cleaned content + citations/links.
+        // NOTE: `loading` deliberately stays TRUE until the request finishes —
+        // clearing it here would re-enable the composer mid-stream and let a
+        // second concurrent request start, whose stale closure would clobber the
+        // thread. The status bubble hides itself once text starts arriving.
+        (deltaText) => {
+          streamed += deltaText;
+          setStreaming(true);
+          setMessages([...newMessages, { role: "assistant", content: streamed }]);
         },
       );
     } catch {
@@ -208,6 +238,7 @@ export default function AskPage() {
         content: streamChatErrorMessage(),
       }]);
       setLoading(false);
+      setStreaming(false);
     }
   }, []);
 
@@ -254,9 +285,11 @@ export default function AskPage() {
     <div className="h-full flex flex-col" style={{ background: "var(--color-bg)" }}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b sidebar-border shrink-0">
-        <div className="flex items-center gap-2">
-          <MessageCircleQuestion size={16} className="text-[#3b82f6]" />
-          <span className="text-base font-semibold text-[#3b82f6] tracking-wide">
+        <div className="flex items-center gap-2.5">
+          <span className="w-7 h-7 rounded-full bg-[var(--color-accent2)]/15 flex items-center justify-center shrink-0">
+            <MessageCircleQuestion size={15} className="text-[var(--color-accent2)]" />
+          </span>
+          <span className="text-[15px] font-semibold text-themed tracking-tight">
             Ask Hiqmah
           </span>
         </div>
@@ -298,7 +331,7 @@ export default function AskPage() {
           transition={{ duration: 0.25 }}
           className="flex justify-start"
         >
-          <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-sm leading-relaxed bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20">
+          <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] leading-relaxed card-bg text-themed border sidebar-border">
             <div className="whitespace-pre-wrap break-words overflow-hidden">
               {renderMarkdown(greeting)}
             </div>
@@ -313,10 +346,10 @@ export default function AskPage() {
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+              className={`max-w-[85%] rounded-2xl px-4 py-3 text-[15px] leading-relaxed ${
                 msg.role === "user"
-                  ? "rounded-br-md bg-[var(--color-accent)]/20 text-themed border border-[var(--color-accent)]/30"
-                  : "rounded-bl-md bg-[var(--color-gold)]/10 text-themed border border-[var(--color-gold)]/20"
+                  ? "rounded-br-md bg-[var(--color-accent)]/15 text-themed border border-[var(--color-accent)]/25"
+                  : "rounded-bl-md card-bg text-themed border sidebar-border"
               }`}
             >
               <div className="whitespace-pre-wrap break-words overflow-hidden">{renderMarkdown(msg.content)}</div>
@@ -356,14 +389,16 @@ export default function AskPage() {
             </div>
           </motion.div>
         ))}
-        {loading && (
+        {/* Status bubble only until the first token lands — then the streaming
+            answer itself is the progress indicator. */}
+        {loading && !streaming && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex justify-start"
           >
-            <div className="bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/20 rounded-xl px-4 py-3 text-sm text-themed-muted flex items-center gap-2">
-              <Loader2 size={14} className="animate-spin text-[#3b82f6]" />
+            <div className="card-bg border sidebar-border rounded-2xl rounded-bl-md px-4 py-3 text-sm text-themed-muted flex items-center gap-2">
+              <Loader2 size={14} className="animate-spin text-[var(--color-accent2)]" />
               {statusText}
             </div>
           </motion.div>
@@ -390,12 +425,13 @@ export default function AskPage() {
             }}
             rows={1}
             placeholder={placeholderText || "Ask anything about Islam..."}
-            className="flex-1 min-w-0 resize-none max-h-[140px] overflow-y-auto bg-[var(--color-card)] rounded-lg px-4 py-3 text-themed text-base outline-none border sidebar-border focus:border-[#3b82f6]/40 transition-colors placeholder:text-themed-muted/50"
+            className="flex-1 min-w-0 resize-none max-h-[140px] overflow-y-auto bg-[var(--color-card)] rounded-2xl px-4 py-3 text-themed text-base outline-none border sidebar-border focus:border-[var(--color-accent2)]/45 transition-colors placeholder:text-themed-muted/50"
           />
           <button
             type="submit"
             disabled={!query.trim() || loading}
-            className="p-3 rounded-lg bg-[#2563eb]/20 text-[#3b82f6] hover:bg-[#2563eb]/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+            aria-label="Send"
+            className="w-11 h-11 rounded-full bg-[var(--color-accent2)]/18 text-[var(--color-accent2)] border border-[var(--color-accent2)]/30 flex items-center justify-center transition-colors active:bg-[var(--color-accent2)]/28 disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
           >
             <Send size={16} />
           </button>
