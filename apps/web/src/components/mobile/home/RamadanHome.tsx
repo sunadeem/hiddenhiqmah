@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Moon,
@@ -21,7 +21,10 @@ import {
   getCurrentHijriMonthDay,
   isLaylatulQadrSeason,
 } from "@hidden-hiqmah/ui/lib/storage";
-import { getFreshCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
+import {
+  getFreshCachedLocation,
+  LOCATION_CHANGED_EVENT,
+} from "@hidden-hiqmah/ui/lib/location-cache";
 import { computePrayerTimes } from "@/lib/prayer-times";
 import TodayStrip from "./TodayStrip";
 import { QuickActions } from "../MobileHomeDashboard";
@@ -125,7 +128,7 @@ export default function RamadanHome({
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
+  const loadTimes = useCallback(() => {
     try {
       const loc = getFreshCachedLocation();
       if (!loc) {
@@ -137,6 +140,7 @@ export default function RamadanHome({
         method: ps.calcMethod,
         asrHanafi: ps.asrMethod === "hanafi",
       });
+      setHasLoc(true);
       setTimes({
         Fajr: t.Fajr,
         Dhuhr: t.Dhuhr,
@@ -148,6 +152,16 @@ export default function RamadanHome({
       setHasLoc(false);
     }
   }, []);
+
+  // Read once on mount, then again whenever a foreground refresh discovers the
+  // user has travelled (see lib/mobile/location-refresh) — suhoor/iftar are the
+  // one thing on this screen you cannot be a city behind on. Without it the
+  // cache re-stamp keeps getFreshCachedLocation "fresh", so it never self-heals.
+  useEffect(() => {
+    loadTimes();
+    window.addEventListener(LOCATION_CHANGED_EVENT, loadTimes);
+    return () => window.removeEventListener(LOCATION_CHANGED_EVENT, loadTimes);
+  }, [loadTimes]);
 
   useEffect(() => {
     try {

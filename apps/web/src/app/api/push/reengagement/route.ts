@@ -6,6 +6,7 @@ import {
   type ApnsTarget,
   type PushEnvironment,
 } from "@/lib/push/apns";
+import { fetchOptedOut } from "@/lib/push/optedOut";
 
 export const runtime = "nodejs";
 
@@ -21,7 +22,7 @@ function cronAuthorized(req: NextRequest): boolean {
   return false;
 }
 
-type TokenRow = { token: string; platform: string; environment: string };
+type TokenRow = { token: string; platform: string; environment: string; user_id: string };
 
 async function handle(req: NextRequest) {
   if (!cronAuthorized(req)) {
@@ -35,17 +36,25 @@ async function handle(req: NextRequest) {
     return NextResponse.json({ error: "Database is not configured." }, { status: 500 });
   }
 
+  // Skip anyone who turned this nudge off. Negative + paged — see fetchOptedOut
+  // for why (unknown preference ⇒ still subscribed; PostgREST's 1000-row cap
+  // would otherwise silently re-subscribe everyone past the first page).
+  const optedOut = await fetchOptedOut(supa, "reengagement_push");
+  if (!optedOut) {
+    return NextResponse.json({ error: "Failed to read push preferences." }, { status: 500 });
+  }
+
   // Target devices we haven't seen in over INACTIVE_DAYS days.
   const cutoff = new Date(Date.now() - INACTIVE_DAYS * 86_400_000).toISOString();
   const { data, error } = await supa
     .from("device_tokens")
-    .select("token, platform, environment")
+    .select("token, platform, environment, user_id")
     .lt("last_seen_at", cutoff);
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   const targets: ApnsTarget[] = ((data ?? []) as TokenRow[])
-    .filter((r) => r.platform === "ios")
+    .filter((r) => r.platform === "ios" && !optedOut.has(r.user_id))
     .map((r) => ({ token: r.token, environment: r.environment as PushEnvironment }));
 
   if (!targets.length) {
@@ -76,6 +85,7 @@ async function handle(req: NextRequest) {
     failed: result.failed,
     corrected: result.corrected.length,
     removed: result.staleTokens.length,
+    optedOut: optedOut.size,
   });
 }
 

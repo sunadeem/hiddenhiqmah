@@ -32,6 +32,7 @@ import { getProgress, getPrayerSettings } from "@hidden-hiqmah/ui/lib/storage";
 import { reverseGeocode, formatLocation } from "@hidden-hiqmah/ui/lib/location";
 import { computePrayerTimes } from "@/lib/prayer-times";
 import { ensureNotificationPermission, scheduleAllNotifications } from "@/lib/mobile/notifications";
+import { LOCATION_CHANGED_EVENT } from "@/lib/mobile/location-refresh";
 
 type PrayerTimings = {
   Fajr: string;
@@ -271,6 +272,19 @@ export function NextPrayerCard() {
       cancelled = true;
       if (timer) clearTimeout(timer);
     };
+  }, [computeTimes]);
+
+  // A foreground refresh can discover the user has travelled (see
+  // lib/mobile/location-refresh). The `fetched` ref above means this card never
+  // re-runs its own location flow, so without this it would keep showing the old
+  // city's times until the next mount.
+  useEffect(() => {
+    const onLocationChanged = () => {
+      const loc = getCachedLocation();
+      if (loc) computeTimes(loc.lat, loc.lng, loc.display);
+    };
+    window.addEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
+    return () => window.removeEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
   }, [computeTimes]);
 
   useEffect(() => {

@@ -22,8 +22,54 @@
 import { Capacitor } from "@capacitor/core";
 import { PushNotifications } from "@capacitor/push-notifications";
 import { supabase } from "@/lib/supabase";
+import { getNotificationPrefs } from "@hidden-hiqmah/ui/lib/storage";
 
 const TOKEN_CACHE_KEY = "hiqmah-apns-token-pending";
+const PREFS_DIRTY_KEY = "hiqmah-push-prefs-dirty";
+
+/** Flag the remote-push preferences as not yet mirrored to the server. Set by the
+ *  Notifications screen when an RPC fails (signed out, offline); cleared once
+ *  syncPushPrefs lands them. Exported so the settings UI can mark it. */
+export function markPushPrefsDirty(): void {
+  try {
+    localStorage.setItem(PREFS_DIRTY_KEY, "1");
+  } catch {
+    /* ignore */
+  }
+}
+
+/**
+ * Re-assert the remote-push preferences (profiles.dua_push /
+ * reengagement_push / circle_push) from this device's saved prefs.
+ *
+ * The send routes read those COLUMNS, so a toggle whose RPC failed — the common
+ * case being a user who changed it while signed out, since the settings screen
+ * isn't auth-gated — would otherwise leave the server sending a push the user
+ * explicitly declined, with nothing to correct it. The RPCs are idempotent, so
+ * we simply re-state the local truth whenever we have a session.
+ */
+async function syncPushPrefs(): Promise<void> {
+  try {
+    if (!localStorage.getItem(PREFS_DIRTY_KEY)) return;
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) return; // still signed out — stay dirty, retry next foreground
+    const prefs = getNotificationPrefs();
+    const results = await Promise.all([
+      supabase.rpc("set_my_dua_push", { p_enabled: prefs.duaPush !== false }),
+      supabase.rpc("set_my_reengagement_push", {
+        p_enabled: prefs.reengagementPush !== false,
+      }),
+      supabase.rpc("set_my_circle_push", { p_enabled: prefs.circleChat === true }),
+    ]);
+    // Only clear the flag once every write actually landed (rpc resolves errors
+    // rather than throwing, so check each one).
+    if (results.every((r) => !r.error)) localStorage.removeItem(PREFS_DIRTY_KEY);
+  } catch {
+    /* leave the flag set; we retry on the next foreground */
+  }
+}
 
 const APNS_ENV: "production" | "sandbox" =
   process.env.NEXT_PUBLIC_APNS_ENVIRONMENT === "sandbox" ? "sandbox" : "production";
@@ -131,4 +177,7 @@ export async function flushPendingPushToken(): Promise<void> {
   } catch {
     /* ignore */
   }
+  // Same trigger points (foreground + post-sign-in) are exactly when a
+  // previously-failed preference write can finally land.
+  await syncPushPrefs();
 }

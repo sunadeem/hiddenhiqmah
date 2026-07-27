@@ -13,6 +13,7 @@ import { isTabRoot } from "./routes";
 import { hapticLight } from "@/lib/mobile/haptics";
 import { applyNativeSetup } from "@/lib/mobile/setup";
 import { registerNotificationTapHandler, scheduleAllNotifications } from "@/lib/mobile/notifications";
+import { refreshLocation, type LocationRefreshResult } from "@/lib/mobile/location-refresh";
 import { registerDeepLinkHandler } from "@/lib/mobile/deeplinks";
 import { registerPush, flushPendingPushToken } from "@/lib/mobile/push";
 import { App as CapApp } from "@capacitor/app";
@@ -69,9 +70,24 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   // use. No-op on web / without notification permission.
   useEffect(() => {
     let cleanup: (() => void) | undefined;
+    // Location first: if the user has travelled, refreshLocation rewrites the
+    // cached fix and rebuilds the whole schedule for the NEW city itself, so
+    // scheduling again here would be a wasted duplicate. EVERY other outcome
+    // (no meaningful move, web, permission denied, GPS timeout → null) still
+    // needs the rolling window refilled, so it must never end up skipped.
+    // Nothing is cancelled while we wait, so the short delay costs nothing.
+    const refill = (res: LocationRefreshResult | null) => {
+      if (!res?.changed) void scheduleAllNotifications(false);
+    };
+    // appStateChange is NOT emitted at cold start (native didBecomeActive fires
+    // before this listener exists and is not retained), so do the launch pass
+    // here — otherwise the most likely travel path is the one that never
+    // refreshes: iOS jettisons the suspended app mid-flight, and the user taps
+    // the icon on landing into a fresh launch still scheduling the old city.
+    void refreshLocation().then(refill, () => refill(null));
     CapApp.addListener("appStateChange", ({ isActive }) => {
       if (isActive) {
-        void scheduleAllNotifications(false);
+        void refreshLocation().then(refill, () => refill(null));
         // Re-assert the APNs token (covers permission granted after launch, and
         // re-persists a token cached while signed out once a session exists).
         void registerPush();

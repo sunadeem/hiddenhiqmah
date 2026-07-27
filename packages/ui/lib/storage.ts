@@ -86,6 +86,13 @@ export type NotificationPrefs = {
   /** Remote push when someone posts in one of your Circles. Opt-in — default
    *  FALSE. Mirrored server-side to profiles.circle_push via set_my_circle_push. */
   circleChat: boolean;
+  /** Remote push carrying a duʿā, once a week (Wednesday). Opt-OUT — default
+   *  TRUE. Mirrored server-side to profiles.dua_push via set_my_dua_push. */
+  duaPush: boolean;
+  /** Remote "we've missed you" nudge, sent only to devices inactive 3+ days.
+   *  Opt-OUT — default TRUE. Mirrored server-side to profiles.reengagement_push
+   *  via set_my_reengagement_push. */
+  reengagementPush: boolean;
 };
 
 const defaultNotificationPrefs: NotificationPrefs = {
@@ -115,6 +122,11 @@ const defaultNotificationPrefs: NotificationPrefs = {
   // Opt-in per founder instruction — circle-chat push is OFF until the user turns
   // it on (which also flips the server-side profiles.circle_push flag).
   circleChat: false,
+  // Opt-OUT (unlike circleChat): these remote pushes already ship and users
+  // expect them, so they default ON and match their server columns' defaults
+  // (profiles.dua_push / profiles.reengagement_push, both default true).
+  duaPush: true,
+  reengagementPush: true,
 };
 
 export function getNotificationPrefs(): NotificationPrefs {

@@ -24,11 +24,15 @@ import {
 } from "lucide-react";
 import { formatLocation, reverseGeocode } from "@hidden-hiqmah/ui/lib/location";
 import {
+  getCachedLocation,
   getFreshCachedLocation,
   setCachedLocation,
   getLocationState,
   setLocationState,
+  LOCATION_CHANGED_EVENT,
+  type CachedLocation,
 } from "@hidden-hiqmah/ui/lib/location-cache";
+import { isNative } from "@/lib/mobile/platform";
 
 /* ───────────────────────── prayer times data ───────────────────────── */
 
@@ -358,6 +362,9 @@ function PrayerTimesContent() {
   const ptFetched = useRef(false);
   const ptDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ptInputRef = useRef<HTMLInputElement>(null);
+  // The user picked a city by hand this session — a background location refresh
+  // must not yank the view back to wherever the device is.
+  const ptManualPick = useRef(false);
 
   const ptFetchTimesByCity = useCallback(
     async (c: string, co: string, m: number) => {
@@ -427,19 +434,85 @@ function PrayerTimesContent() {
     []
   );
 
-  const ptAutoLocate = useCallback(async () => {
+  // Show the times for an already-resolved device location (shared by the cached
+  // path, the forced re-locate, and the location-changed broadcast).
+  const ptApplyCachedLocation = useCallback(
+    (loc: CachedLocation) => {
+      setPtCity(loc.city);
+      setPtCountry(loc.country);
+      setPtDisplayLocation(loc.display);
+      ptFetchTimesByCoords(loc.lat, loc.lng, ptMethod, true); // device location → on-device
+    },
+    [ptFetchTimesByCoords, ptMethod]
+  );
+
+  /**
+   * @param force the user tapped Auto-locate — take a NEW fix instead of
+   *   short-circuiting on the (up to 24h old) cache, which is what made the
+   *   button appear to do nothing after travelling.
+   */
+  const ptAutoLocate = useCallback(async (force = false) => {
+    ptManualPick.current = false;
+
     // Prefer cached location — no prompt, instant
-    const fresh = getFreshCachedLocation();
-    if (fresh) {
-      setPtCity(fresh.city);
-      setPtCountry(fresh.country);
-      setPtDisplayLocation(fresh.display);
-      ptFetchTimesByCoords(fresh.lat, fresh.lng, ptMethod, true); // device location → on-device
+    if (!force) {
+      const fresh = getFreshCachedLocation();
+      if (fresh) {
+        ptApplyCachedLocation(fresh);
+        return;
+      }
+    }
+
+    // Native owns the ENTIRE fix path, forced or not. WKWebView does not serve
+    // navigator.geolocation, so falling through to the browser path below could
+    // hang with no callback (leaving the page stuck on "Loading prayer times…"
+    // with Auto-locate disabled) or fire its error callback and mark the user
+    // "denied" — which then blocks the home screen from ever requesting
+    // permission, leaving the location cache empty and EVERY prayer/adhan
+    // notification unscheduled. refreshLocation also re-resolves the city and
+    // reschedules the adhan, so notifications can't be left in the old city.
+    if (isNative()) {
+      setPtLocating(true);
+      // Lazily loaded so this public route's chunk never statically pulls in the
+      // native graph (notification scheduler + reminders.json + Capacitor
+      // plugins) — all of it dead on the web. AppShellGate lazy-loads MobileShell
+      // for the same reason, which is what keeps it out of the shared chunk too.
+      const { refreshLocation } = await import("@/lib/mobile/location-refresh");
+      const res = await refreshLocation({ force });
+      setPtLocating(false);
+      // Branch on the RESULT, not on the cache: anyone who has ever granted
+      // location still has a cached fix, so falling back to it after a failed
+      // re-locate (permission revoked, location services off, GPS timeout) would
+      // silently re-render the STALE city behind a spinner that implies success.
+      if (!res) {
+        // Only surface an error for a deliberate tap. An unattended pass that
+        // finds no permission yet is normal — the home screen's onboarding flow
+        // owns the prompt; showing a scary message here would pre-empt it.
+        if (force) {
+          setPtError("Couldn't get your location. Search for your city instead.");
+          setPtShowManualInput(true);
+          return;
+        }
+        const cached = getCachedLocation();
+        if (cached) ptApplyCachedLocation(cached);
+        else {
+          setPtCity("Makkah");
+          setPtCountry("Saudi Arabia");
+          setPtDisplayLocation("Makkah, Saudi Arabia");
+          setPtShowManualInput(true);
+          ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
+        }
+        return;
+      }
+      const loc = getCachedLocation();
+      if (loc) ptApplyCachedLocation(loc);
       return;
     }
 
-    // Honor prior denial — fall back to Makkah without prompting
-    if (getLocationState() === "denied") {
+    // Honor prior denial — fall back to Makkah without prompting. Skipped on an
+    // explicit tap: the user is asking, so let the browser decide whether to
+    // re-prompt (a hard denial just lands in the error callback below).
+    if (!force && getLocationState() === "denied") {
       setPtCity("Makkah");
       setPtCountry("Saudi Arabia");
       setPtDisplayLocation("Makkah, Saudi Arabia");
@@ -476,18 +549,26 @@ function PrayerTimesContent() {
         setPtLocating(false);
       },
       () => {
+        setPtShowManualInput(true);
+        setPtLocating(false);
+        setLocationState("denied");
+        // A forced re-locate that fails keeps whatever is already on screen —
+        // only the first, unattended attempt falls back to Makkah. Say so:
+        // stopping the spinner with the old city still rendered and no message
+        // reads as success.
+        if (force) {
+          setPtError("Couldn't get your location. Search for your city instead.");
+          return;
+        }
         setPtCity("Makkah");
         setPtCountry("Saudi Arabia");
         setPtDisplayLocation("Makkah, Saudi Arabia");
-        setPtShowManualInput(true);
         ptFetchTimesByCity("Makkah", "Saudi Arabia", ptMethod);
-        setPtLocating(false);
-        setLocationState("denied");
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ptFetchTimesByCoords, ptFetchTimesByCity]);
+  }, [ptFetchTimesByCoords, ptFetchTimesByCity, ptApplyCachedLocation]);
 
   useEffect(() => {
     if (ptFetched.current) return;
@@ -503,6 +584,20 @@ function PrayerTimesContent() {
     ptAutoLocate();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // A foreground refresh can discover the user has travelled while this page is
+  // open (see lib/mobile/location-refresh). Re-read the cache instead of leaving
+  // the old city's times on screen — unless they're deliberately looking at a
+  // city they searched for.
+  useEffect(() => {
+    const onLocationChanged = () => {
+      if (ptManualPick.current) return;
+      const loc = getCachedLocation();
+      if (loc) ptApplyCachedLocation(loc);
+    };
+    window.addEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
+    return () => window.removeEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
+  }, [ptApplyCachedLocation]);
 
   useEffect(() => {
     if (!ptTimings) return;
@@ -571,6 +666,7 @@ function PrayerTimesContent() {
   };
 
   const ptSelectSuggestion = (s: { display: string; lat: number; lon: number }) => {
+    ptManualPick.current = true;
     setPtSearchQuery(s.display);
     setPtShowSuggestions(false);
     setPtSuggestions([]);
@@ -590,6 +686,7 @@ function PrayerTimesContent() {
       ptSelectSuggestion(ptSuggestions[0]);
     } else {
       // Fallback: try city-based fetch
+      ptManualPick.current = true;
       const q = ptSearchQuery.trim();
       ptFetchTimesByCity(q, "auto", ptMethod);
       setPtShowManualInput(false);
@@ -648,7 +745,9 @@ function PrayerTimesContent() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
-                ptAutoLocate();
+                // force: take a NEW fix. Without it the 24h-fresh cache made this
+                // button a no-op for a day after the user travelled.
+                void ptAutoLocate(true);
                 setPtShowManualInput(false);
               }}
               disabled={ptLocating}
@@ -656,7 +755,7 @@ function PrayerTimesContent() {
               title="Auto-detect location"
             >
               <LocateFixed size={14} className={ptLocating ? "animate-spin" : ""} />
-              Auto-locate
+              {ptLocating ? "Locating…" : "Auto-locate"}
             </button>
             <button
               onClick={() => setPtShowManualInput((v) => !v)}
