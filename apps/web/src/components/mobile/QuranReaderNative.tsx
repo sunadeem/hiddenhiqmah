@@ -49,7 +49,14 @@ type Chapter = {
   revelationPlace: string;
 };
 
-const AR_SIZES = ["text-2xl", "text-3xl", "text-4xl", "text-5xl"];
+// Arabic scale, indexed by the stored font size (see storage.getFontSize).
+// text-6xl is the "huge" step — words are laid out as individual flex-wrapped
+// spans, so even a long word takes its own line rather than clipping.
+const AR_SIZES = ["text-2xl", "text-3xl", "text-4xl", "text-5xl", "text-6xl"];
+const MAX_FONT = AR_SIZES.length - 1;
+/** Clamp a stored index into the scale — never return undefined (which would
+ *  render the Arabic with no size class at all). */
+const arSize = (n: number) => AR_SIZES[Math.max(0, Math.min(MAX_FONT, n))];
 
 /** Current word index for a verse, from real timestamps + audio progress. */
 function activeWordIndex(
@@ -347,7 +354,7 @@ export default function QuranReaderNative({
   };
   const updateFont = (delta: number) => {
     setFontSizeState((n) => {
-      const c = Math.max(0, Math.min(3, n + delta));
+      const c = Math.max(0, Math.min(MAX_FONT, n + delta));
       setFontSize(c);
       return c;
     });
@@ -673,7 +680,7 @@ const VerseBlock = memo(function VerseBlock({
       {display.arabic && (
         <p
           dir="rtl"
-          className={`font-arabic text-themed text-right leading-[2.2] ${AR_SIZES[fontSize]} flex flex-wrap justify-start gap-x-2`}
+          className={`font-arabic text-themed text-right leading-[2.2] ${arSize(fontSize)} flex flex-wrap justify-start gap-x-2`}
         >
           {words
             ? words.map((w, wi) => (
@@ -844,7 +851,7 @@ function FocusView({
           className="flex-1 flex flex-col justify-center gap-6"
         >
             {display.arabic && (
-              <p dir="rtl" className={`font-arabic text-themed text-center leading-[2.3] ${AR_SIZES[Math.min(fontSize + 1, 3)]} flex flex-wrap justify-center gap-x-2`}>
+              <p dir="rtl" className={`font-arabic text-themed text-center leading-[2.3] ${arSize(fontSize + 1)} flex flex-wrap justify-center gap-x-2`}>
                 {words
                   ? words.map((w, wi) => (
                       <span
@@ -1012,7 +1019,7 @@ function SettingsSheet({
                 <button type="button" onClick={() => onFont(-1)} className="w-9 h-9 rounded-full bg-[var(--overlay-medium)] text-themed flex items-center justify-center touch-manipulation" aria-label="Smaller">
                   <Minus size={16} />
                 </button>
-                <span className="text-themed-muted text-xs w-8 text-center tabular-nums">{fontSize + 1}/4</span>
+                <span className="text-themed-muted text-xs w-8 text-center tabular-nums">{fontSize + 1}/{MAX_FONT + 1}</span>
                 <button type="button" onClick={() => onFont(1)} className="w-9 h-9 rounded-full bg-[var(--overlay-medium)] text-themed flex items-center justify-center touch-manipulation" aria-label="Larger">
                   <Plus size={16} />
                 </button>

@@ -432,8 +432,11 @@ export function setLastPosition(surahId: number, verseNum: number) {
 
 // ─── Font Size ───
 
+/** Quran text size index: 0=small, 1=medium, 2=large (default), 3=xl, 4=huge.
+ *  Readers clamp to their own scale length, so a value written by a newer build
+ *  can never render as "no size class" on an older one. */
 export function getFontSize(): number {
-  return get<number>(KEYS.fontSize, 2); // 0=small, 1=medium, 2=large (default), 3=xl
+  return get<number>(KEYS.fontSize, 2);
 }
 
 export function setFontSize(size: number) {

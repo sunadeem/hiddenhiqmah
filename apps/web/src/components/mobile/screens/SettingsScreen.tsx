@@ -50,7 +50,9 @@ const CALC_METHODS: { value: number; label: string }[] = [
   { value: 15, label: "Moonsighting Committee Worldwide" },
 ];
 
-const FONT_SIZE_LABELS = ["Small", "Medium", "Large", "Extra Large"];
+// Indexes match the Quran readers' size scales (AR_SIZES / fontSizeClasses) —
+// add a step here only alongside one there, or the extra option renders nothing.
+const FONT_SIZE_LABELS = ["Small", "Medium", "Large", "Extra Large", "Huge"];
 
 export default function SettingsScreen() {
   const { theme } = useTheme();
