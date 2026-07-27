@@ -96,15 +96,19 @@ export default function DailyScreen() {
 
 // Checklist category filter. Derived purely from item identity (isPrayer =
 // kind === "prayer"), so no schema change is needed:
-//   • Prayer — the five fard prayers (Fajr…Isha).
-//   • Extra  — everything else: dhikr + sunnah/task items (Ḍuḥā, Witr, Quran,
+//   • Fard   — the five obligatory prayers (Fajr…Isha). The DEFAULT view: the
+//              obligations are what a user checks most, so they open to them
+//              rather than scrolling a combined list.
+//   • Sunnah — everything else: dhikr + sunnah/task items (Ḍuḥā, Witr, Quran,
 //              sadaqah…) plus every user-added custom item (added as kind "task").
-//   • All    — the full list (current behavior; default so nothing changes on load).
+//   • All    — the full list.
+// The filter KEYS stay "prayer"/"extra" — they're only internal state, and
+// renaming them would churn every reference for a label change.
 type ChecklistFilter = "prayer" | "extra" | "all";
 
 const CHECKLIST_FILTERS: { key: ChecklistFilter; label: string }[] = [
-  { key: "prayer", label: "Prayer" },
-  { key: "extra", label: "Extra" },
+  { key: "prayer", label: "Fard" },
+  { key: "extra", label: "Sunnah" },
   { key: "all", label: "All" },
 ];
 
@@ -115,7 +119,7 @@ function ChecklistTab() {
   const list = useChecklist(adapter, today);
   const [calOpen, setCalOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  const [filter, setFilter] = useState<ChecklistFilter>("all");
+  const [filter, setFilter] = useState<ChecklistFilter>("prayer");
   const [week, setWeek] = useState<DayRollup[]>([]);
 
   const filteredRows = useMemo(() => {
@@ -207,7 +211,7 @@ function ChecklistTab() {
         </button>
       </div>
 
-      {/* Category filter (Prayer / Extra / All) — reuses the app's segmented
+      {/* Category filter (Fard / Sunnah / All) — reuses the app's segmented
           tab pattern. Categories are inferred from item identity; check/uncheck,
           streaks, edit and sync all operate on the same rows unchanged. */}
       {list.rows.length > 0 && (
@@ -235,7 +239,9 @@ function ChecklistTab() {
         // The full-list empty case still falls through to <Checklist/> below,
         // preserving the original empty-list rendering.
         <p className="card-bg rounded-2xl border sidebar-border px-4 py-6 text-center text-sm text-themed-muted">
-          {filter === "prayer" ? "No prayers on your list." : "No extra items on your list."}
+          {filter === "prayer"
+            ? "No fard prayers on your list."
+            : "No sunnah items on your list."}
         </p>
       ) : (
         <Checklist
