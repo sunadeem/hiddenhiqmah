@@ -290,7 +290,10 @@ export default function JournalSection({
                   setComposer((c) => (c ? { ...c, body: ev.target.value } : c))
                 }
                 placeholder="Write freely — what is on your heart, what you noticed, what you want to change…"
-                className="w-full min-h-[45vh] resize-none rounded-2xl card-bg border sidebar-border p-4 text-themed text-[15px] leading-relaxed outline-none focus:border-[var(--color-gold)]/40"
+                // text-base = 16px on purpose: iOS auto-zooms the page when a
+                // focused field is under 16px, which broke this overlay's layout.
+                // Every other composer in the app (Ask, Circles) is 16px too.
+                className="w-full min-h-[45vh] resize-none rounded-2xl card-bg border sidebar-border p-4 text-themed text-base leading-relaxed outline-none focus:border-[var(--color-gold)]/40"
               />
 
               {composer.mode === "edit" && (
