@@ -14,6 +14,8 @@ import {
   MoonStar,
   Moon,
   MessageSquare,
+  Heart,
+  BellRing,
 } from "lucide-react";
 import {
   getNotificationPrefs,
@@ -21,6 +23,7 @@ import {
   type NotificationPrefs,
 } from "@hidden-hiqmah/ui/lib/storage";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
+import { markPushPrefsDirty } from "@/lib/mobile/push";
 import { supabase } from "@/lib/supabase";
 import {
   SettingsSection,
@@ -38,6 +41,42 @@ export default function NotificationsScreen() {
 
   useEffect(() => {
     setNotif(getNotificationPrefs());
+    // The three remote-push prefs are per-USER (profiles columns) while
+    // localStorage is per-DEVICE, so on a reinstall or a second device the local
+    // blob is empty and the switches would render defaults that contradict what
+    // the server actually has — showing "on" for a push the user silenced (or
+    // "off" while circle pushes keep arriving). Hydrate the authoritative values
+    // once; stay on the local ones if signed out or offline.
+    void (async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) return;
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("dua_push, reengagement_push, circle_push")
+          .eq("id", session.user.id)
+          .maybeSingle();
+        if (error || !data) return;
+        const row = data as {
+          dua_push: boolean | null;
+          reengagement_push: boolean | null;
+          circle_push: boolean | null;
+        };
+        const patch: Partial<NotificationPrefs> = {};
+        if (typeof row.dua_push === "boolean") patch.duaPush = row.dua_push;
+        if (typeof row.reengagement_push === "boolean")
+          patch.reengagementPush = row.reengagement_push;
+        if (typeof row.circle_push === "boolean") patch.circleChat = row.circle_push;
+        if (Object.keys(patch).length) {
+          setNotificationPrefs(patch);
+          setNotif((n) => (n ? { ...n, ...patch } : n));
+        }
+      } catch {
+        /* offline — the local prefs already rendered */
+      }
+    })();
   }, []);
 
   const updateNotif = (patch: Partial<NotificationPrefs>) => {
@@ -47,20 +86,46 @@ export default function NotificationsScreen() {
     rescheduleNotificationsDebounced(true);
   };
 
-  // Circle-chat push is a REMOTE (APNs) preference, so besides persisting the
-  // local pref we mirror it to the server (profiles.circle_push) — that flag is
-  // what the /api/push/circle-message fan-out reads. Fire-and-forget; if the RPC
-  // fails (offline / signed out) the local pref still reflects the user's choice
-  // and next successful toggle re-syncs it.
-  const updateCircleChat = (v: boolean) => {
-    updateNotif({ circleChat: v });
+  // The three REMOTE (APNs) preferences live on the server — profiles.circle_push
+  // / dua_push / reengagement_push — because the send routes read those columns,
+  // not this device's localStorage. So each toggle writes locally AND mirrors to
+  // the server.
+  //
+  // supabase.rpc() does NOT throw: postgrest-js resolves errors as `{ error }`,
+  // so a try/catch here would never fire and a failed write would be silently
+  // lost. That matters most for the opt-OUT flags: a signed-out user (this screen
+  // is not auth-gated, and mobile is a soft gate) toggling "Weekly duʿā" off hits
+  // the RPC's `not authenticated` exception, and would otherwise keep receiving a
+  // push they explicitly declined. So we check `error` and, on failure, mark the
+  // prefs dirty — push.ts re-asserts them on the next foreground / after sign-in.
+  const syncRemotePref = (fn: string, enabled: boolean) => {
     void (async () => {
       try {
-        await supabase.rpc("set_my_circle_push", { p_enabled: v });
+        const { error } = await supabase.rpc(fn, { p_enabled: enabled });
+        if (error) markPushPrefsDirty();
       } catch {
-        /* offline or signed out — local pref kept; re-synced on next toggle */
+        markPushPrefsDirty(); // network threw before postgrest could answer
       }
     })();
+  };
+
+  const updateCircleChat = (v: boolean) => {
+    updateNotif({ circleChat: v });
+    syncRemotePref("set_my_circle_push", v);
+  };
+
+  // The two server-sent pushes from migration 030: the weekly duʿā and the
+  // re-engagement nudge. Both are opt-OUT (default on). The on-device scheduler
+  // doesn't know these keys, so the reschedule updateNotif triggers is a harmless
+  // no-op — the server column is what actually silences the push.
+  const updateDuaPush = (v: boolean) => {
+    updateNotif({ duaPush: v });
+    syncRemotePref("set_my_dua_push", v);
+  };
+
+  const updateReengagementPush = (v: boolean) => {
+    updateNotif({ reengagementPush: v });
+    syncRemotePref("set_my_reengagement_push", v);
   };
 
   if (!notif) {
@@ -181,6 +246,29 @@ export default function NotificationsScreen() {
           subtitle="Get notified when someone posts in your circles."
           toggle={notif.circleChat === true}
           onToggle={(v) => updateCircleChat(v)}
+        />
+      </SettingsSection>
+
+      {/* Server-sent (APNs) pushes — these come from Hiqmah's backend, not the
+          on-device scheduler, so their real switch is the profiles column each
+          toggle syncs. Times are the cron's (14:00/15:00 UTC), not local. */}
+      <SettingsSection heading="From Hiqmah">
+        <SettingsRow
+          icon={Heart}
+          title="Weekly duʿā"
+          // No time-of-day claim: the send is a fixed 14:00 UTC (migration 030),
+          // which is morning in the Americas but afternoon/evening elsewhere.
+          // If that cron ever moves to a local hour, say so here too.
+          subtitle="A duʿā every Wednesday"
+          toggle={notif.duaPush !== false}
+          onToggle={(v) => updateDuaPush(v)}
+        />
+        <SettingsRow
+          icon={BellRing}
+          title="Check-in nudges"
+          subtitle="Only if you've been away from the app for a few days"
+          toggle={notif.reengagementPush !== false}
+          onToggle={(v) => updateReengagementPush(v)}
         />
       </SettingsSection>
 
