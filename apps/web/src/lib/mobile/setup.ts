@@ -1,7 +1,6 @@
 "use client";
 
 import { Capacitor } from "@capacitor/core";
-import { scheduleAllNotifications } from "./notifications";
 
 // Module-scoped so the viewport observer survives (and is not duplicated by)
 // remounts of the component that calls applyNativeSetup.
@@ -71,7 +70,10 @@ export async function applyNativeSetup() {
     // plugin unavailable; ignore
   }
 
-  // Refresh the rolling window of prayer/daily notifications on every app open.
-  // Silent — only schedules if the user has already granted permission.
-  void scheduleAllNotifications(false);
+  // NOTE: the launch-time (re)schedule deliberately lives in MobileShell, not
+  // here. scheduleAllNotifications cancels everything before rebuilding, so two
+  // overlapping passes open a window where ZERO notifications are pending — and
+  // MobileShell's pass is location-aware (it refreshes the fix first, so a user
+  // who travelled is scheduled for the city they're actually in). One scheduler
+  // per launch; see the foreground effect in MobileShell.tsx.
 }

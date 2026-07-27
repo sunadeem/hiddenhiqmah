@@ -13,9 +13,11 @@ import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import { formatLocation, reverseGeocode } from "@hidden-hiqmah/ui/lib/location";
 import {
   getFreshCachedLocation,
+  getCachedLocation,
   setCachedLocation,
   getLocationState,
   setLocationState,
+  LOCATION_CHANGED_EVENT,
 } from "@hidden-hiqmah/ui/lib/location-cache";
 
 /* ───────────────────────── Qiblah section ───────────────────────── */
@@ -173,6 +175,23 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   useEffect(() => {
     fetchLocation();
   }, [fetchLocation]);
+
+  // A foreground refresh can discover the user has travelled while the compass
+  // is open (see lib/mobile/location-refresh). fetchLocation only runs on mount,
+  // and the refresh re-stamps cachedAt so getFreshCachedLocation never expires
+  // into a re-read — without this the needle keeps pointing at the OLD city's
+  // qiblah bearing for the whole session.
+  useEffect(() => {
+    const onLocationChanged = () => {
+      const loc = getCachedLocation();
+      if (!loc) return;
+      setLoc({ lat: loc.lat, lng: loc.lng, city: loc.display });
+      setLoading(false);
+      setError(null);
+    };
+    window.addEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
+    return () => window.removeEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
+  }, []);
 
   // Recompute magnetic declination whenever the location changes.
   useEffect(() => {
