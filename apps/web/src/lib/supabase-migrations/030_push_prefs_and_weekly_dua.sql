@@ -93,8 +93,9 @@ grant execute on function public.set_my_reengagement_push(boolean) to authentica
 -- Schedule is UTC (Supabase DB tz): '0 14 * * 3' = 14:00 UTC every Wednesday
 -- (pg_cron day-of-week 3 = Wednesday, 0 = Sunday) — same hour the daily job used.
 -- ⚠️ 14:00 UTC is "Wednesday morning" in the Americas (9am ET / 6am PT) but mid
---    afternoon in Europe and evening in South/Southeast Asia. The Settings
---    subtitle says "Wednesday morning"; change BOTH together if you re-time it.
+--    afternoon in Europe and evening in South/Southeast Asia. The Settings copy
+--    therefore says only "every Wednesday", with no time of day — if you re-time
+--    this to a local hour, update that subtitle to match.
 -- Still dispatched through push_post() (029) — never a hard-coded URL/secret, so
 -- an unseeded dev DB stays inert.
 select cron.unschedule('push-daily')      where exists (select 1 from cron.job where jobname = 'push-daily');
