@@ -691,14 +691,16 @@ function SurahPageContent() {
   };
 
   const fontSizeClasses = [
-    "text-lg md:text-xl",     // 0 = small
+    "text-lg md:text-xl",      // 0 = small
     "text-xl md:text-2xl",     // 1 = medium
     "text-2xl md:text-3xl",    // 2 = large (default)
     "text-3xl md:text-4xl",    // 3 = xl
+    "text-4xl md:text-5xl",    // 4 = huge
   ];
+  const maxFontSize = fontSizeClasses.length - 1;
 
   const changeFontSize = (delta: number) => {
-    const newSize = Math.max(0, Math.min(3, fontSize + delta));
+    const newSize = Math.max(0, Math.min(maxFontSize, fontSize + delta));
     setFontSizeState(newSize);
     saveFontSize(newSize);
   };
@@ -879,12 +881,12 @@ function SurahPageContent() {
             >
               <Minus size={12} />
             </button>
-            <span className="text-[10px] text-themed-muted w-5 text-center font-mono">
-              {["S", "M", "L", "XL"][fontSize]}
+            <span className="text-[10px] text-themed-muted w-7 text-center font-mono">
+              {["S", "M", "L", "XL", "2XL"][fontSize] ?? "L"}
             </span>
             <button
               onClick={() => changeFontSize(1)}
-              disabled={fontSize === 3}
+              disabled={fontSize === maxFontSize}
               className="px-2 py-2 text-themed-muted hover:text-themed disabled:opacity-30 transition-colors"
               title="Increase font size"
             >
@@ -1039,7 +1041,7 @@ function SurahPageContent() {
 
                 {/* Arabic text — word-by-word with hover tooltips */}
                 <div
-                  className={`${fontSizeClasses[fontSize]} font-arabic text-themed leading-[2.2] md:leading-[2.4] text-right mb-5 flex flex-wrap justify-start gap-x-2`}
+                  className={`${fontSizeClasses[Math.min(fontSize, maxFontSize)]} font-arabic text-themed leading-[2.2] md:leading-[2.4] text-right mb-5 flex flex-wrap justify-start gap-x-2`}
                   dir="rtl"
                 >
                   {wordsData?.[String(verse.number)]
