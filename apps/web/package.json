@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "build:mobile": "BUILD_TARGET=mobile next build",
-    "build:mobile:prod": "set -a && . ./.env.prod && set +a && BUILD_TARGET=mobile next build",
+    "build:search-index": "node ../../scripts/build-hadith-index.mjs",
+    "build": "node ../../scripts/build-hadith-index.mjs && next build",
+    "build:mobile": "node ../../scripts/build-hadith-index.mjs && BUILD_TARGET=mobile next build",
+    "build:mobile:prod": "node ../../scripts/build-hadith-index.mjs && set -a && . ./.env.prod && set +a && BUILD_TARGET=mobile next build",
     "start": "next start",
     "lint": "eslint"
   },
