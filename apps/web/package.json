@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "build:search-index": "node ../../scripts/build-hadith-index.mjs",
     "build": "next build",
     "build:mobile": "BUILD_TARGET=mobile next build",
     "build:mobile:prod": "set -a && . ./.env.prod && set +a && BUILD_TARGET=mobile next build",

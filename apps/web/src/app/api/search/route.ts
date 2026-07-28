@@ -1,9 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
-import * as fs from "fs";
-import * as path from "path";
 import { createHash } from "crypto";
 import { tryGetSupabaseServer } from "@/lib/supabase-server";
+import { MIN_BM25_SCORE, type PhraseEvidence, type SearchTier } from "@/lib/search/bm25";
+import { searchHadiths } from "@/lib/search/hadith";
+import { getQuranVerse, searchQuran } from "@/lib/search/quran";
 
 // Give the streamed Opus answer room to finish before the platform function
 // timeout. Native buffers the whole SSE response, so a mid-answer timeout there
@@ -26,41 +27,91 @@ const client = new Anthropic({
 const SEARCH_MODEL = "claude-haiku-4-5";
 const ANSWER_MODEL = "claude-opus-4-8";
 
-// Cap on sequential search-refinement rounds on the fast model. Each round is
-// another blocking round-trip the user waits through (shown as "Thinking…"/
-// "Searching…") before any answer token streams, so we keep it minimal for
-// speed. At 0 the refinement loop is skipped entirely: the FIRST gather call's
-// tool requests are still executed (see the post-loop block), so we get one full
-// search wave — the model picks keywords, we run the tools, then the answer pass
-// grounds on those results. Bump to 1 (adds one refinement wave) if grounding
-// regresses on hard questions.
-const MAX_SEARCH_ROUNDS = 0;
-
-// Find the @hidden-hiqmah/content workspace package at runtime. Layouts:
-//   - dev (pnpm dev from apps/web)    → cwd = apps/web → ../../packages/content
-//   - Vercel (Root Directory=apps/web,
-//     outputFileTracingRoot=monorepo) → cwd = /var/task → packages/content
+// Search refinement is ADAPTIVE, not a fixed count. Every extra round is another
+// blocking model round-trip the user waits through before a single answer token
+// streams, so we only pay for one when the first wave genuinely came up short:
 //
-// Probe both; use whichever has the hadith/ subdirectory we need.
-const CONTENT_ROOT: string = (() => {
-  const candidates = [
-    path.join(process.cwd(), "packages/content"),       // Vercel
-    path.join(process.cwd(), "../../packages/content"), // dev
-    path.join(process.cwd(), "../packages/content"),    // safety net
-  ];
-  for (const candidate of candidates) {
-    try {
-      if (fs.existsSync(path.join(candidate, "hadith"))) {
-        return candidate;
-      }
-    } catch {
-      // ignore
-    }
-  }
-  // Fallback — let the per-file fs.readFileSync calls surface the real error
-  console.error("[Ask Hiqmah] Could not locate @hidden-hiqmah/content. Tried:", candidates);
-  return candidates[0];
-})();
+//   strong first wave → 0 refinement rounds (the fast path)
+//   weak/empty wave   → 1 refinement round, so the model retries with different
+//                       keywords BY ITSELF — the user never has to ask it to.
+//
+// "Strong" is judged from the retrieval layer's own signals (tier + BM25 score),
+// not from the model's opinion of its own results — see isStrongHit().
+const MAX_REFINEMENT_ROUNDS = 1;
+
+// BM25 score at which a wave is solid enough to stop searching.
+//
+// MEASURED against the real corpus, and the ranges OVERLAP HEAVILY — this
+// threshold is not a separator and must not be described as one. On the two
+// independent gold sets (whose answers are known to be in the corpus) the top
+// hadith cleared 12 on 27 of 28 and 22 of 24. On 20 queries the corpus cannot
+// answer — absent topics, invented narrations, gibberish, contentless filler —
+// it still cleared 12 on 8, topping out at 18.24 on an invented narration ("the
+// prophet said the earth orbits the sun once every seven days"), which is
+// higher than 3 of the 52 genuinely answerable questions scored.
+//
+// So state what 12 buys, and nothing more: it RARELY costs an answerable
+// question its fast path (27/28 and 22/24), while the flatly-empty queries fall
+// far below it — gibberish and contentless one-liners 0.00, "hello there how
+// are you" 3.51, "tell me something" 5.70. It does NOT keep noise
+// out. The three answerable questions that DO escalate are near-misses rather
+// than failures: 11.53 on "…ordered to fight people until they say…" (whose
+// gold hadith is at rank 1), and 9.55 / 9.06 on two one-or-two-term queries.
+//
+// It is a floor on lexical evidence, not a verdict on relevance: only the model
+// can tell whether the top hit answers the question, which is why the escalated
+// round hands it the results and lets it search again itself. bm25.ts's own
+// floor of 3 is far too low to be useful here — noise clears it easily.
+//
+// Note the collection-authority prior (hadith.ts) scales every hadith score by
+// up to 1.05, so it nudges this gate looser: on the same noise set, queries
+// clearing 12 went 6/20 → 8/20. The answerable side did not change (27/28,
+// 22/24 both before and after), so the gate was left at 12.
+const STRONG_HIT_SCORE = 12;
+
+// The same bar for the Quran, which needs its own number because BM25 scores
+// are corpus-relative and these two corpora are not the same size. 6,236 verses
+// vs 35,089 hadiths caps idf at 8.3 instead of 10.06, and verses are shorter, so
+// the whole Quran score distribution sits lower. MEASURED: on 30 questions both
+// tools were asked, the hadith side cleared 12 on 24 and the Quran side on 4 —
+// and on 20 "what does the Quran say about X" questions the top verse scored
+// 0.00–9.95, so NOT ONE was judged strong. A Quran-only wave therefore escalated
+// every single time: a guaranteed extra model round-trip, which is exactly the
+// latency this rewrite exists to buy back.
+//
+// Calibrated at 8 on the same two samples: 19/30 of the answerable shared
+// questions now take the fast path (vs 4/30 at 12), while the absent-topic set
+// tops out at 10.84 and still escalates on 13/20. Same caveat as above — the
+// ranges overlap; this only stops the guaranteed-wasted round.
+const STRONG_QURAN_SCORE = 8;
+
+// A verified quoted phrase is only decisive when the quote was SUBSTANTIVE.
+// Both the tool descriptions and the system prompt now tell the search model to
+// quote the user's wording, so filler quotes are a designed-for case: MEASURED,
+// "one of you" (score 2.60), "the best of you" (7.05) and "the people" (3.48)
+// all verified as exact phrases and all counted as strong, permanently
+// suppressing the one refinement round.
+//
+// Two gates, both drawn from the same measurement. On 8 genuine quotes the
+// phrase contributed 2–5 non-stop terms and its term-intersection covered 1–24
+// documents; on 12 filler quotes it contributed 1–2 terms over 151–8,634
+// documents. Requiring ≥2 terms AND ≤100 candidate documents separates the two
+// sets completely, with the genuine side's worst case (24) four times inside
+// the bar.
+const MIN_PHRASE_TERMS = 2;
+const MAX_PHRASE_CANDIDATES = 100;
+
+// Retrieval lives in @/lib/search — BM25 over a prebuilt inverted index
+// (scripts/build-hadith-index.mjs), so a tool call touches one index file plus
+// the handful of book files that won, instead of re-parsing all 51MB of hadith
+// on every call the way the old keyword scan did.
+
+// How many candidates each search tool returns. Deliberately generous: the
+// answer pass is instructed to discard irrelevant hits, so recall at this
+// layer matters more than precision, and a real match pushed off a 5-row list
+// is a match the model can never cite.
+const DEFAULT_SEARCH_RESULTS = 12;
+const MAX_SEARCH_RESULTS = 15;
 
 // ── CORS helpers (mobile app at hiqmah://, capacitor:// hits this from a
 // different origin) ──────────────────────────────────────────────────────
@@ -91,215 +142,6 @@ function sha256(input: string): string {
   return createHash("sha256").update(input).digest("hex");
 }
 
-// ── Hadith search infrastructure ──────────────────────────────────────────
-
-const HADITH_DIR = path.join(CONTENT_ROOT, "hadith");
-const COLLECTIONS = ["bukhari", "muslim", "abudawud", "tirmidhi", "nasai", "ibnmajah", "ahmad"];
-
-interface HadithEntry {
-  id: number;
-  arabic: string;
-  english: string;
-  reference: string;
-}
-
-interface CollectionMeta {
-  collection: string;
-  name: string;
-  books: { id: number; name: string; count: number }[];
-}
-
-const metaCache = new Map<string, CollectionMeta>();
-function getMeta(collection: string): CollectionMeta | null {
-  if (metaCache.has(collection)) return metaCache.get(collection)!;
-  try {
-    const raw = fs.readFileSync(path.join(HADITH_DIR, collection, "metadata.json"), "utf-8");
-    const meta = JSON.parse(raw) as CollectionMeta;
-    metaCache.set(collection, meta);
-    return meta;
-  } catch {
-    return null;
-  }
-}
-
-// Stop words to filter out from search queries — these match too many hadiths
-const STOP_WORDS = new Set([
-  "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",
-  "have", "has", "had", "do", "does", "did", "will", "would", "could",
-  "should", "may", "might", "shall", "can", "need", "must",
-  "i", "me", "my", "we", "our", "you", "your", "he", "him", "his",
-  "she", "her", "it", "its", "they", "them", "their", "who", "whom",
-  "what", "which", "that", "this", "these", "those",
-  "in", "on", "at", "to", "for", "of", "with", "by", "from", "about",
-  "into", "through", "during", "before", "after", "above", "below",
-  "between", "out", "off", "over", "under", "again", "further", "then",
-  "and", "but", "or", "nor", "not", "no", "so", "if", "because",
-  "as", "until", "while", "when", "where", "how", "than", "too", "very",
-  "just", "also", "still", "already", "even",
-  "said", "says", "told", "asked", "went", "came", "made", "got",
-  "prophet", "allah", "messenger", "narrated", "god",
-]);
-
-function filterKeywords(query: string): string[] {
-  return query.toLowerCase().split(/\s+/).filter(w => w.length > 2 && !STOP_WORDS.has(w));
-}
-
-function searchHadiths(
-  query: string,
-  collection?: string,
-  maxResults = 5
-): { collection: string; collectionName: string; book: string; reference: string; english: string }[] {
-  const keywords = filterKeywords(query);
-  if (keywords.length === 0) return [];
-
-  const results: { collection: string; collectionName: string; book: string; reference: string; english: string; score: number }[] = [];
-  const collectionsToSearch = collection ? [collection] : COLLECTIONS;
-
-  for (const col of collectionsToSearch) {
-    const meta = getMeta(col);
-    if (!meta) continue;
-
-    for (const book of meta.books) {
-      let hadiths: HadithEntry[];
-      try {
-        const raw = fs.readFileSync(path.join(HADITH_DIR, col, `${book.id}.json`), "utf-8");
-        hadiths = JSON.parse(raw) as HadithEntry[];
-      } catch {
-        continue;
-      }
-
-      for (const h of hadiths) {
-        const text = h.english.toLowerCase();
-        let score = 0;
-        for (const kw of keywords) {
-          if (text.includes(kw)) score++;
-        }
-        // Require at least 2/3 of meaningful keywords to match
-        if (keywords.length > 0 && score >= Math.ceil(keywords.length * 2 / 3)) {
-          results.push({
-            collection: col,
-            collectionName: meta.name,
-            book: book.name,
-            reference: `${col} ${h.reference}`,
-            english: h.english.length > 500 ? h.english.slice(0, 500) + "…" : h.english,
-            score,
-          });
-        }
-      }
-    }
-  }
-
-  results.sort((a, b) => b.score - a.score);
-  return results.slice(0, maxResults).map(({ score: _, ...rest }) => rest);
-}
-
-// ── Quran search infrastructure ───────────────────────────────────────────
-
-const QURAN_DIR = path.join(CONTENT_ROOT, "quran");
-
-interface QuranVerse {
-  id: number;
-  number: number;
-  key: string;
-  textAr: string;
-  textEn: string;
-  textTranslit?: string;
-  juz: number;
-  page: number;
-  hizb: number;
-}
-
-interface ChapterInfo {
-  id: number;
-  name: string;
-  nameAr: string;
-  meaning: string;
-  verses: number;
-}
-
-let chaptersCache: ChapterInfo[] | null = null;
-function getChapters(): ChapterInfo[] {
-  if (chaptersCache) return chaptersCache;
-  try {
-    const raw = fs.readFileSync(path.join(QURAN_DIR, "chapters.json"), "utf-8");
-    chaptersCache = JSON.parse(raw) as ChapterInfo[];
-    return chaptersCache;
-  } catch {
-    return [];
-  }
-}
-
-const surahCache = new Map<number, QuranVerse[]>();
-function getSurahVerses(surahId: number): QuranVerse[] {
-  if (surahCache.has(surahId)) return surahCache.get(surahId)!;
-  try {
-    const raw = fs.readFileSync(path.join(QURAN_DIR, "verses", `${surahId}.json`), "utf-8");
-    const verses = JSON.parse(raw) as QuranVerse[];
-    surahCache.set(surahId, verses);
-    return verses;
-  } catch {
-    return [];
-  }
-}
-
-function searchQuran(
-  query: string,
-  surahId?: number,
-  maxResults = 5
-): { surah: string; surahId: number; verse: number; key: string; arabic: string; english: string }[] {
-  const keywords = filterKeywords(query);
-  if (keywords.length === 0) return [];
-
-  const chapters = getChapters();
-  const results: { surah: string; surahId: number; verse: number; key: string; arabic: string; english: string; score: number }[] = [];
-  const surahsToSearch = surahId ? [surahId] : Array.from({ length: 114 }, (_, i) => i + 1);
-
-  for (const sid of surahsToSearch) {
-    const verses = getSurahVerses(sid);
-    const ch = chapters.find((c) => c.id === sid);
-    const surahName = ch ? `${ch.name} (${ch.meaning})` : `Surah ${sid}`;
-
-    for (const v of verses) {
-      const text = v.textEn.toLowerCase();
-      let score = 0;
-      for (const kw of keywords) {
-        if (text.includes(kw)) score++;
-      }
-      if (keywords.length > 0 && score >= Math.ceil(keywords.length * 2 / 3)) {
-        results.push({
-          surah: surahName,
-          surahId: sid,
-          verse: v.number,
-          key: v.key,
-          arabic: v.textAr,
-          english: v.textEn,
-          score,
-        });
-      }
-    }
-  }
-
-  results.sort((a, b) => b.score - a.score);
-  return results.slice(0, maxResults).map(({ score: _, ...rest }) => rest);
-}
-
-function getQuranVerse(surahId: number, ayah: number): { surah: string; surahId: number; verse: number; key: string; arabic: string; english: string; transliteration?: string } | null {
-  const chapters = getChapters();
-  const verses = getSurahVerses(surahId);
-  const ch = chapters.find((c) => c.id === surahId);
-  const v = verses.find((vr) => vr.number === ayah);
-  if (!v) return null;
-  return {
-    surah: ch ? `${ch.name} (${ch.meaning})` : `Surah ${surahId}`,
-    surahId,
-    verse: v.number,
-    key: v.key,
-    arabic: v.textAr,
-    english: v.textEn,
-    transliteration: v.textTranslit,
-  };
-}
-
 // ── Citation type ─────────────────────────────────────────────────────────
 
 interface Citation {
@@ -317,13 +159,13 @@ const TOOLS: Anthropic.Messages.Tool[] = [
   {
     name: "search_hadith",
     description:
-      "Search through the hadith collections available on this website (Bukhari, Muslim, Abu Dawud, Tirmidhi, Nasai, Ibn Majah, Ahmad). Use this to find specific hadiths, verify references, or look up hadiths by topic/keyword.",
+      "Search the hadith collections on this website (Bukhari, Muslim, Abu Dawud, Tirmidhi, Nasai, Ibn Majah, Ahmad). Natural language works — the search is rarity-weighted and stems words, so you do not have to guess exact wording.\n\nWHEN HUNTING A SPECIFIC NARRATION (the user quotes it, paraphrases it from memory, or asks \"is there a hadith about X\"), CALL THIS TOOL SEVERAL TIMES IN THE SAME TURN with genuinely different angles instead of making one guess. Parallel calls all run at once, so three searches cost the same wait as one. Good angles: (a) the distinctive/rare content words that would appear in the text itself, (b) a reworded paraphrase in the vocabulary an English translation actually uses, (c) the user's quoted text in \"double quotes\" for an exact-phrase match. Vary them — three near-identical queries are one search, not three.",
     input_schema: {
       type: "object" as const,
       properties: {
         query: {
           type: "string",
-          description: "2-5 specific, meaningful keywords (no stop words). Examples: 'actions intentions', 'hellfire repentance dragged', 'mother paradise feet'. Use distinctive words that would appear in the hadith text.",
+          description: "What you're looking for, in the user's own words or as distinctive keywords — both work. The search is rarity-weighted and stems words, so 'the person dragged to hellfire who seeks repentance' and 'hellfire repentance' both find it, and 'intention' matches 'intentions'. Wrap text in \"double quotes\" to require an exact phrase. Prefer words that would appear in the hadith itself over words describing your question.",
         },
         collection: {
           type: "string",
@@ -332,7 +174,7 @@ const TOOLS: Anthropic.Messages.Tool[] = [
         },
         max_results: {
           type: "number",
-          description: "Maximum results (default 5, max 10).",
+          description: "Maximum results (default 12, max 15).",
         },
       },
       required: ["query"],
@@ -341,13 +183,13 @@ const TOOLS: Anthropic.Messages.Tool[] = [
   {
     name: "search_quran",
     description:
-      "Search through all 114 surahs of the Quran by keywords in the English translation.",
+      "Search all 114 surahs of the Quran by the English translation. Natural language works. As with search_hadith, when hunting a specific verse issue SEVERAL calls in the SAME turn from different angles (distinctive words, a reworded paraphrase, the quoted text in \"double quotes\") rather than one guess — they run in parallel, so the extra angles are free.",
     input_schema: {
       type: "object" as const,
       properties: {
         query: {
           type: "string",
-          description: "2-5 specific, meaningful keywords (no stop words). Examples: 'mercy forgiveness', 'fasting prescribed believers', 'throne heavens earth'.",
+          description: "What you're looking for, in the user's own words or as distinctive keywords — both work. Matching is rarity-weighted and stems words, so partial matches still rank. Wrap text in \"double quotes\" to require an exact phrase from the translation.",
         },
         surah_id: {
           type: "number",
@@ -355,7 +197,7 @@ const TOOLS: Anthropic.Messages.Tool[] = [
         },
         max_results: {
           type: "number",
-          description: "Maximum results (default 5, max 10).",
+          description: "Maximum results (default 12, max 15).",
         },
       },
       required: ["query"],
@@ -382,7 +224,7 @@ const SYSTEM_PROMPT = `You are "Hiqmah", the AI assistant for Hidden Hiqmah — 
 
 GROUNDING — your most important rule:
 - Base every specific claim about what the Quran or a hadith says on a VERIFIED source. Use the search tools to find and confirm the text before you quote or reference it.
-- NEVER invent, guess, or approximate a hadith number, a surah:ayah reference, or a quotation. If you cannot verify a specific narration or verse with the tools, do not present one — say plainly that you couldn't verify a specific text on this, then give general, clearly-framed guidance.
+- NEVER invent, guess, or approximate a hadith number, a surah:ayah reference, or a quotation. If you cannot verify a specific narration or verse with the tools, do not present one — say plainly that you couldn't verify a specific text on this, then give general, clearly-framed guidance. But searching harder comes FIRST: "I couldn't find it" is only honest after you have actually searched from several different angles, never after one guess.
 - You may explain and teach conversationally, but keep a clear line: quoted scripture and specific rulings must be backed by a cited source; broader educational context should be presented as general understanding, not dressed up as a citation.
 
 FAITHFUL INTERPRETATION — never cherry-pick or mislead:
@@ -398,18 +240,25 @@ RULINGS (fiqh) — answer with sources, flag the gray areas:
 SEARCH TOOLS:
 You have access to the app's Quran and hadith databases. Use these tools to verify and cite content — they are how you ground your answers.
 
-search_hadith — Search hadith collections by keywords.
-search_quran — Search all 114 surahs by keywords in English translation.
+search_hadith — Search the hadith collections. Natural language works; so do distinctive keywords.
+search_quran — Search all 114 surahs by the English translation.
 get_quran_verse — Look up a specific verse by surah:ayah.
 
-CRITICAL RULES FOR TOOL RESULTS:
+FINDING A SPECIFIC NARRATION — SEARCH WIDE ON THE FIRST TURN:
+When someone is hunting a particular hadith or verse — they quote it, paraphrase it from memory, or ask "is there a hadith about X" — do NOT make one keyword guess. Issue SEVERAL search calls IN THE SAME TURN, each from a genuinely different angle. Parallel calls all run at once, so three searches cost the same wait as one, and one round of three angles beats three rounds of one.
+1. DISTINCTIVE WORDS — the rare, specific words that would appear in the text itself ("hellfire repentance", "ruqyah evil eye"), not the common ones ("man", "day", "good").
+2. A REWORDED PARAPHRASE in the vocabulary an English translation actually uses. The user's wording is rarely the translator's: "actions are judged by intentions" is narrated as "the reward of deeds depends upon the intentions". Search both.
+3. THE QUOTE ITSELF, if they gave one — in "double quotes" for an exact-phrase match, plus an unquoted version in case their memory is off by a word.
+Add a search_quran call too whenever the idea could be Quranic. Make the angles genuinely different — three near-identical queries are one search, not three.
+
+RULES FOR TOOL RESULTS:
 1. Critically evaluate every search result. Does this hadith/verse ACTUALLY discuss what the user is asking about? Keyword matches are not relevance.
 2. DISCARD results that are not semantically relevant. If a user asks about "the person dragged to hellfire who seeks repentance" and the search returns a hadith about travel — that is NOT relevant; do not cite it.
 3. When you DO find a relevant result, reference it using this exact format in your text: [[cite:N]] where N is the 1-based index of the result from the tool call. For example: "The Prophet ﷺ said... [[cite:1]]". Only results you mark with [[cite:N]] are shown as source cards.
-4. Try MULTIPLE keyword searches if the first doesn't return relevant results — think about the distinctive words that would actually appear in the text.
-5. If no relevant source is found, do NOT fabricate one. Say you couldn't verify a specific text in our collections, then give general guidance framed as such — without quoting a verse/hadith or citing a reference you haven't verified.
+4. If a wave of searches misses, SEARCH AGAIN YOURSELF, immediately — new angles, new vocabulary, different distinctive words. Never narrate that you are searching, never ask permission to search again, and never end a turn with an offer to look ("Do you want me to search again?", "Shall I look further?", "Let me know if you'd like me to check"). You have the tools; trying harder is your job, not a decision to hand back to the user.
+5. Do not tell the user to go and verify a narration themselves while you still have angles left to try. Only once you have genuinely searched from several different angles and still found nothing may you say you couldn't verify a specific text in our collections — then give general guidance framed as such, without quoting a verse/hadith or citing a reference you haven't verified.
 
-Always aim to be genuinely helpful — a grounded, honest answer that says "I couldn't verify a specific narration" is far better than a confident answer built on a fabricated or out-of-context source.
+Always aim to be genuinely helpful — a grounded, honest answer that says "I couldn't verify a specific narration" is far better than a confident answer built on a fabricated or out-of-context source. But it is only the right answer after a real, multi-angle search.
 
 LENGTH & TONE — short and conversational:
 Answer like a knowledgeable friend in a chat, not an essay. Lead with the direct answer in your first sentence or two, in warm plain language. Keep it SHORT — usually 1–3 short paragraphs. No preamble, no restating the question, no filler.
@@ -423,7 +272,8 @@ At the END of your response, include relevant page links using this format (one 
 [[link:Label Text|/path/to/page]]
 
 WEBSITE DEEP LINKING:
-HADITH: /hadith/{collection}/{bookId}?highlight={hadithId}
+HADITH: /hadith/{collection}/{bookId}?h={hadithId}
+  Take BOTH numbers straight off the result line, never from memory. A result reads "[Result 3] bukhari 15:33 (book 15)" or "[Result 7] ahmad Musnad Ahmad 991 (book 5)": {collection} is the first word, {bookId} is the number in "(book N)", and {hadithId} is the number the reference ENDS with. So those two become /hadith/bukhari/15?h=33 and /hadith/ahmad/5?h=991. Musnad Ahmad references carry no book in the reference text itself — the "(book N)" is the only place it appears, so a link built by splitting the reference alone will 404.
 QURAN: /quran/{surah_number}
 PROPHETS: /prophets/{slug}
 PROPHET MUHAMMAD: /prophet-muhammad?tab=timeline|character|his-person|family|prophecies|worship-sunnah (prophecies incl. his miracles → /miracles; family incl. household = ahl al-bayt + women-companions beyond the wives; worship-sunnah incl. sending salawat upon him)
@@ -463,50 +313,229 @@ const SYSTEM_BLOCKS: Anthropic.Messages.TextBlockParam[] = [
   { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
 ];
 
-// ── Tool execution helper ─────────────────────────────────────────────────
+// ── Progress status ───────────────────────────────────────────────────────
+//
+// Every status we emit describes work that is ACTUALLY happening right now,
+// named from the tool inputs. Deliberately no percentage: the slow part is the
+// model call, where real progress is unknowable, and a fake bar that stalls at
+// 80% erodes trust faster than an honest sentence.
 
-const STATUS_MESSAGES: Record<string, string> = {
-  search_hadith: "Searching hadith collections...",
-  search_quran: "Searching the Quran...",
-  get_quran_verse: "Looking up Quran verse...",
+// Short labels for status text — "Searching Bukhari & Muslim…" reads better than
+// the full "Sahih al-Bukhari" names used on the source cards.
+const COLLECTION_LABELS: Record<string, string> = {
+  bukhari: "Bukhari",
+  muslim: "Muslim",
+  abudawud: "Abu Dawud",
+  tirmidhi: "Tirmidhi",
+  nasai: "Nasa'i",
+  ibnmajah: "Ibn Majah",
+  ahmad: "Ahmad",
 };
 
-function executeTool(block: Anthropic.Messages.ToolUseBlock, counter: { value: number }): { result: string; citations: Citation[] } {
+// Shown while the fast model reads the question and decides which angles to
+// search — the one stretch where nothing is being searched yet. Without it the
+// client's own hardcoded "Thinking..." placeholder sits there for the whole
+// first model call, which is both generic and the least informative moment.
+const PLANNING_STATUS = "Working out what to search for…";
+
+const ESCALATION_STATUS = "No strong match yet — searching more deeply…";
+
+// Handed to the search model alongside the weak wave's results. Without it the
+// escalation round is only an opportunity to search again — the model can just
+// as easily read its own thin results and start writing. This states the
+// retrieval verdict as fact (the model can't see BM25 scores) and spends the
+// round we already paid for.
+const ESCALATION_INSTRUCTION =
+  "[RETRIEVAL] None of those results scored as a confident match, so this question is not answered yet. Do NOT write an answer in this turn and do NOT ask the user anything. Search again RIGHT NOW — several calls in this same turn, each from a genuinely different angle: different distinctive words that would appear in the text itself, a paraphrase in the vocabulary an English translation actually uses, and the user's quoted wording in \"double quotes\" if they gave one. Repeating the previous keywords is wasted effort; change them.";
+
+// "&" reads tightly for a list of names ("Bukhari & Muslim"); "and" reads better
+// when the items are phrases ("the hadith collections and the Quran").
+function joinList(items: string[], conjunction = "&"): string {
+  if (items.length <= 1) return items[0] ?? "";
+  if (items.length === 2) return `${items[0]} ${conjunction} ${items[1]}`;
+  return `${items.slice(0, -1).join(", ")} ${conjunction} ${items[items.length - 1]}`;
+}
+
+function pluralize(count: number, noun: string): string {
+  return `${count} ${noun}${count === 1 ? "" : "s"}`;
+}
+
+/** Name what this wave of tool calls is actually about to search. */
+function describeSearchWave(blocks: Anthropic.Messages.ToolUseBlock[]): string {
+  const collections = new Set<string>();
+  let wholeCorpus = false;
+  let quran = false;
+  const verseLookups: string[] = [];
+
+  for (const block of blocks) {
+    if (block.name === "search_hadith") {
+      const { collection } = block.input as { collection?: string };
+      const label = collection ? COLLECTION_LABELS[collection] : undefined;
+      // No collection — or one searchHadiths won't recognise — means the whole
+      // corpus is searched, so say that rather than name a filter that isn't
+      // being applied.
+      if (label) collections.add(label);
+      else wholeCorpus = true;
+    } else if (block.name === "search_quran") {
+      quran = true;
+    } else if (block.name === "get_quran_verse") {
+      const { surah_id, ayah } = block.input as { surah_id?: number; ayah?: number };
+      verseLookups.push(`${surah_id}:${ayah}`);
+    }
+  }
+
+  const targets: string[] = [];
+  if (wholeCorpus) targets.push("the hadith collections");
+  else if (collections.size > 0) targets.push(joinList([...collections]));
+  if (quran) targets.push("the Quran");
+
+  if (targets.length > 0) return `Searching ${joinList(targets, "and")}…`;
+  if (verseLookups.length > 0) return `Looking up Quran ${joinList(verseLookups)}…`;
+  return "Searching…";
+}
+
+/** Report the real number of sources the answer pass is about to read. */
+function describeSources(hadiths: number, verses: number): string {
+  const parts: string[] = [];
+  if (hadiths > 0) parts.push(pluralize(hadiths, "narration"));
+  if (verses > 0) parts.push(pluralize(verses, "verse"));
+  // Nothing was found — don't claim to be reading sources that don't exist.
+  if (parts.length === 0) return "Writing your answer…";
+  return `Reading ${joinList(parts, "and")}…`;
+}
+
+// ── Tool execution helper ─────────────────────────────────────────────────
+
+/**
+ * Is this result good enough to stop searching? Judged from the retrieval
+ * layer's signals rather than the model's opinion of its own keywords:
+ *
+ *   - the "rare-terms" fallback tier never counts — reaching it means normal
+ *     ranking already came up short;
+ *   - a verified quoted phrase is a BONUS route to "strong": a substantive
+ *     quote (see MIN_PHRASE_TERMS / MAX_PHRASE_CANDIDATES) that clears the
+ *     ordinary floor counts even when its score sits under `threshold`,
+ *     because "we found the exact words you quoted, in four documents" is
+ *     evidence the score alone doesn't carry;
+ *   - everything else — INCLUDING a phrase hit whose quote was filler — has to
+ *     clear `threshold`, which is per-corpus.
+ *
+ * The phrase check must NOT be an exclusive override. It used to return the
+ * phrase verdict and never fall through to the score, which inverted quoting:
+ * MEASURED over 10 realistic questions containing ONE quoted distinctive term
+ * ("is \"ruqyah\" allowed in islam" 17.39, "is \"witr\" prayer obligatory"
+ * 17.63, "when is \"tayammum\" allowed instead of wudu" 15.18 …), 8 of 10 came
+ * back WEAK while the byte-identical unquoted question at the SAME score came
+ * back STRONG — so quoting, which the prompt explicitly asks the model to do,
+ * bought a wasted escalation round. As a bonus instead of a replacement those
+ * 8 inversions go to 0, the 8 genuine multi-term verbatim quotes stay 8/8
+ * decisive, and the 6 filler quotes ("one of you" 2.60, "the people" 3.48,
+ * "the best of you" 7.05) stay 0/6 — they fail both routes, as intended.
+ */
+function isStrongHit(
+  top: { score: number; tier: SearchTier; phrase?: PhraseEvidence } | undefined,
+  threshold: number
+): boolean {
+  if (!top) return false;
+  if (top.tier === "rare-terms") return false;
+  const { phrase } = top;
+  const decisiveQuote =
+    !!phrase &&
+    phrase.terms >= MIN_PHRASE_TERMS &&
+    phrase.candidates <= MAX_PHRASE_CANDIDATES &&
+    top.score >= MIN_BM25_SCORE;
+  return decisiveQuote || top.score >= threshold;
+}
+
+// Tell the model HOW the results were found. "rare-terms" means the ordinary
+// ranking came up short and we fell back to matching only the query's most
+// distinctive words, so the hits are looser and need harder filtering.
+function tierNote(tier: SearchTier): string {
+  if (tier === "phrase") return " matching your quoted phrase exactly";
+  if (tier === "rare-terms") return " from a broadened search (matched on the most distinctive words only, so relevance varies)";
+  return "";
+}
+
+/**
+ * Run one tool call.
+ *
+ * `strong` reports whether the retrieval layer found something solid enough
+ * that the search phase can stop — it is what decides between the fast path and
+ * one automatic refinement round.
+ *
+ * `result` and `digest` exist because the two texts have DIFFERENT AUDIENCES,
+ * and conflating them leaked search instructions into the answer. `result` goes
+ * back as the tool_result, read only by the search model, so it can carry
+ * imperatives ("search again yourself, right now"). `digest` is what gets
+ * replayed to the ANSWER model under "Here are search results from the app's
+ * database", where an instruction aimed at a model that has no tools is at best
+ * confusing and at worst something it repeats to the user. They are the same
+ * string whenever the tool actually found something.
+ */
+function executeTool(
+  block: Anthropic.Messages.ToolUseBlock,
+  counter: { value: number }
+): { result: string; digest: string; citations: Citation[]; strong: boolean } {
   const citations: Citation[] = [];
 
   if (block.name === "search_hadith") {
     const input = block.input as { query: string; collection?: string; max_results?: number };
-    const results = searchHadiths(input.query, input.collection, Math.min(input.max_results || 5, 10));
+    const results = searchHadiths(
+      input.query,
+      input.collection,
+      Math.min(input.max_results || DEFAULT_SEARCH_RESULTS, MAX_SEARCH_RESULTS)
+    );
     if (results.length > 0) {
       // Number each result so Claude can reference them with [[cite:N]]
       const numbered = results.map((h) => {
         counter.value++;
-        const refParts = h.reference.split(" ");
-        const col = refParts[0];
-        const [bookId, hadithId] = (refParts[1] || "").split(":");
         citations.push({
           type: "hadith",
           source: h.collectionName,
           reference: h.reference,
           english: h.english,
-          href: `/hadith/${col}/${bookId}?h=${hadithId}`,
+          // Built from the STRUCTURED fields, never by re-parsing `reference`.
+          // Its shape is collection-dependent — Musnad Ahmad reads "Musnad
+          // Ahmad 65" where the rest read "13:27" — so splitting it produced
+          // /hadith/ahmad/Musnad?h=undefined for all 1,285 Ahmad entries, a
+          // hard 404 in the static export and in the shipped iOS app.
+          href: `/hadith/${h.collection}/${h.bookId}?h=${h.hadithId}`,
         });
-        return `[Result ${counter.value}] ${h.reference}\n${h.english}`;
+        // "(book N)" is here for the LINKS THE MODEL WRITES IN PROSE, not for
+        // the citation cards — those get `href` above, built from the
+        // structured fields. The reference string alone is not enough to
+        // construct /hadith/{collection}/{book}?h=…: six collections spell it
+        // "<book>:<n>", but all 1,285 Musnad Ahmad entries read "Musnad Ahmad
+        // 991" with the book (1–7) nowhere in the string, so the model was
+        // guessing it. The trailing number IS the ?h= anchor for all 35,089
+        // entries (verified against the corpus), so reference + this suffix are
+        // together sufficient. See WEBSITE DEEP LINKING in the system prompt.
+        return `[Result ${counter.value}] ${h.reference} (book ${h.bookId})\n${h.english}`;
       });
+      const found = `Found ${results.length} results${tierNote(results[0].tier)}. IMPORTANT: Read each result carefully. Only cite results that are actually relevant to the user's question using [[cite:N]] format.\n\n${numbered.join("\n\n")}`;
       return {
-        result: `Found ${results.length} results. IMPORTANT: Read each result carefully. Only cite results that are actually relevant to the user's question using [[cite:N]] format.\n\n${numbered.join("\n\n")}`,
+        result: found,
+        digest: found,
         citations,
+        strong: isStrongHit(results[0], STRONG_HIT_SCORE),
       };
     }
     return {
-      result: "No matching hadiths found. Try different keywords, or answer from your own knowledge.",
+      result:
+        "No matching hadiths found. Search again yourself, right now, with different distinctive words, a reworded paraphrase, or a \"quoted phrase\" — several angles in one turn. Never ask the user for permission to search again.",
+      digest: `No matching hadiths found for "${input.query}".`,
       citations,
+      strong: false,
     };
   }
 
   if (block.name === "search_quran") {
     const input = block.input as { query: string; surah_id?: number; max_results?: number };
-    const results = searchQuran(input.query, input.surah_id, Math.min(input.max_results || 5, 10));
+    const results = searchQuran(
+      input.query,
+      input.surah_id,
+      Math.min(input.max_results || DEFAULT_SEARCH_RESULTS, MAX_SEARCH_RESULTS)
+    );
     if (results.length > 0) {
       const numbered = results.map((v) => {
         counter.value++;
@@ -520,14 +549,21 @@ function executeTool(block: Anthropic.Messages.ToolUseBlock, counter: { value: n
         });
         return `[Result ${counter.value}] ${v.key}\n${v.english}`;
       });
+      const found = `Found ${results.length} verses${tierNote(results[0].tier)}. IMPORTANT: Only cite verses actually relevant to the question using [[cite:N]] format.\n\n${numbered.join("\n\n")}`;
       return {
-        result: `Found ${results.length} verses. IMPORTANT: Only cite verses actually relevant to the question using [[cite:N]] format.\n\n${numbered.join("\n\n")}`,
+        result: found,
+        digest: found,
         citations,
+        // The Quran's own bar — see STRONG_QURAN_SCORE.
+        strong: isStrongHit(results[0], STRONG_QURAN_SCORE),
       };
     }
     return {
-      result: "No matching verses found. Try different keywords, or answer from your own knowledge.",
+      result:
+        "No matching verses found. Search again yourself, right now, with different distinctive words or a reworded paraphrase — several angles in one turn. Never ask the user for permission to search again.",
+      digest: `No matching verses found for "${input.query}".`,
       citations,
+      strong: false,
     };
   }
 
@@ -544,18 +580,20 @@ function executeTool(block: Anthropic.Messages.ToolUseBlock, counter: { value: n
         english: result.english,
         href: `/quran/${result.surahId}?v=${result.verse}`,
       });
+      const found = `[Result ${counter.value}] ${result.key}\nArabic: ${result.arabic}\nEnglish: ${result.english}\nTransliteration: ${result.transliteration || "N/A"}`;
       return {
-        result: `[Result ${counter.value}] ${result.key}\nArabic: ${result.arabic}\nEnglish: ${result.english}\nTransliteration: ${result.transliteration || "N/A"}`,
+        result: found,
+        digest: found,
         citations,
+        // An exact reference lookup that resolved is as certain as retrieval gets.
+        strong: true,
       };
     }
-    return {
-      result: `Verse ${input.surah_id}:${input.ayah} not found.`,
-      citations,
-    };
+    const missing = `Verse ${input.surah_id}:${input.ayah} not found.`;
+    return { result: missing, digest: missing, citations, strong: false };
   }
 
-  return { result: "Unknown tool", citations: [] };
+  return { result: "Unknown tool", digest: "Unknown tool", citations: [], strong: false };
 }
 
 // ── SSE streaming API handler ─────────────────────────────────────────────
@@ -670,10 +708,11 @@ export async function POST(req: NextRequest) {
           }
         };
         // Non-streaming SEARCH pass on the fast/cheap model: it picks the search
-        // keywords and issues the tool calls. Any prose it produces is discarded.
-        // With MAX_SEARCH_ROUNDS = 0 it never sees the tool RESULTS, so judging
-        // relevance is entirely the answer model's job (the system prompt's
-        // "CRITICAL RULES FOR TOOL RESULTS" is what enforces it).
+        // angles and issues the tool calls. Any prose it produces is discarded.
+        // On the fast path it never sees the tool RESULTS, so judging relevance
+        // stays the answer model's job (the system prompt's "RULES FOR TOOL
+        // RESULTS" is what enforces it). It only sees results when the first
+        // wave came up weak and we call it a second time to refine.
         const gather = async (
           msgs: Anthropic.Messages.MessageParam[]
         ): Promise<Anthropic.Messages.Message> => {
@@ -747,71 +786,128 @@ export async function POST(req: NextRequest) {
           }
         };
 
-        // ── Search phase (fast model; MAX_SEARCH_ROUNDS refinement rounds) ──
-        let response = await gather(apiMessages);
-        const messageChain: Anthropic.Messages.MessageParam[] = [...apiMessages];
-        let rounds = 0;
-
-        while (response.stop_reason === "tool_use" && rounds < MAX_SEARCH_ROUNDS) {
-          rounds++;
-          const toolBlocks = response.content.filter(
-            (b): b is Anthropic.Messages.ToolUseBlock => b.type === "tool_use"
-          );
-
-          for (const block of toolBlocks) {
-            send("status", { text: STATUS_MESSAGES[block.name] || "Searching..." });
-          }
-
-          const toolResults: Anthropic.Messages.ToolResultBlockParam[] = toolBlocks.map((block) => {
-            const { result, citations } = executeTool(block, citationCounter);
+        // ── Search phase (fast model, adaptive rounds) ──────────────────────
+        // One wave = every tool call the model requested in a single turn. The
+        // model is prompted to fire several angles per wave, so one wave is
+        // already a multi-angle search, not a single guess.
+        //
+        // Executes the wave, reports what is being searched, and returns the
+        // tool_result blocks plus whether the retrieval layer found anything
+        // solid enough to stop on.
+        const runToolWave = (blocks: Anthropic.Messages.ToolUseBlock[]) => {
+          send("status", { text: describeSearchWave(blocks) });
+          // A wave is judged on its SEARCHES, not on everything it did. A
+          // get_quran_verse lookup resolves by construction, so letting one
+          // vouch for the wave would suppress escalation in exactly the case
+          // the user reported: a hadith hunt that came up empty next to a verse
+          // lookup that trivially succeeded. Lookups only decide the wave when
+          // no search ran at all.
+          let searchRan = false;
+          let searchStrong = false;
+          let lookupStrong = false;
+          const toolResults: Anthropic.Messages.ToolResultBlockParam[] = blocks.map((block) => {
+            const { result, digest, citations, strong: hit } = executeTool(block, citationCounter);
             allCitations.push(...citations);
-            allSearchResults.push(result);
+            // `digest`, not `result`: allSearchResults is replayed to the ANSWER
+            // model, which has no tools and must not be handed instructions
+            // written for the search model.
+            allSearchResults.push(digest);
+            if (block.name === "search_hadith" || block.name === "search_quran") {
+              searchRan = true;
+              if (hit) searchStrong = true;
+            } else if (hit) {
+              lookupStrong = true;
+            }
             return {
               type: "tool_result" as const,
               tool_use_id: block.id,
               content: result,
             };
           });
+          return { toolResults, strong: searchRan ? searchStrong : lookupStrong };
+        };
 
-          messageChain.push({ role: "assistant" as const, content: response.content });
-          messageChain.push({ role: "user" as const, content: toolResults });
+        send("status", { text: PLANNING_STATUS });
+        let response = await gather(apiMessages);
+        const messageChain: Anthropic.Messages.MessageParam[] = [...apiMessages];
+        let refinements = 0;
+        let foundStrongSource = false;
 
-          response = await gather(messageChain);
-        }
-
-        // If we hit the round cap still requesting tools, execute those too so
-        // their sources are available to the answer pass (for citations). With
-        // MAX_SEARCH_ROUNDS = 0 this is the ONLY place tools run, so it also owns
-        // the "Searching the Qur'an…" status the user sees during the wait.
-        if (response.stop_reason === "tool_use") {
+        while (response.stop_reason === "tool_use") {
           const toolBlocks = response.content.filter(
             (b): b is Anthropic.Messages.ToolUseBlock => b.type === "tool_use"
           );
-          for (const block of toolBlocks) {
-            send("status", { text: STATUS_MESSAGES[block.name] || "Searching..." });
-          }
-          for (const block of toolBlocks) {
-            const { result, citations } = executeTool(block, citationCounter);
-            allCitations.push(...citations);
-            allSearchResults.push(result);
-          }
+          // Defensive: a "tool_use" stop_reason always carries at least one
+          // tool_use block, but an empty wave would push an empty tool_result
+          // array back to the API (a 400) and could never satisfy the loop's
+          // exit condition on its own.
+          if (toolBlocks.length === 0) break;
+          const wave = runToolWave(toolBlocks);
+          if (wave.strong) foundStrongSource = true;
+
+          // Fast path: solid sources in hand, or we've already spent our one
+          // refinement. Either way, stop paying for round-trips and answer.
+          if (foundStrongSource || refinements >= MAX_REFINEMENT_ROUNDS) break;
+
+          // Weak or empty wave — escalate ourselves rather than surfacing a
+          // shrug. This is the round that used to be missing: the model gets to
+          // see its own results and retry with different keywords, so the user
+          // never has to say "I feel like you can find it".
+          refinements++;
+          send("status", { text: ESCALATION_STATUS });
+          messageChain.push({ role: "assistant" as const, content: response.content });
+          // tool_result blocks must lead the user turn; the instruction rides
+          // after them as text in the same message.
+          messageChain.push({
+            role: "user" as const,
+            content: [
+              ...wave.toolResults,
+              { type: "text" as const, text: ESCALATION_INSTRUCTION },
+            ],
+          });
+          response = await gather(messageChain);
         }
 
         // ── Answer phase (quality model, streamed) ──────────────────────────
-        send("status", { text: "Preparing answer..." });
+        // Count DISTINCT sources: the multi-angle waves deliberately overlap, so
+        // the same hadith can arrive twice and claiming to read it twice would be
+        // a lie. (allCitations keeps its duplicates — [[cite:N]] indexes into it.)
+        const seenSources = new Set<string>();
+        let hadithSources = 0;
+        let quranSources = 0;
+        for (const c of allCitations) {
+          if (seenSources.has(c.reference)) continue;
+          seenSources.add(c.reference);
+          if (c.type === "hadith") hadithSources++;
+          else quranSources++;
+        }
+        send("status", { text: describeSources(hadithSources, quranSources) });
+
         const searchSummary = allSearchResults.length > 0
           ? `Here are search results from the app's database. Evaluate each for relevance:\n\n${allSearchResults.join("\n\n---\n\n")}`
           : "No relevant sources were found in the app's database. Do NOT fabricate a verse, hadith, or reference — if the question needs a specific text, tell the user you couldn't verify one, then give general guidance framed as such.";
 
+        // Tell the answer model how hard the search actually tried, so "I couldn't
+        // verify a specific narration" is an informed statement rather than a
+        // guess — and so it never offers to run a search it cannot run. Counted
+        // from the tool calls that really executed, not from what the prompt asked
+        // for: telling the model it searched five ways when it searched once would
+        // license exactly the overconfidence the grounding rules exist to prevent.
+        const searchCount = allSearchResults.length;
+        const searchEffort =
+          searchCount === 0
+            ? "No database search was run for this question."
+            : `${searchCount} database ${searchCount === 1 ? "search has" : "searches have"} already been run${refinements > 0 ? ", across two rounds with different angles," : ""} and the results above are everything they returned.`;
+
         await answerStream([
           ...apiMessages,
-          { role: "user" as const, content: `[SEARCH RESULTS]\n${searchSummary}\n\n[REMINDER] Now answer the user's question above. Keep it SHORT and conversational — like a knowledgeable friend in a chat, not an essay: open with the direct answer, 1–3 short paragraphs, no preamble. Stay grounded: only quote or cite a verse/hadith that appears in the results above (with [[cite:N]]); never invent a reference. If there's real depth you held back (scholarly views, a longer story, the specific narrations), end with ONE brief, natural follow-up offer instead of dumping it all; if it's simple, just answer and stop. Include [[link:Label|/path]] at the end.` },
+          { role: "user" as const, content: `[SEARCH RESULTS]\n${searchSummary}\n\n[SEARCH EFFORT] ${searchEffort} You have NO search tools in this turn, so never offer to search again, never ask permission to look further, and never end with "let me know if you'd like me to check" — the searching is done. If nothing relevant came back, say plainly that you couldn't verify a specific text in our collections and give general guidance instead.\n\n[REMINDER] Now answer the user's question above. Keep it SHORT and conversational — like a knowledgeable friend in a chat, not an essay: open with the direct answer, 1–3 short paragraphs, no preamble. Stay grounded: only quote or cite a verse/hadith that appears in the results above (with [[cite:N]]); never invent a reference. If there's real depth you held back (scholarly views, a longer story, the specific narrations), end with ONE brief, natural follow-up offer instead of dumping it all; if it's simple, just answer and stop. Include [[link:Label|/path]] at the end.` },
         ]);
 
         let text = raw;
 
         // Debug logging (remove in production)
-        // try { fs.writeFileSync(path.join(process.cwd(), "ask-debug.log"), JSON.stringify({ stopReason: response.stop_reason, textLen: text.length, rounds }, null, 2)); } catch {}
+        // try { fs.writeFileSync(path.join(process.cwd(), "ask-debug.log"), JSON.stringify({ stopReason: response.stop_reason, textLen: text.length, refinements }, null, 2)); } catch {}
 
         const links: { label: string; href: string }[] = [];
 
@@ -867,7 +963,17 @@ export async function POST(req: NextRequest) {
           text = text || "I apologize, I encountered an issue generating a response. Please try asking your question again.";
         }
 
-        console.log("[Ask Hiqmah] Content length:", text.length, "links:", links.length, "citations:", filteredCitations.length);
+        // `refinements`/`strongSource` are the tuning signals for STRONG_HIT_SCORE:
+        // refinements firing on nearly every question means the floor is too high
+        // (we're paying a round-trip we don't need), never firing means too low.
+        console.log(
+          "[Ask Hiqmah] Content length:", text.length,
+          "links:", links.length,
+          "citations:", filteredCitations.length,
+          "sources:", seenSources.size,
+          "refinements:", refinements,
+          "strongSource:", foundStrongSource
+        );
         send("answer", { content: text, links, citations: filteredCitations });
 
         // Log usage against quota (after successful answer)
