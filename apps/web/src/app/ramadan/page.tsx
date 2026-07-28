@@ -21,7 +21,7 @@ const whyItMatters = [
     point: "The gates of Paradise are opened",
     detail:
       "The Prophet (peace be upon him) said: 'When Ramadan begins, the gates of Paradise are opened, the gates of Hellfire are closed, and the devils are chained.'",
-    reference: "Bukhari 30:8; Muslim 13:211",
+    reference: "Bukhari 30:8; Bukhari 30:9; Muslim 13:1",
   },
   {
     point: "Fasting is a shield from the Hellfire",
@@ -136,7 +136,7 @@ const fastingTopics: FastingTopic[] = [
           title: "Intention (Niyyah)",
           detail:
             "The intention to fast must be made before Fajr each day. It is made in the heart — no verbal declaration is required. Many scholars hold that a single intention at the start of Ramadan suffices for the entire month, unless the fast is broken and needs to be restarted.",
-          note: "Hadith: 'There is no fast for the one who does not intend to fast from the night before.' — Nasai 22:242; Abu Dawud 14:142",
+          note: "Hadith: 'He who does not determine to fast before dawn does not fast.' — Abu Dawud 14:142; also Nasai 22:242 (graded da'if in the corpus). Some chains of this narration are graded weak, but the ruling that obligatory fasts require an intention formed before dawn is agreed upon.",
         },
         {
           title: "Suhoor (Pre-dawn Meal)",
@@ -153,7 +153,7 @@ const fastingTopics: FastingTopic[] = [
         {
           title: "Du'a at Iftar",
           detail:
-            "The Prophet (peace be upon him) would say upon breaking his fast: 'Dhahaba adh-dhama'u wabtallatil-'urooqu wa thabatal-ajru in sha Allah' — The thirst has gone, the veins have been moistened, and the reward is assured, if Allah wills. Another widely recited du'a is: 'Allahumma inni laka sumtu wa bika aamantu wa 'alaika tawakkaltu wa 'ala rizqika aftartu' — O Allah, I fasted for You, believed in You, placed my trust in You, and broke my fast with Your provision. This version is from Abu Dawud 14:46 but is graded da'if (weak); the first du'a above is the stronger narration.",
+            "The Prophet (peace be upon him) would say upon breaking his fast: 'Dhahaba adh-dhama'u wabtallatil-'urooqu wa thabatal-ajru in sha Allah' — The thirst has gone, the veins have been moistened, and the reward is assured, if Allah wills. Another widely recited du'a is: 'Allahumma laka sumtu wa 'ala rizqika aftartu' — O Allah, for You I have fasted, and with Your provision I have broken my fast. This version is from Abu Dawud 14:46 but is graded da'if (weak); the longer form circulated today ('...wa bika aamantu wa 'alaika tawakkaltu') adds clauses that are not in that narration. The first du'a above is the stronger narration.",
           note: "Abu Dawud 14:45 (graded hasan); Abu Dawud 14:46 (graded da'if — widely recited but weak chain)",
         },
         {
@@ -195,7 +195,7 @@ const fastingTopics: FastingTopic[] = [
           title: "Menstruation or post-natal bleeding",
           detail:
             "The onset of menstruation or post-natal bleeding (nifas) at any point during the day invalidates the fast. The days must be made up after Ramadan. Women are not permitted to fast during these periods.",
-          note: "Bukhari 30:59",
+          note: "Bukhari 30:58",
         },
         {
           title: "Cupping / blood extraction (scholarly difference)",
@@ -345,7 +345,7 @@ const fastingTopics: FastingTopic[] = [
         {
           title: "Kaffarah (Expiation for Intentional Violation)",
           detail:
-            "If a person deliberately breaks the fast during Ramadan without a valid excuse (specifically by eating, drinking, or sexual intercourse), kaffarah is required in addition to making up the day. The kaffarah is, in order: freeing a slave (no longer applicable), fasting 60 consecutive days, or feeding 60 poor people.",
+            "If a person deliberately breaks the fast during Ramadan by sexual intercourse, kaffarah is required in addition to making up the day — this is agreed upon, and is the case the cited hadith addresses directly. For deliberately eating or drinking, the schools differ: the Hanafi and Maliki schools require kaffarah as well, while the Shafi'i and Hanbali schools require only making up the day along with sincere tawbah for a grave sin. The kaffarah is, in order: freeing a slave (no longer applicable), fasting 60 consecutive days, or feeding 60 poor people. Consult a scholar for your situation.",
           note: "Bukhari 30:44; Muslim 13:101",
         },
         {
@@ -1053,7 +1053,7 @@ function RamadanContent() {
             </ContentCard>
 
             <SourcesCard delay={0.4} sources={[
-              { ref: "Bukhari 30:8; Muslim 13:211", desc: "Gates of Paradise opened, Hellfire closed, devils chained" },
+              { ref: "Bukhari 30:8; Bukhari 30:9; Muslim 13:1", desc: "Gates of Paradise opened, Hellfire closed, devils chained" },
               { ref: "Bukhari 30:4; Muslim 13:212", desc: "Fasting as a shield; hadith qudsi on fasting's reward" },
               { ref: "Bukhari 2:31; Muslim 6:209", desc: "Previous sins forgiven for fasting and praying in Ramadan" },
               { ref: "Bukhari 30:6", desc: "The gate Ar-Rayyan, reserved for those who fast" },

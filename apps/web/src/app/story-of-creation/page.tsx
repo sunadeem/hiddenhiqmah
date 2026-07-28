@@ -896,16 +896,16 @@ const lifeOnEarthTopics: Topic[] = [
           title: "124,000 prophets",
           detail:
             "The Prophet (peace be upon him) was asked how many prophets there were, and he said 124,000, among whom 315 were messengers (rusul). The Quran names 25 of them by name. All of them called to the same truth: 'There is no god but Allah.'",
-          note: "Musnad Ahmad 21546 (graded Sahih by some scholars); Quran 40:78",
+          note: "A long narration in Musnad Ahmad — outside the app's local collections; authenticated by some scholars (e.g. Ibn Hibban), its chains critiqued by others; Quran 40:78",
         },
         {
           title: "Muhammad — the seal of the prophets",
           detail:
             "The Prophet Muhammad (peace be upon him) is the final messenger sent to all of humanity, not just one nation. Allah says: 'Muhammad is not the father of any of your men, but he is the Messenger of Allah and the seal of the prophets.' His message completes and confirms all that came before.",
-          note: "Quran 33:40; Muslim 43:7",
+          note: "Quran 33:40; Muslim 43:23",
         },
       ],
-      source: "Quran 2:213; Quran 16:36; Quran 33:40; Quran 35:24; Bukhari 65:440; Muslim 43:7",
+      source: "Quran 2:213; Quran 16:36; Quran 33:40; Quran 35:24; Bukhari 65:440; Muslim 43:23",
     },
   },
   {
@@ -1119,7 +1119,7 @@ const dayOfJudgementTopics: Topic[] = [
           title: "All of creation gathered",
           detail:
             "Every human being who ever lived will be resurrected — barefoot, naked, and uncircumcised. The Prophet (peace be upon him) said the first to be clothed will be Ibrahim (peace be upon him). The sun will be brought close, and people will drown in their own sweat according to their deeds.",
-          note: "Bukhari 60:103; Muslim 53:75",
+          note: "Bukhari 60:117; Muslim 53:75",
         },
         {
           title: "A day of fifty thousand years",
@@ -1131,10 +1131,10 @@ const dayOfJudgementTopics: Topic[] = [
           title: "The intercession (Shafa'ah)",
           detail:
             "When people cannot bear the wait, they will go from prophet to prophet begging for intercession — from Adam to Nuh to Ibrahim to Musa to Isa — and each will say 'Not me.' Finally they will come to Muhammad (peace be upon him), who will prostrate before Allah and be given permission to intercede. This is the Maqam al-Mahmud — the praised station.",
-          note: "Bukhari 65:349; Muslim 1:378",
+          note: "Bukhari 97:135; Muslim 1:378",
         },
       ],
-      source: "Quran 70:4; Quran 83:6; Bukhari 60:103; Bukhari 65:349; Muslim 1:378; Muslim 53:75",
+      source: "Quran 70:4; Quran 83:6; Bukhari 60:117; Bukhari 97:135; Muslim 1:378; Muslim 53:75",
     },
   },
   {
@@ -1160,7 +1160,7 @@ const dayOfJudgementTopics: Topic[] = [
           title: "The weight of La ilaha illallah",
           detail:
             "The Prophet (peace be upon him) told of a man whose record contains 99 scrolls of sins, each stretching as far as the eye can see. Then a small card is brought with 'La ilaha illallah' on it. It is placed on the scale and it outweighs all 99 scrolls. Nothing is heavier than the name of Allah.",
-          note: "Tirmidhi 40:22; Ibn Majah 37:200",
+          note: "Tirmidhi 40:34; Ibn Majah 37:201",
         },
         {
           title: "The Sirat (bridge over Hellfire)",
@@ -1169,7 +1169,7 @@ const dayOfJudgementTopics: Topic[] = [
           note: "Muslim 1:360; Bukhari 81:151",
         },
       ],
-      source: "Quran 17:14; Quran 21:47; Quran 69:19-29; Muslim 1:360; Tirmidhi 40:22",
+      source: "Quran 17:14; Quran 21:47; Quran 69:19-29; Muslim 1:360; Tirmidhi 40:34",
     },
   },
 ];
@@ -1212,10 +1212,10 @@ const jannahJahannamTopics: Topic[] = [
           title: "The greatest reward: seeing Allah",
           detail:
             "The greatest of all rewards in Jannah is seeing the Face of Allah. The Prophet (peace be upon him) said: 'When the people of Paradise enter Paradise, Allah will say: Do you want anything more? They will say: Have You not brightened our faces? Then the veil will be lifted, and nothing they were given will be more beloved than looking at their Lord.'",
-          note: "Muslim 1:88; Quran 75:22-23",
+          note: "Muslim 1:354; Quran 75:22-23",
         },
       ],
-      source: "Quran 3:185; Quran 47:15; Quran 75:22-23; Bukhari 56:20; Bukhari 59:55; Muslim 1:88; Muslim 53:3",
+      source: "Quran 3:185; Quran 47:15; Quran 75:22-23; Bukhari 56:20; Bukhari 59:55; Muslim 1:354; Muslim 53:3",
     },
   },
   {
@@ -1247,7 +1247,7 @@ const jannahJahannamTopics: Topic[] = [
           title: "It will be filled",
           detail:
             "Allah will say to Hellfire: 'Are you filled?' And it will say: 'Are there any more?' Until Allah places His foot upon it and it will say: 'Enough, enough!' — and its parts will draw together. Allah has sworn: 'I will surely fill Hellfire with jinn and people, all together.'",
-          note: "Bukhari 65:355; Quran 11:119; Quran 32:13",
+          note: "Bukhari 65:370; Quran 11:119; Quran 32:13",
         },
         {
           title: "Mercy for the sinful believers",
@@ -1256,7 +1256,7 @@ const jannahJahannamTopics: Topic[] = [
           note: "Bukhari 2:30; Muslim 1:377",
         },
       ],
-      source: "Quran 4:145; Quran 11:119; Quran 66:6; Bukhari 2:30; Bukhari 65:355; Muslim 1:377; Muslim 53:68",
+      source: "Quran 4:145; Quran 11:119; Quran 66:6; Bukhari 2:30; Bukhari 65:370; Muslim 1:377; Muslim 53:68",
     },
   },
   {
@@ -1276,13 +1276,13 @@ const jannahJahannamTopics: Topic[] = [
           title: "Death will be slaughtered",
           detail:
             "The Prophet (peace be upon him) said: 'Death will be brought on the Day of Resurrection in the form of a black and white ram. A caller will say: O people of Paradise! — and they will crane their necks and look. He will say: Do you know what this is? They will say: Yes, this is death. Then a caller will say: O people of Hellfire! They will crane their necks and look. Then the ram will be slaughtered and the caller will say: O people of Paradise — eternity, no more death. O people of the Fire — eternity, no more death.'",
-          note: "Bukhari 65:373; Muslim 53:50",
+          note: "Bukhari 65:252; Muslim 53:50",
         },
         {
           title: "The people of Jannah will rejoice",
           detail:
-            "The Prophet (peace be upon him) said: 'The people of Paradise will increase in joy, and the people of the Fire will increase in grief.' Knowing that death is gone forever means the bliss of Paradise will never end — and neither will the punishment of the Fire for those who earned it.",
-          note: "Bukhari 65:373; Muslim 53:50",
+            "The Prophet (peace be upon him) said that the slaughtering of death 'would increase the delight of the inmates of Paradise and it would increase the grief of the inmates of Hell-Fire.' Knowing that death is gone forever means the bliss of Paradise will never end — and neither will the punishment of the Fire for those who earned it.",
+          note: "Muslim 53:53",
         },
         {
           title: "The ultimate conclusion",
@@ -1291,7 +1291,7 @@ const jannahJahannamTopics: Topic[] = [
           note: "Quran 36:81",
         },
       ],
-      source: "Quran 36:81; Quran 43:77; Bukhari 65:373; Muslim 53:50",
+      source: "Quran 36:81; Quran 43:77; Bukhari 65:252; Muslim 53:50; Muslim 53:53",
     },
   },
 ];

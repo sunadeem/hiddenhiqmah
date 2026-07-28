@@ -51,7 +51,7 @@ const whyItMatters = [
     point: "The greatest reward: seeing the Face of Allah",
     detail:
       "The people of Jannah will be granted the greatest of all blessings — looking upon the Face of their Lord. The Prophet (peace be upon him) said: 'When the people of Paradise enter Paradise, Allah will say: Do you want anything more? They will say: Have You not brightened our faces? Have You not admitted us to Paradise and saved us from the Fire? Then the veil will be lifted, and nothing they were given will be more beloved to them than looking at their Lord.'",
-    reference: "Muslim 1:88; Quran 75:22-23",
+    reference: "Muslim 1:354; Quran 75:22-23",
   },
   {
     point: "Paradise is surrounded by hardships",
@@ -399,13 +399,13 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "The lifting of the veil",
           detail:
             "The Prophet (peace be upon him) said: 'When the people of Paradise enter Paradise, Allah will say: Do you want anything more? They will say: Have You not brightened our faces? Have You not admitted us to Paradise and saved us from the Fire? Then the veil will be lifted, and nothing they were given will be more beloved to them than looking at their Lord, the Exalted and Majestic.' Then the Prophet recited: 'For those who have done good is the best reward and even more.' (Quran 10:26)",
-          note: "Muslim 1:88",
+          note: "Muslim 1:354",
         },
         {
           title: "The 'extra' (al-Ziyadah)",
           detail:
             "In the verse 'For those who have done good is the best reward and even more (ziyadah)' (Quran 10:26), the Prophet (peace be upon him) explained that 'the best reward' is Paradise, and 'even more' (al-ziyadah) is looking at the Face of Allah. This is the greatest pleasure of Jannah — greater than all its physical blessings combined.",
-          note: "Muslim 1:88; Tirmidhi 38:30",
+          note: "Muslim 1:354; Tirmidhi 38:30",
         },
         {
           title: "The people of the highest level",
@@ -417,11 +417,11 @@ const descriptionTopics: DescriptionTopic[] = [
           title: "Allah's pleasure — the greatest of all",
           detail:
             "Allah will say to the people of Paradise: 'O people of Paradise!' They will say: 'Here we are, our Lord!' He will say: 'Are you pleased?' They will say: 'How could we not be pleased when You have given us what You have not given anyone else?' He will say: 'I will give you something even better.' They will ask: 'What could be better?' He will say: 'I bestow upon you My pleasure (ridwan), and I shall never be angry with you after this.'",
-          note: "Bukhari 23:138; Muslim 53:10",
+          note: "Bukhari 81:138; Muslim 53:10",
         },
       ],
       source:
-        "Quran 10:26; Quran 75:22-23; Bukhari 23:138; Bukhari 97:61; Muslim 1:88; Muslim 15:39; Tirmidhi 38:30; Tirmidhi 38:31",
+        "Quran 10:26; Quran 75:22-23; Bukhari 81:138; Bukhari 97:61; Muslim 1:354; Muslim 53:10; Tirmidhi 38:30; Tirmidhi 38:31",
     },
   },
 ];
@@ -460,7 +460,7 @@ const howToTopics: HowToTopic[] = [
           title: "Sincerity (Ikhlas)",
           detail:
             "All deeds must be done sincerely for the sake of Allah alone. The Prophet (peace be upon him) said: 'Actions are judged by intentions, and every person will be rewarded according to what they intended.' A deed done for showing off or worldly gain has no reward with Allah.",
-          note: "Bukhari 1:1; Muslim 6:335",
+          note: "Bukhari 1:1; Muslim 33:222",
         },
         {
           title: "The mercy of Allah",
@@ -470,7 +470,7 @@ const howToTopics: HowToTopic[] = [
         },
       ],
       source:
-        "Quran 2:82; Quran 4:48; Quran 4:124; Bukhari 1:1; Bukhari 81:52; Muslim 1:178; Muslim 0:6:335",
+        "Quran 2:82; Quran 4:48; Quran 4:124; Bukhari 1:1; Bukhari 81:52; Muslim 1:178; Muslim 33:222",
     },
   },
   {
@@ -579,8 +579,8 @@ const howToTopics: HowToTopic[] = [
         {
           title: "The Quranic names of Paradise",
           detail:
-            "The Quran refers to Paradise by several names, each highlighting a different quality. Jannat al-Firdaws (الفردوس) — the highest garden, beneath the Throne of Allah. Jannat al-Adn (جنات عدن) — the Gardens of Perpetual Residence, mentioned 11 times in the Quran, described with flowing rivers, gold adornments, and reunion with righteous family. Jannat an-Na'im (جنات النعيم) — the Gardens of Delight, a life of complete happiness and peace. Jannat al-Ma'wa (جنة المأوى) — the Garden of Refuge, an eternal shelter for the pious. Dar as-Salam (دار السلام) — the Abode of Peace, where all trials end and Allah's peace is guaranteed. Dar al-Khuld (دار الخلد) — the Abode of Immortality, where its people live forever. Illiyyun (عليّون) — the Highest Place, where the record of the righteous is kept and the angels bear witness to it. Whether these are names for distinct levels or different descriptions of the same Paradise is discussed among scholars — what is certain is that each name is from the Quran itself.",
-          note: "Quran 18:107; Quran 23:11 (Firdaws); 9:72, 13:23, 18:31, 61:12, 98:8 (Adn); 10:9, 56:12, 68:34 (Na'im); 32:19, 53:15 (Ma'wa); 6:127, 10:25 (Dar as-Salam); 41:28 (Dar al-Khuld); 83:18-21 (Illiyyun)",
+            "The Quran refers to Paradise by several names, each highlighting a different quality. Jannat al-Firdaws (الفردوس) — the highest garden, beneath the Throne of Allah. Jannat al-Adn (جنات عدن) — the Gardens of Perpetual Residence, mentioned 11 times in the Quran, described with flowing rivers, gold adornments, and reunion with righteous family. Jannat an-Na'im (جنات النعيم) — the Gardens of Delight, a life of complete happiness and peace. Jannat al-Ma'wa (جنة المأوى) — the Garden of Refuge, an eternal shelter for the pious. Dar as-Salam (دار السلام) — the Abode of Peace, where all trials end and Allah's peace is guaranteed. Jannat al-Khuld (جنة الخلد) — the Eternal Paradise, promised to the righteous, where its people live forever. Illiyyun (عليّون) — the Highest Place, where the record of the righteous is kept and the angels bear witness to it. Whether these are names for distinct levels or different descriptions of the same Paradise is discussed among scholars — what is certain is that each name is from the Quran itself.",
+          note: "Quran 18:107; Quran 23:11 (Firdaws); 9:72, 13:23, 18:31, 61:12, 98:8 (Adn); 10:9, 56:12, 68:34 (Na'im); 32:19, 53:15 (Ma'wa); 6:127, 10:25 (Dar as-Salam); 25:15 (Jannat al-Khuld); 83:18-21 (Illiyyun)",
         },
         {
           title: "Jannatul Firdaus — the highest level",
@@ -608,7 +608,7 @@ const howToTopics: HowToTopic[] = [
         },
       ],
       source:
-        "Quran 6:127; Quran 9:72; Quran 10:9; Quran 10:25; Quran 13:23; Quran 18:31; Quran 18:107; Quran 23:11; Quran 32:19; Quran 41:28; Quran 53:15; Quran 56:12; Quran 61:12; Quran 68:34; Quran 83:18-21; Quran 83:26; Quran 98:8; Bukhari 59:66; Bukhari 97:51; Muslim 53:11; Abu Dawud 8:49; Tirmidhi 45:40",
+        "Quran 6:127; Quran 9:72; Quran 10:9; Quran 10:25; Quran 13:23; Quran 18:31; Quran 18:107; Quran 23:11; Quran 25:15; Quran 32:19; Quran 53:15; Quran 56:12; Quran 61:12; Quran 68:34; Quran 83:18-21; Quran 83:26; Quran 98:8; Bukhari 59:66; Bukhari 97:51; Muslim 53:11; Abu Dawud 8:49; Tirmidhi 45:40",
     },
   },
   {
@@ -1422,7 +1422,7 @@ function JannahContent() {
               { ref: "Bukhari 59:55; Muslim 53:3", desc: "What no eye has seen" },
               { ref: "Bukhari 75:33; Muslim 52:66", desc: "None enters Paradise by deeds alone" },
               { ref: "Bukhari 81:77", desc: "Paradise is closer than your sandal strap" },
-              { ref: "Muslim 1:88", desc: "The lifting of the veil; seeing the Face of Allah" },
+              { ref: "Muslim 1:354", desc: "The lifting of the veil; seeing the Face of Allah" },
               { ref: "Muslim 53:50", desc: "Death slaughtered between Paradise and the Fire" },
             ]} />
           </motion.div>

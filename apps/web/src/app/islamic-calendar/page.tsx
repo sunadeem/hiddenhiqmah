@@ -103,7 +103,7 @@ const months: Month[] = [
       {
         title: "Birth of the Prophet (peace be upon him)",
         detail:
-          "The majority of scholars agree that the Prophet (peace be upon him) was born on a Monday in Rabi al-Awwal. When asked about fasting on Monday, he said: 'That is the day on which I was born, the day on which I was sent, and the day on which revelation came to me.'",
+          "The majority of scholars agree that the Prophet (peace be upon him) was born on a Monday in Rabi al-Awwal. When asked about fasting on Monday, he said: 'It is the day on which I was born, and revelation was sent down to me.'",
         note: "Muslim 13:256",
       },
       {
@@ -155,7 +155,7 @@ const months: Month[] = [
       {
         title: "Birth of Fatimah (may Allah be pleased with her)",
         detail:
-          "Some historians place the birth of Fatimah, the daughter of the Prophet (peace be upon him), in this month, approximately five years before prophethood. She is the mother of al-Hasan and al-Husayn, and the Prophet said: 'Fatimah is the leader of the women of Paradise.'",
+          "Some historians place the birth of Fatimah, the daughter of the Prophet (peace be upon him), in this month, approximately five years before prophethood. She is the mother of al-Hasan and al-Husayn, and the Prophet (peace be upon him) gave her the glad tidings that she would be the chief of the women of Paradise — asking her, 'Don't you like to be the chief of all the ladies of Paradise, or the chief of the believing women?'",
         note: "Bukhari 61:129",
       },
       {
@@ -196,7 +196,7 @@ const months: Month[] = [
         title: "One of the four sacred months",
         detail:
           "Rajab is singled out as a sacred month. It is called 'Rajab al-Fard' (the solitary Rajab) because it stands alone, separated from the other three sacred months (Dhul Qi'dah, Dhul Hijjah, and Muharram) which are consecutive.",
-        note: "Bukhari 65:184; Muslim 13:261",
+        note: "Bukhari 65:184",
       },
       {
         title: "Al-Isra wal-Mi'raj",
@@ -266,7 +266,7 @@ const months: Month[] = [
         title: "The month the Quran was revealed",
         detail:
           "Allah says: 'The month of Ramadan in which the Quran was revealed — a guidance for the people and clear proofs of guidance and criterion.' The Prophet (peace be upon him) and Jibreel would review the Quran together every Ramadan.",
-        note: "Quran 2:185; Bukhari 91:10",
+        note: "Quran 2:185; Bukhari 61:63",
       },
       {
         title: "Laylatul Qadr — better than a thousand months",
@@ -778,7 +778,7 @@ function IslamicCalendarContent() {
             <SourcesCard sources={[
               { ref: "Quran 9:36", desc: "Twelve months ordained by Allah, four sacred" },
               { ref: "Quran 2:185; Quran 2:189", desc: "Ramadan and the crescent moons" },
-              { ref: "Bukhari 65:184; Muslim 13:261", desc: "The four sacred months named by the Prophet" },
+              { ref: "Bukhari 65:184", desc: "The four sacred months named by the Prophet" },
               { ref: "Bukhari 63:131", desc: "The Hijrah and the establishment of the calendar" },
             ]} />
           </motion.div>
@@ -1008,7 +1008,7 @@ function IslamicCalendarContent() {
                   {
                     title: "Good deeds are more rewarding",
                     detail:
-                      "Just as sins are graver, righteous deeds carry greater reward during these months. The Prophet (peace be upon him) encouraged fasting in the sacred months: 'Fast some days of the sacred months, and leave some days.'",
+                      "Just as sins are graver, righteous deeds carry greater reward during these months. The Prophet (peace be upon him) encouraged fasting in the sacred months, telling one companion: 'Fast during the inviolable months and then stop' — repeating it three times.",
                     note: "Abu Dawud 14:116",
                   },
                   {
@@ -1045,7 +1045,7 @@ function IslamicCalendarContent() {
             <SourcesCard delay={0.5} sources={[
               { ref: "Quran 2:217", desc: "Fighting in the sacred month is a great sin" },
               { ref: "Quran 9:36; Quran 9:37", desc: "Four sacred months ordained by Allah; the condemnation of nasi'" },
-              { ref: "Bukhari 65:184; Muslim 13:261", desc: "The Prophet named the four sacred months" },
+              { ref: "Bukhari 65:184", desc: "The Prophet named the four sacred months" },
               { ref: "Abu Dawud 14:116", desc: "Fasting in the sacred months" },
               { ref: "Tafsir Ibn Kathir", desc: "Sins are graver during sacred months" },
             ]} />

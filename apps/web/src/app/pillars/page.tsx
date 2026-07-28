@@ -193,7 +193,7 @@ const pillars: Pillar[] = [
     ],
     points: [
       "It is the second pillar and the most important act of worship after the shahada",
-      "Prescribed during al-Isra wal-Mi'raj — originally 50, reduced to 5 but rewarded as 50 (Bukhari 59:18, Muslim 1:314)",
+      "Prescribed during al-Isra wal-Mi'raj — originally 50, reduced to 5 but rewarded as 50 (Bukhari 59:18, Muslim 1:316)",
       "Five obligatory prayers: Fajr, Dhuhr, Asr, Maghrib, Isha",
       "Requires ritual purity (wudu), facing the qiblah, covering the awrah, and praying at the appointed time",
       "Sujud (prostration) is the closest a servant is to Allah (Muslim 4:245)",
@@ -264,7 +264,7 @@ const pillars: Pillar[] = [
       "The nisab is approximately 85 grams of gold or 595 grams of silver in value",
       "The standard rate is 2.5% on cash, gold, silver, and trade goods",
       "Eight eligible categories of recipients are specified in Quran 9:60",
-      "Zakat cannot be given to one's own parents, children, or spouse — the majority of scholars hold this by consensus, as their maintenance is already an obligation",
+      "Zakat may not be given to one's own parents, children, or spouse according to the majority of scholars, since their maintenance is already one's obligation",
       "Abu Bakr (may Allah be pleased with him) fought those who refused to pay zakat after the Prophet's death, declaring it inseparable from salah (Bukhari 24:5)",
       "Zakat al-Fitr is a separate obligation at the end of Ramadan — one sa' (approximately 3 kg) of food per person (Bukhari 24:103)",
       "Zakat is mentioned alongside salah numerous times in the Quran, showing their inseparable connection",
@@ -319,7 +319,7 @@ const pillars: Pillar[] = [
     ],
     hadith: [
       {
-        ref: "Bukhari 30:14",
+        ref: "Bukhari 30:11",
         text: "Whoever fasts the month of Ramadan out of faith and seeking reward, his previous sins will be forgiven.",
       },
       {
@@ -327,7 +327,7 @@ const pillars: Pillar[] = [
         text: "Whoever does not give up false speech and acting upon it and ignorance, Allah has no need of his giving up his food and drink.",
       },
       {
-        ref: "Bukhari 30:4",
+        ref: "Bukhari 30:14",
         text: "Allah said: 'Every deed of the son of Adam is for him except fasting — it is for Me, and I shall reward it.' Fasting is a shield. When one of you is fasting, let him not speak obscenely or act ignorantly. If someone fights him or insults him, let him say: 'I am fasting, I am fasting.'",
       },
     ],
@@ -374,7 +374,7 @@ const pillars: Pillar[] = [
     description:
       "The annual pilgrimage to Makkah — obligatory once in a lifetime for every Muslim who is physically and financially able. Hajj commemorates the legacy of Ibrahim, Hajar, and Ismail, and symbolizes the unity and equality of all believers before Allah.",
     detailedExplanation:
-      "Hajj takes place during the 8th-12th of Dhul Hijjah, the last month of the Islamic calendar. The rites begin with entering the state of ihram — a state of consecration marked by wearing simple white garments (for men) and making the intention. The pilgrim performs Tawaf (circling the Ka'bah seven times), Sa'i (walking between Safa and Marwah seven times, commemorating Hajar's search for water), standing at Arafah on the 9th of Dhul Hijjah (the greatest pillar of Hajj), staying overnight at Muzdalifah, stoning the Jamarat (pillars representing where Ibrahim resisted Shaytan), sacrificing an animal (commemorating Ibrahim's willingness to sacrifice Ismail), and shaving or trimming the hair. The Prophet (peace be upon him) performed Hajj only once — the Farewell Pilgrimage in the 10th year after Hijrah — during which he delivered his famous Farewell Sermon and said: 'Take from me your rites of Hajj' (Muslim 15:159).",
+      "Hajj takes place during the 8th-12th of Dhul Hijjah, the last month of the Islamic calendar. The rites begin with entering the state of ihram — a state of consecration marked by wearing simple white garments (for men) and making the intention. The pilgrim performs Tawaf (circling the Ka'bah seven times), Sa'i (walking between Safa and Marwah seven times, commemorating Hajar's search for water), standing at Arafah on the 9th of Dhul Hijjah (the greatest pillar of Hajj), staying overnight at Muzdalifah, stoning the Jamarat (pillars representing where Ibrahim resisted Shaytan), sacrificing an animal (commemorating Ibrahim's willingness to sacrifice Ismail), and shaving or trimming the hair. The Prophet (peace be upon him) performed Hajj only once — the Farewell Pilgrimage in the 10th year after Hijrah — during which he delivered his famous Farewell Sermon and said: 'Take your rites of Hajj from me, for I do not know whether I will perform Hajj after this Hajj of mine' (Muslim 15:341).",
     keyVerses: [
       {
         ref: "Quran 3:97",
@@ -405,8 +405,8 @@ const pillars: Pillar[] = [
         text: "An accepted Hajj (Hajj Mabrur) has no reward except Paradise.",
       },
       {
-        ref: "Muslim 15:159",
-        text: "Take from me your rites of Hajj, for I do not know — perhaps I will not perform Hajj after this year of mine.",
+        ref: "Muslim 15:341",
+        text: "Take your rites of Hajj from me, for I do not know whether I will perform Hajj after this Hajj of mine.",
       },
     ],
     points: [
@@ -435,7 +435,7 @@ const pillars: Pillar[] = [
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on Hajj",
       "Al-Mughni, Ibn Qudamah — Section on the rites and rulings of Hajj",
       "Sifat Hajjat an-Nabi, Ibn al-Qayyim (from Zad al-Ma'ad) — Description of the Prophet's Hajj",
-      "Bukhari 25:9; Bukhari 26:1; Muslim 15:159; Muslim 15:495 — Hadith on Hajj",
+      "Bukhari 25:9; Bukhari 26:1; Muslim 15:341; Muslim 15:495 — Hadith on Hajj",
       "Tafsir Ibn Kathir — Commentary on Quran 2:127; Quran 2:197; Quran 3:97; Quran 22:27",
     ],
   },
@@ -700,15 +700,15 @@ function PillarsContent() {
                 </p>
                 <div className="rounded-lg p-4" style={{ backgroundColor: "var(--color-bg)" }}>
                   <p className="text-lg font-arabic text-gold leading-loose mb-2 text-right">
-                    قَالَ فَأَخْبِرْنِي عَنِ الإِسْلامِ
+                    وَقَالَ يَا مُحَمَّدُ أَخْبِرْنِي عَنِ الإِسْلاَمِ
                   </p>
                   <p className="text-themed text-sm italic text-center">
-                    &ldquo;He (Jibril) said: Then tell me about Islam.&rdquo;
+                    &ldquo;He (Jibril) said: O Muhammad, inform me about Islam.&rdquo;
                   </p>
                   <p className="text-xs text-themed-muted mt-2 text-center">Muslim 1:1</p>
                 </div>
                 <p>
-                  The pillars are the minimum requirements for a person&apos;s Islam to be valid. Beyond them, there are countless voluntary acts (nawafil) that bring the servant closer to Allah. But the obligatory acts always take priority — the Prophet (peace be upon him) said that Allah said: &ldquo;My servant does not draw near to Me with anything more beloved to Me than the religious duties I have obligated upon him.&rdquo; (Bukhari 2:37)
+                  The pillars are the minimum requirements for a person&apos;s Islam to be valid. Beyond them, there are countless voluntary acts (nawafil) that bring the servant closer to Allah. But the obligatory acts always take priority — the Prophet (peace be upon him) said that Allah said: &ldquo;My servant does not draw near to Me with anything more beloved to Me than the religious duties I have obligated upon him.&rdquo; (Bukhari 81:91)
                 </p>
               </div>
             </ContentCard>

@@ -438,3 +438,36 @@ _Batch 5 (qiblah, tawhid, articles-of-faith, pillars, prophet-stories), Opus-bui
 19. Yusuf / 'Forgiveness and Reunion': 'Commentators note that when the Prophet ﷺ entered Makkah victorious… he pardoned them in the very spirit of Yusuf's words' — an interpretive homiletic link attributed generically to commentators; no invented citation.
 20. Dawud / 'The Two Disputants': 'The Bathsheba tale found in earlier scriptures is a later fabrication that Islam rejects; the Quran's test concerns only hastiness in judgment' — mainstream Islamic position stated with generic attribution (no source cited), correctly framing the rejected Israʼiliyyat.
 21. Adam / 'Habil and Qabil' and the Nimrod/Azar narratives use the traditional proper names Habil, Qabil, Nimrod (not named in the Quranic text) — conventional traditional naming, parenthetically qualified.
+
+## Fable re-review follow-ups (2026-07-28)
+
+External citations added or retained during the batch 2-5 re-review that CANNOT be verified against the app's local corpus (the shipped Musnad Ahmad covers ids 1-1438 only). Each is honestly labeled in-app; founder should confirm number/grading against a printed edition (e.g. al-Arna'ut's Musnad) or cut the passage.
+
+### /articles-of-faith
+1. (line ~313) Ahmad 21546 (315 messengers, from Abu Dharr) not resolvable locally; disclosure added but the existing 'graded hasan by some scholars' remains a generic attribution needing a named grader.
+
+### /day-of-judgement
+2. (line ~355) FOLLOW-UP ONLY (reviewer fix already applied): the '50,000-year Day is made lighter for the believer' detail is now attributed generically as 'A narration in Musnad Ahmad states... though scholars differ over its grading.' The specific Musnad number and a grading verdict are not resolvable against the local 7-book corpus (shipped Ahmad ids 1–1438 only) — founder may want to source and grade it externally, or drop the sentence.
+
+### /miracles
+3. (line ~221) Markets Coming Close Together: 'Ahmad 10724' wording is unverifiable against the local 7-book corpus (shipped Ahmad ids 1-1438 only). Disclosure + moderate grading applied, but founder should source and grade the narration externally or remove the card.
+4. (line ~139) Constantinople 'how excellent the commander' wording (Musnad Ahmad 18859) is outside the local corpus and contested (al-Albani da'if / al-Hakim sahih). Now disclosed on the card; founder may want an external verified reference or to drop the quote.
+
+### /pillars
+5. (line ~267) Zakat may not be given to parents/children/spouse — now framed as 'majority of scholars'. Founder to confirm scope: some schools permit a wife giving zakat to her poor husband. No local citation carried.
+6. (line ~264) Nisab figures (approx. 85g gold / 595g silver) carry no citation — founder to source to a named fiqh reference.
+7. (line ~93) Seven conditions of the shahada (ilm, yaqeen, qabool, inqiyad, sidq, ikhlas, mahabbah) attributed generically to 'scholars'; also restated at line 127. Founder to attach a named source.
+
+### /prophet-muhammad
+8. (line ~195) External citation added per reviewer: 'Musnad Ahmad 17163 (sahih — Ibn Hibban, al-Hakim)' for 'I am the answer to the prayer of my father Ibrahim...'. Local Ahmad corpus only covers hadith 1-1438, so this number and grading could not be verified in-repo — founder should confirm against the al-Arna'ut edition (or delete the sentence).
+9. (line ~230) External citation added per reviewer: 'Musnad Ahmad 24864 (hasan — al-Arna'ut)' for the Khadijah line 'She believed in me when no one else did...'. Not verifiable locally (Ahmad corpus stops at 1438) — founder to confirm number/grading externally.
+10. (line ~430) External citation added per reviewer for the Arab/non-Arab, white/black equality passage: 'Musnad Ahmad 23489 (sahih — al-Albani, al-Arna'ut)'. Not in the local 7-collection corpus — founder to confirm number/grading externally.
+11. (line ~438) Deathbed address ('trials coming like segments of a dark night... lawful only what the Quran made lawful') now attributed to 'Ibn Sa'd, at-Tabaqat' as a sirah report. Reviewer notes its chain is weak; founder may prefer to cut the passage entirely rather than carry a da'if sirah report.
+12. (line ~1247) Removed the 'You will certainly conquer Constantinople — how excellent the commander and how excellent his army' narration (Musnad Ahmad 18859: authenticated by al-Hakim/adh-Dhahabi, da'if per al-Albani). If the founder wants it restored, it needs an explicit contested-grading label.
+
+### /prophet-stories
+13. (line ~1916) Ahmad 23489 (Farewell Sermon equality passage) is outside the local Ahmad corpus (ids 1-1438). Non-local disclosure added, but NO grading asserted — I would not invent one. Founder to supply grading from an external source, mirroring Ahmad 8952's 'graded Sahih by Al-Albani'.
+14. (line ~1260) Identification of the sun-held-back prophet as Yusha ibn Nun now attributed to 'scholars ... based on other narrations' — founder may want a named tafsir/sirah source.
+
+### /sects
+15. (line ~857) Musnad Ahmad 23489 (Farewell Sermon, no-Arab-superiority) is outside the app's local collections; now labelled as such. Founder should confirm the preferred external citation/grading wording.

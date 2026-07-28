@@ -738,6 +738,7 @@ const pillarsData: PillarData[] = [
     name: "Salah",
     nameAr: "الصلاة",
     icon: "🕌",
+    source: "Tirmidhi 2:266; Abu Dawud 2:474; Nasai 37:26",
     descriptions: {
       little: "We pray to Allah five times every day to talk to Him and thank Him!",
       explorer: "Salah (prayer) is performed five times daily: Fajr (dawn), Dhuhr (noon), Asr (afternoon), Maghrib (sunset), and Isha (night). It connects us directly to Allah.",
@@ -779,6 +780,7 @@ const pillarsData: PillarData[] = [
     name: "Sawm",
     nameAr: "الصيام",
     icon: "🌙",
+    source: "Bukhari 2:31",
     descriptions: {
       little: "During Ramadan, Muslims don't eat or drink from sunrise to sunset to get closer to Allah!",
       explorer: "Sawm (fasting) during Ramadan means no food or drink from dawn (Fajr) to sunset (Maghrib). It teaches patience, gratitude, and empathy for those who are hungry.",

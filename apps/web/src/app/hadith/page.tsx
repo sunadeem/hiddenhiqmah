@@ -188,7 +188,7 @@ const featuredHadiths = [
     collection: "bukhari",
     collectionName: "Bukhari",
     bookId: 62,
-    hadithId: 3759,
+    hadithId: 3760,
     theme: "Character",
     illustration: BestCharacterIllustration,
   },
