@@ -5,15 +5,23 @@
 // posting lists once so a query touches one index file plus the handful of
 // book files that actually won.
 //
-// Run from anywhere:  node scripts/build-hadith-index.mjs
-// Also runs automatically: `pnpm build:search-index`, and as the first step of
-// apps/web's `build` / `build:mobile` scripts, so a deploy can never ship an
-// index built by a different tokeniser than the one that will query it.
+// Run from anywhere:  node scripts/build-hadith-index.mjs  (or `pnpm build:search-index`)
+//
+// RUN THIS BY HAND WHENEVER YOU TOUCH tokenize.mjs, and commit the result — the
+// index is a committed artifact, like packages/content/quran/search-index.json.
+//
+// ⚠️ Do NOT wire this into apps/web's `build` script. It was, and it broke the
+// Vercel deploy: Vercel builds the monorepo through Turborepo, whose build
+// context contains only workspace packages, so this repo-root scripts/ file
+// does not exist there (MODULE_NOT_FOUND on /vercel/path0/scripts/...). The
+// artifact is already committed, so there is nothing to regenerate at deploy
+// time anyway.
 //
 // The tokeniser is imported from the SEARCH RUNTIME, not reimplemented here —
 // BM25 only matches when index-time and query-time tokenisation are identical.
 // It also supplies INDEX_VERSION, which is stamped into the output and checked
-// at read time.
+// at read time: if you forget to rebuild, hadith.ts refuses the stale index and
+// logs loudly rather than silently returning wrong results.
 
 import fs from "fs";
 import path from "path";
