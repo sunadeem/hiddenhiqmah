@@ -1268,11 +1268,11 @@ function LearnArabicContent() {
               },
               {
                 title: "7. Be Consistent — Even 10 Minutes Daily",
-                detail: "The Prophet ﷺ said: 'The most beloved deeds to Allah are those done consistently, even if they are small' (Sahih al-Bukhari 6464). Consistency is more important than marathon study sessions. Even 10 minutes of daily Arabic study — reviewing letters, learning a few new words, reading a few verses — will compound over weeks and months into real proficiency.",
+                detail: "The Prophet ﷺ said: 'the most beloved deed to Allah is the most regular and constant even if it were little' (Bukhari 81:53). Consistency is more important than marathon study sessions. Even 10 minutes of daily Arabic study — reviewing letters, learning a few new words, reading a few verses — will compound over weeks and months into real proficiency.",
               },
               {
                 title: "8. Make Du'a for Understanding",
-                detail: "Ask Allah to make it easy for you. The Prophet Musa (Moses) made du'a: 'My Lord, expand for me my breast, ease for me my task, and untie the knot from my tongue, that they may understand my speech' (Quran 20:25-28). Sincerity and du'a are your greatest tools.",
+                detail: "Ask Allah to make it easy for you. The Prophet Musa (Moses) made du'a: 'My Lord, reassure my heart for me, and ease my task for me, and loosen the knot from my tongue, so that they may understand my speech' (Quran 20:25-28). Sincerity and du'a are your greatest tools.",
               },
             ].map((tip, i) => (
               <ContentCard key={tip.title} delay={0.05 + i * 0.05}>

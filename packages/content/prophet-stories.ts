@@ -46,7 +46,7 @@ export const prophetStories: Record<string, ProphetStory> = {
           {
             text:
               "The Prophet ﷺ said: ‘Allah created Adam sixty cubits tall. Whoever enters Paradise will be in the form of Adam — and human stature has kept diminishing since then.’",
-            source: "Bukhari 79:1; 60:2",
+            source: "Bukhari 79:1",
           },
           {
             text:
@@ -1223,7 +1223,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Taha (20:29-36, 90-94), Al-A'raf (7:142, 150-151), Al-Qasas (28:33-35)",
-      "Bukhari 65:261, Muslim 29:37",
+      "Bukhari 62:56, Muslim 44:47",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -1247,7 +1247,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ identified the young companion (fata) of Musa as Yusha ibn Nun.",
-            source: "Bukhari 57:33",
+            source: "Bukhari 60:74",
           },
         ],
       },
@@ -1257,7 +1257,7 @@ export const prophetStories: Record<string, ProphetStory> = {
           "After Musa's death, Yusha ibn Nun took on the responsibility of leading the Israelites into the Holy Land. He was among the few who had remained faithful when the majority of Israelites had refused to enter the land, fearing its powerful inhabitants. Under his leadership, they finally entered and established themselves there.",
         hadith: [
           {
-            text: "The Prophet ﷺ mentioned that the sun was held back (delayed in setting) for Yusha ibn Nun when he was fighting on a Friday.",
+            text: "The Prophet ﷺ told of a prophet for whom the sun was held back from setting until Allah granted him victory — scholars identify this prophet as Yusha ibn Nun based on other narrations.",
             source: "Muslim 32:36",
           },
         ],
@@ -1270,7 +1270,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran 18:60-65 — identified as the young companion of Musa",
-      "Bukhari 57:33",
+      "Bukhari 60:74",
       "Muslim 32:36",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
@@ -1356,7 +1356,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said: 'The most beloved fasting to Allah is the fasting of Dawud — he would fast one day and not fast the next.'",
-            source: "Bukhari 19:11, Muslim 13:261",
+            source: "Bukhari 19:11, Muslim 13:246",
           },
         ],
       },
@@ -1411,7 +1411,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Al-Baqarah (2:249-252), Sad (38:17-26), Saba (34:10-11), Al-Anbiya (21:78-80)",
-      "Bukhari 19:11, Muslim 13:261",
+      "Bukhari 19:11, Muslim 13:246",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -1812,7 +1812,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said: 'By Him in Whose Hand is my life, the son of Maryam will soon descend among you as a just judge. He will break the cross, kill the swine, and abolish the jizyah.'",
-            source: "Bukhari 34:169, Muslim 1:321",
+            source: "Bukhari 34:169, Muslim 1:294",
           },
           {
             text:
@@ -1836,7 +1836,7 @@ export const prophetStories: Record<string, ProphetStory> = {
     ],
     references: [
       "Quran: Surah Maryam (19:16-40), Aal-E-Imran (3:42-62), Al-Ma'idah (5:110-120), An-Nisa (4:156-159), As-Saff (61:6)",
-      "Bukhari 34:169, Muslim 1:321",
+      "Bukhari 34:169, Muslim 1:294",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -1852,7 +1852,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said: 'I was sent to perfect good character.'",
-            source: "Ahmad 8952 (graded Sahih by Al-Albani)",
+            source: "Ahmad 8952 (graded Sahih by Al-Albani; not in this app's local collection)",
           },
         ],
       },
@@ -1876,7 +1876,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "The Prophet ﷺ said about the people of Ta'if who rejected and stoned him: 'Perhaps Allah will bring from their descendants people who will worship Allah alone.'",
-            source: "Bukhari 59:42, Muslim 54:44",
+            source: "Bukhari 59:42, Muslim 32:135",
           },
         ],
       },
@@ -1914,7 +1914,7 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "In his Farewell Sermon, the Prophet ﷺ said: 'All mankind is from Adam and Eve. An Arab has no superiority over a non-Arab, nor does a non-Arab have any superiority over an Arab; a white has no superiority over a black, nor does a black have any superiority over a white — except by piety and good action.'",
-            source: "Ahmad 23489",
+            source: "Ahmad 23489 (Farewell Sermon; not in this app's local collection)",
           },
         ],
       },

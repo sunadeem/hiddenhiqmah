@@ -261,7 +261,7 @@ const articles: Article[] = [
       "The Injil (Gospel) was revealed to Isa (Jesus) — not the New Testament written later by men",
       "The Quran is the final revelation, confirming truth in previous scriptures and superseding them",
       "Previous scriptures were altered (tahrif) by human hands — only the Quran is divinely preserved",
-      "The Quran was revealed over 23 years and compiled into a single manuscript under Uthman ibn Affan",
+      "The Quran was revealed over 23 years, first compiled into one collection under Abu Bakr, and standardized into official copies under Uthman ibn Affan (Bukhari 66:8-66:9)",
     ],
     misconceptions: [
       {
@@ -310,12 +310,12 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Ahmad 21546 (from Abu Dharr, graded hasan by some scholars)",
+        ref: "Ahmad 21546 (from Abu Dharr, graded hasan by some scholars; not in this app's local collection)",
         text: "The Prophet (peace be upon him) was asked about the number of prophets and he indicated that there were a great many, and among them were 315 messengers.",
       },
       {
-        ref: "Bukhari 61:43",
-        text: "The Prophet (peace be upon him) said: 'My example and the example of the prophets before me is like that of a man who built a house and made it beautiful except for the place of one brick. People would look at it and say: How excellent — if only that brick were put in its place. I am that brick, and I am the seal of the prophets.'",
+        ref: "Bukhari 61:44",
+        text: "The Prophet (peace be upon him) said: 'My example and the example of the prophets before me is like that of a man who built a house and made it beautiful except for the place of one brick. People would look at it and say: How excellent — if only that brick were put in its place. So I am that brick, and I am the last of the Prophets.'",
       },
     ],
     points: [
@@ -388,8 +388,8 @@ const articles: Article[] = [
         text: "The sun will be brought close to the people on the Day of Resurrection, about a mile away. People will be in their own sweat according to their deeds — some to their ankles, some to their knees, some to their waists, and some will be bridled by it.",
       },
       {
-        ref: "Abu Dawud 38:6",
-        text: "The Prophet (peace be upon him) said: 'The Mahdi is from my progeny, from the descendants of Fatimah.' He will fill the earth with justice after it has been filled with oppression.",
+        ref: "Abu Dawud 38:6; 38:7",
+        text: "The Prophet (peace be upon him) said: 'The Mahdi will be of my family, of the descendants of Fatimah.' In a narration from Abu Sa'id al-Khudri: 'He will fill the earth with equity and justice as it was filled with oppression and tyranny.'",
       },
     ],
     points: [
@@ -451,7 +451,7 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Muslim 46:11",
+        ref: "Muslim 46:27",
         text: "Allah determined the measures of creation fifty thousand years before He created the heavens and the earth.",
       },
       {
@@ -497,7 +497,7 @@ const articles: Article[] = [
       "Al-Aqidah al-Wasitiyyah, Ibn Taymiyyah — Chapter on qadr",
       "Shifa al-Alil fi Masa'il al-Qada wal-Qadr, Ibn al-Qayyim",
       "Tafsir Ibn Kathir — Commentary on Quran 54:49; Quran 57:22; Quran 76:30",
-      "Muslim 46:11; Bukhari 59:19 — Hadith on writing of decree",
+      "Muslim 46:27; Bukhari 59:19 — Hadith on writing of decree",
       "Tirmidhi 32:7; Ibn Majah 36:97 — Only supplication turns back the decree",
       "Tirmidhi 37:102 — Advice to Ibn Abbas: the pens are lifted and the pages are dried",
     ],

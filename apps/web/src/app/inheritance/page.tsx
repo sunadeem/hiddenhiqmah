@@ -1021,10 +1021,10 @@ function WasiyyahTab() {
           <p className="text-themed-muted text-sm leading-relaxed">
             Sa&apos;d (RA) fell sick during the Farewell Pilgrimage and asked the Prophet ﷺ if he could bequeath two-thirds of his wealth. The Prophet ﷺ said no. He asked half — no. He asked a third. The Prophet ﷺ said:
           </p>
-          <p className="font-arabic text-gold text-lg leading-loose mt-2 mb-1">الثُّلُثُ، وَالثُّلُثُ كَثِيرٌ، إِنَّكَ أَنْ تَذَرَ وَرَثَتَكَ أَغْنِيَاءَ خَيْرٌ مِنْ أَنْ تَذَرَهُمْ عَالَةً يَتَكَفَّفُونَ النَّاسَ</p>
+          <p className="font-arabic text-gold text-lg leading-loose mt-2 mb-1">الثُّلُثُ وَالثُّلُثُ كَثِيرٌ إِنَّكَ أَنْ تَذَرَ وَرَثَتَكَ أَغْنِيَاءَ خَيْرٌ مِنْ أَنْ تَذَرَهُمْ عَالَةً يَتَكَفَّفُونَ النَّاسَ</p>
           <p className="text-themed text-sm leading-relaxed mb-1">Ath-thuluthu, wath-thuluthu kathir. Innaka an tadhara warathataka aghniya&apos;a khayrun min an tadharahum &apos;alatan yatakaffafuna an-nas</p>
           <p className="text-themed-muted text-sm leading-relaxed italic mb-1">&ldquo;A third, and a third is much. To leave your heirs wealthy is better than to leave them poor begging from people.&rdquo;</p>
-          <Ref text="Bukhari 55:5" />
+          <Ref text="Muslim 25:6" />
         </ContentCard>
         <ContentCard delay={0.17}>
           <h5 className="text-gold font-medium mb-2">No bequest to an heir</h5>
@@ -1183,7 +1183,7 @@ function WisdomInheritanceTab() {
         <ContentCard delay={0.11}>
           <h5 className="text-gold font-medium mb-2">Women inherit equal or more in many cases</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            The &quot;2:1&quot; rule is only one specific scenario. In <span className="text-gold">more than 30 cases</span>, women inherit equal to or more than men:
+            The &quot;2:1&quot; rule is only one specific scenario. Contemporary scholars of fara&apos;id have enumerated <span className="text-gold">dozens of scenarios</span> in which women inherit equal to or more than men:
           </p>
           <ul className="text-themed-muted text-sm leading-relaxed list-disc pl-5 mt-2 space-y-1">
             <li>Maternal siblings: male and female inherit equally</li>
@@ -1219,9 +1219,9 @@ function WisdomInheritanceTab() {
         <ContentCard delay={0.26}>
           <h5 className="text-gold font-medium mb-2">Gifts during life — Hibah</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            You may gift assets <span className="text-gold">during your lifetime</span> to anyone — heirs or not. These are not bound by the inheritance rules. But gifts to one child while excluding others are discouraged: the Prophet ﷺ refused to witness a gift one father gave only to one son and said: <span className="italic">&quot;Be just among your children.&quot;</span>
+            You may gift assets <span className="text-gold">during your lifetime</span> to anyone — heirs or not. These are not bound by the inheritance rules. But gifts to one child while excluding others are discouraged: the Prophet ﷺ refused to witness a gift one father gave only to one son and said: <span className="italic">&quot;Be afraid of Allah, and be just to your children.&quot;</span>
           </p>
-          <Ref text="Bukhari 51:20" />
+          <Ref text="Bukhari 51:21" />
         </ContentCard>
         <ContentCard delay={0.29}>
           <h5 className="text-gold font-medium mb-2">My son died before me — do his children inherit?</h5>
@@ -1313,7 +1313,7 @@ const wasiyyahFaqsSources: Record<WasiyyahFaqsSub, SourceRef[]> = {
     { ref: "Quran 4:8", desc: "Give present non-heir relatives something — basis of the wasiyyah for orphaned grandchildren" },
     { ref: "Quran 4:11", desc: "Lidh-dhakari mithlu hazzi al-unthayayn — and the financial context" },
     { ref: "Quran 4:14", desc: "Transgressing Allah's limits = the Fire" },
-    { ref: "Bukhari 51:20", desc: "Be just among your children — Nu'man ibn Bashir" },
+    { ref: "Bukhari 51:21", desc: "Be just to your children — Nu'man ibn Bashir" },
     { ref: "Bukhari 55:1", desc: "Keep your wasiyyah written down" },
     { ref: "Tirmidhi 29:2", desc: "Learn the laws of inheritance and teach them (graded weak)" },
     { ref: "Ibn Majah 23:1", desc: "Inheritance is half of knowledge (graded weak)" },

@@ -43,7 +43,7 @@ const whyItMatters = [
     point: "It is the condition for entering Paradise",
     detail:
       "The Prophet (peace be upon him) said: \"Whoever dies knowing that there is no god worthy of worship except Allah shall enter Paradise.\"",
-    reference: "Muslim 1:178",
+    reference: "Muslim 1:43",
   },
   {
     point: "Shirk is the only unforgivable sin if one dies upon it",
@@ -213,7 +213,7 @@ const categories: Category[] = [
     ],
     hadith: [
       {
-        ref: "Muslim 46:11",
+        ref: "Muslim 46:27",
         text: "Allah determined the measures of creation fifty thousand years before He created the heavens and the earth.",
       },
     ],
@@ -294,7 +294,7 @@ const categories: Category[] = [
         text: "The right of Allah upon His servants is that they worship Him and do not associate anything with Him. And the right of the servants upon Allah is that He does not punish whoever does not associate anything with Him.",
       },
       {
-        ref: "Muslim 1:1",
+        ref: "Muslim 1:176",
         text: "Whoever meets Allah without associating anything with Him will enter Paradise, and whoever meets Him associating something with Him will enter the Fire.",
       },
     ],
@@ -952,7 +952,7 @@ function TawhidContent() {
 
             <SourcesCard delay={0.35} sources={[
               { ref: "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab", desc: "Chapters on the purpose of creation and the danger of shirk" },
-              { ref: "Muslim 1:178", desc: "Hadith on the condition for entering Paradise" },
+              { ref: "Muslim 1:43", desc: "Hadith on the condition for entering Paradise" },
               { ref: "Bukhari 56:72", desc: "Hadith of Mu'adh ibn Jabal on the right of Allah" },
               { ref: "Tafsir Ibn Kathir", desc: "Commentary on Quran 51:56; Quran 21:25; Quran 4:48" },
             ]} />

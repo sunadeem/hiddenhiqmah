@@ -223,7 +223,7 @@ const whatHappensTopics: GraveTopic[] = [
         {
           title: "The grave is expanded",
           detail:
-            "After the believer answers correctly, his grave is expanded for him as far as his eye can see. It is furnished with furnishings from Paradise, and a gate to Paradise is opened for him so that its fragrance and breeze reach him.",
+            "After the believer answers correctly, a caller proclaims from heaven: 'My servant has spoken the truth — so spread a bed for him from Paradise, clothe him from Paradise, and open a door for him into Paradise.' Some of its air and perfume come to him, and a space is made for him as far as the eye can see.",
           note: "Abu Dawud 42:158; Bukhari 23:93",
         },
         {
@@ -284,11 +284,11 @@ const whatHappensTopics: GraveTopic[] = [
           title: "Punishment for specific sins",
           detail:
             "The Prophet (peace be upon him) passed by two graves and said: 'They are being punished, and they are not being punished for something major (that was difficult to avoid). One of them used to not protect himself from his urine, and the other used to walk about spreading malicious gossip.'",
-          note: "Bukhari 23:114; Muslim 1:198a",
+          note: "Bukhari 23:114; Muslim 2:143",
         },
       ],
       source:
-        "Abu Dawud 42:158; Mishkat al-Masabih 1630; Quran 40:46; Bukhari 23:114; Muslim 1:198a",
+        "Abu Dawud 42:158; Mishkat al-Masabih 1630; Quran 40:46; Bukhari 23:114; Muslim 2:143",
     },
   },
   {

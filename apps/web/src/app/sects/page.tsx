@@ -225,7 +225,7 @@ const sunniTopics: SectTopic[] = [
           title: "All Companions are trustworthy ('udul)",
           detail:
             "The Quran and Sunnah testify to the righteousness of the Companions as a whole. The Prophet ﷺ said: 'The best of people is my generation, then those who follow them, then those who follow them.' Their testimony is accepted, and we do not impugn any of them.",
-          note: "Bukhari 52:16; Muslim 44:55",
+          note: "Bukhari 52:16; Muslim 44:301",
         },
         {
           title: "The Rightly Guided Caliphs",
@@ -396,7 +396,7 @@ const shiaTopics: SectTopic[] = [
           title: "Position on the Companions",
           detail:
             "Many Shia scholars and texts criticize, curse, or declare disbelief in prominent Companions, especially Abu Bakr, Umar, Uthman, A'ishah, and others — claiming they usurped Ali's right and altered the religion. This directly contradicts Quran 9:100 where Allah declares His pleasure with the foremost among the Muhajirun and Ansar.",
-          note: "Quran 9:100; Quran 48:18; Muslim 44:55",
+          note: "Quran 9:100; Quran 48:18; Muslim 44:316; Bukhari 62:23",
         },
         {
           title: "Different hadith corpus",
@@ -527,9 +527,9 @@ const otherSects: SectTopic[] = [
       intro:
         "The Khawarij ('those who went out') were the first sect to emerge in Islam. They broke away from Ali ibn Abi Talib's army after the Battle of Siffin (37 AH) when he agreed to arbitration with Mu'awiyah. They declared both Ali and Mu'awiyah — and anyone who accepted arbitration — as disbelievers.",
       verse: {
-        arabic: "يَخْرُجُ مِنْ ضِئْضِئِ هَذَا قَوْمٌ يَتْلُونَ كِتَابَ اللَّهِ رَطْبًا لاَ يُجَاوِزُ حَنَاجِرَهُمْ",
-        text: "There will emerge from the progeny of this man a people who will recite the Quran, but it will not go beyond their throats (i.e., they won't understand it).",
-        ref: "Bukhari 61:117",
+        arabic: "يَخْرُجُ مِنْ ضِئْضِئِ هَذَا قَوْمٌ يَتْلُونَ كِتَابَ اللَّهِ رَطْبًا لاَ يُجَاوِزُ حَنَاجِرَهُمْ",
+        text: "There would arise a people from the progeny of this (man) who would recite the Qur'an glibly, but it would not go beyond their throats.",
+        ref: "Muslim 12:189",
       },
       points: [
         {
@@ -541,8 +541,8 @@ const otherSects: SectTopic[] = [
         {
           title: "The Prophet ﷺ warned about them extensively",
           detail:
-            "The Prophet ﷺ described them in multiple hadith: they are young in age, foolish in mind, they speak the best of words but leave Islam like an arrow passes through its target. He ﷺ said: 'If I were to encounter them, I would kill them as the people of 'Ad were killed.'",
-          note: "Bukhari 61:118; Muslim 12:196",
+            "The Prophet ﷺ described them in multiple hadith: they are young in age, foolish in mind, they speak the best of words but leave Islam like an arrow passes through its target. He ﷺ said: 'If I should live up to their time, I will kill them as the people of 'Ad were killed.'",
+          note: "Muslim 12:188; Bukhari 60:19",
         },
         {
           title: "The founding incident: Dhul-Khuwaysirah",
@@ -575,7 +575,7 @@ const otherSects: SectTopic[] = [
           note: "Bukhari 61:117; Muslim 12:196; fatawa of contemporary scholars",
         },
       ],
-      source: "Bukhari 61:117; Bukhari 88:15; Bukhari 78:189; Bukhari 88:14; Bukhari 66:82; Bukhari 66:83; Tirmidhi 47:52; Ibn Majah 0:173; Ibn Majah 0:168; Muslim 12:196; Maqalat al-Islamiyyin, al-Ash'ari",
+      source: "Muslim 12:189; Muslim 12:188; Bukhari 60:19; Bukhari 61:117; Bukhari 88:15; Bukhari 78:189; Bukhari 88:14; Bukhari 66:82; Bukhari 66:83; Tirmidhi 47:52; Ibn Majah 0:173; Ibn Majah 0:168; Muslim 12:196; Maqalat al-Islamiyyin, al-Ash'ari",
     },
   },
   {
@@ -728,7 +728,7 @@ const otherSects: SectTopic[] = [
     name: "Ash'aris & Maturidis",
     content: {
       intro:
-        "The Ash'ari and Maturidi schools of theology emerged in the 3rd-4th centuries AH as a response to the Mu'tazilah. While they defended Islam against rationalist excesses, scholars within Ahl al-Sunnah have noted areas where they diverged from the methodology of the Salaf (early generations).",
+        "The Ash'ari and Maturidi schools of theology emerged in the 3rd-4th centuries AH as a response to the Mu'tazilah. Unlike most groups on this tab, these are schools of theology whose scholars are honored as imams of the Ummah; many Sunni scholars throughout history counted Ash'aris and Maturidis within Ahl al-Sunnah, while Athari scholars critique the specific positions below. While they defended Islam against rationalist excesses, scholars within Ahl al-Sunnah have noted areas where they diverged from the methodology of the Salaf (early generations).",
       points: [
         {
           title: "Abu al-Hasan al-Ash'ari (d. 324 AH)",
@@ -745,7 +745,7 @@ const otherSects: SectTopic[] = [
         {
           title: "Areas of agreement with Ahl al-Sunnah",
           detail:
-            "Ash'aris and Maturidis agree with Ahl al-Sunnah wal-Jama'ah on many fundamentals: the Quran is from Allah, the Companions are honored, the six articles of faith, and the five pillars. They oppose the Mu'tazilah and the Shia on key issues. Many great scholars of hadith, fiqh, and tafsir were Ash'ari in theology.",
+            "Ash'aris and Maturidis share the fundamentals of Ahl al-Sunnah wal-Jama'ah: the Quran is from Allah, the Companions are honored, the six articles of faith, and the five pillars. They oppose the Mu'tazilah and the Shia on key issues. Many great scholars of hadith, fiqh, and tafsir were Ash'ari in theology.",
         },
         {
           title: "Areas of divergence",
@@ -854,7 +854,7 @@ const otherSects: SectTopic[] = [
           title: "Racial theology contradicts Tawhid",
           detail:
             "The NOI taught that Black people are divine, that Fard Muhammad was 'God in person,' and that white people were 'devils' created by an evil scientist named Yakub. Islam categorically rejects all forms of racism and teaches that no human being is divine. The Prophet ﷺ said: 'No Arab has superiority over a non-Arab, nor does a non-Arab have superiority over an Arab — except by piety.'",
-          note: "Quran 49:13; Ahmad 23489 (Farewell Sermon)",
+          note: "Quran 49:13; Musnad Ahmad 23489 (Farewell Sermon) — outside the app's local collections",
         },
         {
           title: "Denial of the Hereafter as taught in Islam",
@@ -875,7 +875,7 @@ const otherSects: SectTopic[] = [
           note: "The Autobiography of Malcolm X, Chapter 18 — El-Hajj Malik El-Shabazz",
         },
       ],
-      source: "Quran 33:40; Quran 49:13; Ahmad 23489; The Autobiography of Malcolm X",
+      source: "Quran 33:40; Quran 49:13; Musnad Ahmad 23489 (Farewell Sermon) — outside the app's local collections; The Autobiography of Malcolm X",
     },
   },
 ];

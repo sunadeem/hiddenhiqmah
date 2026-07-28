@@ -257,9 +257,9 @@ function PreparingGoodEndingSub() {
         <ContentCard delay={0.29}>
           <h5 className="text-gold font-medium mb-2">Visit the graves</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            &quot;Visit the graves, for they remind you of the Hereafter.&quot; A short walk through a cemetery does what a hundred lectures cannot.
+            &quot;Visit the graves, for they will remind you of the Hereafter.&quot; A short walk through a cemetery does what a hundred lectures cannot.
           </p>
-          <Ref text="Muslim 11:136" />
+          <Ref text="Tirmidhi 10:90" />
         </ContentCard>
         <ContentCard delay={0.32}>
           <h5 className="text-gold font-medium mb-2">Live as if today is the day</h5>
@@ -280,7 +280,7 @@ function PreparingChecklistSub() {
         <p className="text-themed-muted text-sm leading-relaxed">
           When a Muslim dies in the West, the family is often thrown — in the first hours of grief — into a system built around funeral homes, embalming, and cremation, none of which match how Islam buries its dead. The Sunnah is speed, simplicity, and dignity: <span className="italic">&quot;Hasten with the funeral.&quot;</span> The steps below are a practical map, not a fatwa — confirm details with your local masjid and follow the fiqh on the other sub-tabs.
         </p>
-        <Ref text="Bukhari 23:73" />
+        <Ref text="Bukhari 23:72" />
         <Link href="/death-rites?tab=preparing&sub=affairs" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
           Set your affairs before this day comes →
         </Link>
@@ -321,7 +321,7 @@ function PreparingChecklistSub() {
           <p className="text-themed-muted text-sm leading-relaxed">
             The Sunnah is to bury quickly, ideally within a day. Try not to delay for distant relatives to arrive; they can pray the janazah in absentia or visit the grave later. Refrigeration for a short, necessary delay is acceptable — a long delay for convenience is against the Sunnah.
           </p>
-          <Ref text="Bukhari 23:73" />
+          <Ref text="Bukhari 23:72" />
         </ContentCard>
         <ContentCard delay={0.23}>
           <h5 className="text-gold font-medium mb-2">Local burial vs. repatriation</h5>
@@ -858,7 +858,7 @@ function WashingTab() {
           <p className="text-themed-muted text-sm leading-relaxed">
             &quot;Hasten with the funeral. If they were righteous, you are hastening them to something good. If they were otherwise, you are removing something evil from your necks.&quot;
           </p>
-          <Ref text="Bukhari 23:73" />
+          <Ref text="Bukhari 23:72" />
         </ContentCard>
       </div>
 
@@ -925,17 +925,17 @@ function JanazahTab() {
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Du&apos;a for the Deceased (After 3rd Takbir)</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <VerseCard
-          arabic="اللَّهُمَّ اغْفِرْ لَهُ وَارْحَمْهُ وَعَافِهِ وَاعْفُ عَنْهُ وَأَكْرِمْ نُزُلَهُ وَوَسِّعْ مُدْخَلَهُ وَاغْسِلْهُ بِالْمَاءِ وَالثَّلْجِ وَالْبَرَدِ وَنَقِّهِ مِنَ الْخَطَايَا كَمَا يُنَقَّى الثَّوْبُ الأَبْيَضُ مِنَ الدَّنَسِ"
-          transliteration="Allahumma-ghfir lahu warhamhu wa 'afihi wa'fu 'anhu wa akrim nuzulahu wa wassi' mudkhalahu, wa-ghsilhu bil-ma'i wath-thalji wal-baradi wa naqqihi mina al-khataya kama yunaqqa ath-thawbu al-abyadu mina ad-danas"
-          english="O Allah, forgive him and have mercy on him, give him strength and pardon him. Be generous to him and make his entrance roomy. Wash him with water, snow, and hail, and purify him of sins as a white garment is purified of stains."
+          arabic="اللَّهُمَّ اغْفِرْ لَهُ وَارْحَمْهُ وَعَافِهِ وَاعْفُ عَنْهُ وَأَكْرِمْ نُزُلَهُ وَوَسِّعْ مُدْخَلَهُ وَاغْسِلْهُ بِالْمَاءِ وَالثَّلْجِ وَالْبَرَدِ وَنَقِّهِ مِنَ الْخَطَايَا كَمَا نَقَّيْتَ الثَّوْبَ الأَبْيَضَ مِنَ الدَّنَسِ"
+          transliteration="Allahumma-ghfir lahu warhamhu wa 'afihi wa'fu 'anhu wa akrim nuzulahu wa wassi' mudkhalahu, wa-ghsilhu bil-ma'i wath-thalji wal-baradi wa naqqihi mina al-khataya kama naqqayta ath-thawba al-abyada mina ad-danas"
+          english="O Allah, forgive him and have mercy on him, give him strength and pardon him. Be generous to him and make his entrance roomy. Wash him with water, snow, and hail, and cleanse him of sins as You cleansed the white garment of stains."
           source="Muslim 11:109"
           delay={0.26}
         />
         <VerseCard
-          arabic="اللَّهُمَّ اغْفِرْ لِحَيِّنَا وَمَيِّتِنَا وَشَاهِدِنَا وَغَائِبِنَا وَصَغِيرِنَا وَكَبِيرِنَا وَذَكَرِنَا وَأُنْثَانَا"
+          arabic="اللَّهُمَّ اغْفِرْ لِحَيِّنَا وَمَيِّتِنَا وَشَاهِدِنَا وَغَائِبِنَا وَصَغِيرِنَا وَكَبِيرِنَا وَذَكَرِنَا وَأُنْثَانَا"
           transliteration="Allahumma-ghfir li-hayyina wa mayyitina wa shahidina wa gha'ibina wa saghirina wa kabirina wa dhakarina wa unthana"
           english="O Allah, forgive our living and our dead, those present and those absent, our young and our old, our males and our females."
-          source="Abu Dawud 21:113"
+          source="Ibn Majah 6:66"
           delay={0.29}
         />
       </div>
@@ -943,10 +943,10 @@ function JanazahTab() {
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">The Reward</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <VerseCard
-          arabic="مَنْ شَهِدَ الْجَنَازَةَ حَتَّى يُصَلِّيَ عَلَيْهَا فَلَهُ قِيرَاطٌ، وَمَنْ شَهِدَهَا حَتَّى تُدْفَنَ فَلَهُ قِيرَاطَانِ. قِيلَ: وَمَا الْقِيرَاطَانِ؟ قَالَ: مِثْلُ الْجَبَلَيْنِ الْعَظِيمَيْنِ"
-          transliteration="Man shahida al-janazata hatta yusalliya 'alayha fa-lahu qirat, wa man shahidaha hatta tudfana fa-lahu qiratan. Qila: wa ma al-qiratan? Qala: mithlu al-jabalayni al-'azimayn"
-          english="Whoever attends the funeral until the prayer is offered gets one qirat. Whoever stays until burial gets two qirats. It was asked: what are two qirats? He said: like two great mountains."
-          source="Bukhari 23:80"
+          arabic="مَنْ شَهِدَ الْجَنَازَةَ حَتَّى يُصَلِّيَ عَلَيْهَا فَلَهُ قِيرَاطٌ، وَمَنْ شَهِدَ حَتَّى تُدْفَنَ كَانَ لَهُ قِيرَاطَانِ. قِيلَ وَمَا الْقِيرَاطَانِ قَالَ: مِثْلُ الْجَبَلَيْنِ الْعَظِيمَيْنِ"
+          transliteration="Man shahida al-janazata hatta yusalliya 'alayha fa-lahu qirat, wa man shahida hatta tudfana kana lahu qiratan. Qila: wa ma al-qiratan? Qala: mithlu al-jabalayni al-'azimayn"
+          english="Whoever attends the funeral until the prayer is offered for it gets one qirat. Whoever stays until it is buried gets two qirats. It was asked: what are two qirats? He said: like two huge mountains."
+          source="Bukhari 23:81"
           delay={0.32}
         />
       </div>
@@ -1033,7 +1033,7 @@ function BurialProcessionSub() {
           <p className="text-themed-muted text-sm leading-relaxed">
             It is a Sunnah to help carry the bier — traditionally taking a turn at each of its four corners. The pace is a brisk, dignified walk (&quot;Hasten with the funeral&quot;), not a slow, mournful crawl. Those on foot may walk in front of, behind, or beside the bier.
           </p>
-          <Ref text="Bukhari 23:73" />
+          <Ref text="Bukhari 23:72" />
         </ContentCard>
         <ContentCard delay={0.14}>
           <h5 className="text-gold font-medium mb-2">Standing for a passing funeral — &quot;Is it not a soul?&quot;</h5>
@@ -1045,9 +1045,9 @@ function BurialProcessionSub() {
         <ContentCard delay={0.17}>
           <h5 className="text-gold font-medium mb-2">Whoever follows it, do not sit until it is placed down</h5>
           <p className="text-themed-muted text-sm leading-relaxed">
-            &quot;When a funeral passes by you, stand up; and whoever follows it, let him not sit down until it is put down (in the grave).&quot; The Prophet ﷺ would remain standing at the graveside until the body was placed in the lahd. (Later practice on standing for a passing bier is broad; scholars differ on whether it was abrogated — many hold it remains recommended.)
+            &quot;When a funeral passes by you, stand up; and whoever follows it, let him not sit down until it is put down (in the grave).&quot; The Prophet ﷺ would remain standing at the graveside until the body was placed in the lahd. (In a later narration he sat and said, &quot;Sit down — act differently from them&quot; (Abu Dawud 21:88), so scholars differ on whether the standing was abrogated — many hold it remains recommended.)
           </p>
-          <Ref text="Abu Dawud 21:88; Nasai 21:97" />
+          <Ref text="Nasai 21:97" />
         </ContentCard>
         <ContentCard delay={0.2}>
           <h5 className="text-gold font-medium mb-2">The qirat is for following, not just praying</h5>
@@ -1079,7 +1079,7 @@ function BurialGraveSub() {
           <p className="text-themed-muted text-sm leading-relaxed">
             The Sunnah is to bury without unnecessary delay. The body should be carried respectfully and placed in the grave quickly after the janazah prayer.
           </p>
-          <Ref text="Bukhari 23:73" />
+          <Ref text="Bukhari 23:72" />
         </ContentCard>
         <ContentCard delay={0.11}>
           <h5 className="text-gold font-medium mb-2">Dig deep, and dig well</h5>
@@ -1324,17 +1324,17 @@ function VisitingGravesTab() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <VerseCard
-          arabic="كُنْتُ نَهَيْتُكُمْ عَنْ زِيَارَةِ الْقُبُورِ فَزُورُوهَا، فَإِنَّهَا تُذَكِّرُ الْآخِرَةَ"
-          transliteration="Kuntu nahaytukum 'an ziyarati al-qubur fa-zuruha, fa-innaha tudhakkiru al-akhirah"
-          english="I used to forbid you from visiting graves — but now visit them, for they remind you of the Hereafter."
-          source="Muslim 11:136"
+          arabic="قَدْ كُنْتُ نَهَيْتُكُمْ عَنْ زِيَارَةِ الْقُبُورِ فَقَدْ أُذِنَ لِمُحَمَّدٍ فِي زِيَارَةِ قَبْرِ أُمِّهِ فَزُورُوهَا فَإِنَّهَا تُذَكِّرُ الآخِرَةَ"
+          transliteration="Qad kuntu nahaytukum 'an ziyarati al-qubur, fa-qad udhina li-Muhammadin fi ziyarati qabri ummih, fa-zuruha, fa-innaha tudhakkiru al-akhirah"
+          english="I had forbidden you from visiting the graves. But Muhammad has been permitted to visit the grave of his mother — so visit them, for they will remind you of the Hereafter."
+          source="Tirmidhi 10:90"
           delay={0.08}
         />
         <VerseCard
-          arabic="السَّلَامُ عَلَيْكُمْ دَارَ قَوْمٍ مُؤْمِنِينَ، وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لَاحِقُونَ، نَسْأَلُ اللَّهَ لَنَا وَلَكُمُ الْعَافِيَةَ"
-          transliteration="As-salamu 'alaykum dara qawmin mu'minin, wa inna in sha'a Allah bikum lahiqun, nas'alu Allaha lana wa lakumu al-'afiyah"
-          english="Peace be upon you, abode of a believing people. And we, if Allah wills, will be joining you. We ask Allah for safety for us and for you."
-          source="Muslim 11:131"
+          arabic="السَّلاَمُ عَلَيْكُمْ أَهْلَ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لاَحِقُونَ نَسْأَلُ اللَّهَ لَنَا وَلَكُمُ الْعَافِيَةَ"
+          transliteration="As-salamu 'alaykum ahlad-diyari minal-mu'minina wal-muslimin, wa inna in sha'a Allahu bikum lahiqun, nas'alu Allaha lana wa lakumu al-'afiyah"
+          english="Peace be upon you, O inhabitants of the abodes, believers and Muslims. And we will be joining you, if Allah wills. We ask Allah for well-being for us and for you."
+          source="Ibn Majah 6:115"
           delay={0.11}
         />
         <ContentCard delay={0.14}>
@@ -1528,10 +1528,10 @@ const preparingSources: Record<PreparingSub, SourceRef[]> = {
   ],
   "good-ending": [
     { ref: "Quran 3:102", desc: "Do not die except in a state of Islam" },
-    { ref: "Muslim 11:136", desc: "Visit graves — they remind you of the Hereafter" },
+    { ref: "Tirmidhi 10:90", desc: "Visit graves — they remind you of the Hereafter" },
   ],
   checklist: [
-    { ref: "Bukhari 23:73", desc: "Hasten with the funeral — the anchor for a prompt, dignified burial" },
+    { ref: "Bukhari 23:72", desc: "Hasten with the funeral — the anchor for a prompt, dignified burial" },
   ],
 };
 
@@ -1594,12 +1594,12 @@ const burialSources: Record<BurialSub, SourceRef[]> = {
   procession: [
     { ref: "Bukhari 23:4; Bukhari 23:3", desc: "Following the funeral is a right of a Muslim upon a Muslim" },
     { ref: "Bukhari 23:65; Bukhari 23:68; Bukhari 23:69; Bukhari 23:70; Nasai 21:104", desc: "Standing for a passing funeral — 'Is it not a soul?'" },
-    { ref: "Abu Dawud 21:88; Nasai 21:97", desc: "Remain standing until the bier is put down" },
+    { ref: "Nasai 21:97", desc: "Remain standing until the bier is put down" },
     { ref: "Muslim 11:70", desc: "The qirat is for following the bier, not only praying" },
-    { ref: "Bukhari 23:73", desc: "Hasten with the funeral" },
+    { ref: "Bukhari 23:72", desc: "Hasten with the funeral" },
   ],
   grave: [
-    { ref: "Bukhari 23:73", desc: "Hasten the burial" },
+    { ref: "Bukhari 23:72", desc: "Hasten the burial" },
     { ref: "Nasai 21:193", desc: "Dig deep and dig well — and, in necessity, two or three in one grave (Uhud)" },
   ],
   lowering: [
@@ -1621,13 +1621,13 @@ const washingJanazahSources: Record<WashingJanazahSub, SourceRef[]> = {
     { ref: "Muslim 48:48", desc: "Concealing a Muslim's faults — Allah conceals his in both worlds" },
     { ref: "Bukhari 23:32", desc: "Three white sheets, no shirt, no turban" },
     { ref: "Abu Dawud 21:69", desc: "Five pieces of cloth for shrouding Umm Kulthum" },
-    { ref: "Bukhari 23:73", desc: "Hasten the funeral" },
+    { ref: "Bukhari 23:72", desc: "Hasten the funeral" },
   ],
   janazah: [
-    { ref: "Bukhari 23:80", desc: "Two qirats — like two great mountains — for attending burial" },
+    { ref: "Bukhari 23:81", desc: "Two qirats — like two great mountains — for attending burial" },
     { ref: "Bukhari 23:90", desc: "Reciting Al-Fatihah in the janazah" },
     { ref: "Muslim 11:109", desc: "The Prophet's du'a in janazah" },
-    { ref: "Abu Dawud 21:113", desc: "The comprehensive janazah du'a" },
+    { ref: "Ibn Majah 6:66", desc: "The comprehensive janazah du'a" },
   ],
   "special-cases": [
     { ref: "Bukhari 23:74; Muslim 11:85; Muslim 11:86; Ibn Majah 6:106", desc: "Salat al-gha'ib — the prayer in absentia for the Najashi" },
@@ -1658,8 +1658,8 @@ const griefVisitingSources: Record<GriefVisitingSub, SourceRef[]> = {
     { ref: "Abu Dawud 21:44", desc: "Prepare food for the family of Ja'far" },
   ],
   visiting: [
-    { ref: "Muslim 11:136", desc: "Visit graves — they remind you of the Hereafter" },
-    { ref: "Muslim 11:131", desc: "The salam to give upon entering a graveyard" },
+    { ref: "Tirmidhi 10:90", desc: "Visit graves — they remind you of the Hereafter" },
+    { ref: "Ibn Majah 6:115", desc: "The salam to give upon entering a graveyard" },
     { ref: "Muslim 11:124", desc: "Prohibition of sitting on graves" },
     { ref: "Muslim 11:127", desc: "Prohibition of praying facing graves" },
     { ref: "Muslim 25:20", desc: "Du'a of the living benefits the deceased" },

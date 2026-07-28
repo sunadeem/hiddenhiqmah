@@ -26,7 +26,7 @@ const whyItMatters = [
     reference: "Muslim 1:1",
   },
   {
-    point: "It is mentioned over 1,000 times in the Quran",
+    point: "It is referred to constantly throughout the Quran, under many names",
     detail:
       "The Day of Judgement is referred to by many names in the Quran — Yawm al-Qiyamah (Day of Resurrection), Yawm ad-Din (Day of Recompense), al-Haqqah (The Inevitable Reality), al-Qari'ah (The Striking Calamity), as-Sa'ah (The Hour), and more. Its constant mention shows its centrality in the Islamic worldview.",
     reference: "Quran 1:4; Quran 69:1; Quran 101:1; Quran 75:1",
@@ -150,7 +150,7 @@ const signsTopics: Topic[] = [
         },
       ],
       source:
-        "Bukhari 3:22; Bukhari 92:65; Muslim 1:1; Muslim 0:15:159; Tirmidhi 36:29",
+        "Bukhari 3:22; Bukhari 92:65; Muslim 1:1; Muslim 54:23; Muslim 54:44; Tirmidhi 36:29",
     },
   },
   {
@@ -164,13 +164,13 @@ const signsTopics: Topic[] = [
           title: "The appearance of al-Mahdi",
           detail:
             "The Prophet (peace be upon him) said: 'The Mahdi is from my progeny, from the descendants of Fatimah.' He will fill the earth with justice and fairness after it has been filled with oppression and tyranny. He will lead the Muslims and rule for seven or nine years.",
-          note: "Abu Dawud 38:6; Ibn Majah 36:161",
+          note: "Abu Dawud 38:6; Abu Dawud 38:7; Abu Dawud 38:9 (the nine-year variant); Ibn Majah 36:161",
         },
         {
           title: "The emergence of al-Masih al-Dajjal (the False Messiah)",
           detail:
             "The greatest trial to face humanity. The Prophet (peace be upon him) said: 'Between the creation of Adam and the Hour, there is no greater trial than the Dajjal.' He will claim to be God, perform extraordinary feats, and lead many astray. He is one-eyed, and between his eyes is written 'kafir' (disbeliever), which every believer will be able to read.",
-          note: "Muslim 54:134; Muslim 15:142",
+          note: "Muslim 54:134; Muslim 54:156",
         },
         {
           title: "The descent of 'Isa ibn Maryam (Jesus, peace be upon him)",
@@ -200,7 +200,7 @@ const signsTopics: Topic[] = [
           title: "The sun will rise from the west",
           detail:
             "The Prophet (peace be upon him) said: 'The Hour will not come until the sun rises from the west. When it rises from the west, all people will believe, but that will be when belief will no longer benefit a person who did not believe before.' After this, the door of repentance is closed.",
-          note: "Bukhari 65:157; Muslim 33:253; Quran 6:158",
+          note: "Bukhari 65:157; Muslim 1:301; Quran 6:158",
         },
         {
           title: "The Beast (al-Dabbah) will emerge",
@@ -216,7 +216,7 @@ const signsTopics: Topic[] = [
         },
       ],
       source:
-        "Bukhari 60:118; Bukhari 65:157; Muslim 54:23; Muslim 15:146; Abu Dawud 38:6; Quran 6:158; Quran 18:94-99; Quran 21:96; Quran 27:82; Quran 44:10-11",
+        "Bukhari 60:118; Bukhari 65:157; Muslim 54:23; Muslim 15:146; Abu Dawud 38:6; Abu Dawud 38:7; Quran 6:158; Quran 18:94-99; Quran 21:96; Quran 27:82; Quran 44:10-11",
     },
   },
   {
@@ -352,7 +352,7 @@ const eventsTopics: Topic[] = [
         {
           title: "Standing for 50,000 years",
           detail:
-            "Allah says: 'The angels and the Spirit ascend to Him in a Day the measure of which is fifty thousand years.' Scholars explain that this refers to the length of the Day of Judgement. However, for the believer, it will be made easy — like a short obligatory prayer.",
+            "Allah says: 'The angels and the Spirit ascend to Him in a Day the measure of which is fifty thousand years.' Scholars explain that this refers to the length of the Day of Judgement. A narration in Musnad Ahmad states that for the believer it will be made lighter than a single obligatory prayer, though scholars differ over its grading.",
           note: "Quran 70:4",
         },
         {
@@ -619,7 +619,7 @@ const salvationTopics: Topic[] = [
           title: "Other forms of intercession",
           detail:
             "The Prophet (peace be upon him) will intercede for his ummah, and Allah will also permit the angels, the prophets, the righteous, and even the believers to intercede for one another. But no one intercedes except by Allah's permission.",
-          note: "Muslim 1:90; Quran 2:255",
+          note: "Muslim 1:359; Quran 2:255",
         },
         {
           title: "The al-Maqam al-Mahmud (Praised Station)",
@@ -641,7 +641,7 @@ const salvationTopics: Topic[] = [
         },
       ],
       source:
-        "Quran 2:255; Quran 17:79; Bukhari 65:234; Muslim 1:90; Muslim 1:101; Muslim 6:302; Tirmidhi 37:21; Tirmidhi 37:22; Abu Dawud 42:144",
+        "Quran 2:255; Quran 17:79; Bukhari 65:234; Muslim 1:101; Muslim 1:359; Muslim 6:302; Tirmidhi 37:21; Tirmidhi 37:22; Abu Dawud 42:144",
     },
   },
   {
@@ -660,8 +660,8 @@ const salvationTopics: Topic[] = [
         {
           title: "The cups are as numerous as the stars",
           detail:
-            "The Prophet (peace be upon him) described the hawd as having cups placed around it, as numerous as the stars in the sky. Two channels from Paradise (from the river al-Kawthar) pour into it.",
-          note: "Muslim 43:33",
+            "The Prophet (peace be upon him) described the hawd as having cups placed around it, as numerous as the stars in the sky. Two spouts from Paradise pour into it.",
+          note: "Muslim 43:33; Muslim 43:50",
         },
         {
           title: "Some will be turned away",
@@ -671,7 +671,7 @@ const salvationTopics: Topic[] = [
         },
       ],
       source:
-        "Bukhari 81:167; Bukhari 81:172; Muslim 43:33",
+        "Bukhari 81:167; Bukhari 81:172; Muslim 43:33; Muslim 43:50",
     },
   },
   {

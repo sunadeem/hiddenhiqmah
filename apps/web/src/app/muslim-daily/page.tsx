@@ -338,16 +338,16 @@ export function MorningTab() {
             arabic="لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير"
             transliteration="La ilaha illallah, wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa ala kulli shay'in qadir — 10 times"
             translation="There is no god but Allah alone, with no partner. His is the dominion and His is the praise, and He is over all things capable."
-            english="He will have the reward of freeing four slaves from the children of Isma'il."
+            english="It is as if he freed one of the descendants of Isma'il."
             note="Said once in the morning it also earns ten good deeds, erases ten sins, raises you ten ranks, and guards you from Shaytan until evening."
-            reference="Bukhari 80:98; Abu Dawud 43:305"
+            reference="Bukhari 80:99; Abu Dawud 43:305"
             delay={0}
           />
           <AdhkarItem
             arabic="اللّهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور"
             transliteration="Allahumma bika asbahna wa bika amsayna, wa bika nahya wa bika namutu, wa ilaykan-nushur"
             english="O Allah, by You we enter the morning, by You we enter the evening, by You we live, by You we die, and to You is the resurrection."
-            reference="Tirmidhi 48:22"
+            reference="Abu Dawud 43:296"
             delay={0}
           />
           <AdhkarItem
@@ -620,7 +620,7 @@ export function EveningTab() {
             arabic="اللّهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير"
             transliteration="Allahumma bika amsayna wa bika asbahna, wa bika nahya wa bika namutu, wa ilaykal-masir"
             english="O Allah, by You we enter the evening, by You we enter the morning, by You we live, by You we die, and to You is the return."
-            reference="Tirmidhi 48:22"
+            reference="Ibn Majah 34:42"
             delay={0}
           />
           <AdhkarItem
@@ -1087,7 +1087,7 @@ export function MidnightTab() {
               <p className="text-themed-muted text-sm mt-2 leading-relaxed">
                 <span className="text-gold font-medium">How to pray:</span> Pray in sets of 2 rak&apos;ahs. The Prophet &#xFDFA; would typically pray 8 rak&apos;ahs + 3 Witr.
               </p>
-              <Ref text="Muslim 6:147" />
+              <Ref text="Bukhari 19:28" />
               <Link
                 href="/salah"
                 className="inline-block mt-3 text-xs text-gold hover:text-gold/80 underline underline-offset-2"
@@ -1148,7 +1148,7 @@ export function MidnightTab() {
             arabic="اللّهم لك الحمد أنت نور السماوات والأرض ومن فيهن"
             transliteration="Allahumma lakal-hamd, Anta nurus-samawati wal-ard wa man fihinn"
             english="O Allah, to You belongs all praise. You are the Light of the heavens and the earth and all within them."
-            reference="Bukhari 19:1"
+            reference="Bukhari 80:14"
             delay={0}
           />
           <ContentCard delay={0}>
@@ -1169,10 +1169,10 @@ export function MidnightTab() {
               <p className="text-themed-muted text-sm leading-relaxed">
                 &quot;Make Witr as your last prayer at night.&quot;
               </p>
-              <p className="text-themed-muted text-sm mt-2 leading-relaxed">
-                <span className="text-gold font-medium">How:</span> Minimum 1 rak&apos;ah, best is 3. Include Qunut dua in the last rak&apos;ah.
-              </p>
               <Ref text="Bukhari 14:9" />
+              <p className="text-themed-muted text-sm mt-2 leading-relaxed">
+                <span className="text-gold font-medium">How:</span> Witr can be 1, 3, or more rak&apos;ahs — the Prophet &#xFDFA; prayed it in different numbers. Many scholars recommend the Qunut supplication in the last rak&apos;ah; the schools differ over when it is said.
+              </p>
               <div className="flex gap-3 flex-wrap mt-3">
                 <Link href="/salah" className="text-xs text-gold hover:text-gold/80 underline underline-offset-2">View Salah guide →</Link>
                 <Link href="/duas" className="text-xs text-gold hover:text-gold/80 underline underline-offset-2">Browse Duas →</Link>
@@ -1936,11 +1936,11 @@ function WorshipContent({ activeSub, setActiveSub, visibleKeys }: { activeSub: W
 /* Sources & References — aggregated from the refs already shown on this page's
    cards, KEYED BY SUB-VIEW so the card always reflects the current selection. */
 const worshipSources: Record<WorshipSub, { ref: string; desc: string }[]> = {
-  morning: [{ ref: "Bukhari 80:9; Muslim 6:118; Nasai, Sunan al-Kubra 9928; Abu Dawud 43:310; Muslim 5:188; Bukhari 80:100; Bukhari 80:98; Abu Dawud 43:305; Tirmidhi 48:22; Muslim 48:101; Ibn Majah 34:43; Abu Dawud 8:114; Abu Dawud 43:300; Abu Dawud 43:318; Tirmidhi 48:111; Quran 17:78; Muslim 6:101", desc: "Morning — waking, Fajr, the morning adhkar, Quran time, and Duha" }],
+  morning: [{ ref: "Bukhari 80:9; Muslim 6:118; Nasai, Sunan al-Kubra 9928; Abu Dawud 43:310; Muslim 5:188; Bukhari 80:100; Bukhari 80:99; Abu Dawud 43:305; Abu Dawud 43:296; Muslim 48:101; Ibn Majah 34:43; Abu Dawud 8:114; Abu Dawud 43:300; Abu Dawud 43:318; Tirmidhi 48:111; Quran 17:78; Muslim 6:101", desc: "Morning — waking, Fajr, the morning adhkar, Quran time, and Duha" }],
   afternoon: [{ ref: "Tirmidhi 2:281; Tirmidhi 48:14; Ibn Majah 5:123; Quran 2:238; Bukhari 78:52; Muslim 45:90; Hakim Mustadrak 1:564; Abu Dawud 8:116; Bukhari 11:59; Abu Dawud 2:659", desc: "Afternoon — Dhuhr, midday dhikr, Asr, charity, and the Friday sunnahs" }],
-  evening: [{ ref: "Bukhari 9:50; Abu Dawud 43:302; Bukhari 80:3; Muslim 48:101; Abu Dawud 8:114; Abu Dawud 43:300; Abu Dawud 43:318; Tirmidhi 48:111; Abu Dawud 29:44; Abu Dawud 29:45; Tirmidhi 48:236; Bukhari 14:9; Bukhari 78:69; Muslim 6:252; Tirmidhi 45:3", desc: "Evening — Maghrib, the evening adhkar, Isha & Witr, and family time" }],
+  evening: [{ ref: "Bukhari 9:50; Ibn Majah 34:42; Abu Dawud 43:302; Bukhari 80:3; Muslim 48:101; Abu Dawud 8:114; Abu Dawud 43:300; Abu Dawud 43:318; Tirmidhi 48:111; Abu Dawud 29:44; Abu Dawud 29:45; Tirmidhi 48:236; Bukhari 14:9; Bukhari 78:69; Muslim 6:252; Tirmidhi 45:3", desc: "Evening — Maghrib, the evening adhkar, Isha & Witr, and family time" }],
   sleep: [{ ref: "Bukhari 80:8; Muslim 48:75; Bukhari 66:39; Bukhari 40:11; Bukhari 66:31; Abu Dawud 43:273; Bukhari 91:5; Bukhari 19:35; Ibn Majah 34:55; Bukhari 80:4", desc: "Before sleep — the sleep sunnahs, bedtime duas, bad dreams, and istighfar" }],
-  midnight: [{ ref: "Muslim 6:147; Bukhari 19:26; Muslim 52:77; Tirmidhi 2:265; Nasai 20:47; Bukhari 19:1; Quran 3:17; Bukhari 30:32", desc: "Midnight — Tahajjud, Allah's nearness in the last third, Witr, and suhoor" }],
+  midnight: [{ ref: "Bukhari 19:28; Bukhari 19:26; Muslim 52:77; Tirmidhi 2:265; Nasai 20:47; Bukhari 80:14; Quran 3:17; Bukhari 30:32", desc: "Midnight — Tahajjud, Allah's nearness in the last third, Witr, and suhoor" }],
 };
 const sunnahSources: Record<SunnahSub, { ref: string; desc: string }[]> = {
   eating: [{ ref: "Abu Dawud 28:32; Muslim 36:139; Bukhari 70:4; Abu Dawud 27:54; Muslim 36:148; Muslim 48:123; Abu Dawud 34:4; Tirmidhi 48:89; Bukhari 70:37; Muslim 36:254; Ibn Majah 29:37; Abu Dawud 28:29; Tirmidhi 36:77; Bukhari 74:57", desc: "Eating & drinking" }],

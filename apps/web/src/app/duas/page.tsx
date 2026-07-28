@@ -303,11 +303,11 @@ function DuasContent() {
                   Why These Duas Are the Most Powerful
                 </h3>
                 <p className="text-sm text-themed-muted leading-relaxed mb-3">
-                  These are not opinions or rankings — each of these duas carries an <strong className="text-themed">explicit, extraordinary promise</strong> from the Prophet Muhammad (peace be upon him), narrated in Sahih al-Bukhari and Sahih Muslim, the two most rigorously authenticated hadith collections. Scholars across all schools of thought agree on their virtues.
+                  These are not opinions or rankings — each of these duas carries an <strong className="text-themed">explicit, extraordinary promise</strong> from the Prophet Muhammad (peace be upon him), narrated in the Sahihs of al-Bukhari and Muslim, or in Sunan narrations graded authentic (see each dua&rsquo;s source line). Scholars across all schools of thought agree on their virtues.
                 </p>
                 <ul className="text-sm text-themed-muted space-y-1.5 list-disc list-inside">
                   <li><strong className="text-themed">Sayyid al-Istighfar</strong> — The Prophet called it the <em>master</em> of all istighfar; promised Paradise for whoever says it with conviction</li>
-                  <li><strong className="text-themed">Ayatul Kursi</strong> — The greatest verse in the Quran; guaranteed protection at night and nothing prevents Paradise except death</li>
+                  <li><strong className="text-themed">Ayatul Kursi</strong> — The greatest verse in the Quran; recited at bedtime, a guard from Allah protects you until dawn; recited after every obligatory prayer, nothing prevents Paradise except death</li>
                   <li><strong className="text-themed">The Three Quls</strong> — &ldquo;Will suffice you against everything&rdquo; — a comprehensive shield</li>
                   <li><strong className="text-themed">Dua of Yunus</strong> — &ldquo;No Muslim supplicates with this except that Allah answers&rdquo; — a guaranteed response</li>
                   <li><strong className="text-themed">Tahleel (100x)</strong> — Equivalent to freeing ten slaves; a fortress from Shaytan until evening</li>
