@@ -82,20 +82,30 @@ grant execute on function public.set_my_reengagement_push(boolean) to authentica
 -- ============================================================================
 -- 3. Re-schedule the content push: DAILY → WEDNESDAYS
 -- ============================================================================
+-- ⚠️⚠️ SUPERSEDED BY MIGRATION 031 — DO NOT RE-RUN THIS SECTION. ⚠️⚠️
+--    031 replaces 'push-weekly-dua' ('0 14 * * 3') with 'push-dua-hourly'
+--    ('0 * * * *') and moves the "is it time?" decision into /api/push/daily,
+--    which sends at ~10:00 Wednesday in each DEVICE'S OWN timezone. Re-running
+--    this file resurrects the UTC-pinned weekly job ALONGSIDE the hourly one and
+--    users get the duʿā twice. If you ever do re-run it, re-run 031 afterwards —
+--    031 unschedules every historical job name, so it is always the fix.
+--    (§1 and §2 above — the profiles columns and their RPCs — remain current.)
+--
 -- The job is renamed 'push-daily' → 'push-weekly-dua' so cron.job stops lying
 -- about what it does. BOTH names are unscheduled first, so re-running this file
 -- is safe and no orphaned daily job can survive the rename.
 --
 -- ⚠️ Do NOT re-run 026 or 029 §3 after this migration: both re-create
 --    'push-daily' on '0 14 * * *' and you would be back to a daily send (on top
---    of this weekly one). If you ever do, just re-run this file afterwards.
+--    of this weekly one). If you ever do, just re-run 031 afterwards.
 --
 -- Schedule is UTC (Supabase DB tz): '0 14 * * 3' = 14:00 UTC every Wednesday
 -- (pg_cron day-of-week 3 = Wednesday, 0 = Sunday) — same hour the daily job used.
--- ⚠️ 14:00 UTC is "Wednesday morning" in the Americas (9am ET / 6am PT) but mid
---    afternoon in Europe and evening in South/Southeast Asia. The Settings copy
---    therefore says only "every Wednesday", with no time of day — if you re-time
---    this to a local hour, update that subtitle to match.
+-- ⚠️ HISTORICAL NOTE (fixed by 031): 14:00 UTC was "Wednesday morning" in the
+--    Americas (9am ET / 6am PT) but mid afternoon in Europe and evening in
+--    South/Southeast Asia, and it drifted an hour at every DST change. That is
+--    why the Settings copy used to say only "every Wednesday" with no time of
+--    day; since 031 timed the send per device it reads "Wednesday morning".
 -- Still dispatched through push_post() (029) — never a hard-coded URL/secret, so
 -- an unseeded dev DB stays inert.
 select cron.unschedule('push-daily')      where exists (select 1 from cron.job where jobname = 'push-daily');

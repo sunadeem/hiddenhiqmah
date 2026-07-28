@@ -6,8 +6,16 @@
  * Separate from notifications.ts (local scheduling): remote push does not consume
  * the local 64-pending budget and never touches the adhan/prayer scheduler. We:
  *   1. once notification permission is granted, register with APNs,
- *   2. persist the returned device token to Supabase (upsert_device_token RPC),
+ *   2. persist the returned device token — plus this device's IANA timezone — to
+ *      Supabase (upsert_device_token RPC),
  *   3. route a tapped push to its deep link (same extra.url contract as local).
+ *
+ * The timezone is what lets the weekly duʿā arrive at ~10am local instead of a
+ * fixed UTC hour (migration 031). It re-uploads on EVERY foreground, because
+ * MobileShell calls registerPush() from its appStateChange listener and iOS
+ * re-emits the `registration` event on each register() — so a user who flies to
+ * another zone (or edits their device clock) is corrected the next time they open
+ * the app, with no extra plumbing.
  *
  * Mobile is browsable without an account (soft gate) and the RPC needs auth.uid(),
  * so when signed out we cache the token and re-persist on the next foreground /
@@ -74,6 +82,32 @@ async function syncPushPrefs(): Promise<void> {
 const APNS_ENV: "production" | "sandbox" =
   process.env.NEXT_PUBLIC_APNS_ENVIRONMENT === "sandbox" ? "sandbox" : "production";
 
+/**
+ * This device's IANA timezone name (e.g. "America/Toronto"), or null.
+ *
+ * Stored on device_tokens (migration 031) so the weekly duʿā push can be sent at
+ * ~10:00 on Wednesday in the user's OWN local time instead of a fixed 14:00 UTC.
+ * It must be the zone NAME, never an offset: an offset is only correct for half
+ * the year, and the server re-derives the offset from the name on every send so
+ * DST needs no migration.
+ *
+ * Wrapped in try/catch and 64-char-bounded (the column's check constraint):
+ * registration is how a device becomes reachable at all, and must never fail
+ * over a timezone lookup. null simply means "unknown", which the server reads as
+ * "leave whatever zone is on file" and, if there is none, "keep this device on
+ * the legacy 14:00 UTC send".
+ */
+function deviceTimezone(): string | null {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (typeof tz !== "string") return null;
+    const trimmed = tz.trim();
+    return trimmed && trimmed.length <= 64 ? trimmed : null;
+  } catch {
+    return null;
+  }
+}
+
 let navigateFn: ((url: string) => void) | null = null;
 let listenersReady = false;
 
@@ -91,10 +125,18 @@ async function persistToken(token: string): Promise<void> {
       }
       return;
     }
+    // p_timezone is a DEFAULTED argument on a single (non-overloaded)
+    // upsert_device_token — migration 031 deliberately dropped the old 3-arg
+    // signature rather than adding an overload, because two candidates matching
+    // the same argument names is how PostgREST ends up answering PGRST203 and
+    // token registration stops working for older builds. Sending the key
+    // explicitly (even as null) is therefore safe and unambiguous; null means
+    // "keep whatever zone is already on file".
     const { error } = await supabase.rpc("upsert_device_token", {
       p_token: token,
       p_platform: "ios",
       p_environment: APNS_ENV,
+      p_timezone: deviceTimezone(),
     });
     if (error) {
       try {

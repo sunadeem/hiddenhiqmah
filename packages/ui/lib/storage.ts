@@ -86,8 +86,9 @@ export type NotificationPrefs = {
   /** Remote push when someone posts in one of your Circles. Opt-in — default
    *  FALSE. Mirrored server-side to profiles.circle_push via set_my_circle_push. */
   circleChat: boolean;
-  /** Remote push carrying a duʿā, once a week (Wednesday). Opt-OUT — default
-   *  TRUE. Mirrored server-side to profiles.dua_push via set_my_dua_push. */
+  /** Remote push carrying a duʿā, once a week — ~10:00 on Wednesday in the
+   *  device's own timezone (migration 031). Opt-OUT — default TRUE. Mirrored
+   *  server-side to profiles.dua_push via set_my_dua_push. */
   duaPush: boolean;
   /** Remote "we've missed you" nudge, sent only to devices inactive 3+ days.
    *  Opt-OUT — default TRUE. Mirrored server-side to profiles.reengagement_push

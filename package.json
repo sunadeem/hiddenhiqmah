@@ -7,6 +7,7 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "build:search-index": "node scripts/build-hadith-index.mjs",
+    "build:quran-index": "node scripts/build-search-index.mjs",
     "build:mobile": "turbo run build:mobile",
     "lint": "turbo run lint",
     "web:dev": "pnpm --filter @hidden-hiqmah/web dev",

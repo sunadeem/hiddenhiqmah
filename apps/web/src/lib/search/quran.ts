@@ -92,10 +92,12 @@ function surahName(surahId: number): string {
 //
 // The Quran is small enough (6,236 verses, ~900KB of English) to index on
 // first use, so there is no committed artifact to keep in sync. It is built
-// from verses/*.json rather than the existing quran/search-index.json because
-// that file predates the Rowwad translation swap: its text no longer matches
-// what the reader displays, so searching it would surface verses whose quoted
-// wording the user can never find in the app.
+// from verses/*.json rather than the committed quran/search-index.json because
+// that artifact is a different thing: a lowercased full-text blob for the surah
+// list's substring search, with no tokens, positions or BM25 stats. Building
+// from verses/*.json also means this index cannot drift from what the reader
+// displays — the committed one did exactly that, sitting on the pre-Rowwad
+// translation until scripts/build-search-index.mjs was repaired and re-run.
 
 interface QuranIndex {
   surahOf: Int32Array;
