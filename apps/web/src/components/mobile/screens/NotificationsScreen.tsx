@@ -251,15 +251,18 @@ export default function NotificationsScreen() {
 
       {/* Server-sent (APNs) pushes — these come from Hiqmah's backend, not the
           on-device scheduler, so their real switch is the profiles column each
-          toggle syncs. Times are the cron's (14:00/15:00 UTC), not local. */}
+          toggle syncs. The duʿā is timed to THIS device's timezone (031); the
+          check-in nudge is still a fixed 15:00 UTC, hence no time claim on it. */}
       <SettingsSection heading="From Hiqmah">
         <SettingsRow
           icon={Heart}
           title="Weekly duʿā"
-          // No time-of-day claim: the send is a fixed 14:00 UTC (migration 030),
-          // which is morning in the Americas but afternoon/evening elsewhere.
-          // If that cron ever moves to a local hour, say so here too.
-          subtitle="A duʿā every Wednesday"
+          // "morning" is honest again as of migration 031: the cron ticks hourly
+          // and the server sends at ~10:00 Wednesday in the device's own IANA
+          // timezone, DST included. Before that it was a fixed 14:00 UTC, so this
+          // subtitle deliberately named no time — if the schedule ever goes back
+          // to UTC-pinned, drop "morning" again.
+          subtitle="A duʿā every Wednesday morning"
           toggle={notif.duaPush !== false}
           onToggle={(v) => updateDuaPush(v)}
         />

@@ -2,7 +2,7 @@
 
 Every notification Hiqmah delivers, when it fires, and whether the user can turn it off.
 Generated from `lib/mobile/notifications.ts`, `lib/mobile/islamic-events.ts`, the
-`/api/push/*` routes, and the pg_cron schedule in migrations 026 / 029 / 030.
+`/api/push/*` routes, and the pg_cron schedule in migrations 026 / 029 / 030 / 031.
 
 Two systems are in play:
 
@@ -10,8 +10,10 @@ Two systems are in play:
   location + user prefs. Works offline, fires at a fixed **local** time, and is
   capped by iOS at 64 pending (see the tier budget in `notifications.ts`).
 - **Remote push (APNs)** — sent from the server, driven by pg_cron via
-  `public.push_post()`. Fires at a fixed **UTC** time and reads its audience from
-  `profiles` columns, not from this device's localStorage.
+  `public.push_post()`, reading its audience from `profiles` columns rather than
+  this device's localStorage. The **weekly duʿā** is timed per device in that
+  device's own IANA timezone (migration 031); the **check-in nudge** is still a
+  fixed UTC hour, which is fine for a "you've been away a few days" nudge.
 
 **Volume, on default settings:** 14 on a typical day; 15 on Wednesday (+ duʿā) or
 Friday (+ Jumu'ah).
@@ -29,7 +31,7 @@ location and date. Everything else is at a fixed time.
 | 5:42 am | Fajr | Local | `prayerNotif` |
 | 8:00 am | Today's Verse | Local | `todaysVerse` |
 | 9:30 am | Jumu'ah *(Fridays)* | Local | `jumuah` |
-| 10:00 am | **Weekly duʿā** *(Wednesdays)* | Remote | `duaPush` |
+| 10:00 am *(local)* | **Weekly duʿā** *(Wednesdays)* | Remote | `duaPush` |
 | 10:00 am | Islamic event *(event days)* | Local | `islamicEvents` |
 | 10:00 am | White Days *(monthly)* | Local | `whiteDays` |
 | 11:00 am | **Check-in nudge** *(Mon, inactive 3+ days)* | Remote | `reengagementPush` |
@@ -63,7 +65,7 @@ location and date. Everything else is at a fixed time.
 | Islamic events | 10:00 am, event days | Local | `islamicEvents` | On |
 | Laylat al-Qadr | 8:30 pm, odd nights | Local | `islamicEvents` | On |
 | White Days | 10:00 am, monthly | Local | `whiteDays` | On |
-| **Weekly duʿā** | Wed 14:00 UTC | Remote | `duaPush` → `profiles.dua_push` | On |
+| **Weekly duʿā** | Wed ~10:00 **local** (each device's own zone) | Remote | `duaPush` → `profiles.dua_push` | On |
 | **Check-in nudge** | Mon 15:00 UTC | Remote | `reengagementPush` → `profiles.reengagement_push` | On |
 | Circle chat | On each message | Remote | `circleChat` → `profiles.circle_push` | **Off** (opt-in) |
 | Announcement | Ad hoc (manual) | Remote | — | Always |
@@ -129,23 +131,56 @@ than a hard ceiling on how many a user ever receives.
 
 ---
 
-## Known gap: the push is scheduled in UTC, not local time
+## How the weekly duʿā lands at 10am *local* (migration 031)
 
-Every local notification fires at a fixed **local** time. The remote push is a
-pg_cron job at a fixed **UTC** hour (`'0 14 * * 3'`), so it arrives:
+Until 031 this was a real gap: every on-device notification fired at a fixed
+**local** time, while the one remote content push was a pg_cron job at a fixed
+**UTC** hour (`'0 14 * * 3'`) — ~10am Eastern, but ~3pm in London, ~7:30pm in
+Karachi, ~10pm in Jakarta, and an hour adrift for half the year on either side of
+a DST change. Migration 031 closed it. The schedule no longer decides *who* gets
+the push, only *when to look*:
 
-- 10am Eastern in summer, **9am once the clocks change**
-- ~3pm in London, ~7:30pm in Karachi, ~10pm in Jakarta
+1. **The cron ticks hourly** — `push-dua-hourly`, `'0 * * * *'`, still dispatched
+   through `public.push_post()` (never a hard-coded URL/secret, so an unseeded dev
+   DB stays inert). Every zone therefore gets its turn once a day.
+2. **`/api/push/daily` decides per device.** `device_tokens.timezone` holds an
+   IANA **name** (`America/Toronto`), set by `upsert_device_token`'s `p_timezone`
+   from `Intl.DateTimeFormat().resolvedOptions().timeZone`. The route converts
+   "now" into that zone with `Intl.DateTimeFormat` and sends only where local
+   weekday is Wednesday **and** local hour is 10.
+3. **Never store an offset.** A name re-derives its offset from the instant on
+   every run, so DST is handled with no migration and no re-registration. A stored
+   `-04:00` would be wrong for half the year — that is the original bug.
+4. **`device_tokens.last_dua_push_at` dedupes.** The job now runs 168× a week, and
+   a zone change (or a repeated local hour at a DST boundary) could match a device
+   twice, so a device already sent inside the window is skipped. It is stamped
+   **only after APNs accepts**, so a failed send retries on the next tick instead
+   of being silently swallowed. The APNs `collapse-id` (`daily-<local date>`) is
+   the second line of defence: even a double match shows one banner.
+5. **NULL timezone still works.** Every token registered before 031 shipped (and
+   any client whose `Intl` lookup threw) has no zone and keeps the **legacy 14:00
+   UTC** Wednesday send, so nobody silently stops receiving the duʿā while waiting
+   for the app update. Those devices migrate themselves: `registerPush()` runs on
+   every foreground, iOS re-emits `registration`, and the RPC writes the zone.
+   Travel and manual clock changes self-correct by the same path.
 
-Acceptable for friends-and-family testing in North America. Before a wide launch,
-either move the cron to an hour that suits the main audience, or send per-user in
-their own timezone. Until then the Settings copy deliberately says "every
-Wednesday" with **no time of day** — don't reintroduce a "morning" claim without
-also changing the schedule.
+   One accepted edge in that migration: a device that uploads its zone for the
+   first time **on a Wednesday, after its own local 10:00 but before 14:00 UTC**
+   falls between the two schedules and misses that single week — the local
+   window has passed, and it is no longer on the legacy path. Closing it would
+   mean sending some users a duʿā at an arbitrary local hour, possibly late at
+   night, which is a worse trade than one skipped week during a one-time
+   migration.
+
+Because the copy is now honest about the time, the Settings row reads **"A duʿā
+every Wednesday morning"** again. If the schedule ever goes back to UTC-pinned,
+drop "morning" from `NotificationsScreen.tsx`.
 
 ## Operational gotcha
 
-Migration 030 renamed the content cron `push-daily` → `push-weekly-dua`.
-**Re-running migration 026, or 029 §3, resurrects a daily `push-daily` job**
-alongside the weekly one, and users would get both. 030 unschedules both names,
-so re-running *030* is always the fix.
+The content cron has been renamed twice: `push-daily` → `push-weekly-dua` (030) →
+`push-dua-hourly` (031). **Re-running migration 026 or 029 §3 resurrects a daily
+`push-daily` job, and re-running 030 §3 resurrects the UTC-pinned weekly
+`push-weekly-dua`** — either would sit alongside the hourly job and users would
+get the duʿā twice. Migration 031 unschedules *all three* names before scheduling
+its own, so re-running **031** is always the fix.
