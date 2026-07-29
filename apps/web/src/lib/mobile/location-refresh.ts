@@ -31,6 +31,7 @@ import {
 } from "@hidden-hiqmah/ui/lib/location-cache";
 import { formatLocation, reverseGeocode } from "@hidden-hiqmah/ui/lib/location";
 import { scheduleAllNotifications } from "@/lib/mobile/notifications";
+import { syncWidgetData } from "@/lib/mobile/widgets";
 
 // The event name lives in the leaf cache module so web-only surfaces can listen
 // without importing this (native) module; re-exported for existing importers.
@@ -80,10 +81,22 @@ async function withGeoTimeout(lat: number, lng: number) {
   ]);
 }
 
-function broadcastLocationChanged(): void {
+/**
+ * The cached fix just changed — tell everything that renders from it.
+ *
+ * Two audiences: mounted screens (via the DOM event) and the native widgets,
+ * which live in a separate process and can only see what we've written into the
+ * App Group. Forced, because the widget's whole input set (coordinates, and the
+ * city it's captioned with) is exactly what just changed — its normal 6-hour
+ * write window would otherwise leave the home screen showing the old city's
+ * prayer times for the rest of the day you landed. Fire-and-forget: publishing
+ * must never delay (or fail) a location refresh.
+ */
+function publishLocationChange(): void {
   if (typeof window !== "undefined") {
     window.dispatchEvent(new Event(LOCATION_CHANGED_EVENT));
   }
+  void syncWidgetData({ force: true });
 }
 
 async function runRefresh(force: boolean): Promise<LocationRefreshResult | null> {
@@ -148,7 +161,7 @@ async function runRefresh(force: boolean): Promise<LocationRefreshResult | null>
           });
           // Titles bake in the city, so the pending notifications need rebuilding.
           await scheduleAllNotifications(false);
-          broadcastLocationChanged();
+          publishLocationChange();
           return { changed: false, moved };
         }
       }
@@ -182,7 +195,7 @@ async function runRefresh(force: boolean): Promise<LocationRefreshResult | null>
     await scheduleAllNotifications(false);
     // Broadcast now, not after the geocode: mounted screens are showing the old
     // city's TIMES, which matter more than the label they're captioned with.
-    broadcastLocationChanged();
+    publishLocationChange();
 
     // Now the cosmetic part. Bounded, because a hung lookup must not hold this
     // refresh's queue slot: notification titles print loc.city ("Maghrib ·
@@ -199,7 +212,7 @@ async function runRefresh(force: boolean): Promise<LocationRefreshResult | null>
         display: resolved,
       });
       await scheduleAllNotifications(false);
-      broadcastLocationChanged();
+      publishLocationChange();
     }
     return { changed: true, ...(moved !== undefined ? { moved } : {}) };
   } catch {

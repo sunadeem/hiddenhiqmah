@@ -1,6 +1,7 @@
 "use client";
 
 import { Capacitor } from "@capacitor/core";
+import { syncWidgetData } from "@/lib/mobile/widgets";
 
 // Module-scoped so the viewport observer survives (and is not duplicated by)
 // remounts of the component that calls applyNativeSetup.
@@ -69,6 +70,16 @@ export async function applyNativeSetup() {
   } catch {
     // plugin unavailable; ignore
   }
+
+  // Republish prayer times to the App Group so the home-screen / Lock Screen
+  // widgets render without running JS. Fire-and-forget and self-throttling (see
+  // widgets.ts): the widget extension can't compute anything itself, so "the app
+  // was opened" is the main event that refreshes it. Unlike the scheduler below
+  // this is idempotent — no cancel-then-rebuild window — so running it here AND
+  // from MobileShell's foreground pass is harmless; the second call short-
+  // circuits on the write stamp, or fills in the gap when the first one ran
+  // before any location fix existed.
+  void syncWidgetData();
 
   // NOTE: the launch-time (re)schedule deliberately lives in MobileShell, not
   // here. scheduleAllNotifications cancels everything before rebuilding, so two

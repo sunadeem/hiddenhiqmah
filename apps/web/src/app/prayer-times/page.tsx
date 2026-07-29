@@ -642,6 +642,16 @@ function PrayerTimesContent() {
     setPtMethod(newMethod);
     // Persist so the Home card + scheduled adhan use the same method.
     setPrayerSettings({ calcMethod: newMethod as PrayerCalcMethod });
+    // Republish the native widgets' precomputed month, which was built with the
+    // OLD method (forced, since the write window exists to skip no-op rewrites,
+    // and this is not one). Lazily imported for the same reason Auto-locate
+    // imports the refresher below: this is a public web route, and its chunk
+    // must not statically pull in the native graph. No-op on web.
+    if (isNative()) {
+      void import("@/lib/mobile/widgets")
+        .then((m) => m.syncWidgetData({ force: true }))
+        .catch(() => {});
+    }
     // Re-fetch from the active coordinates when we have them: preserves the
     // Hanafi Asr madhab + exact location and keeps working offline (on-device
     // path). Only the manual-city fallback (no coords) uses the network API.
