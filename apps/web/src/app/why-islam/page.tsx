@@ -415,7 +415,7 @@ const proofTopics: Topic[] = [
           title: "Abolished racism 1,400 years ago",
           detail:
             "In his Farewell Sermon, the Prophet declared: 'An Arab has no superiority over a non-Arab, nor a non-Arab over an Arab; a white has no superiority over a black, nor a black over a white — except by piety and good action.' This was said in 632 CE — over 1,200 years before the American Civil Rights Movement.",
-          note: "Ahmad 23489",
+          note: "Musnad Ahmad 23489 (isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700) — not in this app's local collection",
         },
         {
           title: "Women's rights in the 7th century",
@@ -434,7 +434,7 @@ const proofTopics: Topic[] = [
             "Unlike religions that address only spiritual matters, Islam provides guidance for every aspect of life: personal hygiene, diet, business ethics, criminal justice, international relations, environmental stewardship, and treatment of animals. No other religion offers such a comprehensive and integrated system of life.",
         },
       ],
-      source: "Quran 49:13; Quran 4:7; Quran 4:19; Ahmad 23489",
+      source: "Quran 49:13; Quran 4:7; Quran 4:19; Musnad Ahmad 23489 (isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700) — not in this app's local collection",
     },
   },
   {
@@ -907,7 +907,7 @@ const judaismTopics: Topic[] = [
           title: "Ethnic superiority contradicts divine justice",
           detail:
             "A just God does not favor one ethnic group over all of humanity based on lineage. Islam teaches that the only criterion that elevates a person before God is righteousness (taqwa) — not race, ethnicity, or ancestry. The Farewell Sermon declared: 'An Arab has no superiority over a non-Arab, nor a non-Arab over an Arab; a white has no superiority over a black, nor a black over a white — except by piety.'",
-          note: "Ahmad 23489",
+          note: "Musnad Ahmad 23489 (isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700) — not in this app's local collection",
         },
         {
           title: "The covenant was conditional, not unconditional",
@@ -922,7 +922,7 @@ const judaismTopics: Topic[] = [
           note: "Quran 35:24; Quran 34:28",
         },
       ],
-      source: "Quran 49:13; Quran 35:24; Ahmad 23489; Exodus 19:5",
+      source: "Quran 49:13; Quran 35:24; Exodus 19:5; Musnad Ahmad 23489 (isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700) — not in this app's local collection",
     },
   },
   {
@@ -1049,7 +1049,7 @@ const hinduismTopics: Topic[] = [
           title: "Islam abolished birth-based hierarchy",
           detail:
             "1,400 years ago, Islam declared: 'An Arab has no superiority over a non-Arab, nor a non-Arab over an Arab; a white has no superiority over a black, nor a black over a white — except by piety.' Bilal, a freed Ethiopian slave, was chosen as the first muezzin (caller to prayer). Salman al-Farisi, a Persian, was honored as one of the Prophet's closest companions. Islam's egalitarianism is not just theoretical — it was practiced from day one.",
-          note: "Ahmad 23489; Quran 49:13",
+          note: "Quran 49:13; Musnad Ahmad 23489 (isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700) — not in this app's local collection",
         },
         {
           title: "Karma justifies oppression",
@@ -1057,7 +1057,7 @@ const hinduismTopics: Topic[] = [
             "The caste system is theologically justified by karma: a Dalit's suffering is 'deserved' because of sins in a past life. This creates a moral catastrophe — there is no obligation to help the oppressed because their oppression is 'cosmic justice.' Islam rejects this absolutely: every person is born sinless, suffering is a test not a punishment, and social justice is a religious obligation.",
         },
       ],
-      source: "Quran 49:13; Ahmad 23489",
+      source: "Quran 49:13; Musnad Ahmad 23489 (isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700) — not in this app's local collection",
     },
   },
   {

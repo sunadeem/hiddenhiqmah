@@ -23,8 +23,17 @@ import {
   Users,
   Sparkles,
   Layers,
+  Tags,
+  HeartHandshake,
+  Flame,
+  HandHeart,
+  Scale,
+  Handshake,
+  RotateCcw,
+  type LucideIcon,
 } from "lucide-react";
 import { parseHadithRef } from "@hidden-hiqmah/ui/lib/search";
+import { hadithTopics } from "@/data/hadith-topics";
 import {
   SincerityIllustration,
   SafeFromHarmIllustration,
@@ -99,8 +108,12 @@ const featuredHadiths = [
     narrator: "Narrated 'Abdullah bin 'Amr",
     collection: "bukhari",
     collectionName: "Bukhari",
+    // Bukhari 2:3 — the quoted 'Abdullah bin 'Amr narration. `hadithId` here is
+    // the IN-BOOK number, which is what the reader resolves ?h= against first;
+    // the previous value (10, the collection-wide id) matched data-ref "2:10"
+    // and silently opened an unrelated hadith about the Ansar.
     bookId: 2,
-    hadithId: 10,
+    hadithId: 3,
     theme: "Character",
     illustration: SafeFromHarmIllustration,
   },
@@ -165,8 +178,10 @@ const featuredHadiths = [
     narrator: "Narrated Anas bin Malik",
     collection: "bukhari",
     collectionName: "Bukhari",
-    bookId: 4,
-    hadithId: 220,
+    // Bukhari 78:152 — the Anas narration quoted above. Previously pointed at
+    // book 4 / 220, which resolved to an unrelated Abu Huraira report.
+    bookId: 78,
+    hadithId: 152,
     theme: "Mercy",
     illustration: MercyIllustration,
   },
@@ -248,6 +263,22 @@ const featuredHadiths = [
     illustration: SincerityIllustration,
   },
 ];
+
+/* ───────────────────────── Browse by topic ─────────────────────────
+   Curated in src/data/hadith-topics.ts. Every entry was read in full in the
+   local corpus before inclusion, and each snippet is a byte-identical slice of
+   that entry's English translation — so nothing shown here is paraphrased. */
+
+const topicIcons: Record<string, LucideIcon> = {
+  HeartHandshake,
+  Users,
+  Flame,
+  HandHeart,
+  Scale,
+  Handshake,
+  GraduationCap,
+  RotateCcw,
+};
 
 /* ───────────────────── "About Hadith" educational content ───────────────────── */
 
@@ -642,6 +673,7 @@ function buildSnippet(text: string, query: string): string {
 export default function HadithPage() {
   const [selected, setSelected] = useState<string>("bukhari");
   const [aboutSub, setAboutSub] = useState<AboutSub>("what");
+  const [topicSub, setTopicSub] = useState<string>(hadithTopics[0].id);
   const [metadataMap, setMetadataMap] = useState<Record<string, CollectionMeta>>({});
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -754,9 +786,12 @@ export default function HadithPage() {
   const isSearching = search.length >= 3 || !!hadithRef;
 
   const isFeatured = selected === "featured";
+  const isTopics = selected === "topics";
   const isAbout = selected === "about";
   const isNawawi = selected === "nawawi";
   const isQudsi = selected === "qudsi";
+  const activeTopic =
+    hadithTopics.find((t) => t.id === topicSub) ?? hadithTopics[0];
   const selectedInfo = collections.find((c) => c.slug === selected);
   const subtitle = currentMeta
     ? `${currentMeta.totalHadiths.toLocaleString()} hadiths across ${currentMeta.books.length} books — compiled by ${currentMeta.author}`
@@ -877,6 +912,7 @@ export default function HadithPage() {
             icon: <Star size={14} />,
             highlight: true,
           },
+          { key: "topics", label: "Topics", icon: <Tags size={14} /> },
           { key: "about", label: "About Hadith", icon: <Info size={14} /> },
           { key: "nawawi", label: "The Forty", icon: <ScrollText size={14} /> },
           { key: "qudsi", label: "Hadith Qudsi", icon: <Sparkles size={14} /> },
@@ -961,6 +997,76 @@ export default function HadithPage() {
                     );
                   })}
                 </div>
+            </>
+          ) : isTopics ? (
+            <>
+              <div className="flex items-baseline gap-3 mb-1">
+                <h2 className="text-xl font-semibold text-themed">Browse by Topic</h2>
+              </div>
+              <p className="text-sm text-themed-muted mb-5 max-w-3xl">
+                Eight themes that come up again and again in the Sunnah, each gathering a handful of
+                narrations from the collections held in this app. Every excerpt below is quoted
+                word-for-word from the translation in the reader — tap any card to open the full
+                hadith, with its Arabic and its chapter, in the collection it belongs to.
+              </p>
+
+              <SubTabLayout
+                subs={hadithTopics.map((t) => {
+                  const Icon = topicIcons[t.icon];
+                  return {
+                    key: t.id,
+                    label: t.label,
+                    icon: Icon ? <Icon size={14} /> : undefined,
+                  };
+                })}
+                activeSub={topicSub}
+                setActiveSub={setTopicSub}
+              >
+                <div className="mb-4">
+                  <div className="flex flex-wrap items-baseline gap-2 mb-1">
+                    <h3 className="text-lg font-semibold text-themed">{activeTopic.label}</h3>
+                    <span className="text-xs text-themed-muted">
+                      {activeTopic.hadiths.length} hadiths
+                    </span>
+                  </div>
+                  <p className="text-sm text-themed-muted leading-relaxed">{activeTopic.blurb}</p>
+                </div>
+
+                <div className="space-y-3">
+                  {activeTopic.hadiths.map((h) => (
+                    <Link
+                      key={`${h.collection}-${h.hadithId}`}
+                      // ?h= must be the IN-BOOK number: the reader matches
+                      // data-ref="<book>:<h>" before falling back to the
+                      // collection-wide id. See src/data/hadith-topics.ts.
+                      href={`/hadith/${h.collection}/${h.bookId}?h=${h.hadithNo}`}
+                      className="block"
+                    >
+                      <div className="card-bg rounded-xl border sidebar-border p-4 hover:border-[var(--color-gold)]/30 transition-colors">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <span className="text-[11px] px-1.5 py-0.5 rounded bg-[var(--color-gold)]/10 text-gold">
+                            {h.collectionName} {h.reference}
+                          </span>
+                          <span className="text-[11px] text-themed-muted inline-flex items-center gap-1">
+                            <ScrollText size={11} />
+                            Read in full
+                            <ArrowRight size={11} />
+                          </span>
+                        </div>
+                        <p className="text-themed text-sm leading-relaxed italic opacity-90">
+                          &ldquo;{h.snippet}&rdquo;
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+
+                <p className="text-xs text-themed-muted mt-4 opacity-70">
+                  These selections are a starting point, not the whole of what the Sunnah says on
+                  the theme. A narration is best understood alongside the others on its subject and
+                  with the explanation of qualified scholars.
+                </p>
+              </SubTabLayout>
             </>
           ) : isAbout ? (
             <>

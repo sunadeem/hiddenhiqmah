@@ -1257,8 +1257,8 @@ export const prophetStories: Record<string, ProphetStory> = {
           "After Musa's death, Yusha ibn Nun took on the responsibility of leading the Israelites into the Holy Land. He was among the few who had remained faithful when the majority of Israelites had refused to enter the land, fearing its powerful inhabitants. Under his leadership, they finally entered and established themselves there.",
         hadith: [
           {
-            text: "The Prophet ﷺ told of a prophet for whom the sun was held back from setting until Allah granted him victory — scholars identify this prophet as Yusha ibn Nun based on other narrations.",
-            source: "Muslim 32:36",
+            text: "The Prophet ﷺ told of a prophet who, setting out on campaign, asked Allah to hold the sun back for him — and it was held back until Allah granted him victory. A separate narration names him outright: 'The sun was never held back for any human being except for Yusha, on the nights he marched towards Bayt al-Maqdis.'",
+            source: "Muslim 32:36; Musnad Ahmad 8315 (isnad sahih on al-Bukhari's criterion — al-Arna'ut; also authenticated by al-Albani, as-Silsilah as-Sahihah) — not in this app's local collection",
           },
         ],
       },
@@ -1272,6 +1272,7 @@ export const prophetStories: Record<string, ProphetStory> = {
       "Quran 18:60-65 — identified as the young companion of Musa",
       "Bukhari 60:74",
       "Muslim 32:36",
+      "Musnad Ahmad 8315 — names Yusha explicitly; isnad sahih on al-Bukhari's criterion (al-Arna'ut); not in this app's local collection",
       "Ibn Kathir, Qasas al-Anbiya",
     ],
   },
@@ -1914,7 +1915,42 @@ export const prophetStories: Record<string, ProphetStory> = {
         hadith: [
           {
             text: "In his Farewell Sermon, the Prophet ﷺ said: 'All mankind is from Adam and Eve. An Arab has no superiority over a non-Arab, nor does a non-Arab have any superiority over an Arab; a white has no superiority over a black, nor does a black have any superiority over a white — except by piety and good action.'",
-            source: "Ahmad 23489 (Farewell Sermon; not in this app's local collection)",
+            source: "Musnad Ahmad 23489 (Farewell Sermon; isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700; not in this app's local collection)",
+          },
+        ],
+      },
+      {
+        title: "The Great Intercession",
+        content:
+          "On the Day of Resurrection, when the sun draws near and the crowds can bear no more, people will search for someone to intercede with Allah so the reckoning may begin. They will go to Adam, who will recall his own slip and say, ‘I am concerned with myself, I am concerned with myself’ — nafsī, nafsī — and send them to Nuh. Nuh will send them to Ibrahim, Ibrahim to Musa, Musa to Isa, and each will decline in turn. Isa will say: go to Muhammad ﷺ. He will go, fall in prostration beneath the Throne, and praise Allah with praises Allah teaches him there — until he is told, ‘Raise your head and speak, for you will be listened to; and ask, for you will be granted; and intercede, for your intercession will be accepted.’ This is the Great Intercession (ash-shafāʿah al-ʿuẓmā), the praised station (al-maqām al-maḥmūd) promised to him alone — the one scene in which every prophet in this collection stands together.",
+        verses: [
+          {
+            arabic: "وَمِنَ ٱلَّيْلِ فَتَهَجَّدْ بِهِۦ نَافِلَةً لَّكَ عَسَىٰٓ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَّحْمُودًا",
+            translation:
+              "And wake up during the night and pray, as an additional prayer for you [O Prophet], so your Lord may raise you to a praised status.",
+            reference: "Quran 17:79",
+          },
+        ],
+        hadith: [
+          {
+            text:
+              "Anas reported that the Prophet ﷺ said: the believers will say, ‘Let us ask someone to intercede for us with our Lord,’ and they will come to Adam, who will say ‘I am not fit for this undertaking’ and send them to Nuh; Nuh will send them to Ibrahim, Ibrahim to Musa, Musa to Isa, and Isa will say, ‘Go to Muhammad.’ ‘So they will come to me, and I will ask the permission of my Lord… When I see my Lord I will fall down in prostration before Him, and He will leave me as long as He wishes, and then it will be said: O Muhammad! Raise your head and speak, for you will be listened to; and ask, for you will be granted; and intercede, for your intercession will be accepted.’",
+            source: "Bukhari 97:39; Bukhari 65:3",
+          },
+          {
+            text:
+              "Abu Hurayrah reported that the Prophet ﷺ said: ‘I shall be the leader of mankind on the Day of Resurrection.’ He described the people going from Adam to Nuh to Ibrahim to Musa to Isa, each saying, ‘I am concerned with myself, I am concerned with myself,’ until they come to him: ‘I shall then set off and come below the Throne and fall down prostrate before my Lord… then it would be said: Muhammad, raise your head; ask and it would be granted; intercede and intercession would be accepted.’",
+            source: "Muslim 1:386",
+          },
+          {
+            text:
+              "In the long narration of the intercession, the Prophet ﷺ described returning again and again — each time prostrating, praising Allah with praises He teaches him, and being told, ‘Raise your head and speak, for you will be listened to; and ask, for you will be granted; and intercede, for your intercession will be accepted’ — and each time more are taken out of the Fire, down to those with the weight of a mustard seed of faith in their hearts.",
+            source: "Bukhari 97:135",
+          },
+          {
+            text:
+              "Abu Hurayrah reported that the Messenger of Allah ﷺ was asked about Allah’s words, ‘It may be that your Lord will raise you to a praised station’ (Quran 17:79), and he said: ‘It is the intercession.’",
+            source: "Tirmidhi 47:189",
           },
         ],
       },
@@ -1930,8 +1966,669 @@ export const prophetStories: Record<string, ProphetStory> = {
       "Quran: Surah Al-Alaq (96:1-5), Al-Ahzab (33:21, 40), Al-Anbiya (21:107), Al-Fath (48:29), Al-Ma'idah (5:3)",
       "Sahih al-Bukhari — numerous hadith throughout",
       "Sahih Muslim — numerous hadith throughout",
+      "Bukhari 97:39; Bukhari 97:135; Muslim 1:386 — the hadith of the Great Intercession",
+      "Tirmidhi 47:189; Bukhari 65:240 — the praised station (Quran 17:79) explained as the intercession",
       "Ar-Rahiq al-Makhtum (The Sealed Nectar) by Safiur-Rahman al-Mubarakpuri",
       "Ibn Kathir, Al-Bidaya wan-Nihaya",
+    ],
+  },
+
+  // ── Righteous figures of the Quran whose prophethood scholars debated ──
+  // Deliberately not part of the 25-prophet timeline in prophets.ts; each is
+  // surfaced from the "Righteous Figures" section of the /prophets landing.
+  maryam: {
+    slug: "maryam",
+    title: "Maryam (Mary) — The Best of Women",
+    sections: [
+      {
+        title: "Dedicated Before She Was Born",
+        content:
+          "Maryam was the daughter of ʿImran. Before she was born, her mother vowed the child in her womb to the service of Allah; when the baby proved to be a girl she named her Maryam and sought Allah’s protection for her and her offspring from Satan. Allah accepted her with a gracious acceptance, caused her to grow in a good manner, and placed her in the care of the prophet Zakariyya — who found provision waiting with her every time he entered her prayer chamber, and was told plainly: ‘It is from Allah.’",
+        verses: [
+          {
+            arabic: "إِذْ قَالَتِ ٱمْرَأَتُ عِمْرَٰنَ رَبِّ إِنِّى نَذَرْتُ لَكَ مَا فِى بَطْنِى مُحَرَّرًا فَتَقَبَّلْ مِنِّىٓ ۖ إِنَّكَ أَنتَ ٱلسَّمِيعُ ٱلْعَلِيمُ",
+            translation:
+              "[Remember] when the wife of ‘Imrān said, “My Lord, I dedicate to You what is in my womb, so accept it from me, for You are the All-Hearing, the All-Knowing.”",
+            reference: "Quran 3:35",
+          },
+          {
+            arabic: "فَلَمَّا وَضَعَتْهَا قَالَتْ رَبِّ إِنِّى وَضَعْتُهَآ أُنثَىٰ وَٱللَّهُ أَعْلَمُ بِمَا وَضَعَتْ وَلَيْسَ ٱلذَّكَرُ كَٱلْأُنثَىٰ ۖ وَإِنِّى سَمَّيْتُهَا مَرْيَمَ وَإِنِّىٓ أُعِيذُهَا بِكَ وَذُرِّيَّتَهَا مِنَ ٱلشَّيْطَـٰنِ ٱلرَّجِيمِ",
+            translation:
+              "When she gave birth, she said, “My Lord, I have given birth to a female child,” – and Allah knew best what she had given birth to – “and the male is not like the female. I have named her Mary, and I seek refuge with You for her and her offspring from Satan, the accursed.”",
+            reference: "Quran 3:36",
+          },
+          {
+            arabic: "فَتَقَبَّلَهَا رَبُّهَا بِقَبُولٍ حَسَنٍ وَأَنۢبَتَهَا نَبَاتًا حَسَنًا وَكَفَّلَهَا زَكَرِيَّا ۖ كُلَّمَا دَخَلَ عَلَيْهَا زَكَرِيَّا ٱلْمِحْرَابَ وَجَدَ عِندَهَا رِزْقًا ۖ قَالَ يَـٰمَرْيَمُ أَنَّىٰ لَكِ هَـٰذَا ۖ قَالَتْ هُوَ مِنْ عِندِ ٱللَّهِ ۖ إِنَّ ٱللَّهَ يَرْزُقُ مَن يَشَآءُ بِغَيْرِ حِسَابٍ",
+            translation:
+              "Her Lord graciously accepted her and caused her to grow in a good manner, and entrusted her to the care of Zachariah. Every time Zachariah entered her prayer chamber, he found with her some provision. He said, “O Mary, where did this come from?” She said, “It is from Allah, for Allah provides for whom He wills without measure.”",
+            reference: "Quran 3:37",
+          },
+        ],
+        hadith: [
+          {
+            text:
+              "Abu Hurayrah reported that the Prophet ﷺ said: ‘There is none born among the offspring of Adam but Satan touches it — a child cries loudly at birth because of the touch of Satan — except Maryam and her child.’ Abu Hurayrah then recited: ‘And I seek refuge with You for her and for her offspring from the outcast Satan.’",
+            source: "Bukhari 60:102; Muslim 43:191",
+          },
+        ],
+      },
+      {
+        title: "Chosen, Purified, Chosen Above All Women",
+        content:
+          "The angels addressed Maryam directly: Allah had chosen her, purified her, and chosen her above the women of the worlds — and commanded her to a life of devotion, prostration, and bowing with those who bow. The Prophet ﷺ named her among the very few who reached perfection, and the best of the women of her time.",
+        verses: [
+          {
+            arabic: "وَإِذْ قَالَتِ ٱلْمَلَـٰٓئِكَةُ يَـٰمَرْيَمُ إِنَّ ٱللَّهَ ٱصْطَفَىٰكِ وَطَهَّرَكِ وَٱصْطَفَىٰكِ عَلَىٰ نِسَآءِ ٱلْعَـٰلَمِينَ",
+            translation:
+              "And [remember] when the angels said, “O Mary, Allah has chosen you, purified you, and chosen you over all women.",
+            reference: "Quran 3:42",
+          },
+          {
+            arabic: "يَـٰمَرْيَمُ ٱقْنُتِى لِرَبِّكِ وَٱسْجُدِى وَٱرْكَعِى مَعَ ٱلرَّٰكِعِينَ",
+            translation:
+              "O Mary, worship your Lord devoutly, prostrate yourself and bow down with those who bow down.”",
+            reference: "Quran 3:43",
+          },
+        ],
+        hadith: [
+          {
+            text:
+              "ʿAli reported that he heard the Prophet ﷺ say: ‘Maryam, the daughter of ʿImran, was the best among the women of her time, and Khadijah is the best among the women of this nation.’",
+            source: "Bukhari 60:103; Muslim 44:101",
+          },
+          {
+            text:
+              "Abu Musa al-Ashʿari reported that the Messenger of Allah ﷺ said: ‘Many among men attained perfection, but among women none attained perfection except Maryam the daughter of ʿImran and Asiyah the wife of Pharaoh.’",
+            source: "Bukhari 62:114",
+          },
+        ],
+      },
+      {
+        title: "The Annunciation — a Word from Allah",
+        content:
+          "Maryam withdrew from her family to a place in the east and screened herself from them. Allah sent the angel to her in the form of a perfect man; she sought refuge in the Most Compassionate from him, and he answered that he was only a messenger from her Lord, sent to grant her a righteous son. She asked how she could have a child when no man had touched her and she had never been unchaste — and was told that this was easy for Allah, and that the child would be a sign for people and a mercy from Him.",
+        verses: [
+          {
+            arabic: "إِذْ قَالَتِ ٱلْمَلَـٰٓئِكَةُ يَـٰمَرْيَمُ إِنَّ ٱللَّهَ يُبَشِّرُكِ بِكَلِمَةٍ مِّنْهُ ٱسْمُهُ ٱلْمَسِيحُ عِيسَى ٱبْنُ مَرْيَمَ وَجِيهًا فِى ٱلدُّنْيَا وَٱلْـَٔاخِرَةِ وَمِنَ ٱلْمُقَرَّبِينَ",
+            translation:
+              "[Remember] when the angels said, “O Mary, Allah gives you glad tidings of a Word from Him, whose name will be the Messiah, Jesus, son of Mary; honorable in this world and the Hereafter, and one of those near [to Allah].",
+            reference: "Quran 3:45",
+          },
+          {
+            arabic: "فَٱتَّخَذَتْ مِن دُونِهِمْ حِجَابًا فَأَرْسَلْنَآ إِلَيْهَا رُوحَنَا فَتَمَثَّلَ لَهَا بَشَرًا سَوِيًّا",
+            translation:
+              "She screened herself from them, then We sent to her Our Spirit [Gabriel] and he appeared before her in the form of a perfect human being.",
+            reference: "Quran 19:17",
+          },
+          {
+            arabic: "قَالَتْ أَنَّىٰ يَكُونُ لِى غُلَـٰمٌ وَلَمْ يَمْسَسْنِى بَشَرٌ وَلَمْ أَكُ بَغِيًّا",
+            translation:
+              "She said, “How can I have a son when no man has touched me, nor have I ever been unchaste?”",
+            reference: "Quran 19:20",
+          },
+          {
+            arabic: "قَالَ كَذَٰلِكِ قَالَ رَبُّكِ هُوَ عَلَىَّ هَيِّنٌ ۖ وَلِنَجْعَلَهُۥٓ ءَايَةً لِّلنَّاسِ وَرَحْمَةً مِّنَّا ۚ وَكَانَ أَمْرًا مَّقْضِيًّا",
+            translation:
+              "He said, “Thus it will be; your Lord says, ‘It is easy for Me; We make him a sign for people and a mercy from Us. This matter has already been decreed.’”",
+            reference: "Quran 19:21",
+          },
+          {
+            arabic: "قَالَتْ رَبِّ أَنَّىٰ يَكُونُ لِى وَلَدٌ وَلَمْ يَمْسَسْنِى بَشَرٌ ۖ قَالَ كَذَٰلِكِ ٱللَّهُ يَخْلُقُ مَا يَشَآءُ ۚ إِذَا قَضَىٰٓ أَمْرًا فَإِنَّمَا يَقُولُ لَهُۥ كُن فَيَكُونُ",
+            translation:
+              "She said: “My Lord, how can I have a child when no man has ever touched me?” He said, “Thus Allah creates what He wills. When He decrees something, He only says to it ‘Be’, and it is.",
+            reference: "Quran 3:47",
+          },
+        ],
+      },
+      {
+        title: "The Birth Under the Palm Tree",
+        content:
+          "She carried him and withdrew to a distant place. The pains of labour drove her to the trunk of a palm tree, and in that moment she wished she had died before this and been completely forgotten. Then she was called from beneath her: do not grieve — a stream had been placed beneath her, and shaking the trunk would drop fresh ripe dates upon her. She was told to eat, drink, be glad, and to answer anyone she met with a vow of silence to the Most Compassionate.",
+        verses: [
+          {
+            arabic: "۞ فَحَمَلَتْهُ فَٱنتَبَذَتْ بِهِۦ مَكَانًا قَصِيًّا",
+            translation:
+              "So she conceived him and withdrew with him to a distant place.",
+            reference: "Quran 19:22",
+          },
+          {
+            arabic: "فَأَجَآءَهَا ٱلْمَخَاضُ إِلَىٰ جِذْعِ ٱلنَّخْلَةِ قَالَتْ يَـٰلَيْتَنِى مِتُّ قَبْلَ هَـٰذَا وَكُنتُ نَسْيًا مَّنسِيًّا",
+            translation:
+              "The pains of labor drove her to the trunk of a palm tree. She said, “Oh, would that I had died before this and had been completely forgotten!”",
+            reference: "Quran 19:23",
+          },
+          {
+            arabic: "فَنَادَىٰهَا مِن تَحْتِهَآ أَلَّا تَحْزَنِى قَدْ جَعَلَ رَبُّكِ تَحْتَكِ سَرِيًّا",
+            translation:
+              "Then he called her from beneath her, “Do not grieve; your Lord has provided a stream beneath you.",
+            reference: "Quran 19:24",
+          },
+          {
+            arabic: "وَهُزِّىٓ إِلَيْكِ بِجِذْعِ ٱلنَّخْلَةِ تُسَـٰقِطْ عَلَيْكِ رُطَبًا جَنِيًّا",
+            translation:
+              "Shake the trunk of the palm tree towards yourself; fresh ripe dates will drop upon you.",
+            reference: "Quran 19:25",
+          },
+          {
+            arabic: "فَكُلِى وَٱشْرَبِى وَقَرِّى عَيْنًا ۖ فَإِمَّا تَرَيِنَّ مِنَ ٱلْبَشَرِ أَحَدًا فَقُولِىٓ إِنِّى نَذَرْتُ لِلرَّحْمَـٰنِ صَوْمًا فَلَنْ أُكَلِّمَ ٱلْيَوْمَ إِنسِيًّا",
+            translation:
+              "Eat and drink, and be glad. And if you see any human being, say, ‘I have vowed silence to the Most Compassionate, so I will not talk to any human being today.’”",
+            reference: "Quran 19:26",
+          },
+        ],
+      },
+      {
+        title: "Facing Her People — the Cradle Answers",
+        content:
+          "She came to her people carrying him, and they accused her of something monstrous: her father had been no man of evil, nor her mother unchaste. She did not argue — she pointed to the infant. They objected that they could not speak to a baby in the cradle, and the baby spoke: a servant of Allah, given the Scripture and made a prophet. Her honour was defended by Allah Himself through the very child she was accused over. His own story is told in the entry for Prophet Isa.",
+        verses: [
+          {
+            arabic: "فَأَتَتْ بِهِۦ قَوْمَهَا تَحْمِلُهُۥ ۖ قَالُوا۟ يَـٰمَرْيَمُ لَقَدْ جِئْتِ شَيْـًٔا فَرِيًّا",
+            translation:
+              "Then she came to her people carrying him. They said, “O Mary, you have committed something monstrous!",
+            reference: "Quran 19:27",
+          },
+          {
+            arabic: "يَـٰٓأُخْتَ هَـٰرُونَ مَا كَانَ أَبُوكِ ٱمْرَأَ سَوْءٍ وَمَا كَانَتْ أُمُّكِ بَغِيًّا",
+            translation:
+              "O sister of Aaron, your father was not a man of evil, nor was your mother unchaste.”",
+            reference: "Quran 19:28",
+          },
+          {
+            arabic: "فَأَشَارَتْ إِلَيْهِ ۖ قَالُوا۟ كَيْفَ نُكَلِّمُ مَن كَانَ فِى ٱلْمَهْدِ صَبِيًّا",
+            translation:
+              "Thereupon she pointed to him. They said, “How can we talk to someone who is still a baby in the cradle?”",
+            reference: "Quran 19:29",
+          },
+          {
+            arabic: "قَالَ إِنِّى عَبْدُ ٱللَّهِ ءَاتَىٰنِىَ ٱلْكِتَـٰبَ وَجَعَلَنِى نَبِيًّا",
+            translation:
+              "Jesus said, “I am a slave of Allah. He has given me the Scripture and made me a prophet.",
+            reference: "Quran 19:30",
+          },
+          {
+            arabic: "وَٱلسَّلَـٰمُ عَلَىَّ يَوْمَ وُلِدتُّ وَيَوْمَ أَمُوتُ وَيَوْمَ أُبْعَثُ حَيًّا",
+            translation:
+              "Peace is upon me the day I was born, the day I will die and the day I will be resurrected.”",
+            reference: "Quran 19:33",
+          },
+        ],
+      },
+      {
+        title: "Was Maryam a Prophet?",
+        content:
+          "The Quran gives Maryam a title of its own: the Messiah’s ‘mother was a woman of truth’ — a ṣiddīqah (Quran 5:75) — who guarded her chastity, believed in the words of her Lord and His Scriptures, and was one of the obedient (Quran 66:12). The great majority of scholars — and many transmit it as the settled position of the scholars — held that prophethood was given only to men, citing ‘We did not send before you except men whom We gave a revelation’ (Quran 12:109), so Maryam is honoured as the greatest of women and a ṣiddīqah rather than a prophetess. A minority disagreed, most famously Ibn Hazm, who argued that because an angel brought her news from Allah she received a form of revelation and could be called a prophetess. The disagreement is about the title, not her rank: both sides read the same verses of her being chosen above the women of the worlds.",
+        verses: [
+          {
+            arabic: "مَّا ٱلْمَسِيحُ ٱبْنُ مَرْيَمَ إِلَّا رَسُولٌ قَدْ خَلَتْ مِن قَبْلِهِ ٱلرُّسُلُ وَأُمُّهُۥ صِدِّيقَةٌ ۖ كَانَا يَأْكُلَانِ ٱلطَّعَامَ ۗ ٱنظُرْ كَيْفَ نُبَيِّنُ لَهُمُ ٱلْـَٔايَـٰتِ ثُمَّ ٱنظُرْ أَنَّىٰ يُؤْفَكُونَ",
+            translation:
+              "The Messiah, son of Mary, was no more than a messenger. There were messengers who passed away before him, and His mother was a woman of truth; they both ate food. See how We make Our signs clear to them, yet see how they are deluded!",
+            reference: "Quran 5:75",
+          },
+          {
+            arabic: "وَمَرْيَمَ ٱبْنَتَ عِمْرَٰنَ ٱلَّتِىٓ أَحْصَنَتْ فَرْجَهَا فَنَفَخْنَا فِيهِ مِن رُّوحِنَا وَصَدَّقَتْ بِكَلِمَـٰتِ رَبِّهَا وَكُتُبِهِۦ وَكَانَتْ مِنَ ٱلْقَـٰنِتِينَ",
+            translation:
+              "Also [the example of] Mary, daughter of ‘Imrān who guarded her chastity, so We breathed into her through Our angel [Gabriel], and she firmly believed in the words of her Lord and His Scriptures and was one of the obedient.",
+            reference: "Quran 66:12",
+          },
+          {
+            arabic: "وَمَآ أَرْسَلْنَا مِن قَبْلِكَ إِلَّا رِجَالًا نُّوحِىٓ إِلَيْهِم مِّنْ أَهْلِ ٱلْقُرَىٰٓ ۗ أَفَلَمْ يَسِيرُوا۟ فِى ٱلْأَرْضِ فَيَنظُرُوا۟ كَيْفَ كَانَ عَـٰقِبَةُ ٱلَّذِينَ مِن قَبْلِهِمْ ۗ وَلَدَارُ ٱلْـَٔاخِرَةِ خَيْرٌ لِّلَّذِينَ ٱتَّقَوْا۟ ۗ أَفَلَا تَعْقِلُونَ",
+            translation:
+              "We did not send before you except men whom We gave a revelation, from the people of each society. Have they not traveled through the land to see how was the end of those who came before them? But the home of the Hereafter is far better for those who fear Allah. Do you not then understand?",
+            reference: "Quran 12:109",
+          },
+        ],
+      },
+    ],
+    lessons: [
+      "Allah accepts what is offered to Him sincerely — even when it does not arrive in the form we expected",
+      "Worship and purity, not lineage or status, are what raise a person with Allah",
+      "Allah defends the honour of those who trust Him — Maryam stayed silent and He answered for her",
+      "The Quran names one woman, and it names her as chosen above the women of the worlds",
+      "Hardship and honour can arrive together: the trial that terrified Maryam was the sign that vindicated her",
+    ],
+    references: [
+      "Quran: Surah Aal-E-Imran (3:33-47), Maryam (19:16-34), Al-Ma'idah (5:75), Al-Anbiya (21:91), At-Tahrim (66:12)",
+      "Bukhari 60:102; Muslim 43:191 — Maryam and her son not touched by Satan at birth",
+      "Bukhari 60:103; Muslim 44:101 — the best of the women of her time",
+      "Bukhari 62:114 — perfection attained among women by Maryam and Asiyah",
+      "Ibn Kathir, Qasas al-Anbiya — the story of Maryam and the scholarly discussion of whether she was a prophetess",
+    ],
+  },
+
+  khidr: {
+    slug: "khidr",
+    title: "Al-Khidr — The Servant Given Knowledge",
+    sections: [
+      {
+        title: "The Question That Sent Musa Travelling",
+        content:
+          "A man asked Musa whether anyone was more learned than he was, and Musa said no. Allah corrected him: His slave at the junction of the two seas had knowledge Musa did not have, and a fish was made the sign of their meeting place. Musa set out with his young companion, the fish slipped away into the sea, and there they found ‘one of Our slaves upon whom We bestowed Our mercy and We taught him from Our Own knowledge.’ The same journey is told from Musa’s side in the entry for Prophet Musa.",
+        verses: [
+          {
+            arabic: "وَإِذْ قَالَ مُوسَىٰ لِفَتَىٰهُ لَآ أَبْرَحُ حَتَّىٰٓ أَبْلُغَ مَجْمَعَ ٱلْبَحْرَيْنِ أَوْ أَمْضِىَ حُقُبًا",
+            translation:
+              "And [remember] when Moses said to his servant, “I will not give up until I reach the junction of the two seas, or I travel for ages.”",
+            reference: "Quran 18:60",
+          },
+          {
+            arabic: "فَوَجَدَا عَبْدًا مِّنْ عِبَادِنَآ ءَاتَيْنَـٰهُ رَحْمَةً مِّنْ عِندِنَا وَعَلَّمْنَـٰهُ مِن لَّدُنَّا عِلْمًا",
+            translation:
+              "There they found one of Our slaves upon whom We bestowed Our mercy and We taught him from Our Own knowledge.",
+            reference: "Quran 18:65",
+          },
+        ],
+        hadith: [
+          {
+            text:
+              "Ibn ʿAbbas differed with al-Hurr ibn Qays about the companion of Musa, and Ubayy ibn Kaʿb reported that the Prophet ﷺ said: while Musa was sitting among the Israelites a man asked him whether he knew anyone more learned than himself, and Musa said no — so Allah revealed to him, ‘Yes, Our slave Khadir,’ and made a fish the sign of their meeting place.",
+            source: "Bukhari 60:73; Bukhari 3:16; Bukhari 3:20",
+          },
+        ],
+      },
+      {
+        title: "The Condition: Ask Me About Nothing",
+        content:
+          "Musa asked to follow him and be taught. Al-Khidr warned him twice that he would never be able to bear it, because he would be watching things he had no knowledge of. Musa promised patience, if Allah willed, and obedience — and was given one condition: ask nothing until it is explained to you.",
+        verses: [
+          {
+            arabic: "قَالَ لَهُۥ مُوسَىٰ هَلْ أَتَّبِعُكَ عَلَىٰٓ أَن تُعَلِّمَنِ مِمَّا عُلِّمْتَ رُشْدًا",
+            translation:
+              "Moses said to him, “May I follow you so that you may teach me some knowledge that you have been taught?”",
+            reference: "Quran 18:66",
+          },
+          {
+            arabic: "قَالَ إِنَّكَ لَن تَسْتَطِيعَ مَعِىَ صَبْرًا",
+            translation:
+              "He said, “You will never be able to have patience with me.”",
+            reference: "Quran 18:67",
+          },
+          {
+            arabic: "قَالَ سَتَجِدُنِىٓ إِن شَآءَ ٱللَّهُ صَابِرًا وَلَآ أَعْصِى لَكَ أَمْرًا",
+            translation:
+              "Moses said, “You will find me patient, if Allah wills; and I will not disobey any of your orders.”",
+            reference: "Quran 18:69",
+          },
+          {
+            arabic: "قَالَ فَإِنِ ٱتَّبَعْتَنِى فَلَا تَسْـَٔلْنِى عَن شَىْءٍ حَتَّىٰٓ أُحْدِثَ لَكَ مِنْهُ ذِكْرًا",
+            translation:
+              "He said, “Then if you follow me, do not ask me about anything until I mention it to you.”",
+            reference: "Quran 18:70",
+          },
+        ],
+      },
+      {
+        title: "Three Acts That Baffled a Prophet",
+        content:
+          "They boarded a ship and Al-Khidr made a hole in it; Musa objected that its people would drown. They met a boy and Al-Khidr killed him; Musa objected that an innocent soul had been taken. They came to a town whose people refused them hospitality, and Al-Khidr rebuilt a wall that was about to collapse without asking for payment; Musa objected that he could at least have taken a wage. Each time he was reminded of the warning — and at the third he asked to be parted from his teacher if he objected again.",
+        verses: [
+          {
+            arabic: "فَٱنطَلَقَا حَتَّىٰٓ إِذَا رَكِبَا فِى ٱلسَّفِينَةِ خَرَقَهَا ۖ قَالَ أَخَرَقْتَهَا لِتُغْرِقَ أَهْلَهَا لَقَدْ جِئْتَ شَيْـًٔا إِمْرًا",
+            translation:
+              "So they both set out, until when they boarded a ship, he made a hole in it. Moses said, “Did you make a hole in it to drown its people? You have done something terrible!”",
+            reference: "Quran 18:71",
+          },
+          {
+            arabic: "فَٱنطَلَقَا حَتَّىٰٓ إِذَا لَقِيَا غُلَـٰمًا فَقَتَلَهُۥ قَالَ أَقَتَلْتَ نَفْسًا زَكِيَّةًۢ بِغَيْرِ نَفْسٍ لَّقَدْ جِئْتَ شَيْـًٔا نُّكْرًا",
+            translation:
+              "Then they proceeded until they met a boy, and the man killed him. Moses said, “Did you kill an innocent soul who killed none? You have done something monstrous!”",
+            reference: "Quran 18:74",
+          },
+          {
+            arabic: "فَٱنطَلَقَا حَتَّىٰٓ إِذَآ أَتَيَآ أَهْلَ قَرْيَةٍ ٱسْتَطْعَمَآ أَهْلَهَا فَأَبَوْا۟ أَن يُضَيِّفُوهُمَا فَوَجَدَا فِيهَا جِدَارًا يُرِيدُ أَن يَنقَضَّ فَأَقَامَهُۥ ۖ قَالَ لَوْ شِئْتَ لَتَّخَذْتَ عَلَيْهِ أَجْرًا",
+            translation:
+              "Then they went on until they came to the people of a town. They asked its people for food, but they refused to offer them hospitality. They found there a wall that was about to collapse, but he repaired it. Moses said, “If you wished, you could have taken some payment for it.”",
+            reference: "Quran 18:77",
+          },
+        ],
+      },
+      {
+        title: "The Wisdom Behind Each Act",
+        content:
+          "At the parting, Al-Khidr explained. The ship belonged to poor men working at sea, and a king ahead was seizing every sound ship — a defect saved their livelihood. The boy’s parents were believers, and it was feared he would overburden them with rebellion and disbelief, so a better and more merciful child was hoped for in his place. The wall stood over a treasure belonging to two orphans whose father had been righteous, and Allah willed that they reach maturity and take it out themselves. He ended with the decisive words: ‘I did not do it of my own accord.’",
+        verses: [
+          {
+            arabic: "قَالَ هَـٰذَا فِرَاقُ بَيْنِى وَبَيْنِكَ ۚ سَأُنَبِّئُكَ بِتَأْوِيلِ مَا لَمْ تَسْتَطِع عَّلَيْهِ صَبْرًا",
+            translation:
+              "The man said, “This is the parting of ways between me and you. I will inform you of the interpretation of that which you could not bear with patience.",
+            reference: "Quran 18:78",
+          },
+          {
+            arabic: "أَمَّا ٱلسَّفِينَةُ فَكَانَتْ لِمَسَـٰكِينَ يَعْمَلُونَ فِى ٱلْبَحْرِ فَأَرَدتُّ أَنْ أَعِيبَهَا وَكَانَ وَرَآءَهُم مَّلِكٌ يَأْخُذُ كُلَّ سَفِينَةٍ غَصْبًا",
+            translation:
+              "“As for the ship, it belonged to some poor people who worked at sea. I wanted to make it defective because there was a king ahead of them who seized every [good] ship by force.",
+            reference: "Quran 18:79",
+          },
+          {
+            arabic: "وَأَمَّا ٱلْغُلَـٰمُ فَكَانَ أَبَوَاهُ مُؤْمِنَيْنِ فَخَشِينَآ أَن يُرْهِقَهُمَا طُغْيَـٰنًا وَكُفْرًا",
+            translation:
+              "“As for the boy, his parents were believers, and we feared that he would overburden them with his rebellion and disbelief.",
+            reference: "Quran 18:80",
+          },
+          {
+            arabic: "فَأَرَدْنَآ أَن يُبْدِلَهُمَا رَبُّهُمَا خَيْرًا مِّنْهُ زَكَوٰةً وَأَقْرَبَ رُحْمًا",
+            translation:
+              "So we hoped that their Lord would give them another in his place, more righteous and tender-hearted.",
+            reference: "Quran 18:81",
+          },
+          {
+            arabic: "وَأَمَّا ٱلْجِدَارُ فَكَانَ لِغُلَـٰمَيْنِ يَتِيمَيْنِ فِى ٱلْمَدِينَةِ وَكَانَ تَحْتَهُۥ كَنزٌ لَّهُمَا وَكَانَ أَبُوهُمَا صَـٰلِحًا فَأَرَادَ رَبُّكَ أَن يَبْلُغَآ أَشُدَّهُمَا وَيَسْتَخْرِجَا كَنزَهُمَا رَحْمَةً مِّن رَّبِّكَ ۚ وَمَا فَعَلْتُهُۥ عَنْ أَمْرِى ۚ ذَٰلِكَ تَأْوِيلُ مَا لَمْ تَسْطِع عَّلَيْهِ صَبْرًا",
+            translation:
+              "As for the wall, it belonged to two orphan boys in the city, and there was a treasure under it that belonged to them. Their father was a righteous man, so your Lord willed that they should reach their maturity and retrieve their treasure, as a mercy from your Lord; I did not do it of my own accord. This is the interpretation of that which you could not bear with patience.”",
+            reference: "Quran 18:82",
+          },
+        ],
+      },
+      {
+        title: "Who Was Al-Khidr?",
+        content:
+          "The Quran never names him — it calls him a slave of Allah given mercy and knowledge from Him. The name Al-Khidr comes from the Prophet ﷺ himself, and one narration explains it. Scholars have long differed over whether he was a prophet (nabī) receiving revelation or a righteous servant of Allah given special knowledge: most Quran commentators lean towards his prophethood, partly because he said ‘I did not do it of my own accord’ and because taking a life is not left to a man’s own judgement; others hold he was a righteous walī and not a prophet. Whether he is still alive is a separate and equally old dispute — some scholars held that he lives on, while others held that he died like every other human being and read the reports about him as narrations rather than proofs. Neither question is settled by an explicit text, so both are reported here as scholarly positions rather than as creed.",
+        hadith: [
+          {
+            text:
+              "Abu Hurayrah reported that the Prophet ﷺ said: ‘Al-Khadir was named so because he sat over a barren white land, and it turned green with plantation after his sitting over it.’",
+            source: "Bukhari 60:75",
+          },
+        ],
+      },
+    ],
+    lessons: [
+      "There is always knowledge beyond your own — Allah sent even Musa to sit and learn",
+      "What looks like harm can be hidden mercy; the wisdom of a decree often arrives after the shock of it",
+      "Patience with a teacher, and holding the tongue, are part of seeking knowledge",
+      "Working for people without asking a wage is the way of the righteous",
+      "No one acts of his own accord in what belongs to Allah — Al-Khidr’s own last words",
+    ],
+    references: [
+      "Quran: Surah Al-Kahf (18:60-82)",
+      "Bukhari 3:16; Bukhari 3:20 — the full narration of Musa and Al-Khadir",
+      "Bukhari 60:73 — Ibn ʿAbbas and Ubayy ibn Kaʿb on the companion of Musa",
+      "Bukhari 60:75 — why he was called Al-Khadir",
+      "Ibn Kathir, Qasas al-Anbiya — the scholarly discussion of his prophethood and of whether he is alive",
+    ],
+  },
+
+  "dhul-qarnayn": {
+    slug: "dhul-qarnayn",
+    title: "Dhul-Qarnayn — The Just King and the Barrier",
+    sections: [
+      {
+        title: "A Question Put to the Prophet ﷺ",
+        content:
+          "Dhul-Qarnayn — ‘the two-horned one’ — enters the Quran as the answer to a question put to the Prophet ﷺ. Allah had established him in the earth and given him the means to reach everything, and he used those means: he followed one course, then another, judging as he went. His story closes Surah al-Kahf, the surah recommended to be read every Friday.",
+        verses: [
+          {
+            arabic: "وَيَسْـَٔلُونَكَ عَن ذِى ٱلْقَرْنَيْنِ ۖ قُلْ سَأَتْلُوا۟ عَلَيْكُم مِّنْهُ ذِكْرًا",
+            translation:
+              "They ask you about Dhul-Qarnayn. Say, “I will tell you something about him.”",
+            reference: "Quran 18:83",
+          },
+          {
+            arabic: "إِنَّا مَكَّنَّا لَهُۥ فِى ٱلْأَرْضِ وَءَاتَيْنَـٰهُ مِن كُلِّ شَىْءٍ سَبَبًا",
+            translation:
+              "We established him on earth and gave him the means to achieve everything.",
+            reference: "Quran 18:84",
+          },
+          {
+            arabic: "فَأَتْبَعَ سَبَبًا",
+            translation:
+              "He pursued a course,",
+            reference: "Quran 18:85",
+          },
+        ],
+      },
+      {
+        title: "Westward — Justice Before Power",
+        content:
+          "He reached the far west, where he found the sun setting in a dark body of water and a people living nearby. He was given a choice: punish them or treat them with kindness. His answer set the rule of his rule — the wrongdoer would be punished and then returned to his Lord for a graver punishment, while the believer who did righteous deeds would have the best reward and be commanded only what is easy.",
+        verses: [
+          {
+            arabic: "حَتَّىٰٓ إِذَا بَلَغَ مَغْرِبَ ٱلشَّمْسِ وَجَدَهَا تَغْرُبُ فِى عَيْنٍ حَمِئَةٍ وَوَجَدَ عِندَهَا قَوْمًا ۗ قُلْنَا يَـٰذَا ٱلْقَرْنَيْنِ إِمَّآ أَن تُعَذِّبَ وَإِمَّآ أَن تَتَّخِذَ فِيهِمْ حُسْنًا",
+            translation:
+              "until when he reached the far west, he found the sun setting in a dark body of water, and he found some people nearby. We said, “O Dhul-Qarnayn, either punish them or treat them with kindness.”",
+            reference: "Quran 18:86",
+          },
+          {
+            arabic: "قَالَ أَمَّا مَن ظَلَمَ فَسَوْفَ نُعَذِّبُهُۥ ثُمَّ يُرَدُّ إِلَىٰ رَبِّهِۦ فَيُعَذِّبُهُۥ عَذَابًا نُّكْرًا",
+            translation:
+              "He said, “As for one who does wrong, we will punish him, then he will be brought back to his Lord, and He will punish him grievously.",
+            reference: "Quran 18:87",
+          },
+          {
+            arabic: "وَأَمَّا مَنْ ءَامَنَ وَعَمِلَ صَـٰلِحًا فَلَهُۥ جَزَآءً ٱلْحُسْنَىٰ ۖ وَسَنَقُولُ لَهُۥ مِنْ أَمْرِنَا يُسْرًا",
+            translation:
+              "But he who believes and does righteous deeds, he will have the best reward, and we will enjoin upon him to do what is easy.”",
+            reference: "Quran 18:88",
+          },
+        ],
+      },
+      {
+        title: "Eastward — a People Without Shelter",
+        content:
+          "Then he pursued another course until he reached the far east, and found the sun rising upon a people for whom Allah had provided no shelter from it. The Quran does not linger on who they were: ‘So it was, and We had full knowledge about him.’ What is preserved is the pattern — a ruler who kept travelling, kept judging, and kept crediting Allah.",
+        verses: [
+          {
+            arabic: "ثُمَّ أَتْبَعَ سَبَبًا",
+            translation:
+              "Then he pursued another course,",
+            reference: "Quran 18:89",
+          },
+          {
+            arabic: "حَتَّىٰٓ إِذَا بَلَغَ مَطْلِعَ ٱلشَّمْسِ وَجَدَهَا تَطْلُعُ عَلَىٰ قَوْمٍ لَّمْ نَجْعَل لَّهُم مِّن دُونِهَا سِتْرًا",
+            translation:
+              "until when he reached the far east, he found the sun rising on a people for whom We provided no shelter from it.",
+            reference: "Quran 18:90",
+          },
+          {
+            arabic: "كَذَٰلِكَ وَقَدْ أَحَطْنَا بِمَا لَدَيْهِ خُبْرًا",
+            translation:
+              "So it was, and We had full knowledge about him.",
+            reference: "Quran 18:91",
+          },
+        ],
+      },
+      {
+        title: "The Barrier Against Gog and Magog",
+        content:
+          "Between two mountains he found a people who could barely understand a word, and who complained that Gog and Magog (Yaʾjuj and Maʾjuj) were spreading corruption in the land. They offered him payment to build a barrier. He refused the payment — what his Lord had given him was better — and asked only for manpower. He had iron blocks brought and levelled between the two mountainsides, had the fire blown to extreme heat, and poured molten copper over it. Gog and Magog could neither climb it nor pierce it.",
+        verses: [
+          {
+            arabic: "حَتَّىٰٓ إِذَا بَلَغَ بَيْنَ ٱلسَّدَّيْنِ وَجَدَ مِن دُونِهِمَا قَوْمًا لَّا يَكَادُونَ يَفْقَهُونَ قَوْلًا",
+            translation:
+              "until when he reached [a valley] between the two mountains, he found beyond them a people who could barely understand a word.",
+            reference: "Quran 18:93",
+          },
+          {
+            arabic: "قَالُوا۟ يَـٰذَا ٱلْقَرْنَيْنِ إِنَّ يَأْجُوجَ وَمَأْجُوجَ مُفْسِدُونَ فِى ٱلْأَرْضِ فَهَلْ نَجْعَلُ لَكَ خَرْجًا عَلَىٰٓ أَن تَجْعَلَ بَيْنَنَا وَبَيْنَهُمْ سَدًّا",
+            translation:
+              "They said, “O Dhul-Qarnayn, Gog and Magog are spreading corruption in the land. Can we give you some payment in return for you to construct a barrier between us and them?”",
+            reference: "Quran 18:94",
+          },
+          {
+            arabic: "قَالَ مَا مَكَّنِّى فِيهِ رَبِّى خَيْرٌ فَأَعِينُونِى بِقُوَّةٍ أَجْعَلْ بَيْنَكُمْ وَبَيْنَهُمْ رَدْمًا",
+            translation:
+              "He said, “What my Lord has given me is better. But help me with manpower, I will construct a barricade between you and them.",
+            reference: "Quran 18:95",
+          },
+          {
+            arabic: "ءَاتُونِى زُبَرَ ٱلْحَدِيدِ ۖ حَتَّىٰٓ إِذَا سَاوَىٰ بَيْنَ ٱلصَّدَفَيْنِ قَالَ ٱنفُخُوا۟ ۖ حَتَّىٰٓ إِذَا جَعَلَهُۥ نَارًا قَالَ ءَاتُونِىٓ أُفْرِغْ عَلَيْهِ قِطْرًا",
+            translation:
+              "Bring me iron blocks” – until when he leveled between the two mountainsides, he said, “Blow [with bellows],” until when he fired them up to extreme heat, he said, “Bring me molten copper to pour over it.”",
+            reference: "Quran 18:96",
+          },
+          {
+            arabic: "فَمَا ٱسْطَـٰعُوٓا۟ أَن يَظْهَرُوهُ وَمَا ٱسْتَطَـٰعُوا۟ لَهُۥ نَقْبًا",
+            translation:
+              "Thus they could not climb over it nor could they pierce it.",
+            reference: "Quran 18:97",
+          },
+        ],
+      },
+      {
+        title: "“This Is a Mercy From My Lord”",
+        content:
+          "He did not call the barrier his achievement. He called it a mercy from his Lord — and said that when the promise of his Lord came, He would raze it to the ground. The Prophet ﷺ later warned that an opening had already been made in it, a reminder that the strongest structure on earth stands only as long as Allah wills.",
+        verses: [
+          {
+            arabic: "قَالَ هَـٰذَا رَحْمَةٌ مِّن رَّبِّى ۖ فَإِذَا جَآءَ وَعْدُ رَبِّى جَعَلَهُۥ دَكَّآءَ ۖ وَكَانَ وَعْدُ رَبِّى حَقًّا",
+            translation:
+              "He said, “This is a mercy from my Lord. But when the promise of my Lord comes to pass, He will raze it to the ground. The promise of my Lord is ever true.”",
+            reference: "Quran 18:98",
+          },
+        ],
+        hadith: [
+          {
+            text:
+              "Zaynab bint Jahsh reported that the Prophet ﷺ came in alarm and said: ‘None has the right to be worshipped but Allah. Woe to the Arabs from an evil that has drawn near — an opening has been made in the barrier of Gog and Magog like this,’ making a circle with his thumb and forefinger. She asked, ‘Shall we be destroyed though there are righteous people among us?’ He said: ‘Yes, when evil persons increase.’",
+            source: "Bukhari 60:21; Bukhari 92:11",
+          },
+          {
+            text:
+              "Abu Hurayrah reported that the Prophet ﷺ said: ‘Allah has made an opening in the barrier of Gog and Magog like this’ — and he showed it with his fingers.",
+            source: "Bukhari 60:22",
+          },
+        ],
+      },
+      {
+        title: "King, Prophet — and the Question of His Identity",
+        content:
+          "Scholars have differed over whether Dhul-Qarnayn was a prophet or a righteous, Allah-guided king. Most classical commentators regarded him as a believing king rather than a prophet; some counted him among the prophets, pointing to Allah addressing him in the verses. Both positions are reported and neither is settled by an explicit text. His identity in history is disputed in the same way: the Quran gives no name, land, or era, and the identifications later writers have proposed with various ancient rulers are conjecture rather than established fact — the Quran gives the lesson and withholds the label. Even the meaning of ‘the two horns’ is explained differently by the commentators — the two ends of the earth he reached, two braids of hair, or a twin-horned crown — with none of the explanations decisive.",
+      },
+    ],
+    lessons: [
+      "Power is a trust: Allah ‘established him in the earth’, and he answered by ruling justly",
+      "Justice means restraining the wrongdoer and making the doer of good secure",
+      "Real strength builds what protects people — and credits Allah with it, not itself",
+      "Every barrier, and every empire, ends when the promise of Allah comes",
+      "The Quran preserves the lesson and omits the labels we would otherwise chase",
+    ],
+    references: [
+      "Quran: Surah Al-Kahf (18:83-98)",
+      "Bukhari 60:21; Bukhari 92:11 — an opening made in the barrier of Gog and Magog",
+      "Bukhari 60:22 — the same warning narrated by Abu Hurayrah",
+      "Ibn Kathir, Tafsir on Surah Al-Kahf — the scholarly positions on who Dhul-Qarnayn was",
+    ],
+  },
+
+  luqman: {
+    slug: "luqman",
+    title: "Luqman al-Hakim — The Wisdom of a Father",
+    sections: [
+      {
+        title: "Wisdom Given, and the Gratitude It Owes",
+        content:
+          "Allah endowed Luqman with wisdom (ḥikmah) and paired the gift with its duty in the same breath: be grateful to Allah. The Quran adds the reason — whoever is grateful is grateful for his own good, and Allah is in need of no one. A whole surah carries Luqman’s name, and its heart is a passage of advice from a father to his son.",
+        verses: [
+          {
+            arabic: "وَلَقَدْ ءَاتَيْنَا لُقْمَـٰنَ ٱلْحِكْمَةَ أَنِ ٱشْكُرْ لِلَّهِ ۚ وَمَن يَشْكُرْ فَإِنَّمَا يَشْكُرُ لِنَفْسِهِۦ ۖ وَمَن كَفَرَ فَإِنَّ ٱللَّهَ غَنِىٌّ حَمِيدٌ",
+            translation:
+              "Indeed, We endowed Luqmān with wisdom, [saying], “Be grateful to Allah.” Whoever is grateful, it is only for his own good; and whoever is ungrateful, then Allah is Self-Sufficient, Praiseworthy.",
+            reference: "Quran 31:12",
+          },
+        ],
+      },
+      {
+        title: "“O My Son, Do Not Associate Anything With Allah”",
+        content:
+          "The first thing he taught his son was tawhid — and he called shirk by its true name: the greatest wrongdoing there is. The Prophet ﷺ used this very verse to settle a fear among his Companions when they read that security belongs to ‘those who believe and do not mix their faith with wrongdoing’ (Quran 6:82).",
+        verses: [
+          {
+            arabic: "وَإِذْ قَالَ لُقْمَـٰنُ لِٱبْنِهِۦ وَهُوَ يَعِظُهُۥ يَـٰبُنَىَّ لَا تُشْرِكْ بِٱللَّهِ ۖ إِنَّ ٱلشِّرْكَ لَظُلْمٌ عَظِيمٌ",
+            translation:
+              "When Luqmān said to his son, while advising him, “O my dear son, do not associate partners with Allah. Indeed, associating partners with Allah is the worst wrongdoing.”",
+            reference: "Quran 31:13",
+          },
+        ],
+        hadith: [
+          {
+            text:
+              "ʿAbdullah ibn Masʿud reported that when ‘those who believe and do not mix their belief with wrongdoing’ (Quran 6:82) was revealed, it weighed heavily on the Companions, and they said: ‘Which of us has not wronged himself?’ The Messenger of Allah ﷺ said: ‘It does not mean that. Have you not heard what Luqman said to his son — “Indeed, associating partners with Allah is a great wrong”?’",
+            source: "Bukhari 65:298; Muslim 1:234",
+          },
+        ],
+      },
+      {
+        title: "Parents — Kindness Even Where There Is No Obedience",
+        content:
+          "Allah interrupts Luqman’s advice with His own command about parents: a mother carried her child in weakness upon weakness, so be grateful to Allah and to your parents. And then the limit — if they strive to make you associate anything with Allah, do not obey them in that; yet keep company with them in this world with kindness. Obedience has a ceiling; good treatment does not.",
+        verses: [
+          {
+            arabic: "وَوَصَّيْنَا ٱلْإِنسَـٰنَ بِوَٰلِدَيْهِ حَمَلَتْهُ أُمُّهُۥ وَهْنًا عَلَىٰ وَهْنٍ وَفِصَـٰلُهُۥ فِى عَامَيْنِ أَنِ ٱشْكُرْ لِى وَلِوَٰلِدَيْكَ إِلَىَّ ٱلْمَصِيرُ",
+            translation:
+              "We have enjoined upon man kindness to his parents. His mother bore him in weakness upon weakness, and his weaning took place within two years. Be grateful to Me and to your parents. To Me is the final return.",
+            reference: "Quran 31:14",
+          },
+          {
+            arabic: "وَإِن جَـٰهَدَاكَ عَلَىٰٓ أَن تُشْرِكَ بِى مَا لَيْسَ لَكَ بِهِۦ عِلْمٌ فَلَا تُطِعْهُمَا ۖ وَصَاحِبْهُمَا فِى ٱلدُّنْيَا مَعْرُوفًا ۖ وَٱتَّبِعْ سَبِيلَ مَنْ أَنَابَ إِلَىَّ ۚ ثُمَّ إِلَىَّ مَرْجِعُكُمْ فَأُنَبِّئُكُم بِمَا كُنتُمْ تَعْمَلُونَ",
+            translation:
+              "But if they strive to make you associate partners with Me of what you have no knowledge, then do not obey them. Yet keep company with them in this world with kindness, and follow the way of those who turn to Me [in repentance]. Then to Me is your return, and I will inform you of what you used to do.",
+            reference: "Quran 31:15",
+          },
+        ],
+      },
+      {
+        title: "Nothing Is Too Small for Allah to Bring Forth",
+        content:
+          "Luqman returns to his son with the smallest image the Quran uses for a deed: the weight of a mustard seed, hidden inside a rock, or lost in the heavens or the earth — Allah will bring it forth. It is a warning and a comfort at once: no wrong is too well hidden to be seen, and no good is too small to be counted.",
+        verses: [
+          {
+            arabic: "يَـٰبُنَىَّ إِنَّهَآ إِن تَكُ مِثْقَالَ حَبَّةٍ مِّنْ خَرْدَلٍ فَتَكُن فِى صَخْرَةٍ أَوْ فِى ٱلسَّمَـٰوَٰتِ أَوْ فِى ٱلْأَرْضِ يَأْتِ بِهَا ٱللَّهُ ۚ إِنَّ ٱللَّهَ لَطِيفٌ خَبِيرٌ",
+            translation:
+              "[Luqmān said], “O my dear son, even if a deed were the weight of a mustard seed – whether in a rock or in the heavens or in the earth – Allah will bring it forth. Indeed, Allah is Most Subtle, All-Aware.",
+            reference: "Quran 31:16",
+          },
+        ],
+      },
+      {
+        title: "Prayer, Enjoining Good, and Patience",
+        content:
+          "The next instruction is a whole religious life in one line: establish the prayer, enjoin what is right, forbid what is wrong, and be patient with whatever befalls you — because the one who calls to good will be tested by it. Luqman closes the instruction with the Quran’s own words: ‘This is a matter of firm resolve.’",
+        verses: [
+          {
+            arabic: "يَـٰبُنَىَّ أَقِمِ ٱلصَّلَوٰةَ وَأْمُرْ بِٱلْمَعْرُوفِ وَٱنْهَ عَنِ ٱلْمُنكَرِ وَٱصْبِرْ عَلَىٰ مَآ أَصَابَكَ ۖ إِنَّ ذَٰلِكَ مِنْ عَزْمِ ٱلْأُمُورِ",
+            translation:
+              "“O my dear son, establish prayer, enjoin what is right and forbid what is wrong, and be patient with whatever befalls you. This is a matter of firm resolve.",
+            reference: "Quran 31:17",
+          },
+        ],
+      },
+      {
+        title: "How You Walk and How You Speak",
+        content:
+          "He closes with manners, because wisdom shows in the body before it shows in speech: do not turn your face from people in contempt, do not walk the earth in arrogance, be moderate in your gait, and lower your voice. The Quran ends the passage with a comparison no one forgets — the most repugnant of voices is the voice of donkeys.",
+        verses: [
+          {
+            arabic: "وَلَا تُصَعِّرْ خَدَّكَ لِلنَّاسِ وَلَا تَمْشِ فِى ٱلْأَرْضِ مَرَحًا ۖ إِنَّ ٱللَّهَ لَا يُحِبُّ كُلَّ مُخْتَالٍ فَخُورٍ",
+            translation:
+              "Do not turn your face away from people [in contempt], and do not walk on earth in arrogance. Indeed, Allah does not like anyone who is arrogant and boastful.",
+            reference: "Quran 31:18",
+          },
+          {
+            arabic: "وَٱقْصِدْ فِى مَشْيِكَ وَٱغْضُضْ مِن صَوْتِكَ ۚ إِنَّ أَنكَرَ ٱلْأَصْوَٰتِ لَصَوْتُ ٱلْحَمِيرِ",
+            translation:
+              "Be moderate in your gait and lower your voice. Indeed, the most repugnant of voices is the voice of donkeys.”",
+            reference: "Quran 31:19",
+          },
+        ],
+      },
+      {
+        title: "Was Luqman a Prophet?",
+        content:
+          "The majority of scholars held that Luqman was a wise, righteous servant of Allah — a ḥakīm — and not a prophet, which is how the Quran describes him: he was given wisdom, not revelation or a scripture. A minority among the early scholars counted him a prophet. Early commentators also transmit descriptions of him as an Abyssinian or Nubian man, a freed slave, a carpenter, or a shepherd; these come from early reports rather than from the Quran or an authentic hadith, and the scholars who cite them do not treat them as certain. What the Quran does establish is that Allah gave him wisdom, that he is named twice (Quran 31:12-13), and that a father’s advice to his son was preserved in a surah bearing his name.",
+      },
+    ],
+    lessons: [
+      "Wisdom begins with tawhid — the first thing Luqman taught his son was to worship Allah alone",
+      "The gravest wrong is not a wrong done to people but shirk done to Allah",
+      "Be good to your parents even in the one place where you cannot obey them",
+      "No deed is too small to be brought forth — not the weight of a mustard seed",
+      "Calling to good comes with being tested, and patience is what carries it",
+      "Teach children gently: the Quran preserves a father speaking, not lecturing",
+    ],
+    references: [
+      "Quran: Surah Luqman (31:12-19)",
+      "Bukhari 65:298; Muslim 1:234 — the Prophet ﷺ explains Quran 6:82 with Luqman’s advice to his son",
+      "Ibn Kathir, Tafsir on Surah Luqman — reports on who Luqman was and on whether he was a prophet",
     ],
   },
 };

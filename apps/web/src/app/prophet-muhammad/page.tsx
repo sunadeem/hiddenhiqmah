@@ -16,6 +16,9 @@ import Accordion from "@hidden-hiqmah/ui/components/Accordion";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { BookOpen } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
+// The prophecies below that also appear on /miracles are held in one shared
+// record so a correction cannot land on only one of the two pages.
+import { seerahProphecy } from "@/data/prophecies";
 
 /* ───────────────────────── sections nav ───────────────────────── */
 
@@ -191,8 +194,8 @@ const timeline: TimelineEvent[] = [
     year: "570 CE",
     title: "Birth in Mecca — Year of the Elephant",
     detail:
-      "Muhammad ﷺ was born on a Monday, 12th of Rabi' al-Awwal, into the Banu Hashim clan of the Quraysh tribe in Mecca. His father Abdullah ibn Abdul Muttalib had passed away before his birth, leaving him an orphan from the start. His mother Aminah bint Wahb entrusted him to Halimah al-Sa'diyyah as his wet-nurse, as was the custom among the Arabs to raise children in the desert for pure air and eloquent speech. The same year, Abraha, the Abyssinian governor of Yemen, marched with a great army and war elephants to destroy the Ka'bah, but Allah destroyed them by sending flocks of birds that pelted them with stones of baked clay, as described in Surah Al-Fil. Of his own coming the Prophet ﷺ later said: 'I am the answer to the prayer of my father Ibrahim, and the glad tidings of my brother Isa' — a narration recorded outside the six books, in Musnad Ahmad 17163 (graded sahih by Ibn Hibban and al-Hakim).",
-    reference: "Quran 105:1-5 (the Year of the Elephant); Musnad Ahmad 17163 (sahih — Ibn Hibban, al-Hakim)",
+      "Muhammad ﷺ was born on a Monday, 12th of Rabi' al-Awwal, into the Banu Hashim clan of the Quraysh tribe in Mecca. His father Abdullah ibn Abdul Muttalib had passed away before his birth, leaving him an orphan from the start. His mother Aminah bint Wahb entrusted him to Halimah al-Sa'diyyah as his wet-nurse, as was the custom among the Arabs to raise children in the desert for pure air and eloquent speech. The same year, Abraha, the Abyssinian governor of Yemen, marched with a great army and war elephants to destroy the Ka'bah, but Allah destroyed them by sending flocks of birds that pelted them with stones of baked clay, as described in Surah Al-Fil. Of his own coming the Prophet ﷺ later said: 'I am the answer to the prayer of my father Ibrahim, and the glad tidings of Isa' — a narration recorded outside the six books, in Musnad Ahmad 17163 (graded sahih by Ibn Hibban and al-Hakim; sahih li-ghayrihi per al-Arna'ut).",
+    reference: "Quran 105:1-5 (the Year of the Elephant); Musnad Ahmad 17163 (sahih — Ibn Hibban 6404, al-Hakim; sahih li-ghayrihi — al-Arna'ut; also authenticated by al-Albani, Takhrij al-Mishkat) — not in this app's local collection",
   },
   {
     year: "576 CE",
@@ -226,8 +229,8 @@ const timeline: TimelineEvent[] = [
     year: "595 CE",
     title: "Marriage to Khadijah",
     detail:
-      "Before his prophethood, Muhammad ﷺ was renowned throughout Mecca as 'Al-Amin' (The Trustworthy) and 'As-Sadiq' (The Truthful). Khadijah bint Khuwaylid, a noble and wealthy businesswoman of the Quraysh, hired him to lead her trading caravan to Syria. Impressed by his honesty and the extraordinary profits he returned, and after hearing her servant Maysarah describe his noble character, she proposed marriage through her friend Nafisah. He married her when he was 25 and she was 40. She bore him all of his children except Ibrahim — including Qasim, Abdullah, Zaynab, Ruqayyah, Umm Kulthum, and Fatimah. She was the first person to believe in his prophethood, and he never married another woman during her lifetime. He kept praising her long after she died — Aisha said she was never jealous of any woman as she was of Khadijah, because she so often heard him mention her, and Allah had commanded him to give her the glad tidings of a palace in Paradise. The much-quoted words 'She believed in me when no one else did, and she supported me with her wealth when people deprived me' come from outside the six books, in Musnad Ahmad 24864 (graded hasan by al-Arna'ut).",
-    reference: "Bukhari 63:41; Muslim 44:107; Musnad Ahmad 24864 (hasan — al-Arna'ut)",
+      "Before his prophethood, Muhammad ﷺ was renowned throughout Mecca as 'Al-Amin' (The Trustworthy) and 'As-Sadiq' (The Truthful). Khadijah bint Khuwaylid, a noble and wealthy businesswoman of the Quraysh, hired him to lead her trading caravan to Syria. Impressed by his honesty and the extraordinary profits he returned, and after hearing her servant Maysarah describe his noble character, she proposed marriage through her friend Nafisah. He married her when he was 25 and she was 40. She bore him all of his children except Ibrahim — including Qasim, Abdullah, Zaynab, Ruqayyah, Umm Kulthum, and Fatimah. She was the first person to believe in his prophethood, and he never married another woman during her lifetime. He kept praising her long after she died — Aisha said she was never jealous of any woman as she was of Khadijah, because she so often heard him mention her, and Allah had commanded him to give her the glad tidings of a palace in Paradise. The much-quoted words 'She believed in me when no one else did, and she supported me with her wealth when people deprived me' come from outside the six books, in Musnad Ahmad 24864 (its isnad graded hasan by al-Arna'ut and by al-Haythami).",
+    reference: "Bukhari 63:41; Muslim 44:107; Musnad Ahmad 24864 (isnad hasan — al-Arna'ut; al-Haythami: isnad hasan, Majma' az-Zawa'id) — not in this app's local collection",
   },
   {
     year: "605 CE",
@@ -426,16 +429,16 @@ const timeline: TimelineEvent[] = [
     hijri: "10 AH — 9th Dhul Hijjah",
     title: "The Farewell Sermon (Khutbat al-Wada')",
     detail:
-      "Standing on the plain of Arafat before a vast multitude, the Prophet ﷺ delivered his final public address. What follows is the sermon as it is preserved in the authenticated narrations — Jabir's report in Sahih Muslim and Abu Bakra's report in Sahih al-Bukhari — rather than the popular modern rendering that circulates as one continuous speech.\n\nHe praised Allah, then said:\n\n'Verily your blood, your property are as sacred and inviolable as the sacredness of this day of yours, in this month of yours, in this town of yours.'\n\n'Behold! Everything pertaining to the Days of Ignorance is under my feet, completely abolished. Abolished too are the blood-revenges of the Days of Ignorance. And the usury of the pre-Islamic period is abolished — and the first usury I abolish is our own, the usury of Abbas ibn Abd al-Muttalib.'\n\n'Fear Allah concerning women! Verily you have taken them on the security of Allah, and intercourse with them has been made lawful to you by the words of Allah. Their rights upon you are that you should provide them with food and clothing in a fitting manner.'\n\n'I have left among you the Book of Allah, and if you hold fast to it, you would never go astray.'\n\n'And you will be asked about me — what will you say?' They answered: 'We bear witness that you have conveyed the message, discharged your trust, and given sincere counsel.' He then raised his forefinger towards the sky and pointed it at the people, saying three times: 'O Allah, be witness! O Allah, be witness!'\n\nAt Mina on the Day of Sacrifice he addressed them again: 'Your blood, your property and your honor are sacred to one another like the sanctity of this day of yours, in this city of yours, in this month of yours; and surely you will meet your Lord, and He will ask you about your deeds. Beware! Do not become disbelievers after me, cutting the throats of one another. It is incumbent on those who are present to convey this message to those who are absent — perhaps some of those to whom it is conveyed will understand it better than those who actually heard it.'\n\nThe celebrated declaration of human equality — 'An Arab has no superiority over a non-Arab, nor a non-Arab over an Arab; a white person has no superiority over a black person, nor a black person over a white person, except by piety' — belongs to a separate narration of that same pilgrimage recorded outside the six books, in Musnad Ahmad 23489 (graded sahih by al-Albani and al-Arna'ut).\n\nIt was during these blessed days that the final verse of legislation was revealed: 'Today I have perfected your religion for you, completed My favor upon you, and have chosen Islam as your religion' (Quran 5:3). Umar ibn al-Khattab said he knew exactly when and where it came down: on the day of Arafah, and he himself was standing at Arafat.\n\nThis sermon established, 1400 years ago, principles the world would take centuries to recognize: the sanctity of life, property and honor, the rights of women, the abolition of usury and of pre-Islamic blood feuds, and the duty of every believer to carry the message onward.",
-    reference: "Muslim 15:159; Bukhari 64:428; Ibn Majah 25:193; Quran 5:3; Bukhari 65:128; Musnad Ahmad 23489 (sahih — al-Albani, al-Arna'ut)",
+      "Standing on the plain of Arafat before a vast multitude, the Prophet ﷺ delivered his final public address. What follows is the sermon as it is preserved in the authenticated narrations — Jabir's report in Sahih Muslim and Abu Bakra's report in Sahih al-Bukhari — rather than the popular modern rendering that circulates as one continuous speech.\n\nHe praised Allah, then said:\n\n'Verily your blood, your property are as sacred and inviolable as the sacredness of this day of yours, in this month of yours, in this town of yours.'\n\n'Behold! Everything pertaining to the Days of Ignorance is under my feet, completely abolished. Abolished too are the blood-revenges of the Days of Ignorance. And the usury of the pre-Islamic period is abolished — and the first usury I abolish is our own, the usury of Abbas ibn Abd al-Muttalib.'\n\n'Fear Allah concerning women! Verily you have taken them on the security of Allah, and intercourse with them has been made lawful to you by the words of Allah. Their rights upon you are that you should provide them with food and clothing in a fitting manner.'\n\n'I have left among you the Book of Allah, and if you hold fast to it, you would never go astray.'\n\n'And you will be asked about me — what will you say?' They answered: 'We bear witness that you have conveyed the message, discharged your trust, and given sincere counsel.' He then raised his forefinger towards the sky and pointed it at the people, saying three times: 'O Allah, be witness! O Allah, be witness!'\n\nAt Mina on the Day of Sacrifice he addressed them again: 'Your blood, your property and your honor are sacred to one another like the sanctity of this day of yours, in this city of yours, in this month of yours; and surely you will meet your Lord, and He will ask you about your deeds. Beware! Do not become disbelievers after me, cutting the throats of one another. It is incumbent on those who are present to convey this message to those who are absent — perhaps some of those to whom it is conveyed will understand it better than those who actually heard it.'\n\nThe celebrated declaration of human equality — 'An Arab has no superiority over a non-Arab, nor a non-Arab over an Arab; a white person has no superiority over a black person, nor a black person over a white person, except by piety' — belongs to a separate narration of that same pilgrimage recorded outside the six books, in Musnad Ahmad 23489 (isnad graded sahih by al-Arna'ut; authenticated by al-Albani in as-Sahihah 2700).\n\nIt was during these blessed days that the final verse of legislation was revealed: 'Today I have perfected your religion for you, completed My favor upon you, and have chosen Islam as your religion' (Quran 5:3). Umar ibn al-Khattab said he knew exactly when and where it came down: on the day of Arafah, and he himself was standing at Arafat.\n\nThis sermon established, 1400 years ago, principles the world would take centuries to recognize: the sanctity of life, property and honor, the rights of women, the abolition of usury and of pre-Islamic blood feuds, and the duty of every believer to carry the message onward.",
+    reference: "Muslim 15:159; Bukhari 64:428; Ibn Majah 25:193; Quran 5:3; Bukhari 65:128; Musnad Ahmad 23489 (isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700) — not in this app's local collection",
   },
   {
     year: "632 CE",
     hijri: "11 AH — 12th Rabi' al-Awwal",
     title: "The Passing of the Prophet ﷺ",
     detail:
-      "About three months after the Farewell Pilgrimage, the Prophet ﷺ fell ill with a severe fever and headache. Despite his illness, he continued to lead prayers in the mosque until he was too weak to stand, at which point he appointed Abu Bakr to lead in his place. During his final days, he freed his slaves, gave away his last possessions — even a few dirhams that remained in his house — and repeatedly asked: 'Have I wronged anyone? Let him come forward.' The sirah literature records that he addressed the Muslims from the door of Aisha's room, his head wrapped, telling them that trials were coming like segments of a dark night, and that he had made lawful only what the Quran made lawful and unlawful only what the Quran made unlawful (Ibn Sa'd, at-Tabaqat — a sirah report, not a hadith of the six books).\n\nHe called for his daughter Fatimah and whispered something to her. She wept. Then he whispered again, and she smiled. She later revealed: 'He told me he was going to die, so I wept. Then he told me I would be the first of his family to join him, and that I would be the leader of the women of Paradise, so I smiled.'\n\nOn Monday morning, 12th Rabi' al-Awwal, 11 AH (June 8, 632 CE), Abu Bakr had begun leading Fajr prayer. The Prophet ﷺ drew aside the curtain of Aisha's room and looked out at the Muslims praying. Anas said: 'His face was like a page of the Quran (radiant and bright). He smiled.' It was his last gaze upon his ummah at prayer. He returned to Aisha's lap, and his condition worsened. His final words, as his eyes were fixed upward, were: 'Rather, the highest companion... the highest companion (ar-Rafiq al-A'la).' Aisha said: 'He chose the Hereafter over this world.' He was 63 years old.\n\nUmar ibn al-Khattab, overwhelmed with grief, drew his sword and declared that the Prophet ﷺ had not died. Abu Bakr entered, kissed the Prophet ﷺ on the forehead, and went out to the people: 'Whoever worshipped Muhammad, let him know that Muhammad has died. And whoever worshipped Allah, let him know that Allah is Ever-Living and shall never die.' He then recited: 'Muhammad is no more than a messenger; other messengers have passed away before him. If he were to die or be killed, would you turn back on your heels?' (Quran 3:144). Umar said: 'It was as though I had never heard this verse until Abu Bakr recited it.' The Prophet ﷺ was buried where he passed away, in Aisha's room, which is now part of al-Masjid an-Nabawi in Medina.",
-    reference: "Quran 3:144; Bukhari 64:456; Bukhari 64:478; Bukhari 23:141; Bukhari 23:5; Bukhari 64:472; Ibn Sa'd, at-Tabaqat (final address)",
+      "About three months after the Farewell Pilgrimage, the Prophet ﷺ fell ill with a severe fever and headache. Despite his illness, he continued to lead prayers in the mosque until he was too weak to stand, at which point he appointed Abu Bakr to lead in his place. During his final days, he freed his slaves, gave away his last possessions — even a few dirhams that remained in his house — and repeatedly asked: 'Have I wronged anyone? Let him come forward.'\n\nHe called for his daughter Fatimah and whispered something to her. She wept. Then he whispered again, and she smiled. She later revealed: 'He told me he was going to die, so I wept. Then he told me I would be the first of his family to join him, and that I would be the leader of the women of Paradise, so I smiled.'\n\nOn Monday morning, 12th Rabi' al-Awwal, 11 AH (June 8, 632 CE), Abu Bakr had begun leading Fajr prayer. The Prophet ﷺ drew aside the curtain of Aisha's room and looked out at the Muslims praying. Anas said: 'His face was like a page of the Quran (radiant and bright). He smiled.' It was his last gaze upon his ummah at prayer. He returned to Aisha's lap, and his condition worsened. His final words, as his eyes were fixed upward, were: 'Rather, the highest companion... the highest companion (ar-Rafiq al-A'la).' Aisha said: 'He chose the Hereafter over this world.' He was 63 years old.\n\nUmar ibn al-Khattab, overwhelmed with grief, drew his sword and declared that the Prophet ﷺ had not died. Abu Bakr entered, kissed the Prophet ﷺ on the forehead, and went out to the people: 'Whoever worshipped Muhammad, let him know that Muhammad has died. And whoever worshipped Allah, let him know that Allah is Ever-Living and shall never die.' He then recited: 'Muhammad is no more than a messenger; other messengers have passed away before him. If he were to die or be killed, would you turn back on your heels?' (Quran 3:144). Umar said: 'It was as though I had never heard this verse until Abu Bakr recited it.' The Prophet ﷺ was buried where he passed away, in Aisha's room, which is now part of al-Masjid an-Nabawi in Medina.",
+    reference: "Quran 3:144; Bukhari 64:456; Bukhari 64:478; Bukhari 23:141; Bukhari 23:5; Bukhari 64:472",
   },
 ];
 
@@ -1221,51 +1224,11 @@ type Prophecy = {
 };
 
 const prophecies: Prophecy[] = [
-  {
-    title: "Conquest of Persia and Rome",
-    description:
-      "During the digging of the trench at the Battle of Al-Khandaq, when the Muslims were at their weakest — besieged, starving, and outnumbered — the Prophet ﷺ prophesied the fall of the great empires. Within a decade of his passing, the Muslim armies had conquered the entirety of the Persian Empire and taken the Levant and Egypt from the Romans. The Prophet ﷺ also said that when Kisra (the Persian emperor) perishes, there will be no Kisra after him — and when Caesar perishes, there will be no Caesar after him.",
-    hadith:
-      "The Prophet ﷺ said: 'When Kisra perishes, there will be no Kisra after him. And when Caesar perishes, there will be no Caesar after him. By the One in whose hand is my soul, you will spend their treasures in the cause of Allah.'",
-    reference: "Bukhari 57:29; Muslim 54:92",
-    status: "fulfilled",
-  },
-  {
-    title: "Barefoot shepherds competing in tall buildings",
-    description:
-      "The Prophet ﷺ told Jibreel that among the signs of the Hour is that barefoot, naked, destitute shepherds would compete in constructing tall buildings. This has been visibly fulfilled in the Arabian Peninsula, where Bedouin communities transformed within decades into nations competing to build the tallest skyscrapers in the world.",
-    hadith:
-      "When Jibreel asked: 'Tell me about the Hour.' The Prophet ﷺ said: '...and you will see the barefoot, naked, destitute shepherds competing in constructing tall buildings.'",
-    reference: "Muslim 1:1; Bukhari 2:43",
-    status: "fulfilled",
-  },
-  {
-    title: "The conquest of Constantinople",
-    description:
-      "The Prophet ﷺ foretold the Muslim conquest of Constantinople (modern-day Istanbul). This was fulfilled in 1453 CE — over 800 years later — when Sultan Mehmed II (Mehmed the Conqueror) conquered the city, ending the Byzantine Empire. The prophecy is recorded in both Sahih Muslim and Jami' at-Tirmidhi.",
-    hadith:
-      "The Prophet ﷺ said: 'Constantinople will be conquered with the coming of the Hour.' In another narration, of the army that endures the great battle with the Romans: 'the third who would never be put to trial would win — and they would be the conquerors of Constantinople.'",
-    reference: "Muslim 54:44; Tirmidhi 33:82",
-    status: "fulfilled",
-  },
-  {
-    title: "The Muslim conquest of Jerusalem",
-    description:
-      "The Prophet ﷺ foretold the conquest of Jerusalem (Bayt al-Maqdis). This was fulfilled during the caliphate of Umar ibn al-Khattab in 637 CE (16 AH), when Umar personally traveled to Jerusalem to accept its surrender and guaranteed the safety of its Christian inhabitants in what became known as the Pact of Umar.",
-    hadith:
-      "The Prophet ﷺ said to Awf ibn Malik: 'Count six signs before the Hour: my death, then the conquest of Bayt al-Maqdis...'",
-    reference: "Bukhari 58:18",
-    status: "fulfilled",
-  },
-  {
-    title: "Fire emerging from the Hijaz",
-    description:
-      "The Prophet ﷺ foretold that a great fire would emerge from the land of Hijaz (western Arabia) that would illuminate the necks of camels in Busra (Syria). In 654 AH (1256 CE), a massive volcanic eruption occurred east of Medina that lasted for months. Historical records confirm that the glow of its lava was visible from great distances, and the people of Medina were terrified.",
-    hadith:
-      "The Prophet ﷺ said: 'The Hour will not come until a fire emerges from the land of Hijaz that will illuminate the necks of camels in Busra.'",
-    reference: "Bukhari 92:65; Muslim 54:55",
-    status: "fulfilled",
-  },
+  seerahProphecy("persia-and-rome"),
+  seerahProphecy("barefoot-shepherds"),
+  seerahProphecy("constantinople"),
+  seerahProphecy("jerusalem"),
+  seerahProphecy("hijaz-fire"),
   {
     title: "Prevalence of usury (riba)",
     description:
@@ -1275,24 +1238,8 @@ const prophecies: Prophecy[] = [
     reference: "Nasai 44:7 (graded sahih); Abu Dawud 23:6",
     status: "fulfilled",
   },
-  {
-    title: "Widespread tribulations and killing",
-    description:
-      "The Prophet ﷺ foretold that as the Hour approaches, killing and tribulations (fitan) would increase dramatically, and that the killer would not know why he killed, nor the killed why he was killed.",
-    hadith:
-      "The Prophet ﷺ said: 'By the One in whose hand is my soul, this world will not end until a time comes when the killer does not know why he killed, and the killed does not know why he was killed.' They asked: 'How will that be?' He said: 'Haraj (killing/chaos). The killer and the killed will both be in the Hellfire.'",
-    reference: "Muslim 47:18",
-    status: "ongoing",
-  },
-  {
-    title: "Time will pass quickly",
-    description:
-      "The Prophet ﷺ foretold that as the Hour draws near, time would feel as though it passes faster and faster. Many people today remark on how quickly years, months, and days seem to go by compared to previous generations.",
-    hadith:
-      "The Prophet ﷺ said: 'The Hour will not come until time contracts — a year will be like a month, a month like a week, a week like a day, a day like an hour, and an hour like the burning of a palm-leaf frond.'",
-    reference: "Tirmidhi 36:29 (graded sahih by al-Albani)",
-    status: "ongoing",
-  },
+  seerahProphecy("senseless-killing"),
+  seerahProphecy("time-passing-rapidly"),
   {
     title: "Wealth will increase until people are dissatisfied",
     description:
@@ -1302,15 +1249,7 @@ const prophecies: Prophecy[] = [
     reference: "Bukhari 58:18",
     status: "fulfilled",
   },
-  {
-    title: "The Mongol siege and destruction of Baghdad",
-    description:
-      "The Prophet ﷺ warned that Muslims would fight the Turks — a people with small eyes, red faces and flat noses, whose faces are like hammered shields — and a people whose shoes are made of hair. Classical scholars such as Ibn Hajar read the Mongol and Tatar invasions as this hadith's fulfillment: in 1258 CE, the Mongol army under Hulagu Khan sacked Baghdad, the capital of the Abbasid Caliphate. An estimated 200,000 to over a million people were killed, the House of Wisdom was destroyed, and the Tigris ran black with ink. This ended the Islamic Golden Age.",
-    hadith:
-      "The Prophet ﷺ said: 'The Hour will not be established until you fight with the Turks; people with small eyes, red faces, and flat noses. Their faces will look like shields coated with leather. The Hour will not be established till you fight with people whose shoes are made of hair.'",
-    reference: "Bukhari 56:141; Muslim 54:76",
-    status: "fulfilled",
-  },
+  seerahProphecy("mongol-baghdad"),
   {
     title: "Muslims will be numerous but weak",
     description:
@@ -1320,15 +1259,7 @@ const prophecies: Prophecy[] = [
     reference: "Abu Dawud 39:7",
     status: "ongoing",
   },
-  {
-    title: "Islam will reach wherever the earth was folded",
-    description:
-      "The Prophet ﷺ was shown, in a single vision, the whole earth 'folded' before him — its farthest east and west — and told that the dominion of his ummah would one day span exactly that expanse. Within a century Islam stretched from the Atlantic coast of Spain to the frontiers of China, and today it is present in every land on earth, fulfilling this within-history sign of his prophethood.",
-    hadith:
-      "The Messenger of Allah ﷺ said: 'Allah, the Exalted, folded for me the earth... so much so that I saw its easts and wests... The kingdom of my community will reach as far as the earth was folded for me.'",
-    reference: "Abu Dawud 37:13",
-    status: "fulfilled",
-  },
+  seerahProphecy("earth-folded"),
   {
     title: "Ammar will be killed by the transgressing party",
     description:
@@ -1681,6 +1612,13 @@ const dailySunnah: SunnahPractice[] = [
         hadith:
           "The Prophet ﷺ said: 'Whoever has hair, let him honor it.' He ﷺ would oil and comb his hair regularly, and he commanded the Muslims to grow their beards and trim their mustaches.",
         reference: "Abu Dawud 35:5; Bukhari 77:110",
+      },
+      {
+        practice: "Say the du'a entering and leaving the bathroom",
+        hadith:
+          "Anas said: 'Whenever the Prophet ﷺ went to answer the call of nature, he used to say: Allahumma inni a'udhu bika minal-khubuthi wal-khaba'ith (O Allah, I seek refuge with You from male and female devils).' And Aisha said that when he ﷺ came out of the privy he would say: 'Ghufranak' (I seek Your forgiveness).",
+        reference: "Bukhari 4:8; Nasai 1:19; Abu Dawud 1:30; Tirmidhi 1:7",
+        link: { href: "/duas?tab=home-mosque", label: "Both du'as in full on the Du'as page →" },
       },
     ],
   },

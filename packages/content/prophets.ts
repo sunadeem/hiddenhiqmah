@@ -401,3 +401,97 @@ export const prophets: Prophet[] = [
 export function getProphetBySlug(slug: string): Prophet | undefined {
   return prophets.find((p) => p.slug === slug);
 }
+
+/**
+ * Righteous figures of the Quran whose prophethood scholars have debated.
+ * They are deliberately NOT in `prophets` — that list is the twenty-five
+ * named prophets and the chronological timeline built from it — but each has
+ * a deep-dive at /prophets/{slug}, linked from the "Righteous Figures"
+ * section of the /prophets landing page.
+ */
+export interface RighteousFigure extends Prophet {
+  figure: true; // detail page drops the "Prophet" title prefix
+  badge: string; // scholarly status, mirrored from the landing-page card
+  honorificAr?: string;
+}
+
+export const righteousFigures: RighteousFigure[] = [
+  {
+    slug: "maryam",
+    name: "Maryam",
+    nameAr: "مريم",
+    era: "Palestine",
+    date: "Contemporary of Isa (~1 CE)",
+    dateNote: "No authenticated date in Islamic sources. Her life is placed with the birth of Isa.",
+    mentions: 34,
+    surahs: "Aal-E-Imran, Maryam, Al-Ma'idah, Al-Anbiya, At-Tahrim",
+    summary:
+      "The mother of Isa and the only woman named in the Quran, with a surah bearing her name. Allah chose her, purified her, and chose her above the women of the worlds.",
+    order: 101,
+    source: "quran",
+    sourceNote:
+      "The majority of scholars hold that Maryam was a ṣiddīqah (Quran 5:75) and not a prophetess; a minority, most famously Ibn Hazm, held that she received revelation through the angel.",
+    figure: true,
+    badge: "Siddiqah — the best of women",
+    honorificAr: "عليها السلام",
+  },
+  {
+    slug: "khidr",
+    name: "Al-Khidr",
+    nameAr: "الخضر",
+    era: "The time of Musa",
+    date: "Unknown",
+    dateNote: "No authenticated date. He appears in the lifetime of Musa.",
+    mentions: 0,
+    surahs: "Al-Kahf",
+    summary:
+      "The servant of Allah whom Musa travelled to learn from — given mercy from Allah and taught knowledge from Him. He scuttled a boat, took a boy's life, and rebuilt a falling wall, each with a hidden wisdom.",
+    order: 102,
+    source: "hadith",
+    sourceNote:
+      "The Quran calls him “one of Our slaves” (18:65) without naming him; the name Al-Khidr comes from the Prophet ﷺ (Bukhari 60:73; Bukhari 60:75). Scholars differ over whether he was a prophet or a righteous servant.",
+    figure: true,
+    badge: "Prophethood debated",
+  },
+  {
+    slug: "dhul-qarnayn",
+    name: "Dhul-Qarnayn",
+    nameAr: "ذو القرنين",
+    era: "Unknown",
+    date: "Unknown",
+    dateNote: "The Quran gives no era for him.",
+    mentions: 3,
+    surahs: "Al-Kahf",
+    summary:
+      "A just and powerful ruler whom Allah established in the earth. He travelled east and west judging fairly, and built a barrier of iron and molten copper against Gog and Magog.",
+    order: 103,
+    source: "quran",
+    sourceNote:
+      "Scholars differ over whether he was a prophet or a righteous, Allah-guided king; most classical commentators held the latter. The Quran gives no name, land, or era, and historical identifications proposed by later writers are conjecture.",
+    figure: true,
+    badge: "Prophethood debated",
+  },
+  {
+    slug: "luqman",
+    name: "Luqman",
+    nameAr: "لقمان",
+    era: "Unknown",
+    date: "Unknown",
+    dateNote: "No authenticated date in Islamic sources.",
+    mentions: 2,
+    surahs: "Luqman",
+    summary:
+      "The sage whom Allah endowed with wisdom. His advice to his son — worship Allah alone, honour your parents, pray, be patient, stay humble — fills the surah that carries his name.",
+    order: 104,
+    source: "quran",
+    sourceNote:
+      "The majority of scholars held that Luqman was a wise, righteous man (ḥakīm) and not a prophet; a minority among the early scholars counted him a prophet.",
+    figure: true,
+    badge: "Prophethood debated",
+  },
+];
+
+export function getFigureBySlug(slug: string): RighteousFigure | undefined {
+  return righteousFigures.find((f) => f.slug === slug);
+}
+

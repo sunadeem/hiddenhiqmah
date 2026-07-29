@@ -310,7 +310,7 @@ const articles: Article[] = [
     ],
     hadith: [
       {
-        ref: "Ahmad 21546 (from Abu Dharr, graded hasan by some scholars; not in this app's local collection)",
+        ref: "Musnad Ahmad 21546 (from Abu Dharr) — its Musnad chains were graded weak by al-Arna'ut; the figure of 315 messengers is authenticated through the corroborating narration of Abu Umamah, graded sahih li-ghayrihi by al-Albani (as-Sahihah 2668); not in this app's local collection",
         text: "The Prophet (peace be upon him) was asked about the number of prophets and he indicated that there were a great many, and among them were 315 messengers.",
       },
       {
@@ -1060,6 +1060,31 @@ function ArticlesOfFaithContent() {
                               </ContentCard>
                             </Link>
                           ))}
+
+                          {/* The other end of the Last Day — no dedicated page yet, so the
+                              sober outline lives here and routes on to the two that exist. */}
+                          <ContentCard>
+                            <h4 className="text-sm font-semibold text-themed mb-2">Jahannam — go deeper</h4>
+                            <p className="text-themed-muted text-sm leading-relaxed">
+                              Jahannam is the counterpart of Jannah within this same article of faith: a real abode, already prepared, and warned of so that it may be avoided. Of those who reject His signs Allah says that He will cast them into the Fire and replace their skins, <span className="text-themed italic">&ldquo;so that they may taste the punishment&rdquo;</span> (Quran 4:56). The Prophet (peace be upon him) set it beside the only heat we know: <span className="text-themed italic">&ldquo;This Fire of yours, which the sons of Adam kindle, is one part from seventy parts of the heat of the Hell&rdquo;</span> (Tirmidhi 39:17). The warning is given so that it may be acted on — <span className="text-themed italic">&ldquo;O you who believe, protect yourselves and your families from a Fire whose fuel is people and stones&rdquo;</span> (Quran 66:6) — and the way out is the one the Quran keeps naming: faith, obedience, and turning back to Allah before the Day arrives.
+                            </p>
+                            <p className="text-xs text-themed-muted mt-3">
+                              <HadithRefText text="Quran 4:56; Quran 66:6; Tirmidhi 39:17" />
+                            </p>
+                            <div className="mt-3 space-y-2">
+                              {[
+                                { href: "/day-of-judgement?tab=events", label: "The events of the Day, in sequence" },
+                                { href: "/barzakh", label: "Barzakh — what precedes it, in the grave" },
+                              ].map((l) => (
+                                <Link key={l.href} href={l.href} className="block group">
+                                  <div className="flex items-center justify-between gap-3 rounded-lg px-3 py-2 border sidebar-border hover:border-gold/40 transition-colors">
+                                    <span className="text-sm text-themed">{l.label}</span>
+                                    <ArrowRight size={16} className="text-gold shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                                  </div>
+                                </Link>
+                              ))}
+                            </div>
+                          </ContentCard>
                         </div>
                       )}
 

@@ -4,7 +4,43 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
-import { prophets } from "@hidden-hiqmah/content/prophets";
+import { prophets, righteousFigures } from "@hidden-hiqmah/content/prophets";
+
+function SidebarItem({
+  slug,
+  name,
+  nameAr,
+  isActive,
+}: {
+  slug: string;
+  name: string;
+  nameAr: string;
+  isActive: boolean;
+}) {
+  return (
+    <Link href={`/prophets/${slug}`} className="relative block">
+      <motion.div
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
+          isActive ? "text-gold" : "text-themed-muted hover:text-themed"
+        }`}
+        whileHover={{ x: 2 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        {isActive && (
+          <motion.div
+            layoutId="prophet-active"
+            className="absolute left-0 top-1 bottom-1 w-[3px] rounded-full bg-gold"
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          />
+        )}
+        <span className="font-medium truncate">{name}</span>
+        <span className="text-xs font-arabic opacity-60 ml-auto shrink-0">
+          {nameAr}
+        </span>
+      </motion.div>
+    </Link>
+  );
+}
 
 export default function ProphetsLayout({
   children,
@@ -33,48 +69,32 @@ export default function ProphetsLayout({
           </Link>
 
           <nav className="space-y-0.5">
-            {prophets.map((prophet) => {
-              const isActive = activeSlug === prophet.slug;
-              return (
-                <Link
-                  key={prophet.slug}
-                  href={`/prophets/${prophet.slug}`}
-                  className="relative block"
-                >
-                  <motion.div
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                      isActive
-                        ? "text-gold"
-                        : "text-themed-muted hover:text-themed"
-                    }`}
-                    whileHover={{ x: 2 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 20,
-                    }}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="prophet-active"
-                        className="absolute left-0 top-1 bottom-1 w-[3px] rounded-full bg-gold"
-                        transition={{
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 25,
-                        }}
-                      />
-                    )}
-                    <span className="font-medium truncate">
-                      {prophet.name}
-                    </span>
-                    <span className="text-xs font-arabic opacity-60 ml-auto shrink-0">
-                      {prophet.nameAr}
-                    </span>
-                  </motion.div>
-                </Link>
-              );
-            })}
+            {prophets.map((prophet) => (
+              <SidebarItem
+                key={prophet.slug}
+                slug={prophet.slug}
+                name={prophet.name}
+                nameAr={prophet.nameAr}
+                isActive={activeSlug === prophet.slug}
+              />
+            ))}
+          </nav>
+
+          {/* Righteous figures of the Quran — kept below and labelled so they
+              are never read as part of the twenty-five named prophets. */}
+          <p className="mt-5 mb-1 px-3 text-[10px] uppercase tracking-wider text-themed-muted/70">
+            Righteous figures
+          </p>
+          <nav className="space-y-0.5">
+            {righteousFigures.map((figure) => (
+              <SidebarItem
+                key={figure.slug}
+                slug={figure.slug}
+                name={figure.name}
+                nameAr={figure.nameAr}
+                isActive={activeSlug === figure.slug}
+              />
+            ))}
           </nav>
         </div>
       </aside>

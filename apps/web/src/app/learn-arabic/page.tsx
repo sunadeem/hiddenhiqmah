@@ -55,6 +55,7 @@ function SpeakButton({ text, className = "" }: { text: string; className?: strin
 const sections = [
   { key: "alphabet", label: "The Alphabet" },
   { key: "vowels", label: "Vowels & Marks" },
+  { key: "tajwid", label: "Tajwīd" },
   { key: "vocabulary", label: "Quranic Vocabulary" },
   { key: "grammar", label: "Basic Grammar" },
   { key: "phrases", label: "Essential Phrases" },
@@ -176,6 +177,181 @@ const mushafSymbols = [
   { symbol: '۞', name: 'Rubʼ al-ḥizb', meaning: 'Marks a quarter of a ḥizb — a way of tracking portions for recitation and memorisation.' },
   { symbol: 'ا۟', name: 'Silent zero', meaning: 'A small circle over a letter (usually an alif) meaning it is written but not pronounced.' },
   { symbol: 'نۢ', name: 'Iqlāb (small mīm)', meaning: 'A tiny mīm above a nūn or tanwīn: pronounce it as a hidden ‘m’ before the letter bāʾ.' },
+];
+
+/* ───────────────────────── tajwīd data ─────────────────────────
+   Every Arabic fragment below is copied programmatically from
+   packages/content/quran/verses — never retyped. */
+
+type TajwidExample = {
+  ar: string;
+  translit: string;
+  ref: string;
+  note: string;
+};
+
+/** Quran 73:4 — the command to recite with tartīl. */
+const tartilVerse = "وَرَتِّلِ ٱلْقُرْءَانَ تَرْتِيلًا";
+
+const makharij = [
+  {
+    name: "Al-Jawf",
+    en: "The empty space of the mouth and throat",
+    letters: "ا و ي",
+    detail: "The three lengthening (madd) letters, when they carry no vowel of their own. Their sound is not stopped anywhere — it simply runs out through the open air of the mouth, which is why these are the only letters you can hold.",
+  },
+  {
+    name: "Al-Ḥalq",
+    en: "The throat — three points",
+    letters: "ء ه ع ح غ خ",
+    detail: "Deepest in the throat: ء and ه. The middle of the throat: ع and ح. Nearest the mouth: غ and خ. This is the group English speakers find hardest, because English makes no sound this far back.",
+  },
+  {
+    name: "Al-Lisān",
+    en: "The tongue — the largest group, 18 letters",
+    letters: "ق ك ج ش ي ض ل ن ر ط د ت ص ز س ظ ذ ث",
+    detail: "Back of the tongue against the soft palate: ق, then ك a little further forward. The middle of the tongue: ج ش ي. The side of the tongue against the upper molars: ض — the sound Arabic is named after. The tip against the gum ridge: ل, then ن, then ر. The tip at the upper front teeth and their roots: ط د ت; the whistling letters ص ز س; and the tip showing between the teeth: ظ ذ ث.",
+  },
+  {
+    name: "Ash-Shafatān",
+    en: "The two lips",
+    letters: "ف ب م و",
+    detail: "ف is made with the inside of the lower lip against the edges of the upper front teeth. ب م و use both lips: ب closed firmly, م closed with the sound running out through the nose, و rounded and open.",
+  },
+  {
+    name: "Al-Khayshūm",
+    en: "The nasal passage",
+    letters: "ن م",
+    detail: "Not a letter’s own home, but the exit of ghunnah — the nasal hum carried by م and ن whenever they are doubled, merged or hidden. Easy to test: hum a ghunnah, pinch your nose, and the sound is blocked.",
+  },
+];
+
+type NunRule = {
+  id: string;
+  name: string;
+  gloss: string;
+  letters: string;
+  lettersNote: string;
+  how: string;
+  examples: TajwidExample[];
+};
+
+const nunRules: NunRule[] = [
+  {
+    id: "izhar",
+    name: "1. Iẓhār",
+    gloss: "making clear",
+    letters: "ء ه ع ح غ خ",
+    lettersNote: "The six throat letters",
+    how: "Pronounce the nūn plainly and finish it before the next letter — no nasal hum held on it, no merging. The throat letters are made too far back to blend with a nūn, so the two sounds stay separate.",
+    examples: [
+      { ar: "مِنْ عَلَقٍ", translit: "min ʿalaq", ref: "Quran 96:2", note: "Nūn sākinah before ʿayn — the nūn is sounded cleanly." },
+      { ar: "سَلَـٰمٌ هِىَ", translit: "salāmun hiya", ref: "Quran 97:5", note: "Tanwīn before hāʼ — the “-un” is finished before the h begins." },
+    ],
+  },
+  {
+    id: "idgham-ghunnah",
+    name: "2. Idghām with ghunnah",
+    gloss: "merging, with a nasal hum",
+    letters: "ي ن م و",
+    lettersNote: "Remembered as yanmū",
+    how: "Merge the nūn into the letter that follows so the two become one doubled letter, and hold a ghunnah — a nasal hum of about two counts — on it. (Inside a single word, a nūn sākinah before و or ي is instead pronounced clearly; that happens in only a handful of Quranic words.)",
+    examples: [
+      { ar: "فَمَن يَعْمَلْ", translit: "fa-may yaʿmal", ref: "Quran 99:7", note: "Written fa-man, recited fa-may-yaʿmal — the nūn merges into the yāʼ." },
+      { ar: "بِحِجَارَةٍ مِّن", translit: "bi-ḥijāratim min", ref: "Quran 105:4", note: "Tanwīn merging into a mīm — note the shaddah printed on that mīm." },
+    ],
+  },
+  {
+    id: "idgham-no-ghunnah",
+    name: "3. Idghām without ghunnah",
+    gloss: "merging, with no hum",
+    letters: "ل ر",
+    lettersNote: "Two letters only",
+    how: "Merge the nūn completely into the lām or rāʼ, leaving no nasal hum behind. The nūn is simply gone.",
+    examples: [
+      { ar: "مِّن رَّبِّهِمْ", translit: "mir rabbihim", ref: "Quran 2:5", note: "The nūn sākinah disappears into the rāʼ — which is why the rāʼ is printed with a shaddah. (The mīm carries one for the same reason: the tanwīn of hudan, just before it in the verse, merged into it.)" },
+      { ar: "هُدًى لِّلْمُتَّقِينَ", translit: "hudal lil-muttaqīn", ref: "Quran 2:2", note: "Tanwīn disappearing into the lām." },
+    ],
+  },
+  {
+    id: "iqlab",
+    name: "4. Iqlāb",
+    gloss: "turning over",
+    letters: "ب",
+    lettersNote: "One letter only",
+    how: "Turn the nūn into a hidden mīm before the bāʼ: the lips come lightly together and a ghunnah is held for about two counts. The muṣḥaf tells you where — a tiny mīm is printed above the nūn or the tanwīn.",
+    examples: [
+      { ar: "مِنۢ بَعْدِ", translit: "mim baʿdi", ref: "Quran 2:27", note: "The small mīm above the nūn is the iqlāb sign itself." },
+      { ar: "سَمِيعٌۢ بَصِيرٌ", translit: "samīʿum baṣīr", ref: "Quran 22:61", note: "Tanwīn before bāʼ, with the same small mīm." },
+    ],
+  },
+  {
+    id: "ikhfa",
+    name: "5. Ikhfāʼ",
+    gloss: "hiding",
+    letters: "ت ث ج د ذ ز س ش ص ض ط ظ ف ق ك",
+    lettersNote: "The remaining fifteen letters",
+    how: "A middle state between clear and merged. The tongue does not go to its usual place for the nūn; the sound is held lightly in the nose for about two counts while the mouth is already shaping the letter that follows.",
+    examples: [
+      { ar: "عَن صَلَاتِهِمْ", translit: "ʿan ṣalātihim", ref: "Quran 107:5", note: "Nūn sākinah hidden before ṣād." },
+      { ar: "جَنَّـٰتٍ تَجْرِى", translit: "jannātin tajrī", ref: "Quran 2:25", note: "Tanwīn hidden before tāʼ." },
+    ],
+  },
+];
+
+type MaddType = {
+  name: string;
+  gloss: string;
+  counts: string;
+  when: string;
+  example: TajwidExample;
+};
+
+const maddTypes: MaddType[] = [
+  {
+    name: "Madd ṭabīʿī",
+    gloss: "natural madd",
+    counts: "2 counts",
+    when: "The default: a madd letter with no hamza and no sukūn after it. Held for exactly two counts — no shorter, and no longer either.",
+    example: { ar: "ٱلرَّحْمَـٰنِ", translit: "ar-Raḥmān", ref: "Quran 1:1", note: "The ā (written here as a small upright alif) is two counts — one of the most over-stretched sounds in Al-Fātiḥah." },
+  },
+  {
+    name: "Madd muttaṣil",
+    gloss: "connected madd",
+    counts: "4–5 counts",
+    when: "A madd letter followed by a hamza inside the same word. Every reciter lengthens it, which is why it is often called the obligatory madd.",
+    example: { ar: "إِذَا جَآءَ", translit: "idhā jāʼa", ref: "Quran 110:1", note: "The ā of jāʼa meets a hamza without leaving the word — the wavy sign over the alif marks it." },
+  },
+  {
+    name: "Madd munfaṣil",
+    gloss: "separated madd",
+    counts: "usually 4–5 counts",
+    when: "A madd letter at the end of one word with a hamza starting the next. Its length is not fixed: it varies with the transmitted reading and with the reciter’s chosen pace — commonly stretched like the connected madd, while some transmissions keep it at two.",
+    example: { ar: "إِنَّآ أَعْطَيْنَـٰكَ", translit: "innā aʿṭaynāka", ref: "Quran 108:1", note: "The ā ends one word and a hamza opens the next." },
+  },
+  {
+    name: "Madd lāzim",
+    gloss: "necessary madd",
+    counts: "6 counts",
+    when: "A madd letter followed by a permanent sukūn or a shaddah — permanent because it is there whether you stop or carry on. The longest madd, and the one nobody differs over.",
+    example: { ar: "وَلَا ٱلضَّآلِّينَ", translit: "wa lā ḍ-ḍāllīn", ref: "Quran 1:7", note: "The ā runs into a doubled lām — six counts, every single time." },
+  },
+  {
+    name: "Madd ʿāriḍ li-s-sukūn",
+    gloss: "madd at a stop",
+    counts: "2, 4 or 6 counts",
+    when: "A madd letter followed by a letter that falls silent only because you chose to stop there. Two, four or six counts are all acceptable; the usual advice is to pick one and stay consistent through the passage.",
+    example: { ar: "وَإِيَّاكَ نَسْتَعِينُ", translit: "wa iyyāka nastaʿīn", ref: "Quran 1:5", note: "Stop on nastaʿīn and the ī before the final nūn becomes a stopping madd." },
+  },
+];
+
+const qalqalahExamples: (TajwidExample & { letter: string })[] = [
+  { letter: "ق", ar: "وَيَقْطَعُونَ", translit: "wa yaqṭaʿūn", ref: "Quran 2:27", note: "Qāf carrying sukūn in the middle of a word — a light bounce." },
+  { letter: "ط", ar: "أَطْعَمَهُم", translit: "aṭʿamahum", ref: "Quran 106:4", note: "Ṭāʼ carrying sukūn — release it without letting an “a” slip in after it." },
+  { letter: "ب", ar: "ٱلْأَبْتَرُ", translit: "al-abtar", ref: "Quran 108:3", note: "Bāʼ carrying sukūn between two vowels." },
+  { letter: "ج", ar: "وَٱلْفَجْرِ", translit: "wa-l-fajr", ref: "Quran 89:1", note: "Jīm carrying sukūn." },
+  { letter: "د", ar: "لَمْ يَلِدْ وَلَمْ يُولَدْ", translit: "lam yalid wa lam yūlad", ref: "Quran 112:3", note: "Two dāls: a light bounce on the first, and the stronger stopping bounce on the second if you pause at the end." },
+  { letter: "ق", ar: "مِنْ عَلَقٍ", translit: "min ʿalaq", ref: "Quran 96:2", note: "Stopping on ʿalaq gives the stronger bounce — the same letter, a bigger echo." },
 ];
 
 /* ───────────────────────── quranic vocabulary ───────────────────────── */
@@ -736,7 +912,7 @@ function LearnArabicContent() {
       />
 
       <VerseHero
-        arabic="ٱقْرَأْ بِٱسْمِ رَبِّكَ ٱلَّذِى خَلَقَ"
+        arabic="ٱقْرَأْ بِٱسْمِ رَبِّكَ ٱلَّذِى خَلَقَ"
         text="Read! In the name of your Lord who created."
         reference="Quran 96:1 — The first verse revealed"
       />
@@ -1047,7 +1223,192 @@ function LearnArabicContent() {
                 ))}
               </div>
               <p className="text-xs text-themed-muted mt-3">
-                Stopping signs are guidance for beautiful, meaning-preserving recitation, not strict obligations (except the compulsory stop). Learning them well is part of tajwīd — see the Learning Tips tab.
+                Stopping signs are guidance for beautiful, meaning-preserving recitation, not strict obligations (except the compulsory stop). Learning them well is part of tajwīd — see the{" "}
+                <button type="button" onClick={() => setActiveSection("tajwid")} className="text-gold hover:underline">Tajwīd tab</button>.
+              </p>
+            </ContentCard>
+          </motion.div>
+        )}
+
+        {/* ═══════════════ TAJWĪD ═══════════════ */}
+        {activeSection === "tajwid" && (
+          <motion.div key="tajwid" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="space-y-6">
+            {/* What tajwīd is */}
+            <ContentCard>
+              <h2 className="text-lg font-semibold text-themed mb-2">What Tajw&#299;d Is</h2>
+              <p className="text-sm text-themed-muted leading-relaxed mb-4">
+                Tajw&#299;d means &ldquo;making something excellent&rdquo;. As a science it means giving every letter of the Qur&rsquo;an its due &mdash; sounding it from its correct point of articulation (<em>makhraj</em>), with its proper qualities (<em>&#7779;if&#257;t</em>), and observing the rules of merging, nasalisation, lengthening and pausing that govern recitation. It is not an ornament added to the text: it is how the Qur&rsquo;an was received from the Prophet &#65018; and passed on, generation after generation, by listening and being corrected.
+              </p>
+
+              <div className="rounded-xl border sidebar-border p-3 sm:p-5 mb-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <p className="text-2xl sm:text-3xl font-arabic text-gold leading-loose text-right flex-1" dir="rtl">{tartilVerse}</p>
+                  <SpeakButton text={tartilVerse} className="p-2 shrink-0 mt-1" />
+                </div>
+                <p className="text-sm text-themed italic mb-1">wa rattili l-Qur&rsquo;&#257;na tart&#299;l&#257;</p>
+                <p className="text-sm text-themed-muted mb-2">&ldquo;&hellip;and recite the Qur&rsquo;an at a measured pace.&rdquo;</p>
+                <p className="text-[11px] text-gold/70 uppercase tracking-wider">Quran 73:4</p>
+              </div>
+
+              <p className="text-xs text-themed-muted leading-relaxed mb-3">
+                The word <em>tart&#299;l</em> in that command is exactly what tajw&#299;d spells out in practice: unhurried, measured, letter-by-letter recitation &mdash; not speed, and not performance.
+              </p>
+              <p className="text-xs text-themed-muted leading-relaxed">
+                Scholars commonly distinguish two levels: the practical minimum &mdash; reciting without distorting letters or mangling meanings, which is asked of every reciter &mdash; and mastery of the full science with its terminology, which is generally treated as a communal responsibility rather than an individual one.
+              </p>
+            </ContentCard>
+
+            {/* Makhārij */}
+            <ContentCard delay={0.1}>
+              <h2 className="text-lg font-semibold text-themed mb-2">Makh&#257;rij &mdash; Where Each Letter Is Made</h2>
+              <p className="text-sm text-themed-muted mb-4">
+                A <em>makhraj</em> is the point in the mouth or throat where a letter&rsquo;s sound is produced. Two letters can look almost the same in transliteration and still be completely different letters, because they are made in different places &mdash; which is why &#7717; and h, or s and &#7779;, are never interchangeable. The articulation points are usually grouped into five regions:
+              </p>
+              <div className="space-y-3">
+                {makharij.map((m) => (
+                  <div key={m.name} className="rounded-lg border sidebar-border p-3 sm:p-4 flex flex-col sm:flex-row gap-3 sm:gap-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <div className="sm:w-40 shrink-0">
+                      <h3 className="font-semibold text-sm text-themed">{m.name}</h3>
+                      <p className="text-[11px] text-themed-muted leading-snug">{m.en}</p>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-lg sm:text-xl font-arabic text-gold mb-1.5 leading-relaxed" dir="rtl">{m.letters}</p>
+                      <p className="text-xs text-themed-muted leading-relaxed">{m.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-themed-muted mt-3">
+                The commonest scheme counts seventeen precise articulation points inside these five regions; other classical scholars counted sixteen or fourteen, differing mainly over whether the empty space (<em>jawf</em>) is a region of its own. The five-region grouping above is the one usually taught first.
+              </p>
+            </ContentCard>
+
+            {/* Nūn sākinah & tanwīn */}
+            <ContentCard delay={0.15}>
+              <h2 className="text-lg font-semibold text-themed mb-2">N&#363;n S&#257;kinah &amp; Tanw&#299;n &mdash; The Four Rules</h2>
+              <p className="text-sm text-themed-muted mb-4">
+                A <em>n&#363;n s&#257;kinah</em> is a n&#363;n carrying suk&#363;n &mdash; a n&#363;n with no vowel of its own. A <em>tanw&#299;n</em> is the doubled ending &ldquo;-an / -in / -un&rdquo;, which is the same n&#363;n sound written as a vowel mark. The two behave identically, and what happens to them depends entirely on the letter that comes next. Every letter of the alphabet falls into one of four groups &mdash; and the second, idgh&#257;m, divides into two. This is the first thing every tajw&#299;d student learns.
+              </p>
+              <div className="space-y-3">
+                {nunRules.map((r) => (
+                  <div key={r.id} className="rounded-lg border sidebar-border p-3 sm:p-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-1.5">
+                      <h3 className="font-semibold text-sm text-themed">{r.name}</h3>
+                      <span className="text-xs text-themed-muted italic">({r.gloss})</span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                      <span className="text-lg sm:text-xl font-arabic text-gold leading-relaxed" dir="rtl">{r.letters}</span>
+                      <span className="text-[11px] text-themed-muted">{r.lettersNote}</span>
+                    </div>
+                    <p className="text-xs text-themed-muted leading-relaxed mb-3">{r.how}</p>
+                    <div className="space-y-2">
+                      {r.examples.map((ex) => (
+                        <div key={ex.ref + ex.translit} className="rounded-md border sidebar-border px-2.5 py-2 sm:px-3 card-bg">
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="text-xl sm:text-2xl font-arabic text-gold leading-loose text-right flex-1" dir="rtl">{ex.ar}</p>
+                            <SpeakButton text={ex.ar} className="p-1.5 shrink-0 mt-1" />
+                          </div>
+                          <p className="text-[11px] text-themed italic">{ex.translit}</p>
+                          <p className="text-[11px] text-themed-muted leading-relaxed">{ex.note}</p>
+                          <p className="text-[10px] text-gold/60 mt-0.5">{ex.ref}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-themed-muted mt-3">
+                Worth knowing alongside these: a m&#299;m carrying suk&#363;n has its own three rules on exactly the same logic &mdash; <em>ikhf&#257;&#702; shafaw&#299;</em> (hidden, with a ghunnah, before b&#257;&#702;), <em>idgh&#257;m shafaw&#299;</em> (merged, with a ghunnah, into another m&#299;m), and <em>i&#7827;h&#257;r shafaw&#299;</em> (pronounced clearly before every other letter).
+              </p>
+            </ContentCard>
+
+            {/* Madd */}
+            <ContentCard delay={0.2}>
+              <h2 className="text-lg font-semibold text-themed mb-2">Madd &mdash; How Long to Hold a Vowel</h2>
+              <p className="text-sm text-themed-muted mb-4">
+                <em>Madd</em> means lengthening. The three madd letters are <span className="font-arabic text-gold">ا و ي</span> when they carry no vowel of their own &mdash; alif after a fat&#7717;ah, w&#257;w after a &#7693;ammah, y&#257;&#702; after a kasrah. How long you hold one depends on what follows it. Length is counted in <em>&#7717;arak&#257;t</em> (&ldquo;counts&rdquo;): one count is the time it takes to say one short vowel, which teachers often measure by folding one finger. Counts are relative to your own pace, not to a clock &mdash; so whatever pace you choose, keep it steady.
+              </p>
+              <div className="space-y-3">
+                {maddTypes.map((m) => (
+                  <div key={m.name} className="rounded-lg border sidebar-border p-3 sm:p-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-1.5">
+                      <h3 className="font-semibold text-sm text-themed">{m.name}</h3>
+                      <span className="text-xs text-themed-muted italic">({m.gloss})</span>
+                      <span className="ml-auto text-xs font-semibold text-gold">{m.counts}</span>
+                    </div>
+                    <p className="text-xs text-themed-muted leading-relaxed mb-3">{m.when}</p>
+                    <div className="rounded-md border sidebar-border px-2.5 py-2 sm:px-3 card-bg">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-xl sm:text-2xl font-arabic text-gold leading-loose text-right flex-1" dir="rtl">{m.example.ar}</p>
+                        <SpeakButton text={m.example.ar} className="p-1.5 shrink-0 mt-1" />
+                      </div>
+                      <p className="text-[11px] text-themed italic">{m.example.translit}</p>
+                      <p className="text-[11px] text-themed-muted leading-relaxed">{m.example.note}</p>
+                      <p className="text-[10px] text-gold/60 mt-0.5">{m.example.ref}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-themed-muted mt-3">
+                The full science names several more madds (<em>badal</em>, <em>l&#299;n</em>, <em>&#7779;ilah</em> and others). These five carry most of what a learner needs to recite Al-F&#257;ti&#7717;ah and the short surahs correctly.
+              </p>
+            </ContentCard>
+
+            {/* Qalqalah */}
+            <ContentCard delay={0.25}>
+              <h2 className="text-lg font-semibold text-themed mb-2">Qalqalah &mdash; The Bouncing Letters</h2>
+              <p className="text-sm text-themed-muted mb-3">
+                Five letters &mdash; <span className="font-arabic text-gold">ق ط ب ج د</span>, remembered by the phrase <em>qu&#7789;b jad</em> &mdash; carry a faint bounce, almost an echo, when they have no vowel. Their articulation shuts the sound off completely, so releasing them cleanly takes a small push of air; without it the letter either vanishes or picks up a vowel that is not there. The bounce is an echo, not an &ldquo;uh&rdquo; &mdash; do not add a full vowel.
+              </p>
+              <p className="text-sm text-themed-muted mb-4">
+                It is commonly graded in two degrees: <em>qalqalah &#7779;ughr&#257;</em>, the light bounce on a letter carrying suk&#363;n in the middle of a word or verse, and <em>qalqalah kubr&#257;</em>, the stronger bounce when you stop on that letter at the end. Some teachers name a third, middle degree for stopping on a doubled letter.
+              </p>
+              <div className="space-y-2">
+                {qalqalahExamples.map((q) => (
+                  <div key={q.ref + q.translit} className="rounded-lg border sidebar-border p-3 sm:p-4 flex flex-col sm:flex-row gap-3 sm:gap-4" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <div className="text-center sm:w-14 shrink-0">
+                      <p className="text-3xl sm:text-4xl font-arabic text-gold leading-none">{q.letter}</p>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-xl sm:text-2xl font-arabic text-gold leading-loose text-right flex-1" dir="rtl">{q.ar}</p>
+                        <SpeakButton text={q.ar} className="p-1.5 shrink-0 mt-1" />
+                      </div>
+                      <p className="text-[11px] text-themed italic">{q.translit}</p>
+                      <p className="text-[11px] text-themed-muted leading-relaxed">{q.note}</p>
+                      <p className="text-[10px] text-gold/60 mt-0.5">{q.ref}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ContentCard>
+
+            {/* Learn it from a teacher */}
+            <ContentCard delay={0.3}>
+              <h2 className="text-lg font-semibold text-themed mb-2">Learn This From a Teacher</h2>
+              <p className="text-sm text-themed-muted leading-relaxed mb-3">
+                Tajw&#299;d is transmitted by ear. Every generation of reciters learned it by reciting to someone who had recited to someone before them &mdash; a chain of listening and correction reaching back to the Prophet &#65018;, not a chain of books. A page can tell you that ikhf&#257;&#702; is &ldquo;held lightly in the nose for about two counts&rdquo;. Only a teacher can tell you whether what you just did <em>was</em> ikhf&#257;&#702;.
+              </p>
+              <p className="text-sm text-themed-muted leading-relaxed mb-3">
+                So treat this tab as orientation, not certification. It names the rules so that you recognise them when a teacher uses the words, and so the marks printed in the mu&#7779;&#7717;af stop looking arbitrary. It does not qualify anyone to teach, and it is emphatically not an <em>ij&#257;zah</em> &mdash; the licence a qualified teacher grants only after hearing a student recite.
+              </p>
+              <ul className="space-y-2">
+                {[
+                  "Find a qualified teacher — in person or online — and recite back to them regularly. Being heard and corrected is the whole method.",
+                  "Pick one measured reciter and listen closely to the same passage many times before trying to imitate it.",
+                  "Start with Al-Fātiḥah and the short surahs you already recite daily; fixing what you say every day is worth more than covering new ground.",
+                  "Be patient with a slow start. The Prophet ﷺ said that one who is proficient in the Qur’an is with the noble recording angels, “and he who falters in it, and finds it difficult for him, will have two rewards” (Muslim 6:290).",
+                ].map((t) => (
+                  <li key={t} className="text-xs text-themed-muted leading-relaxed flex items-start gap-2">
+                    <span className="text-gold/50 mt-0.5">&#8226;</span>
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs text-themed-muted mt-3">
+                The stopping signs printed in the mu&#7779;&#7717;af belong to this same science &mdash; see{" "}
+                <button type="button" onClick={() => setActiveSection("vowels")} className="text-gold hover:underline">Symbols in the Mu&#7779;&#7717;af</button>{" "}
+                under Vowels &amp; Marks.
               </p>
             </ContentCard>
           </motion.div>
@@ -1264,7 +1625,7 @@ function LearnArabicContent() {
               },
               {
                 title: "6. Study Tajwīd (Recitation Rules)",
-                detail: "Tajwīd is the science of reciting every letter from its correct place of articulation (makhraj) with its proper qualities — Allah commands \u2018…recite the Qur’an at a measured pace\u2019 (Quran 73:4), and the reward is high: \u2018One who is proficient in the Qur'an is associated with the noble, upright, recording angels; and he who falters in it, and finds it difficult for him, will have two rewards\u2019 (Muslim 6:290). The core rules cover nūn sākinah and tanwīn (iẓhār = clear; idghām = merging; iqlāb = turning n into m before bāʼ; ikhfāʼ = light nasalisation), the rules of mīm sākinah, qalqalah (a slight \u2018echo\u2019 on the letters qāf, ṭāʾ, bāʾ, jīm, dāl when they carry sukūn), ghunnah (nasalisation held about two counts), and madd (elongation held 2, 4, or 6 counts). Common beginner mistakes: rushing the long vowels, softening the heavy/emphatic letters, and slipping a vowel onto a sukūn. Because it is judged by the ear, tajwīd is best learned face-to-face — find a qualified teacher, in person or online, and recite back to them.",
+                detail: "Tajwīd is the science of giving every letter its due — sounding it from its correct place of articulation (makhraj) with its proper qualities — because Allah commands \u2018…recite the Qur’an at a measured pace\u2019 (Quran 73:4). Common beginner mistakes: rushing the long vowels, softening the heavy letters, and slipping a vowel onto a sukūn. Because it is judged by the ear it is learned face-to-face, from a qualified teacher who hears you recite. The Tajwīd tab on this page walks through the makhārij, the four rules of nūn sākinah and tanwīn, madd, and qalqalah — each with a Quranic example.",
               },
               {
                 title: "7. Be Consistent — Even 10 Minutes Daily",

@@ -242,6 +242,7 @@ const figures: Figure[] = [
           servant, not a prophet.
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
+          <XLink href="/prophets/khidr" label="Al-Khidr — the full story" />
           <XLink href="/prophets/musa" label="Prophet Musa" />
           <XLink href="/quran/18" label="Surah al-Kahf" />
         </div>
@@ -269,6 +270,7 @@ const figures: Figure[] = [
           while some counted him among the prophets. His identity in history is likewise disputed.
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
+          <XLink href="/prophets/dhul-qarnayn" label="Dhul-Qarnayn — the full story" />
           <XLink href="/quran/18" label="Surah al-Kahf" />
           <XLink href="/day-of-judgement" label="Gog & Magog — a sign" />
         </div>
@@ -295,6 +297,7 @@ const figures: Figure[] = [
           prophet, though a minority counted him among the prophets.
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
+          <XLink href="/prophets/luqman" label="Luqman — the full story" />
           <XLink href="/quran/31" label="Surah Luqman" />
           <XLink href="/family" label="Raising righteous children" />
         </div>
@@ -313,15 +316,18 @@ const figures: Figure[] = [
           Maryam, the mother of Isa (Jesus), is the only woman named in the Quran, and a whole surah
           bears her name. Allah chose her, purified her, and chose her above all women (Quran 3:42),
           and gave her Isa without a father, breathing into her of His spirit through the angel
-          (Quran 66:12). She was a ṣiddīqah — a woman of the very highest truthfulness.
+          (Quran 66:12). She was a ṣiddīqah — a woman of the very highest truthfulness. The Prophet
+          ﷺ said she was &ldquo;the best among the women of her time&rdquo; (Bukhari 60:103).
         </p>
         <VerseBlock id="3:42" />
         <p>
           The mainstream position is that Maryam was not a prophet, since prophethood was given to
-          men; a minority of scholars held that she received a form of revelation through the angel,
-          but this is not the majority view. Either way she is honoured as the greatest of women.
+          men; a minority — most famously Ibn Hazm — held that she received a form of revelation
+          through the angel, but this is not the majority view. Either way she is honoured as the
+          greatest of women.
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
+          <XLink href="/prophets/maryam" label="Maryam — the full story" />
           <XLink href="/prophets/isa" label="Prophet Isa" />
           <XLink href="/women" label="Women in Islam" />
         </div>
@@ -409,6 +415,7 @@ const figureSources = [
   { ref: "Quran 31:12", desc: "Luqman endowed with wisdom" },
   { ref: "Quran 3:42", desc: "Maryam chosen above all women" },
   { ref: "Quran 66:12", desc: "Maryam who guarded her chastity" },
+  { ref: "Bukhari 60:103", desc: "the best of the women of her time" },
   { ref: "Quran 9:30", desc: "the false claim about Uzair" },
   { ref: "Quran 2:247", desc: "Talut appointed king" },
   { ref: "Quran 18:9", desc: "the People of the Cave" },
@@ -729,7 +736,8 @@ function ProphetsContent() {
         <p className="text-themed-muted text-sm leading-relaxed mb-4">
           Beyond the twenty-five prophets, the Quran honours other figures whose prophethood
           scholars have debated — several of them anchoring Surah al-Kahf, read every Friday.
-          Here are the main scholarly positions.
+          Here are the main scholarly positions; Maryam, Al-Khidr, Dhul-Qarnayn and Luqman each
+          have a full story page of their own.
         </p>
       )}
       <div className="space-y-4">

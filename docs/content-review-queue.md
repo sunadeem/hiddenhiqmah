@@ -439,7 +439,9 @@ _Batch 5 (qiblah, tawhid, articles-of-faith, pillars, prophet-stories), Opus-bui
 20. Dawud / 'The Two Disputants': 'The Bathsheba tale found in earlier scriptures is a later fabrication that Islam rejects; the Quran's test concerns only hastiness in judgment' — mainstream Islamic position stated with generic attribution (no source cited), correctly framing the rejected Israʼiliyyat.
 21. Adam / 'Habil and Qabil' and the Nimrod/Azar narratives use the traditional proper names Habil, Qabil, Nimrod (not named in the Quranic text) — conventional traditional naming, parenthetically qualified.
 
-## Fable re-review follow-ups (2026-07-28)
+## Fable re-review follow-ups (2026-07-28) — ✅ ALL 15 RESOLVED (2026-07-29)
+
+Every item below was verified against the grading literature (dorar.net takhrij, edition-aware Musnad numbering, named graders) and the in-app labels updated accordingly. Outcomes: **3 CONFIRMED** as labeled (Ahmad 17163, 24864, 23489) · **8 LABELS CORRECTED** — including a wrong edition number (Constantinople commander narration: 18859 → **18957**, ar-Risala ed., da'if per al-Arna'ut/al-Albani vs al-Hakim's authentication) and proper sourcing for the pillars fiqh attributions · **1 CUT** — the Ibn Sa'd deathbed address ("lawful only what the Quran made lawful"): weak in every chain (al-Mu'allimi: "not established") and a known Quranist proof-text; the passage was removed. The items are kept below for the audit trail.
 
 External citations added or retained during the batch 2-5 re-review that CANNOT be verified against the app's local corpus (the shipped Musnad Ahmad covers ids 1-1438 only). Each is honestly labeled in-app; founder should confirm number/grading against a printed edition (e.g. al-Arna'ut's Musnad) or cut the passage.
 
@@ -475,9 +477,9 @@ External citations added or retained during the batch 2-5 re-review that CANNOT 
 ### /sects
 15. (line ~857) Musnad Ahmad 23489 (Farewell Sermon, no-Arab-superiority) is outside the app's local collections; now labelled as such. Founder should confirm the preferred external citation/grading wording.
 
-## Should-be-added — from the Fable re-review (2026-07-29)
+## Should-be-added — from the Fable re-review (2026-07-29) — ✅ ALL 19 BUILT (2026-07-29)
 
-The re-review's coverage verdicts. The two MUST items are ALREADY RESOLVED (recorded here for the audit trail); the NICE items are founder decisions — none were auto-built.
+All NICE items below were built the same day (six Opus builders under the corpus-verification iron rules, reviewed at the Fable bar before commit; 10 review defects fixed pre-ship). Scope choices: kids letters practice shipped as a flashcard mode (not a tracing engine); tajwid shipped as a tab inside /learn-arabic; the Jahannam item shipped as a go-deeper card; the prophecy cards are now single-sourced from src/data/prophecies.ts so the two pages can never drift again. The list is kept for the audit trail.
 
 ### MUST — resolved
 1. ~~Sync the corrected Constantinople/Mongols prophecy cards into /prophet-muhammad's duplicates~~ — DONE 2026-07-29: both cards on /prophet-muhammad now carry the corpus-verified wording and honest framing that /miracles received. The structural fix (single-sourcing the ~10 duplicated prophecy cards, expansion-plan item #10) remains recommended — see NICE below.
