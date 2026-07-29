@@ -1305,9 +1305,9 @@ const prophecies: Prophecy[] = [
   {
     title: "The Mongol siege and destruction of Baghdad",
     description:
-      "The Prophet ﷺ warned that Muslims would fight a people 'whose faces are like hammered shields' with small eyes and flat noses, who wear shoes made of hair. In 1258 CE, the Mongol army under Hulagu Khan — matching this description exactly — sacked Baghdad, the capital of the Abbasid Caliphate. An estimated 200,000 to over a million people were killed, the House of Wisdom was destroyed, and the Tigris ran black with ink. This ended the Islamic Golden Age.",
+      "The Prophet ﷺ warned that Muslims would fight the Turks — a people with small eyes, red faces and flat noses, whose faces are like hammered shields — and a people whose shoes are made of hair. Classical scholars such as Ibn Hajar read the Mongol and Tatar invasions as this hadith's fulfillment: in 1258 CE, the Mongol army under Hulagu Khan sacked Baghdad, the capital of the Abbasid Caliphate. An estimated 200,000 to over a million people were killed, the House of Wisdom was destroyed, and the Tigris ran black with ink. This ended the Islamic Golden Age.",
     hadith:
-      "The Prophet ﷺ said: 'The Hour will not come until you fight a people whose shoes are made of hair, and the Hour will not come until you fight a people with small eyes and flat noses.'",
+      "The Prophet ﷺ said: 'The Hour will not be established until you fight with the Turks; people with small eyes, red faces, and flat noses. Their faces will look like shields coated with leather. The Hour will not be established till you fight with people whose shoes are made of hair.'",
     reference: "Bukhari 56:141; Muslim 54:76",
     status: "fulfilled",
   },
