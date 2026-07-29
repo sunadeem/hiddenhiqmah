@@ -457,6 +457,9 @@ External citations added or retained during the batch 2-5 re-review that CANNOT 
 5. (line ~267) Zakat may not be given to parents/children/spouse — now framed as 'majority of scholars'. Founder to confirm scope: some schools permit a wife giving zakat to her poor husband. No local citation carried.
 6. (line ~264) Nisab figures (approx. 85g gold / 595g silver) carry no citation — founder to source to a named fiqh reference.
 7. (line ~93) Seven conditions of the shahada (ilm, yaqeen, qabool, inqiyad, sidq, ikhlas, mahabbah) attributed generically to 'scholars'; also restated at line 127. Founder to attach a named source.
+7b. Agricultural zakat rates (5% irrigated / 10% rain-fed) stated without citation — the underlying hadith (al-'ushr on rain-watered crops) is in Bukhari's Zakat book; founder to attach the specific reference.
+7c. The Jumu'ah-obligation point is stated flatly; the exemptions (traveler, woman, sick, child) are generically attributed — founder to source or soften.
+7d. 'Whoever says the shahada sincerely will eventually enter Paradise (even if punished first)' — mainstream position, but stated without a named narration; founder to attach one (e.g. the Abu Dharr narration) or keep as general aqidah framing.
 
 ### /prophet-muhammad
 8. (line ~195) External citation added per reviewer: 'Musnad Ahmad 17163 (sahih — Ibn Hibban, al-Hakim)' for 'I am the answer to the prayer of my father Ibrahim...'. Local Ahmad corpus only covers hadith 1-1438, so this number and grading could not be verified in-repo — founder should confirm against the al-Arna'ut edition (or delete the sentence).
@@ -471,3 +474,50 @@ External citations added or retained during the batch 2-5 re-review that CANNOT 
 
 ### /sects
 15. (line ~857) Musnad Ahmad 23489 (Farewell Sermon, no-Arab-superiority) is outside the app's local collections; now labelled as such. Founder should confirm the preferred external citation/grading wording.
+
+## Should-be-added — from the Fable re-review (2026-07-29)
+
+The re-review's coverage verdicts. The two MUST items are ALREADY RESOLVED (recorded here for the audit trail); the NICE items are founder decisions — none were auto-built.
+
+### MUST — resolved
+1. ~~Sync the corrected Constantinople/Mongols prophecy cards into /prophet-muhammad's duplicates~~ — DONE 2026-07-29: both cards on /prophet-muhammad now carry the corpus-verified wording and honest framing that /miracles received. The structural fix (single-sourcing the ~10 duplicated prophecy cards, expansion-plan item #10) remains recommended — see NICE below.
+2. ~~Add a /pillars generic-attribution section to this queue~~ — DONE: items 5-7d above.
+
+### NICE — founder decisions
+1. **/prophet-muhammad** — Bathroom-entry/exit etiquette dua as its own Daily Sunnah card (Allahumma inni a'udhu bika minal-khubthi wal-khaba'ith — Abu Dawud 1:4; Nasai 1:19)
+   _Why:_ Expansion-plan item #11 for this page; currently only a passing phrase inside the Remembrance description (~line 1429), the sole plan proposal not built.
+2. **/dhikr** — Add the 4 planned catalog adhkar (Dua of Yunus, Raditu billahi rabban 3x, Bismillahil-ladhi la yadurru 3x, post-Fajr tahlil 10x) and expose the full tahlil as a standalone addable catalog entry
+   _Why:_ Plan item #2 (HIGH) named these; none are in src/lib/dhikr/catalog.ts — the full tahlil ships only inside the after-prayer preset override.
+3. **/duas-data** — A 'between the adhan and the iqamah' dua-window entry (Abu Dawud 2:131)
+   _Why:_ Plan item #7's completion; the promise is cited in the duas-page explainer but has no card in duas.json, so it never surfaces in category/search views.
+4. **/duas-data** — The drought plea 'Allahumma aghithna' from the same Bukhari 15:28 famine narration
+   _Why:_ Plan item #13 wanted both halves of the istisqa pair; only the 'around us, not upon us' stop-rain dua shipped.
+5. **/duas-data** — A 'make dua in sujud' practice card (Muslim 4:245)
+   _Why:_ Plan item #1's fourth sub-item; present only as prose in the duas-page explainer, not as a dua entry.
+6. **/day-of-judgement** — One-line caveat on the 10-step chronological timeline card that the exact ordering of some stations (e.g. Hawd relative to the Sirat) is discussed among scholars.
+   _Why:_ The timeline presents a fixed sequence as settled; classical scholars (e.g. in al-Qurtubi's and Ibn Hajar's discussions) genuinely differ on the Hawd/Sirat order, and the page's own house style flags such matters elsewhere.
+7. **/kids** — Top up 'My First Duas' from 7 toward the plan's 10-15 (easy locally-citable adds: dua for parents Quran 17:24, entering/leaving the masjid, after wudu, when it rains).
+   _Why:_ The expansion plan (docs/content-expansion-plan.md, /kids proposal 4) specified ~10-15 duas; 7 shipped — the largest quantitative shortfall on the page.
+8. **/kids** — Add the trace/flashcard game mechanic to the Arabic Letters tab (currently a static tap-to-reveal grid).
+   _Why:_ Plan proposal 12 explicitly called for an interactive trace/game deck; the shipped static grid meets the content bar but not the planned interactivity.
+9. **/kids** — Small count top-ups: Daily Words 25 → ~30 phrases and Challenges 46 → 50+ questions.
+   _Why:_ Both shipped slightly under the plan's stated targets (proposals 8 and 9); content quality is fine, only quantity is short.
+10. **/barzakh** — A 'Can I recite Quran at the graveside?' entry in the Common Questions topic (differed practice: Hanbali/Hanafi scholars permit and consider it beneficial; classical Maliki/Shafi'i positions differ; du'a and salam are agreed upon).
+   _Why:_ The expansion plan's own proposal #5 scope named 'Quran recitation at graves' among the Common Questions, it is the one plan sub-item not shipped, and it is among the most commonly asked real-world grave-visit questions.
+11. **/death-rites** — One card in the Practical Checklist on organ donation (fiqh councils differ; several major academies permit it with conditions; frame as consult-a-scholar, no invented citation).
+   _Why:_ The Western civil-process checklist already walks the family through embalming, autopsy, and cremation decisions, but the same hospital/DMV paperwork forces an organ-donor consent decision the page leaves unaddressed.
+12. **/prophets** — A 'Duas of the Prophets' block (Adam 7:23, Yunus 21:87, Ayyub 21:83, Musa 20:25-28, Ibrahim 26:83, Zakariyya 21:89) on the landing page or as a /duas category.
+   _Why:_ Plan item #5 is the only /prophets proposal absent from every shipped location; it is the most practically actionable content in the topic and all source verses are already in the corpus.
+13. **/hadith-page** — Thematic hadith browsing (/hadith/topics, Riyad-as-Salihin-style: Mercy, Parents, Anger, Charity, Honesty, Neighbors, Knowledge, Repentance).
+   _Why:_ Plan item #9, the known nice-to-have deferral — currently the only way into 7 collections is search or book-by-book reading; a topical door is the biggest remaining usability gap for beginners.
+14. **/learn-arabic** — A dedicated /tajwid route (or a tajwid sub-tab) expanding tip #6's single dense paragraph into structured rules with Arabic examples (makharij chart, nun-sakinah/tanwin four rules, madd types with beat counts, qalqalah letters).
+   _Why:_ Plan item #4 (HIGH) was consciously compressed into one Learning-Tips paragraph; it is the one plan item where a reader who wants the actual rules is left without a usable treatment.
+15. **/prayer-times** — Show the computed Islamic-midnight and last-third-begins clock times for the user's location on the night card — the tool already has Maghrib and Fajr times in state.
+   _Why:_ Plan proposal 7's optional enhancement: the card teaches the concept but the app already holds the data to answer the reader's obvious next question ('so when is it tonight?').
+16. **/articles-of-faith** — A /jahannam go-deeper page (or card) to complete the Last Day cross-link set.
+   _Why:_ Plan item 6 (MED) unbuilt: the Last Day article deep-links /barzakh, /day-of-judgement, /jannah but has no Hellfire counterpart, leaving the destination-pair asymmetric.
+17. **/prophet-stories** — Entries (or a 'righteous figures' section) for Maryam, Khidr, Dhul-Qarnayn, and Luqman with the standard is-he/she-a-prophet scholarly hedges.
+   _Why:_ Plan item 2 (HIGH) unbuilt: these are the most-asked debated figures; Khidr currently exists only inside Musa's story and Maryam has no entry at all.
+18. **/prophet-stories** — The Great Intercession narrative (mankind going Adam → Nuh → Ibrahim → Musa → Isa → Muhammad on Judgment Day) appended to the muhammad entry.
+   _Why:_ Plan item 7 unbuilt: it is the canonical cross-prophet narrative that ties all 27 entries together; the muhammad story currently ends at the Farewell Sermon.
+19. **/miracles + /prophet-muhammad** — single-source the ~10 prophecy cards duplicated across the two pages (plan item #10) so future fixes can never drift apart again.
