@@ -32,6 +32,7 @@ import {
 } from "@hidden-hiqmah/ui/lib/storage";
 import { getCachedLocation, getLocationState } from "@hidden-hiqmah/ui/lib/location-cache";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
+import { syncWidgetData } from "@/lib/mobile/widgets";
 
 const FEEDBACK_EMAIL = "support@hiddenhiqmah.com";
 
@@ -101,6 +102,12 @@ export default function SettingsScreen() {
     // rolling adhan notifications now (no-op on web / without permission) —
     // otherwise old-method adhans keep firing until the next cold start.
     rescheduleNotificationsDebounced(false);
+    // Same for the home-screen widgets: they render from a blob we publish into
+    // the App Group, so without this the widget would keep showing the OLD
+    // method's times for up to 6 hours while the app itself already shows the
+    // new ones. Forced past that write window precisely because the inputs
+    // changed. No-op on web / on a build without the native bridge.
+    void syncWidgetData({ force: true });
   };
 
   if (!hydrated || !prayer) {

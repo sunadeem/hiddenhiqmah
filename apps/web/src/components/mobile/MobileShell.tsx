@@ -15,6 +15,7 @@ import { applyNativeSetup } from "@/lib/mobile/setup";
 import { registerNotificationTapHandler, scheduleAllNotifications } from "@/lib/mobile/notifications";
 import { refreshLocation, type LocationRefreshResult } from "@/lib/mobile/location-refresh";
 import { registerDeepLinkHandler } from "@/lib/mobile/deeplinks";
+import { syncWidgetData } from "@/lib/mobile/widgets";
 import { registerPush, flushPendingPushToken } from "@/lib/mobile/push";
 import { App as CapApp } from "@capacitor/app";
 import { useLegacyImport } from "@/lib/daily/useLegacyImport";
@@ -78,6 +79,14 @@ export default function MobileShell({ children }: { children: React.ReactNode })
     // Nothing is cancelled while we wait, so the short delay costs nothing.
     const refill = (res: LocationRefreshResult | null) => {
       if (!res?.changed) void scheduleAllNotifications(false);
+      // Roll the widgets' 30-day window forward too. Chained AFTER the location
+      // refresh for the same reason the scheduler is: a user who travelled gets
+      // the new city's times published, not the old one's. Unforced — a changed
+      // location has already forced its own write inside refreshLocation, and a
+      // plain foreground only needs the window topped up (widgets.ts throttles
+      // to one write per 6h). Never awaited: the widget is the least urgent
+      // surface here and must not delay anything.
+      void syncWidgetData();
     };
     // appStateChange is NOT emitted at cold start (native didBecomeActive fires
     // before this listener exists and is not retained), so do the launch pass
