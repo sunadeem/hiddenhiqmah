@@ -854,7 +854,7 @@ const otherSects: SectTopic[] = [
           title: "Racial theology contradicts Tawhid",
           detail:
             "The NOI taught that Black people are divine, that Fard Muhammad was 'God in person,' and that white people were 'devils' created by an evil scientist named Yakub. Islam categorically rejects all forms of racism and teaches that no human being is divine. The Prophet ﷺ said: 'No Arab has superiority over a non-Arab, nor does a non-Arab have superiority over an Arab — except by piety.'",
-          note: "Quran 49:13; Musnad Ahmad 23489 (Farewell Sermon) — outside the app's local collections",
+          note: "Quran 49:13; Musnad Ahmad 23489 (Farewell Sermon; isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700) — outside the app's local collections",
         },
         {
           title: "Denial of the Hereafter as taught in Islam",
@@ -875,7 +875,7 @@ const otherSects: SectTopic[] = [
           note: "The Autobiography of Malcolm X, Chapter 18 — El-Hajj Malik El-Shabazz",
         },
       ],
-      source: "Quran 33:40; Quran 49:13; Musnad Ahmad 23489 (Farewell Sermon) — outside the app's local collections; The Autobiography of Malcolm X",
+      source: "Quran 33:40; Quran 49:13; Musnad Ahmad 23489 (Farewell Sermon; isnad sahih — al-Arna'ut; al-Albani, as-Sahihah 2700) — outside the app's local collections; The Autobiography of Malcolm X",
     },
   },
 ];

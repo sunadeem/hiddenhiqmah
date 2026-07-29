@@ -1172,6 +1172,48 @@
       "source": "Bukhari 15:28",
       "when": "When rain is heavy and you fear its harm",
       "virtue": "When continuous rain threatened Medina, the Prophet raised his hands and said this, and the clouds parted from over the city."
+    },
+    {
+      "id": "dua-in-sujud",
+      "tags": [
+        "prayer",
+        "making-dua"
+      ],
+      "title": "Du'a in Sujud",
+      "arabic": "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ دِقَّهُ وَجِلَّهُ وَأَوَّلَهُ وَآخِرَهُ وَعَلاَنِيَتَهُ وَسِرَّهُ",
+      "transliteration": "Allahumma-ghfir li dhanbi kullahu, diqqahu wa jillahu, wa awwalahu wa akhirahu, wa 'alaniyatahu wa sirrah",
+      "translation": "O Allah, forgive me all of my sin — the small of it and the great of it, the first of it and the last of it, the open of it and the secret of it.",
+      "source": "Muslim 4:246, Muslim 4:245",
+      "when": "In prostration (sujud), where a servant is nearest to his Lord",
+      "virtue": "The Prophet (peace be upon him) said that the nearest a servant comes to his Lord is while prostrating, so supplicate much in it. This is a du'a he himself used to say in his sujud."
+    },
+    {
+      "id": "between-the-adhan-and-iqamah",
+      "tags": [
+        "prayer",
+        "making-dua"
+      ],
+      "title": "Between the Adhan and the Iqamah",
+      "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالآخِرَةِ",
+      "transliteration": "Allahumma inni as'alukal-'afwa wal-'afiyata fid-dunya wal-akhirah",
+      "translation": "O Allah, I ask You for pardon and well-being in this world and in the Hereafter.",
+      "source": "Abu Dawud 2:131, Tirmidhi 48:225, Ibn Majah 34:45",
+      "when": "In the waiting time between the adhan and the iqamah",
+      "virtue": "The supplication made between the adhan and the iqamah is not rejected. When the Companions asked what they should say, the Prophet (peace be upon him) told them to ask Allah for al-'afiyah (well-being) in this world and the Hereafter. The wording given here is the Prophet's own morning-and-evening supplication asking for exactly that (Ibn Majah)."
+    },
+    {
+      "id": "asking-allah-for-rain",
+      "tags": [
+        "rain-weather"
+      ],
+      "title": "Asking Allah for Rain",
+      "arabic": "اللَّهُمَّ أَغِثْنَا",
+      "transliteration": "Allahumma aghithna",
+      "translation": "O Allah, send us rain.",
+      "source": "Bukhari 15:9, Muslim 9:9",
+      "when": "In drought, and in the prayer for rain (istisqa)",
+      "repeat": "3 times",
+      "virtue": "A man stood during the Friday sermon and said the livestock were dying and the roads were cut off, so the Prophet (peace be upon him) raised his hands and said this three times. Anas said there was not a wisp of cloud in the sky — then a cloud like a shield rose, and it rained until they had not seen the sun for a week."
     }
   ]
 }

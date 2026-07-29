@@ -312,6 +312,15 @@ function PreparingChecklistSub() {
             Autopsy is only obligatory when the law requires it (e.g. an unexplained or suspicious death). Where it is optional, the family may respectfully decline to preserve the body&apos;s dignity and avoid delay. If one is legally mandated, it is permitted by necessity — cooperate, and resume the Islamic process as soon as the body is released.
           </p>
         </ContentCard>
+        <ContentCard delay={0.19}>
+          <h5 className="text-gold font-medium mb-2">5. If organ donation is raised</h5>
+          <p className="text-themed-muted text-sm leading-relaxed">
+            Hospitals often raise donation at or just before death, and the family is asked to decide in minutes. The fiqh councils differ on this. Several major fiqh academies and national fatwa bodies permit transplantation under conditions — that it saves or substantially preserves a life, that no organ is bought or sold, and that there is clear consent. Other scholars and councils hold it impermissible, on the grounds that the body keeps its inviolability after death. Because it is a live difference rather than a settled ruling, put the question to a scholar you trust before the moment arrives, decide it with the family, and write the decision down alongside the wasiyyah so no one has to guess.
+          </p>
+          <Link href="/death-rites?tab=preparing&sub=affairs" className="inline-block mt-2 text-xs text-gold hover:text-gold/80 underline underline-offset-2">
+            Record it with your affairs →
+          </Link>
+        </ContentCard>
       </div>
 
       <h3 className="text-lg font-semibold text-themed mt-6 mb-3 px-1">Burial Decisions</h3>
@@ -1700,7 +1709,7 @@ const searchIndex: SearchEntry[] = [
   { tab: "preparing", sub: "reality", label: "Reality of Death", keywords: "reality of death remember often destroyer of pleasures every soul will taste death" },
   { tab: "preparing", sub: "affairs", label: "Set Your Affairs", keywords: "wasiyyah will debts settle tawbah repentance" },
   { tab: "preparing", sub: "good-ending", label: "A Good Ending", keywords: "husn al-khatimah good ending visit graves live as if today" },
-  { tab: "preparing", sub: "checklist", label: "Practical Checklist", keywords: "first 24 hours funeral home death certificate embalming cremation autopsy muslim cemetery repatriation costs west america uk first muslim funeral what to do" },
+  { tab: "preparing", sub: "checklist", label: "Practical Checklist", keywords: "first 24 hours funeral home death certificate embalming cremation autopsy organ donation transplant donor muslim cemetery repatriation costs west america uk first muslim funeral what to do" },
   { tab: "dying", sub: "bedside", label: "At the Bedside", keywords: "dying moments shahada la ilaha illallah prompt talqin" },
   { tab: "dying", sub: "words-dua", label: "Words & Du'a", keywords: "speak only good yasin dua for the dying" },
   { tab: "dying", sub: "departure", label: "The Soul Departs", keywords: "soul departs inna lillahi close the eyes" },

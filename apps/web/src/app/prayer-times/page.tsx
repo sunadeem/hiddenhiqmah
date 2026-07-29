@@ -248,6 +248,28 @@ function timeStringToMinutes(raw: string): number {
   return h * 60 + m;
 }
 
+// The Islamic night runs Maghrib → Fajr. "Islamic midnight" is that interval's
+// midpoint (where Isha's preferred window closes); the last third of the night
+// begins two-thirds of the way through it. Returns display strings, or null when
+// there are no prayer times yet (no location resolved).
+function getNightMarkers(timings: PrayerTimings | null): { midnight: string; lastThird: string } | null {
+  if (!timings || !timings.Maghrib || !timings.Fajr) return null;
+  const maghribMin = timeStringToMinutes(timings.Maghrib);
+  const fajrMin = timeStringToMinutes(timings.Fajr);
+  if (!Number.isFinite(maghribMin) || !Number.isFinite(fajrMin)) return null;
+  // Fajr belongs to the following morning, so it always falls after Maghrib.
+  const nightLength = ((fajrMin - maghribMin) % (24 * 60) + 24 * 60) % (24 * 60);
+  if (nightLength <= 0) return null;
+  const fmt = (min: number) => {
+    const wrapped = ((Math.round(min) % (24 * 60)) + 24 * 60) % (24 * 60);
+    return formatDisplayTime(`${Math.floor(wrapped / 60)}:${String(wrapped % 60).padStart(2, "0")}`);
+  };
+  return {
+    midnight: fmt(maghribMin + nightLength / 2),
+    lastThird: fmt(maghribMin + (nightLength * 2) / 3),
+  };
+}
+
 interface WindowProgress {
   prevKey: string;
   prevTime: string;
@@ -692,6 +714,10 @@ function PrayerTimesContent() {
       setPtShowManualInput(false);
     }
   };
+
+  // Islamic midnight + start of the last third, for the Night Prayers sub-tab.
+  // Null until a location resolves; the card falls back to a prompt.
+  const ptNightMarkers = getNightMarkers(ptTimings);
 
   return (
     <div>
@@ -1208,8 +1234,38 @@ function PrayerTimesContent() {
         <ContentCard delay={0.47}>
           <h3 className="text-gold font-semibold text-lg mb-3">Islamic midnight &amp; the last third of the night</h3>
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
-            &ldquo;Islamic midnight&rdquo; is not 12:00 on the clock — it is the <span className="text-gold">midpoint between Maghrib and Fajr</span>. That midpoint is when the preferred time for Isha ends, and it also marks the start of the night&rsquo;s final third, the time of tahajjud. The Prophet&nbsp;&#65018; said whoever prays Isha in congregation is like one who kept vigil till midnight.
+            &ldquo;Islamic midnight&rdquo; is not 12:00 on the clock — it is the <span className="text-gold">midpoint between Maghrib and Fajr</span>. That midpoint is when the preferred time for Isha ends. Later still — two-thirds of the way from Maghrib to Fajr — the night&rsquo;s <span className="text-gold">final third</span> begins, the time of tahajjud. The Prophet&nbsp;&#65018; said whoever prays Isha in congregation is like one who kept vigil till midnight.
           </p>
+
+          {/* Both markers, computed from the location already loaded on the Times tab */}
+          {ptNightMarkers ? (
+            <div className="rounded-lg p-4 mb-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-xs text-themed-muted mb-1">Islamic midnight</p>
+                  <p className="text-gold font-semibold text-lg">{ptNightMarkers.midnight}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-themed-muted mb-1">Last third begins</p>
+                  <p className="text-gold font-semibold text-lg">{ptNightMarkers.lastThird}</p>
+                </div>
+              </div>
+              <p className="text-xs text-themed-muted mt-3">
+                Worked out from your Maghrib and Fajr times{ptDisplayLocation ? ` for ${ptDisplayLocation}` : ""}. Tomorrow&rsquo;s Fajr shifts by a minute or two, so treat these as very close rather than exact.
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-lg p-4 mb-3 border sidebar-border" style={{ backgroundColor: "var(--color-bg)" }}>
+              <p className="text-xs text-themed-muted leading-relaxed">
+                {ptLoading
+                  ? "Working out tonight’s midnight and last-third times…"
+                  : ptTimings
+                    ? "Maghrib and Fajr are too close together at this location for a meaningful midpoint — see the high-latitude note under Times & Calendar."
+                    : "Set your location on the Times tab and tonight’s Islamic midnight and last-third times will be worked out for you here."}
+              </p>
+            </div>
+          )}
+
           <p className="text-themed-muted text-sm leading-relaxed mb-3">
             The last third of the night is the most beloved time to stand in prayer:
           </p>

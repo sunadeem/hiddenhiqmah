@@ -968,6 +968,10 @@ function TawhidContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
+            <p className="text-xs text-themed-muted italic text-center mb-4 px-2 leading-relaxed">
+              The three-fold division is a teaching framework the scholars drew out of the texts, not a division the Quran itself sets out in these terms — the individual truths it gathers are drawn from the texts themselves.
+            </p>
+
             {/* Category subtabs */}
             <div className="flex justify-center gap-2 overflow-x-auto pb-4 mb-2 scrollbar-hide">
               {categories.filter((cat) => textMatch(search, cat.title, cat.meaning, cat.description, ...cat.points)).map((cat) => (

@@ -13,8 +13,11 @@ import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import { BookOpen, Telescope, Clock, MapPin, Moon, Sparkles } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import Link from "next/link";
+// The prophecy cards below that also appear on /prophet-muhammad are held in
+// one shared record so a correction cannot land on only one of the two pages.
+import { miraclesProphecy, type ProphecyStrength } from "@/data/prophecies";
 
-type Strength = "strong" | "moderate" | "debated";
+type Strength = ProphecyStrength;
 
 type Miracle = {
   category: string;
@@ -133,58 +136,11 @@ const miracles: Miracle[] = [
   },
 
   // === FULFILLED PROPHECIES ===
-  {
-    category: "prophecy",
-    title: "The Conquest of Constantinople",
-    reference: "Musnad Ahmad — outside the app's local collections; grading disputed",
-    arabic: "لَتُفْتَحَنَّ الْقُسْطَنْطِينِيَّةُ فَلَنِعْمَ الْأَمِيرُ أَمِيرُهَا وَلَنِعْمَ الْجَيْشُ ذَٰلِكَ الْجَيْشُ",
-    translation: "Verily, Constantinople will be conquered. How excellent will be the commander who conquers it, and how excellent will be his army.",
-    explanation: "Prophet Muhammad ﷺ prophesied the conquest of Constantinople (modern-day Istanbul). Multiple authentic narrations confirm this prophecy. The specific narration praising the commander and army is from Musnad Ahmad (grading disputed among scholars). This prophecy was fulfilled in 1453 CE — over 800 years later — when the Ottoman Sultan Mehmed II conquered the city.",
-    historicalContext: "Constantinople was the capital of the Byzantine Empire and one of the most fortified cities in the world. Multiple Muslim attempts to conquer it had failed over centuries before Mehmed II's successful siege.",
-    sources: ["Musnad Ahmad (commonly cited as Musnad Ahmad 18859) — external; wording not verified against this app's local corpus", "Muslim 54:44 — the general prophecy of the conquest", "Tirmidhi 33:82 — the general prophecy of the conquest", "Historical: Fall of Constantinople, 1453 CE"],
-    strength: "strong",
-    strengthNote: "The general prophecy of Constantinople's conquest is in Sahih Muslim and other authentic collections. The specific 'how excellent the commander' wording (Musnad Ahmad) has been weakened by al-Albani and al-Arna'ut, but authenticated by al-Hakim and al-Dhahabi.",
-  },
-  {
-    category: "prophecy",
-    title: "The Conquest of Jerusalem",
-    reference: "Bukhari 58:18",
-    explanation: "Prophet Muhammad ﷺ told his companion Awf ibn Malik about six signs before the Day of Judgment, the first being his own death and the second being the conquest of Jerusalem (Bayt al-Maqdis). Jerusalem was conquered by the Muslim army under Caliph Umar ibn al-Khattab in 637 CE, just 5 years after the Prophet's death.",
-    historicalContext: "Caliph Umar personally traveled to Jerusalem to accept its surrender from the Patriarch Sophronius. He famously refused to pray inside the Church of the Holy Sepulchre to prevent Muslims from converting it to a mosque.",
-    sources: ["Bukhari 58:18", "Historical: Siege of Jerusalem, 637 CE"],
-    strength: "strong",
-  },
-  {
-    category: "prophecy",
-    title: "The Conquest of Persia and Treasures of Kisra",
-    reference: "Bukhari 57:29",
-    arabic: "إِذَا هَلَكَ كِسْرَى فَلَا كِسْرَى بَعْدَهُ",
-    translation: "When Kisra (Chosroes) perishes, there will be no Kisra after him.",
-    explanation: "Prophet Muhammad ﷺ prophesied the fall of the Persian Empire and that its treasures would be spent in the cause of Allah. The Sasanian Persian Empire — one of the two superpowers of the time — fell to the Muslim army in 651 CE, and its vast treasures were distributed.",
-    sources: ["Bukhari 57:29", "Muslim 54:92", "Historical: Fall of Sasanian Empire, 651 CE"],
-    strength: "strong",
-  },
-  {
-    category: "prophecy",
-    title: "Barefoot Shepherds Competing in Tall Buildings",
-    reference: "Muslim 1:1",
-    arabic: "أَنْ تَلِدَ الْأَمَةُ رَبَّتَهَا وَأَنْ تَرَى الْحُفَاةَ الْعُرَاةَ الْعَالَةَ رِعَاءَ الشَّاءِ يَتَطَاوَلُونَ فِي الْبُنْيَانِ",
-    translation: "...and you will see barefoot, naked, destitute shepherds competing in constructing tall buildings.",
-    explanation: "In the famous Hadith of Jibreel, the Prophet ﷺ described one of the signs of the approaching Hour: that barefoot, impoverished Bedouin shepherds would compete in building the tallest structures. Today, the Arabian Peninsula — historically home to nomadic Bedouin tribes — hosts the world's tallest skyscrapers, including the Burj Khalifa (828m) and the upcoming Jeddah Tower.",
-    sources: ["Muslim 1:1 (Hadith of Jibreel)", "Bukhari 2:43"],
-    strength: "strong",
-  },
-  {
-    category: "prophecy",
-    title: "A Fire from Hijaz Visible from Busra",
-    reference: "Bukhari 92:65, Muslim 54:55",
-    arabic: "لَا تَقُومُ السَّاعَةُ حَتَّى تَخْرُجَ نَارٌ مِنْ أَرْضِ الْحِجَازِ تُضِيءُ أَعْنَاقَ الْإِبِلِ بِبُصْرَى",
-    translation: "The Hour will not come until a fire emerges from the land of Hijaz that will illuminate the necks of camels in Busra (Syria).",
-    explanation: "In 1256 CE, a massive volcanic eruption occurred east of Medina. The eruption lasted for weeks and the lava flow extended over 23 km. Contemporary historians, including Abu Shama al-Maqdisi, documented that the light of the fire was visible from great distances, with reports reaching as far as Busra in Syria.",
-    historicalContext: "Abu Shama al-Maqdisi recorded: 'A great fire appeared in the Harrah near Medina on Friday, 6th Jumada al-Akhirah 654 AH.' The event was documented by multiple historians of the period.",
-    sources: ["Bukhari 92:65", "Muslim 54:55", "Abu Shama al-Maqdisi, Dhayl al-Rawdatayn"],
-    strength: "strong",
-  },
+  miraclesProphecy("constantinople"),
+  miraclesProphecy("jerusalem"),
+  miraclesProphecy("persia-and-rome"),
+  miraclesProphecy("barefoot-shepherds"),
+  miraclesProphecy("hijaz-fire"),
   {
     category: "prophecy",
     title: "The Plague of Amwas",
@@ -194,51 +150,20 @@ const miracles: Miracle[] = [
     sources: ["Bukhari 58:18", "Ibn Kathir, Al-Bidayah wan-Nihayah"],
     strength: "strong",
   },
-  {
-    category: "prophecy",
-    title: "Widespread Senseless Killing",
-    reference: "Bukhari 92:13, Muslim 54:23",
-    arabic: "يَتَقَارَبُ الزَّمَانُ وَيَكْثُرُ الْهَرْجُ ... الْقَتْلُ الْقَتْلُ",
-    translation: "Time will pass rapidly and al-harj will increase... killing, killing.",
-    explanation: "The Prophet ﷺ prophesied a time when senseless, widespread killing (al-harj) would become commonplace — where the killer would not know why he kills and the victim would not know why he was killed. This describes an era of indiscriminate violence, terrorism, and mass conflict that the modern world has witnessed in unprecedented scale.",
-    sources: ["Bukhari 92:13", "Muslim 54:23"],
-    strength: "strong",
-  },
-  {
-    category: "prophecy",
-    title: "Time Passing Rapidly",
-    reference: "Tirmidhi 36:29",
-    arabic: "لاَ تَقُومُ السَّاعَةُ حَتَّى يَتَقَارَبَ الزَّمَانُ فَتَكُونُ السَّنَةُ كَالشَّهْرِ وَالشَّهْرُ كَالْجُمُعَةِ وَتَكُونُ الْجُمُعَةُ كَالْيَوْمِ",
-    translation: "The Hour will not come until time passes rapidly — a year will be like a month, a month like a week, a week like a day.",
-    explanation: "The Prophet ﷺ described a time when time itself would seem to accelerate. Modern life, with its constant connectivity, information overload, and rapid pace, has made this perception of accelerating time a widely shared experience across cultures.",
-    sources: ["Tirmidhi 36:29 (graded sahih by al-Albani)"],
-    strength: "strong",
-    strengthNote: "The prophecy is authentic; its fulfillment is based on the widely shared perception of modern life's accelerating pace.",
-  },
+  miraclesProphecy("senseless-killing"),
+  miraclesProphecy("time-passing-rapidly"),
   {
     category: "prophecy",
     title: "Markets Coming Close Together",
-    reference: "Musnad Ahmad 10724 — outside the app's local collections",
-    arabic: "تَقَارُبُ الْأَسْوَاقِ",
-    translation: "Markets will come close together.",
-    explanation: "The Prophet ﷺ prophesied that markets would draw close to one another. This has been interpreted as the proliferation of shopping centers, malls, and the rise of global e-commerce — where virtually any marketplace in the world is accessible from anywhere. International trade and supply chains have made markets across continents effectively 'close together.'",
-    sources: ["Musnad Ahmad 10724 — external; wording not verified against this app's local corpus"],
+    reference: "Musnad Ahmad 10724; Sahih Ibn Hibban 6718 — outside the app's local collections",
+    translation: "...and markets will come close together.",
+    explanation: "In a narration listing signs before the Hour, the Prophet ﷺ said that markets would come close to one another. The clause quoted here is one line of a longer hadith. Its closeness has been read as the proliferation of shopping centres and malls and the rise of global commerce — where virtually any marketplace in the world is reachable from anywhere — though that application is a modern interpretation rather than part of the text.",
+    sources: ["Musnad Ahmad 10724 — outside the app's local collections", "Sahih Ibn Hibban 6718 — isnad sahih (al-Arna'ut); sahih (al-Albani, Sahih Mawarid az-Zam'an 1577)"],
     strength: "moderate",
-    strengthNote: "The narration is cited to Musnad Ahmad, but its wording is not verifiable against this app's local hadith collections; reading 'closeness' as global commerce is a modern interpretation.",
+    strengthNote: "The narration itself is well authenticated — al-Arna'ut graded its isnad sahih in his takhrij of Ibn Hibban 6718, al-Albani graded it sahih, and al-Haythami noted that its narrators are those of the Sahih apart from Sa'id ibn Sim'an, who is trustworthy. What remains interpretive is reading 'markets coming close together' as modern global commerce.",
   },
 
-  {
-    category: "prophecy",
-    title: "The Mongol Siege and Destruction of Baghdad",
-    reference: "Bukhari 56:141; Muslim 54:76",
-    arabic: "لاَ تَقُومُ السَّاعَةُ حَتَّى تُقَاتِلُوا التُّرْكَ صِغَارَ الأَعْيُنِ، حُمْرَ الْوُجُوهِ، ذُلْفَ الأُنُوفِ، كَأَنَّ وُجُوهَهُمُ الْمَجَانُّ الْمُطَرَّقَةُ، وَلاَ تَقُومُ السَّاعَةُ حَتَّى تُقَاتِلُوا قَوْمًا نِعَالُهُمُ الشَّعَرُ",
-    translation: "The Hour will not be established until you fight with the Turks; people with small eyes, red faces, and flat noses. Their faces will look like shields coated with leather. The Hour will not be established till you fight with people whose shoes are made of hair.",
-    explanation: "The Prophet ﷺ warned that Muslims would fight the Turks — a people with small eyes, red faces and flat noses, whose faces are like hammered shields — and a people whose shoes are made of hair. The hadith names the Turks; classical scholars such as Ibn Hajar read the Mongol and Tatar invasions as its fulfillment. In 1258 CE, the Mongol army under Hulagu Khan sacked Baghdad, the capital of the Abbasid Caliphate. An estimated 200,000 to over a million people were killed, the House of Wisdom was destroyed, and the Tigris ran black with ink from the books thrown into it. This was one of the most catastrophic events in human history.",
-    historicalContext: "The Mongol invasion ended the Islamic Golden Age. Baghdad, which had been the intellectual and political center of the Muslim world for over 500 years, was utterly devastated. The last Abbasid Caliph, al-Musta'sim, was executed by being wrapped in a carpet and trampled by horses.",
-    sources: ["Bukhari 56:141", "Muslim 54:76", "Historical: Siege of Baghdad, 1258 CE"],
-    strength: "strong",
-    strengthNote: "The narration is in Bukhari and Muslim; identifying its fulfillment with the Mongol invasions is a reading of later scholars such as Ibn Hajar, not part of the hadith itself.",
-  },
+  miraclesProphecy("mongol-baghdad"),
 
   // === SCIENTIFIC REFERENCES ===
   {
@@ -511,15 +436,7 @@ const miracles: Miracle[] = [
     strength: "strong",
     strengthNote: "A prophecy fulfilled within living memory of its narrators — evidentially stronger than distant-future signs — recorded in Sahih al-Bukhari.",
   },
-  {
-    category: "prophecy",
-    title: "The Earth Folded Up — Islam Spreading East and West",
-    reference: "Abu Dawud 37:13",
-    explanation: "The Prophet ﷺ said that the earth was “folded up” for him so that he saw its easts and its wests, and that the dominion of his community would reach as far as he had been shown. Within roughly a century, Muslim rule extended from the Atlantic coast of Spain in the west to the frontiers of China and India in the east — closely matching the reach he described.",
-    sources: ["Abu Dawud 37:13", "Muslim 54:24"],
-    strength: "strong",
-    strengthNote: "Narrated by Thawban; the “earth drawn together, east and west” wording is also in Sahih Muslim, and the eastward–westward reach of early Muslim rule is a matter of documented history.",
-  },
+  miraclesProphecy("earth-folded"),
   {
     category: "prophecy",
     title: "Abu Lahab's Decade of Open Falsification (Surah al-Masad)",

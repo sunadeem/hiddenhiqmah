@@ -352,8 +352,8 @@ const eventsTopics: Topic[] = [
         {
           title: "Standing for 50,000 years",
           detail:
-            "Allah says: 'The angels and the Spirit ascend to Him in a Day the measure of which is fifty thousand years.' Scholars explain that this refers to the length of the Day of Judgement. A narration in Musnad Ahmad states that for the believer it will be made lighter than a single obligatory prayer, though scholars differ over its grading.",
-          note: "Quran 70:4",
+            "Allah says: 'The angels and the Spirit ascend to Him in a Day the measure of which is fifty thousand years.' Scholars explain that this refers to the length of the Day of Judgement. A narration in Musnad Ahmad (11717; also Abu Ya'la 1390 and Ibn Hibban 7334) states that for the believer it will be made lighter than a single obligatory prayer — its isnad was graded weak by al-Arna'ut (through Darraj from Abu al-Haytham, and Ibn Lahi'ah), while al-Haythami considered the isnad hasan despite a weak narrator in it.",
+          note: "Quran 70:4. The narration: Musnad Ahmad 11717; Abu Ya'la 1390; Ibn Hibban 7334 — not in this app's local collections",
         },
         {
           title: "The sun is brought close — a mile away",
@@ -1163,6 +1163,9 @@ function DayOfJudgementContent() {
                     </li>
                   ))}
                 </ol>
+                <p className="text-xs text-themed-muted mt-3 italic">
+                  The broad sequence is established, but the exact placement of some stations relative to one another — the Hawd and the Sirat, for instance — is a matter discussed among the scholars.
+                </p>
                 <p className="text-xs text-themed-muted mt-3">
                   <HadithRefText text="Quran 39:68; Muslim 54:175; Bukhari 65:234; Muslim 1:102" />
                 </p>

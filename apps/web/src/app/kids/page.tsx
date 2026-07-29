@@ -1317,6 +1317,11 @@ const dailyWords: DailyWord[] = [
   { id: "alayhis-salam", arabic: "عليه السلام", transliteration: "Alayhis-salam", english: "Peace be upon him", when: "After the name of a prophet or angel", category: "honorifics" },
   { id: "radiyallahu-anhu", arabic: "رضي الله عنه", transliteration: "Radiyallahu Anhu", english: "May Allah be pleased with him", when: "After the name of a companion of the Prophet ﷺ", category: "honorifics" },
   { id: "fi-amanillah", arabic: "في أمان الله", transliteration: "Fi Amanillah", english: "In the protection of Allah", when: "When saying goodbye to someone", category: "greetings" },
+  { id: "wa-iyyakum", arabic: "وإياكم", transliteration: "Wa iyyakum", english: "And to you too", when: "When you reply to someone who says JazakAllahu Khairan", category: "greetings" },
+  { id: "allahumma-barik", arabic: "اللهم بارك", transliteration: "Allahumma barik", english: "O Allah, bless it", when: "When you admire something lovely — say it along with MashAllah", category: "daily" },
+  { id: "bi-idhnillah", arabic: "بإذن الله", transliteration: "Bi idhnillah", english: "By Allah's permission", when: "When you hope something will happen, like InshAllah", category: "daily" },
+  { id: "rahimahullah", arabic: "رحمه الله", transliteration: "Rahimahullah", english: "May Allah have mercy on him", when: "After the name of someone who has passed away", category: "honorifics" },
+  { id: "radiyallahu-anha", arabic: "رضي الله عنها", transliteration: "Radiyallahu Anha", english: "May Allah be pleased with her", when: "After the name of a woman companion of the Prophet ﷺ", category: "honorifics" },
 ];
 
 function DailyWordsTab({
@@ -2225,6 +2230,12 @@ const challengeQuestions: ChallengeQuestion[] = [
   { id: "c44", type: "multiple-choice", category: "daily", difficulty: "explorer", question: "When someone sneezes and says Alhamdulillah, what do we reply?", options: ["Bismillah", "Yarhamukallah", "InshAllah", "Ameen"], answer: 1, explanation: "We reply 'Yarhamukallah' — may Allah have mercy on you." },
   { id: "c45", type: "true-false", category: "daily", difficulty: "explorer", question: "'MashAllah' is said when we admire something good.", options: ["True", "False"], answer: 0, explanation: "MashAllah means 'what Allah has willed' — said when admiring a blessing." },
   { id: "c46", type: "multiple-choice", category: "daily", difficulty: "scholar", question: "What does 'JazakAllahu Khairan' mean?", options: ["Goodbye", "May Allah reward you with good", "In the name of Allah", "See you soon"], answer: 1, explanation: "It means 'May Allah reward you with good' — a beautiful way to say thank you." },
+  { id: "c47", type: "multiple-choice", category: "pillars", difficulty: "little", question: "Which way do we face when we pray?", options: ["Towards the Ka'bah in Makkah", "Towards the sun", "Any way we like", "Straight up at the sky"], answer: 0, explanation: "Muslims everywhere face the Ka'bah in Makkah. That direction is called the qiblah." },
+  { id: "c48", type: "multiple-choice", category: "prophets", difficulty: "little", question: "Who is the last prophet Allah sent?", options: ["Musa", "Isa", "Muhammad ﷺ", "Ibrahim"], answer: 2, explanation: "Prophet Muhammad ﷺ is the seal of the prophets — no prophet comes after him." },
+  { id: "c49", type: "multiple-choice", category: "quran", difficulty: "explorer", question: "How many letters are in the Arabic alphabet?", options: ["20", "24", "28", "30"], answer: 2, explanation: "Arabic has 28 letters, from Alif all the way to Ya." },
+  { id: "c50", type: "multiple-choice", category: "daily", difficulty: "explorer", question: "Which dua did the Prophet ﷺ teach for stepping into the masjid?", options: ["Allahumma-ftah li abwaba rahmatik", "Bismika Allahumma amutu wa ahya", "Allahumma sayyiban nafi'an", "Rabbi zidni 'ilma"], answer: 0, explanation: "'Allahumma-ftah li abwaba rahmatik' — O Allah, open for me the gates of Your mercy." },
+  { id: "c51", type: "multiple-choice", category: "beliefs", difficulty: "explorer", question: "Which book did Allah give to Prophet Musa?", options: ["The Tawrah", "The Injil", "The Zabur", "The Quran"], answer: 0, explanation: "Allah gave the Tawrah to Musa, the Zabur to Dawud, the Injil to Isa, and the Quran to Muhammad ﷺ." },
+  { id: "c52", type: "multiple-choice", category: "seerah", difficulty: "scholar", question: "What is the Prophet's journey from Makkah to Madinah called?", options: ["The Hijrah", "The Isra", "Hajj", "Umrah"], answer: 0, explanation: "The Hijrah. Years later, Umar ibn al-Khattab and the companions chose it as year one of the Islamic calendar." },
 ];
 
 // Themed quiz packs — `key` matches ChallengeQuestion.category ("all" = everything).
@@ -2460,6 +2471,13 @@ const myDuas: FirstDua[] = [
   { id: "bathroom", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ", transliteration: "Allahumma inni a'udhu bika minal-khubthi wal-khaba'ith", english: "O Allah, I seek refuge in You from evil and evil-doers", when: "Say it before you step into the bathroom.", source: "Bukhari 4:8", ageMin: "little" },
   { id: "leave-home", arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ", transliteration: "Bismillahi tawakkaltu 'alallah, la hawla wa la quwwata illa billah", english: "In the name of Allah, I trust in Allah; there is no might and no power except with Allah", when: "Say it as you leave your home.", source: "Abu Dawud 43:323", ageMin: "explorer" },
   { id: "protection", arabic: "بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَىْءٌ فِي الأَرْضِ وَلاَ فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", transliteration: "Bismillahil-ladhi la yadurru ma'asmihi shay'un fil-ardi wa la fis-sama'i wa huwas-Sami'ul-'Alim", english: "In the name of Allah, with whose name nothing on earth or in the heavens can cause harm, and He is the All-Hearing, the All-Knowing", when: "Say it three times each morning and evening to stay safe.", source: "Abu Dawud 43:316", ageMin: "scholar" },
+  { id: "parents", arabic: "وَقُل رَّبِّ ٱرْحَمْهُمَا كَمَا رَبَّيَانِى صَغِيرًا", transliteration: "Wa qul rabbi-rhamhuma kama rabbayani saghira", english: "And say: My Lord, be merciful to them, just as they took care of me when I was little", when: "Say it for your mum and dad, any time you think of them.", source: "Quran 17:24", ageMin: "little" },
+  { id: "masjid-in", arabic: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ", transliteration: "Allahumma-ftah li abwaba rahmatik", english: "O Allah, open for me the gates of Your mercy", when: "Say it as you step into the masjid.", source: "Muslim 6:82", ageMin: "little" },
+  { id: "masjid-out", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ", transliteration: "Allahumma inni as'aluka min fadlik", english: "O Allah, I ask You for Your bounty", when: "Say it as you walk back out of the masjid.", source: "Muslim 6:82", ageMin: "little" },
+  { id: "bathroom-out", arabic: "غُفْرَانَكَ", transliteration: "Ghufranaka", english: "I ask You for Your forgiveness", when: "Say it the moment you step back out of the bathroom.", source: "Abu Dawud 1:30; Tirmidhi 1:7", ageMin: "little" },
+  { id: "rain", arabic: "اللَّهُمَّ اجْعَلْهُ صَيِّبًا نَافِعًا", transliteration: "Allahumma-j'alhu sayyiban nafi'an", english: "O Allah, make it a rain that brings good", when: "Say it when you watch the rain coming down.", source: "Nasai 17:20", ageMin: "little" },
+  { id: "study", arabic: "وَقُل رَّبِّ زِدْنِى عِلْمًا", transliteration: "Wa qul rabbi zidni 'ilma", english: "And say: My Lord, give me more knowledge", when: "Say it before you start your lesson or your homework.", source: "Quran 20:114", ageMin: "explorer" },
+  { id: "after-wudu", arabic: "أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ", transliteration: "Ash-hadu an la ilaha illallahu wahdahu la sharika lah, wa ash-hadu anna Muhammadan 'abduhu wa rasuluh", english: "I bear witness that there is no god but Allah alone, with no partner, and I bear witness that Muhammad is His servant and Messenger", when: "Say it as soon as you finish your wudu.", source: "Muslim 2:21", ageMin: "explorer" },
 ];
 
 function getDuasByAge(age: AgeGroup): FirstDua[] {
@@ -2940,39 +2958,196 @@ const arabicLetters: ArabicLetter[] = [
   { order: 28, letter: "ي", name: "Ya", sound: "y / long ee" },
 ];
 
+function LetterPractice() {
+  // Deck is only shuffled on a user gesture — never during render — so the
+  // static export and the hydrated client always start from the same order.
+  const [deck, setDeck] = useState<ArabicLetter[]>(arabicLetters);
+  const [cardIdx, setCardIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [practised, setPractised] = useState<number[]>([]);
+  const draggingRef = useRef(false);
+
+  const card = deck[cardIdx];
+
+  const flip = useCallback(() => {
+    if (!flipped && card) setPractised((p) => (p.includes(card.order) ? p : [...p, card.order]));
+    setFlipped((f) => !f);
+  }, [flipped, card]);
+
+  const step = useCallback(
+    (delta: number) => {
+      setFlipped(false);
+      setCardIdx((i) => (i + delta + deck.length) % deck.length);
+    },
+    [deck.length]
+  );
+
+  const shuffle = useCallback(() => {
+    setDeck([...arabicLetters].sort(() => Math.random() - 0.5));
+    setCardIdx(0);
+    setFlipped(false);
+    setPractised([]);
+  }, []);
+
+  if (!card) return null;
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <p className="text-center text-themed-muted text-sm mb-4">
+        One letter at a time. Tap the card to check its name and sound, then swipe or tap Next.
+      </p>
+
+      <div className="text-center text-xs text-themed-muted mb-3">
+        {cardIdx + 1} of {deck.length} &middot; {practised.length} practised
+      </div>
+
+      {/* Progress bar */}
+      <div className="h-1.5 rounded-full bg-themed-muted/20 mb-4">
+        <motion.div
+          className="h-full rounded-full bg-gold"
+          initial={{ width: 0 }}
+          animate={{ width: `${(practised.length / deck.length) * 100}%` }}
+        />
+      </div>
+
+      <motion.div
+        className="perspective-1000 cursor-pointer mb-4 touch-pan-y"
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.15}
+        onDragStart={() => {
+          draggingRef.current = true;
+        }}
+        onDragEnd={(_, info) => {
+          if (info.offset.x < -60) step(1);
+          else if (info.offset.x > 60) step(-1);
+          window.setTimeout(() => {
+            draggingRef.current = false;
+          }, 0);
+        }}
+        onClick={() => {
+          if (!draggingRef.current) flip();
+        }}
+      >
+        <motion.div
+          className="relative w-full h-56 rounded-2xl"
+          animate={{ rotateY: flipped ? 180 : 0 }}
+          transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          <div
+            className="absolute inset-0 card-bg sidebar-border rounded-2xl flex flex-col items-center justify-center p-6 text-center"
+            style={{ backfaceVisibility: "hidden" }}
+          >
+            <p className="text-7xl font-arabic text-gold leading-none">{card.letter}</p>
+            <p className="text-xs text-themed-muted mt-6 opacity-50">Tap to see its name</p>
+          </div>
+          <div
+            className="absolute inset-0 card-bg sidebar-border rounded-2xl flex flex-col items-center justify-center p-6 text-center"
+            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+          >
+            <p className="text-lg font-semibold text-themed mb-1">{card.name}</p>
+            <p className="text-sm text-themed-muted">Sound: {card.sound}</p>
+            <p className="text-[11px] text-themed-muted mt-3">Letter {card.order} of 28 in the alphabet</p>
+            <p className="text-xs text-themed-muted mt-3 opacity-50">Tap to flip back</p>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      <div className="flex justify-center items-center gap-4">
+        <button
+          onClick={() => step(-1)}
+          aria-label="Previous letter"
+          className="p-3 rounded-full card-bg sidebar-border hover:bg-gold/10 transition"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          onClick={() => step(1)}
+          className="px-5 py-2.5 rounded-full bg-gold text-black font-medium text-sm hover:bg-gold/90 transition"
+        >
+          Next Letter
+        </button>
+        <button
+          onClick={() => step(1)}
+          aria-label="Next letter"
+          className="p-3 rounded-full card-bg sidebar-border hover:bg-gold/10 transition"
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      <div className="mt-4 text-center">
+        <button
+          onClick={shuffle}
+          className="px-4 py-2 rounded-full text-xs card-bg sidebar-border text-themed-muted hover:bg-gold/10 transition"
+        >
+          <RotateCcw size={13} className="inline mr-1" /> Shuffle the deck
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ArabicAlphabetTab() {
+  const [mode, setMode] = useState<"letters" | "practice">("letters");
   const [idx, setIdx] = useState<number | null>(null);
   const active = idx !== null ? arabicLetters[idx] : null;
 
   return (
     <div className="max-w-3xl mx-auto">
-      <p className="text-center text-themed-muted text-sm mb-4">
-        Arabic has 28 letters. Tap a letter to hear its name and sound!
-      </p>
-      <div className="grid grid-cols-4 sm:grid-cols-6 gap-2.5">
-        {arabicLetters.map((l, i) => (
+      <div className="flex justify-center gap-2 mb-4">
+        {([
+          { key: "letters", label: "All letters", emoji: "🔤" },
+          { key: "practice", label: "Practice", emoji: "🃏" },
+        ] as const).map((m) => (
           <button
-            key={l.order}
-            onClick={() => setIdx(i)}
-            className={`aspect-square rounded-xl border flex items-center justify-center text-2xl font-arabic transition ${idx === i ? "bg-gold text-black border-gold" : "card-bg sidebar-border hover:bg-gold/10"}`}
+            key={m.key}
+            onClick={() => setMode(m.key)}
+            className={`px-4 py-2 rounded-full text-xs font-medium border transition ${
+              mode === m.key
+                ? "bg-gold text-black border-gold"
+                : "card-bg sidebar-border text-themed-muted hover:bg-gold/10"
+            }`}
           >
-            {l.letter}
+            {m.emoji} {m.label}
           </button>
         ))}
       </div>
 
-      {active && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-5">
-          <ContentCard>
-            <div className="flex items-center gap-4">
-              <span className="text-5xl font-arabic text-gold">{active.letter}</span>
-              <div>
-                <p className="font-semibold text-themed">Letter {active.order}: {active.name}</p>
-                <p className="text-sm text-themed-muted mt-0.5">Sound: {active.sound}</p>
+      {mode === "practice" ? (
+        <LetterPractice />
+      ) : (
+        <>
+        <p className="text-center text-themed-muted text-sm mb-4">
+          Arabic has 28 letters. Tap a letter to hear its name and sound!
+        </p>
+        <div className="grid grid-cols-4 sm:grid-cols-6 gap-2.5">
+          {arabicLetters.map((l, i) => (
+            <button
+              key={l.order}
+              onClick={() => setIdx(i)}
+              className={`aspect-square rounded-xl border flex items-center justify-center text-2xl font-arabic transition ${idx === i ? "bg-gold text-black border-gold" : "card-bg sidebar-border hover:bg-gold/10"}`}
+            >
+              {l.letter}
+            </button>
+          ))}
+        </div>
+
+        {active && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-5">
+            <ContentCard>
+              <div className="flex items-center gap-4">
+                <span className="text-5xl font-arabic text-gold">{active.letter}</span>
+                <div>
+                  <p className="font-semibold text-themed">Letter {active.order}: {active.name}</p>
+                  <p className="text-sm text-themed-muted mt-0.5">Sound: {active.sound}</p>
+                </div>
               </div>
-            </div>
-          </ContentCard>
-        </motion.div>
+            </ContentCard>
+          </motion.div>
+        )}
+        </>
       )}
 
       <div className="mt-4 p-3 rounded-xl bg-gold/5 border border-gold/20 text-center">

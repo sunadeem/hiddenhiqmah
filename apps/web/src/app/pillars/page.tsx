@@ -90,7 +90,7 @@ const pillars: Pillar[] = [
     description:
       "The declaration of faith — bearing witness that there is no god worthy of worship except Allah, and that Muhammad (peace be upon him) is His final Messenger. It is the gateway to Islam and the most important of the five pillars.",
     detailedExplanation:
-      "The Shahada consists of two testimonies. The first — 'La ilaha illa Allah' (There is no god but Allah) — is a negation of all false deities followed by an affirmation of Allah alone as worthy of worship. This is the essence of Tawhid. The second — 'Muhammadur Rasulullah' (Muhammad is the Messenger of Allah) — means obeying him in what he commanded, believing him in what he reported, avoiding what he prohibited, and worshipping Allah only in the way he prescribed. The Shahada has seven conditions that scholars have derived from the Quran and Sunnah: knowledge (ilm), certainty (yaqeen), acceptance (qabool), submission (inqiyad), truthfulness (sidq), sincerity (ikhlas), and love (mahabbah). A person must fulfill all of these for their shahada to be valid.",
+      "The Shahada consists of two testimonies. The first — 'La ilaha illa Allah' (There is no god but Allah) — is a negation of all false deities followed by an affirmation of Allah alone as worthy of worship. This is the essence of Tawhid. The second — 'Muhammadur Rasulullah' (Muhammad is the Messenger of Allah) — means obeying him in what he commanded, believing him in what he reported, avoiding what he prohibited, and worshipping Allah only in the way he prescribed. The Shahada has seven conditions, as compiled from the Quran and Sunnah by Hafiz ibn Ahmad al-Hakami (d. 1377 AH) in Ma'arij al-Qabul, his commentary on Sullam al-Wusul: knowledge (ilm), certainty (yaqeen), acceptance (qabool), submission (inqiyad), truthfulness (sidq), sincerity (ikhlas), and love (mahabbah). A person must fulfill all of these for their shahada to be valid. Some later scholars list an eighth alongside them — disbelief in whatever is worshipped besides Allah — which others treat as already contained within acceptance and submission.",
     keyVerses: [
       {
         ref: "Quran 3:18",
@@ -124,7 +124,7 @@ const pillars: Pillar[] = [
       "It is the first thing a person says to enter Islam",
       "The first half (la ilaha illa Allah) negates all false gods; the second half affirms Allah alone",
       "The second testimony (Muhammadur Rasulullah) means following the Prophet's Sunnah in worship",
-      "Seven conditions: knowledge, certainty, acceptance, submission, truthfulness, sincerity, and love",
+      "Seven conditions: knowledge, certainty, acceptance, submission, truthfulness, sincerity, and love — as compiled by Hafiz al-Hakami in Ma'arij al-Qabul",
       "It must be said with understanding and conviction, not merely as words on the tongue",
       "It is the last thing the Prophet (peace be upon him) encouraged people to say before death (Abu Dawud 21:28)",
       "A person who says it sincerely, even once in their lifetime, will eventually enter Paradise",
@@ -142,6 +142,7 @@ const pillars: Pillar[] = [
       },
     ],
     sources: [
+      "Ma'arij al-Qabul, Hafiz ibn Ahmad al-Hakami — The compilation of the seven conditions of La ilaha illa Allah",
       "Kitab at-Tawhid, Muhammad ibn Abd al-Wahhab — On the meaning and conditions of La ilaha illa Allah",
       "Sharh Usul al-Iman, Ibn Uthaymeen — Section on the shahada and its conditions",
       "Al-Qawa'id al-Muthla, Ibn Uthaymeen — On the testimony of faith",
@@ -261,10 +262,11 @@ const pillars: Pillar[] = [
     ],
     points: [
       "Obligatory on every Muslim whose wealth meets the nisab and has been held for one lunar year",
-      "The nisab is approximately 85 grams of gold or 595 grams of silver in value",
+      "The nisab is 20 mithqal of gold or 200 dirhams of silver — converted by contemporary scholars and fiqh councils to approximately 85 grams of gold or 595 grams of silver in value",
       "The standard rate is 2.5% on cash, gold, silver, and trade goods",
       "Eight eligible categories of recipients are specified in Quran 9:60",
-      "Zakat may not be given to one's own parents, children, or spouse according to the majority of scholars, since their maintenance is already one's obligation",
+      "Zakat may not be given to one's parents or children — a consensus reported by Ibn al-Mundhir — nor by a husband to his wife, since their maintenance is already his obligation",
+      "Whether a wife may give her zakat to her poor husband is a genuine point of difference: many scholars permit it, citing the Prophet's answer to Zaynab, the wife of Ibn Mas'ud, that she would have two rewards — one for kinship and one for charity (Bukhari 24:68)",
       "Abu Bakr (may Allah be pleased with him) fought those who refused to pay zakat after the Prophet's death, declaring it inseparable from salah (Bukhari 24:5)",
       "Zakat al-Fitr is a separate obligation at the end of Ramadan — one sa' (approximately 3 kg) of food per person (Bukhari 24:103)",
       "Zakat is mentioned alongside salah numerous times in the Quran, showing their inseparable connection",
@@ -285,7 +287,9 @@ const pillars: Pillar[] = [
       "Fiqh az-Zakat, Yusuf al-Qaradawi — Comprehensive jurisprudence of zakat",
       "Sharh Umdatul Ahkam, Ibn Uthaymeen — Chapters on zakat",
       "Al-Mughni, Ibn Qudamah — Section on zakat rulings",
-      "Bukhari 24:1; Bukhari 24:103; Muslim 12:28 — Hadith on zakat",
+      "Bukhari 24:1; Bukhari 24:68; Bukhari 24:103; Muslim 12:28 — Hadith on zakat",
+      "Al-Ijma', Ibn al-Mundhir — Consensus that zakat is not given to one's parents or children",
+      "IslamQA fatwa 64; Islamweb fatwa 81355 — Contemporary gram equivalents of the nisab (20 mithqal / 200 dirhams)",
       "Tafsir Ibn Kathir — Commentary on Quran 9:60; Quran 9:103",
     ],
   },

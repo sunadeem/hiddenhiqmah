@@ -358,6 +358,12 @@ const whatHappensTopics: GraveTopic[] = [
           note: "Nasai 21:233",
         },
         {
+          title: "Can I recite Quran at the graveside?",
+          detail:
+            "The schools differ, and the difference is an old one. The Hanbali and Hanafi schools permit reciting at the grave and hold that the recitation benefits the deceased. The classical Maliki position disliked it, and the classical Shafi'i position held that the reward of recitation does not of itself transfer to the dead — though later scholars in both schools allowed it, particularly where the reciter follows the recitation with du'a for the deceased. What all of them agree on is the du'a: asking Allah to forgive the deceased and make him firm, and giving the salam on entering a graveyard (the wording is on the Death & Rites page under Visiting Graves). If your community follows one of these schools, follow the ruling of its scholars — this is a difference in practice, not in creed.",
+          note: "Scholarly summary; a recognised difference between the four schools, so no single narration is quoted here",
+        },
+        {
           title: "How does time pass in the Barzakh?",
           detail:
             "However long the Barzakh lasts, the soul's sense of its duration is compressed. On the Day of Resurrection those raised will say, 'We stayed for a day or part of a day,' and it will seem to them 'no more than an evening or a morning' — the whole interval between death and rising will feel brief.",

@@ -4,9 +4,10 @@
 // total (and into Dhikr Stats). Keys here intentionally match the ones already
 // used by the Worship tab + /dhikr page so nothing double-counts.
 //
-// SCOPE: intentionally SHORT (one-line arabic) adhkār only, so every dhikr card
-// stays a consistent size. Longer multi-line supplications don't render well as
-// uniform counter cards, so they're deliberately excluded.
+// SCOPE: single-sentence adhkār only, so every dhikr card stays a consistent
+// size. A few (the full tahlil, the post-Fajr tahlil) wrap to two lines, which
+// the cards handle; longer multi-line supplications are still excluded — those
+// belong on the Du'as page, not on a counter card.
 //
 // `english` and `reference` power the /dhikr cards (translation + source line).
 // A `reference` is only set when it was verified against the app's local Quran
@@ -59,6 +60,28 @@ export const DHIKR_CATALOG: DhikrCatalogEntry[] = [
     english: "There is no god but Allah",
     reference: "Bukhari 80:98",
     defaultGoal: 100,
+  },
+  {
+    key: "tahlil_full",
+    label: "La ilaha illallah (full tahlil)",
+    arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    translit:
+      "La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadeer",
+    english:
+      "None has the right to be worshipped except Allah alone, without any partner. To Him belongs the dominion and to Him belongs all praise, and He is over all things capable",
+    reference: "Bukhari 80:98, Muslim 5:188",
+    defaultGoal: 100,
+  },
+  {
+    key: "tahlil_fajr",
+    label: "Tahlil after Fajr",
+    arabic: "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    translit:
+      "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, yuhyi wa yumit, wa huwa 'ala kulli shay'in qadir",
+    english:
+      "There is no god but Allah alone, with no partner; His is the dominion and His is the praise; He gives life and causes death, and He is over all things capable — ten times after Fajr, before speaking",
+    reference: "Tirmidhi 48:105",
+    defaultGoal: 10,
   },
   {
     key: "istighfar",
@@ -148,6 +171,36 @@ export const DHIKR_CATALOG: DhikrCatalogEntry[] = [
     translit: "Rabbi zidni 'ilma",
     english: "My Lord, increase me in knowledge",
     reference: "Quran 20:114",
+    defaultGoal: 3,
+  },
+  {
+    key: "dua_yunus",
+    label: "La ilaha illa anta (Du'a of Yunus)",
+    arabic: "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+    translit: "La ilaha illa anta, subhanaka inni kuntu minaz-zalimeen",
+    english: "There is no god but You, glory be to You. Indeed, I have been of the wrongdoers",
+    reference: "Quran 21:87, Tirmidhi 48:136",
+    defaultGoal: 3,
+  },
+  {
+    key: "raditu_billah",
+    label: "Raditu billahi Rabban",
+    arabic: "رَضِيتُ بِاللَّهِ رَبًّا وَبِالإِسْلاَمِ دِينًا وَبِمُحَمَّدٍ نَبِيًّا",
+    translit: "Raditu billahi Rabban, wa bil-Islami dinan, wa bi-Muhammadin nabiyya",
+    english:
+      "I am pleased with Allah as my Lord, Islam as my religion, and Muhammad ﷺ as my Prophet — said morning and evening",
+    reference: "Tirmidhi 48:20, Abu Dawud 43:300",
+    defaultGoal: 3,
+  },
+  {
+    key: "bismillah_la_yadurru",
+    label: "Bismillahil-ladhi la yadurru",
+    arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+    translit:
+      "Bismillahil-ladhi la yadurru ma'as-mihi shay'un fil-ardi wa la fis-sama'i wa huwas-Sami'ul-'Alim",
+    english:
+      "In the name of Allah, with whose name nothing on earth or in heaven can cause harm — three times, morning and evening",
+    reference: "Abu Dawud 43:316, Tirmidhi 48:19",
     defaultGoal: 3,
   },
 ];

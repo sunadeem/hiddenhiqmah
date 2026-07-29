@@ -4,7 +4,7 @@ import { use } from "react";
 import { notFound } from "next/navigation";
 import { motion } from "framer-motion";
 import { BookOpen, Quote } from "lucide-react";
-import { getProphetBySlug } from "@hidden-hiqmah/content/prophets";
+import { getProphetBySlug, getFigureBySlug } from "@hidden-hiqmah/content/prophets";
 import { getStoryBySlug } from "@hidden-hiqmah/content/prophet-stories";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import Link from "next/link";
@@ -17,18 +17,25 @@ export default function ProphetDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
-  const prophet = getProphetBySlug(slug);
+  // Either a named prophet, or one of the righteous figures whose prophethood
+  // scholars debated (Maryam, Al-Khidr, Dhul-Qarnayn, Luqman).
+  const figure = getFigureBySlug(slug);
+  const prophet = getProphetBySlug(slug) ?? figure;
   const story = getStoryBySlug(slug);
 
   if (!prophet) {
     notFound();
   }
 
-  // Find prev/next prophets
+  const isFigure = figure !== undefined;
+
+  // Find prev/next prophets (timeline order — figures sit outside it)
   const currentIndex = prophets.findIndex((p) => p.slug === slug);
   const prevProphet = currentIndex > 0 ? prophets[currentIndex - 1] : null;
   const nextProphet =
-    currentIndex < prophets.length - 1 ? prophets[currentIndex + 1] : null;
+    currentIndex >= 0 && currentIndex < prophets.length - 1
+      ? prophets[currentIndex + 1]
+      : null;
 
   return (
     <div>
@@ -40,24 +47,34 @@ export default function ProphetDetailPage({
       >
         <div className="flex items-baseline gap-4 mb-2">
           <h1 className="text-3xl md:text-4xl font-bold text-themed">
-            Prophet {prophet.name}
+            {isFigure ? prophet.name : `Prophet ${prophet.name}`}
           </h1>
           <span className="text-2xl md:text-3xl font-arabic text-gold">
             {prophet.nameAr}
           </span>
         </div>
-        {prophet.name !== "Muhammad" && (
-          <p className="text-sm font-arabic text-gold/70 mb-2">عليه السلام</p>
-        )}
-        {prophet.name === "Muhammad" && (
+        {figure ? (
+          figure.honorificAr && (
+            <p className="text-sm font-arabic text-gold/70 mb-2">
+              {figure.honorificAr}
+            </p>
+          )
+        ) : prophet.name === "Muhammad" ? (
           <p className="text-sm font-arabic text-gold/70 mb-2">
             صلى الله عليه وسلم
           </p>
+        ) : (
+          <p className="text-sm font-arabic text-gold/70 mb-2">عليه السلام</p>
         )}
         <p className="text-themed-muted">{prophet.summary}</p>
 
         {/* Meta info */}
         <div className="flex flex-wrap gap-3 mt-4">
+          {figure && (
+            <span className="text-xs text-gold border border-gold/30 rounded-full px-3 py-1">
+              {figure.badge}
+            </span>
+          )}
           <span className="text-xs text-themed-muted border sidebar-border rounded-full px-3 py-1">
             {prophet.era}
           </span>
@@ -199,8 +216,21 @@ export default function ProphetDetailPage({
         </ContentCard>
       )}
 
+      {/* Righteous figures sit outside the prophet timeline — send them back to
+          the section they were opened from instead of prev/next. */}
+      {isFigure && (
+        <div className="mt-8">
+          <Link
+            href="/prophets?tab=about&sub=figures"
+            className="inline-flex items-center gap-1 text-accent text-sm font-medium hover:gap-2 transition-all"
+          >
+            &larr; All righteous figures
+          </Link>
+        </div>
+      )}
+
       {/* Prev/Next navigation */}
-      <div className="flex justify-between mt-8 gap-4">
+      <div className={`flex justify-between mt-8 gap-4${isFigure ? " hidden" : ""}`}>
         {prevProphet ? (
           <Link
             href={`/prophets/${prevProphet.slug}`}
