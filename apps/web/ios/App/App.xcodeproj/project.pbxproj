@@ -21,6 +21,8 @@
 		D6E7A1B2C3D400000000000B /* NextPrayerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000002 /* NextPrayerWidget.swift */; };
 		D6E7A1B2C3D400000000000C /* HijriDateWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000003 /* HijriDateWidget.swift */; };
 		D6E7A1B2C3D400000000000D /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000004 /* SharedData.swift */; };
+		D6E7A1B2C3D400000000001D /* QiblaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D400000000001C /* QiblaWidget.swift */; };
+		D6E7A1B2C3D400000000001F /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D400000000001E /* StreakWidget.swift */; };
 		D6E7A1B2C3D400000000000E /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000008 /* WidgetBridge.swift */; };
 		D6E7A1B2C3D400000000000F /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000009 /* MainViewController.swift */; };
 		D6E7A1B2C3D4000000000010 /* HiqmahWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000007 /* HiqmahWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -43,6 +45,8 @@
 		D6E7A1B2C3D4000000000002 /* NextPrayerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextPrayerWidget.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000003 /* HijriDateWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HijriDateWidget.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000004 /* SharedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedData.swift; sourceTree = "<group>"; };
+		D6E7A1B2C3D400000000001C /* QiblaWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QiblaWidget.swift; sourceTree = "<group>"; };
+		D6E7A1B2C3D400000000001E /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000006 /* HiqmahWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HiqmahWidgets.entitlements; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000007 /* HiqmahWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HiqmahWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +136,8 @@
 				D6E7A1B2C3D4000000000004 /* SharedData.swift */,
 				D6E7A1B2C3D4000000000002 /* NextPrayerWidget.swift */,
 				D6E7A1B2C3D4000000000003 /* HijriDateWidget.swift */,
+				D6E7A1B2C3D400000000001C /* QiblaWidget.swift */,
+				D6E7A1B2C3D400000000001E /* StreakWidget.swift */,
 			);
 			path = HiqmahWidgets;
 			sourceTree = "<group>";
@@ -282,6 +288,8 @@
 				D6E7A1B2C3D400000000000A /* HiqmahWidgetsBundle.swift in Sources */,
 				D6E7A1B2C3D400000000000B /* NextPrayerWidget.swift in Sources */,
 				D6E7A1B2C3D400000000000C /* HijriDateWidget.swift in Sources */,
+				D6E7A1B2C3D400000000001D /* QiblaWidget.swift in Sources */,
+				D6E7A1B2C3D400000000001F /* StreakWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

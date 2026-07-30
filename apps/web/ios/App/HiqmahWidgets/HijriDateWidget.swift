@@ -18,7 +18,7 @@ import WidgetKit
  */
 
 /// See the note in NextPrayerWidget.swift: deeplinks.ts only routes URLs with a
-/// `code` param today, so this simply opens the app until a path parser lands.
+/// Routed by WIDGET_ROUTES in src/lib/mobile/deeplinks.ts (`islamic-calendar`).
 private let hiqmahIslamicCalendarURL = URL(string: "hiddenhiqmah://islamic-calendar")
 
 // MARK: - Calendar
