@@ -28,6 +28,8 @@ import {
 import { computePrayerTimes } from "@/lib/prayer-times";
 import TodayStrip from "./TodayStrip";
 import { QuickActions } from "../MobileHomeDashboard";
+import QiblahSheet from "../QiblahSheet";
+import { useQiblahParam } from "@/lib/mobile/qiblah-param";
 
 // Midnight Indigo on a near-black canvas: the page background is near-black so the
 // indigo cards POP (instead of a wall of one colour), with a soft periwinkle glow
@@ -121,6 +123,14 @@ export default function RamadanHome({
   const [hasLoc, setHasLoc] = useState(true);
   const [now, setNow] = useState(0);
   const [juz, setJuz] = useState(0);
+  const [qiblahOpen, setQiblahOpen] = useState(false);
+  // Consume the qibla-widget deep link — but never from the Settings PREVIEW
+  // render, which would hijack the tap into a mock context.
+  useQiblahParam(
+    useCallback(() => {
+      if (!preview) setQiblahOpen(true);
+    }, [preview])
+  );
 
   useEffect(() => {
     setNow(Date.now());
@@ -377,8 +387,10 @@ export default function RamadanHome({
         </div>
       )}
 
-      {/* Everyday shortcuts — adhan · qiblah · hadith · bookmarks */}
-      <QuickActions />
+      {/* Everyday shortcuts — adhan · qiblah · hadith · bookmarks. Qiblah opens
+          the live compass in a sheet (portaled to <body>, so it keeps the normal
+          palette rather than this page's Ramadan re-palette). */}
+      <QuickActions onQiblahClick={() => setQiblahOpen(true)} />
 
       {/* Daily streak / checklist — the shared invariant, kept at the bottom */}
       <TodayStrip />
@@ -391,6 +403,8 @@ export default function RamadanHome({
           Use my usual home instead
         </button>
       )}
+
+      <QiblahSheet open={qiblahOpen} onClose={() => setQiblahOpen(false)} />
     </div>
   );
 }

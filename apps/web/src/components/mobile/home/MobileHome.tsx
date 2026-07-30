@@ -19,15 +19,18 @@ import ClassicHome from "../screens/HomeScreen";
 
 /**
  * The Home host. Home is a swappable *style*, not a fixed layout:
- *   - "daily-path" (default) — the adaptive day ribbon, tuned by onboarding
- *   - "classic"             — the original dashboard (HomeScreen), kept as-is
- *   - "focus"               — minimal: next prayer + one act
+ *   - "classic" (default)  — the original dashboard (HomeScreen), kept as-is
+ *   - "daily-path"         — the adaptive day ribbon, tuned by onboarding
+ *   - "focus"              — minimal: next prayer + one act
  * During Ramadan (Hijri month 9), if ramadanAuto is on, the Ramadan home takes
  * over (overriding the base style) — with a one-tap opt-out.
  *
  * Core rule: the style only changes what's *previewed* on Home, never what's
  * *reachable*. The invariant TodayStrip (the shallow entry into the full daily
  * checklist) sits above Daily Path & Focus; Classic keeps its own StreakCard.
+ * Every style also carries the four everyday shortcuts (adhan · qiblah · hadith
+ * · bookmarks) with Qiblah opening the live compass sheet — parity is on the
+ * style components themselves, so the Settings preview shows the real thing.
  */
 export default function MobileHome() {
   const [style, setStyle] = useState<HomeStyle | null>(null);

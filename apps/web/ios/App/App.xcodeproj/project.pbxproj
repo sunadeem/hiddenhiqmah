@@ -23,8 +23,10 @@
 		D6E7A1B2C3D400000000000D /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000004 /* SharedData.swift */; };
 		D6E7A1B2C3D400000000001D /* QiblaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D400000000001C /* QiblaWidget.swift */; };
 		D6E7A1B2C3D400000000001F /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D400000000001E /* StreakWidget.swift */; };
+		D6E7A1B2C3D4000000000021 /* CountdownWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000020 /* CountdownWidget.swift */; };
 		D6E7A1B2C3D400000000000E /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000008 /* WidgetBridge.swift */; };
 		D6E7A1B2C3D400000000000F /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000009 /* MainViewController.swift */; };
+		D6E7A1B2C3D40000000000A2 /* HeadingBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D40000000000A1 /* HeadingBridge.swift */; };
 		D6E7A1B2C3D4000000000010 /* HiqmahWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000007 /* HiqmahWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -47,11 +49,13 @@
 		D6E7A1B2C3D4000000000004 /* SharedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedData.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D400000000001C /* QiblaWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QiblaWidget.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D400000000001E /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
+		D6E7A1B2C3D4000000000020 /* CountdownWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownWidget.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000006 /* HiqmahWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HiqmahWidgets.entitlements; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000007 /* HiqmahWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HiqmahWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6E7A1B2C3D4000000000008 /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBridge.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000009 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		D6E7A1B2C3D40000000000A1 /* HeadingBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingBridge.swift; sourceTree = "<group>"; };
 		DB33DED03012AF8E00C1040A /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,6 +119,7 @@
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				D6E7A1B2C3D4000000000009 /* MainViewController.swift */,
 				D6E7A1B2C3D4000000000008 /* WidgetBridge.swift */,
+				D6E7A1B2C3D40000000000A1 /* HeadingBridge.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
 				504EC30E1FED79650016851F /* Assets.xcassets */,
 				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
@@ -135,6 +140,7 @@
 				D6E7A1B2C3D4000000000001 /* HiqmahWidgetsBundle.swift */,
 				D6E7A1B2C3D4000000000004 /* SharedData.swift */,
 				D6E7A1B2C3D4000000000002 /* NextPrayerWidget.swift */,
+				D6E7A1B2C3D4000000000020 /* CountdownWidget.swift */,
 				D6E7A1B2C3D4000000000003 /* HijriDateWidget.swift */,
 				D6E7A1B2C3D400000000001C /* QiblaWidget.swift */,
 				D6E7A1B2C3D400000000001E /* StreakWidget.swift */,
@@ -277,6 +283,7 @@
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				D6E7A1B2C3D400000000000F /* MainViewController.swift in Sources */,
 				D6E7A1B2C3D400000000000E /* WidgetBridge.swift in Sources */,
+				D6E7A1B2C3D40000000000A2 /* HeadingBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,6 +294,7 @@
 				D6E7A1B2C3D400000000000D /* SharedData.swift in Sources */,
 				D6E7A1B2C3D400000000000A /* HiqmahWidgetsBundle.swift in Sources */,
 				D6E7A1B2C3D400000000000B /* NextPrayerWidget.swift in Sources */,
+				D6E7A1B2C3D4000000000021 /* CountdownWidget.swift in Sources */,
 				D6E7A1B2C3D400000000000C /* HijriDateWidget.swift in Sources */,
 				D6E7A1B2C3D400000000001D /* QiblaWidget.swift in Sources */,
 				D6E7A1B2C3D400000000001F /* StreakWidget.swift in Sources */,
@@ -431,7 +439,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = DK2X4QYGNP;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -455,7 +463,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = DK2X4QYGNP;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -477,7 +485,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = HiqmahWidgets/HiqmahWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = DK2X4QYGNP;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = HiqmahWidgets/Info.plist;
@@ -502,7 +510,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = HiqmahWidgets/HiqmahWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = DK2X4QYGNP;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = HiqmahWidgets/Info.plist;

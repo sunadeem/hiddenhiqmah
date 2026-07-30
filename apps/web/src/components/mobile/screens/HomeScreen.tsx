@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Flame } from "lucide-react";
 import {
@@ -15,6 +15,7 @@ import { pickTodaysInspiration } from "@/data/home-content";
 import { recordVisit } from "@hidden-hiqmah/ui/lib/storage";
 import { todayLocalDate, type Streaks } from "@hidden-hiqmah/ui/lib/daily/types";
 import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
+import { useQiblahParam } from "@/lib/mobile/qiblah-param";
 
 const ZERO_STREAKS: Streaks = {
   overallCurrent: 0,
@@ -33,6 +34,9 @@ export default function HomeScreen() {
   useEffect(() => {
     recordVisit();
   }, []);
+
+  // Qibla-widget taps land here as "/?qiblah=1" — open the compass sheet.
+  useQiblahParam(useCallback(() => setQiblahOpen(true), []));
 
   // Load the live daily-checklist streak (recompute against today, then read).
   useEffect(() => {

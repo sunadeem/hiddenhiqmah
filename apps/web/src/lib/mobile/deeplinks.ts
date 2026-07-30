@@ -14,6 +14,12 @@ import { Capacitor } from "@capacitor/core";
  *      directly on the real compass. Unknown paths deliberately no-op — the app
  *      just opens — so an old binary receiving a newer widget's URL never breaks.
  *
+ * Every routed tap is also broadcast as a `hiqmah:deep-link-nav` event. A
+ * same-route navigation (a widget tapped while the app is already foregrounded on
+ * that route) does NOT remount the target screen, so a screen that resolves its
+ * own query param from the URL would never see it. Screens listen for this the
+ * same way they listen for `hiqmah:push-nav` (see lib/mobile/qiblah-param.ts).
+ *
  * Works via the custom scheme `hiddenhiqmah://…` (registered in Info.plist); the
  * same parser handles universal links once Associated Domains + AASA are set up.
  * No-op on web.
@@ -22,7 +28,11 @@ const WIDGET_ROUTES: Record<string, string> = {
   // scheme host/path → in-app route. Keep in sync with widgetURL values in
   // ios/App/HiqmahWidgets/*.swift — a key missing here silently degrades to
   // "just open the app".
-  qiblah: "/qiblah",
+  // The qibla widget lands on HOME with the compass sheet open, not the /qiblah
+  // article: a widget tap means "which way do I pray right now", and the sheet is
+  // one swipe from the rest of the app instead of a separate page to back out of.
+  // qiblah-param.ts consumes the flag.
+  qiblah: "/?qiblah=1",
   "prayer-times": "/prayer-times",
   "muslim-daily": "/muslim-daily",
   "islamic-calendar": "/islamic-calendar",
@@ -54,7 +64,14 @@ export function registerDeepLinkHandler(navigate: (path: string) => void): () =>
     const hostKey = parsed.host.toLowerCase();
     const pathKey = (parsed.pathname.replace(/^\/+/, "").split("/")[0] || "").toLowerCase();
     const route = WIDGET_ROUTES[hostKey] ?? WIDGET_ROUTES[pathKey];
-    if (route) navigate(route);
+    if (!route) return;
+    navigate(route);
+    // Also broadcast it — see the header note on same-route taps.
+    try {
+      window.dispatchEvent(new CustomEvent("hiqmah:deep-link-nav", { detail: { url: route } }));
+    } catch {
+      /* ignore */
+    }
   };
 
   // Cold start: the URL that launched the app.
