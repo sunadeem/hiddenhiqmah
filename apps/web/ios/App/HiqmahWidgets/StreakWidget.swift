@@ -153,6 +153,10 @@ struct StreakWidgetEntryView: View {
                         .foregroundColor(theme.goldDisplay)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
+                        // Without a constraint the scale factor never engages and
+                        // a 3-digit streak (63pt wide) clips into the ring band —
+                        // the ring's clear chord at digit height is ~58pt.
+                        .frame(maxWidth: 52)
                 }
                 .aspectRatio(1, contentMode: .fit)
 

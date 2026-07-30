@@ -35,19 +35,26 @@ struct NextPrayerEntry: TimelineEntry {
     let city: String?
     /// The five prayers of the local day containing `date` (medium family).
     let schedule: [PrayerInstant]
+    /// The prayer immediately BEFORE `instant`, resolved from the full multi-day
+    /// instant list. The progress rails measure the prior→next interval, and
+    /// looking the prior up in the single-day `schedule` loses it across local
+    /// midnight — an Isha→Fajr rail would visibly refill to 100% at 00:00.
+    let priorDate: Date?
 
     init(
         date: Date,
         instant: PrayerInstant?,
         following: PrayerInstant? = nil,
         city: String?,
-        schedule: [PrayerInstant]
+        schedule: [PrayerInstant],
+        priorDate: Date? = nil
     ) {
         self.date = date
         self.instant = instant
         self.following = following
         self.city = city
         self.schedule = schedule
+        self.priorDate = priorDate
     }
 
     static func empty(at date: Date, city: String? = nil) -> NextPrayerEntry {
@@ -76,7 +83,8 @@ struct NextPrayerProvider: TimelineProvider {
                     instant: next,
                     following: data.nextPrayer(after: next.date),
                     city: data.city,
-                    schedule: data.schedule(for: now)
+                    schedule: data.schedule(for: now),
+                    priorDate: data.instants.last(where: { $0.date <= now })?.date
                 )
             )
         } else if context.isPreview {
@@ -144,7 +152,8 @@ struct NextPrayerProvider: TimelineProvider {
                     // with the headline at every boundary.
                     following: data.nextPrayer(after: next.date),
                     city: data.city,
-                    schedule: data.schedule(for: boundary)
+                    schedule: data.schedule(for: boundary),
+                    priorDate: data.instants.last(where: { $0.date <= boundary })?.date
                 )
             )
         }
@@ -212,10 +221,14 @@ struct NextPrayerWidgetEntryView: View {
 
     /// The interval the countdown is crossing, for the progress rail. Clamped so
     /// the range can never be empty or inverted — ProgressView traps on both.
+    /// `priorDate` first: the single-day schedule loses the prior prayer across
+    /// local midnight and the rail would refill to 100% at 00:00.
     private func interval(to instant: PrayerInstant) -> ClosedRange<Date> {
-        let prior = entry.schedule
-            .filter { $0.date < instant.date }
-            .max(by: { $0.date < $1.date })?.date ?? entry.date
+        let prior = entry.priorDate
+            ?? entry.schedule
+                .filter { $0.date < instant.date }
+                .max(by: { $0.date < $1.date })?.date
+            ?? entry.date
         let end = max(instant.date, prior.addingTimeInterval(60))
         return min(prior, end.addingTimeInterval(-60))...end
     }
@@ -249,23 +262,36 @@ struct NextPrayerWidgetEntryView: View {
     @ViewBuilder
     private var circularView: some View {
         if let instant = entry.instant {
-            ProgressView(
-                timerInterval: interval(to: instant),
-                countsDown: true,
-                label: { EmptyView() },
-                currentValueLabel: {
-                    VStack(spacing: -1) {
-                        Image(systemName: instant.prayer.symbolName)
-                            .font(.system(size: 10, weight: .semibold))
-                        Text(HiqmahFormat.clock(instant.date))
-                            .font(.system(size: 11, weight: .bold, design: .rounded))
-                            .monospacedDigit()
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                    }
+            // Ring and label as separate layers (see CountdownWidget for why),
+            // and the prayer's NAME rather than its icon — at a glance "ʿAṣr
+            // 5:08" answers the question; a sun glyph doesn't.
+            ZStack {
+                ProgressView(
+                    timerInterval: interval(to: instant),
+                    countsDown: true,
+                    label: { EmptyView() },
+                    currentValueLabel: { EmptyView() }
+                )
+                .progressViewStyle(.circular)
+
+                VStack(spacing: 0) {
+                    Text(instant.prayer.displayName)
+                        .font(.system(size: 8, weight: .semibold))
+                        .opacity(0.85)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .frame(maxWidth: 38)
+                    // compactClock, not clock: "10:11 PM" is 57pt at this size and
+                    // would scale to ~7pt — smaller than the caption above it.
+                    // "10:11" fits at full size.
+                    Text(HiqmahFormat.compactClock(instant.date))
+                        .font(.system(size: 11.5, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.4)
+                        .frame(maxWidth: 36)
                 }
-            )
-            .progressViewStyle(.circular)
+            }
         } else {
             VStack(spacing: 1) {
                 Image(systemName: "moon.stars")
@@ -304,6 +330,11 @@ struct NextPrayerWidgetEntryView: View {
                     )
                     .font(.system(size: 19, weight: .bold, design: .rounded))
                     .monospacedDigit()
+                    // Pin to leading: the timer lays out at its widest possible
+                    // string and centres the current one inside that box, so as
+                    // the glyph count drops ("2:58:38" → "59:59") the digits
+                    // would otherwise drift right of the rows above and below.
+                    .multilineTextAlignment(.leading)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                     if let following = entry.following {

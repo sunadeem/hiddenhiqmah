@@ -61,9 +61,14 @@ struct CountdownWidgetEntryView: View {
     /// entry was made. Clamped so the range can never be empty or inverted —
     /// ProgressView(timerInterval:) traps on both.
     private func interval(to instant: PrayerInstant) -> ClosedRange<Date> {
-        let prior = entry.schedule
-            .filter { $0.date < instant.date }
-            .max(by: { $0.date < $1.date })?.date ?? entry.date
+        // priorDate first — see NextPrayerWidget.interval(to:): the single-day
+        // schedule loses the prior prayer across local midnight and the ring
+        // would refill to 100% at 00:00.
+        let prior = entry.priorDate
+            ?? entry.schedule
+                .filter { $0.date < instant.date }
+                .max(by: { $0.date < $1.date })?.date
+            ?? entry.date
         let end = max(instant.date, prior.addingTimeInterval(60))
         return min(prior, end.addingTimeInterval(-60))...end
     }
@@ -142,21 +147,41 @@ struct CountdownWidgetEntryView: View {
     @ViewBuilder
     private var circularView: some View {
         if let instant = entry.instant {
-            ProgressView(
-                timerInterval: interval(to: instant),
-                countsDown: true,
-                label: { EmptyView() },
-                currentValueLabel: {
+            // The ring and its label are SEPARATE layers. Inside the system
+            // gauge's currentValueLabel the timer text was not width-constrained,
+            // and Text(timerInterval:) lays out at the width of its longest
+            // possible string — "2:58:38" ran clean across the ring stroke.
+            // Overlaying our own label with a hard frame + scale factor is the
+            // only reliable containment.
+            ZStack {
+                ProgressView(
+                    timerInterval: interval(to: instant),
+                    countsDown: true,
+                    label: { EmptyView() },
+                    currentValueLabel: { EmptyView() }
+                )
+                .progressViewStyle(.circular)
+
+                VStack(spacing: 0) {
                     Text(
                         timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
                         countsDown: true
                     )
-                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
                     .monospacedDigit()
-                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.35)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 36)
+
+                    Text(instant.prayer.displayName)
+                        .font(.system(size: 7.5, weight: .semibold))
+                        .opacity(0.8)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .frame(maxWidth: 38)
                 }
-            )
-            .progressViewStyle(.circular)
+            }
         } else {
             VStack(spacing: 1) {
                 HourglassGlyph(size: 15, color: .white)
