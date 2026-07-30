@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import {
   BookOpen,
@@ -8,7 +9,9 @@ import {
   Users,
   Sparkles,
 } from "lucide-react";
-import { NextPrayerCard } from "../MobileHomeDashboard";
+import { NextPrayerCard, QuickActions } from "../MobileHomeDashboard";
+import QiblahSheet from "../QiblahSheet";
+import { useQiblahParam } from "@/lib/mobile/qiblah-param";
 import type { TunedFor } from "@hidden-hiqmah/ui/lib/storage";
 
 type Act = { icon: typeof BookOpen; title: string; subtitle: string; href: string };
@@ -25,10 +28,19 @@ const ACT: Record<TunedFor, Act> = {
  * Focus — the minimal Home style: just the next-prayer countdown and one
  * suggested act (chosen from the "tuned for" preference). The invariant
  * TodayStrip is rendered above this by MobileHome.
+ *
+ * The four everyday shortcuts (adhan · qiblah · hadith · bookmarks) sit at the
+ * very bottom: every Home style must reach them (Qiblah in particular opens the
+ * live compass in a sheet, same as Classic/Daily Path), and keeping them last
+ * preserves this style's minimalism above the fold.
  */
 export default function FocusHome({ tunedFor }: { tunedFor: TunedFor }) {
   const act = ACT[tunedFor] ?? ACT.exploring;
   const Icon = act.icon;
+  const [qiblahOpen, setQiblahOpen] = useState(false);
+  // A qibla-widget tap deep-links to /?qiblah=1 — every home style that hosts
+  // the sheet must consume it, or the tap dies on this layout.
+  useQiblahParam(useCallback(() => setQiblahOpen(true), []));
 
   return (
     <>
@@ -50,6 +62,11 @@ export default function FocusHome({ tunedFor }: { tunedFor: TunedFor }) {
         </div>
         <span className="text-xs font-bold text-gold shrink-0">Begin →</span>
       </Link>
+
+      {/* Everyday shortcuts — adhan · qiblah · hadith · bookmarks */}
+      <QuickActions onQiblahClick={() => setQiblahOpen(true)} />
+
+      <QiblahSheet open={qiblahOpen} onClose={() => setQiblahOpen(false)} />
     </>
   );
 }

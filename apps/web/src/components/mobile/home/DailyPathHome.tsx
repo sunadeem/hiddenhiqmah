@@ -25,6 +25,7 @@ import QiblahSheet from "../QiblahSheet";
 import { getProgress, type TunedFor } from "@hidden-hiqmah/ui/lib/storage";
 import { todayLocalDate, DAILY_CHANGED_EVENT } from "@hidden-hiqmah/ui/lib/daily/types";
 import { useDailyAdapter } from "@/lib/daily/useDailyAdapter";
+import { useQiblahParam } from "@/lib/mobile/qiblah-param";
 import { useAuth } from "@/context/AuthContext";
 import TodayStrip from "./TodayStrip";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
@@ -89,6 +90,9 @@ export default function DailyPathHome({ tunedFor }: { tunedFor: TunedFor }) {
   const [hijri, setHijri] = useState("");
   const [readHref, setReadHref] = useState("/quran");
   const [doneKeys, setDoneKeys] = useState<Set<string>>(new Set());
+
+  // Qibla-widget taps land here as "/?qiblah=1" — open the compass sheet.
+  useQiblahParam(useCallback(() => setQiblahOpen(true), []));
 
   useEffect(() => {
     setHour(new Date().getHours());

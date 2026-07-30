@@ -7,6 +7,7 @@ import WidgetKit
 struct HiqmahWidgetsBundle: WidgetBundle {
     var body: some Widget {
         NextPrayerWidget()
+        CountdownWidget()
         HijriDateWidget()
         QiblaWidget()
         StreakWidget()

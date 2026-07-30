@@ -225,7 +225,10 @@ export type HomePrefs = {
 };
 
 const defaultHomePrefs: HomePrefs = {
-  homeStyle: "daily-path",
+  // Classic (the original dashboard — verse, next prayer, streak & tiles) is the
+  // out-of-the-box Home. Only the DEFAULT: getHomePrefs merges the stored blob
+  // OVER these defaults, so anyone who has picked a style keeps it.
+  homeStyle: "classic",
   tunedFor: "exploring",
   // Auto-activate the Ramadan home during Ramadan (Hijri month 9).
   ramadanAuto: true,

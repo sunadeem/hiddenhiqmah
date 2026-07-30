@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { Capacitor } from "@capacitor/core";
-import { Motion } from "@capacitor/motion";
 import { Compass } from "lucide-react";
 import { hapticSuccess } from "@/lib/mobile/haptics";
 import { model as geomagneticModel } from "geomagnetism";
@@ -77,6 +76,41 @@ interface DeviceOrientationEventWithPermission {
   requestPermission?: () => Promise<"granted" | "denied">;
 }
 
+/**
+ * Where the live compass stands. Drives the CTA / honest-message copy, which is
+ * the difference between "the arrow is stagnant and nobody knows why" and a
+ * user who can act:
+ *   checking          – deciding which source to use (first client tick)
+ *   live              – a source is attached; readings are arriving (or imminent)
+ *   needs-permission  – mobile Safari: DeviceOrientationEvent.requestPermission()
+ *                       needs a USER GESTURE, so we must show a button
+ *   denied            – the user declined that prompt
+ *   no-compass        – phone/tablet with no usable magnetometer (or a binary
+ *                       without the native HeadingBridge plugin)
+ *   desktop           – no sensor because it's a computer; suggest the phone
+ */
+type CompassStatus =
+  | "checking"
+  | "live"
+  | "needs-permission"
+  | "denied"
+  | "no-compass"
+  | "desktop";
+
+/** A sensor-less environment: a phone that can't ("no-compass") vs a computer. */
+function noSensorStatus(): CompassStatus {
+  if (typeof window === "undefined") return "desktop";
+  try {
+    return window.matchMedia("(pointer: coarse)").matches ? "no-compass" : "desktop";
+  } catch {
+    return "desktop";
+  }
+}
+
+/** How long to wait for a first reading before calling the sensor absent —
+ *  desktop Chrome exposes DeviceOrientationEvent but never fires it. */
+const FIRST_READING_TIMEOUT_MS = 2500;
+
 export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   const [loc, setLoc] = useState<QiblahState | null>(null);
   const [loading, setLoading] = useState(true);
@@ -86,7 +120,9 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   // always takes the shortest path and doesn't spin backwards when 359° → 1°.
   const [displayHeading, setDisplayHeading] = useState<number | null>(null);
   const continuousHeadingRef = useRef<number | null>(null);
-  const [needsPermission, setNeedsPermission] = useState(false);
+  const [compassStatus, setCompassStatus] = useState<CompassStatus>("checking");
+  // Whether ANY reading has arrived. Read from timers, so it must be a ref.
+  const gotReadingRef = useRef(false);
   // Magnetic declination at the user's location (east-positive). Kept in a ref
   // so the high-frequency orientation handler reads the latest value without
   // re-attaching listeners; mirrored in state for the caption.
@@ -101,11 +137,16 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   const calibrationPoorRef = useRef(false);
   const [tilted, setTilted] = useState(false);
   const tiltedRef = useRef(false);
+  // Whether the live readings are MAGNETIC (so we apply the declination
+  // correction ourselves) or already true-north (iOS CLHeading.trueHeading).
+  // Only drives the caption — the correction itself is decided per reading.
+  const [magneticSource, setMagneticSource] = useState(true);
+  const magneticSourceRef = useRef(true);
 
-  const applyHeading = useCallback((magneticHeading: number) => {
-    // Device heading is relative to magnetic north; shift it to true north so
-    // it matches the true-north qiblah bearing.
-    const newHeading = (((magneticHeading + declinationRef.current) % 360) + 360) % 360;
+  // The dial's only entry point: a TRUE-north heading in degrees.
+  const applyTrueHeading = useCallback((trueHeading: number) => {
+    gotReadingRef.current = true;
+    const newHeading = ((trueHeading % 360) + 360) % 360;
     setHeading(newHeading);
     if (continuousHeadingRef.current === null) {
       continuousHeadingRef.current = newHeading;
@@ -120,6 +161,44 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
     const next = current + delta;
     continuousHeadingRef.current = next;
     setDisplayHeading(next);
+  }, []);
+
+  // A MAGNETIC-north reading (webkitCompassHeading / absolute alpha on the web,
+  // or iOS's magneticHeading when it has no fix to derive a true heading from):
+  // shift it to true north so it matches the true-north qiblah bearing.
+  // NEVER route CLHeading.trueHeading through here — iOS has already applied the
+  // declination, and doing it twice puts the needle out by 2× the local value.
+  const applyMagneticHeading = useCallback(
+    (magneticHeading: number) => {
+      if (!magneticSourceRef.current) {
+        magneticSourceRef.current = true;
+        setMagneticSource(true);
+      }
+      applyTrueHeading(magneticHeading + declinationRef.current);
+    },
+    [applyTrueHeading]
+  );
+
+  // iOS trueHeading — already true-north, so no declination of ours.
+  const applyNativeTrueHeading = useCallback(
+    (trueHeading: number) => {
+      if (magneticSourceRef.current) {
+        magneticSourceRef.current = false;
+        setMagneticSource(false);
+      }
+      applyTrueHeading(trueHeading);
+    },
+    [applyTrueHeading]
+  );
+
+  const setCalibrationFromAccuracy = useCallback((accuracy: number) => {
+    // Negative = the sensor itself calls the reading invalid; >25° is too coarse
+    // to trust a qiblah on. Bucketed so a 60Hz stream only re-renders on change.
+    const poor = accuracy < 0 || accuracy > 25;
+    if (poor !== calibrationPoorRef.current) {
+      calibrationPoorRef.current = poor;
+      setCalibrationPoor(poor);
+    }
   }, []);
 
   const fetchLocation = useCallback(() => {
@@ -201,10 +280,10 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
     setDeclination(decl);
   }, [loc]);
 
-  // Shared handler for every orientation source: heading, plus the two trust
-  // signals iOS delivers on the same event — webkitCompassAccuracy (max error
-  // in degrees; negative = sensor needs calibration) and beta/gamma tilt
-  // (compass readings degrade when the phone isn't reasonably flat).
+  // WEB orientation handler: heading, plus the two trust signals Safari delivers
+  // on the same event — webkitCompassAccuracy (max error in degrees; negative =
+  // sensor needs calibration) and beta/gamma tilt (compass readings degrade when
+  // the phone isn't reasonably flat).
   const processOrientation = useCallback(
     (e: DeviceOrientationEvent) => {
       const ev = e as DeviceOrientationEvent & {
@@ -212,17 +291,21 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
         webkitCompassAccuracy?: number;
       };
       if (typeof ev.webkitCompassHeading === "number") {
-        applyHeading(ev.webkitCompassHeading);
-      } else if (typeof e.alpha === "number") {
-        applyHeading((360 - e.alpha) % 360);
+        applyMagneticHeading(ev.webkitCompassHeading);
+      } else if (
+        typeof e.alpha === "number" &&
+        (e.absolute || e.type === "deviceorientationabsolute")
+      ) {
+        // Only an ABSOLUTE (north-referenced) alpha is a compass. A relative
+        // alpha is measured from wherever the device happened to be when the
+        // sensor started, which is a heading of nothing at all. (Some Chrome
+        // builds leave `absolute` false on the absolute event — trust the event
+        // name in that case.)
+        applyMagneticHeading((360 - e.alpha) % 360);
       }
 
       if (typeof ev.webkitCompassAccuracy === "number") {
-        const poor = ev.webkitCompassAccuracy < 0 || ev.webkitCompassAccuracy > 25;
-        if (poor !== calibrationPoorRef.current) {
-          calibrationPoorRef.current = poor;
-          setCalibrationPoor(poor);
-        }
+        setCalibrationFromAccuracy(ev.webkitCompassAccuracy);
       }
 
       if (typeof e.beta === "number" && typeof e.gamma === "number") {
@@ -236,77 +319,138 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
         }
       }
     },
-    [applyHeading]
+    [applyMagneticHeading, setCalibrationFromAccuracy]
   );
 
-  // Device orientation (compass) — sets up listener and handles iOS permission
+  // ── Native app: CoreLocation via the HeadingBridge plugin ──────────────────
+  // DeviceOrientationEvent is a dead end inside the WKWebView: webkitCompassHeading
+  // is a Safari-only extension (absent in an app web view) and `alpha` there is
+  // not north-referenced, so the old listener/@capacitor/motion path could never
+  // produce a heading and the needle just sat still. The plugin streams
+  // CLLocationManager headings instead. Location permission is already granted
+  // for prayer times, so there's nothing for the user to approve.
   useEffect(() => {
-    const isNative = Capacitor.isNativePlatform();
-    const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
-      .DeviceOrientationEvent;
+    if (!Capacitor.isNativePlatform()) return;
+    let cancelled = false;
+    let detach: (() => void) | undefined;
+    let stop: (() => void) | undefined;
 
-    const handler = processOrientation;
-
-    const attach = () => {
-      window.addEventListener("deviceorientationabsolute", handler as EventListener);
-      window.addEventListener("deviceorientation", handler);
-    };
-
-    // ── Native app: auto-start the compass, no permission button ──
-    if (isNative) {
-      let motionRemove: (() => void) | undefined;
-      (async () => {
-        // In the WKWebView the Safari-style requestPermission gesture isn't
-        // required; attach the orientation listener directly (delivers
-        // webkitCompassHeading on iOS). Also start @capacitor/motion as a
-        // native fallback source.
-        try {
-          if (typeof DeviceOrientationEventCls?.requestPermission === "function") {
-            await DeviceOrientationEventCls.requestPermission().catch(() => {});
+    (async () => {
+      try {
+        const { HeadingBridge } = await import("@/lib/mobile/heading");
+        stop = () => {
+          void HeadingBridge.stop().catch(() => {});
+        };
+        const handle = await HeadingBridge.addListener("heading", (e) => {
+          if (typeof e.trueHeading === "number" && e.trueHeading >= 0) {
+            applyNativeTrueHeading(e.trueHeading);
+          } else if (typeof e.magneticHeading === "number" && e.magneticHeading >= 0) {
+            // No location fix for iOS to derive declination from — correct the
+            // magnetic reading ourselves from the World Magnetic Model.
+            applyMagneticHeading(e.magneticHeading);
+          } else {
+            return; // both readings invalid; keep the last good heading
           }
-        } catch {
-          /* ignore */
+          if (typeof e.accuracy === "number") setCalibrationFromAccuracy(e.accuracy);
+        });
+        if (cancelled) {
+          void handle.remove();
+          return;
         }
-        attach();
-        try {
-          const l = await Motion.addListener("orientation", (e) => {
-            processOrientation(e as unknown as DeviceOrientationEvent);
-          });
-          motionRemove = () => l.remove();
-        } catch {
-          /* motion unavailable */
-        }
-      })();
-      return () => {
-        window.removeEventListener("deviceorientationabsolute", handler as EventListener);
-        window.removeEventListener("deviceorientation", handler);
-        motionRemove?.();
-      };
-    }
+        detach = () => void handle.remove();
+        await HeadingBridge.start();
+        if (!cancelled) setCompassStatus("live");
+      } catch {
+        // No magnetometer (iPad / simulator), or a binary that predates the
+        // plugin — say so rather than leaving a dead arrow on screen.
+        if (!cancelled) setCompassStatus("no-compass");
+      }
+    })();
 
-    // ── Web ──
-    if (!DeviceOrientationEventCls) return;
-    if (typeof DeviceOrientationEventCls.requestPermission === "function") {
-      // iOS Safari requires a user gesture → show the enable button.
-      setNeedsPermission(true);
-      return;
-    }
-    attach();
     return () => {
-      window.removeEventListener("deviceorientationabsolute", handler as EventListener);
+      cancelled = true;
+      detach?.();
+      // Always stop: the magnetometer is a real battery cost and the sheet can be
+      // opened and closed dozens of times a day.
+      stop?.();
+    };
+  }, [applyNativeTrueHeading, applyMagneticHeading, setCalibrationFromAccuracy]);
+
+  const attachWebOrientation = useCallback(() => {
+    const handler = processOrientation as EventListener;
+    window.addEventListener("deviceorientationabsolute", handler);
+    window.addEventListener("deviceorientation", handler);
+    return () => {
+      window.removeEventListener("deviceorientationabsolute", handler);
       window.removeEventListener("deviceorientation", handler);
     };
   }, [processOrientation]);
 
-  const requestCompassPermission = async () => {
-    const DeviceOrientationEventCls = (window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission })
-      .DeviceOrientationEvent;
-    if (!DeviceOrientationEventCls?.requestPermission) return;
-    const res = await DeviceOrientationEventCls.requestPermission();
-    if (res === "granted") {
-      setNeedsPermission(false);
-      window.addEventListener("deviceorientation", processOrientation);
+  // Listeners/timers owned by the permission button (outside any effect), torn
+  // down on unmount.
+  const webDetachRef = useRef<(() => void) | null>(null);
+  const firstReadingTimerRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      webDetachRef.current?.();
+      webDetachRef.current = null;
+      if (firstReadingTimerRef.current !== null) window.clearTimeout(firstReadingTimerRef.current);
+    },
+    []
+  );
+
+  // Desktop Chrome exposes DeviceOrientationEvent and never fires it. Nothing
+  // after a couple of seconds means there is no sensor, not "still warming up".
+  const armFirstReadingTimeout = useCallback(() => {
+    if (firstReadingTimerRef.current !== null) window.clearTimeout(firstReadingTimerRef.current);
+    firstReadingTimerRef.current = window.setTimeout(() => {
+      firstReadingTimerRef.current = null;
+      if (!gotReadingRef.current) setCompassStatus(noSensorStatus());
+    }, FIRST_READING_TIMEOUT_MS);
+  }, []);
+
+  // ── Web: the browser's own orientation sensor ──────────────────────────────
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) return;
+    const DeviceOrientationEventCls = (
+      window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission }
+    ).DeviceOrientationEvent;
+
+    if (!DeviceOrientationEventCls) {
+      setCompassStatus(noSensorStatus());
+      return;
     }
+    if (typeof DeviceOrientationEventCls.requestPermission === "function") {
+      // Mobile Safari gates the sensor behind a USER GESTURE, so all we can do
+      // here is put up the CTA — see the button in the dial.
+      setCompassStatus("needs-permission");
+      return;
+    }
+    const detach = attachWebOrientation();
+    setCompassStatus("live");
+    armFirstReadingTimeout();
+    return detach;
+  }, [attachWebOrientation, armFirstReadingTimeout]);
+
+  const requestCompassPermission = async () => {
+    const DeviceOrientationEventCls = (
+      window as unknown as { DeviceOrientationEvent?: DeviceOrientationEventWithPermission }
+    ).DeviceOrientationEvent;
+    if (typeof DeviceOrientationEventCls?.requestPermission !== "function") return;
+    let res: "granted" | "denied" = "denied";
+    try {
+      res = await DeviceOrientationEventCls.requestPermission();
+    } catch {
+      res = "denied"; // must be called from a gesture; a throw here is a refusal
+    }
+    if (res !== "granted") {
+      setCompassStatus("denied");
+      return;
+    }
+    webDetachRef.current?.();
+    webDetachRef.current = attachWebOrientation();
+    setCompassStatus("live");
+    armFirstReadingTimeout();
   };
 
   const qiblahBearing = loc ? calcQiblahBearing(loc.lat, loc.lng) : null;
@@ -497,15 +641,43 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                 </div>
               )}
 
-              {/* Center bearing label — only shown when the arrow isn't (desktop / no sensor) */}
+              {/* Center of the dial when there's no live heading yet: the static
+                  bearing, and — crucially — the enable CTA right where the
+                  stagnant arrow would be. A button buried in the details column
+                  is a button nobody finds, which is why the compass reads as
+                  "broken" rather than "needs one tap". Shown in BOTH the full page
+                  and the compact home sheet, since this is the same markup. */}
               {heading === null && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="text-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6">
+                  <div className="text-center pointer-events-none">
                     <p className="text-3xl font-semibold text-gold font-mono">{Math.round(qiblahBearing)}°</p>
                     <p className="text-[10px] uppercase tracking-wider text-themed-muted">
                       {compassDirection(qiblahBearing)}
                     </p>
                   </div>
+                  {compassStatus === "needs-permission" && (
+                    <button
+                      type="button"
+                      onClick={requestCompassPermission}
+                      className="flex items-center gap-2 px-5 py-3 rounded-full bg-gold text-black font-semibold text-sm shadow-[0_0_24px_rgba(212,168,67,0.45)] hover:bg-gold/90 active:scale-[0.97] transition touch-manipulation"
+                    >
+                      <Compass size={18} /> Enable compass
+                    </button>
+                  )}
+                  {compassStatus === "denied" && (
+                    <button
+                      type="button"
+                      onClick={requestCompassPermission}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-full card-bg border border-gold/40 text-gold font-medium text-xs hover:bg-gold/10 transition touch-manipulation"
+                    >
+                      <Compass size={15} /> Try enabling again
+                    </button>
+                  )}
+                  {compassStatus === "live" && (
+                    <p className="text-[11px] text-themed-muted text-center pointer-events-none">
+                      Starting compass…
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -539,9 +711,10 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
               </p>
             )}
 
-            {/* Declination caption — shown while the live compass is active and
-                the magnetic→true correction is being applied. */}
-            {heading !== null && declination !== null && Math.abs(declination) >= 0.05 && (
+            {/* Declination caption — only while WE are doing the magnetic→true
+                correction. iOS trueHeading arrives already corrected, so claiming
+                it here would be describing work we didn't do. */}
+            {heading !== null && magneticSource && declination !== null && Math.abs(declination) >= 0.05 && (
               <p className="text-[10px] text-themed-muted mt-2 text-center">
                 Compass corrected for magnetic declination ({Math.abs(declination).toFixed(1)}°{declination >= 0 ? "E" : "W"})
               </p>
@@ -559,22 +732,34 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                   Distance to Ka&apos;bah: <span className="text-themed font-mono">{Math.round(distanceKm).toLocaleString()} km</span> <span className="text-themed-muted">/</span> <span className="text-themed font-mono">{Math.round(distanceKm * 0.621371).toLocaleString()} mi</span>
                 </p>
               )}
-              {needsPermission && (
-                <button
-                  onClick={requestCompassPermission}
-                  className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg bg-gold/20 text-gold border border-gold/40 hover:bg-gold/30 transition-colors text-sm font-medium"
-                >
-                  <Compass size={16} /> Enable live compass
-                </button>
-              )}
-              {heading === null && !needsPermission && (
+              {heading === null && (
                 <>
+                  {compassStatus === "needs-permission" && (
+                    <p className="text-xs text-gold/80 mt-3">
+                      Tap <span className="font-semibold">Enable compass</span> above to point the needle live using your phone&apos;s built-in compass.
+                    </p>
+                  )}
+                  {compassStatus === "denied" && (
+                    <p className="text-xs text-gold/80 mt-3">
+                      Compass access was declined, so the live needle is off. Allow <span className="font-semibold">Motion &amp; Orientation Access</span> for this site in your browser settings, then try again.
+                    </p>
+                  )}
+                  {compassStatus === "no-compass" && (
+                    <p className="text-xs text-gold/80 mt-3">
+                      This device doesn&apos;t have a compass sensor, so the needle can&apos;t point live. The bearing itself is still exact.
+                    </p>
+                  )}
                   <p className="text-xs text-themed-muted mt-3">
                     Hold a compass (or use a compass app) and align it so the needle points to <span className="text-gold font-mono">{Math.round(qiblahBearing)}°</span>. That direction is the qiblah from where you are standing.
                   </p>
-                  <p className="text-xs text-gold/80 mt-2">
-                    Tip: Visit this page on your phone for a live qiblah direction using its built-in compass.
-                  </p>
+                  {/* Only ever say this on a machine that genuinely has no
+                      sensor — telling someone already holding their phone to
+                      "visit this on your phone" is how the compass looked broken. */}
+                  {compassStatus === "desktop" && (
+                    <p className="text-xs text-gold/80 mt-2">
+                      Tip: Visit this page on your phone for a live qiblah direction using its built-in compass.
+                    </p>
+                  )}
                 </>
               )}
               {heading !== null && (
