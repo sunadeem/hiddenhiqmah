@@ -37,10 +37,13 @@ private let hiqmahCountdownURL = URL(string: "hiddenhiqmah://prayer-times")
 
 struct CountdownWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
     let entry: NextPrayerEntry
 
+    private var theme: HiqmahTheme { HiqmahTheme.of(colorScheme) }
+
     var body: some View {
-        content.widgetURL(hiqmahCountdownURL)
+        content.widgetURL(URL(string: "hiddenhiqmah://prayer-times"))
     }
 
     @ViewBuilder
@@ -49,91 +52,116 @@ struct CountdownWidgetEntryView: View {
         case .accessoryCircular:
             circularView.hiqmahAccessoryBackground()
         default:
-            smallView.hiqmahWidgetBackground()
+            smallView.hiqmahCard(theme)
+        }
+    }
+
+    /// Start of the interval being counted through, for the progress rail: the
+    /// scheduled prayer immediately before the target, falling back to when this
+    /// entry was made. Clamped so the range can never be empty or inverted —
+    /// ProgressView(timerInterval:) traps on both.
+    private func interval(to instant: PrayerInstant) -> ClosedRange<Date> {
+        let prior = entry.schedule
+            .filter { $0.date < instant.date }
+            .max(by: { $0.date < $1.date })?.date ?? entry.date
+        let end = max(instant.date, prior.addingTimeInterval(60))
+        return min(prior, end.addingTimeInterval(-60))...end
+    }
+
+    // MARK: Home screen — small
+
+    /// Centred on both axes. This face exists to show one number, and a leading
+    /// alignment let the width that Text(timerInterval:) reserves for its widest
+    /// possible string drag the digits visibly off-axis.
+    @ViewBuilder
+    private var smallView: some View {
+        if let instant = entry.instant {
+            VStack(spacing: 0) {
+                HiqmahHeader(title: "Countdown", theme: theme) { size, colour in
+                    HourglassGlyph(size: size, color: colour)
+                }
+
+                Spacer(minLength: 0)
+
+                Text(
+                    timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
+                    countsDown: true
+                )
+                .font(.system(size: 32, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                .foregroundColor(theme.goldDisplay)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .lineLimit(1)
+                .minimumScaleFactor(0.4)
+
+                Text("until \(instant.prayer.displayName)")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(theme.title)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+
+                Spacer(minLength: 0)
+
+                // A live rail rather than a ring: a trimmed circle would be frozen
+                // at render time and disagree with the ticking digits above it.
+                ProgressView(
+                    timerInterval: interval(to: instant),
+                    countsDown: true,
+                    label: { EmptyView() },
+                    currentValueLabel: { EmptyView() }
+                )
+                .progressViewStyle(.linear)
+                .tint(theme.goldDisplay)
+                .frame(height: 4)
+            }
+        } else {
+            VStack(spacing: 0) {
+                HiqmahHeader(title: "Countdown", theme: theme) { size, colour in
+                    HourglassGlyph(size: size, color: colour)
+                }
+                Spacer(minLength: 0)
+                Text("Open Hiqmah")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(theme.goldText)
+                Text("Set your location once and the countdown appears here.")
+                    .font(.system(size: 11))
+                    .foregroundColor(theme.muted)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.8)
+                Spacer(minLength: 0)
+            }
         }
     }
 
     // MARK: Accessory — circular
 
-    /// The countdown, auto-scaled to whatever the tray allows, with the prayer
-    /// name whispered underneath. `Text(timerInterval:)` swings between "12:34"
-    /// and "10:12:34" over a night, so lineLimit(1) + a generous
-    /// minimumScaleFactor is what keeps it from being clipped mid-tick;
-    /// monospacedDigit stops the whole line from breathing every second.
     @ViewBuilder
     private var circularView: some View {
         if let instant = entry.instant {
-            VStack(spacing: 0) {
-                Text(
-                    timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
-                    countsDown: true
-                )
-                .font(.system(size: 15, weight: .semibold, design: .rounded).monospacedDigit())
-                .lineLimit(1)
-                .minimumScaleFactor(0.4)
-                Text(instant.prayer.displayName)
-                    .font(.system(size: 9, weight: .medium))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-            }
-            .padding(2)
+            ProgressView(
+                timerInterval: interval(to: instant),
+                countsDown: true,
+                label: { EmptyView() },
+                currentValueLabel: {
+                    Text(
+                        timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
+                        countsDown: true
+                    )
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .minimumScaleFactor(0.5)
+                }
+            )
+            .progressViewStyle(.circular)
         } else {
-            // Same empty state as Next Prayer's circular family.
-            VStack(spacing: 0) {
-                Image(systemName: "moon.stars")
-                    .font(.system(size: 13, weight: .medium))
-                Text("—")
-                    .font(.system(size: 12, weight: .semibold))
+            VStack(spacing: 1) {
+                HourglassGlyph(size: 15, color: .white)
+                Text("—").font(.system(size: 11, weight: .semibold))
             }
-            .padding(2)
-        }
-    }
-
-    // MARK: Home screen — small
-
-    /// Two elements, centred: the countdown and "until <Prayer>". That is the
-    /// entire widget — anyone who wants the clock time or the day's schedule has
-    /// the Next Prayer widget for it.
-    @ViewBuilder
-    private var smallView: some View {
-        if let instant = entry.instant {
-            VStack(alignment: .leading, spacing: 4) {
-                Spacer(minLength: 0)
-
-                Text(
-                    timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
-                    countsDown: true
-                )
-                .font(.system(size: 30, weight: .semibold, design: .rounded).monospacedDigit())
-                .foregroundColor(.hiqmahGold)
-                .lineLimit(1)
-                .minimumScaleFactor(0.4)
-
-                Text("until \(instant.prayer.displayName)")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundColor(.hiqmahText)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-
-                Spacer(minLength: 0)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        } else {
-            // Same wording as Next Prayer's empty home-screen state.
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Prayer countdown")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundColor(.hiqmahText)
-                Text("Open Hiqmah")
-                    .font(.system(size: 13))
-                    .foregroundColor(.hiqmahGold)
-                Text("Set your location once and the countdown appears here.")
-                    .font(.system(size: 11))
-                    .foregroundColor(.hiqmahMuted)
-                    .lineLimit(3)
-                    .minimumScaleFactor(0.8)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
     }
 }

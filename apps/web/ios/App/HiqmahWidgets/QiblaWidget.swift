@@ -182,11 +182,68 @@ struct QiblaProvider: TimelineProvider {
     }
 }
 
+// MARK: - Skyline
+
+/// A mosque silhouette for the base of the large face. Deliberately low: the
+/// dial's opaque inner disc is drawn on top of this, so anything tall enough to
+/// reach behind the dial would be silently erased rather than layered.
+private struct MosqueSkyline: Shape {
+    func path(in rect: CGRect) -> Path {
+        let s = rect.width / 338
+        let y = rect.maxY
+        var p = Path()
+
+        p.addRect(CGRect(x: rect.minX, y: y - 26 * s, width: 44 * s, height: 26 * s))
+        p.addRect(CGRect(x: rect.minX + 294 * s, y: y - 26 * s, width: 44 * s, height: 26 * s))
+
+        for centre in [58.0, 280.0] {
+            let x = rect.minX + CGFloat(centre) * s
+            p.move(to: CGPoint(x: x - 6 * s, y: y))
+            p.addLine(to: CGPoint(x: x - 6 * s, y: y - 74 * s))
+            p.addQuadCurve(to: CGPoint(x: x, y: y - 88 * s),
+                           control: CGPoint(x: x - 6 * s, y: y - 84 * s))
+            p.addQuadCurve(to: CGPoint(x: x + 6 * s, y: y - 74 * s),
+                           control: CGPoint(x: x + 6 * s, y: y - 84 * s))
+            p.addLine(to: CGPoint(x: x + 6 * s, y: y))
+            p.closeSubpath()
+            p.addEllipse(in: CGRect(x: x - 3.4 * s, y: y - 97.4 * s,
+                                    width: 6.8 * s, height: 6.8 * s))
+        }
+
+        for centre in [110.0, 228.0] {
+            let x = rect.minX + CGFloat(centre) * s
+            p.move(to: CGPoint(x: x - 22 * s, y: y))
+            p.addLine(to: CGPoint(x: x - 22 * s, y: y - 38 * s))
+            p.addQuadCurve(to: CGPoint(x: x, y: y - 66 * s),
+                           control: CGPoint(x: x - 22 * s, y: y - 58 * s))
+            p.addQuadCurve(to: CGPoint(x: x + 22 * s, y: y - 38 * s),
+                           control: CGPoint(x: x + 22 * s, y: y - 58 * s))
+            p.addLine(to: CGPoint(x: x + 22 * s, y: y))
+            p.closeSubpath()
+        }
+
+        let cx = rect.minX + 169 * s
+        p.move(to: CGPoint(x: cx - 35 * s, y: y))
+        p.addLine(to: CGPoint(x: cx - 35 * s, y: y - 58 * s))
+        p.addQuadCurve(to: CGPoint(x: cx, y: y - 86 * s),
+                       control: CGPoint(x: cx - 35 * s, y: y - 78 * s))
+        p.addQuadCurve(to: CGPoint(x: cx + 35 * s, y: y - 58 * s),
+                       control: CGPoint(x: cx + 35 * s, y: y - 78 * s))
+        p.addLine(to: CGPoint(x: cx + 35 * s, y: y))
+        p.closeSubpath()
+
+        return p
+    }
+}
+
 // MARK: - View
 
 struct QiblaWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
     let entry: QiblaEntry
+
+    private var theme: HiqmahTheme { HiqmahTheme.of(colorScheme) }
 
     var body: some View {
         content.widgetURL(hiqmahQiblahURL)
@@ -199,9 +256,20 @@ struct QiblaWidgetEntryView: View {
             inlineView.hiqmahClearWidgetBackground()
         case .accessoryCircular:
             circularView.hiqmahAccessoryBackground()
+        case .accessoryRectangular:
+            rectangularView.hiqmahClearWidgetBackground()
+        case .systemMedium:
+            mediumView.hiqmahCard(theme)
+        case .systemLarge:
+            largeView.hiqmahCard(theme)
         default:
-            smallView.hiqmahWidgetBackground()
+            smallView.hiqmahCard(theme)
         }
+    }
+
+    private var readout: String {
+        guard let bearing = entry.bearing else { return "—" }
+        return "\(Qibla.degreesLabel(bearing)) \(Qibla.cardinal(bearing))"
     }
 
     // MARK: Accessory — inline
@@ -209,76 +277,70 @@ struct QiblaWidgetEntryView: View {
     @ViewBuilder
     private var inlineView: some View {
         if let bearing = entry.bearing {
-            // The inline family is a single line of system-styled text next to the
-            // clock; no glyph, because it would eat a third of the width.
-            Text("Qibla \(Qibla.degreesLabel(bearing)) \(Qibla.cardinal(bearing))")
+            Text("Qiblah \(Qibla.degreesLabel(bearing)) \(Qibla.cardinal(bearing))")
         } else {
-            Text("Qibla — Open Hiqmah")
-        }
-    }
-
-    // MARK: Kaaba glyph
-
-    /// A tiny Kaaba — the black cube with its gold hizam band. Drawn rather than
-    /// an asset: no SF Symbol exists for it, a vector renders crisply at any
-    /// size, and opacity layering keeps the shape legible in the Lock Screen's
-    /// monochrome accessory rendering (where colours are flattened and the band
-    /// survives as a brightness step).
-    private struct KaabaGlyph: View {
-        var size: CGFloat
-        /// Accessory families are rendered monochrome by the system, so the
-        /// cube uses the adaptive primary colour there instead of true black.
-        var accessory: Bool = false
-
-        var body: some View {
-            ZStack {
-                RoundedRectangle(cornerRadius: size * 0.14, style: .continuous)
-                    .fill(accessory ? Color.primary.opacity(0.92) : Color.black.opacity(0.92))
-                if !accessory {
-                    RoundedRectangle(cornerRadius: size * 0.14, style: .continuous)
-                        .strokeBorder(Color.hiqmahGold.opacity(0.45), lineWidth: max(0.5, size * 0.045))
-                }
-                Rectangle()
-                    .fill(accessory ? Color.black.opacity(0.55) : Color.hiqmahGold)
-                    .frame(height: max(1, size * 0.16))
-                    .offset(y: -size * 0.18)
-                    .clipShape(RoundedRectangle(cornerRadius: size * 0.14, style: .continuous)
-                        .inset(by: max(0.5, size * 0.03)))
-            }
-            .frame(width: size, height: size)
+            Text("Qiblah — Open Hiqmah")
         }
     }
 
     // MARK: Accessory — circular
 
+    /// Fully concentric, and the degrees are knocked OUT of the pivot disc — the
+    /// place the Kaaba medallion holds on the larger faces. Nothing sits on the
+    /// tick ring, so there is no vertical offset to make room for a caption.
     @ViewBuilder
     private var circularView: some View {
         if let bearing = entry.bearing {
-            // The Kaaba itself is the pointer: it orbits the dial rim to sit at
-            // the bearing (up = north, same fixed-map reading as before), while
-            // a counter-rotation keeps the cube upright wherever it lands.
-            ZStack {
-                Circle()
-                    .strokeBorder(Color.primary.opacity(0.18), lineWidth: 1)
-                Text(Qibla.degreesLabel(bearing))
-                    .font(.system(size: 12, weight: .semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-                VStack {
-                    KaabaGlyph(size: 13, accessory: true)
-                        .rotationEffect(.degrees(-bearing))
-                    Spacer(minLength: 0)
-                }
-                .padding(3)
-                .rotationEffect(.degrees(bearing))
-            }
+            let label = Qibla.degreesLabel(bearing)
+            CompassDial(bearing: bearing, theme: theme, showsCardinals: false, mono: true)
+                .mask(
+                    ZStack {
+                        Rectangle()
+                        Text(label)
+                            .font(.system(size: label.count > 3 ? 11 : 13,
+                                          weight: .bold, design: .rounded))
+                            .monospacedDigit()
+                            .blendMode(.destinationOut)
+                    }
+                    .compositingGroup()
+                )
+                .padding(1)
         } else {
             VStack(spacing: 1) {
-                KaabaGlyph(size: 15, accessory: true)
-                Text("—")
-                    .font(.system(size: 11, weight: .semibold))
+                KaabaGlyph(size: 15, color: .white)
+                Text("—").font(.system(size: 11, weight: .semibold))
             }
-            .padding(2)
+        }
+    }
+
+    // MARK: Accessory — rectangular
+
+    @ViewBuilder
+    private var rectangularView: some View {
+        if let bearing = entry.bearing {
+            HStack(spacing: 9) {
+                HiqmahBadge(radius: 13, theme: theme, mono: true) { size, colour in
+                    KaabaGlyph(size: size, color: colour)
+                }
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("QIBLAH")
+                        .font(.system(size: 10, weight: .semibold))
+                        .tracking(0.7)
+                        .foregroundColor(.white.opacity(0.72))
+                    Text(readout)
+                        .font(.system(size: 19, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                    Text("from true north")
+                        .font(.system(size: 9.5))
+                        .foregroundColor(.white.opacity(0.62))
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 0)
+            }
+        } else {
+            Text("Qiblah — Open Hiqmah")
         }
     }
 
@@ -287,60 +349,157 @@ struct QiblaWidgetEntryView: View {
     @ViewBuilder
     private var smallView: some View {
         if let bearing = entry.bearing {
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 4) {
-                    KaabaGlyph(size: 12)
-                    Text("QIBLA")
-                        .font(.system(size: 10, weight: .semibold))
-                        .tracking(0.6)
+            VStack(spacing: 0) {
+                HiqmahHeader(title: "Qiblah", theme: theme) { size, colour in
+                    KaabaGlyph(size: size, color: colour)
                 }
-                .foregroundColor(.hiqmahMuted)
-
-                Text("\(Qibla.degreesLabel(bearing)) \(Qibla.cardinal(bearing))")
-                    .font(.system(size: 26, weight: .semibold, design: .rounded))
-                    .foregroundColor(.hiqmahGold)
+                Spacer(minLength: 2)
+                CompassDial(bearing: bearing, theme: theme)
+                    .aspectRatio(1, contentMode: .fit)
+                Spacer(minLength: 2)
+                Text(readout)
+                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundColor(theme.goldText)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
-
                 Text("from true north")
-                    .font(.system(size: 10))
-                    .foregroundColor(.hiqmahMuted)
+                    .font(.system(size: 9.5))
+                    .foregroundColor(theme.muted)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
-
-                Spacer(minLength: 0)
-
-                if let km = entry.distanceKm, let distance = Qibla.distanceLabel(km) {
-                    Text(distance)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.hiqmahText)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                }
-
-                if let city = entry.city {
-                    Text(city)
-                        .font(.system(size: 11))
-                        .foregroundColor(.hiqmahMuted)
-                        .lineLimit(1)
-                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         } else {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Qibla")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundColor(.hiqmahText)
-                Text("Open Hiqmah")
-                    .font(.system(size: 13))
-                    .foregroundColor(.hiqmahGold)
-                Text("Set your location once and the direction appears here.")
-                    .font(.system(size: 11))
-                    .foregroundColor(.hiqmahMuted)
-                    .lineLimit(3)
-                    .minimumScaleFactor(0.8)
+            emptyView
+        }
+    }
+
+    // MARK: Home screen — medium
+
+    @ViewBuilder
+    private var mediumView: some View {
+        if let bearing = entry.bearing {
+            HStack(spacing: 16) {
+                CompassDial(bearing: bearing, theme: theme)
+                    .aspectRatio(1, contentMode: .fit)
+                VStack(alignment: .leading, spacing: 3) {
+                    HiqmahHeader(title: "Qiblah", theme: theme, radius: 11, fontSize: 13) { size, colour in
+                        KaabaGlyph(size: size, color: colour)
+                    }
+                    Spacer(minLength: 2)
+                    Text(readout)
+                        .font(.system(size: 30, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundColor(theme.goldDisplay)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                    Text("from true north")
+                        .font(.system(size: 12))
+                        .foregroundColor(theme.muted)
+                    if let city = entry.city, let km = entry.distanceKm,
+                       let distance = Qibla.distanceLabel(km) {
+                        Text("\(city) · \(distance)")
+                            .font(.system(size: 11))
+                            .monospacedDigit()
+                            .foregroundColor(theme.muted)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        } else {
+            emptyView
+        }
+    }
+
+    // MARK: Home screen — large
+
+    @ViewBuilder
+    private var largeView: some View {
+        if let bearing = entry.bearing {
+            ZStack(alignment: .bottom) {
+                MosqueSkyline()
+                    .fill(theme.sky)
+                    .frame(height: 78)
+                    .frame(maxWidth: .infinity, alignment: .bottom)
+
+                VStack(spacing: 0) {
+                    HStack(alignment: .top, spacing: 9) {
+                        HiqmahBadge(radius: 19, theme: theme) { size, colour in
+                            KaabaGlyph(size: size, color: colour)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Qiblah")
+                                .font(.system(size: 21, weight: .bold))
+                                .foregroundColor(theme.title)
+                            Text("Makkah")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(theme.goldText)
+                        }
+                        Spacer(minLength: 0)
+                        VStack(alignment: .trailing, spacing: 3) {
+                            if let city = entry.city {
+                                HStack(spacing: 5) {
+                                    Circle()
+                                        .fill(Color(hiqmahHex: 0x34C759))
+                                        .frame(width: 7, height: 7)
+                                    Text(city)
+                                        .font(.system(size: 13, weight: .medium))
+                                        .foregroundColor(theme.title.opacity(0.85))
+                                        .lineLimit(1)
+                                }
+                            }
+                            if let km = entry.distanceKm, let distance = Qibla.distanceLabel(km) {
+                                Text(distance)
+                                    .font(.system(size: 12))
+                                    .monospacedDigit()
+                                    .foregroundColor(theme.muted)
+                            }
+                        }
+                    }
+
+                    Spacer(minLength: 6)
+
+                    CompassDial(bearing: bearing, theme: theme)
+                        .aspectRatio(1, contentMode: .fit)
+
+                    Spacer(minLength: 6)
+
+                    Text(Qibla.degreesLabel(bearing))
+                        .font(.system(size: 38, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundColor(theme.goldDisplay)
+                    Text("from true north")
+                        .font(.system(size: 13))
+                        .foregroundColor(theme.muted)
+                }
+            }
+        } else {
+            emptyView
+        }
+    }
+
+    // MARK: Empty
+
+    @ViewBuilder
+    private var emptyView: some View {
+        VStack(spacing: 0) {
+            HiqmahHeader(title: "Qiblah", theme: theme) { size, colour in
+                KaabaGlyph(size: size, color: colour)
+            }
+            Spacer(minLength: 0)
+            Text("Open Hiqmah")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(theme.goldText)
+            Text("Set your location once and the direction appears here.")
+                .font(.system(size: 11))
+                .foregroundColor(theme.muted)
+                .multilineTextAlignment(.center)
+                .lineLimit(3)
+                .minimumScaleFactor(0.8)
+            Spacer(minLength: 0)
         }
     }
 }
@@ -354,12 +513,15 @@ struct QiblaWidget: Widget {
         StaticConfiguration(kind: QiblaWidget.kind, provider: QiblaProvider()) { entry in
             QiblaWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("Qibla")
+        .configurationDisplayName("Qiblah")
         .description("The bearing to the Kaaba from your saved location. Open Hiqmah for the live compass.")
         .supportedFamilies([
             .systemSmall,
+            .systemMedium,
+            .systemLarge,
             .accessoryInline,
-            .accessoryCircular
+            .accessoryCircular,
+            .accessoryRectangular
         ])
     }
 }
