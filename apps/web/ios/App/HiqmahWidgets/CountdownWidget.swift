@@ -147,40 +147,30 @@ struct CountdownWidgetEntryView: View {
     @ViewBuilder
     private var circularView: some View {
         if let instant = entry.instant {
-            // The ring and its label are SEPARATE layers. Inside the system
-            // gauge's currentValueLabel the timer text was not width-constrained,
-            // and Text(timerInterval:) lays out at the width of its longest
-            // possible string — "2:58:38" ran clean across the ring stroke.
-            // Overlaying our own label with a hard frame + scale factor is the
-            // only reliable containment.
-            ZStack {
-                ProgressView(
-                    timerInterval: interval(to: instant),
-                    countsDown: true,
-                    label: { EmptyView() },
-                    currentValueLabel: { EmptyView() }
+            // No ring. It cost ~4pt of radius on every side and shrank the one
+            // thing this face exists to show; the frosted disc alone is the
+            // container. Timer spans the full equator, name sits beneath.
+            VStack(spacing: 0) {
+                Text(
+                    timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
+                    countsDown: true
                 )
-                .progressViewStyle(.circular)
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.4)
+                .multilineTextAlignment(.center)
+                // 36, not the full equator: the digit row sits above centre, and
+                // at 44 wide its corners left the disc (√(22² + 9.6²) = 24 > the
+                // 22.5 radius; 3pt outside on an SE). 36 clears every canvas.
+                .frame(maxWidth: 36)
 
-                VStack(spacing: 0) {
-                    Text(
-                        timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
-                        countsDown: true
-                    )
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
-                    .monospacedDigit()
+                Text(instant.prayer.displayName)
+                    .font(.system(size: 10, weight: .semibold))
+                    .opacity(0.85)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.35)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: 36)
-
-                    Text(instant.prayer.displayName)
-                        .font(.system(size: 7.5, weight: .semibold))
-                        .opacity(0.8)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                        .frame(maxWidth: 38)
-                }
+                    .minimumScaleFactor(0.6)
+                    .frame(maxWidth: 40)
             }
         } else {
             VStack(spacing: 1) {
@@ -206,5 +196,80 @@ struct CountdownWidget: Widget {
             .systemSmall,
             .accessoryCircular
         ])
+    }
+}
+
+// MARK: - Next Prayer Compact (accessoryCircular only)
+
+/// The build-11 rectangular stack — icon + prayer, its time, the countdown —
+/// reborn as a circular. That content half-fills the rectangular slot and wastes
+/// the rest; the circle carries the identical three lines with no dead space.
+/// Row widths follow the circle: the middle line gets the equator, the top and
+/// bottom rows get the narrower chords they sit on.
+struct NextPrayerCompactWidgetEntryView: View {
+    let entry: NextPrayerEntry
+
+    var body: some View {
+        content.widgetURL(URL(string: "hiddenhiqmah://prayer-times"))
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        Group {
+            if let instant = entry.instant {
+                VStack(spacing: 0) {
+                    HStack(spacing: 2) {
+                        Image(systemName: instant.prayer.symbolName)
+                            .font(.system(size: 7.5, weight: .semibold))
+                        Text(instant.prayer.displayName)
+                            .font(.system(size: 8.5, weight: .bold))
+                    }
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    // 36: at 32 "Maghrib" needed a 0.619 scale against a 0.6
+                    // floor — a 3% margin from truncating to an ellipsis. The
+                    // chord at this row's height allows ~37.
+                    .frame(maxWidth: 36)
+
+                    Text(HiqmahFormat.clock(instant.date))
+                        .font(.system(size: 9.5, weight: .medium))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .frame(maxWidth: 40)
+
+                    Text(
+                        timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
+                        countsDown: true
+                    )
+                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.4)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 34)
+                }
+            } else {
+                VStack(spacing: 1) {
+                    Image(systemName: "moon.stars")
+                        .font(.system(size: 13, weight: .medium))
+                    Text("—").font(.system(size: 11, weight: .semibold))
+                }
+            }
+        }
+        .hiqmahAccessoryBackground()
+    }
+}
+
+struct NextPrayerCompactWidget: Widget {
+    static let kind = "HiqmahNextPrayerCompact"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: NextPrayerCompactWidget.kind, provider: NextPrayerProvider()) { entry in
+            NextPrayerCompactWidgetEntryView(entry: entry)
+        }
+        .configurationDisplayName("Next Prayer Compact")
+        .description("Prayer, time and countdown — the whole glance in one circle.")
+        .supportedFamilies([.accessoryCircular])
     }
 }
