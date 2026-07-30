@@ -678,31 +678,46 @@ struct FlameGlyph: View {
     }
 }
 
+/// Built as Shapes, never raw `Path {}` views: a bare Path draws in the view's
+/// coordinate space, whose origin is the TOP-LEFT corner — centre-relative
+/// coordinates land the glyph half outside its own frame (it shipped poking out
+/// of the badge circle). Shape's path(in:) hands us the frame rect to centre in.
 struct HourglassGlyph: View {
     var size: CGFloat
     var color: Color
 
+    private struct Lines: Shape {
+        func path(in rect: CGRect) -> Path {
+            let s = min(rect.width, rect.height)
+            let cx = rect.midX
+            let cy = rect.midY
+            func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: cx + x * s, y: cy + y * s) }
+            var p = Path()
+            p.move(to: pt(-0.28, -0.40)); p.addLine(to: pt(0.28, -0.40))
+            p.move(to: pt(-0.28, 0.40));  p.addLine(to: pt(0.28, 0.40))
+            p.move(to: pt(-0.24, -0.40)); p.addLine(to: pt(0.24, 0.40))
+            p.move(to: pt(0.24, -0.40));  p.addLine(to: pt(-0.24, 0.40))
+            return p
+        }
+    }
+
+    private struct Sand: Shape {
+        func path(in rect: CGRect) -> Path {
+            let s = min(rect.width, rect.height)
+            let cx = rect.midX
+            let cy = rect.midY
+            func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: cx + x * s, y: cy + y * s) }
+            var p = Path()
+            p.move(to: pt(-0.17, 0.36)); p.addLine(to: pt(0.17, 0.36)); p.addLine(to: pt(0, 0.06))
+            p.closeSubpath()
+            return p
+        }
+    }
+
     var body: some View {
-        let s = size
         ZStack {
-            Path { p in
-                p.move(to: CGPoint(x: -s * 0.28, y: -s * 0.40))
-                p.addLine(to: CGPoint(x: s * 0.28, y: -s * 0.40))
-                p.move(to: CGPoint(x: -s * 0.28, y: s * 0.40))
-                p.addLine(to: CGPoint(x: s * 0.28, y: s * 0.40))
-                p.move(to: CGPoint(x: -s * 0.24, y: -s * 0.40))
-                p.addLine(to: CGPoint(x: s * 0.24, y: s * 0.40))
-                p.move(to: CGPoint(x: s * 0.24, y: -s * 0.40))
-                p.addLine(to: CGPoint(x: -s * 0.24, y: s * 0.40))
-            }
-            .stroke(color, style: StrokeStyle(lineWidth: max(0.9, s * 0.09), lineCap: .round, lineJoin: .round))
-            Path { p in
-                p.move(to: CGPoint(x: -s * 0.17, y: s * 0.36))
-                p.addLine(to: CGPoint(x: s * 0.17, y: s * 0.36))
-                p.addLine(to: CGPoint(x: 0, y: s * 0.06))
-                p.closeSubpath()
-            }
-            .fill(color)
+            Lines().stroke(color, style: StrokeStyle(lineWidth: max(0.9, size * 0.09), lineCap: .round, lineJoin: .round))
+            Sand().fill(color)
         }
         .frame(width: size, height: size)
     }
@@ -948,7 +963,10 @@ struct CompassDial: View {
                     ZStack {
                         Circle().fill(Color(hiqmahHex: 0x141416))
                         Circle().strokeBorder(theme.onDark.opacity(0.85), lineWidth: max(1, r * 0.0225))
-                        KaabaGlyph(size: r * 0.57, color: theme.onDark)
+                        // 1.08 × the medallion RADIUS (0.265r), matching the
+                        // prototype. Sized against the diameter it came out
+                        // double, and the cube's corners broke past the rim.
+                        KaabaGlyph(size: r * 0.285, color: theme.onDark)
                     }
                     .frame(width: r * 0.53, height: r * 0.53)
                 }

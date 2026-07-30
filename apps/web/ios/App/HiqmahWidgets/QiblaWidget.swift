@@ -189,46 +189,51 @@ struct QiblaProvider: TimelineProvider {
 /// reach behind the dial would be silently erased rather than layered.
 private struct MosqueSkyline: Shape {
     func path(in rect: CGRect) -> Path {
+        // x scales off the card width, but y is CAPPED to the declared frame
+        // height (the tallest element spans 97.4 units). Shapes do not clip to
+        // their frame, and scaling height off width painted the central dome up
+        // into the dial's transparent tick band.
         let s = rect.width / 338
+        let sy = min(s, rect.height / 97.4)
         let y = rect.maxY
         var p = Path()
 
-        p.addRect(CGRect(x: rect.minX, y: y - 26 * s, width: 44 * s, height: 26 * s))
-        p.addRect(CGRect(x: rect.minX + 294 * s, y: y - 26 * s, width: 44 * s, height: 26 * s))
+        p.addRect(CGRect(x: rect.minX, y: y - 26 * sy, width: 44 * s, height: 26 * sy))
+        p.addRect(CGRect(x: rect.minX + 294 * s, y: y - 26 * sy, width: 44 * s, height: 26 * sy))
 
         for centre in [58.0, 280.0] {
             let x = rect.minX + CGFloat(centre) * s
             p.move(to: CGPoint(x: x - 6 * s, y: y))
-            p.addLine(to: CGPoint(x: x - 6 * s, y: y - 74 * s))
-            p.addQuadCurve(to: CGPoint(x: x, y: y - 88 * s),
-                           control: CGPoint(x: x - 6 * s, y: y - 84 * s))
-            p.addQuadCurve(to: CGPoint(x: x + 6 * s, y: y - 74 * s),
-                           control: CGPoint(x: x + 6 * s, y: y - 84 * s))
+            p.addLine(to: CGPoint(x: x - 6 * s, y: y - 74 * sy))
+            p.addQuadCurve(to: CGPoint(x: x, y: y - 88 * sy),
+                           control: CGPoint(x: x - 6 * s, y: y - 84 * sy))
+            p.addQuadCurve(to: CGPoint(x: x + 6 * s, y: y - 74 * sy),
+                           control: CGPoint(x: x + 6 * s, y: y - 84 * sy))
             p.addLine(to: CGPoint(x: x + 6 * s, y: y))
             p.closeSubpath()
-            p.addEllipse(in: CGRect(x: x - 3.4 * s, y: y - 97.4 * s,
-                                    width: 6.8 * s, height: 6.8 * s))
+            p.addEllipse(in: CGRect(x: x - 3.4 * s, y: y - 97.4 * sy,
+                                    width: 6.8 * s, height: 6.8 * sy))
         }
 
         for centre in [110.0, 228.0] {
             let x = rect.minX + CGFloat(centre) * s
             p.move(to: CGPoint(x: x - 22 * s, y: y))
-            p.addLine(to: CGPoint(x: x - 22 * s, y: y - 38 * s))
-            p.addQuadCurve(to: CGPoint(x: x, y: y - 66 * s),
-                           control: CGPoint(x: x - 22 * s, y: y - 58 * s))
-            p.addQuadCurve(to: CGPoint(x: x + 22 * s, y: y - 38 * s),
-                           control: CGPoint(x: x + 22 * s, y: y - 58 * s))
+            p.addLine(to: CGPoint(x: x - 22 * s, y: y - 38 * sy))
+            p.addQuadCurve(to: CGPoint(x: x, y: y - 66 * sy),
+                           control: CGPoint(x: x - 22 * s, y: y - 58 * sy))
+            p.addQuadCurve(to: CGPoint(x: x + 22 * s, y: y - 38 * sy),
+                           control: CGPoint(x: x + 22 * s, y: y - 58 * sy))
             p.addLine(to: CGPoint(x: x + 22 * s, y: y))
             p.closeSubpath()
         }
 
         let cx = rect.minX + 169 * s
         p.move(to: CGPoint(x: cx - 35 * s, y: y))
-        p.addLine(to: CGPoint(x: cx - 35 * s, y: y - 58 * s))
-        p.addQuadCurve(to: CGPoint(x: cx, y: y - 86 * s),
-                       control: CGPoint(x: cx - 35 * s, y: y - 78 * s))
-        p.addQuadCurve(to: CGPoint(x: cx + 35 * s, y: y - 58 * s),
-                       control: CGPoint(x: cx + 35 * s, y: y - 78 * s))
+        p.addLine(to: CGPoint(x: cx - 35 * s, y: y - 58 * sy))
+        p.addQuadCurve(to: CGPoint(x: cx, y: y - 86 * sy),
+                       control: CGPoint(x: cx - 35 * s, y: y - 78 * sy))
+        p.addQuadCurve(to: CGPoint(x: cx + 35 * s, y: y - 58 * sy),
+                       control: CGPoint(x: cx + 35 * s, y: y - 78 * sy))
         p.addLine(to: CGPoint(x: cx + 35 * s, y: y))
         p.closeSubpath()
 
@@ -296,15 +301,18 @@ struct QiblaWidgetEntryView: View {
                 .mask(
                     ZStack {
                         Rectangle()
-                        // Sized to sit inside the pivot disc (~23pt across), which
-                        // is what the knockout is cut from.
+                        // The pivot disc is 0.79r ≈ 16pt on the ~45pt accessory
+                        // face — the knockout must fit INSIDE it, so the frame is
+                        // 14pt ("295°" scales to 0.73, above the 0.7 floor). At 21
+                        // the scale factor never engaged and the glyph ends fell
+                        // off the disc edge, knocking out nothing.
                         Text(label)
                             .font(.system(size: label.count > 3 ? 8.5 : 10.5,
                                           weight: .bold, design: .rounded))
                             .monospacedDigit()
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
-                            .frame(maxWidth: 21)
+                            .frame(maxWidth: 14)
                             .blendMode(.destinationOut)
                     }
                     .compositingGroup()
@@ -427,7 +435,9 @@ struct QiblaWidgetEntryView: View {
             ZStack(alignment: .bottom) {
                 MosqueSkyline()
                     .fill(theme.sky)
-                    .frame(height: 78)
+                    // 56, not 78: the dial's bottom edge sits ~67pt above the
+                    // content bottom, and the silhouette must stay under it.
+                    .frame(height: 56)
                     .frame(maxWidth: .infinity, alignment: .bottom)
 
                 VStack(spacing: 0) {
