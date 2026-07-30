@@ -8,6 +8,7 @@ struct HiqmahWidgetsBundle: WidgetBundle {
     var body: some Widget {
         NextPrayerWidget()
         CountdownWidget()
+        NextPrayerCompactWidget()
         HijriDateWidget()
         QiblaWidget()
         StreakWidget()

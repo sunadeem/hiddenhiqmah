@@ -295,24 +295,18 @@ struct QiblaWidgetEntryView: View {
     /// tick ring, so there is no vertical offset to make room for a caption.
     @ViewBuilder
     private var circularView: some View {
-        if let bearing = entry.bearing {
-            let label = Qibla.degreesLabel(bearing)
-            CompassDial(bearing: bearing, theme: theme, showsCardinals: false, mono: true)
+        if entry.bearing != nil {
+            // The Kaaba, not the number — the monochrome twin of the colour
+            // medallion. It is knocked OUT of the white pivot disc so the frost
+            // shows through, which is how accessory widgets draw ink. At size 13
+            // the cube's corners sit 7.1pt from centre vs the disc's 8.1pt
+            // radius. The bearing still lives on the inline face and one tap
+            // opens the live compass.
+            CompassDial(bearing: entry.bearing ?? 0, theme: theme, showsCardinals: false, mono: true)
                 .mask(
                     ZStack {
                         Rectangle()
-                        // The pivot disc is 0.79r ≈ 16pt on the ~45pt accessory
-                        // face — the knockout must fit INSIDE it, so the frame is
-                        // 14pt ("295°" scales to 0.73, above the 0.7 floor). At 21
-                        // the scale factor never engaged and the glyph ends fell
-                        // off the disc edge, knocking out nothing.
-                        Text(label)
-                            .font(.system(size: label.count > 3 ? 8.5 : 10.5,
-                                          weight: .bold, design: .rounded))
-                            .monospacedDigit()
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .frame(maxWidth: 14)
+                        KaabaGlyph(size: 13, color: .white)
                             .blendMode(.destinationOut)
                     }
                     .compositingGroup()
