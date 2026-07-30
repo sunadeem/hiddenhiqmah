@@ -217,27 +217,64 @@ struct QiblaWidgetEntryView: View {
         }
     }
 
+    // MARK: Kaaba glyph
+
+    /// A tiny Kaaba — the black cube with its gold hizam band. Drawn rather than
+    /// an asset: no SF Symbol exists for it, a vector renders crisply at any
+    /// size, and opacity layering keeps the shape legible in the Lock Screen's
+    /// monochrome accessory rendering (where colours are flattened and the band
+    /// survives as a brightness step).
+    private struct KaabaGlyph: View {
+        var size: CGFloat
+        /// Accessory families are rendered monochrome by the system, so the
+        /// cube uses the adaptive primary colour there instead of true black.
+        var accessory: Bool = false
+
+        var body: some View {
+            ZStack {
+                RoundedRectangle(cornerRadius: size * 0.14, style: .continuous)
+                    .fill(accessory ? Color.primary.opacity(0.92) : Color.black.opacity(0.92))
+                if !accessory {
+                    RoundedRectangle(cornerRadius: size * 0.14, style: .continuous)
+                        .strokeBorder(Color.hiqmahGold.opacity(0.45), lineWidth: max(0.5, size * 0.045))
+                }
+                Rectangle()
+                    .fill(accessory ? Color.black.opacity(0.55) : Color.hiqmahGold)
+                    .frame(height: max(1, size * 0.16))
+                    .offset(y: -size * 0.18)
+                    .clipShape(RoundedRectangle(cornerRadius: size * 0.14, style: .continuous)
+                        .inset(by: max(0.5, size * 0.03)))
+            }
+            .frame(width: size, height: size)
+        }
+    }
+
     // MARK: Accessory — circular
 
     @ViewBuilder
     private var circularView: some View {
         if let bearing = entry.bearing {
-            VStack(spacing: 0) {
-                Image(systemName: "location.north.fill")
-                    .font(.system(size: 15, weight: .semibold))
-                    // Up is north. The arrow points along the bearing, so the
-                    // whole face reads like a fixed map rather than a needle.
-                    .rotationEffect(.degrees(bearing))
+            // The Kaaba itself is the pointer: it orbits the dial rim to sit at
+            // the bearing (up = north, same fixed-map reading as before), while
+            // a counter-rotation keeps the cube upright wherever it lands.
+            ZStack {
+                Circle()
+                    .strokeBorder(Color.primary.opacity(0.18), lineWidth: 1)
                 Text(Qibla.degreesLabel(bearing))
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
+                VStack {
+                    KaabaGlyph(size: 13, accessory: true)
+                        .rotationEffect(.degrees(-bearing))
+                    Spacer(minLength: 0)
+                }
+                .padding(3)
+                .rotationEffect(.degrees(bearing))
             }
-            .padding(2)
         } else {
-            VStack(spacing: 0) {
-                Image(systemName: "location.north")
-                    .font(.system(size: 15, weight: .semibold))
+            VStack(spacing: 1) {
+                KaabaGlyph(size: 15, accessory: true)
                 Text("—")
                     .font(.system(size: 11, weight: .semibold))
             }
@@ -252,9 +289,7 @@ struct QiblaWidgetEntryView: View {
         if let bearing = entry.bearing {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 4) {
-                    Image(systemName: "location.north.fill")
-                        .font(.system(size: 10, weight: .semibold))
-                        .rotationEffect(.degrees(bearing))
+                    KaabaGlyph(size: 12)
                     Text("QIBLA")
                         .font(.system(size: 10, weight: .semibold))
                         .tracking(0.6)
