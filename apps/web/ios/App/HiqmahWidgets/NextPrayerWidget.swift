@@ -16,12 +16,10 @@ import WidgetKit
 
 /// Tapping any family opens the app.
 ///
-/// NOTE: src/lib/mobile/deeplinks.ts currently only routes inbound URLs that
-/// carry a `code` query param (circle invites) — every other URL just launches
-/// the app and lands wherever it was. This URL is therefore a safe "open the
-/// app" link today, and becomes a real /prayer-times jump the moment the path
-/// parser is added there. Deliberately no `code` param, so it can never be
-/// mistaken for an invite.
+/// NOTE: routed by the WIDGET_ROUTES allow-list in src/lib/mobile/deeplinks.ts
+/// — `prayer-times` must stay listed there, or the tap silently degrades to
+/// "just open the app". Deliberately no `code` query param, so it can never be
+/// mistaken for a circle invite.
 private let hiqmahPrayerTimesURL = URL(string: "hiddenhiqmah://prayer-times")
 
 // MARK: - Entry
@@ -30,12 +28,30 @@ struct NextPrayerEntry: TimelineEntry {
     let date: Date
     /// The prayer this entry is counting down to. nil = no usable data.
     let instant: PrayerInstant?
+    /// The prayer AFTER `instant` — the rectangular family's third line. Comes
+    /// straight from the same payload, so after Isha it is naturally tomorrow's
+    /// Fajr. nil only at the very end of the cached window.
+    let following: PrayerInstant?
     let city: String?
     /// The five prayers of the local day containing `date` (medium family).
     let schedule: [PrayerInstant]
 
+    init(
+        date: Date,
+        instant: PrayerInstant?,
+        following: PrayerInstant? = nil,
+        city: String?,
+        schedule: [PrayerInstant]
+    ) {
+        self.date = date
+        self.instant = instant
+        self.following = following
+        self.city = city
+        self.schedule = schedule
+    }
+
     static func empty(at date: Date, city: String? = nil) -> NextPrayerEntry {
-        NextPrayerEntry(date: date, instant: nil, city: city, schedule: [])
+        NextPrayerEntry(date: date, instant: nil, following: nil, city: city, schedule: [])
     }
 }
 
@@ -58,6 +74,7 @@ struct NextPrayerProvider: TimelineProvider {
                 NextPrayerEntry(
                     date: now,
                     instant: next,
+                    following: data.nextPrayer(after: next.date),
                     city: data.city,
                     schedule: data.schedule(for: now)
                 )
@@ -123,6 +140,9 @@ struct NextPrayerProvider: TimelineProvider {
                 NextPrayerEntry(
                     date: boundary,
                     instant: next,
+                    // Resolved per entry, so the "then …" line advances in lockstep
+                    // with the headline at every boundary.
+                    following: data.nextPrayer(after: next.date),
                     city: data.city,
                     schedule: data.schedule(for: boundary)
                 )
@@ -150,6 +170,11 @@ struct NextPrayerProvider: TimelineProvider {
         return NextPrayerEntry(
             date: date,
             instant: next,
+            following: data.nextPrayer(after: next.date)
+                // The sample covers one day only, so previewing late in the evening
+                // leaves nothing after Isha. Synthesise a plausible Fajr so the
+                // gallery still shows the full three-line rectangular layout.
+                ?? PrayerInstant(prayer: .fajr, date: next.date.addingTimeInterval(7 * 60 * 60)),
             city: data.city,
             schedule: data.schedule(for: date)
         )
@@ -220,24 +245,39 @@ struct NextPrayerWidgetEntryView: View {
 
     // MARK: Accessory — rectangular
 
+    /// EXACTLY THREE LINES. accessoryRectangular is a fixed-height slot that clips
+    /// anything past ~3 lines of these font sizes, and it clips silently — so every
+    /// Text here is lineLimit(1) and the name/time pair shares one line rather than
+    /// risking a wrap that would push the countdown out of view. Adding a fourth
+    /// line means taking one away.
     @ViewBuilder
     private var rectangularView: some View {
         if let instant = entry.instant {
             VStack(alignment: .leading, spacing: 1) {
+                // 1 — what's next, and when.
                 HStack(spacing: 4) {
                     Image(systemName: instant.prayer.symbolName)
                         .font(.caption2)
-                    Text(instant.prayer.displayName)
+                    Text("\(instant.prayer.displayName) · \(HiqmahFormat.clock(instant.date))")
                         .font(.headline)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                 }
-                Text(HiqmahFormat.clock(instant.date))
-                    .font(.caption)
+                // 2 — the live countdown, ticked by the system inside this entry.
                 Text(
                     timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
                     countsDown: true
                 )
-                .font(.caption2.monospacedDigit())
+                .font(.caption.monospacedDigit())
+                .lineLimit(1)
+                // 3 — the one after. Omitted (not blanked) when the cached window
+                // ends here, so the widget shrinks to two lines instead of lying.
+                if let following = entry.following {
+                    Text("then \(following.prayer.displayName) \(HiqmahFormat.clock(following.date))")
+                        .font(.caption2)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         } else {

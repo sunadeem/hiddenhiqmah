@@ -20,7 +20,7 @@
 
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { getCachedLocation } from "@hidden-hiqmah/ui/lib/location-cache";
-import { getPrayerSettings } from "@hidden-hiqmah/ui/lib/storage";
+import { getPrayerSettings, getVisitStats } from "@hidden-hiqmah/ui/lib/storage";
 import { computePrayerTimes } from "@/lib/prayer-times";
 
 /**
@@ -33,8 +33,25 @@ type WidgetBridgePlugin = {
 
 const WidgetBridge = registerPlugin<WidgetBridgePlugin>("WidgetBridge");
 
-/** Bump when the payload shape changes so the native reader can reject/migrate. */
-const PAYLOAD_VERSION = 1;
+/**
+ * Bump when the payload shape changes.
+ *
+ * The version is INFORMATIONAL, not a gate: neither side may refuse a blob over
+ * it, because app and extension are updated together but a WIDGET can outlive
+ * either. Compatibility is carried by the field-level contract instead, in both
+ * directions:
+ *
+ *   - v2 blob → v1 reader (user updated the app but the installed widget binary
+ *     is the old one, mid-update): the old decoder ignores unknown keys, so
+ *     `lat`/`lng`/`streak` are silently dropped and prayers still render.
+ *   - v1 blob → v2 reader (a widget added before the app was next opened, so the
+ *     last write predates this version): SharedData.swift decodes the three new
+ *     fields as OPTIONALS, so prayers still render and the qibla / streak
+ *     widgets show their own placeholder rather than 0°/0-day garbage.
+ *
+ * Which is why v2 only ADDS fields and never renames or retypes one.
+ */
+const PAYLOAD_VERSION = 2;
 
 /**
  * How far ahead to precompute. The widget must survive a user who doesn't open
@@ -70,12 +87,30 @@ export type WidgetPayload = {
   updatedAt: string;
   /** Label to caption the widget with; "" when we never resolved a name. */
   city: string;
+  /**
+   * The coordinates the times were computed for. The Qibla widget re-derives the
+   * bearing to the Kaaba from these NATIVELY (QiblaWidget.swift mirrors
+   * QiblahSection.tsx's great-circle math) rather than us shipping a precomputed
+   * degree figure — one number to keep honest instead of two, and the extension
+   * can then also show the distance.
+   */
+  lat: number;
+  lng: number;
+  /**
+   * Consecutive-day visit streak at the time of this write. Only as fresh as the
+   * last app open by construction: the extension can't run the visit bookkeeping,
+   * and localStorage lives on the far side of the WKWebView. A stale streak is
+   * the accepted cost of showing one at all.
+   */
+  streak: number;
   days: WidgetDay[];
 };
 
 /** Last SUCCESSFUL write (module-level: resets on reload, which is fine — a
  *  fresh launch should re-publish anyway). */
 let lastWrittenAt = 0;
+/** Streak carried by the last successful write — see the guard in `run()`. */
+let lastWrittenStreak = -1;
 /**
  * Serialize writes. Foreground events arrive in bursts and a settings change can
  * land while a silent pass is mid-flight; queued calls are cheap because the
@@ -91,6 +126,20 @@ let queue: Promise<void> = Promise.resolve();
  *  as notifications.ts, so a formatted value can never reach the widget. */
 function cleanTime(raw: string): string {
   return raw.replace(/\s*\(.*\)/, "").trim();
+}
+
+/**
+ * Current visit streak, or 0 for anything unexpected. Deliberately total: the
+ * streak is a garnish on a payload whose real job is prayer times, so a corrupt
+ * or absent visit record must degrade to "no streak" and never abort the write.
+ */
+function currentStreak(): number {
+  try {
+    const n = getVisitStats().currentStreak;
+    return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+  } catch {
+    return 0;
+  }
 }
 
 function dayKey(d: Date): string {
@@ -138,6 +187,9 @@ function buildPayload(): WidgetPayload | null {
     // Prefer the short city name; fall back to whatever label we have (which may
     // be coarse coordinates when the reverse-geocode hasn't succeeded yet).
     city: loc.city || loc.display || "",
+    lat: loc.lat,
+    lng: loc.lng,
+    streak: currentStreak(),
     days,
   };
 }
@@ -160,13 +212,25 @@ export function syncWidgetData(opts?: { force?: boolean }): Promise<void> {
     try {
       // Checked here, not at call time, so a burst of foregrounds queued behind
       // one real write all short-circuit on the stamp it just set.
-      if (!force && lastWrittenAt && Date.now() - lastWrittenAt < MIN_INTERVAL_MS) {
+      //
+      // The streak escape hatch: prayer times for a fixed location don't change,
+      // but the streak does — and it changes at MIDNIGHT, which a 6-hour window
+      // would happily sit through, leaving the streak widget a day behind on the
+      // one day the number was worth looking at. Reading the visit record is a
+      // localStorage hit, cheap next to the 30 days of Adhan math it gates.
+      if (
+        !force &&
+        lastWrittenAt &&
+        Date.now() - lastWrittenAt < MIN_INTERVAL_MS &&
+        currentStreak() === lastWrittenStreak
+      ) {
         return;
       }
       const payload = buildPayload();
       if (!payload) return; // no location fix yet — nothing to publish
       await WidgetBridge.setWidgetData({ json: JSON.stringify(payload) });
       lastWrittenAt = Date.now();
+      lastWrittenStreak = payload.streak;
     } catch {
       // Plugin missing (older binary), App Group unavailable, storage full —
       // the widget just keeps its last-published timeline. Never surface this:
