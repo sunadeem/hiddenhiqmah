@@ -296,15 +296,20 @@ struct QiblaWidgetEntryView: View {
                 .mask(
                     ZStack {
                         Rectangle()
+                        // Sized to sit inside the pivot disc (~23pt across), which
+                        // is what the knockout is cut from.
                         Text(label)
-                            .font(.system(size: label.count > 3 ? 11 : 13,
+                            .font(.system(size: label.count > 3 ? 8.5 : 10.5,
                                           weight: .bold, design: .rounded))
                             .monospacedDigit()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .frame(maxWidth: 21)
                             .blendMode(.destinationOut)
                     }
                     .compositingGroup()
                 )
-                .padding(1)
+                .padding(2)
         } else {
             VStack(spacing: 1) {
                 KaabaGlyph(size: 15, color: .white)

@@ -937,9 +937,13 @@ struct CompassDial: View {
                 .rotationEffect(.degrees(bearing))
 
                 if mono {
+                    // The pivot disc hosts the knocked-out degrees on the Lock
+                    // Screen face, so it is far larger than the colour medallion —
+                    // ~40% of the dial. At r*0.29 the number had nothing behind it
+                    // and simply vanished.
                     Circle()
                         .fill(Color.white.opacity(0.95))
-                        .frame(width: r * 0.29, height: r * 0.29)
+                        .frame(width: r * 0.79, height: r * 0.79)
                 } else {
                     ZStack {
                         Circle().fill(Color(hiqmahHex: 0x141416))
