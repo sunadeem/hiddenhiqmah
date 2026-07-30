@@ -105,7 +105,18 @@ struct StreakProvider: TimelineProvider {
 
 struct StreakWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
     let entry: StreakEntry
+
+    private var theme: HiqmahTheme { HiqmahTheme.of(colorScheme) }
+
+    /// The next round number worth reaching. The ring measures progress toward it,
+    /// which is a real quantity — unlike a week-progress ring, which the payload
+    /// carries no data for.
+    private func milestone(for streak: Int) -> Int {
+        let marks = [7, 30, 60, 100, 180, 365]
+        return marks.first(where: { $0 > streak }) ?? ((streak / 365) + 1) * 365
+    }
 
     var body: some View {
         content.widgetURL(hiqmahStreakURL)
@@ -117,7 +128,60 @@ struct StreakWidgetEntryView: View {
         case .accessoryCircular:
             circularView.hiqmahAccessoryBackground()
         default:
-            smallView.hiqmahWidgetBackground()
+            smallView.hiqmahCard(theme)
+        }
+    }
+
+    // MARK: Home screen — small
+
+    @ViewBuilder
+    private var smallView: some View {
+        VStack(spacing: 0) {
+            HiqmahHeader(title: "Streak", theme: theme) { size, colour in
+                FlameGlyph(size: size, color: colour)
+            }
+
+            Spacer(minLength: 2)
+
+            if let streak = entry.streak {
+                let goal = milestone(for: streak)
+                ZStack {
+                    GaugeRing(fraction: Double(streak) / Double(goal), theme: theme)
+                    Text("\(streak)")
+                        .font(.system(size: 34, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundColor(theme.goldDisplay)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                }
+                .aspectRatio(1, contentMode: .fit)
+
+                Spacer(minLength: 2)
+
+                Text("day streak")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundColor(theme.title)
+                    .lineLimit(1)
+
+                Text("\(goal - streak) to \(goal) days")
+                    .font(.system(size: 9.5))
+                    .monospacedDigit()
+                    .foregroundColor(theme.muted)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            } else {
+                Spacer(minLength: 0)
+                Text("Open Hiqmah")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(theme.goldText)
+                Text("Visit each day and your streak appears here.")
+                    .font(.system(size: 11))
+                    .foregroundColor(theme.muted)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.8)
+                Spacer(minLength: 0)
+            }
         }
     }
 
@@ -126,75 +190,24 @@ struct StreakWidgetEntryView: View {
     @ViewBuilder
     private var circularView: some View {
         if let streak = entry.streak {
-            VStack(spacing: 0) {
-                Image(systemName: "flame.fill")
-                    .font(.system(size: 13, weight: .medium))
-                Text("\(streak)")
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-            }
-            .padding(2)
-        } else {
-            VStack(spacing: 0) {
-                Image(systemName: "flame")
-                    .font(.system(size: 13, weight: .medium))
-                Text("—")
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
-            }
-            .padding(2)
-        }
-    }
-
-    // MARK: Home screen — small
-
-    @ViewBuilder
-    private var smallView: some View {
-        if let streak = entry.streak {
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 4) {
-                    Image(systemName: "flame.fill")
-                        .font(.system(size: 10, weight: .semibold))
-                    Text("STREAK")
-                        .font(.system(size: 10, weight: .semibold))
-                        .tracking(0.6)
+            ZStack {
+                GaugeRing(fraction: Double(streak) / Double(milestone(for: streak)),
+                          theme: theme, mono: true)
+                VStack(spacing: 0) {
+                    FlameGlyph(size: 11, color: .white)
+                    Text("\(streak)")
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                 }
-                .foregroundColor(.hiqmahGold.opacity(0.85))
-
-                Spacer(minLength: 0)
-
-                Text("\(streak)")
-                    .font(.system(size: 44, weight: .semibold, design: .rounded))
-                    .foregroundColor(.hiqmahGold)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-
-                // Invariant "day": reads as the compound "12 day streak", which is
-                // correct for every count including 1.
-                Text("day streak")
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.hiqmahText)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-
-                Spacer(minLength: 0)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .padding(1)
         } else {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Streak")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundColor(.hiqmahText)
-                Text("Open Hiqmah")
-                    .font(.system(size: 13))
-                    .foregroundColor(.hiqmahGold)
-                Text("Visit each day and your streak appears here.")
-                    .font(.system(size: 11))
-                    .foregroundColor(.hiqmahMuted)
-                    .lineLimit(3)
-                    .minimumScaleFactor(0.8)
+            VStack(spacing: 0) {
+                FlameGlyph(size: 13, color: .white)
+                Text("—").font(.system(size: 13, weight: .bold, design: .rounded))
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
     }
 }

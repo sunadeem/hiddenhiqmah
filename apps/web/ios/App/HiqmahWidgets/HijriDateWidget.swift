@@ -136,72 +136,89 @@ struct HijriProvider: TimelineProvider {
 
 struct HijriDateWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
     let entry: HijriEntry
 
+    private var theme: HiqmahTheme { HiqmahTheme.of(colorScheme) }
+
+    /// Hijri months run 29 or 30 days and the payload carries no length, so the
+    /// ring is drawn against 30. It is a sense of where the month stands, not a
+    /// precise gauge, and it never overstates: a 29-day month simply ends a
+    /// thirtieth short of full.
+    private var monthFraction: Double {
+        min(1, max(0.02, Double(entry.day) / 30.0))
+    }
+
     var body: some View {
-        content.widgetURL(hiqmahIslamicCalendarURL)
+        content.widgetURL(URL(string: "hiddenhiqmah://islamic-calendar"))
     }
 
     @ViewBuilder
     private var content: some View {
         switch family {
         case .accessoryInline:
-            Text(entry.fullDate)
-                .hiqmahClearWidgetBackground()
+            Text(entry.fullDate).hiqmahClearWidgetBackground()
         case .accessoryCircular:
-            circularView
-                .hiqmahAccessoryBackground()
+            circularView.hiqmahAccessoryBackground()
         default:
-            smallView
-                .hiqmahWidgetBackground()
+            smallView.hiqmahCard(theme)
         }
     }
 
-    private var circularView: some View {
-        VStack(spacing: 0) {
-            Text("\(entry.day)")
-                .font(.system(size: 22, weight: .semibold, design: .rounded))
-                .lineLimit(1)
-            Text(HijriCalendar.shortMonthName(entry.month))
-                .font(.system(size: 10, weight: .medium))
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
-        }
-        .padding(2)
-    }
+    // MARK: Home screen — small
 
+    @ViewBuilder
     private var smallView: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text("HIJRI")
-                .font(.system(size: 10, weight: .semibold))
-                .tracking(0.6)
-                .foregroundColor(.hiqmahMuted)
+        VStack(spacing: 0) {
+            HiqmahHeader(title: "Hijri", theme: theme) { size, colour in
+                CrescentGlyph(size: size, color: colour)
+            }
 
-            Text("\(entry.day)")
-                .font(.system(size: 34, weight: .semibold, design: .rounded))
-                .foregroundColor(.hiqmahGold)
+            Spacer(minLength: 2)
+
+            ZStack {
+                GaugeRing(fraction: monthFraction, theme: theme)
+                Text("\(entry.day)")
+                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundColor(theme.goldDisplay)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+            }
+            .aspectRatio(1, contentMode: .fit)
+
+            Spacer(minLength: 2)
+
+            Text("\(HijriCalendar.monthName(entry.month)) \(entry.year)")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundColor(theme.title)
                 .lineLimit(1)
+                .minimumScaleFactor(0.6)
 
-            Text(HijriCalendar.monthName(entry.month))
-                .font(.system(size: 15, weight: .medium))
-                .foregroundColor(.hiqmahText)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-
-            Text("\(entry.year) AH")
-                .font(.system(size: 12))
-                .foregroundColor(.hiqmahMuted)
-                .lineLimit(1)
-
-            Spacer(minLength: 0)
-
-            Text(entry.date.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))
-                .font(.system(size: 11))
-                .foregroundColor(.hiqmahMuted)
+            Text(entry.date.formatted(.dateTime.day().month(.wide).year()))
+                .font(.system(size: 9.5))
+                .foregroundColor(theme.muted)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
+
+    // MARK: Accessory — circular
+
+    @ViewBuilder
+    private var circularView: some View {
+        ZStack {
+            GaugeRing(fraction: monthFraction, theme: theme, mono: true)
+            VStack(spacing: 0) {
+                CrescentGlyph(size: 11, color: .white)
+                Text("\(entry.day)")
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+            }
+        }
+        .padding(1)
     }
 }
 
@@ -215,7 +232,7 @@ struct HijriDateWidget: Widget {
             HijriDateWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Hijri Date")
-        .description("Today's Islamic (Umm al-Qura) date.")
+        .description("Today's date in the Islamic calendar.")
         .supportedFamilies([
             .systemSmall,
             .accessoryInline,

@@ -185,7 +185,10 @@ struct NextPrayerProvider: TimelineProvider {
 
 struct NextPrayerWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
     let entry: NextPrayerEntry
+
+    private var theme: HiqmahTheme { HiqmahTheme.of(colorScheme) }
 
     var body: some View {
         content.widgetURL(hiqmahPrayerTimesURL)
@@ -201,10 +204,33 @@ struct NextPrayerWidgetEntryView: View {
         case .accessoryRectangular:
             rectangularView.hiqmahClearWidgetBackground()
         case .systemMedium:
-            mediumView.hiqmahWidgetBackground()
+            mediumView.hiqmahCard(theme)
         default:
-            smallView.hiqmahWidgetBackground()
+            smallView.hiqmahCard(theme)
         }
+    }
+
+    /// The interval the countdown is crossing, for the progress rail. Clamped so
+    /// the range can never be empty or inverted — ProgressView traps on both.
+    private func interval(to instant: PrayerInstant) -> ClosedRange<Date> {
+        let prior = entry.schedule
+            .filter { $0.date < instant.date }
+            .max(by: { $0.date < $1.date })?.date ?? entry.date
+        let end = max(instant.date, prior.addingTimeInterval(60))
+        return min(prior, end.addingTimeInterval(-60))...end
+    }
+
+    @ViewBuilder
+    private func rail(to instant: PrayerInstant, tint: Color) -> some View {
+        ProgressView(
+            timerInterval: interval(to: instant),
+            countsDown: true,
+            label: { EmptyView() },
+            currentValueLabel: { EmptyView() }
+        )
+        .progressViewStyle(.linear)
+        .tint(tint)
+        .frame(height: 4)
     }
 
     // MARK: Accessory — inline
@@ -214,7 +240,7 @@ struct NextPrayerWidgetEntryView: View {
         if let instant = entry.instant {
             Text("\(instant.prayer.displayName) \(HiqmahFormat.clock(instant.date))")
         } else {
-            Text("Open Hiqmah")
+            Text("Hiqmah — Open app")
         }
     }
 
@@ -223,120 +249,125 @@ struct NextPrayerWidgetEntryView: View {
     @ViewBuilder
     private var circularView: some View {
         if let instant = entry.instant {
-            VStack(spacing: 0) {
-                Image(systemName: instant.prayer.symbolName)
-                    .font(.system(size: 13, weight: .medium))
-                Text(HiqmahFormat.compactClock(instant.date))
-                    .font(.system(size: 12, weight: .semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-            }
-            .padding(2)
+            ProgressView(
+                timerInterval: interval(to: instant),
+                countsDown: true,
+                label: { EmptyView() },
+                currentValueLabel: {
+                    VStack(spacing: -1) {
+                        Image(systemName: instant.prayer.symbolName)
+                            .font(.system(size: 10, weight: .semibold))
+                        Text(HiqmahFormat.clock(instant.date))
+                            .font(.system(size: 11, weight: .bold, design: .rounded))
+                            .monospacedDigit()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                    }
+                }
+            )
+            .progressViewStyle(.circular)
         } else {
-            VStack(spacing: 0) {
+            VStack(spacing: 1) {
                 Image(systemName: "moon.stars")
                     .font(.system(size: 13, weight: .medium))
-                Text("—")
-                    .font(.system(size: 12, weight: .semibold))
+                Text("—").font(.system(size: 11, weight: .semibold))
             }
-            .padding(2)
         }
     }
 
     // MARK: Accessory — rectangular
 
-    /// EXACTLY THREE LINES. accessoryRectangular is a fixed-height slot that clips
-    /// anything past ~3 lines of these font sizes, and it clips silently — so every
-    /// Text here is lineLimit(1) and the name/time pair shares one line rather than
-    /// risking a wrap that would push the countdown out of view. Adding a fourth
-    /// line means taking one away.
     @ViewBuilder
     private var rectangularView: some View {
         if let instant = entry.instant {
-            VStack(alignment: .leading, spacing: 1) {
-                // 1 — what's next, and when.
-                HStack(spacing: 4) {
+            HStack(spacing: 9) {
+                HiqmahBadge(radius: 13, theme: theme, mono: true) { size, colour in
                     Image(systemName: instant.prayer.symbolName)
-                        .font(.caption2)
-                    Text("\(instant.prayer.displayName) · \(HiqmahFormat.clock(instant.date))")
-                        .font(.headline)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                        .font(.system(size: size * 0.58, weight: .semibold))
+                        .foregroundColor(colour)
                 }
-                // 2 — the live countdown, ticked by the system inside this entry.
-                Text(
-                    timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
-                    countsDown: true
-                )
-                .font(.caption.monospacedDigit())
-                .lineLimit(1)
-                // 3 — the one after. Omitted (not blanked) when the cached window
-                // ends here, so the widget shrinks to two lines instead of lying.
-                if let following = entry.following {
-                    Text("then \(following.prayer.displayName) \(HiqmahFormat.clock(following.date))")
-                        .font(.caption2)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                VStack(alignment: .leading, spacing: 1) {
+                    HStack(spacing: 6) {
+                        Text(instant.prayer.displayName)
+                            .font(.system(size: 13, weight: .bold))
+                            .lineLimit(1)
+                        Spacer(minLength: 0)
+                        Text(HiqmahFormat.clock(instant.date))
+                            .font(.system(size: 13, weight: .medium))
+                            .monospacedDigit()
+                            .foregroundColor(.white.opacity(0.85))
+                            .lineLimit(1)
+                    }
+                    Text(
+                        timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
+                        countsDown: true
+                    )
+                    .font(.system(size: 19, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    if let following = entry.following {
+                        Text("then \(following.prayer.displayName) · \(HiqmahFormat.clock(following.date))")
+                            .font(.system(size: 9.5))
+                            .foregroundColor(.white.opacity(0.65))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         } else {
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Prayer times")
-                    .font(.headline)
-                Text("Open Hiqmah")
-                    .font(.caption)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            Text("Hiqmah — Open app")
         }
     }
 
     // MARK: Home screen — small
 
+    /// The stacked face: name, time, then countdown, centred — with the prayer's
+    /// own icon riding in the badge, where it changes through the day rather than
+    /// sitting inert beside the name.
     @ViewBuilder
     private var smallView: some View {
         if let instant = entry.instant {
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 4) {
+            VStack(spacing: 0) {
+                HiqmahHeader(title: "Next Prayer", theme: theme) { size, colour in
                     Image(systemName: instant.prayer.symbolName)
-                        .font(.system(size: 10, weight: .semibold))
-                    Text("NEXT PRAYER")
-                        .font(.system(size: 10, weight: .semibold))
-                        .tracking(0.6)
+                        .font(.system(size: size * 0.55, weight: .semibold))
+                        .foregroundColor(colour)
                 }
-                .foregroundColor(.hiqmahMuted)
+
+                Spacer(minLength: 0)
 
                 Text(instant.prayer.displayName)
-                    .font(.system(size: 26, weight: .semibold, design: .rounded))
-                    .foregroundColor(.hiqmahGold)
+                    .font(.system(size: 25, weight: .bold, design: .rounded))
+                    .foregroundColor(theme.goldDisplay)
+                    .frame(maxWidth: .infinity)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.5)
 
                 Text(HiqmahFormat.clock(instant.date))
                     .font(.system(size: 17, weight: .medium))
-                    .foregroundColor(.hiqmahText)
+                    .monospacedDigit()
+                    .foregroundColor(theme.title)
+                    .frame(maxWidth: .infinity)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .minimumScaleFactor(0.7)
 
                 Text(
                     timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
                     countsDown: true
                 )
-                .font(.system(size: 14, weight: .medium).monospacedDigit())
-                .foregroundColor(.hiqmahGold.opacity(0.85))
+                .font(.system(size: 15, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                .foregroundColor(theme.goldText)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(0.5)
 
                 Spacer(minLength: 0)
 
-                if let city = entry.city {
-                    Text(city)
-                        .font(.system(size: 11))
-                        .foregroundColor(.hiqmahMuted)
-                        .lineLimit(1)
-                }
+                rail(to: instant, tint: theme.goldDisplay)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         } else {
             emptyHomeView
         }
@@ -347,110 +378,93 @@ struct NextPrayerWidgetEntryView: View {
     @ViewBuilder
     private var mediumView: some View {
         if let instant = entry.instant {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("NEXT PRAYER")
-                            .font(.system(size: 10, weight: .semibold))
-                            .tracking(0.6)
-                            .foregroundColor(.hiqmahMuted)
-
-                        HStack(spacing: 6) {
-                            Image(systemName: instant.prayer.symbolName)
-                                .font(.system(size: 15, weight: .medium))
-                                .foregroundColor(.hiqmahGold)
-                            Text(instant.prayer.displayName)
-                                .font(.system(size: 24, weight: .semibold, design: .rounded))
-                                .foregroundColor(.hiqmahGold)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.7)
-                        }
-
-                        Text(HiqmahFormat.clock(instant.date))
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.hiqmahText)
-                            .lineLimit(1)
+            HStack(spacing: 14) {
+                VStack(alignment: .leading, spacing: 2) {
+                    HiqmahHeader(title: "Next Prayer", theme: theme, radius: 11, fontSize: 12) { size, colour in
+                        Image(systemName: instant.prayer.symbolName)
+                            .font(.system(size: size * 0.55, weight: .semibold))
+                            .foregroundColor(colour)
                     }
 
-                    Spacer(minLength: 8)
+                    Spacer(minLength: 2)
 
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text(
-                            timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
-                            countsDown: true
-                        )
-                        .font(.system(size: 20, weight: .semibold).monospacedDigit())
-                        .foregroundColor(.hiqmahText)
+                    Text(instant.prayer.displayName)
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .foregroundColor(theme.goldDisplay)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.6)
+                        .minimumScaleFactor(0.5)
 
-                        Text("remaining")
-                            .font(.system(size: 10))
-                            .foregroundColor(.hiqmahMuted)
+                    Text(HiqmahFormat.clock(instant.date))
+                        .font(.system(size: 16, weight: .medium))
+                        .monospacedDigit()
+                        .foregroundColor(theme.title)
+                        .lineLimit(1)
 
-                        if let city = entry.city {
-                            Text(city)
-                                .font(.system(size: 11))
-                                .foregroundColor(.hiqmahMuted)
+                    Text(
+                        timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
+                        countsDown: true
+                    )
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundColor(theme.goldText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+
+                    Spacer(minLength: 2)
+
+                    rail(to: instant, tint: theme.goldDisplay)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Rectangle()
+                    .fill(theme.hair)
+                    .frame(width: 1)
+
+                VStack(spacing: 3) {
+                    ForEach(entry.schedule, id: \.date) { item in
+                        let isNext = item.date == instant.date
+                        HStack(spacing: 6) {
+                            Text(item.prayer.displayName)
+                                .font(.system(size: isNext ? 13 : 12, weight: isNext ? .bold : .medium))
+                                .lineLimit(1)
+                            Spacer(minLength: 4)
+                            Text(HiqmahFormat.clock(item.date))
+                                .font(.system(size: isNext ? 13 : 12, weight: isNext ? .bold : .medium))
+                                .monospacedDigit()
                                 .lineLimit(1)
                         }
+                        .foregroundColor(isNext ? theme.goldText : theme.muted)
                     }
                 }
-
-                if !entry.schedule.isEmpty {
-                    Rectangle()
-                        .fill(Color.hiqmahMuted.opacity(0.25))
-                        .frame(height: 1)
-
-                    HStack(spacing: 0) {
-                        ForEach(entry.schedule) { item in
-                            VStack(spacing: 2) {
-                                Text(item.prayer.displayName)
-                                    .font(.system(size: 10, weight: .medium))
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.7)
-                                Text(HiqmahFormat.compactClock(item.date))
-                                    .font(.system(size: 13, weight: .semibold))
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.7)
-                            }
-                            .foregroundColor(color(for: item, next: instant))
-                            .opacity(item.date <= entry.date ? 0.45 : 1)
-                            .frame(maxWidth: .infinity)
-                        }
-                    }
-                }
-
-                Spacer(minLength: 0)
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         } else {
             emptyHomeView
         }
     }
 
-    // MARK: Shared
+    // MARK: Empty
 
+    @ViewBuilder
     private var emptyHomeView: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("Prayer times")
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(.hiqmahText)
+        VStack(spacing: 0) {
+            HiqmahHeader(title: "Next Prayer", theme: theme) { size, colour in
+                Image(systemName: "moon.stars.fill")
+                    .font(.system(size: size * 0.55, weight: .semibold))
+                    .foregroundColor(colour)
+            }
+            Spacer(minLength: 0)
             Text("Open Hiqmah")
-                .font(.system(size: 13))
-                .foregroundColor(.hiqmahGold)
-            Text("Set your location once and times appear here.")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(theme.goldText)
+            Text("Set your location once and prayer times appear here.")
                 .font(.system(size: 11))
-                .foregroundColor(.hiqmahMuted)
+                .foregroundColor(theme.muted)
+                .multilineTextAlignment(.center)
                 .lineLimit(3)
                 .minimumScaleFactor(0.8)
+            Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-    }
-
-    /// Gold for the prayer being counted down to, plain text for the rest.
-    private func color(for item: PrayerInstant, next: PrayerInstant) -> Color {
-        item.prayer == next.prayer && item.date == next.date ? .hiqmahGold : .hiqmahText
     }
 }
 
