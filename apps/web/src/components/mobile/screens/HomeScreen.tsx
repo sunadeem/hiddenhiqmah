@@ -82,15 +82,12 @@ export default function HomeScreen() {
 
 function StreakCard({ streaks }: { streaks: Streaks }) {
   const streak = streaks.overallCurrent;
-  const sub =
-    streaks.prayerCurrent > 0
-      ? `${streaks.prayerCurrent}-day prayer streak`
-      : streaks.overallBest > streak
-      ? `Best ${streaks.overallBest} days`
-      : "Keep it going";
   return (
     <Link
-      href="/streaks"
+      // The checklist is where this streak is actually earned, and it has no other
+      // home-screen entry point — so the streak card doubles as its front door.
+      // Streak *detail* (/streaks) is still one tap away from inside DailyScreen.
+      href="/muslim-daily?tab=checklist"
       className="card-bg rounded-2xl border sidebar-border p-4 flex flex-col justify-center touch-manipulation active:scale-[0.98] transition-transform"
     >
       <div className="flex items-center gap-2 text-themed-muted text-xs uppercase tracking-wider mb-1">
@@ -100,7 +97,7 @@ function StreakCard({ streaks }: { streaks: Streaks }) {
       <p className="text-2xl font-bold text-themed leading-none">
         {streak} <span className="text-base font-normal text-themed-muted">days</span>
       </p>
-      <p className="text-xs text-themed-muted mt-1">{sub}</p>
+      <p className="text-xs text-themed-muted mt-1">Today&apos;s checklist →</p>
     </Link>
   );
 }
