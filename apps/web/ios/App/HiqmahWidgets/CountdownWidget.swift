@@ -230,30 +230,36 @@ struct NextPrayerCompactWidgetEntryView: View {
                 // Net at the sizes actually rendered: name 8.5→~11, clock 8.5→~11,
                 // countdown 7.8→~9.7. Rows are pulled together (spacing −3) so all
                 // three sit nearer the equator; ink gaps stay ~3pt.
+                // Frame widths are the CHORD each row sits on, measured against the
+                // real content circle (~50pt across, radius ~25 — NOT the 45pt I
+                // assumed twice, which clamped every row below what the circle
+                // actually allows). Equator ≈46, the outer rows ≈34 at their ink
+                // extremes. Since minimumScaleFactor scales against the frame, an
+                // under-sized frame silently shrinks text that would have fitted.
                 VStack(spacing: -3) {
                     Text(instant.prayer.displayName)
                         .font(.system(size: 12, weight: .bold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.55)
-                        .frame(maxWidth: 29)
+                        .frame(maxWidth: 34)
 
                     Text(
                         timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
                         countsDown: true
                     )
-                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                     .multilineTextAlignment(.center)
-                    .frame(maxWidth: 42)
+                    .frame(maxWidth: 46)
 
                     Text(HiqmahFormat.compactClock(instant.date))
                         .font(.system(size: 12, weight: .medium))
                         .monospacedDigit()
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
-                        .frame(maxWidth: 29)
+                        .frame(maxWidth: 34)
                 }
             } else {
                 VStack(spacing: 1) {
