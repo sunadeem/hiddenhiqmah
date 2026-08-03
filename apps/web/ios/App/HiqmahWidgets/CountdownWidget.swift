@@ -217,37 +217,43 @@ struct NextPrayerCompactWidgetEntryView: View {
     private var content: some View {
         Group {
             if let instant = entry.instant {
-                VStack(spacing: 0) {
-                    HStack(spacing: 2) {
-                        Image(systemName: instant.prayer.symbolName)
-                            .font(.system(size: 7.5, weight: .semibold))
-                        Text(instant.prayer.displayName)
-                            .font(.system(size: 8.5, weight: .bold))
-                    }
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                    // 36: at 32 "Maghrib" needed a 0.619 scale against a 0.6
-                    // floor — a 3% margin from truncating to an ellipsis. The
-                    // chord at this row's height allows ~37.
-                    .frame(maxWidth: 36)
-
-                    Text(HiqmahFormat.clock(instant.date))
-                        .font(.system(size: 9.5, weight: .medium))
-                        .monospacedDigit()
+                // Everything here is sized by ONE constraint: a circle is widest
+                // at its equator, and each row may only be as wide as the chord it
+                // sits on. Three moves buy the legibility:
+                //   · the countdown — the longest string at 7 glyphs — takes the
+                //     equator (chord ≈44) instead of the bottom row (chord ≈29),
+                //     which is what forced it down to ~7.8pt before;
+                //   · compactClock drops the AM/PM, so the clock is 4–5 glyphs
+                //     rather than 8 and mostly renders unscaled;
+                //   · the prayer icon is gone. It ate a third of the top row's
+                //     width and pinned the name near its truncation floor.
+                // Net at the sizes actually rendered: name 8.5→~11, clock 8.5→~11,
+                // countdown 7.8→~9.7. Rows are pulled together (spacing −3) so all
+                // three sit nearer the equator; ink gaps stay ~3pt.
+                VStack(spacing: -3) {
+                    Text(instant.prayer.displayName)
+                        .font(.system(size: 12, weight: .bold))
                         .lineLimit(1)
-                        .minimumScaleFactor(0.6)
-                        .frame(maxWidth: 40)
+                        .minimumScaleFactor(0.55)
+                        .frame(maxWidth: 29)
 
                     Text(
                         timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
                         countsDown: true
                     )
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .lineLimit(1)
-                    .minimumScaleFactor(0.4)
+                    .minimumScaleFactor(0.5)
                     .multilineTextAlignment(.center)
-                    .frame(maxWidth: 34)
+                    .frame(maxWidth: 42)
+
+                    Text(HiqmahFormat.compactClock(instant.date))
+                        .font(.system(size: 12, weight: .medium))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .frame(maxWidth: 29)
                 }
             } else {
                 VStack(spacing: 1) {
