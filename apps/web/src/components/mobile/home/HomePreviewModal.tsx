@@ -66,7 +66,7 @@ export default function HomePreviewModal({
           {/* Header */}
           <div
             className="flex items-center gap-2 px-4 pb-3 border-b sidebar-border shrink-0"
-            style={{ paddingTop: "max(env(safe-area-inset-top), 60px)" }}
+            style={{ paddingTop: "var(--hiqmah-safe-top)" }}
           >
             <button
               onClick={onClose}

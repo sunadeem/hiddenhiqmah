@@ -269,7 +269,7 @@ function ChecklistTab() {
           animate={{ opacity: 1 }}
           className="fixed inset-0 z-[70] bg-themed overflow-y-auto"
           style={{
-            paddingTop: "max(env(safe-area-inset-top), 60px)",
+            paddingTop: "var(--hiqmah-safe-top)",
             paddingBottom: "calc(env(safe-area-inset-bottom) + 24px)",
             overscrollBehavior: "contain",
           }}

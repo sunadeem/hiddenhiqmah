@@ -38,7 +38,7 @@ export default function MobileTopBar() {
     return (
       <header
         className="shrink-0 bg-themed"
-        style={{ paddingTop: "max(env(safe-area-inset-top), 60px)" }}
+        style={{ paddingTop: "var(--hiqmah-safe-top)" }}
       />
     );
   }
@@ -56,9 +56,9 @@ export default function MobileTopBar() {
   return (
     <header
       className="shrink-0 bg-themed"
-      style={{ paddingTop: "max(env(safe-area-inset-top), 60px)" }}
+      style={{ paddingTop: "var(--hiqmah-safe-top)" }}
     >
-      <div className="h-12 flex items-center px-2">
+      <div className="h-12 flex items-center px-2 ipad-column">
         <button
           type="button"
           onClick={handleBack}
