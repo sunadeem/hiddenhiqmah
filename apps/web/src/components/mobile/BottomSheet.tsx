@@ -68,7 +68,7 @@ function Sheet({
       onDragEnd={(_, info) => {
         if (info.offset.y > 140 || info.velocity.y > 500) onClose();
       }}
-      className="fixed inset-0 z-[60] flex flex-col"
+      className="fixed inset-0 z-[60] flex flex-col ipad-overlay"
       style={{ backgroundColor: "var(--color-bg)" }}
     >
       <div
