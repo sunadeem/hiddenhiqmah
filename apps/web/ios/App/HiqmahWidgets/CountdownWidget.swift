@@ -207,6 +207,7 @@ struct CountdownWidget: Widget {
 /// Row widths follow the circle: the middle line gets the equator, the top and
 /// bottom rows get the narrower chords they sit on.
 struct NextPrayerCompactWidgetEntryView: View {
+    @Environment(\.widgetFamily) private var family
     let entry: NextPrayerEntry
 
     var body: some View {
@@ -215,6 +216,88 @@ struct NextPrayerCompactWidgetEntryView: View {
 
     @ViewBuilder
     private var content: some View {
+        switch family {
+        case .accessoryRectangular:
+            rectangularView.hiqmahClearWidgetBackground()
+        default:
+            circularView.hiqmahAccessoryBackground()
+        }
+    }
+
+    /// Interval being counted through, for the rail. `priorDate` first — the
+    /// single-day schedule loses the prior prayer across local midnight. Clamped
+    /// so the range can never be empty or inverted; ProgressView traps on both.
+    private func interval(to instant: PrayerInstant) -> ClosedRange<Date> {
+        let prior = entry.priorDate
+            ?? entry.schedule
+                .filter { $0.date < instant.date }
+                .max(by: { $0.date < $1.date })?.date
+            ?? entry.date
+        let end = max(instant.date, prior.addingTimeInterval(60))
+        return min(prior, end.addingTimeInterval(-60))...end
+    }
+
+    // MARK: Accessory — rectangular
+
+    /// 172 × 76pt, so nothing has to scale: the countdown runs at 27pt with its
+    /// seconds intact where the circle capped it near 10.6. Name and time are
+    /// pushed to opposite ends of the top line and the rail spans the full width
+    /// — build 11's rectangle stacked everything at the left and left the right
+    /// half dead, which is the whole reason this shape was rejected before.
+    @ViewBuilder
+    private var rectangularView: some View {
+        if let instant = entry.instant {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 4) {
+                    Image(systemName: instant.prayer.symbolName)
+                        .font(.system(size: 11, weight: .semibold))
+                    Text(instant.prayer.displayName)
+                        .font(.system(size: 15, weight: .semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    Spacer(minLength: 6)
+                    Text(HiqmahFormat.clock(instant.date))
+                        .font(.system(size: 14, weight: .medium))
+                        .monospacedDigit()
+                        .opacity(0.82)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                }
+
+                Spacer(minLength: 2)
+
+                Text(
+                    timerInterval: HiqmahFormat.countdownRange(from: entry.date, to: instant.date),
+                    countsDown: true
+                )
+                .font(.system(size: 27, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                // Pin to leading: the timer lays out at its widest possible string
+                // and centres the current one inside that box, so the digits would
+                // drift right of the row above as the glyph count drops.
+                .multilineTextAlignment(.leading)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+
+                ProgressView(
+                    timerInterval: interval(to: instant),
+                    countsDown: true,
+                    label: { EmptyView() },
+                    currentValueLabel: { EmptyView() }
+                )
+                .progressViewStyle(.linear)
+                .frame(height: 3)
+                .padding(.top, 4)
+            }
+        } else {
+            Text("Hiqmah — Open app")
+        }
+    }
+
+    // MARK: Accessory — circular
+
+    @ViewBuilder
+    private var circularView: some View {
         Group {
             if let instant = entry.instant {
                 // Everything here is sized by ONE constraint: a circle is widest
@@ -269,7 +352,6 @@ struct NextPrayerCompactWidgetEntryView: View {
                 }
             }
         }
-        .hiqmahAccessoryBackground()
     }
 }
 
@@ -281,7 +363,7 @@ struct NextPrayerCompactWidget: Widget {
             NextPrayerCompactWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Next Prayer Compact")
-        .description("Prayer, time and countdown — the whole glance in one circle.")
-        .supportedFamilies([.accessoryCircular])
+        .description("Prayer, time and countdown in one place — pick the wide slot for a large countdown, or the round one.")
+        .supportedFamilies([.accessoryRectangular, .accessoryCircular])
     }
 }
