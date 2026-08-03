@@ -113,6 +113,55 @@ body {
   padding-top: max(0.5rem, env(safe-area-inset-top));
 }
 
+/* Top inset for full-bleed native screens. The 60px floor exists because
+   env(safe-area-inset-top) is unreliable in this WebView (it reports 0 before
+   layout settles) and content must never sit under the status bar / Dynamic
+   Island. Kept as a variable so the iPad can lower it — see the tablet block
+   below. Resolves identically to the old literal everywhere else, including
+   the website, where env() is 0 and the floor applies as before. */
+:root {
+  --hiqmah-safe-top: max(env(safe-area-inset-top), 60px);
+}
+
+/* ---------------------------------------------------------------------------
+   iPad. The native shell is a phone layout by construction, so on a tablet
+   canvas it is CONSTRAINED, never stretched: a phone UI at 1024pt wide gives
+   unreadable line lengths and a tab bar the width of the screen.
+
+   Scoped to `.native` AND a tablet width, which can only ever match the iPad
+   app: at these widths the website renders AppShell (the desktop layout), not
+   MobileShell, and `.native` is set by native setup only. Nothing here can
+   reach hiddenhiqmah.com.
+
+   ⚠️ This is why iPad support is cheap, and it rests on one thing:
+   AppShellGate chooses the shell on Capacitor.isNativePlatform(), NOT on
+   viewport width. Switching that to a width check would look like a tidy
+   refactor and would silently drop the iPad app onto the website shell, whose
+   sidebar hides Circles, Hifz, Streaks and Household (they are `mobileOnly`).
+   Do not make that change.
+   --------------------------------------------------------------------------- */
+@media (min-width: 700px) {
+  .native {
+    /* No notch on iPad, so the Dynamic Island floor is just dead space. */
+    --hiqmah-safe-top: max(env(safe-area-inset-top), 20px);
+  }
+
+  /* Reading column: wide enough for a tablet, short enough to keep a
+     comfortable measure instead of running the full 768–1024pt. */
+  .native .ipad-column {
+    width: 100%;
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+
+  /* The floating chrome keeps roughly phone proportions and centres, so the
+     tab bar reads as a deliberate control rather than a stretched shelf. */
+  .native .mobile-bottom-chrome > div {
+    max-width: 26rem;
+    margin-inline: auto;
+  }
+}
+
 /*
  * Mobile tab strip: horizontal-scroll pills, no wrap, hidden scrollbar.
  * Used by mobile page-internal tabs (Salah subtabs, Prophet Muhammad tabs, etc.)

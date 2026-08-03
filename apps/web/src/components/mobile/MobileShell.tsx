@@ -166,7 +166,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
       >
         {isFullChat ? (
           // Ask owns the full viewport (header + scrollable messages + pinned input).
-          <div className="h-full">{children}</div>
+          <div className="h-full ipad-column">{children}</div>
         ) : (
           /* Smooth fade-in on every route change (keyed on pathname).
              Opacity-only on purpose: any transform here becomes an ancestor
@@ -178,7 +178,7 @@ export default function MobileShell({ children }: { children: React.ReactNode })
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="px-3 pt-4"
+            className="px-3 pt-4 ipad-column"
             style={{
               paddingBottom: hideBottomChrome
                 ? 16
