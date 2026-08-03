@@ -140,7 +140,14 @@ body {
    sidebar hides Circles, Hifz, Streaks and Household (they are `mobileOnly`).
    Do not make that change.
    --------------------------------------------------------------------------- */
-@media (min-width: 700px) {
+/* ⚠️ The height term is NOT optional. Every modern iPhone in LANDSCAPE is
+   700–956pt wide (X/11 Pro 812, 14/15/16 844–874, Plus/Max 896–956), so a
+   width-only query captures the phone the moment it is turned sideways — which
+   is exactly what shipped first and had to be fixed. Every iPad is ≥744pt in
+   BOTH dimensions in either orientation (mini 6 744×1133, 9.7" 768×1024, 12.9"
+   1024×1366) and Split View panes keep the full height, so every intended case
+   still matches; no iPhone landscape height exceeds 440pt, so none can. */
+@media (min-width: 700px) and (min-height: 700px) {
   .native {
     /* No notch on iPad, so the Dynamic Island floor is just dead space. */
     --hiqmah-safe-top: max(env(safe-area-inset-top), 20px);
@@ -154,11 +161,49 @@ body {
     margin-inline: auto;
   }
 
-  /* The floating chrome keeps roughly phone proportions and centres, so the
-     tab bar reads as a deliberate control rather than a stretched shelf. */
-  .native .mobile-bottom-chrome > div {
+  /* Full-screen overlays keep their background edge-to-edge — capping the root
+     would leave the shell showing around a "full screen" sheet — so the CHILDREN
+     are constrained instead. */
+  .native .ipad-overlay > * {
+    width: 100%;
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+
+  /* Bottom-anchored action sheets line up with the tab bar they slide out from
+     rather than spanning the canvas beneath a 26rem pill. */
+  .native .ipad-sheet {
     max-width: 26rem;
     margin-inline: auto;
+  }
+
+  /* Tab bar only (`:last-child`). The mini player is styled edge-to-edge — a top
+     hairline, no side borders, no radius — so capping it renders a severed bar
+     with hard-cut sides. */
+  .native .mobile-bottom-chrome > div:last-child {
+    max-width: 26rem;
+    margin-inline: auto;
+  }
+
+  /* Tailwind's md:/lg:/xl: variants key off the VIEWPORT, but inside the native
+     shell the content container is capped at 40rem — narrower than the `md`
+     breakpoint itself. So on a 1024pt iPad these fire for a container that does
+     not exist: lg:grid-cols-4 becomes four ~150pt cards, and the qiblah page
+     splits into two columns around a fixed 384pt compass with ~250pt left for
+     the readout. There is no desktop layout to serve inside the app, so collapse
+     them to the phone counts. */
+  .native [class~="md:grid-cols-3"],
+  .native [class~="md:grid-cols-4"],
+  .native [class~="lg:grid-cols-3"],
+  .native [class~="lg:grid-cols-4"],
+  .native [class~="xl:grid-cols-4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .native [class~="md:flex-row"] {
+    flex-direction: column;
+  }
+  .native [class~="md:w-96"] {
+    width: 100%;
   }
 }
 

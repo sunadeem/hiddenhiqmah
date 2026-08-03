@@ -102,7 +102,7 @@ export default function UnderstandingSheet({
     <AnimatePresence>
       {open && word && (
         <motion.div
-          className="fixed inset-0 z-[70] flex flex-col justify-end"
+          className="fixed inset-0 z-[70] flex flex-col justify-end ipad-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

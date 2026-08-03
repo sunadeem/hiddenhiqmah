@@ -60,7 +60,7 @@ export default function HomePreviewModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.18 }}
-          className="fixed inset-0 z-[70] flex flex-col"
+          className="fixed inset-0 z-[70] flex flex-col ipad-overlay"
           style={{ background: "var(--color-bg)" }}
         >
           {/* Header */}

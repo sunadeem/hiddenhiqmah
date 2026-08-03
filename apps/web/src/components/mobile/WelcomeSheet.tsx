@@ -121,7 +121,7 @@ export default function WelcomeSheet() {
   const slide = SLIDES[idx];
 
   return (
-    <div className="fixed inset-0 z-[80] bg-themed flex flex-col">
+    <div className="fixed inset-0 z-[80] bg-themed flex flex-col ipad-overlay">
       <div
         className="flex-1 overflow-y-auto px-6 flex flex-col"
         style={{

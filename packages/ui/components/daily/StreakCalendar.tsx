@@ -162,12 +162,12 @@ export function StreakCalendar({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-[70] flex flex-col bg-themed"
+      className="fixed inset-0 z-[70] flex flex-col bg-themed ipad-overlay"
       style={{ overscrollBehavior: "contain" }}
     >
       <div
         className="flex items-center justify-between px-4 shrink-0"
-        style={{ paddingTop: "max(env(safe-area-inset-top), 60px)", paddingBottom: 12 }}
+        style={{ paddingTop: "var(--hiqmah-safe-top)", paddingBottom: 12 }}
       >
         <h2 className="text-lg font-bold text-themed">History</h2>
         <button

@@ -267,7 +267,7 @@ function ChecklistTab() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 z-[70] bg-themed overflow-y-auto"
+          className="fixed inset-0 z-[70] bg-themed overflow-y-auto ipad-overlay"
           style={{
             paddingTop: "var(--hiqmah-safe-top)",
             paddingBottom: "calc(env(safe-area-inset-bottom) + 24px)",

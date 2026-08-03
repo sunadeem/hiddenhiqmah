@@ -266,7 +266,7 @@ function Sheet({
       animate={{ y: 0 }}
       exit={{ y: "100%" }}
       transition={{ type: "spring", damping: 32, stiffness: 320 }}
-      className="fixed inset-0 z-[70] flex flex-col"
+      className="fixed inset-0 z-[70] flex flex-col ipad-overlay"
       style={{ backgroundColor: "var(--color-bg)" }}
     >
       {/* Header */}
@@ -652,7 +652,7 @@ function DeleteConfirm({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 32, stiffness: 320 }}
-            className="fixed bottom-0 left-0 right-0 z-[81] bg-themed border-t sidebar-border rounded-t-2xl"
+            className="fixed bottom-0 left-0 right-0 ipad-sheet z-[81] bg-themed border-t sidebar-border rounded-t-2xl"
             style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
           >
             <div className="flex justify-center pt-2 pb-1">

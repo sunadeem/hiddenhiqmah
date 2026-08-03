@@ -956,7 +956,7 @@ function SettingsSheet({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 32, stiffness: 320 }}
-            className="fixed bottom-0 left-0 right-0 z-[71] bg-themed border-t sidebar-border rounded-t-2xl px-5"
+            className="fixed bottom-0 left-0 right-0 ipad-sheet z-[71] bg-themed border-t sidebar-border rounded-t-2xl px-5"
             style={{ paddingBottom: "max(env(safe-area-inset-bottom), 16px)", paddingTop: 8 }}
           >
             <div className="flex justify-center pb-3">
