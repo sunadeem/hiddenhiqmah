@@ -153,12 +153,54 @@ body {
     --hiqmah-safe-top: max(env(safe-area-inset-top), 20px);
   }
 
-  /* Reading column: wide enough for a tablet, short enough to keep a
-     comfortable measure instead of running the full 768–1024pt. */
+  /* 1.3× scale. An iPad is held further away than a phone, so phone type and
+     44pt targets read small on it. Tailwind's type, spacing and radii are all
+     rem-based, so they follow the root size for free. SVG icons are the
+     exception — lucide writes px width/height attributes — hence the zoom,
+     which scales an icon's layout box proportionally whatever its intrinsic
+     size. If `zoom` is ever unsupported the icons simply stay put; nothing
+     breaks. Any remaining hardcoded px (text-[10px] and friends) will not
+     follow, and those are the spots to touch up from device screenshots. */
+  .native {
+    font-size: 130%;
+  }
+  .native svg {
+    zoom: 1.3;
+  }
+
+  /* Content column ≈ 90% of a 1024pt canvas. 44rem at the scaled root is ~915px
+     — a phone-width strip floating in the middle of a tablet was the thing that
+     read as unfinished. */
   .native .ipad-column {
     width: 100%;
-    max-width: 40rem;
+    max-width: 44rem;
     margin-inline: auto;
+  }
+
+  /* The home flows its cards into TWO columns. Multi-column rather than a grid
+     on purpose: the four home styles (classic, daily-path, focus, ramadan)
+     render different cards in different orders, and several return fragments —
+     multicol needs no per-card marking and balances the two columns itself.
+     `break-inside: avoid` keeps a card whole; `column-span: all` promotes a hero
+     (the verse) to full width. This is what turns the empty lower half of a
+     portrait iPad into used space. */
+  .native .ipad-home {
+    columns: 2;
+    column-gap: 0.9rem;
+    orphans: 1;
+    widows: 1;
+  }
+  .native .ipad-home > * {
+    break-inside: avoid;
+    margin-bottom: 0.9rem;
+  }
+  /* space-y-* puts margin-TOP on every sibling after the first, which in a
+     column flow lands as a stray gap at the top of column two. */
+  .native .ipad-home > * + * {
+    margin-top: 0;
+  }
+  .native .ipad-home-wide {
+    column-span: all;
   }
 
   /* Full-screen overlays keep their background edge-to-edge — capping the root

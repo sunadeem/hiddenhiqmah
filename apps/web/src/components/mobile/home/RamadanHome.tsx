@@ -239,7 +239,7 @@ export default function RamadanHome({
       : "A juz a day completes the Qur'an by Eid";
 
   return (
-    <div className="space-y-3" style={RAMADAN_STYLE}>
+    <div className="space-y-3 ipad-home" style={RAMADAN_STYLE}>
       {/* ── Header ── */}
       <div className="flex items-center justify-between px-1 pt-1">
         <div className="min-w-0">
