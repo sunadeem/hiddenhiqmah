@@ -82,14 +82,19 @@ export default function MobileHome() {
   return (
     <div className="space-y-3 pb-4">
       <ActiveProfileBanner />
-      {style === "focus" ? (
-        <>
-          <TodayStrip />
-          <FocusHome tunedFor={tunedFor} />
-        </>
-      ) : (
-        <DailyPathHome tunedFor={tunedFor} />
-      )}
+      {/* ipad-home flows these cards into two columns on a tablet (no-op on
+          phones). The banner and Circles card stay outside it so they keep the
+          full width rather than becoming column items. */}
+      <div className="ipad-home">
+        {style === "focus" ? (
+          <>
+            <TodayStrip />
+            <FocusHome tunedFor={tunedFor} />
+          </>
+        ) : (
+          <DailyPathHome tunedFor={tunedFor} />
+        )}
+      </div>
       <CirclesHomeCard />
     </div>
   );

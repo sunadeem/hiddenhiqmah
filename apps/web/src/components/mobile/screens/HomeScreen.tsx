@@ -62,8 +62,10 @@ export default function HomeScreen() {
   return (
     <>
       <PullToRefresh onRefresh={handleRefresh}>
-        <div className="space-y-3 pb-4">
-          <TodaysVerseCard inspiration={inspiration} />
+        <div className="space-y-3 pb-4 ipad-home">
+          <div className="ipad-home-wide">
+            <TodaysVerseCard inspiration={inspiration} />
+          </div>
 
           <NextPrayerCard key={prayerKey} />
 
