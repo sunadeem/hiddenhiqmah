@@ -163,8 +163,15 @@ body {
 
   /* Full-screen overlays keep their background edge-to-edge — capping the root
      would leave the shell showing around a "full screen" sheet — so the CHILDREN
-     are constrained instead. */
-  .native .ipad-overlay > * {
+     are constrained instead.
+
+     The :not() guards are load-bearing: several of these overlays carry a
+     positioned scrim as a direct child (UnderstandingSheet's
+     `absolute inset-0 bg-black/50`). Capping a scrim would leave the screen
+     edges untinted AND kill tap-to-dismiss outside the centre column, since the
+     scrim is what receives the close tap. Positioned children must stay
+     full-bleed; only flow content is measured. */
+  .native .ipad-overlay > *:not([class~="absolute"]):not([class~="fixed"]) {
     width: 100%;
     max-width: 40rem;
     margin-inline: auto;
