@@ -302,12 +302,12 @@ export function NextPrayerCard() {
   if (!timings || !nextPrayer) {
     // Skeleton shaped like the loaded prayer card → no layout shift on load.
     return (
-      <div className="card-bg rounded-2xl border sidebar-border p-5">
+      <div className="card-bg rounded-2xl border sidebar-border p-4">
         <div className="flex justify-between mb-4">
           <Skeleton className="h-3 w-40" />
           <Skeleton className="h-3 w-12" />
         </div>
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-3">
           <Skeleton className="h-12 w-12 rounded-xl" />
           <div className="flex-1">
             <Skeleton className="h-6 w-24 mb-2" />
@@ -341,7 +341,7 @@ export function NextPrayerCard() {
   return (
     <Link
       href="/salah?tab=times"
-      className="block card-bg rounded-2xl border sidebar-border p-5 touch-manipulation relative overflow-hidden"
+      className="block card-bg rounded-2xl border sidebar-border p-4 touch-manipulation relative overflow-hidden"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
       <div className="relative">
