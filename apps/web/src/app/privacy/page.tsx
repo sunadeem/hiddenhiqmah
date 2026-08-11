@@ -49,24 +49,64 @@ export default function PrivacyPage() {
           <li>Bookmarks (verses, hadith, pages)</li>
           <li>Reading progress and last-read positions</li>
           <li>
-            Streaks: current streak, last visit date, longest streak
+            Streaks, dhikr counts and Kids learning progress &mdash; on your
+          device while you are signed out; synced to your account if you sign in
+          (see below)
           </li>
           <li>Font size and theme preference (light/dark)</li>
-          <li>Dhikr counts</li>
           <li>Notification preferences</li>
           <li>
             Prayer settings: calculation method, Asr juristic method, location
             mode
           </li>
-          <li>
-            Kids learning progress (stars, badges, completed lessons)
-          </li>
           <li>Auto-play preference for Quran audio</li>
           <li>Ask Hiqmah conversation history</li>
         </ul>
         <p className="text-themed-muted text-sm leading-relaxed">
-          We do not have a copy of any of this. Clearing the app or
-          uninstalling removes it.
+          While you are signed out we have no copy of any of this &mdash;
+          clearing the app or uninstalling removes it.
+        </p>
+
+        <h3 className="text-base font-semibold text-themed mt-6">
+          Synced to your account (only if you sign in)
+        </h3>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          Signing in is optional. If you do, these are stored on our servers
+          (Supabase) against your account so they survive a reinstall and follow
+          you between devices:
+        </p>
+        <ul className="text-themed-muted text-sm leading-relaxed pl-6 list-disc space-y-1">
+          <li>Your email address</li>
+          <li>Display name and profile icon, if you set one</li>
+          <li>
+            Journal entries &mdash; the reflections you write are stored as you
+            wrote them
+          </li>
+          <li>
+            Daily checklist completions, including which of the five prayers you
+            marked, plus dhikr counts and streaks
+          </li>
+          <li>Hifz memorisation plans, cards and review history</li>
+          <li>Saved reminders and custom dhikr</li>
+          <li>
+            Circles: the groups you join, your progress in them, and the
+            messages you send. Deleted messages are hidden from the group but
+            retained in our database
+          </li>
+          <li>
+            If you enable push notifications: a device token from Apple and your
+            device&apos;s timezone, so a notification can reach you at the right
+            local hour
+          </li>
+          <li>
+            AI Chat request timestamps and token counts, for your daily quota
+            and our cost accounting
+          </li>
+        </ul>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          We do not sell any of it, and we do not use it for advertising. You can
+          delete your account and everything above at any time &mdash; see
+          &ldquo;Data deletion&rdquo; below.
         </p>
 
         <h3 className="text-base font-semibold text-themed mt-6">
@@ -137,10 +177,10 @@ export default function PrivacyPage() {
         </h3>
         <p className="text-themed-muted text-sm leading-relaxed">
           No name, no address, no phone number, no contacts, no analytics, no
-          advertising identifiers, no tracking pixels, no crash telemetry tied
-          to you, no marketing list. The only personal data we ever store
-          server-side is your email address (only if you sign in) and AI Chat
-          request timestamps (per-account or per-device, for quota only).
+                advertising identifiers, no tracking pixels, no crash telemetry tied
+                to you, no marketing list. If you never sign in, nothing you do in
+                the app is stored on our servers at all. What we do store for
+                signed-in accounts is listed in full above.
         </p>
       </section>
 
@@ -287,11 +327,27 @@ export default function PrivacyPage() {
       <section className="space-y-3 mb-8">
         <h2 className="text-xl font-semibold text-gold">Notifications</h2>
         <p className="text-themed-muted text-sm leading-relaxed">
-          Prayer-time and daily reminders are scheduled locally on your device.
-          They are computed on-device from your prayer settings and are not sent
-          from, or through, any server — nothing about them leaves your phone.
-          They stay off until you enable them, and you can turn them off at any
-          time:
+          There are two kinds, and they work differently.
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          <strong className="text-themed">Local reminders</strong> — adhan and
+          prayer-time alerts, daily checklist and du&apos;a reminders, and
+          Islamic-event reminders — are scheduled on your device and computed
+          on-device from your prayer settings. Nothing about them leaves your
+          phone, and they work with no connection.
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          <strong className="text-themed">Push notifications</strong> — the
+          weekly du&apos;a, occasional re-engagement nudges, and Circles chat
+          alerts if you opt in — are sent from our servers through Apple&apos;s
+          Push Notification service. To deliver them we store a push token
+          issued by Apple for your device, and your device&apos;s timezone so
+          the weekly du&apos;a arrives at the right local hour. Each channel has
+          its own switch in Settings, and turning push off stops them.
+        </p>
+        <p className="text-themed-muted text-sm leading-relaxed">
+          All notifications stay off until you enable them, and you can turn
+          them off at any time:
         </p>
         <ul className="text-themed-muted text-sm leading-relaxed pl-6 list-disc space-y-1">
           <li>
