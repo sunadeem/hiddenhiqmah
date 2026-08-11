@@ -36,6 +36,15 @@ interface NominatimAddress {
   hamlet?: string;
   municipality?: string;
   suburb?: string;
+  // Which of these Nominatim returns depends on how a place happens to be
+  // mapped administratively, not on how specific the coordinates are. Rural and
+  // unincorporated areas frequently carry none of city/town/village/suburb —
+  // which is how a reading ends up as bare "State, Country".
+  neighbourhood?: string;
+  quarter?: string;
+  city_district?: string;
+  county?: string;
+  state_district?: string;
   state?: string;
   region?: string;
   country?: string;
@@ -62,9 +71,25 @@ export async function reverseGeocode(lat: number, lng: number): Promise<GeoField
     if (!res.ok) return null;
     const data: NominatimResponse = await res.json();
     const a = data.address || {};
+    // Both rungs are ordered most-recognisable first and only ever EXTENDED
+    // past the previous fallbacks, so any location that already resolved keeps
+    // exactly the name it had. The additions are there for the case that was
+    // reported: nothing matched at all and the display collapsed to
+    // "Virginia, United States". A county is not as good as a town, but
+    // "Prince William County, Virginia" still tells you where you are.
     return {
-      city: a.city || a.town || a.village || a.hamlet || a.municipality || a.suburb || "",
-      locality: a.suburb || "",
+      city:
+        a.city ||
+        a.town ||
+        a.village ||
+        a.hamlet ||
+        a.municipality ||
+        a.suburb ||
+        a.city_district ||
+        a.county ||
+        a.state_district ||
+        "",
+      locality: a.suburb || a.neighbourhood || a.quarter || "",
       principalSubdivision: a.state || a.region || "",
       countryName: a.country || "",
       countryCode: (a.country_code || "").toUpperCase(),
