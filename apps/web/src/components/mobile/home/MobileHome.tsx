@@ -84,8 +84,11 @@ export default function MobileHome() {
       <ActiveProfileBanner />
       {/* ipad-home flows these cards into two columns on a tablet (no-op on
           phones). The banner and Circles card stay outside it so they keep the
-          full width rather than becoming column items. */}
-      <div className="ipad-home">
+          full width rather than becoming column items.
+          space-y-3 is REQUIRED here: the parent's space-y only reaches its own
+          direct children, so without it every card inside this wrapper loses its
+          vertical gap on phones. */}
+      <div className="space-y-3 ipad-home">
         {style === "focus" ? (
           <>
             <TodayStrip />
