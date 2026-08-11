@@ -70,17 +70,19 @@ export default function AskConsentSheet({
 
         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 pb-4 space-y-3.5">
           <p className="text-sm text-themed-muted leading-relaxed">
-            Ask Hiqmah answers with the help of an AI model. So that you know
-            what happens to what you type:
+            Ask Hiqmah searches this app&apos;s own Qur&apos;an and hadith
+            collections, then uses an AI model to summarise what it found. So
+            that you know what happens to what you type:
           </p>
 
           <ul className="text-sm text-themed-muted leading-relaxed space-y-2.5 pl-4 list-disc marker:text-gold/60">
             <li>
               <strong className="text-themed">
-                Your question is sent to Anthropic
+                Your question is sent to a third-party AI provider
               </strong>{" "}
-              (the makers of Claude) to generate the answer. It leaves your
-              device to do that.
+              to search our collections and summarise what it finds. It leaves
+              your device to do that. The provider is named in our Privacy
+              Policy.
             </li>
             <li>
               <strong className="text-themed">
