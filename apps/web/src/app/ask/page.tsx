@@ -2,10 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import AskConsentSheet, {
-  hasAskConsent,
-  recordAskConsent,
-} from "@/components/mobile/AskConsentSheet";
 import { motion } from "framer-motion";
 import { Send, Loader2, MessageCircleQuestion, Trash2 } from "lucide-react";
 import {
@@ -62,14 +58,6 @@ function buildGreeting(firstName?: string): string {
 
 export default function AskPage() {
   const router = useRouter();
-
-  // One-time consent before the first question — Ask sends what you type to a
-  // third party, and a signed-out user has agreed to nothing. null = not yet
-  // read from storage, so the sheet never flashes on a device that has agreed.
-  const [askConsent, setAskConsent] = useState<boolean | null>(null);
-  useEffect(() => {
-    setAskConsent(hasAskConsent());
-  }, []);
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -449,16 +437,6 @@ export default function AskPage() {
           </button>
         </div>
       </form>
-
-      {askConsent === false && (
-        <AskConsentSheet
-          onApprove={() => {
-            recordAskConsent();
-            setAskConsent(true);
-          }}
-          onReject={() => router.push("/")}
-        />
-      )}
     </div>
   );
 }
