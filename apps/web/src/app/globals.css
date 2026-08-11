@@ -123,6 +123,25 @@ body {
   --hiqmah-safe-top: max(env(safe-area-inset-top), 60px);
 }
 
+/* iOS zooms the whole page in whenever a focused input's font-size is under
+   16px, and only undoes it on blur. Our search fields are text-sm (14px), so
+   tapping one zoomed the page — and because Return did not dismiss the keyboard,
+   the field never blurred and the zoom never reverted. 16px is the documented
+   threshold and is the root fix; Enter-to-blur (PageSearch and the standalone
+   search fields) is the other half. Native only — the website keeps its sizing. */
+.native input:is(
+    [type="text"],
+    [type="search"],
+    [type="email"],
+    [type="password"],
+    [type="number"],
+    [type="tel"],
+    [type="url"]
+  ),
+.native textarea {
+  font-size: 16px;
+}
+
 /* ---------------------------------------------------------------------------
    iPad. The native shell is a phone layout by construction, so on a tablet
    canvas it is CONSTRAINED, never stretched: a phone UI at 1024pt wide gives

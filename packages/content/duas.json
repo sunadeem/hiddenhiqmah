@@ -693,6 +693,19 @@
       "virtue": "No Muslim supplicates with this except that Allah will answer his prayer."
     },
     {
+      "id": "dua-of-musa-for-provision",
+      "tags": [
+        "powerful",
+        "distress"
+      ],
+      "title": "Dua of Musa (peace be upon him)",
+      "arabic": "رَبِّ إِنِّى لِمَآ أَنزَلْتَ إِلَىَّ مِنْ خَيْرٍ فَقِيرٌ",
+      "transliteration": "Rabbi inni lima anzalta ilayya min khayrin faqir",
+      "translation": "My Lord, I am desperately in need of whatever good You may send down to me.",
+      "source": "Quran 28:24",
+      "when": "When you are in need — of provision, help, or any good"
+    },
+    {
       "id": "refuge-from-worry-and-grief",
       "tags": [
         "distress"
