@@ -71,33 +71,29 @@ export default function AskConsentSheet({
         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 pb-4 space-y-3.5">
           <p className="text-sm text-themed-muted leading-relaxed">
             Ask Hiqmah searches this app&apos;s own Qur&apos;an and hadith
-            collections, then uses an AI model to summarise what it found. So
-            that you know what happens to what you type:
+            collections, then uses AI to put the answer together. A few things
+            worth knowing:
           </p>
 
           <ul className="text-sm text-themed-muted leading-relaxed space-y-2.5 pl-4 list-disc marker:text-gold/60">
             <li>
               <strong className="text-themed">
-                Your question is sent to a third-party AI provider
+                Your question leaves your device.
               </strong>{" "}
-              to search our collections and summarise what it finds. It leaves
-              your device to do that. The provider is named in our Privacy
-              Policy.
+              It is sent to an AI to run the search and write the answer. Our
+              Privacy Policy names the provider.
+            </li>
+            <li>
+              <strong className="text-themed">Keep it general.</strong> Please
+              leave out names, health details, or anything identifying &mdash;
+              about you or anyone else. You will get the same answer either way.
             </li>
             <li>
               <strong className="text-themed">
-                Please don&apos;t include private details
+                We do not keep your questions.
               </strong>{" "}
-              you would not want a third party to process — names, health
-              specifics, or anything identifying about you or someone else. Ask
-              the question in general terms and you will get the same answer.
-            </li>
-            <li>
-              <strong className="text-themed">
-                We don&apos;t keep your questions.
-              </strong>{" "}
-              Your conversation history stays on this device. We record only a
-              timestamp and a token count, to enforce the daily limit.
+              Your conversation stays on this device. We record only a timestamp
+              and a token count, for the daily limit.
             </li>
             <li>
               <strong className="text-themed">
@@ -109,8 +105,8 @@ export default function AskConsentSheet({
           </ul>
 
           <p className="text-sm text-themed-muted leading-relaxed">
-            The rest of the app works without this — only Ask Hiqmah needs it.
-            Full detail is in our{" "}
+            Only Ask Hiqmah needs this &mdash; the rest of the app works without
+            it. Full detail is in our{" "}
             <Link href="/privacy" className="text-gold underline">
               Privacy Policy
             </Link>
