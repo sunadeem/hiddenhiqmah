@@ -62,14 +62,14 @@ export default function HomeScreen() {
   return (
     <>
       <PullToRefresh onRefresh={handleRefresh}>
-        <div className="space-y-3 pb-4 ipad-home">
+        <div className="space-y-2.5 pb-3 ipad-home">
           <div className="ipad-home-wide">
             <TodaysVerseCard inspiration={inspiration} />
           </div>
 
           <NextPrayerCard key={prayerKey} />
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <StreakCard streaks={streaks} />
             <ContinueReadingCard />
           </div>
@@ -125,19 +125,19 @@ function TodaysVerseCard({ inspiration }: { inspiration: Inspiration }) {
 
   return (
     <LongPressActions item={item}>
-      <div className="card-bg rounded-2xl border sidebar-border p-5 relative overflow-hidden">
+      <div className="card-bg rounded-2xl border sidebar-border p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gold)]/8 to-transparent pointer-events-none" />
         <div className="relative">
           <p className="text-[10px] uppercase tracking-[0.2em] text-gold/70 mb-2">
             Today's {inspiration.type}
           </p>
-          <p className="text-2xl font-arabic text-gold leading-loose text-center mb-3">
+          <p className="text-2xl font-arabic text-gold leading-loose text-center mb-2.5">
             {inspiration.arabic}
           </p>
           <p className="text-themed text-sm italic text-center leading-relaxed">
             &ldquo;{inspiration.english}&rdquo;
           </p>
-          <p className="text-themed-muted text-[11px] mt-3 text-center">
+          <p className="text-themed-muted text-[11px] mt-2.5 text-center">
             — {inspiration.reference}
           </p>
         </div>
