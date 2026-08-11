@@ -37,7 +37,9 @@ const sections: { heading: string; note?: string; sources: Source[] }[] = [
         name: "Recitation",
         detail:
           "Murattal recitation by Shaykh Mishary Rashid al-Afasy, streamed for listening.",
-        license: "Recitation © the reciter; used for non-commercial listening.",
+        license:
+          "Recitation © Shaykh Mishary Rashid al-Afasy. Streamed per-ayah from the Islamic Network public Quran API (cdn.islamic.network), with attribution.",
+        href: "https://islamic.network",
       },
       {
         name: "Word-highlight timestamps",
@@ -51,7 +53,7 @@ const sections: { heading: string; note?: string; sources: Source[] }[] = [
   },
   {
     heading: "Translation, tafsir & hadith",
-    note: "Qur'an translation and tafsir are used under the redistribution terms of QuranEnc.com (attribution, displayed unmodified). Hadith English translations are being re-sourced under a clearly-licensed edition; this credit will be updated.",
+    note: "Qur'an translation and tafsir are used under the redistribution terms of QuranEnc.com (attribution, displayed unmodified). Hadith text is taken from the open hadith-api dataset; copyright in the English translations remains with their respective translators and they are shown unmodified, with attribution.",
     sources: [
       {
         name: "Qur'an English translation",
@@ -70,8 +72,10 @@ const sections: { heading: string; note?: string; sources: Source[] }[] = [
       {
         name: "Hadith collections",
         detail:
-          "Arabic and English of the six books and Musnad Ahmad. The Arabic matn is from the public-domain tradition; English translations belong to their translators.",
-        license: "© the respective translators.",
+          "Arabic and English of the six books and Musnad Ahmad — the ara-/eng- editions of Bukhari, Muslim, Abu Dawud, Tirmidhi, an-Nasai, Ibn Majah and Ahmad. The Arabic matn is classical and in the public domain.",
+        license:
+          "English translations © their respective translators, reproduced unmodified with attribution. Compiled from the open hadith-api dataset (fawazahmed0/hadith-api), served via jsDelivr.",
+        href: "https://github.com/fawazahmed0/hadith-api",
       },
     ],
   },
