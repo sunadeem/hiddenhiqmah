@@ -41,8 +41,13 @@ We store the device's IANA **timezone name** (`device_tokens.timezone`), which i
 what lets the weekly duʿā arrive at 10am local. We do **not** store coordinates.
 
 ### Personal info → Email address
-Collected · not shared · **stored** · **required** for an account · Account
-management. Supabase magic-link auth; the email lands in `auth.users`.
+Collected · not shared · **stored** · **optional** · Account management.
+Supabase magic-link auth; the email lands in `auth.users`.
+
+**Optional, confirmed by the founder 2026-08-18: signup is not required.** The
+app is fully browsable without an account, so every account-bound answer below is
+optional too. This matters beyond accuracy — Play surfaces "you can use this app
+without giving data" to users, and it is true here.
 
 ### Personal info → Name
 Collected · not shared · stored · optional · App functionality.
@@ -50,8 +55,9 @@ Collected · not shared · stored · optional · App functionality.
 part, which is why the UI cleans it before display.
 
 ### Personal info → User IDs
-Collected · not shared · stored · required · App functionality + Account
-management. The Supabase `user_id` UUID on every row.
+Collected · not shared · stored · **optional** · App functionality + Account
+management. The Supabase `user_id` UUID on every row — exists only once a user
+signs in, which is optional.
 
 ### Messages → Other in-app messages
 Collected · not shared · stored · **optional** · App functionality.
@@ -100,8 +106,14 @@ record of religious *observance*: which of the five prayers were completed each
 day (`checklist_day`, `checklist_day_items`), dhikr counts, Qur'an memorisation
 progress, and streaks — all keyed to a `user_id` on our server.
 
-**My recommendation: declare it.** Collected · not shared · stored · optional ·
-App functionality + Personalisation.
+**DECISION (founder, 2026-08-18): DECLARE IT.** Collected · not shared · stored ·
+**optional** · App functionality + Personalisation.
+
+⚠️ Recorded honestly, because the founder asked whether Play *requires* this:
+**it does not.** There is no Play rule that religious apps must tick this box. The
+rule is "declare what you collect that falls in the category", and whether a
+prayer-completion log falls in it is interpretation. We are declaring by choice,
+on the reasoning below — not to satisfy a stated requirement.
 
 Reasoning, so you can overrule me knowingly:
 
@@ -157,11 +169,11 @@ mismatch found.
 ⚠️ **The policy ships inside the iOS bundle**, so any wording change there needs a
 re-archive — worth remembering before editing it to satisfy a Play question.
 
-## Open question for the founder
+## Resolved
 
-**Is an account required on Android?** Project notes say mobile is a mandatory
-account while the code has an `AuthGateContext` soft gate
-(`src/context/AuthGateContext.tsx`). That decides whether Email address and User
-IDs are marked *required* or *optional* above. I've written **required**, which is
-correct if signup is mandatory; if browsing without an account is genuinely
-possible on Android, switch those two to optional.
+**Is an account required on Android?** → **No** (founder, 2026-08-18). The app is
+usable without signing up, so Email address, User IDs, and every account-bound
+category above are marked **optional**. The earlier project note claiming mobile
+required a mandatory account was out of date.
+
+**Religious beliefs** → declared, by choice rather than requirement. See above.

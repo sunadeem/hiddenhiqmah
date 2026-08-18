@@ -154,7 +154,32 @@ Upload key fingerprint (SHA-256), for confirming what Play registered:
 
     2B:D4:9A:81:DE:20:8A:F1:7B:F4:19:85:68:F5:09:F7:AE:77:A9:FB:AC:B5:B7:E4:AF:D1:EB:B3:7B:3D:2E:99
 
-**Verify before uploading** — `jarsigner -verify <aab>` must print `jar verified.`
+**Verify before uploading** — but use the RIGHT tool for each artifact, or a
+correctly-signed build will look broken:
+
+    jarsigner -verify app-release.aab        # AAB  -> "jar verified."
+    apksigner verify --verbose app-release.apk   # APK -> "Verifies"
+
+⚠️ `jarsigner -verify` on a release **APK** prints **"jar is unsigned"** even when
+it is signed. Modern AGP signs APKs with **APK Signature Scheme v2/v3** and skips
+legacy v1 JAR signing for minSdk 24+, so there is no `META-INF` signature for
+jarsigner to find. AABs still use v1, which is why jarsigner is right for those.
+`apksigner` lives in `$ANDROID_HOME/build-tools/<ver>/`.
+
+## Testing on a real device WITHOUT Play
+
+Play is not required to get a build onto a phone, and sideloading is much faster
+than waiting on a console release:
+
+    cd apps/web && BUILD_TARGET=mobile npx next build && npx cap sync android
+    cd android && ./gradlew assembleRelease
+    # -> app/build/outputs/apk/release/app-release.apk   (signed, installable)
+
+    adb install -r app/build/outputs/apk/release/app-release.apk
+
+`assembleRelease` gives an **APK** (installable directly); `bundleRelease` gives
+an **AAB** (Play only — a phone cannot install it). Both are signed with the same
+upload key, so the sideloaded build is the same code Play would serve.
 
 ## Play store listing assets
 
