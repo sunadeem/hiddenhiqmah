@@ -61,6 +61,24 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="hiqmah_push" />
 
+        <!-- Home-screen (and, on Android 16+, lock-screen) widget.
+             On Android a lock-screen widget IS a normal AppWidget - there is no
+             separate family as on iOS - so one receiver serves both surfaces.
+
+             exported="false": nothing outside the app should be able to drive our
+             refresh action. The system delivers APPWIDGET_UPDATE regardless. -->
+        <receiver
+            android:name=".NextPrayerWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.hiddenhiqmah.app.WIDGET_REFRESH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_next_prayer_info" />
+        </receiver>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

@@ -12,6 +12,7 @@ public class MainActivity extends BridgeActivity {
         // reason; there is no auto-discovery for plugins that live in the app.
         registerPlugin(HeadingBridge.class);
         registerPlugin(PlaybackBridge.class);
+        registerPlugin(WidgetBridge.class);
         super.onCreate(savedInstanceState);
     }
 }

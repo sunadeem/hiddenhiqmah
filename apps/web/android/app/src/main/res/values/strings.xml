@@ -4,4 +4,5 @@
     <string name="title_activity_main">Hiqmah</string>
     <string name="package_name">com.hiddenhiqmah.app</string>
     <string name="custom_url_scheme">com.hiddenhiqmah.app</string>
+    <string name="widget_next_prayer_description">The next prayer, its time, and a live countdown.</string>
 </resources>
