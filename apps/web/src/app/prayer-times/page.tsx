@@ -11,6 +11,7 @@ import TabBar from "@hidden-hiqmah/ui/components/TabBar";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
+import { hijriParts, hijriMonthName, hijriMonthNameAr } from "@hidden-hiqmah/ui/lib/hijri";
 import {
   Sunrise,
   Sun,
@@ -54,21 +55,19 @@ interface HijriDate {
 
 // Local Hijri date (Umm al-Qura) for the on-device path — no network.
 function localHijriDate(date: Date): HijriDate {
-  const get = (parts: Intl.DateTimeFormatPart[], type: string) =>
-    parts.find((p) => p.type === type)?.value ?? "";
   try {
-    const en = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).formatToParts(date);
-    const ar = new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
-      month: "long",
-    }).formatToParts(date);
+    // Numbers from Intl (correct on every engine), NAMES from our own lists —
+    // Intl hands back Gregorian month names for this calendar on Android, in
+    // Arabic as readily as in English. See packages/ui/lib/hijri.ts.
+    const parts = hijriParts(date);
+    if (!parts) throw new Error("no islamic calendar");
     return {
-      day: get(en, "day"),
-      month: { en: get(en, "month"), ar: get(ar, "month") },
-      year: get(en, "year"),
+      day: String(parts.day),
+      month: {
+        en: hijriMonthName(parts.month),
+        ar: hijriMonthNameAr(parts.month),
+      },
+      year: String(parts.year),
       designation: { abbreviated: "AH" },
     };
   } catch {
