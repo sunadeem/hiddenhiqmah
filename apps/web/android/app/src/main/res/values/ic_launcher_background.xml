@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <!-- The adaptive icon's background layer. Black, matching the master mark
+         and the iOS icon - the Capacitor template ships #FFFFFF, which would
+         have put the gold mark on a white field. -->
+    <color name="ic_launcher_background">#000000</color>
 </resources>
