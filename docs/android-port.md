@@ -30,21 +30,18 @@ product failing quietly rather than loudly.
   argument to have deliberately. **Founder decision, not a default.**
 
 ## Known gaps (not yet built)
-1. **Background audio — CONFIRMED REQUIRED, not assumed.** `adb shell dumpsys
-   audio` while the app plays says, in as many words:
+1. ~~**Background audio**~~ ✅ **BUILT** — `PlaybackService.java` +
+   `PlaybackBridge.java`, registered in `MainActivity`. The service plays
+   NOTHING; the WebView still owns playback, the service just makes it legal to
+   keep sounding once backgrounded. Hooked into `audioCoordinator` (the single
+   point both channels already pass through), with focus tracking so a channel
+   stopped BECAUSE another claimed focus can't tear down the service that one
+   raised. ⚠️ `packages/ui` is deliberately Capacitor-free — it exposes
+   `setPlaybackServiceHook` and `apps/web/src/lib/mobile/playbackService.ts`
+   installs the impl from native setup. **Still unverified: whether audio really
+   survives backgrounding. Needs a real device.**
 
-       AudioHardening background playback would be muted for
-       com.hiddenhiqmah.app (10214), level: partial
 
-   So Android WILL mute us the moment the app backgrounds. The WebView does
-   request focus correctly in the foreground (`requestAudioFocus() ...
-   USAGE_MEDIA` from the chromium content layer), so this is purely the
-   background case. iOS solves it with `UIBackgroundModes: audio` +
-   AVAudioSession; Android needs FOREGROUND_SERVICE +
-   FOREGROUND_SERVICE_MEDIA_PLAYBACK and an actual service with a notification.
-   **This is the last big architectural gap, and it is load-bearing: the adhan
-   firing at prayer time is the app's core promise, and it fires while the app
-   is in the background by definition.**
 2. **Compass.** `HeadingBridge.swift` → `SensorManager` /
    `TYPE_ROTATION_VECTOR`. ⚠️ Android does **not** apply magnetic declination
    for you the way iOS `trueHeading` does — it must be applied explicitly, and
