@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Notification small icon — the mihrab arch and serif H from the app mark,
+  reduced to a flat white silhouette.
+
+  Android does NOT draw this icon as authored. From API 21 it takes the ALPHA
+  CHANNEL ONLY and re-tints it, so any colour here is discarded and every opaque
+  pixel becomes solid. That is why the full-colour launcher icon cannot be used:
+  it is opaque edge to edge, so the system renders it as a featureless white
+  square — the default outcome for any Capacitor app that never declares one,
+  on both FCM pushes and local notifications.
+
+  Reduced deliberately rather than scaled down. At 24dp the eight-pointed star
+  and the open book of the full mark collapse into noise, so the star becomes a
+  single diamond and the book is dropped; the arch and the H are the two things
+  that still read at notification size.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Mihrab arch, stroked so the silhouette stays an outline rather than a
+         solid blob (a filled arch would swallow the H). -->
+    <path
+        android:pathData="M4.5,21.5 L4.5,11 C4.5,7.4 7.6,4.2 12,1.8 C16.4,4.2 19.5,7.4 19.5,11 L19.5,21.5 Z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+
+    <!-- The eight-pointed star of the full mark, reduced to a diamond. -->
+    <path
+        android:pathData="M12,4.9 L13.2,6.3 L12,7.7 L10.8,6.3 Z"
+        android:fillColor="#FFFFFFFF" />
+
+    <!-- Serif-less H, drawn as one outline so it tints as a single shape. -->
+    <path
+        android:pathData="M9,9.4 h1.7 v3.2 h2.6 V9.4 H15 v8.2 h-1.7 v-3.2 h-2.6 v3.2 H9 Z"
+        android:fillColor="#FFFFFFFF" />
+</vector>

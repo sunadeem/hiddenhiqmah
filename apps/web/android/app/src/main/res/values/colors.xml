@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand gold, matching the color-gold custom property in globals.css.
+         Tints the notification small icon and the accent line Android draws
+         beside it. -->
+    <color name="hiqmah_gold">#D4A843</color>
+</resources>
