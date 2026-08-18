@@ -335,7 +335,38 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     // an advancing position on every timeupdate (throttled to ~1/sec); rate 0 when
     // genuinely paused. `lastPosSec` is per-āyah (this closure), so it resets each verse.
     let lastPosSec = -1;
+    // Last values actually handed to the native session, so repeat pushes can be
+    // skipped (see inside updatePos).
+    let lastNativePlaying = false;
+    let lastNativePosMs = -100000;
     const updatePos = (rate: number) => {
+      // ANDROID first, and deliberately OUTSIDE the navigator.mediaSession guard
+      // below. That guard is iOS's path; on Android it does not hold, so the
+      // native position was never pushed from here — which is what made the
+      // media card sit exactly ONE PAUSE BEHIND: pausing sent playing:false with
+      // no position, native kept the last position it knew (from the previous
+      // play), and the card rendered that. Same lesson as the metadata: never
+      // gate the native surface on a browser API.
+      if (audio.duration && isFinite(audio.duration)) {
+        const posMs = Math.round(
+          Math.min(Math.max(audio.currentTime, 0), audio.duration) * 1000
+        );
+        // Only push on a state CHANGE or a jump, never on every tick. This runs
+        // from timeupdate ~1/sec, and each push restarts the foreground service
+        // and re-posts its notification — a second-by-second churn for nothing,
+        // because Android already extrapolates the elapsed time from
+        // position + speed + updateTime. A 2s tolerance catches a real seek
+        // while ignoring ordinary drift.
+        const drifted = Math.abs(posMs - lastNativePosMs) > 2000;
+        if (rate > 0 !== lastNativePlaying || drifted) {
+          lastNativePlaying = rate > 0;
+          lastNativePosMs = posMs;
+          notePlaybackState("quran", rate > 0, posMs, Math.round(audio.duration * 1000));
+        } else {
+          // Keep the reference point moving so "drift" stays meaningful.
+          lastNativePosMs = posMs;
+        }
+      }
       if (
         "mediaSession" in navigator &&
         "setPositionState" in navigator.mediaSession &&
@@ -348,14 +379,6 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
             playbackRate: rate,
             position: Math.min(Math.max(audio.currentTime, 0), audio.duration),
           });
-          // Same numbers to the native session, so Android's scrubber and
-          // elapsed time track the real element rather than sitting at zero.
-          notePlaybackState(
-            "quran",
-            rate > 0,
-            Math.round(Math.min(Math.max(audio.currentTime, 0), audio.duration) * 1000),
-            Math.round(audio.duration * 1000)
-          );
         } catch {
           /* ignore */
         }
@@ -420,7 +443,18 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         // MediaSession (so the lock-screen / shade player stays put and can
         // resume) but detaches from the foreground, so we're not an idle
         // foreground service pinning an undismissable notification.
-        notePlaybackState("quran", false);
+        //
+        // The POSITION matters here: native leaves its position untouched when
+        // none is supplied, so omitting it froze the card at the previous
+        // pause point while audio resumed from the real one.
+        notePlaybackState(
+          "quran",
+          false,
+          Math.max(0, Math.round(audio.currentTime * 1000)),
+          audio.duration && isFinite(audio.duration)
+            ? Math.round(audio.duration * 1000)
+            : undefined
+        );
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
         updatePos(0);
       }
