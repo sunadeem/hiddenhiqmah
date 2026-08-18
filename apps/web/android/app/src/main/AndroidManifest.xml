@@ -24,6 +24,11 @@
 
         </activity>
 
+        <service
+            android:name=".PlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -69,6 +74,15 @@
          walk the user through granting it. -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
+    <!-- Audio has to keep sounding once the app is backgrounded. Measured:
+         without a foreground service of an audio type, dumpsys reports
+         "AudioHardening background playback would be muted for
+         com.hiddenhiqmah.app". The adhan sounds at the prayer time - by
+         definition a moment nobody is looking at the screen - so this is the
+         difference between the app working and failing silently. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <!-- Hifz memorisation records the user reciting. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

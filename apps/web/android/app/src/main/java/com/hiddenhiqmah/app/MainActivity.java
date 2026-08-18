@@ -11,6 +11,7 @@ public class MainActivity extends BridgeActivity {
         // bridge. The iOS twin is registered by MainViewController for the same
         // reason; there is no auto-discovery for plugins that live in the app.
         registerPlugin(HeadingBridge.class);
+        registerPlugin(PlaybackBridge.class);
         super.onCreate(savedInstanceState);
     }
 }
