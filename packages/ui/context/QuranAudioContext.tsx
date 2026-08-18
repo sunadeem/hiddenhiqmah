@@ -9,6 +9,7 @@ import {
   claimAudioFocus,
   noteAudioAudible,
   noteAudioSilent,
+  notePlaybackState,
   releaseAudioFocus,
 } from "../lib/audioCoordinator";
 
@@ -242,6 +243,28 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     // action handlers already exist when WebKit registers the Now-Playing
     // session on this element's first "playing" transition.
     const ch = chapterRef.current;
+
+    // ANDROID native MediaSession — deliberately OUTSIDE the
+    // navigator.mediaSession block below, and not gated on `ch`.
+    //
+    // That block is iOS's path: WKWebView forwards it to the system, the
+    // Android WebView does not, which is why the session has to be published
+    // natively at all. Nesting this call inside it made the Android card show
+    // the generic channel title, because the whole block is skipped whenever
+    // its conditions don't hold — and the bridge log proved that is exactly
+    // what happened: only {"title":"Quran recitation"} ever reached native.
+    // The lesson: the native surface must not depend on a browser API's
+    // availability.
+    noteAudioAudible("quran", {
+      title: ch ? `${ch.name} — Verse ${verse.number}` : `Verse ${verse.number}`,
+      subtitle: "Mishari Rashid al-Afasy",
+      ...(ch ? { album: `Surah ${ch.name} (${ch.nameAr})` } : {}),
+      ...(audio && audio.duration && isFinite(audio.duration)
+        ? { durationMs: Math.round(audio.duration * 1000) }
+        : {}),
+      ...(audio ? { positionMs: Math.max(0, Math.round(audio.currentTime * 1000)) } : {}),
+    });
+
     if ("mediaSession" in navigator && ch) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: `${ch.name} — Verse ${verse.number}`,
@@ -325,6 +348,14 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
             playbackRate: rate,
             position: Math.min(Math.max(audio.currentTime, 0), audio.duration),
           });
+          // Same numbers to the native session, so Android's scrubber and
+          // elapsed time track the real element rather than sitting at zero.
+          notePlaybackState(
+            "quran",
+            rate > 0,
+            Math.round(Math.min(Math.max(audio.currentTime, 0), audio.duration) * 1000),
+            Math.round(audio.duration * 1000)
+          );
         } catch {
           /* ignore */
         }
@@ -361,7 +392,20 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         // path matters because a lock-screen or headphone resume never goes
         // through our toggle, so without it the service stays down and audio
         // would be muted the moment the app is backgrounded.
-        noteAudioAudible("quran");
+        //
+        // Deliberately notePlaybackState, NOT noteAudioAudible: the latter
+        // re-sends metadata, and with none to hand it would overwrite
+        // "Al-Baqarah — Verse 1" with the generic channel title. onplay fires
+        // AFTER the metadata is published, so it would win — which is exactly
+        // the bug that made the media card read "Quran recitation".
+        notePlaybackState(
+          "quran",
+          true,
+          Math.max(0, Math.round(audio.currentTime * 1000)),
+          audio.duration && isFinite(audio.duration)
+            ? Math.round(audio.duration * 1000)
+            : undefined
+        );
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
         updatePos(1);
       }
@@ -372,10 +416,11 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       if (audio.ended) return;
       if (audioRef.current === audio && playTokenRef.current === token) {
         setAudioPaused(true);
-        // Drop the foreground service while genuinely paused. Focus is KEPT, so
-        // resuming re-raises it above; this only stops an idle service holding
-        // an undismissable notification over silence.
-        noteAudioSilent("quran");
+        // Report PAUSED rather than tearing the service down. Native keeps the
+        // MediaSession (so the lock-screen / shade player stays put and can
+        // resume) but detaches from the foreground, so we're not an idle
+        // foreground service pinning an undismissable notification.
+        notePlaybackState("quran", false);
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
         updatePos(0);
       }
@@ -586,8 +631,35 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       releaseAudioFocus("quran");
   }, []);
 
-  // Register with the audio coordinator so starting the adhan stops recitation.
-  useEffect(() => registerAudioChannel("quran", stopPlayback), [stopPlayback]);
+  // Register with the audio coordinator so starting the adhan stops recitation,
+  // AND expose remote controls so the lock-screen player, the shade media card
+  // and Bluetooth buttons can drive it. Without the second argument those
+  // surfaces would render but do nothing when pressed.
+  useEffect(
+    () =>
+      registerAudioChannel("quran", stopPlayback, {
+        play: () => {
+          const a = audioRef.current;
+          if (a && a.paused) void a.play().catch(() => {});
+        },
+        pause: () => {
+          const a = audioRef.current;
+          if (a && !a.paused) a.pause();
+        },
+        seek: (positionMs: number) => {
+          const a = audioRef.current;
+          if (a && a.duration) a.currentTime = Math.min(a.duration, positionMs / 1000);
+        },
+        // Reuse the very callbacks the iOS lock screen already drives, rather
+        // than writing second versions — one definition of "next āyah" for
+        // every platform and every surface.
+        next: skipNext,
+        previous: skipPrevious,
+      }),
+    // skipNext/skipPrevious close over playingVerse, so they change per āyah;
+    // re-registering is cheap and registerAudioChannel replaces cleanly.
+    [stopPlayback, skipNext, skipPrevious]
+  );
 
   const toggleAutoNextSurah = useCallback(() => {
     const next = !autoNextSurahRef.current;
