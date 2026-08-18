@@ -155,3 +155,41 @@ Upload key fingerprint (SHA-256), for confirming what Play registered:
     2B:D4:9A:81:DE:20:8A:F1:7B:F4:19:85:68:F5:09:F7:AE:77:A9:FB:AC:B5:B7:E4:AF:D1:EB:B3:7B:3D:2E:99
 
 **Verify before uploading** — `jarsigner -verify <aab>` must print `jar verified.`
+
+## Play store listing assets
+
+Generated into `apps/web/android/`:
+
+| Asset | File | Play requirement |
+|---|---|---|
+| App icon | `play-store-icon-512.png` | 512×512, uploaded separately from the AAB |
+| Feature graphic | `play-feature-graphic-1024x500.png` | 1024×500, no transparency |
+| Phone screenshots | `play-screenshots/01…07.png` | ≥2, 9:16, 320–3840px per side |
+
+Screenshots were captured with the emulator display forced to **1080×1920** —
+`adb shell wm size 1080x1920` — because its native 1080×2400 is 9:20, past the
+2:1 aspect ratio Play accepts. Capturing at 9:16 avoids letterboxing a tall
+screenshot onto a padded canvas. `adb shell wm size reset` afterwards.
+
+⚠️ **The home screen is deliberately NOT among them.** The emulator cannot
+satisfy the app's location request, so it falls back to Makkah while the device
+clock stays in America/New_York — the prayer times shown are nonsense and would
+read as a broken app on the listing. Re-shoot the home screen from a real device
+before relying on it in marketing.
+
+### Why the emulator can't do prayer times (diagnosed, not assumed)
+Permissions are granted and the call is correct — `getCurrentPosition` with
+`enableHighAccuracy: false`, timeout 12s — and it fails with
+`OS-PLUG-GLOC-0010 / Location request timed out`. `adb emu geo fix` injects into
+the **GPS provider**, which a low-accuracy (fused/network) request does not
+consume, so the fix never arrives no matter how often it is re-sent. The
+graceful fallback to Makkah is the designed behaviour working correctly.
+**Prayer-time accuracy on Android therefore remains unverifiable without real
+hardware** — this is a limitation of the emulator, not a bug in the app.
+
+### Harmless log noise, so nobody chases it twice
+`Error injecting safe area CSS: TypeError: Cannot read properties of null` comes
+from Capacitor's own `SystemBars.java`, which sets `--safe-area-inset-*` on
+`document.documentElement` before the document exists. We never reference those
+variables — our CSS uses `env(safe-area-inset-top)`, supplied natively by the
+WebView. Nothing of ours depends on it.
