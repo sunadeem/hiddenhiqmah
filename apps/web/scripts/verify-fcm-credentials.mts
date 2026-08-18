@@ -1,12 +1,15 @@
 /**
  * Prove the FCM server credentials actually work — without pushing to anyone.
  *
- *   npm run verify:fcm-creds                     # credentials only
+ *   vercel env pull .env.vercel                  # do NOT let it overwrite .env.local
+ *   npm run verify:fcm-creds -- --env-file .env.vercel
+ *
+ *   npm run verify:fcm-creds                     # or from .env.local / .env
  *   npm run verify:fcm-creds -- --token <FCM>    # + is this device reachable?
  *   npm run verify:fcm-creds -- --token <FCM> --send   # actually deliver one
  *
  * Reads FCM_PROJECT_ID / FCM_CLIENT_EMAIL / FCM_PRIVATE_KEY from the environment,
- * falling back to apps/web/.env.local (`vercel env pull` writes that file).
+ * falling back to --env-file, then .env.local, then .env (all relative to apps/web).
  *
  * WHY IT EXISTS
  *
@@ -37,13 +40,30 @@ import { dirname, resolve } from "node:path";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-/** Minimal .env parser — avoids a dependency for a script run by hand. */
+/**
+ * Minimal .env parser — avoids a dependency for a script run by hand.
+ *
+ * Reads `--env-file <path>` first, then .env.local, then .env. The explicit
+ * flag matters because `vercel env pull` wants to OVERWRITE .env.local, which
+ * on this project would blow away local dev values — so the sane move is
+ * `vercel env pull .env.vercel` and point this at that file. Sourcing such a
+ * file in a shell instead is a trap: the private key is one long line of
+ * literal \n escapes, and quoting rules mangle it in ways that surface much
+ * later as "Invalid JWT Signature".
+ */
 function loadEnvLocal(): void {
-  for (const name of [".env.local", ".env"]) {
+  const flagIdx = process.argv.indexOf("--env-file");
+  const explicit = flagIdx !== -1 ? process.argv[flagIdx + 1] : undefined;
+  const candidates = [...(explicit ? [explicit] : []), ".env.local", ".env"];
+  for (const name of candidates) {
     let raw: string;
     try {
       raw = readFileSync(resolve(HERE, "..", name), "utf8");
     } catch {
+      if (explicit && name === explicit) {
+        console.error(`\n✗ --env-file: cannot read ${name}\n`);
+        process.exit(1);
+      }
       continue;
     }
     for (const line of raw.split("\n")) {
