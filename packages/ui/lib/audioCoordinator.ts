@@ -79,3 +79,34 @@ export function releaseAudioFocus(id: string): void {
   holder = null;
   playback?.end();
 }
+
+/**
+ * Raise/drop ONLY the Android foreground service, without touching focus
+ * ownership or stopping other channels.
+ *
+ * Needed because the service must track "is sound actually coming out", which
+ * is not the same question as "who owns focus". Focus is claimed once when a
+ * channel starts and released when it stops for good; but audio also ends by
+ * itself, and resumes from a lock-screen or headphone button that never goes
+ * through our toggle.
+ *
+ * FOUND ON A REAL DEVICE: every natural end leaked the service. Both channels
+ * released focus only from an explicit stop() the user rarely presses, so when
+ * recitation finished — or the adhan finished, backgrounded, at the prayer time
+ * it exists for — the service stayed foreground with an ONGOING|NO_CLEAR
+ * notification the user could not swipe away.
+ *
+ * Deliberately NOT routed through claimAudioFocus: that stops every other
+ * channel, which is right when a user starts something and wrong when audio
+ * merely resumes.
+ */
+export function noteAudioAudible(id: string): void {
+  if (holder !== id) return;
+  playback?.begin(CHANNEL_TITLES[id] ?? "Playing");
+}
+
+/** Sound has stopped coming out, but `id` keeps focus so it can resume. */
+export function noteAudioSilent(id: string): void {
+  if (holder !== id) return;
+  playback?.end();
+}
