@@ -220,6 +220,49 @@ export async function ensureNotificationPermission(): Promise<boolean> {
 }
 
 /**
+ * ANDROID ONLY — whether the OS will let us schedule EXACT alarms.
+ *
+ * This is the difference between the adhan sounding at the prayer time and
+ * sounding "sometime around" it. Android 12+ downgrades alarms to inexact
+ * without this permission and they drift by minutes, silently — for this app
+ * that is the whole product failing without any error to point at.
+ *
+ * We declare SCHEDULE_EXACT_ALARM (see android/app/src/main/AndroidManifest.xml
+ * for why not USE_EXACT_ALARM), which Android 13+ denies by default, so it has
+ * to be asked for. iOS has no equivalent concept and always reports true.
+ */
+export async function canScheduleExactAlarms(): Promise<boolean> {
+  if (!Capacitor.isNativePlatform()) return false;
+  if (Capacitor.getPlatform() !== "android") return true;
+  try {
+    const res = await LocalNotifications.checkExactNotificationSetting();
+    return res.exact_alarm === "granted";
+  } catch {
+    // Older plugin/OS combinations simply do not gate exact alarms; treating a
+    // failure as "denied" would nag users we cannot actually help.
+    return true;
+  }
+}
+
+/**
+ * ANDROID ONLY — send the user to the system "Alarms & reminders" screen.
+ *
+ * There is no in-app grant for this one; the OS only accepts the change from
+ * its own settings page, so this navigates away and the answer arrives when the
+ * user comes back. Call `canScheduleExactAlarms()` again on resume.
+ */
+export async function openExactAlarmSettings(): Promise<boolean> {
+  if (!Capacitor.isNativePlatform()) return false;
+  if (Capacitor.getPlatform() !== "android") return true;
+  try {
+    const res = await LocalNotifications.changeExactNotificationSetting();
+    return res.exact_alarm === "granted";
+  } catch {
+    return false;
+  }
+}
+
+/**
  * (Re)schedule all enabled notifications. Cancels existing ones first.
  * @param promptIfNeeded request OS permission if not yet determined (use when
  *   the user explicitly turns a toggle on; false on silent app-open runs).
