@@ -284,7 +284,10 @@ public class PlaybackService extends Service {
     private Bitmap artwork() {
         if (artwork == null) {
             try {
-                artwork = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                // drawable-nodpi/media_art.png (512px). The launcher mipmap
+                // tops out at 192px, which Android can quietly reject as too
+                // small for a media card.
+                artwork = BitmapFactory.decodeResource(getResources(), R.drawable.media_art);
             } catch (Exception ignored) {
                 // Art is a nicety; never let it break playback.
             }
@@ -330,6 +333,7 @@ public class PlaybackService extends Service {
             .setContentText(subtitle)
             .setSmallIcon(R.drawable.ic_stat_hiqmah)
             .setContentIntent(tap)
+            .setLargeIcon(artwork())
             .setOngoing(playing)
             .setVisibility(Notification.VISIBILITY_PUBLIC)
             .setCategory(Notification.CATEGORY_TRANSPORT);

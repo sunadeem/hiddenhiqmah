@@ -49,8 +49,14 @@ public class PlaybackBridge extends Plugin {
         String subtitle = call.getString("subtitle", "Hiqmah");
         String album = call.getString("album", null);
         // -1 means "unknown, leave whatever the service already has".
-        long durationMs = call.getLong("durationMs", -1L);
-        long positionMs = call.getLong("positionMs", -1L);
+        //
+        // ⚠️ Read as DOUBLE, not Long. A JS number crosses the bridge as a
+        // double, and call.getLong() silently returns the default instead of
+        // casting — which is why durationMs arrived as -1, the session never
+        // advertised ACTION_SEEK_TO (actions=567, no 256), and the media card
+        // rendered a scrubber with no elapsed/remaining readout.
+        long durationMs = asMillis(call.getDouble("durationMs"));
+        long positionMs = asMillis(call.getDouble("positionMs"));
         boolean playing = Boolean.TRUE.equals(call.getBoolean("playing", true));
         PlaybackService.start(getContext(), title, subtitle, album, durationMs, positionMs, playing);
         call.resolve();
@@ -60,10 +66,15 @@ public class PlaybackBridge extends Plugin {
     @PluginMethod
     public void setState(PluginCall call) {
         boolean playing = Boolean.TRUE.equals(call.getBoolean("playing", true));
-        long positionMs = call.getLong("positionMs", -1L);
-        long durationMs = call.getLong("durationMs", -1L);
+        long positionMs = asMillis(call.getDouble("positionMs"));
+        long durationMs = asMillis(call.getDouble("durationMs"));
         PlaybackService.start(getContext(), null, null, null, durationMs, positionMs, playing);
         call.resolve();
+    }
+
+    /** JS numbers arrive as doubles; -1 means "not supplied". */
+    private static long asMillis(Double v) {
+        return v == null ? -1L : Math.round(v);
     }
 
     @PluginMethod
