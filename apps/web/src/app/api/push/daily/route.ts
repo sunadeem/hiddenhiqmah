@@ -29,12 +29,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { tryGetSupabaseServer } from "@/lib/supabase-server";
-import {
-  sendToMany,
-  isApnsConfigured,
-  type ApnsTarget,
-  type PushEnvironment,
-} from "@/lib/push/apns";
+import { sendPush, isPushConfigured, type PushTarget } from "@/lib/push/send";
+import type { PushEnvironment } from "@/lib/push/apns";
 import { pickDailyContent } from "@/lib/dailyContent";
 import { fetchOptedOut } from "@/lib/push/optedOut";
 
@@ -238,7 +234,10 @@ function pickDueTokens(rows: TokenRow[], now: Date, schemaReady: boolean): DueTo
   const dedupeCutoff = now.getTime() - DEDUPE_MS;
   const due: DueToken[] = [];
   for (const row of rows) {
-    if (row.platform !== "ios") continue;
+    // No platform filter — an Android device is as due as an iOS one; sendPush
+    // picks the transport. (This line used to read `platform !== "ios"`, which
+    // after the Android launch would have meant "no Android user ever receives
+    // the weekly duʿā", while the route still reported ok:true.)
 
     // Already served this week (a repeated local hour at a DST boundary, a
     // manual smoke test, a duplicated cron tick) → skip. Only successful sends
@@ -297,7 +296,7 @@ async function handle(req: NextRequest) {
   if (!cronAuthorized(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (!isApnsConfigured()) {
+  if (!isPushConfigured()) {
     return NextResponse.json({ error: "Push is not configured on the server." }, { status: 500 });
   }
   const supa = tryGetSupabaseServer();
@@ -353,10 +352,11 @@ async function handle(req: NextRequest) {
   // send differs between Auckland and Honolulu, and they'd receive different
   // duʿās from the same week's rotation. In practice a single tick yields one
   // group, but grouping costs nothing and keeps that guarantee explicit.
-  const byDate = new Map<string, ApnsTarget[]>();
+  const byDate = new Map<string, PushTarget[]>();
   for (const { row, localDate } of recipients) {
-    const target: ApnsTarget = {
+    const target: PushTarget = {
       token: row.token,
+      platform: row.platform,
       environment: row.environment as PushEnvironment,
     };
     const bucket = byDate.get(localDate);
@@ -376,7 +376,7 @@ async function handle(req: NextRequest) {
     // just re-sent local content two days in three; the duʿā is the one thing
     // remote adds. Still keyed to the calendar date, so it moves week to week.
     const item = pickDailyContent(dateStr).dua;
-    const result = await sendToMany(targets, {
+    const result = await sendPush(targets, {
       title: item.title,
       body: item.reference ? `${item.english} — ${item.reference}` : item.english,
       url: item.url,

@@ -1,11 +1,6 @@
 import { NextRequest } from "next/server";
 import { requireAdmin, adminJson, corsPreflight } from "@/lib/admin-auth";
-import {
-  sendToMany,
-  isApnsConfigured,
-  type ApnsTarget,
-  type PushEnvironment,
-} from "@/lib/push/apns";
+import { sendPush, isPushConfigured, type PushTarget } from "@/lib/push/send";
 
 export const runtime = "nodejs";
 
@@ -15,7 +10,9 @@ export async function OPTIONS() {
 
 type TokenRow = { token: string; platform: string; environment: string };
 
-// Admin-authored broadcast: sends an 'announcement' push to every iOS device.
+// Admin-authored broadcast: sends an 'announcement' push to every registered
+// device, iOS and Android alike — sendPush routes each token to APNs or FCM by
+// its platform column.
 export async function POST(req: NextRequest) {
   const auth = await requireAdmin(req);
   if (!auth.ok) return auth.res;
@@ -28,7 +25,7 @@ export async function POST(req: NextRequest) {
   if (!title || !bodyText) {
     return adminJson({ error: "title and body are required" }, 400);
   }
-  if (!isApnsConfigured()) {
+  if (!isPushConfigured()) {
     return adminJson({ error: "Push is not configured on the server." }, 500);
   }
 
@@ -38,11 +35,9 @@ export async function POST(req: NextRequest) {
       .select("token, platform, environment");
     if (error) throw error;
 
-    const targets: ApnsTarget[] = ((data ?? []) as TokenRow[])
-      .filter((r) => r.platform === "ios")
-      .map((r) => ({ token: r.token, environment: r.environment as PushEnvironment }));
+    const targets: PushTarget[] = (data ?? []) as TokenRow[];
 
-    const result = await sendToMany(targets, {
+    const result = await sendPush(targets, {
       title,
       body: bodyText,
       url,

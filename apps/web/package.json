@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "verify:fcm": "npx tsx scripts/verify-fcm-classification.mts",
     "dev": "next dev",
     "build:search-index": "node ../../scripts/build-hadith-index.mjs",
     "build": "next build",

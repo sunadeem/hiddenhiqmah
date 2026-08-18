@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tryGetSupabaseServer } from "@/lib/supabase-server";
-import {
-  sendToMany,
-  isApnsConfigured,
-  type ApnsTarget,
-  type PushEnvironment,
-} from "@/lib/push/apns";
+import { sendPush, isPushConfigured, type PushTarget } from "@/lib/push/send";
 import { fetchOptedOut } from "@/lib/push/optedOut";
 
 export const runtime = "nodejs";
@@ -28,7 +23,7 @@ async function handle(req: NextRequest) {
   if (!cronAuthorized(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (!isApnsConfigured()) {
+  if (!isPushConfigured()) {
     return NextResponse.json({ error: "Push is not configured on the server." }, { status: 500 });
   }
   const supa = tryGetSupabaseServer();
@@ -53,15 +48,16 @@ async function handle(req: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  const targets: ApnsTarget[] = ((data ?? []) as TokenRow[])
-    .filter((r) => r.platform === "ios" && !optedOut.has(r.user_id))
-    .map((r) => ({ token: r.token, environment: r.environment as PushEnvironment }));
+  // No platform filter: sendPush routes each token to APNs or FCM itself.
+  const targets: PushTarget[] = ((data ?? []) as TokenRow[]).filter(
+    (r) => !optedOut.has(r.user_id)
+  );
 
   if (!targets.length) {
     return NextResponse.json({ ok: true, sent: 0, failed: 0, removed: 0 });
   }
 
-  const result = await sendToMany(targets, {
+  const result = await sendPush(targets, {
     title: "We've missed you",
     body: "Come back for today's verse, hadith, and du'a — a moment of reflection awaits.",
     url: "/",

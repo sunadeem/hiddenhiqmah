@@ -62,7 +62,26 @@ captures/
 .cxx/
 
 # Google Services (e.g. APIs or Firebase)
-# google-services.json
+#
+# HELD OUT OF GIT DELIBERATELY - this repository is PUBLIC.
+#
+# Google's position is that google-services.json is safe to commit: the Firebase
+# API key inside it is an identifier, not a secret, and it CANNOT be used to send
+# push (sending needs the service-account private key, which lives only in Vercel
+# env vars). Capacitor's own template therefore leaves this line commented out.
+#
+# It is ignored here anyway, because "not a secret" is not the same as "harmless
+# in a public repo": an UNRESTRICTED Google Cloud API key can be used by anyone
+# against any API enabled on the project and billed to it, and secret scanners
+# will flag it regardless. Ignoring costs nothing today - the Android build is
+# local-only, with no CI that needs the file.
+#
+# To commit it instead (needed the moment Android builds move to CI), first
+# restrict the key: Google Cloud Console -> Credentials -> the Android key ->
+# Application restrictions = Android apps (package com.hiddenhiqmah.app + release
+# SHA-1), and API restrictions = only the Firebase APIs in use. Then delete the
+# line below. A fresh clone cannot build Android until the file is present.
+google-services.json
 
 # Freeline
 freeline.py

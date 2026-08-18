@@ -29,6 +29,38 @@
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
 
+        <!-- Notification appearance for FCM pushes.
+
+             Android takes only the ALPHA CHANNEL of a small icon and re-tints
+             it, so a full-colour icon becomes a solid white square. Without
+             these two lines Firebase falls back to @mipmap/ic_launcher, which
+             is opaque edge to edge - every push would show a featureless white
+             block where the app mark should be. ic_stat_hiqmah is the mark
+             reduced to a flat silhouette for exactly this reason.
+
+             These defaults apply when a message carries a `notification` block,
+             which is how every send route builds its payload (lib/push/fcm.ts). -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_hiqmah" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/hiqmah_gold" />
+
+        <!-- Which channel a push posts on when the app is BACKGROUNDED and the
+             Firebase SDK displays the notification itself (the payload's own
+             channel_id only covers the plugin's foreground path).
+
+             Without this, Firebase posts on its own fallback channel, which the
+             user sees in Settings as "Miscellaneous" and which is only
+             IMPORTANCE_DEFAULT - so android.priority "high" would never produce
+             a heads-up banner. The channel is created on first launch by
+             ensurePushChannel() in lib/mobile/push.ts; this string, that one,
+             and PUSH_CHANNEL_ID in lib/push/fcm.ts must stay identical. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="hiqmah_push" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

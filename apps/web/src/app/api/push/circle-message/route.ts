@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tryGetSupabaseServer } from "@/lib/supabase-server";
 import { friendlyName } from "@/lib/friendly-name";
-import {
-  sendToMany,
-  isApnsConfigured,
-  type ApnsTarget,
-  type PushEnvironment,
-} from "@/lib/push/apns";
+import { sendPush, isPushConfigured, type PushTarget } from "@/lib/push/send";
 
 export const runtime = "nodejs";
 
@@ -62,7 +57,7 @@ async function handle(req: NextRequest) {
     return NextResponse.json({ error: "circle_id and sender_id are required" }, { status: 400 });
   }
 
-  if (!isApnsConfigured()) {
+  if (!isPushConfigured()) {
     return NextResponse.json({ error: "Push is not configured on the server." }, { status: 500 });
   }
   const supa = tryGetSupabaseServer();
@@ -119,9 +114,8 @@ async function handle(req: NextRequest) {
   if (tokenErr) {
     return NextResponse.json({ error: tokenErr.message }, { status: 500 });
   }
-  const targets: ApnsTarget[] = ((tokenRows ?? []) as TokenRow[])
-    .filter((r) => r.platform === "ios")
-    .map((r) => ({ token: r.token, environment: r.environment as PushEnvironment }));
+  // No platform filter: sendPush routes each token to APNs or FCM itself.
+  const targets: PushTarget[] = (tokenRows ?? []) as TokenRow[];
   if (!targets.length) {
     return NextResponse.json({ ok: true, sent: 0, failed: 0, recipients: optedInIds.length });
   }
@@ -130,7 +124,7 @@ async function handle(req: NextRequest) {
     messageBody.length > PREVIEW_MAX ? messageBody.slice(0, PREVIEW_MAX).trimEnd() + "…" : messageBody;
 
   const messageId = (payload.message_id ?? "").trim();
-  const result = await sendToMany(targets, {
+  const result = await sendPush(targets, {
     title: `${senderName} in ${circleName}`,
     body: preview || "New message",
     // Tapping routes here (push.ts → router.push(url)); CirclesScreen reads

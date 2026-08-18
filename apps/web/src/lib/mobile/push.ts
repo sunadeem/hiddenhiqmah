@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Remote push (APNs) registration for Hidden Hiqmah.
+ * Remote push registration for Hidden Hiqmah — APNs on iOS, FCM on Android.
  *
  * Separate from notifications.ts (local scheduling): remote push does not consume
  * the local 64-pending budget and never touches the adhan/prayer scheduler. We:
@@ -24,7 +24,8 @@
  * The token's declared `environment` (production by default; sandbox for dev
  * builds via .env) is a best-effort guess — the SERVER (apns.ts) tries both
  * environments and self-corrects device_tokens.environment, so a mislabel just
- * costs one retry on the first send.
+ * costs one retry on the first send. It is APNs-only: FCM serves debug and
+ * release builds from one endpoint, so on Android the column is inert.
  */
 
 import { Capacitor } from "@capacitor/core";
@@ -108,6 +109,70 @@ function deviceTimezone(): string | null {
   }
 }
 
+/**
+ * The platform this token belongs to — which transport the SERVER must use.
+ *
+ * This was hardcoded to "ios" while iOS was the only client. Left that way, an
+ * Android device would register its FCM token as an APNs one, and every send
+ * route would hand a Firebase registration token to api.push.apple.com. That
+ * fails as BadDeviceToken on both APNs environments, which the sender correctly
+ * reads as "dead device" — so the row would be DELETED, and re-registered, and
+ * deleted again, forever. No Android user would ever receive a push and nothing
+ * would look broken from the server's side.
+ *
+ * Capacitor reports "ios" | "android" | "web"; device_tokens.platform is
+ * constrained to ('ios','android'), so anything else falls back to ios — and
+ * registerPush() has already returned on non-native platforms regardless.
+ */
+function devicePlatform(): "ios" | "android" {
+  return Capacitor.getPlatform() === "android" ? "android" : "ios";
+}
+
+/**
+ * The notification channel remote pushes post on. Must match PUSH_CHANNEL_ID in
+ * lib/push/fcm.ts and the default_notification_channel_id meta-data in
+ * AndroidManifest.xml — all three name the same channel, and Android silently
+ * falls back if they disagree.
+ */
+const PUSH_CHANNEL_ID = "hiqmah_push";
+
+/**
+ * Create the Android notification channel for remote push. No-op elsewhere.
+ *
+ * From Android 8 the CHANNEL owns sound, vibration and importance — the payload
+ * cannot override them. With no channel named, Firebase posts on its own
+ * fallback channel, which shows up in the user's notification settings as
+ * "Miscellaneous" and is only IMPORTANCE_DEFAULT, so `priority: "high"` on the
+ * server would never actually produce a heads-up banner.
+ *
+ * Deliberately NOT reusing the LocalNotifications plugin's "default" channel,
+ * even though sharing one would be less code: that channel carries the adhan.
+ * Muting a chatty circle would then also silence the call to prayer, and the
+ * user would have no way to separate them. A dedicated channel keeps the one
+ * notification that must never be missed under its own switch.
+ *
+ * Importance 4 = HIGH (heads-up banner + sound), matching the server's
+ * priority: "high". Idempotent — creating an existing channel is a no-op, and
+ * Android ignores changes to one the user has since customised, which is the
+ * correct behaviour: their choice outranks ours.
+ */
+async function ensurePushChannel(): Promise<void> {
+  if (Capacitor.getPlatform() !== "android") return;
+  try {
+    await PushNotifications.createChannel({
+      id: PUSH_CHANNEL_ID,
+      name: "Reminders & messages",
+      description: "The weekly duʿā, circle messages and announcements",
+      importance: 4,
+      visibility: 1, // public — safe on a lock screen; no private content
+      sound: "default",
+      vibration: true,
+    });
+  } catch {
+    /* channel creation is best-effort; a push still arrives without it */
+  }
+}
+
 let navigateFn: ((url: string) => void) | null = null;
 let listenersReady = false;
 
@@ -134,7 +199,7 @@ async function persistToken(token: string): Promise<void> {
     // "keep whatever zone is already on file".
     const { error } = await supabase.rpc("upsert_device_token", {
       p_token: token,
-      p_platform: "ios",
+      p_platform: devicePlatform(),
       p_environment: APNS_ENV,
       p_timezone: deviceTimezone(),
     });
@@ -201,6 +266,7 @@ export async function registerPush(
   if (navigate) navigateFn = navigate;
   try {
     await ensureListeners();
+    await ensurePushChannel();
     const perm = await PushNotifications.checkPermissions();
     if (perm.receive === "granted") {
       await PushNotifications.register();
