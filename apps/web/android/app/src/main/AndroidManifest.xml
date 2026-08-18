@@ -56,11 +56,19 @@
          quietly. Denied by default on Android 13+, so the app must check
          checkExactNotificationSetting() and walk the user to the system screen.
 
-         NOT declared: USE_EXACT_ALARM. It is auto-granted with no prompt, but
-         Play policy restricts it to apps whose CORE function is alarms, and
-         claiming it is a policy argument to have deliberately rather than by
-         default. See docs/android-port.md. -->
+         USE_EXACT_ALARM covers Android 13+, where it is auto-granted with no
+         prompt at all; SCHEDULE_EXACT_ALARM covers 31-32, where it is granted
+         by default. Declaring both is Google's documented pairing.
+
+         The policy claim: Play restricts USE_EXACT_ALARM to apps whose core
+         function is alarms or calendar events. The adhan IS this app's alarm -
+         five fixed times a day computed from the user's location - so the claim
+         is a fair one. If Play ever objects, dropping this one line falls back
+         to SCHEDULE_EXACT_ALARM alone, and canScheduleExactAlarms() /
+         openExactAlarmSettings() in lib/mobile/notifications.ts already exist to
+         walk the user through granting it. -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <!-- Hifz memorisation records the user reciting. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

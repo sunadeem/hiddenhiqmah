@@ -123,6 +123,15 @@ body {
   --hiqmah-safe-top: max(env(safe-area-inset-top), 60px);
 }
 
+/* Android's status bar is ~24px, not the ~59px Dynamic Island the 60px floor
+   above is sized for — so on Android that floor is dead space at the top of
+   every screen, pushing content down and crowding the bottom of the home. The
+   env() term still wins wherever Android reports a real inset (punch-hole and
+   waterfall displays); only the FLOOR drops. */
+.native.android {
+  --hiqmah-safe-top: max(env(safe-area-inset-top), 28px);
+}
+
 /* iOS zooms the whole page in whenever a focused input's font-size is under
    16px, and only undoes it on blur. Our search fields are text-sm (14px), so
    tapping one zoomed the page — and because Return did not dismiss the keyboard,

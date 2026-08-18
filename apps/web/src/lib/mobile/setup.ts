@@ -19,6 +19,13 @@ export async function applyNativeSetup() {
   // inert on the web build (same static export, different runtime).
   document.documentElement.classList.add("native");
 
+  // Platform class too. The two differ in ways CSS has to know about — most
+  // immediately the top inset: iOS needs a 60px floor to clear the Dynamic
+  // Island (and because WKWebView reports env(safe-area-inset-top)
+  // unreliably), whereas an Android status bar is ~24px and that same floor is
+  // ~36px of dead space pushing every screen down.
+  document.documentElement.classList.add(Capacitor.getPlatform());
+
   // Stop the WKWebView from auto-zooming when a text field is focused (and
   // pinch-zoom, for a native feel). Native-only: the website's <meta viewport>
   // in layout.tsx is left untouched, so web pinch-zoom / accessibility stays.
