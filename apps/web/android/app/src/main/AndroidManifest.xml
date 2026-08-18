@@ -35,7 +35,34 @@
         </provider>
     </application>
 
-    <!-- Permissions -->
+    <!-- Permissions.
+
+         POST_NOTIFICATIONS, RECEIVE_BOOT_COMPLETED, WAKE_LOCK and VIBRATE are
+         merged in by @capacitor/local-notifications. Everything below has to be
+         declared here, because @capacitor/geolocation and the voice recorder
+         declare none of their own. -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Prayer times and the qiblah compass. COARSE alone gives times accurate
+         to the minute; FINE sharpens the qiblah bearing. Both are requested at
+         runtime; the app already works from a cached location without them. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- The adhan has to fire AT the prayer time, not "sometime soon". Without
+         this, Android 12+ silently downgrades our alarms to inexact and they
+         drift by minutes - which for this app is the whole product failing
+         quietly. Denied by default on Android 13+, so the app must check
+         checkExactNotificationSetting() and walk the user to the system screen.
+
+         NOT declared: USE_EXACT_ALARM. It is auto-granted with no prompt, but
+         Play policy restricts it to apps whose CORE function is alarms, and
+         claiming it is a policy argument to have deliberately rather than by
+         default. See docs/android-port.md. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- Hifz memorisation records the user reciting. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 </manifest>
