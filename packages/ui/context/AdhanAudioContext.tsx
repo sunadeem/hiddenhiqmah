@@ -7,6 +7,7 @@ import {
   releaseAudioFocus,
   noteAudioAudible,
   noteAudioSilent,
+  notePlaybackState,
 } from "../lib/audioCoordinator";
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -108,7 +109,7 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
       // Only mark paused if not fully stopped
       if (audioRef.current === audio) {
         setPaused(true);
-        noteAudioSilent("adhan");
+        notePlaybackState("adhan", false);
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
       }
     });
@@ -186,7 +187,16 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Register with the audio coordinator so starting recitation stops the adhan.
-  useEffect(() => registerAudioChannel("adhan", stop), [stop]);
+  useEffect(() => registerAudioChannel("adhan", stop, {
+      play: () => {
+        const a = audioRef.current;
+        if (a && a.paused) void a.play().catch(() => {});
+      },
+      pause: () => {
+        const a = audioRef.current;
+        if (a && !a.paused) a.pause();
+      },
+    }), [stop]);
 
   return (
     <AdhanAudioContext.Provider
