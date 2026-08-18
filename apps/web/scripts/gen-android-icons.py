@@ -55,11 +55,13 @@ DENSITIES = {"mdpi": 1, "hdpi": 1.5, "xhdpi": 2, "xxhdpi": 3, "xxxhdpi": 4}
 INK = 60  # r+g+b above this counts as mark rather than background
 # Breathing room inside the safe zone. Solving for tangency alone (MARGIN = 0)
 # is correct but reads as cramped: the arch tip and the book's outer corners
-# land exactly on the mask edge, so a circular launcher looks like it is about
-# to clip the mark even though it never does. 5% clears the edge while keeping
-# the mark large enough to hold at 48dp list density. Founder's call, 2026-08-18,
-# chosen from a rendered comparison of 0% / 5% / 10%.
-MARGIN = 0.05
+# land exactly on the mask edge, so a circular launcher looks about to clip the
+# mark even though it never does. 5% was tried on the device and still read
+# tight; 10% is what actually looks composed, and the mark is a tall arch, so
+# what it loses in scale it keeps in legibility - the H is the part that has to
+# survive 48dp, and that is unaffected. Founder's call 2026-08-18, from a
+# rendered 0/5/10% comparison plus a device check at 5%.
+MARGIN = 0.10
 
 
 def load_mark() -> Image.Image:
