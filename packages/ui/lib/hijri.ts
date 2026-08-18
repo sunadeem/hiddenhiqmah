@@ -51,6 +51,31 @@ export const HIJRI_MONTHS_SHORT = [
   "Dhul-Hijjah",
 ] as const;
 
+/**
+ * Arabic month names. Same index basis as HIJRI_MONTHS. Intl's Arabic path has
+ * the same index-fallback problem on Android — it will happily hand back
+ * "مارس" (March) for Rabi al-Awwal.
+ */
+export const HIJRI_MONTHS_AR = [
+  "\u0645\u064f\u062d\u064e\u0631\u0651\u064e\u0645",
+  "\u0635\u064e\u0641\u064e\u0631",
+  "\u0631\u064e\u0628\u0650\u064a\u0639 \u0627\u0644\u0623\u064e\u0648\u0651\u064e\u0644",
+  "\u0631\u064e\u0628\u0650\u064a\u0639 \u0627\u0644\u062b\u0651\u064e\u0627\u0646\u0650\u064a",
+  "\u062c\u064f\u0645\u064e\u0627\u062f\u0649 \u0627\u0644\u0623\u064f\u0648\u0644\u0649",
+  "\u062c\u064f\u0645\u064e\u0627\u062f\u0649 \u0627\u0644\u0622\u062e\u0650\u0631\u064e\u0629",
+  "\u0631\u064e\u062c\u064e\u0628",
+  "\u0634\u064e\u0639\u0652\u0628\u064e\u0627\u0646",
+  "\u0631\u064e\u0645\u064e\u0636\u064e\u0627\u0646",
+  "\u0634\u064e\u0648\u0651\u064e\u0627\u0644",
+  "\u0630\u0648 \u0627\u0644\u0642\u0650\u0639\u062f\u0629",
+  "\u0630\u0648 \u0627\u0644\u062d\u0650\u062c\u0651\u0629",
+] as const;
+
+export function hijriMonthNameAr(month: number): string {
+  if (!Number.isFinite(month) || month < 1 || month > HIJRI_MONTHS_AR.length) return "";
+  return HIJRI_MONTHS_AR[month - 1];
+}
+
 export interface HijriParts {
   /** 1–30 */
   day: number;
