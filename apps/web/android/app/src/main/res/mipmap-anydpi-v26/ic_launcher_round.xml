@@ -2,4 +2,8 @@
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/ic_launcher_background"/>
     <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+    <!-- Android 13+ themed icons: the system tints this silhouette to the
+         user's wallpaper palette. Without it, Hiqmah stays full-colour on a
+         home screen where every other icon has gone monochrome. -->
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome"/>
 </adaptive-icon>
