@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widget card. Black with a hairline gold edge, matching the app and the iOS
+     widgets. Launchers clip to their own corner radius on top of this, so the
+     radius here only needs to look right where it is NOT clipped. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#0B0B0D" />
+    <corners android:radius="20dp" />
+    <stroke android:width="1dp" android:color="#2A2418" />
+</shape>

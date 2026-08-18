@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- updatePeriodMillis is 0 ON PURPOSE. Android floors it at 30 minutes, which
+     would leave a passed prayer on screen for up to half an hour, and the
+     Chronometer already keeps the countdown live by itself. The provider instead
+     schedules one exact alarm at the next prayer boundary - accurate and cheaper
+     than polling.
+
+     TARGET_CELL sizes keep it usable at 2x2; resizeable so it can be stretched.
+     widgetCategory includes keyguard so it is offered on the Android 16
+     lock screen, where an AppWidget is the same object as a home-screen one. -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="180dp"
+    android:minHeight="110dp"
+    android:targetCellWidth="3"
+    android:targetCellHeight="2"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/widget_next_prayer"
+    android:previewLayout="@layout/widget_next_prayer"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen|keyguard"
+    android:description="@string/widget_next_prayer_description" />
