@@ -55,3 +55,11 @@ next-env.d.ts
 # Editor
 .vscode/
 .idea/
+
+# Android: generated per-machine, must not be committed
+apps/web/android/local.properties
+apps/web/android/.gradle/
+apps/web/android/build/
+apps/web/android/app/build/
+apps/web/android/capacitor-cordova-android-plugins/build/
+apps/web/android/app/src/main/assets/public/
