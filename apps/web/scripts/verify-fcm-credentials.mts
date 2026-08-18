@@ -1,15 +1,21 @@
 /**
  * Prove the FCM server credentials actually work — without pushing to anyone.
  *
- *   vercel env pull .env.vercel                  # do NOT let it overwrite .env.local
+ *   npm run verify:fcm-creds -- --service-account ~/Downloads/hiqmah-....json
  *   npm run verify:fcm-creds -- --env-file .env.vercel
- *
  *   npm run verify:fcm-creds                     # or from .env.local / .env
  *   npm run verify:fcm-creds -- --token <FCM>    # + is this device reachable?
  *   npm run verify:fcm-creds -- --token <FCM> --send   # actually deliver one
  *
  * Reads FCM_PROJECT_ID / FCM_CLIENT_EMAIL / FCM_PRIVATE_KEY from the environment,
- * falling back to --env-file, then .env.local, then .env (all relative to apps/web).
+ * falling back to --env-file, then .env.local, then .env (relative to apps/web).
+ *
+ * ⚠️ `vercel env pull` CANNOT retrieve these if they are marked **Sensitive** in
+ * Vercel — sensitive vars are write-only and pull returns the literal string
+ * "[SENSITIVE]". That is the correct setting to keep, so verify the key at its
+ * SOURCE instead: --service-account <the JSON Firebase downloaded>. That proves
+ * the key itself is valid and authorised. The one thing it cannot prove is that
+ * the value pasted into Vercel matches — only a real delivery closes that gap.
  *
  * WHY IT EXISTS
  *
@@ -83,6 +89,39 @@ function loadEnvLocal(): void {
   }
 }
 
+/**
+ * Load credentials straight from the service-account JSON Firebase downloads.
+ *
+ * This is the only local option once the Vercel vars are marked Sensitive, and
+ * it is also the most direct: it tests the exact key material rather than a
+ * copy of it.
+ */
+function loadServiceAccount(): void {
+  const idx = process.argv.indexOf("--service-account");
+  if (idx === -1) return;
+  const path = process.argv[idx + 1];
+  if (!path) {
+    console.error("\n✗ --service-account needs a path to the downloaded JSON\n");
+    process.exit(1);
+  }
+  let parsed: { project_id?: string; client_email?: string; private_key?: string };
+  try {
+    parsed = JSON.parse(readFileSync(path.replace(/^~/, process.env.HOME ?? "~"), "utf8"));
+  } catch (e) {
+    console.error(`\n✗ cannot read ${path}: ${e instanceof Error ? e.message : e}\n`);
+    process.exit(1);
+  }
+  if (!parsed.private_key) {
+    console.error(`\n✗ ${path} has no "private_key" — is it the service-account key,`);
+    console.error(`  or did you point at google-services.json by mistake?\n`);
+    process.exit(1);
+  }
+  process.env.FCM_PROJECT_ID = parsed.project_id;
+  process.env.FCM_CLIENT_EMAIL = parsed.client_email;
+  process.env.FCM_PRIVATE_KEY = parsed.private_key;
+}
+
+loadServiceAccount();
 loadEnvLocal();
 
 const argv = process.argv.slice(2);
@@ -108,7 +147,20 @@ for (const [label, value] of [
   console.log(`  ${value ? "✓" : "✗"} ${label}${value ? `  ${label === "FCM_PRIVATE_KEY" ? value : value}` : "  MISSING"}`);
 }
 if (!projectId || !clientEmail || !rawKey) {
-  die("Set all three (or run `vercel env pull` in apps/web to fetch them).");
+  die(
+    "Set all three.\n" +
+      "  Easiest: --service-account <the JSON Firebase downloaded>."
+  );
+}
+// Vercel marks secrets Sensitive = write-only; `env pull` then writes the
+// literal placeholder rather than the value, which would otherwise fail later
+// as an unreadable PEM and read like a corrupted key.
+if ([projectId, clientEmail, rawKey].some((v) => v.includes("[SENSITIVE]"))) {
+  die(
+    "These came back as [SENSITIVE] — Vercel cannot export vars marked Sensitive.\n" +
+      "  That is the right setting to keep; verify the key at its source instead:\n" +
+      "    npm run verify:fcm-creds -- --service-account <downloaded JSON>"
+  );
 }
 
 // ── 1. Token exchange — this is what a wrong key fails ──────────────────────
