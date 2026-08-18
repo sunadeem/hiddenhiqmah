@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "verify:fcm": "npx tsx scripts/verify-fcm-classification.mts",
+    "verify:fcm-creds": "npx tsx scripts/verify-fcm-credentials.mts",
     "dev": "next dev",
     "build:search-index": "node ../../scripts/build-hadith-index.mjs",
     "build": "next build",
