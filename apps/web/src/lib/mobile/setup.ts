@@ -2,6 +2,7 @@
 
 import { Capacitor } from "@capacitor/core";
 import { syncWidgetData } from "@/lib/mobile/widgets";
+import { installPlaybackService } from "./playbackService";
 
 // Module-scoped so the viewport observer survives (and is not duplicated by)
 // remounts of the component that calls applyNativeSetup.
@@ -25,6 +26,10 @@ export async function applyNativeSetup() {
   // unreliably), whereas an Android status bar is ~24px and that same floor is
   // ~36px of dead space pushing every screen down.
   document.documentElement.classList.add(Capacitor.getPlatform());
+
+  // Android only: lets the audio coordinator raise a playback foreground
+  // service, without packages/ui having to know Capacitor exists.
+  installPlaybackService();
 
   // Stop the WKWebView from auto-zooming when a text field is focused (and
   // pinch-zoom, for a native feel). Native-only: the website's <meta viewport>

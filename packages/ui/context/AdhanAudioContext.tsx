@@ -1,7 +1,11 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState, useCallback, ReactNode } from "react";
-import { registerAudioChannel, claimAudioFocus } from "../lib/audioCoordinator";
+import {
+  registerAudioChannel,
+  claimAudioFocus,
+  releaseAudioFocus,
+} from "../lib/audioCoordinator";
 
 /* ═══════════════════════════════════════════════════════════════════
    TYPES
@@ -158,6 +162,10 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
     setPaused(false);
     setProgress(0);
     clearAdhanMediaSession();
+    // Drop Android's playback foreground service. No-op elsewhere, and guarded
+    // inside so a channel stopped BY another claiming focus can't tear down the
+    // service that other channel just raised.
+    releaseAudioFocus("adhan");
   }, []);
 
   const seekTo = useCallback((fraction: number) => {

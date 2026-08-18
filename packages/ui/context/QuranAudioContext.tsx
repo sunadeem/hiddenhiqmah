@@ -4,7 +4,11 @@ import { createContext, useContext, useRef, useState, useCallback, useEffect, Re
 import { useRouter, usePathname } from "next/navigation";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { getAutoPlayNextSurah, setAutoPlayNextSurah } from "../lib/storage";
-import { registerAudioChannel, claimAudioFocus } from "../lib/audioCoordinator";
+import {
+  registerAudioChannel,
+  claimAudioFocus,
+  releaseAudioFocus,
+} from "../lib/audioCoordinator";
 
 export interface Verse {
   id: number;
@@ -564,6 +568,7 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     }
     setPlayingVerse(null);
     autoPlayRef.current = false;
+      releaseAudioFocus("quran");
   }, []);
 
   // Register with the audio coordinator so starting the adhan stops recitation.
