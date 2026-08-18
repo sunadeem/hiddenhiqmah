@@ -7,6 +7,8 @@ import { getAutoPlayNextSurah, setAutoPlayNextSurah } from "../lib/storage";
 import {
   registerAudioChannel,
   claimAudioFocus,
+  noteAudioAudible,
+  noteAudioSilent,
   releaseAudioFocus,
 } from "../lib/audioCoordinator";
 
@@ -355,6 +357,11 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
     audio.onplay = () => {
       if (audioRef.current === audio && playTokenRef.current === token) {
         setAudioPaused(false);
+        // Sound is coming out again — re-raise Android's playback service. This
+        // path matters because a lock-screen or headphone resume never goes
+        // through our toggle, so without it the service stays down and audio
+        // would be muted the moment the app is backgrounded.
+        noteAudioAudible("quran");
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
         updatePos(1);
       }
@@ -365,6 +372,10 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
       if (audio.ended) return;
       if (audioRef.current === audio && playTokenRef.current === token) {
         setAudioPaused(true);
+        // Drop the foreground service while genuinely paused. Focus is KEPT, so
+        // resuming re-raises it above; this only stops an idle service holding
+        // an undismissable notification over silence.
+        noteAudioSilent("quran");
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
         updatePos(0);
       }
@@ -411,9 +422,13 @@ export function QuranAudioProvider({ children }: { children: ReactNode }) {
         } else {
           setPlayingVerse(null);
           autoPlayRef.current = false;
+          // Reached the end with nothing queued — stop the service. Without
+          // this, finishing a surah left it running indefinitely.
+          noteAudioSilent("quran");
         }
       } else {
         setPlayingVerse(null);
+        noteAudioSilent("quran");
       }
     };
   }, [router]);

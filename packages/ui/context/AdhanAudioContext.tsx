@@ -5,6 +5,8 @@ import {
   registerAudioChannel,
   claimAudioFocus,
   releaseAudioFocus,
+  noteAudioAudible,
+  noteAudioSilent,
 } from "../lib/audioCoordinator";
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -84,21 +86,29 @@ export function AdhanAudioProvider({ children }: { children: ReactNode }) {
       setPaused(false);
       setProgress(0);
       clearAdhanMediaSession();
+      // The adhan finishing is the COMMON case - it fires at the prayer time,
+      // backgrounded, and plays to the end. Releasing focus here (not only from
+      // the stop() the user rarely presses) is what stops a permanent
+      // notification being left behind five times a day.
+      releaseAudioFocus("adhan");
     });
     audio.addEventListener("error", () => {
       audioRef.current = null;
       setPlaying(false);
       setPaused(false);
       clearAdhanMediaSession();
+      releaseAudioFocus("adhan");
     });
     audio.addEventListener("play", () => {
       setPaused(false);
+      noteAudioAudible("adhan");
       if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
     });
     audio.addEventListener("pause", () => {
       // Only mark paused if not fully stopped
       if (audioRef.current === audio) {
         setPaused(true);
+        noteAudioSilent("adhan");
         if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
       }
     });
