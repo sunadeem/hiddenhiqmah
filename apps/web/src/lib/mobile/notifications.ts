@@ -337,7 +337,7 @@ export async function scheduleAllNotifications(
     id: number;
     title: string;
     body: string;
-    schedule: { at: Date };
+    schedule: { at: Date; allowWhileIdle?: boolean };
     sound?: string;
     url?: string; // deep-link target on tap
     tier: 1 | 2 | 3 | 4; // 1=adhan (protected), 2=pre-prayer, 3=engagement, 4=Islamic events
@@ -573,7 +573,22 @@ export async function scheduleAllNotifications(
         id: n.id,
         title: n.title,
         body: n.body,
-        schedule: n.schedule,
+        // ⭐ allowWhileIdle is what makes an alarm survive Doze on Android, and
+        // it is applied HERE, at the single choke point every notification
+        // passes through, so a future call site cannot forget it.
+        //
+        // MEASURED on a Galaxy A17 in forced deep idle: without it, Capacitor
+        // schedules setExact(RTC) — exact, but NON-WAKING and Doze-deferrable —
+        // and dumpsys reported our prayer alarm pushed back by device_idle to
+        // +37m53s. It simply did not fire at the prayer time. With it, the
+        // plugin takes the setExactAndAllowWhileIdle(RTC_WAKEUP) branch, which
+        // wakes the device.
+        //
+        // For this app that is not a nicety: an adhan that arrives 38 minutes
+        // late, because the phone was asleep in a pocket, is the product
+        // failing at the one thing it promises. Android permits a handful of
+        // such wakeups per app per hour — far more than five prayers a day.
+        schedule: { ...n.schedule, allowWhileIdle: true },
         ...(n.sound ? { sound: n.sound } : {}),
         ...(n.interruptionLevel ? { interruptionLevel: n.interruptionLevel } : {}),
         ...(n.url ? { extra: { url: n.url } } : {}),
