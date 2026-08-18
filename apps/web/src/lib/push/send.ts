@@ -137,6 +137,104 @@ export async function sendPush(
   };
 }
 
+/**
+ * Answer "would a push actually go out right now?" without pushing to anyone.
+ *
+ * Needed because a bad credential is SILENT: the transport reports ok:false,
+ * the route still returns HTTP 200 with a tidy summary, and the only symptom is
+ * that nobody hears from us — indistinguishable from nobody being due a push.
+ * It also cannot be checked from a laptop, because the credentials live in
+ * Vercel and are marked Sensitive (write-only, so `vercel env pull` returns a
+ * placeholder). This runs where they actually are.
+ *
+ * The trick: send to a token that provably cannot resolve to any device, and
+ * read HOW FAR the request got from the error that comes back.
+ *
+ *   auth/config rejected     -> InvalidProviderToken, 401/403, "FCM auth failed"
+ *   the TOKEN was rejected   -> BadDeviceToken, UNREGISTERED, INVALID_ARGUMENT
+ *
+ * The second outcome is the PASS: a provider that refused your credentials
+ * never got far enough to have an opinion about your token. Nothing is
+ * delivered either way — the tokens below are syntactically shaped but belong
+ * to no device, and any staleness the senders report is discarded rather than
+ * written back to the database.
+ */
+export type TransportProbe = {
+  configured: boolean;
+  ok: boolean;
+  detail: string;
+};
+
+const PROBE_APNS_TOKEN = "0".repeat(64); // valid shape, registered to nothing
+const PROBE_FCM_TOKEN =
+  "cProbeNotARealToken:APA91bF-this-token-belongs-to-no-device-and-is-never-delivered";
+
+/** Reasons that mean "we got through; only the token was wrong" = credentials OK. */
+const TOKEN_LEVEL = new Set([
+  "BadDeviceToken",
+  "DeviceTokenNotForTopic",
+  "Unregistered",
+  "UNREGISTERED",
+  "INVALID_ARGUMENT",
+]);
+
+export async function probeTransports(): Promise<{
+  apns: TransportProbe;
+  fcm: TransportProbe;
+}> {
+  const payload: PushPayload = {
+    title: "Hiqmah",
+    body: "Credential probe — never delivered.",
+  };
+
+  const read = (r: SendManyResult | null, configured: boolean): TransportProbe => {
+    if (!configured) return { configured: false, ok: false, detail: "not configured" };
+    if (!r) return { configured: true, ok: false, detail: "no result" };
+    const first = r.results[0];
+    if (first?.ok) return { configured: true, ok: true, detail: "accepted" };
+    const reason = first?.reason ?? `HTTP ${first?.status ?? 0}`;
+    return {
+      configured: true,
+      ok: TOKEN_LEVEL.has(reason),
+      detail: reason,
+    };
+  };
+
+  const apnsOn = isApnsConfigured();
+  const fcmOn = isFcmConfigured();
+
+  const [apnsRes, fcmRes] = await Promise.all([
+    apnsOn
+      ? sendToManyApns([{ token: PROBE_APNS_TOKEN, environment: "production" }], payload).catch(
+          (e): SendManyResult => ({
+            sent: 0,
+            failed: 1,
+            staleTokens: [],
+            corrected: [],
+            results: [
+              { token: "", ok: false, reason: e instanceof Error ? e.message : "apns threw" },
+            ],
+          })
+        )
+      : Promise.resolve(null),
+    fcmOn
+      ? sendToManyFcm([{ token: PROBE_FCM_TOKEN }], payload).catch(
+          (e): SendManyResult => ({
+            sent: 0,
+            failed: 1,
+            staleTokens: [],
+            corrected: [],
+            results: [
+              { token: "", ok: false, reason: e instanceof Error ? e.message : "fcm threw" },
+            ],
+          })
+        )
+      : Promise.resolve(null),
+  ]);
+
+  return { apns: read(apnsRes, apnsOn), fcm: read(fcmRes, fcmOn) };
+}
+
 /** Send one push to a single device. */
 export async function sendPushToOne(
   target: PushTarget,

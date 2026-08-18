@@ -1,6 +1,11 @@
 import { NextRequest } from "next/server";
 import { requireAdmin, adminJson, corsPreflight } from "@/lib/admin-auth";
-import { sendPush, isPushConfigured, type PushTarget } from "@/lib/push/send";
+import {
+  sendPush,
+  isPushConfigured,
+  probeTransports,
+  type PushTarget,
+} from "@/lib/push/send";
 
 export const runtime = "nodejs";
 
@@ -18,6 +23,27 @@ export async function POST(req: NextRequest) {
   if (!auth.ok) return auth.res;
   const supa = auth.supa;
   const body = auth.body;
+
+  // ── Dry run: are the push credentials actually working? ──────────────────
+  //
+  // Returns BEFORE reading a single token or sending anything, so it cannot
+  // touch the broadcast path below. This is the only way to check the
+  // credentials that matter: they live in Vercel, marked Sensitive, which makes
+  // them write-only — `vercel env pull` returns a placeholder, so a laptop can
+  // verify the key it *thinks* was pasted but never the value actually in use.
+  //
+  //   curl -sX POST https://<host>/api/admin/push \
+  //     -H 'content-type: application/json' \
+  //     -d '{"email":"…","password1":"…","password2":"…","dryRun":true}'
+  if (body.dryRun === true) {
+    const transports = await probeTransports();
+    return adminJson({
+      ok: transports.apns.ok || transports.fcm.ok,
+      dryRun: true,
+      delivered: "nothing — probe tokens belong to no device",
+      transports,
+    });
+  }
 
   const title = String(body.title ?? "").trim();
   const bodyText = String(body.body ?? "").trim();
