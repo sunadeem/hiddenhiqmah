@@ -13,6 +13,7 @@ import { chapter } from "@/lib/hifz/quran";
 import { hapticSuccess } from "@/lib/mobile/haptics";
 import { useAuth } from "@/context/AuthContext";
 import { getMyCirclesWithDetail, setMyProgress, type CircleDetail } from "@/lib/circles";
+import { formatHijriDayMonth } from "@hidden-hiqmah/ui/lib/hijri";
 
 export type HifzView =
   | "onboarding"
@@ -88,10 +89,9 @@ function formatDate(iso?: string): string {
   const d = iso ? new Date(iso) : new Date();
   if (isNaN(d.getTime())) return "";
   try {
-    return new Intl.DateTimeFormat("en-TN-u-ca-islamic-umalqura", {
-      day: "numeric",
-      month: "long",
-    }).format(d);
+    const hijri = formatHijriDayMonth(d);
+    if (hijri) return hijri;
+    return new Intl.DateTimeFormat("en", { day: "numeric", month: "long" }).format(d);
   } catch {
     return new Intl.DateTimeFormat("en", { day: "numeric", month: "long" }).format(d);
   }

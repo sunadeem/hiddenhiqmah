@@ -30,6 +30,7 @@ import TodayStrip from "./TodayStrip";
 import { QuickActions } from "../MobileHomeDashboard";
 import QiblahSheet from "../QiblahSheet";
 import { useQiblahParam } from "@/lib/mobile/qiblah-param";
+import { formatHijri } from "@hidden-hiqmah/ui/lib/hijri";
 
 // Midnight Indigo on a near-black canvas: the page background is near-black so the
 // indigo cards POP (instead of a wall of one colour), with a soft periwinkle glow
@@ -87,15 +88,14 @@ function nextPrayer(
 /** "Tuesday · 12 Ramadan 1447" — real Hijri (umalqura) date, year-round. */
 function hijriDateLine(): string {
   try {
-    const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).formatToParts(new Date());
-    const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
-    const yr = get("year").replace(/\D/g, "");
-    return `${get("weekday")} · ${get("day")} ${get("month")} ${yr}`;
+    // Weekday still comes from Intl (Gregorian names are correct everywhere);
+    // the Hijri day/month/year come from our own formatter.
+    const weekday = new Intl.DateTimeFormat("en", { weekday: "long" }).format(
+      new Date()
+    );
+    const hijri = formatHijri(new Date(), { era: false });
+    if (!hijri) return "";
+    return `${weekday} · ${hijri}`;
   } catch {
     return "";
   }

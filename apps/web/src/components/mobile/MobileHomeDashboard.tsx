@@ -30,6 +30,7 @@ import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
 import { getProgress, getPrayerSettings } from "@hidden-hiqmah/ui/lib/storage";
 import { reverseGeocode, formatLocation } from "@hidden-hiqmah/ui/lib/location";
+import { formatHijri } from "@hidden-hiqmah/ui/lib/hijri";
 import { computePrayerTimes } from "@/lib/prayer-times";
 import { ensureNotificationPermission, scheduleAllNotifications } from "@/lib/mobile/notifications";
 import { LOCATION_CHANGED_EVENT } from "@/lib/mobile/location-refresh";
@@ -397,19 +398,8 @@ export function NextPrayerCard() {
 }
 
 function formatHijriDate(): string {
-  try {
-    const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).formatToParts(new Date());
-    const day = parts.find((p) => p.type === "day")?.value ?? "";
-    const month = parts.find((p) => p.type === "month")?.value ?? "";
-    const year = parts.find((p) => p.type === "year")?.value ?? "";
-    return `${day} ${month} ${year} AH`;
-  } catch {
-    return "";
-  }
+  // Names come from our own list, never Intl — see packages/ui/lib/hijri.ts.
+  return formatHijri(new Date());
 }
 
 function formatGregorianDate(): string {

@@ -29,6 +29,7 @@ import { useQiblahParam } from "@/lib/mobile/qiblah-param";
 import { useAuth } from "@/context/AuthContext";
 import TodayStrip from "./TodayStrip";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
+import { formatHijri } from "@hidden-hiqmah/ui/lib/hijri";
 
 type Step = {
   key: string;
@@ -42,15 +43,8 @@ type Step = {
 };
 
 function hijriToday(): string {
-  try {
-    return new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(new Date());
-  } catch {
-    return "";
-  }
+  // Month name from our own list — Intl returns a Gregorian one on Android.
+  return formatHijri(new Date(), { era: false });
 }
 
 function buildSteps(tunedFor: TunedFor, hour: number): Step[] {
