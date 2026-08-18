@@ -123,3 +123,35 @@ Until they exist, `isFcmConfigured()` is false, Android tokens report
 
 **Verified:** APK builds; `FirebaseApp` initialises; a real FCM registration token
 is issued on a Play-Store-image emulator. **Unverified:** any actual delivery.
+
+## Release builds (Play uploads)
+
+    cd apps/web && BUILD_TARGET=mobile npx next build && npx cap sync android
+    cd android && ./gradlew bundleRelease
+    # -> app/build/outputs/bundle/release/app-release.aab
+
+Play takes an **.aab**, not an APK. The debug APK used for emulator work is
+signed with the debug key and flagged `application-debuggable`; it cannot be
+uploaded.
+
+**The upload key.** `android/upload-keystore.jks` + `android/keystore.properties`
+are **gitignored, and that mattered**: Capacitor's template ships `*.jks` and
+`*.keystore` COMMENTED OUT in `android/.gitignore`, i.e. keystores are committed
+by default. On this public repo that would have published the key that signs
+every release — and while Play App Signing lets Google reset a lost *upload* key,
+nothing can revoke a leaked one. The ignore patterns were uncommented and
+verified with a throwaway `.jks` **before** the real key was generated.
+
+The password lives only in `keystore.properties`, on one machine. It belongs in a
+password manager.
+
+`app/build.gradle` reads that file if present and otherwise **does not create the
+release signingConfig at all**, so `bundleRelease` fails loudly on a machine
+without the secret rather than emitting an unsigned bundle that Play would reject
+only after upload. Debug builds are unaffected.
+
+Upload key fingerprint (SHA-256), for confirming what Play registered:
+
+    2B:D4:9A:81:DE:20:8A:F1:7B:F4:19:85:68:F5:09:F7:AE:77:A9:FB:AC:B5:B7:E4:AF:D1:EB:B3:7B:3D:2E:99
+
+**Verify before uploading** — `jarsigner -verify <aab>` must print `jar verified.`

@@ -53,9 +53,17 @@ captures/
 .idea/navEditor.xml
 
 # Keystore files
-# Uncomment the following lines if you do not want to check your keystore files in.
-#*.jks
-#*.keystore
+#
+# UNCOMMENTED DELIBERATELY - this repository is PUBLIC. Capacitor's template
+# leaves these commented, i.e. keystores get committed by default, which on a
+# public repo would publish the key that signs every release. Anyone holding it
+# could sign a package Android would accept as an update to this app.
+#
+# The upload key is recoverable if lost (Play App Signing lets Google reset it),
+# but it is NOT revocable once leaked - so this stays ignored.
+*.jks
+*.keystore
+keystore.properties
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
