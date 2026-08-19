@@ -6,4 +6,7 @@
     <string name="custom_url_scheme">com.hiddenhiqmah.app</string>
     <string name="widget_next_prayer_description">The next prayer, its time, and a live countdown.</string>
     <string name="widget_prayer_times_description">Today\'s five prayer times, with the next one highlighted.</string>
+    <string name="widget_hijri_description">The Hijri date, alongside today\'s Gregorian date.</string>
+    <string name="widget_qibla_description">The direction and distance to the Ka\'bah from your location.</string>
+    <string name="widget_streak_description">Your consecutive-day streak.</string>
 </resources>

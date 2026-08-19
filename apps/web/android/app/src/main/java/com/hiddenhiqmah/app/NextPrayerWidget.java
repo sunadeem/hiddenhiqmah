@@ -52,9 +52,53 @@ public class NextPrayerWidget extends AppWidgetProvider {
         WidgetStore.Prayer next = WidgetStore.nextPrayer(payload, now);
 
         for (int id : ids) {
-            mgr.updateAppWidget(id, build(context, payload, next, now));
+            RemoteViews v = build(context, payload, next, now);
+            // Draw the art at the size the launcher actually gave THIS instance,
+            // read from its options — a fixed bitmap would stretch or blur on a
+            // resized widget, and users resize widgets constantly.
+            android.os.Bundle opts = mgr.getAppWidgetOptions(id);
+            int wDp = opts != null ? opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0) : 0;
+            int hDp = opts != null ? opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0) : 0;
+            if (wDp <= 0) wDp = 250;
+            if (hDp <= 0) hDp = 160;
+            android.graphics.Bitmap art = WidgetArt.card(
+                context,
+                WidgetArt.dpi(context, wDp),
+                WidgetArt.dpi(context, hDp),
+                motifFor(next)
+            );
+            if (art != null) v.setImageViewBitmap(R.id.widget_art, art);
+            android.graphics.Bitmap badge =
+                WidgetArt.badge(context, WidgetArt.dpi(context, 22), motifFor(next));
+            if (badge != null) v.setImageViewBitmap(R.id.widget_badge, badge);
+            mgr.updateAppWidget(id, v);
         }
         scheduleBoundary(context, next, now);
+    }
+
+    /**
+     * A motif per prayer, so the face changes character through the day rather
+     * than being one static card: a crescent at the night prayers, the arch by
+     * day. Small touch, but it is what makes a widget feel alive on a home
+     * screen you look at fifty times.
+     */
+    private static WidgetArt.Motif motifFor(WidgetStore.Prayer next) {
+        if (next == null) return WidgetArt.Motif.ARCH;
+        if ("Isha".equals(next.name) || "Fajr".equals(next.name)) return WidgetArt.Motif.CRESCENT;
+        if ("Maghrib".equals(next.name)) return WidgetArt.Motif.STAR;
+        return WidgetArt.Motif.ARCH;
+    }
+
+    /** Redraw when the user resizes, so the art matches the new cell. */
+    @Override
+    public void onAppWidgetOptionsChanged(
+        Context context,
+        AppWidgetManager mgr,
+        int id,
+        android.os.Bundle newOptions
+    ) {
+        super.onAppWidgetOptionsChanged(context, mgr, id, newOptions);
+        onUpdate(context, mgr, new int[] { id });
     }
 
     private RemoteViews build(
