@@ -558,7 +558,15 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
 
       {/* Compass */}
       <ContentCard delay={0.08}>
-        <h3 className="text-gold font-semibold text-lg mb-3 flex items-center gap-2">
+        {/* `compact` is not a platform flag — the sheet that sets it is the home
+            compass on iOS as well — so the space-saving trims below are marked
+            here and applied in globals.css under .native.android. Dropping this
+            heading in JSX would take 68px off the iOS sheet too. */}
+        <h3
+          className={`text-gold font-semibold text-lg mb-3 flex items-center gap-2${
+            compact ? " qiblah-compact-drop" : ""
+          }`}
+        >
           <Compass size={18} /> Qiblah Direction From Your Location
         </h3>
 
@@ -577,7 +585,11 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
         )}
 
         {loc && qiblahBearing !== null && (
-          <div className="flex flex-col md:flex-row items-center gap-6">
+          <div
+            className={`flex flex-col md:flex-row items-center gap-6${
+              compact ? " qiblah-compact-gap" : ""
+            }`}
+          >
             {/* Compass visual — dial is fixed (N stays at top, Ka'bah stays at qibla bearing);
                 only the "you are facing" arrow rotates with device heading. */}
             <div className="flex flex-col items-center shrink-0 w-full md:w-auto">
@@ -828,9 +840,22 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                   )}
                 </>
               )}
+              {/* Four lines restating what the dial, the arrow and the marker
+                  already show cost the Android sheet its last fold. Both
+                  versions ship and CSS picks one (see .qiblah-compact-long /
+                  -short), because a `compact` branch would also shorten iOS,
+                  where the copy fits. "Hold your phone flat" is not lost — the
+                  tilted hint says it exactly when it applies. */}
               {heading !== null && (
                 <p className="text-xs text-themed-muted mt-3">
-                  The dial rotates as you turn — keep turning until the Ka&apos;bah marker arrives at the top, right under the arrow. That direction is the qiblah. Hold your phone flat for the most accurate reading.
+                  <span className={compact ? "qiblah-compact-long" : undefined}>
+                    The dial rotates as you turn — keep turning until the Ka&apos;bah marker arrives at the top, right under the arrow. That direction is the qiblah. Hold your phone flat for the most accurate reading.
+                  </span>
+                  {compact && (
+                    <span className="qiblah-compact-short">
+                      Turn until the Ka&apos;bah marker reaches the top.
+                    </span>
+                  )}
                 </p>
               )}
               {compact && (

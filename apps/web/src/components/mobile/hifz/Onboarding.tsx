@@ -284,7 +284,7 @@ export default function Onboarding({ path, nav }: { path: HifzPath; nav: HifzNav
   return (
     <div
       className="flex h-full flex-col text-themed"
-      style={{ paddingTop: "max(env(safe-area-inset-top), 12px)" }}
+      style={{ paddingTop: "var(--hifz-onboarding-top)" }}
     >
       {/* header — back + step dots (NO salām, straight to content) */}
       <div className="flex items-center px-5 pt-2 pb-1">

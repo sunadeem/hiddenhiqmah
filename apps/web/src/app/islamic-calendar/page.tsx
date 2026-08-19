@@ -13,6 +13,7 @@ import { Calendar } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
+import { hijriParts, hijriMonthName, hijriMonthNameAr, type HijriParts } from "@hidden-hiqmah/ui/lib/hijri";
 
 /* ───────────────────────── data ───────────────────────── */
 
@@ -456,6 +457,28 @@ const recurringObservances = [
 
 /* ── Hijri ⇄ Gregorian helpers (Umm al-Qura via Intl) ── */
 
+/**
+ * Hijri month NAMES and the era must never come from Intl — see the header of
+ * packages/ui/lib/hijri.ts. Chromium's ICU build on Android has no localised
+ * Islamic month names and falls back BY INDEX, so `month: "long"` printed
+ * Rabi al-Awwal (3rd Hijri month) as "March"; `year: "numeric"` separately
+ * appends a Gregorian era, so the year came back "1448 BC" and the
+ * `.replace(/\s*AH$/, "")` that was meant to strip an era never matched — the
+ * converter read "6 March, 1448 BC AH".
+ *
+ * This page is where the Hijri widget deep-links, so the widget and the screen
+ * it opened contradicted each other on the same tap: HijriWidget.java renders
+ * its own "6 Rabi al-Awwal 1448 AH" from the same month table used here.
+ *
+ * Numbers from Intl are correct on every engine; only the names are ours.
+ */
+function hijriArabic(parts: HijriParts): string {
+  // Arabic-Indic digits, matching what ar-SA used to emit. useGrouping off so a
+  // four-digit year stays ١٤٤٨ rather than ١٬٤٤٨.
+  const digits = new Intl.NumberFormat("ar-u-nu-arab", { useGrouping: false });
+  return `${digits.format(parts.day)} ${hijriMonthNameAr(parts.month)} ${digits.format(parts.year)} هـ`;
+}
+
 function hijriPartsOf(date: Date): { day: number; month: number; year: number } {
   const fmt = new Intl.DateTimeFormat("en-US", {
     calendar: "islamic-umalqura",
@@ -581,24 +604,12 @@ function IslamicCalendarContent() {
   }, [search, filteredMonths, expandedMonth]);
 
   const todayHijri = useMemo(() => {
-    try {
-      const now = new Date();
-      const en = new Intl.DateTimeFormat("en-US", {
-        calendar: "islamic-umalqura",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }).format(now);
-      const ar = new Intl.DateTimeFormat("ar-SA", {
-        calendar: "islamic-umalqura",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }).format(now);
-      return { en, ar };
-    } catch {
-      return null;
-    }
+    const parts = hijriParts(new Date());
+    if (!parts) return null;
+    return {
+      en: `${parts.day} ${hijriMonthName(parts.month)} ${parts.year} AH`,
+      ar: hijriArabic(parts),
+    };
   }, []);
 
   const hijriResult = useMemo(() => {
@@ -606,33 +617,20 @@ function IslamicCalendarContent() {
       const date = new Date(selectedDate + "T12:00:00"); // noon to avoid timezone issues
       if (isNaN(date.getTime())) return null;
 
-      const dayFormatter = new Intl.DateTimeFormat("en-US", {
-        calendar: "islamic-umalqura",
-        day: "numeric",
-      });
-      const monthFormatter = new Intl.DateTimeFormat("en-US", {
-        calendar: "islamic-umalqura",
-        month: "long",
-      });
-      const yearFormatter = new Intl.DateTimeFormat("en-US", {
-        calendar: "islamic-umalqura",
-        year: "numeric",
-      });
-      const fullFormatterAr = new Intl.DateTimeFormat("ar-SA", {
-        calendar: "islamic-umalqura",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
+      // Hijri day/month/year come from hijriParts (numbers only — see
+      // hijriArabic above for why the names cannot come from Intl). The
+      // Gregorian and weekday formatters below are unaffected by that bug.
+      const parts = hijriParts(date);
+      if (!parts) return null;
       const weekdayFormatter = new Intl.DateTimeFormat("en-US", {
         weekday: "long",
       });
 
       return {
-        day: dayFormatter.format(date),
-        month: monthFormatter.format(date),
-        year: yearFormatter.format(date).replace(/\s*AH$/, ""),
-        arabic: fullFormatterAr.format(date),
+        day: parts.day,
+        month: hijriMonthName(parts.month),
+        year: parts.year,
+        arabic: hijriArabic(parts),
         weekday: weekdayFormatter.format(date),
         gregorian: new Intl.DateTimeFormat("en-US", {
           weekday: "long",

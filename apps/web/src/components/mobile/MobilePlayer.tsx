@@ -197,7 +197,7 @@ function FullSheet({
     >
       <div
         className="shrink-0 relative"
-        style={{ paddingTop: "max(calc(env(safe-area-inset-top) + 0.75rem), 4rem)" }}
+        style={{ paddingTop: "var(--sheet-chrome-top)" }}
       >
         <div
           onPointerDown={(e) => dragControls.start(e)}
@@ -207,7 +207,7 @@ function FullSheet({
           aria-label="Drag down or tap to close"
           className="absolute inset-x-0 top-0 flex justify-center pt-2 pb-2 touch-manipulation cursor-grab active:cursor-grabbing"
           style={{
-            paddingTop: "max(calc(env(safe-area-inset-top) + 0.5rem), 3.5rem)",
+            paddingTop: "var(--sheet-control-top)",
             touchAction: "none",
           }}
         >
@@ -218,7 +218,7 @@ function FullSheet({
           onClick={onClose}
           aria-label="Close player"
           className="absolute right-3 p-3 rounded-full bg-[var(--overlay-medium)] text-themed touch-manipulation"
-          style={{ top: "max(calc(env(safe-area-inset-top) + 0.5rem), 3.5rem)" }}
+          style={{ top: "var(--sheet-control-top)" }}
         >
           <ChevronDown size={22} />
         </button>
