@@ -22,6 +22,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- Deep links. The scheme, the route table (lib/mobile/deeplinks.ts)
+                 and the iOS widgets all already existed - Android simply never
+                 registered the scheme, so nothing could arrive. Capacitor
+                 surfaces the URI via getLaunchUrl() on a cold start and
+                 appUrlOpen on a warm one; launchMode=singleTask makes the warm
+                 path onNewIntent, which is why deeplinks.ts handles both. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="hiddenhiqmah" />
+            </intent-filter>
+
         </activity>
 
         <service

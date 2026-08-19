@@ -56,7 +56,11 @@ public class QiblaWidget extends AppWidgetProvider {
         JSONObject payload = WidgetStore.read(context);
         RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_qibla);
 
-        Intent open = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        // Deep-link to this widget's own area rather than just opening the app.
+        // "qiblah" is resolved by WIDGET_ROUTES in lib/mobile/deeplinks.ts, the
+        // same table the iOS widgets use, so both platforms land in one place.
+        Intent open = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("hiddenhiqmah://qiblah"));
+        open.setPackage(context.getPackageName());
         if (open != null) {
             int flags = PendingIntent.FLAG_UPDATE_CURRENT;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flags |= PendingIntent.FLAG_IMMUTABLE;
