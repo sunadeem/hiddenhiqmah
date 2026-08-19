@@ -263,6 +263,12 @@ public class HeadingBridge extends Plugin implements SensorEventListener {
         ret.put("trueHeading", trueHeading);
         ret.put("magneticHeading", magnetic);
         ret.put("accuracy", accuracyDegrees());
+        // Diagnostic: the raw field magnitude in µT. Earth's is 25–65 anywhere on
+        // the surface, so this number says WHICH failure we're in — a few µT
+        // means an uncalibrated or dead magnetometer, a few hundred means a
+        // magnet or live cable nearby. Cheap to carry and it turns "the compass
+        // is wrong" into a specific, checkable claim.
+        ret.put("fieldUt", fieldMicroTesla);
         notifyListeners("heading", ret);
     }
 
