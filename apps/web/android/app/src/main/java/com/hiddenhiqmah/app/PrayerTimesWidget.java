@@ -79,7 +79,33 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             }
         }
 
-        for (int id : ids) mgr.updateAppWidget(id, v);
+        for (int id : ids) {
+            // Draw at the size the launcher gave THIS instance; a fixed bitmap
+            // would stretch when the widget is resized.
+            android.os.Bundle opts = mgr.getAppWidgetOptions(id);
+            int wDp = opts != null ? opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0) : 0;
+            int hDp = opts != null ? opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0) : 0;
+            if (wDp <= 0) wDp = 250;
+            if (hDp <= 0) hDp = 220;
+            android.graphics.Bitmap art = WidgetArt.card(
+                context, WidgetArt.dpi(context, wDp), WidgetArt.dpi(context, hDp),
+                WidgetArt.Motif.ARCH
+            );
+            if (art != null) v.setImageViewBitmap(R.id.pt_art, art);
+            android.graphics.Bitmap badge =
+                WidgetArt.badge(context, WidgetArt.dpi(context, 22), WidgetArt.Motif.ARCH);
+            if (badge != null) v.setImageViewBitmap(R.id.pt_badge, badge);
+            mgr.updateAppWidget(id, v);
+        }
+    }
+
+    /** Redraw on resize so the art matches the new cell. */
+    @Override
+    public void onAppWidgetOptionsChanged(
+        Context context, AppWidgetManager mgr, int id, android.os.Bundle newOptions
+    ) {
+        super.onAppWidgetOptionsChanged(context, mgr, id, newOptions);
+        onUpdate(context, mgr, new int[] { id });
     }
 
     static void refreshAll(Context context) {

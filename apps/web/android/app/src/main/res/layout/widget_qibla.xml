@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/qb_root" android:layout_width="match_parent" android:layout_height="match_parent">
+    android:id="@+id/qb_root" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@drawable/widget_bg">
     <ImageView android:id="@+id/qb_art" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitXY" android:contentDescription="@null" />
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical"
         android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="14dp" android:paddingBottom="14dp">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
             <ImageView android:id="@+id/qb_badge" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:contentDescription="@null" />
             <TextView android:id="@+id/qb_label" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="QIBLA" android:textColor="#D4A843" android:textSize="10sp" android:letterSpacing="0.16" android:maxLines="1" />
-            <TextView android:id="@+id/qb_city" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6B665C" android:textSize="10sp" android:maxLines="1" android:ellipsize="end" />
+            <TextView android:id="@+id/qb_city" android:text="Makkah" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6B665C" android:textSize="10sp" android:maxLines="1" android:ellipsize="end" />
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="vertical" android:gravity="center_vertical">
-            <TextView android:id="@+id/qb_bearing" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#F1ECE0" android:textSize="30sp" android:maxLines="1" android:ellipsize="end" />
-            <TextView android:id="@+id/qb_sub" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#E2BB6A" android:textSize="15sp" android:maxLines="1" android:ellipsize="end" />
+            <TextView android:id="@+id/qb_bearing" android:text="56.2°" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#F1ECE0" android:textSize="30sp" android:maxLines="1" android:ellipsize="end" />
+            <TextView android:id="@+id/qb_sub" android:text="NE · 10,681 km" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#E2BB6A" android:textSize="15sp" android:maxLines="1" android:ellipsize="end" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

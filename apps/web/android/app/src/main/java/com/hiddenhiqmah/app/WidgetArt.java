@@ -106,9 +106,12 @@ final class WidgetArt {
         p.setStrokeWidth(dp(ctx, 2f));
         p.setColor(0x1FD4A843); // deliberately faint: texture, not decoration
 
-        float size = h * 1.15f;
-        float cx = w - size * 0.30f;
-        float cy = h * 0.46f;
+        // Sized and placed so the shape stays LEGIBLE. Bled too far off the
+        // edge, a motif reads as stray diagonals rather than a glyph — which is
+        // exactly what the eight-pointed star did at the first attempt.
+        float size = h * 0.95f;
+        float cx = w - size * 0.42f;
+        float cy = h * 0.50f;
 
         switch (motif) {
             case STAR:
@@ -163,21 +166,48 @@ final class WidgetArt {
         c.drawPath(outer, p);
     }
 
-    /** Kaaba: cube with the kiswah band. */
+    /**
+     * Kaaba. A bare rectangle reads as a stray UI box, so it needs the two
+     * details that actually identify it: the kiswah band across the upper
+     * third, and the door.
+     */
     private static void kaaba(Canvas c, float cx, float cy, float r, Paint p) {
-        RectF box = new RectF(cx - r, cy - r * 1.05f, cx + r, cy + r * 1.05f);
-        c.drawRoundRect(box, r * 0.06f, r * 0.06f, p);
-        float bandY = cy - r * 0.30f;
-        c.drawLine(box.left, bandY, box.right, bandY, p);
+        RectF box = new RectF(cx - r * 0.86f, cy - r, cx + r * 0.86f, cy + r);
+        c.drawRoundRect(box, r * 0.05f, r * 0.05f, p);
+
+        // Kiswah band — two lines, not one, so it reads as a band.
+        float bandTop = cy - r * 0.42f, bandBottom = cy - r * 0.20f;
+        c.drawLine(box.left, bandTop, box.right, bandTop, p);
+        c.drawLine(box.left, bandBottom, box.right, bandBottom, p);
+
+        // Door, lower right of the face.
+        float dw = r * 0.26f, dh = r * 0.52f;
+        float dx = cx + r * 0.24f;
+        c.drawRect(dx - dw / 2, cy + r - dh, dx + dw / 2, cy + r * 0.92f, p);
     }
 
-    /** Flame, for the streak face. */
+    /**
+     * Flame. A symmetric teardrop reads as a water droplet — the exact wrong
+     * connotation for a streak — so the tip leans and the base is broad.
+     */
     private static void flame(Canvas c, float cx, float cy, float r, Paint p) {
         Path path = new Path();
-        path.moveTo(cx, cy - r);
-        path.cubicTo(cx + r * 0.85f, cy - r * 0.15f, cx + r * 0.55f, cy + r, cx, cy + r);
-        path.cubicTo(cx - r * 0.55f, cy + r, cx - r * 0.85f, cy - r * 0.15f, cx, cy - r);
+        path.moveTo(cx + r * 0.10f, cy - r);                       // leaning tip
+        path.cubicTo(cx + r * 0.95f, cy - r * 0.05f, cx + r * 0.62f, cy + r, cx, cy + r);
+        path.cubicTo(cx - r * 0.62f, cy + r, cx - r * 0.92f, cy - r * 0.10f,
+                     cx - r * 0.16f, cy - r * 0.62f);
+        path.cubicTo(cx - r * 0.02f, cy - r * 0.80f, cx + r * 0.04f, cy - r * 0.90f,
+                     cx + r * 0.10f, cy - r);
         c.drawPath(path, p);
+
+        // Inner flame, so it is unmistakable rather than merely blob-shaped.
+        Path inner = new Path();
+        inner.moveTo(cx + r * 0.02f, cy - r * 0.34f);
+        inner.cubicTo(cx + r * 0.46f, cy + r * 0.10f, cx + r * 0.30f, cy + r * 0.72f,
+                      cx, cy + r * 0.72f);
+        inner.cubicTo(cx - r * 0.30f, cy + r * 0.72f, cx - r * 0.42f, cy + r * 0.14f,
+                      cx + r * 0.02f, cy - r * 0.34f);
+        c.drawPath(inner, p);
     }
 
     /**
