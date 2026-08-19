@@ -178,13 +178,13 @@ export default function MobileShell({ children }: { children: React.ReactNode })
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            /* pt-2, not pt-4. Above this sits MobileTopBar's --hiqmah-safe-top,
-               which on Android resolves to the REAL display cutout (measured
-               35.6dp on a Galaxy A17, so the 28px floor never applies) — that
-               part is not negotiable. The extra 16px on top of it was the dead
-               band under the status bar; 8px is enough separation without the
-               first card floating. */
-            className="px-3 pt-2 ipad-column"
+            /* NO top padding. Above this sits MobileTopBar's --hiqmah-safe-top,
+               which on Android already resolves to the REAL display cutout
+               (measured 35.6dp on a Galaxy A17 — the 28px floor never applies),
+               so the status bar is cleared before this element begins. Anything
+               added here is pure dead band, which is what kept showing up as a
+               gap under the status bar. Went 16px → 8px → 0 on device feedback. */
+            className="px-3 ipad-column"
             style={{
               paddingBottom: hideBottomChrome
                 ? 16
