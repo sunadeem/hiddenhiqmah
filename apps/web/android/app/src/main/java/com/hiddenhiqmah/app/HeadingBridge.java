@@ -89,6 +89,11 @@ public class HeadingBridge extends Plugin implements SensorEventListener {
         if (!running) {
             refreshDeclination();
             sensorManager.registerListener(this, rotationVector, SensorManager.SENSOR_DELAY_GAME);
+            // Also listen to the raw magnetometer — see fieldStrengthSuspect().
+            magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+            if (magnetometer != null) {
+                sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+            }
             running = true;
         }
         call.resolve();
@@ -169,8 +174,43 @@ public class HeadingBridge extends Plugin implements SensorEventListener {
         haveLastEmitted = false;
     }
 
+    /**
+     * Raw magnetic field magnitude, in µT.
+     *
+     * ⭐ THIS IS THE HONEST ACCURACY SIGNAL ON ANDROID. Samsung reports
+     * SENSOR_STATUS_ACCURACY_HIGH on every sample — measured: 131 of 131 — even
+     * while the heading is 63° wrong next to a charging cable. So the OS flag
+     * cannot be used to decide whether to trust a bearing, and the app was
+     * silently drawing a confident qibla it had not earned. iOS, by contrast,
+     * says "compass accuracy is low" in the same spot.
+     *
+     * Earth's field is roughly 25–65 µT everywhere on the surface. A reading far
+     * outside that band means something local is dominating — a cable carrying
+     * current, a magnet, a laptop, a metal desk — and the azimuth derived from it
+     * is not trustworthy no matter how steady it looks.
+     *
+     * Crucially this test does NOT depend on knowing whether the phone is
+     * moving, which is what makes it usable: variance-based detection cannot
+     * tell a disturbed sensor from a user turning around.
+     */
+    private Sensor magnetometer;
+    private float fieldMicroTesla = -1f;
+
+    private static final float FIELD_MIN_UT = 22f;
+    private static final float FIELD_MAX_UT = 70f;
+
+    private boolean fieldStrengthSuspect() {
+        if (fieldMicroTesla < 0) return false; // no reading yet — don't cry wolf
+        return fieldMicroTesla < FIELD_MIN_UT || fieldMicroTesla > FIELD_MAX_UT;
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
+        if (event.sensor != null && event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            float x = event.values[0], y = event.values[1], z = event.values[2];
+            fieldMicroTesla = (float) Math.sqrt(x * x + y * y + z * z);
+            return;
+        }
         if (event.sensor != rotationVector) return;
 
         long now = System.currentTimeMillis();
@@ -295,6 +335,11 @@ public class HeadingBridge extends Plugin implements SensorEventListener {
      * webkitCompassAccuracy. Android reports a coarse enum instead, so map it.
      */
     private double accuracyDegrees() {
+        // A disturbed field outranks whatever the OS claims. Reported as a wide
+        // error rather than -1 so the UI shows "accuracy is low, recalibrate"
+        // instead of treating the reading as entirely invalid — the bearing is
+        // still roughly indicative, it just must not be presented as precise.
+        if (fieldStrengthSuspect()) return 45.0;
         switch (lastAccuracy) {
             case SensorManager.SENSOR_STATUS_ACCURACY_HIGH:
                 return 5.0;
