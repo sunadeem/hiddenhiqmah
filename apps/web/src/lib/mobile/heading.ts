@@ -34,6 +34,18 @@ export type HeadingEvent = {
    * webkitCompassAccuracy on the web path.
    */
   accuracy: number;
+  /**
+   * ANDROID ONLY (absent on iOS): the magnitude of the raw magnetic vector, in
+   * microtesla. Earth's field is 25–65 µT ANYWHERE on the surface, so a reading
+   * far outside that band is not a heading with some error on it — it is a
+   * measurement of something that isn't the Earth, and the bearing derived from
+   * it is meaningless rather than merely coarse.
+   *
+   * We carry it because Android's own accuracy flag can't be trusted to say so:
+   * this device reported ACCURACY_HIGH on every sample while sitting in a 184 µT
+   * field and pointing 63° away from where an iPhone put the qiblah.
+   */
+  fieldUt?: number;
 };
 
 type HeadingBridgePlugin = {

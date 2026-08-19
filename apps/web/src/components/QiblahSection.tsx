@@ -111,6 +111,21 @@ function noSensorStatus(): CompassStatus {
  *  desktop Chrome exposes DeviceOrientationEvent but never fires it. */
 const FIRST_READING_TIMEOUT_MS = 2500;
 
+/**
+ * The band outside which a magnetic reading stops being a compass heading.
+ *
+ * Earth's field is 25–65 µT everywhere on the surface. These bounds sit wide of
+ * that on purpose: between the true range and here is where a reading is merely
+ * COARSE, and the figure-8 prompt is the right response. Past here, the sensor
+ * is dominated by something that isn't the Earth — a magnet in a case, a mount,
+ * a laptop, a speaker — and no amount of calibration recovers a bearing, because
+ * the signal we want is a rounding error in what's being measured. A field of
+ * 40 µT added to Earth's 47 can swing the derived heading by ~60°, which is
+ * roughly the error this device actually showed against an iPhone.
+ */
+const FIELD_UNUSABLE_MIN_UT = 15;
+const FIELD_UNUSABLE_MAX_UT = 90;
+
 export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   const [loc, setLoc] = useState<QiblahState | null>(null);
   const [loading, setLoading] = useState(true);
@@ -135,6 +150,10 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
   // Sensor-trust hints, bucketed so the 60Hz handler only re-renders on change.
   const [calibrationPoor, setCalibrationPoor] = useState(false);
   const calibrationPoorRef = useRef(false);
+  // Harder than `calibrationPoor`: the field itself says there is no heading to
+  // be had here, so the dial stops rotating rather than rotating to a lie.
+  const [fieldUnusable, setFieldUnusable] = useState(false);
+  const fieldUnusableRef = useRef(false);
   const [tilted, setTilted] = useState(false);
   const tiltedRef = useRef(false);
   // Whether the live readings are MAGNETIC (so we apply the declination
@@ -198,6 +217,28 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
     if (poor !== calibrationPoorRef.current) {
       calibrationPoorRef.current = poor;
       setCalibrationPoor(poor);
+    }
+  }, []);
+
+  // Android hands us the raw field magnitude; iOS doesn't, so `undefined` must
+  // mean "no opinion" and never "bad". See FIELD_UNUSABLE_* for the reasoning.
+  const setFieldFromMagnitude = useCallback((fieldUt: number | undefined) => {
+    const unusable =
+      typeof fieldUt === "number" &&
+      fieldUt > 0 &&
+      (fieldUt < FIELD_UNUSABLE_MIN_UT || fieldUt > FIELD_UNUSABLE_MAX_UT);
+    if (unusable !== fieldUnusableRef.current) {
+      fieldUnusableRef.current = unusable;
+      setFieldUnusable(unusable);
+      // Drop the live heading on the way in, so the dial snaps back to
+      // north-up-with-a-Ka'bah-marker instead of freezing the last lie on
+      // screen. Snapping is jarring for a moment; a stuck arrow is wrong for
+      // as long as the user looks at it.
+      if (unusable) {
+        continuousHeadingRef.current = null;
+        setHeading(null);
+        setDisplayHeading(null);
+      }
     }
   }, []);
 
@@ -342,6 +383,10 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
           void HeadingBridge.stop().catch(() => {});
         };
         const handle = await HeadingBridge.addListener("heading", (e) => {
+          // Field check FIRST: when it fails there is nothing worth applying,
+          // and applying it anyway would re-populate the heading we just cleared.
+          setFieldFromMagnitude(e.fieldUt);
+          if (fieldUnusableRef.current) return;
           if (typeof e.trueHeading === "number" && e.trueHeading >= 0) {
             applyNativeTrueHeading(e.trueHeading);
           } else if (typeof e.magneticHeading === "number" && e.magneticHeading >= 0) {
@@ -374,7 +419,12 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
       // opened and closed dozens of times a day.
       stop?.();
     };
-  }, [applyNativeTrueHeading, applyMagneticHeading, setCalibrationFromAccuracy]);
+  }, [
+    applyNativeTrueHeading,
+    applyMagneticHeading,
+    setCalibrationFromAccuracy,
+    setFieldFromMagnitude,
+  ]);
 
   const attachWebOrientation = useCallback(() => {
     const handler = processOrientation as EventListener;
@@ -673,9 +723,14 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                       <Compass size={15} /> Try enabling again
                     </button>
                   )}
-                  {compassStatus === "live" && (
+                  {compassStatus === "live" && !fieldUnusable && (
                     <p className="text-[11px] text-themed-muted text-center pointer-events-none">
                       Starting compass…
+                    </p>
+                  )}
+                  {compassStatus === "live" && fieldUnusable && (
+                    <p className="text-[11px] text-gold/80 text-center pointer-events-none leading-relaxed">
+                      Compass paused — dial is fixed with north up
                     </p>
                   )}
                 </div>
@@ -700,12 +755,23 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
 
             {/* Sensor-trust hints — most "wrong qibla" reports are an
                 uncalibrated or steeply tilted compass; say so. */}
-            {heading !== null && calibrationPoor && (
+            {/* The hard case, which a figure-8 CANNOT fix: the sensor is reading
+                something far stronger than the Earth, so it needs the source
+                moved away, not calibrating. Naming the usual culprits matters —
+                "interference" alone leaves people waving the phone forever. */}
+            {fieldUnusable && (
+              <p className="text-[11px] text-gold/80 mt-2 text-center leading-relaxed">
+                Something magnetic is overwhelming the compass — a magnetic case,
+                a phone mount or grip, a laptop or a speaker. Move away from it
+                and the dial will start turning again.
+              </p>
+            )}
+            {!fieldUnusable && heading !== null && calibrationPoor && (
               <p className="text-[11px] text-gold/80 mt-2 text-center">
                 Compass accuracy is low — wave your phone in a figure-8 to recalibrate.
               </p>
             )}
-            {heading !== null && !calibrationPoor && tilted && (
+            {!fieldUnusable && heading !== null && !calibrationPoor && tilted && (
               <p className="text-[11px] text-gold/80 mt-2 text-center">
                 Hold your phone flat for an accurate reading.
               </p>
