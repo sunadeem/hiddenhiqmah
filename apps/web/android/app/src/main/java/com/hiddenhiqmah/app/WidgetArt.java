@@ -106,30 +106,30 @@ final class WidgetArt {
         p.setStrokeWidth(dp(ctx, 2f));
         p.setColor(0x1FD4A843); // deliberately faint: texture, not decoration
 
-        // Sized and placed so the shape stays LEGIBLE. Bled too far off the
-        // edge, a motif reads as stray diagonals rather than a glyph — which is
-        // exactly what the eight-pointed star did at the first attempt.
-        float size = h * 0.95f;
-        float cx = w - size * 0.42f;
+        // Radius is PER MOTIF, as a fraction of height, because they do not read
+        // at the same scale. Sized from device feedback: the crescent and the
+        // star were large enough to cross the layout's hairline dividers and get
+        // clipped, while the Kaaba and flame sat right — so only the first two
+        // came down, rather than scaling everything and spoiling what worked.
+        float r;
+        switch (motif) {
+            case STAR: r = h * 0.27f; break;
+            case CRESCENT: r = h * 0.30f; break;
+            case KAABA: r = h * 0.32f; break;
+            case FLAME: r = h * 0.40f; break;
+            case ARCH: default: r = h * 0.30f; break;
+        }
+        // Bleed horizontally only. A vertical bleed is what collides with the
+        // dividers; cropping on the right costs nothing.
+        float cx = w - r * 0.95f;
         float cy = h * 0.50f;
 
         switch (motif) {
-            case STAR:
-                rubElHizb(c, cx, cy, size * 0.42f, p);
-                break;
-            case CRESCENT:
-                crescent(c, cx, cy, size * 0.40f, p);
-                break;
-            case KAABA:
-                kaaba(c, cx, cy, size * 0.34f, p);
-                break;
-            case FLAME:
-                flame(c, cx, cy, size * 0.42f, p);
-                break;
-            case ARCH:
-            default:
-                arch(c, cx, cy, size * 0.42f, p);
-                break;
+            case STAR: rubElHizb(c, cx, cy, r, p); break;
+            case CRESCENT: crescent(c, cx, cy, r, p); break;
+            case KAABA: kaaba(c, cx, cy, r, p); break;
+            case FLAME: flame(c, cx, cy, r, p); break;
+            case ARCH: default: arch(c, cx, cy, r, p); break;
         }
     }
 

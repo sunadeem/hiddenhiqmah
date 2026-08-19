@@ -47,7 +47,11 @@ public class StreakWidget extends AppWidgetProvider {
         int streak = WidgetStore.streak(payload);
 
         RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_streak);
-        Intent open = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        // Deep-link to this widget's own area rather than just opening the app.
+        // "muslim-daily" is resolved by WIDGET_ROUTES in lib/mobile/deeplinks.ts, the
+        // same table the iOS widgets use, so both platforms land in one place.
+        Intent open = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("hiddenhiqmah://muslim-daily"));
+        open.setPackage(context.getPackageName());
         if (open != null) {
             int flags = PendingIntent.FLAG_UPDATE_CURRENT;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flags |= PendingIntent.FLAG_IMMUTABLE;
