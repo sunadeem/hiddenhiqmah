@@ -132,6 +132,81 @@ body {
   --hiqmah-safe-top: max(env(safe-area-inset-top), 28px);
 }
 
+/* Sheets are `fixed inset-0`, so unlike a shell screen they start at the very
+   top of the viewport and must clear the status bar themselves — MobileTopBar
+   is not above them. The defaults below are the exact expressions these sheets
+   shipped with, so iOS and the website resolve unchanged; only Android is
+   redirected onto --hiqmah-safe-top, which already knows the platform's real
+   inset (the display cutout — 35.6px on an A17, 0 on a cutout-less panel where
+   the 28px floor takes over).
+
+   NOT folded into a single calc(var(--hiqmah-safe-top) + gap): --hiqmah-safe-top
+   is max(env, 60px), so on iOS that swaps env for max(env, 60) and moves the
+   result 1px at a 59px Dynamic Island and 12px before layout settles, when
+   env() still reports 0. Keeping the non-Android branch byte-identical to what
+   the call sites had is what makes "iOS cannot change" provable rather than
+   merely tested — so edit the override, never the default. */
+:root {
+  --sheet-chrome-top: max(calc(env(safe-area-inset-top) + 0.75rem), 4rem);
+  --sheet-control-top: max(calc(env(safe-area-inset-top) + 0.5rem), 3.5rem);
+  /* Deliberately not the same as --sheet-control-top: CircleChatSheet has no
+     grab handle above its title, so its floor is 3.25rem. The two coincide at a
+     59px inset and differ only where the floor binds — collapsing them would
+     move the web value 4px. */
+  --sheet-header-top: max(calc(env(safe-area-inset-top) + 0.5rem), 3.25rem);
+  /* Hifz onboarding is NOT a sheet — it renders inside <main>, under a
+     MobileTopBar that has already applied --hiqmah-safe-top, so this env() term
+     double-counts the inset. Only Android is corrected here; removing the
+     double-count on iOS would change iOS and needs founder sign-off. */
+  --hifz-onboarding-top: max(env(safe-area-inset-top), 12px);
+}
+.native.android {
+  --sheet-chrome-top: calc(var(--hiqmah-safe-top) + 0.75rem);
+  --sheet-control-top: calc(var(--hiqmah-safe-top) + 0.5rem);
+  --sheet-header-top: calc(var(--hiqmah-safe-top) + 0.5rem);
+  --hifz-onboarding-top: 12px;
+}
+
+/* Qiblah compact-sheet trims — ANDROID ONLY.
+
+   QiblahSection's `compact` prop is not a platform flag: its one consumer,
+   mobile/QiblahSheet.tsx, is the home compass sheet on BOTH platforms. Trimming
+   in the JSX behind `compact` therefore shrinks the iOS sheet by ~128px too,
+   and iOS is frozen — its taller chrome is sized for the Dynamic Island and the
+   founder's overflow report was Android device feedback. So the trims are CSS,
+   scoped to .native.android, and the markup ships every variant.
+
+   Classes are applied only where the component is already `compact`, so none of
+   these can reach the /qiblah article page. */
+/* The sheet draws its own "Qiblah" title 12px above this heading, so on Android
+   it is duplication — and it wrapped to two lines on any phone under ~412px,
+   which is what pushed the article link below the fold. */
+.native.android .qiblah-compact-drop {
+  display: none;
+}
+/* Two spans, one <p>: the long explanation and the one-line version. Exactly
+   one is displayed, so the sentence never doubles up for a screen reader
+   (display: none is removed from the accessibility tree). */
+.native.android .qiblah-compact-long {
+  display: none;
+}
+.qiblah-compact-short {
+  display: none;
+}
+.native.android .qiblah-compact-short {
+  display: inline;
+}
+/* Width-scoped to where the row actually stacks. gap-6 is the side-by-side
+   gutter; below md the flex-col turns it into 24px of dead vertical space above
+   the fold. At >= md the row is genuinely two columns (or, on a native tablet,
+   forced to column by the tablet block below at a width where the height is
+   there anyway), so the gutter stays. */
+@media (max-width: 767px) {
+  .native.android .qiblah-compact-gap {
+    gap: 0.75rem;
+  }
+}
+
 /* iOS zooms the whole page in whenever a focused input's font-size is under
    16px, and only undoes it on blur. Our search fields are text-sm (14px), so
    tapping one zoomed the page — and because Return did not dismiss the keyboard,
@@ -343,6 +418,12 @@ body {
   top: calc(env(safe-area-inset-top) + 3.5rem);
   right: 0;
 }
+/* No .native override here on purpose: .mini-player-pos exists only on
+   packages/ui's MiniPlayer / AdhanMiniPlayer, which only AppShell renders, and
+   AppShellGate swaps AppShell out for MobileShell whenever useIsNative() — the
+   exact condition under which <html> carries `native`. In the app the mini
+   player is MobileShell's in-flow MobilePlayer instead, so a `.native` rule on
+   this class can never match a rendered element. */
 @media (min-width: 1024px) {
   .mini-player-pos {
     top: 1rem;
@@ -350,22 +431,46 @@ body {
   }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
+/* Scrollbar — a persistent 6px rail with a track and a thumb is a POINTER
+   affordance: something to drag with a mouse. On a touch screen there is nothing
+   to drag, so it was pure decoration, and it painted a visible stripe down the
+   side of every Android page.
 
-::-webkit-scrollbar-track {
-  background: var(--color-bg);
-}
+   The fix is to NOT STYLE scrollbars on a coarse pointer, rather than to hide
+   them. Styling ::-webkit-scrollbar at all is what switches Chromium off its
+   native fading OVERLAY scrollbar and onto a classic always-on one — so simply
+   withholding these rules restores the transient indicator Android draws by
+   itself, which is the same thing iOS has always drawn. Hiding them instead
+   (display: none) removes that indicator too and leaves a long article with no
+   cue that it scrolls at all.
 
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
-}
+   Gated on the negation of (pointer: coarse) rather than on .native so mobile
+   WEB is covered too, and so it does not depend on the `native` class, which JS
+   stamps after hydration — a .native gate would flash the rail on first paint.
+   `not all and` keeps this a Media Queries 3 expression; it matches `fine` AND
+   `none`, so a keyboard-only desktop keeps the rail.
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
+   Do NOT reintroduce `scrollbar-width: none` under a coarse gate. It is not a
+   -webkit- property: WebKit implements it, iOS matches (pointer: coarse), and
+   it deletes iOS's overlay scrollbars — measured 6px → 0 in a real WKWebView.
+   Gecko, the only engine that needs it, is not a platform this ships on. */
+@media not all and (pointer: coarse) {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+  }
 }
 
 /* Card hover effect */

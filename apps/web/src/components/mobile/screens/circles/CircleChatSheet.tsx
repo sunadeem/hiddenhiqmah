@@ -272,7 +272,7 @@ function Sheet({
       {/* Header */}
       <div
         className="shrink-0 border-b sidebar-border"
-        style={{ paddingTop: "max(calc(env(safe-area-inset-top) + 0.5rem), 3.25rem)" }}
+        style={{ paddingTop: "var(--sheet-header-top)" }}
       >
         <div className="flex items-center gap-2 px-4 pb-2">
           <div className="flex-1 min-w-0">

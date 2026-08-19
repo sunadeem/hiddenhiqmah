@@ -9,21 +9,34 @@
  * each style owning its own QiblahSheet, so the param plumbing lives here — one
  * implementation every style calls — instead of being re-derived per file.
  *
- * Two arrival paths, and BOTH are needed:
+ * Three arrival paths, and ALL are needed:
  *   1. The URL. A cross-route or cold-start deep link mounts (or remounts) Home
  *      with the param already in `window.location.search`.
  *   2. The `hiqmah:deep-link-nav` / `hiqmah:push-nav` events. Tapping the widget
- *      while the app is already foregrounded on Home is a SAME-ROUTE router.push,
+ *      while the app is already foregrounded on Home is a SAME-ROUTE navigation,
  *      which doesn't remount Home — so the mount effect never re-runs and the URL
  *      path alone would silently do nothing. Mirrors CirclesScreen's ?chat=.
+ *   3. The deep-link latch. On a cold start the link is routed ~300ms before Home
+ *      exists, so the event in (2) is broadcast to nobody. deeplinks.ts parks it;
+ *      we drain it on mount. Draining on the (2) path too is what stops a link
+ *      taken live from re-firing here on a later remount.
  */
 
 import { useEffect, useRef } from "react";
+
+import { takeParkedDeepLink } from "./deep-link-latch";
 
 export const QIBLAH_PARAM = "qiblah";
 
 /** Navigation events that can carry the param without a remount. */
 const NAV_EVENTS = ["hiqmah:deep-link-nav", "hiqmah:push-nav"] as const;
+
+/** Does this route (a path, possibly with a query) ask for the compass? */
+function routeWantsQiblah(route: string | null): boolean {
+  if (!route) return false;
+  const q = route.indexOf("?");
+  return q >= 0 && hasQiblahParam(route.slice(q));
+}
 
 /** Does this query string ask for the compass? Any value but "0" counts. */
 function hasQiblahParam(search: string): boolean {
@@ -67,18 +80,22 @@ export function useQiblahParam(openQiblah: () => void): void {
   }, [openQiblah]);
 
   useEffect(() => {
-    if (consumeQiblahParam()) openRef.current();
+    // Both reads run — the latch is drained even when the URL already carried the
+    // flag, so a link delivered twice can't leave a copy parked for a remount.
+    const fromUrl = consumeQiblahParam();
+    const fromLatch = routeWantsQiblah(takeParkedDeepLink());
+    if (fromUrl || fromLatch) openRef.current();
 
     const timers: number[] = [];
     const onNav = (e: Event) => {
       const url = (e as CustomEvent<{ url?: string }>).detail?.url ?? "";
-      const q = url.indexOf("?");
-      if (q < 0 || !hasQiblahParam(url.slice(q))) return;
+      if (!routeWantsQiblah(url)) return;
+      takeParkedDeepLink(); // taking delivery live; don't leave it parked as well
       openRef.current();
-      // The strip can't happen inline: the navigation that carries the param is
-      // dispatched around the same tick as router.push, so replaceState now would
-      // race the push and lose. Re-check shortly after and only strip what's
-      // actually landed in the URL.
+      // The strip can't happen inline: a `hiqmah:push-nav` is dispatched around
+      // the same tick as its router.push, so replaceState now would race the push
+      // and lose. Re-check shortly after and only strip what's actually landed in
+      // the URL.
       timers.push(window.setTimeout(consumeQiblahParam, 400));
     };
 
