@@ -1,62 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Today's five. Each row is weighted so the list fills the height evenly
-     whatever the cell size, and name/time sit at opposite ends of a full-width
-     row rather than huddling on the left. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Today's five.
+
+     Same drawn design layer as the other faces: static card behind (so the
+     picker preview is never an empty void), runtime bitmap art over it, live
+     text on top. Rows are weighted so the list fills whatever cell the launcher
+     gives it, and each row runs name-left / time-right across the FULL width
+     rather than huddling on one side. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/pt_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/widget_bg"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp">
+    android:background="@drawable/widget_bg">
+
+    <ImageView android:id="@+id/pt_art" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitXY" android:contentDescription="@null" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:baselineAligned="false"
-        android:layout_marginBottom="6dp">
-        <TextView
-            android:id="@+id/pt_label"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="TODAY"
-            android:textColor="#D4A843"
-            android:textSize="10sp"
-            android:letterSpacing="0.14"
-            android:maxLines="1" />
-        <TextView
-            android:id="@+id/pt_city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#6B665C"
-            android:textSize="10sp"
-            android:maxLines="1"
-            android:ellipsize="end" />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="16dp" android:paddingRight="16dp"
+        android:paddingTop="14dp" android:paddingBottom="14dp">
 
-    <LinearLayout android:id="@+id/pt_row_0" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
-        <TextView android:id="@+id/pt_name_0" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
-        <TextView android:id="@+id/pt_time_0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+            <ImageView android:id="@+id/pt_badge" android:layout_width="22dp" android:layout_height="22dp" android:layout_marginEnd="8dp" android:contentDescription="@null" />
+            <TextView android:id="@+id/pt_label" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="TODAY" android:textColor="#D4A843" android:textSize="10sp" android:letterSpacing="0.16" android:maxLines="1" />
+            <TextView android:id="@+id/pt_city" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Makkah" android:textColor="#6B665C" android:textSize="10sp" android:maxLines="1" android:ellipsize="end" />
+        </LinearLayout>
+
+        <ImageView android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="10dp" android:layout_marginBottom="2dp" android:background="#3A2F16" android:contentDescription="@null" />
+
+        <LinearLayout android:id="@+id/pt_row_0" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+            <TextView android:id="@+id/pt_name_0" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Fajr" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+            <TextView android:id="@+id/pt_time_0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5:07 AM" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/pt_row_1" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+            <TextView android:id="@+id/pt_name_1" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Dhuhr" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+            <TextView android:id="@+id/pt_time_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1:15 PM" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/pt_row_2" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+            <TextView android:id="@+id/pt_name_2" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Asr" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+            <TextView android:id="@+id/pt_time_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5:00 PM" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/pt_row_3" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+            <TextView android:id="@+id/pt_name_3" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Maghrib" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+            <TextView android:id="@+id/pt_time_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="8:01 PM" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/pt_row_4" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+            <TextView android:id="@+id/pt_name_4" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Isha" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+            <TextView android:id="@+id/pt_time_4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="9:20 PM" android:textSize="15sp" android:textColor="#8D887C" android:maxLines="1" />
+        </LinearLayout>
     </LinearLayout>
-    <LinearLayout android:id="@+id/pt_row_1" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
-        <TextView android:id="@+id/pt_name_1" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
-        <TextView android:id="@+id/pt_time_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
-    </LinearLayout>
-    <LinearLayout android:id="@+id/pt_row_2" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
-        <TextView android:id="@+id/pt_name_2" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
-        <TextView android:id="@+id/pt_time_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
-    </LinearLayout>
-    <LinearLayout android:id="@+id/pt_row_3" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
-        <TextView android:id="@+id/pt_name_3" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
-        <TextView android:id="@+id/pt_time_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
-    </LinearLayout>
-    <LinearLayout android:id="@+id/pt_row_4" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
-        <TextView android:id="@+id/pt_name_4" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
-        <TextView android:id="@+id/pt_time_4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
-    </LinearLayout>
-</LinearLayout>
+</FrameLayout>
