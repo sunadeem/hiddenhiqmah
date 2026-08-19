@@ -34,6 +34,9 @@ public class WidgetBridge extends Plugin {
         // user returns to the home screen.
         NextPrayerWidget.refreshAll(getContext());
         PrayerTimesWidget.refreshAll(getContext());
+        HijriWidget.refreshAll(getContext());
+        QiblaWidget.refreshAll(getContext());
+        StreakWidget.refreshAll(getContext());
         call.resolve();
     }
 }
