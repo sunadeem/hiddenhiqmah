@@ -1,43 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Next-prayer widget.
-     Deliberately plain RemoteViews: no Compose/Glance dependency for what is a
-     label, two lines of text and a self-ticking countdown. -->
+<!-- Next prayer. Laid out to FILL the slot rather than stack at the top.
+     Weighted spacers push the hero (name + countdown) into the vertical centre
+     and pin the meta rows to the edges, so a 3x2 cell has no dead band at the
+     bottom - the same correction the iOS rectangle needed. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/widget_bg"
-    android:padding="14dp">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
-    <TextView
-        android:id="@+id/widget_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NEXT PRAYER"
-        android:textColor="#D4A843"
-        android:textSize="10sp"
-        android:letterSpacing="0.14"
-        android:maxLines="1" />
-
-    <TextView
-        android:id="@+id/widget_name"
+    <!-- Top rail: label and city at opposite ends, using the full width. -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Maghrib"
-        android:textColor="#F1ECE0"
-        android:textSize="24sp"
-        android:maxLines="1"
-        android:ellipsize="end" />
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
-    <Chronometer
-        android:id="@+id/widget_countdown"
+        <TextView
+            android:id="@+id/widget_label"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="NEXT PRAYER"
+            android:textColor="#D4A843"
+            android:textSize="10sp"
+            android:letterSpacing="0.14"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/widget_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#6B665C"
+            android:textSize="10sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="end" />
+    </LinearLayout>
+
+    <!-- Hero, vertically centred in whatever height remains. -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#D4A843"
-        android:textSize="20sp"
-        android:maxLines="1" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/widget_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maghrib"
+            android:textColor="#F1ECE0"
+            android:textSize="26sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <Chronometer
+            android:id="@+id/widget_countdown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="#D4A843"
+            android:textSize="30sp"
+            android:maxLines="1" />
+    </LinearLayout>
+
+    <!-- Hairline rail, then the time pinned to the bottom edge. -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:background="#2A2418" />
 
     <TextView
         android:id="@+id/widget_time"
@@ -46,13 +85,4 @@
         android:textColor="#8D887C"
         android:textSize="13sp"
         android:maxLines="1" />
-
-    <TextView
-        android:id="@+id/widget_city"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#6B665C"
-        android:textSize="11sp"
-        android:maxLines="1"
-        android:ellipsize="end" />
 </LinearLayout>

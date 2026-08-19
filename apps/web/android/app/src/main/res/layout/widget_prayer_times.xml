@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Today's five. Each row is weighted so the list fills the height evenly
+     whatever the cell size, and name/time sit at opposite ends of a full-width
+     row rather than huddling on the left. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pt_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_bg"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:layout_marginBottom="6dp">
+        <TextView
+            android:id="@+id/pt_label"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="TODAY"
+            android:textColor="#D4A843"
+            android:textSize="10sp"
+            android:letterSpacing="0.14"
+            android:maxLines="1" />
+        <TextView
+            android:id="@+id/pt_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#6B665C"
+            android:textSize="10sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/pt_row_0" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+        <TextView android:id="@+id/pt_name_0" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+        <TextView android:id="@+id/pt_time_0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/pt_row_1" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+        <TextView android:id="@+id/pt_name_1" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+        <TextView android:id="@+id/pt_time_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/pt_row_2" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+        <TextView android:id="@+id/pt_name_2" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+        <TextView android:id="@+id/pt_time_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/pt_row_3" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+        <TextView android:id="@+id/pt_name_3" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+        <TextView android:id="@+id/pt_time_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/pt_row_4" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
+        <TextView android:id="@+id/pt_name_4" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+        <TextView android:id="@+id/pt_time_4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textColor="#8D887C" android:maxLines="1" />
+    </LinearLayout>
+</LinearLayout>

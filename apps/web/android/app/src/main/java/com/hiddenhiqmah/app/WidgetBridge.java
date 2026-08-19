@@ -33,6 +33,7 @@ public class WidgetBridge extends Plugin {
         // a location or calculation-method change is reflected the moment the
         // user returns to the home screen.
         NextPrayerWidget.refreshAll(getContext());
+        PrayerTimesWidget.refreshAll(getContext());
         call.resolve();
     }
 }
