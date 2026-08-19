@@ -163,6 +163,12 @@ public class HeadingBridge extends Plugin implements SensorEventListener {
         }
     }
 
+    /** Drop the filter state so a stale bearing cannot bleed into a new session. */
+    private void resetSmoothing() {
+        haveSmoothed = false;
+        haveLastEmitted = false;
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor != rotationVector) return;
@@ -199,6 +205,17 @@ public class HeadingBridge extends Plugin implements SensorEventListener {
         double magnetic = Math.toDegrees(orientation[0]);
         magnetic = (magnetic + 360.0) % 360.0;
 
+        magnetic = smooth(magnetic);
+
+        // Suppress sub-degree churn. Below this the needle is only rendering
+        // sensor noise, and every emission crosses the JS bridge and triggers a
+        // re-render — so the jitter costs battery as well as looking unsteady.
+        if (haveLastEmitted && angularDelta(magnetic, lastEmittedMagnetic) < MIN_DELTA_DEG) {
+            return;
+        }
+        haveLastEmitted = true;
+        lastEmittedMagnetic = magnetic;
+
         // Declination applied exactly once — see the class note.
         double trueHeading = haveDeclination ? (magnetic + declination + 360.0) % 360.0 : -1.0;
 
@@ -207,6 +224,50 @@ public class HeadingBridge extends Plugin implements SensorEventListener {
         ret.put("magneticHeading", magnetic);
         ret.put("accuracy", accuracyDegrees());
         notifyListeners("heading", ret);
+    }
+
+    /**
+     * Low-pass the heading.
+     *
+     * The raw rotation vector is noisy enough that the needle visibly shakes
+     * while you hold the phone still — reported from the device. iOS never
+     * needed this because Core Location hands back an already-smoothed
+     * trueHeading; Android gives the raw thing.
+     *
+     * ⚠️ Averaged as a UNIT VECTOR, never as degrees. A naive average of 359°
+     * and 1° is 180° — the needle would slam to the opposite direction every
+     * time the user faced north, which is precisely where a qibla compass must
+     * be most trustworthy. Converting to (cos, sin), smoothing each component
+     * and taking atan2 back is the circular mean, which has no such seam.
+     *
+     * ALPHA is a trade: lower is steadier but laggier. 0.18 settles visibly
+     * within a few frames at ~20Hz while removing the shake.
+     */
+    private static final double ALPHA = 0.18;
+    private static final double MIN_DELTA_DEG = 0.4;
+    private double smoothX, smoothY;
+    private boolean haveSmoothed = false;
+    private double lastEmittedMagnetic;
+    private boolean haveLastEmitted = false;
+
+    private double smooth(double degrees) {
+        double rad = Math.toRadians(degrees);
+        double x = Math.cos(rad), y = Math.sin(rad);
+        if (!haveSmoothed) {
+            smoothX = x;
+            smoothY = y;
+            haveSmoothed = true;
+        } else {
+            smoothX += ALPHA * (x - smoothX);
+            smoothY += ALPHA * (y - smoothY);
+        }
+        return (Math.toDegrees(Math.atan2(smoothY, smoothX)) + 360.0) % 360.0;
+    }
+
+    /** Shortest angle between two bearings, 0..180 — wrap-safe. */
+    private static double angularDelta(double a, double b) {
+        double d = Math.abs(a - b) % 360.0;
+        return d > 180.0 ? 360.0 - d : d;
     }
 
     /**
