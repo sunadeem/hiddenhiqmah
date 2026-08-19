@@ -71,12 +71,20 @@
             android:maxLines="1" />
     </LinearLayout>
 
-    <!-- Hairline rail, then the time pinned to the bottom edge. -->
-    <View
+    <!-- Hairline rail, then the time pinned to the bottom edge.
+
+         ⚠️ ImageView, not View. RemoteViews inflates only a WHITELIST of view
+         classes (LinearLayout/FrameLayout/RelativeLayout/GridLayout, TextView,
+         ImageView, Button, ImageButton, Chronometer, ProgressBar, ViewFlipper,
+         the adapter views...). A plain <View> is NOT on it, and using one makes
+         the launcher fail inflation with a bare "Couldn't add widget." - no
+         logcat stack, no hint which element was at fault. -->
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
-        android:background="#2A2418" />
+        android:background="#2A2418"
+        android:contentDescription="@null" />
 
     <TextView
         android:id="@+id/widget_time"
