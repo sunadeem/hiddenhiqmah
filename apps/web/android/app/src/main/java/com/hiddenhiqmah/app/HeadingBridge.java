@@ -240,11 +240,22 @@ public class HeadingBridge extends Plugin implements SensorEventListener {
      * be most trustworthy. Converting to (cos, sin), smoothing each component
      * and taking atan2 back is the circular mean, which has no such seam.
      *
-     * ALPHA is a trade: lower is steadier but laggier. 0.18 settles visibly
-     * within a few frames at ~20Hz while removing the shake.
+     * ⭐ ADAPTIVE, because a fixed alpha cannot win. A single smoothing constant
+     * trades one complaint for the other: high enough to track a real turn and
+     * the needle still shakes at rest; low enough to be steady at rest and the
+     * needle lags behind the phone. 0.18 was still visibly finicky on device.
+     *
+     * So the alpha follows the SIZE of the change. A small delta is almost
+     * certainly noise — a phone held still does not rotate two degrees — and gets
+     * heavy smoothing. A large delta is the user actually turning, and gets very
+     * little, so the needle keeps up. The result is steady in the hand and still
+     * responsive, which is what a qibla compass has to be: people rotate slowly,
+     * hunting the last few degrees, exactly where noise is worst.
      */
-    private static final double ALPHA = 0.18;
-    private static final double MIN_DELTA_DEG = 0.4;
+    private static final double ALPHA_STILL = 0.045; // noise: smooth hard
+    private static final double ALPHA_TURN = 0.55; // real motion: track it
+    private static final double TURN_DEG = 8.0; // above this, treat as a turn
+    private static final double MIN_DELTA_DEG = 1.0;
     private double smoothX, smoothY;
     private boolean haveSmoothed = false;
     private double lastEmittedMagnetic;
@@ -257,10 +268,18 @@ public class HeadingBridge extends Plugin implements SensorEventListener {
             smoothX = x;
             smoothY = y;
             haveSmoothed = true;
-        } else {
-            smoothX += ALPHA * (x - smoothX);
-            smoothY += ALPHA * (y - smoothY);
+            return degrees;
         }
+        double current = (Math.toDegrees(Math.atan2(smoothY, smoothX)) + 360.0) % 360.0;
+        double delta = angularDelta(degrees, current);
+
+        // Ramp between the two constants rather than switching, so a turn that
+        // starts gently does not visibly "click" into a faster mode.
+        double t = Math.min(1.0, delta / TURN_DEG);
+        double alpha = ALPHA_STILL + (ALPHA_TURN - ALPHA_STILL) * t * t;
+
+        smoothX += alpha * (x - smoothX);
+        smoothY += alpha * (y - smoothY);
         return (Math.toDegrees(Math.atan2(smoothY, smoothX)) + 360.0) % 360.0;
     }
 
