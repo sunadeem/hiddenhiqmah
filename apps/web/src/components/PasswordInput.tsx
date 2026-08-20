@@ -23,12 +23,23 @@ export default function PasswordInput({
   const [show, setShow] = useState(false);
   return (
     <div className="relative">
+      {/* The three keyboard-assist attributes are load-bearing ONLY while the
+          field is revealed. At type="password" the platform suppresses
+          capitalisation, autocorrect and spellcheck by itself; the moment the
+          eye is tapped it becomes an ordinary text input and Android's keyboard
+          starts treating a password like prose — capitalising the first
+          character and offering corrections. People tap the eye precisely when
+          a sign-in has just failed, so the silent edit lands at the worst
+          possible moment and reads as "my password stopped working". */}
       <input
         type={show ? "text" : "password"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        autoCapitalize="none"
+        autoCorrect="off"
+        spellCheck={false}
         autoFocus={autoFocus}
         required={required}
         className="w-full bg-white/5 border sidebar-border rounded-xl px-4 py-3 pr-11 text-themed text-base focus:outline-none focus:border-[var(--color-gold)]/40"
