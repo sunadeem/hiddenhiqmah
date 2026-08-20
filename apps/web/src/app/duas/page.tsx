@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,6 +8,8 @@ import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import BookmarkButton from "@hidden-hiqmah/ui/components/BookmarkButton";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
+import ScrollResetOnMount from "@hidden-hiqmah/ui/components/ScrollResetOnMount";
+import { resolveScroller } from "@hidden-hiqmah/ui/lib/scroller";
 import { ArrowLeft, Sun, HandHeart, Utensils, Plane, Home, Shield, Heart, Brain, Stethoscope, Users, BookOpen, CloudRain, Bed, Sparkles, Hand, Moon, HeartCrack, Handshake, type LucideIcon } from "lucide-react";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
@@ -113,6 +115,17 @@ function DuasContent() {
   });
   const [search, setSearch] = useState("");
 
+  // Set by the user actions that swap the AnimatePresence branch, consumed pre-paint
+  // by the incoming branch's <ScrollResetOnMount>. Refs, not state: requesting a
+  // scroll must not cause a render, and the request must die with the page so a
+  // stale flag cannot outlive the visit. Written ONLY inside event handlers, which
+  // is what structurally keeps this off the ?d= path — neither the state
+  // initializer nor the deep-link effect can reach them, so on a deep-link mount
+  // pendingScroll is still null and ScrollResetOnMount returns early.
+  const pendingScroll = useRef<number | null>(null);
+  const landingScroll = useRef(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!scrollToDua) return;
     const timer = setTimeout(() => {
@@ -127,12 +140,28 @@ function DuasContent() {
   }, [scrollToDua]);
 
   const selectCategory = (key: string | null) => {
+    // Entering a category from the landing grid otherwise inherits the grid's
+    // offset — router.replace(..., {scroll:false}) opts out of Next's reset, replace
+    // fires no popstate, and key={pathname} does not remount, so nothing scrolls and
+    // the user lands part-way down the new list. Leaving a category should put them
+    // back on the tile they came from, not at the top.
+    const el = resolveScroller(rootRef.current);
+    if (key && !activeCategory && el) landingScroll.current = el.scrollTop;
+    pendingScroll.current = key ? 0 : landingScroll.current;
     setActiveCategory(key);
     router.replace(key ? `${pathname}?tab=${key}` : pathname, { scroll: false });
   };
 
   const searchLower = search.toLowerCase().trim();
   const isSearching = searchLower.length >= 2;
+
+  const onSearchChange = (v: string) => {
+    // Only when the rendered BRANCH flips (results ⇄ category/landing). Resetting on
+    // every keystroke would fight a user typing while already at the top of results.
+    const nowSearching = v.toLowerCase().trim().length >= 2;
+    if (nowSearching !== isSearching) pendingScroll.current = 0;
+    setSearch(v);
+  };
 
   // Search is global — it matches across every category, landing or not.
   const filtered = isSearching
@@ -226,7 +255,7 @@ function DuasContent() {
   };
 
   return (
-    <div>
+    <div ref={rootRef}>
       <PageHeader
         title="Duas & Supplications"
         titleAr="الأدعية والأذكار"
@@ -245,7 +274,7 @@ function DuasContent() {
       {/* Search — global across every category, landing or not */}
       <PageSearch
         value={search}
-        onChange={setSearch}
+        onChange={onSearchChange}
         placeholder="Search all duas..."
         className="mb-6"
       />
@@ -261,6 +290,7 @@ function DuasContent() {
             transition={{ duration: 0.2 }}
             className="space-y-5"
           >
+            <ScrollResetOnMount target={pendingScroll} />
             {filtered.map(renderDuaCard)}
             {filtered.length === 0 && (
               <p className="text-sm text-themed-muted py-8 text-center">
@@ -282,6 +312,7 @@ function DuasContent() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
+            <ScrollResetOnMount target={pendingScroll} />
             <button
               onClick={() => selectCategory(null)}
               className="flex items-center gap-1.5 text-sm text-themed-muted hover:text-gold transition-colors mb-4"
@@ -368,6 +399,7 @@ function DuasContent() {
             transition={{ duration: 0.2 }}
             className="space-y-8"
           >
+            <ScrollResetOnMount target={pendingScroll} />
             {sectionOrder.map((section) => (
               <div key={section}>
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-themed-muted mb-3">
