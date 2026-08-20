@@ -16,7 +16,9 @@ import {
   setCachedLocation,
   getLocationState,
   setLocationState,
+  getLocationWarning,
   LOCATION_CHANGED_EVENT,
+  LOCATION_CONFIDENCE_EVENT,
 } from "@hidden-hiqmah/ui/lib/location-cache";
 
 /* ───────────────────────── Qiblah section ───────────────────────── */
@@ -311,6 +313,28 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
     };
     window.addEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
     return () => window.removeEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
+  }, []);
+
+  // A ZONE change is the only location-confidence state this page warns about,
+  // and the arithmetic is why: the Ka'bah is ~10,681 km away, so the 27 km of
+  // travel that exposed this bug moves the bearing by 0.026° — you need roughly
+  // 190 km of position error to move it a single degree, which is far inside
+  // both the magnetometer's own error and the tolerance this page itself
+  // documents ("what is between the east and the west is Qiblah"). Warning on a
+  // merely-unconfirmed fix here would be a false alarm on the exact surface
+  // where "never fires when things are fine" earns its keep. A zone change is
+  // different: it can mean Gainesville → Dubai, which is 202° wrong, and that is
+  // the one location error a compass cannot absorb.
+  const [zoneChanged, setZoneChanged] = useState(false);
+  useEffect(() => {
+    const sync = () => setZoneChanged(getLocationWarning().kind === "zone");
+    sync();
+    window.addEventListener(LOCATION_CONFIDENCE_EVENT, sync);
+    window.addEventListener(LOCATION_CHANGED_EVENT, sync);
+    return () => {
+      window.removeEventListener(LOCATION_CONFIDENCE_EVENT, sync);
+      window.removeEventListener(LOCATION_CHANGED_EVENT, sync);
+    };
   }, []);
 
   // Recompute magnetic declination whenever the location changes.
@@ -776,6 +800,14 @@ export function QiblahSection({ compact = false }: { compact?: boolean } = {}) {
                 Something magnetic is overwhelming the compass — a magnetic case,
                 a phone mount or grip, a laptop or a speaker. Move away from it
                 and the dial will start turning again.
+              </p>
+            )}
+            {zoneChanged && loc && (
+              <p className="text-[11px] text-gold/80 mt-2 text-center leading-relaxed">
+                This bearing is calculated for{" "}
+                <span className="font-semibold">{loc.city}</span>, but your phone
+                has changed time zone since. Open Prayer times and update your
+                location before relying on it.
               </p>
             )}
             {!fieldUnusable && heading !== null && calibrationPoor && (

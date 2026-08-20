@@ -13,10 +13,80 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <!-- Deliberately NOT set here: android:windowBackground. Pinning it to
+             the splash black was tried and reverted. The WebView does not cover
+             the whole window - the status-bar strip (top ~100px) and the
+             navigation strip are window background - and this theme is DayNight
+             precisely so those strips track the system: #FAFAFA with dark status
+             icons in light mode, dark with light icons at night. Forcing them
+             black leaves the icon colour still following DayNight, so in light
+             mode the clock and the signal icons go dark-on-black and vanish
+             (measured: strip luma std 10.2 vs 37.0 when correct), and the two
+             light palettes in packages/ui/lib/themes.ts get a near-white page
+             framed by black bands. The splash's black belongs to the launch
+             theme below, not here. -->
     </style>
 
 
+    <!-- The launch theme. Android 12+ draws the splash itself from these
+         attributes; core-splashscreen reproduces the same splash on 24-30.
+
+         Use the UNPREFIXED androidx attribute names, not the android: ones.
+         core-splashscreen's values-v31 variant maps each one into its framework
+         twin (android:windowSplashScreenBackground = ?windowSplashScreenBackground
+         and so on), so one declaration drives both paths - whereas the android:
+         names are API 31 and would not compile against minSdk 24.
+
+         What was here before was the Capacitor template's
+         `android:background="@drawable/splash"`, which set neither splash
+         attribute. Two consequences, both measured on a Galaxy A17:
+
+           - On 12+ the platform fell back to the LAUNCHER icon, upscaling a
+             324px raster to the 288dp (810px) splash slot - a 2.5x blow-up, and
+             the "grainy and dull" the founder reported. 324 and not 432 because
+             a 450dpi screen resolves BOTH mipmap and drawable to the xxhdpi
+             bucket: the same matcher that hands this theme an 864px splash_icon
+             (288dp x 3) hands the fallback a 324px foreground (108dp x 3).
+           - The background fell through to ?android:colorBackground, which is
+             DayNight: #17171A in dark mode but #FCFCFF in LIGHT mode, where the
+             mark's cream centre nearly vanished before hard-cutting to the
+             black app.
+
+         On 24-30 that same line did something different and also wrong.
+         android:background is a VIEW attribute, so it never became the window
+         background on any version - but the compat splash view inherits it and
+         stretches it to the view rect, non-uniformly. Measured on an API 30
+         emulator at the same 1080x2340/450dpi: drawable-port-xxhdpi/splash.png
+         (960x1600) stretched to 1080x2121, i.e. 1.125x across but 1.326x down.
+         What that distorted was not our mark - the file it stretched was the
+         Capacitor TEMPLATE's art, a white field carrying a 128x128 blue
+         Capacitor logo, which came out 145x171 at (468,1059). So the pre-12
+         splash was a competitor's logo on white, stretched out of square. Now
+         the mark is drawn from splash_icon at a true 288dp and measures 303x457
+         on that emulator - the same undistorted size as the 305x457 on 12+. -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="android:background">@drawable/splash</item>
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+
+        <!-- Belt and braces, not load-bearing. This is the attribute
+             core-splashscreen reads to setTheme() the activity back to its real
+             theme, but Capacitor already does that itself: BridgeActivity's
+             onCreate calls setTheme(R.style.AppTheme_NoActionBar) before
+             setContentView, long before installSplashScreen() runs - so androidx
+             ends up calling setTheme with an id the activity already has, which
+             Activity.setTheme discards. Deleting this line was tested on API 30
+             and 36 and changed nothing. It stays because it costs nothing and is
+             what keeps this working the day Capacitor drops that setTheme. -->
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
+
+        <!-- Deliberately NOT set: windowSplashScreenIconBackgroundColor. It
+             swaps the geometry to the 240dp canvas / 158dp circle pair, which
+             would crop 17% off a 288dp-authored icon, and it paints a visible
+             disc behind the mark.
+
+             Also deliberately NOT set: android:windowBackground. On API 24-30
+             Theme.SplashScreen points it at compat_splash_screen_no_icon_background,
+             the layer-list that IS the pre-12 splash; overriding it here would
+             delete the splash on every pre-12 device. -->
     </style>
 </resources>

@@ -274,7 +274,13 @@ export default function PrivacyPage() {
         </ul>
       </section>
 
-      <section className="space-y-3 mb-8">
+      {/* id + scroll margin because Google Play's Data safety form takes a
+          "delete account" and a "delete data" URL and checks that the steps are
+          PROMINENT at that link. Both point here with #data-deletion; without
+          the anchor the reviewer lands at the top of a long policy and has to
+          hunt for this section. scroll-mt keeps the heading clear of the header
+          it would otherwise land under. */}
+      <section id="data-deletion" className="space-y-3 mb-8 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gold">Data deletion</h2>
         <p className="text-themed-muted text-sm leading-relaxed">
           To remove your data:
@@ -309,6 +315,19 @@ export default function PrivacyPage() {
           The local actions permanently remove bookmarks, streaks, settings,
           and chat history from your device. Server-side records (only relevant
           if you signed in) are removed via the email request above.
+        </p>
+        {/* Play asks separately whether data can be deleted WITHOUT closing the
+            account, and the answer given there is yes — so it has to be stated
+            here, at the URL that answer points to. Every item listed is one we
+            actually delete on request, not merely hide. */}
+        <p className="text-themed-muted text-sm leading-relaxed">
+          You do not have to delete your account to remove individual data. A
+          reflection in your Journal, a message you sent in a Circle, and any
+          custom dhikr you created can each be deleted where they appear, and
+          you can leave a Circle at any time from its detail screen. Deleting
+          your account removes everything at once; deleting an item removes only
+          that item. Neither is recoverable afterwards, and we keep no separate
+          copy once the deletion completes.
         </p>
       </section>
 

@@ -23,7 +23,11 @@ import {
 } from "@hidden-hiqmah/ui/lib/storage";
 import {
   getFreshCachedLocation,
+  getLocationWarning,
+  formatConfirmedAt,
   LOCATION_CHANGED_EVENT,
+  LOCATION_CONFIDENCE_EVENT,
+  type LocationWarning,
 } from "@hidden-hiqmah/ui/lib/location-cache";
 import { computePrayerTimes } from "@/lib/prayer-times";
 import TodayStrip from "./TodayStrip";
@@ -173,6 +177,22 @@ export default function RamadanHome({
     return () => window.removeEventListener(LOCATION_CHANGED_EVENT, loadTimes);
   }, [loadTimes]);
 
+  // This screen renders a 5xl iftar countdown off a fix that may be 24h old and
+  // never names the city anywhere — the highest confidence and the least
+  // provenance in the app, on the one screen you cannot be a city behind on.
+  // {kind:"none"} outside Android, where it adds nothing.
+  const [warn, setWarn] = useState<LocationWarning>({ kind: "none" });
+  useEffect(() => {
+    const sync = () => setWarn(getLocationWarning());
+    sync();
+    window.addEventListener(LOCATION_CONFIDENCE_EVENT, sync);
+    window.addEventListener(LOCATION_CHANGED_EVENT, sync);
+    return () => {
+      window.removeEventListener(LOCATION_CONFIDENCE_EVENT, sync);
+      window.removeEventListener(LOCATION_CHANGED_EVENT, sync);
+    };
+  }, []);
+
   useEffect(() => {
     try {
       const raw = localStorage.getItem(JUZ_KEY);
@@ -272,6 +292,25 @@ export default function RamadanHome({
             <p className="inline-flex items-center gap-1.5 text-themed-muted text-sm mt-3">
               <Clock size={14} /> Next prayer · {nextPrayerText}
             </p>
+            {warn.kind !== "none" && (
+              // A Link, not a <p>: the copy says "tap to update", and the hero
+              // it sits in is a plain div — nothing here was tappable, so the
+              // qualifier was telling the user to do something the screen gave
+              // them no way to do. /prayer-times is where the explanation and
+              // the Update location button actually live.
+              <Link
+                href="/prayer-times"
+                className={`block text-[11px] mt-1.5 leading-relaxed ${
+                  warn.kind === "zone" ? "text-amber-300/90" : "text-gold/80"
+                }`}
+              >
+                Times for {warn.display}
+                {warn.kind === "unconfirmed" &&
+                  ` · not confirmed since ${formatConfirmedAt(warn.since)} — tap to update`}
+                {warn.kind === "zone" && " · time zone changed — tap to update"}
+                {warn.kind === "disabled" && " · location is off — tap for how to fix"}
+              </Link>
+            )}
           </div>
         ) : hasLoc ? (
           <div className="relative text-themed-muted text-sm py-4">

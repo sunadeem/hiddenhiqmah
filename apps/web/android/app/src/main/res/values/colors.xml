@@ -4,4 +4,19 @@
          Tints the notification small icon and the accent line Android draws
          beside it. -->
     <color name="hiqmah_gold">#D4A843</color>
+
+    <!-- The launch splash field. Used ONLY by the launch theme - see the note
+         in styles.xml about why the app theme's window background must stay
+         DayNight rather than borrow this.
+
+         Black, matching capacitor.config.ts backgroundColor, the iOS launch
+         screen, ic_launcher_background and the `html { background-color: #000 }`
+         in globals.css. The master mark is authored on pure black, so its
+         antialiased edges blend against this exactly; any other value puts a
+         faint halo around the gold.
+
+         Left as its own name rather than reusing ic_launcher_background: they
+         agree today by coincidence of design, not by requirement, and the
+         launcher one is the adaptive icon's own layer. -->
+    <color name="splash_background">#000000</color>
 </resources>

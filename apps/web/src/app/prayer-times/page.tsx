@@ -30,8 +30,12 @@ import {
   setCachedLocation,
   getLocationState,
   setLocationState,
+  getLocationWarning,
+  formatConfirmedAt,
   LOCATION_CHANGED_EVENT,
+  LOCATION_CONFIDENCE_EVENT,
   type CachedLocation,
+  type LocationWarning,
 } from "@hidden-hiqmah/ui/lib/location-cache";
 import { isNative } from "@/lib/mobile/platform";
 
@@ -379,6 +383,17 @@ function PrayerTimesContent() {
   const [ptShowManualInput, setPtShowManualInput] = useState(false);
   const [ptShowMethodMenu, setPtShowMethodMenu] = useState(false);
   const [ptLocating, setPtLocating] = useState(false);
+  // How much the cached fix can be trusted. Always {kind:"none"} on iOS and the
+  // web — the failure record and the cache's `tz` field that this reads are only
+  // ever written by the Android refresher (see ANDROID_TUNING in
+  // lib/mobile/location-refresh), so nothing below renders there.
+  const [ptWarn, setPtWarn] = useState<LocationWarning>({ kind: "none" });
+  const [ptWarnBusy, setPtWarnBusy] = useState(false);
+  const [ptWarnFailed, setPtWarnFailed] = useState(false);
+  const [ptWarnCooling, setPtWarnCooling] = useState(false);
+  // Held in a ref, not left to fire into a dead component: navigating away mid-
+  // cooldown would otherwise leave the timer running with nothing to re-enable.
+  const ptWarnCoolRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ptIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const ptFetched = useRef(false);
   const ptDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -501,6 +516,13 @@ function PrayerTimesContent() {
       const { refreshLocation } = await import("@/lib/mobile/location-refresh");
       const res = await refreshLocation({ force });
       setPtLocating(false);
+      // A refused retry (one ran seconds ago) learned nothing, so it must not be
+      // narrated either way. Re-applying the cache here would be the very thing
+      // the comment below warns against — a stale city re-rendered behind a
+      // spinner that implies success — while the error copy would be just as
+      // wrong, since nothing was attempted. Leave the screen exactly as it is;
+      // the confidence banner is already saying what is true about this fix.
+      if (res?.throttled) return;
       // Branch on the RESULT, not on the cache: anyone who has ever granted
       // location still has a cached fix, so falling back to it after a failed
       // re-locate (permission revoked, location services off, GPS timeout) would
@@ -619,6 +641,71 @@ function PrayerTimesContent() {
     window.addEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
     return () => window.removeEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
   }, [ptApplyCachedLocation]);
+
+  useEffect(
+    () => () => {
+      if (ptWarnCoolRef.current) clearTimeout(ptWarnCoolRef.current);
+    },
+    []
+  );
+
+  // Confidence in the cached fix moves without the PLACE moving — a run of
+  // failed fixes is exactly that — so LOCATION_CHANGED_EVENT alone would never
+  // raise or clear the banner.
+  useEffect(() => {
+    const sync = () => setPtWarn(getLocationWarning());
+    sync();
+    window.addEventListener(LOCATION_CONFIDENCE_EVENT, sync);
+    window.addEventListener(LOCATION_CHANGED_EVENT, sync);
+    return () => {
+      window.removeEventListener(LOCATION_CONFIDENCE_EVENT, sync);
+      window.removeEventListener(LOCATION_CHANGED_EVENT, sync);
+    };
+  }, []);
+
+  // The banner's only action, and the only path in the app allowed to request a
+  // permission and given a near-live maximumAge + the long timeout. Without the
+  // acquisition fix this button would be a lie: the old settings were measured
+  // failing at 12 068 ms on the handset that produced this bug.
+  const ptUpdateLocation = useCallback(async () => {
+    if (!isNative() || ptWarnBusy || ptWarnCooling) return;
+    setPtWarnBusy(true);
+    setPtWarnFailed(false);
+    try {
+      const { refreshLocation, FORCED_RETRY_COOLDOWN_MS } = await import(
+        "@/lib/mobile/location-refresh"
+      );
+      const res = await refreshLocation({ force: true });
+      // Re-enable slowly: a frustrated user must not be able to hammer GNSS.
+      const cool = () => {
+        setPtWarnCooling(true);
+        if (ptWarnCoolRef.current) clearTimeout(ptWarnCoolRef.current);
+        ptWarnCoolRef.current = setTimeout(
+          () => setPtWarnCooling(false),
+          FORCED_RETRY_COOLDOWN_MS
+        );
+      };
+      if (res?.throttled) {
+        // Refused by the shared floor — the radio never ran, so this is not a
+        // failed fix and must not be reported as one (that would be the app
+        // claiming to have looked when it hadn't). Just re-arm the cooldown.
+        cool();
+      } else if (res) {
+        // Covers the case the old code could not reach at all: a fix that lands
+        // in the SAME place still re-stamps the cache and clears the failures,
+        // so the banner goes away without the coordinates changing.
+        const loc = getCachedLocation();
+        if (loc) ptApplyCachedLocation(loc);
+      } else {
+        setPtWarnFailed(true);
+        setPtShowManualInput(true);
+        cool();
+      }
+    } finally {
+      setPtWarnBusy(false);
+      setPtWarn(getLocationWarning());
+    }
+  }, [ptWarnBusy, ptWarnCooling, ptApplyCachedLocation]);
 
   useEffect(() => {
     if (!ptTimings) return;
@@ -839,6 +926,92 @@ function PrayerTimesContent() {
             </div>
           </div>
         </motion.div>
+
+        {/* Location confidence — the honest qualifier on times we are no longer
+            sure belong to the user's place. Sits directly under the location
+            line it qualifies and above the city search it can reveal, so every
+            location control stays one visual group.
+
+            Suppressed for a city the user searched for by hand: they know where
+            they are looking, and telling them it might be wrong is nonsense.
+
+            NOT dismissible — a warning about wrong prayer times is one you
+            dismiss today and never see on the day it matters. Its only exit is a
+            successful fix. Non-nagging is bought differently: a static in-flow
+            row, never a toast or a modal, no re-animation, and the only
+            paragraph-sized warning in the app. */}
+        {ptWarn.kind !== "none" && !ptManualPick.current && (() => {
+          const zone = ptWarn.kind === "zone";
+          const at = formatConfirmedAt(ptWarn.since);
+          return (
+            <div
+              className={`rounded-xl px-3.5 py-3 border ${
+                zone
+                  ? "bg-amber-500/15 border-amber-400/30"
+                  : "bg-[var(--color-gold)]/10 border-[var(--color-gold)]/25"
+              }`}
+            >
+              <p className={`text-sm font-semibold ${zone ? "text-amber-200" : "text-gold"}`}>
+                {ptWarn.kind === "zone" && "These times may be for the wrong place"}
+                {ptWarn.kind === "unconfirmed" && `Location not confirmed since ${at}`}
+                {ptWarn.kind === "disabled" && "Location is turned off"}
+              </p>
+              <p
+                className={`text-xs leading-relaxed mt-1 ${
+                  zone ? "text-amber-200/90" : "text-gold/80"
+                }`}
+              >
+                {ptWarn.kind === "zone" && (
+                  <>
+                    Your phone has changed time zone since we last confirmed your
+                    location, but these times are still calculated for{" "}
+                    <span className="font-semibold">{ptWarn.display}</span>. If
+                    you&apos;ve travelled, they&apos;re off by hours.
+                  </>
+                )}
+                {ptWarn.kind === "unconfirmed" && (
+                  <>
+                    These times are calculated for{" "}
+                    <span className="font-semibold">{ptWarn.display}</span>. Your
+                    phone hasn&apos;t been able to get a location fix since then —
+                    so if you&apos;ve travelled, they&apos;re wrong.
+                  </>
+                )}
+                {ptWarn.kind === "disabled" && (
+                  <>
+                    These times are calculated for{" "}
+                    <span className="font-semibold">{ptWarn.display}</span>, from{" "}
+                    {at}. Turn Location on in your phone&apos;s settings, then tap
+                    Update location.
+                  </>
+                )}
+              </p>
+              {ptWarnFailed && (
+                <p
+                  className={`text-xs leading-relaxed mt-1.5 ${
+                    zone ? "text-amber-200/90" : "text-gold/80"
+                  }`}
+                >
+                  Still no fix. Try again near a window or outdoors — or search
+                  for your city below.
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={() => void ptUpdateLocation()}
+                disabled={ptWarnBusy || ptWarnCooling}
+                className={`mt-2.5 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 ${
+                  zone
+                    ? "bg-amber-400/20 text-amber-100 border border-amber-400/30"
+                    : "bg-[var(--color-gold)]/20 text-gold border border-[var(--color-gold)]/30"
+                }`}
+              >
+                <LocateFixed size={13} className={ptWarnBusy ? "animate-spin" : ""} />
+                {ptWarnBusy ? "Updating…" : "Update location"}
+              </button>
+            </div>
+          );
+        })()}
 
         {/* Location Search */}
         {ptShowManualInput && (

@@ -96,8 +96,22 @@ export default function SignInScreen() {
     setError(null);
     const { error } = await signInWithPassword(trimmedEmail, password);
     setBusy(false);
-    if (error) setError(error);
-    else finish();
+    // Supabase answers "Invalid login credentials" for THREE different
+    // situations — wrong password, no account with that email, and an account
+    // that predates password sign-in and so has no password set. It cannot
+    // distinguish them in its reply without letting anyone probe which emails
+    // are registered, and neither can we. But "invalid credentials" sends a
+    // user who is in the third case (or who mistyped the address) into retrying
+    // passwords forever, which is the one outcome none of the three deserves.
+    // So keep the fact vague and make the WAY OUT specific: the emailed code
+    // works in every one of those cases and reveals nothing.
+    if (error) {
+      setError(
+        /invalid login credentials/i.test(error)
+          ? "That email and password don't match. Check the address is right — or use “Email me a sign-in code” below, which works even if this account was made before we added passwords."
+          : error
+      );
+    } else finish();
   };
 
   const handleSignUp = async (e: React.FormEvent) => {

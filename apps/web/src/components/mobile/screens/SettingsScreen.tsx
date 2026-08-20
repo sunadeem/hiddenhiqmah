@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   User,
@@ -30,7 +30,14 @@ import {
   type PrayerSettings,
   type AsrMethod,
 } from "@hidden-hiqmah/ui/lib/storage";
-import { getCachedLocation, getLocationState } from "@hidden-hiqmah/ui/lib/location-cache";
+import {
+  getCachedLocation,
+  getLocationState,
+  getLocationWarning,
+  formatConfirmedAt,
+  LOCATION_CONFIDENCE_EVENT,
+  LOCATION_CHANGED_EVENT,
+} from "@hidden-hiqmah/ui/lib/location-cache";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
 import { syncWidgetData } from "@/lib/mobile/widgets";
 
@@ -69,22 +76,123 @@ export default function SettingsScreen() {
     label: "Auto-detect",
     sub: "Auto-detected from your device",
   });
+  /** Set only in a warn state, which makes the row tappable. */
+  const [locRetry, setLocRetry] = useState(false);
+  const [locBusy, setLocBusy] = useState(false);
+  /**
+   * The last tap produced no fix, and how long the row stays un-tappable after
+   * it. Both exist because a retry that silently returns you to the byte-
+   * identical "Tap to update" subtitle reads as a button that does nothing, and
+   * the only thing left to do about that is tap it again — which is a GNSS
+   * acquisition each time, on the surface a user in a dead spot keeps coming
+   * back to. Say it failed, and take the button away long enough to be believed.
+   */
+  const [locFailed, setLocFailed] = useState(false);
+  const [locCooling, setLocCooling] = useState(false);
+  const locCoolTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (locCoolTimer.current) clearTimeout(locCoolTimer.current);
+    },
+    []
+  );
+
+  // Location is auto-detected app-wide (NextPrayerCard / Salah / Prayer Times
+  // all read the same cache). Surface that here — read-only while everything is
+  // healthy, since there's no manual location entry and we don't want to imply
+  // one. When the fix can no longer be trusted the row gains a reason and a tap:
+  // Settings is the permanent, non-nagging home for the action, and the first
+  // place a tester or support will look. Healthy stays untappable deliberately —
+  // the healthy row renders on iOS too, which must stay identical to HEAD.
+  const readLoc = useCallback(() => {
+    if (getLocationState() === "denied") {
+      setLoc({ label: "Off", sub: "Turn on location in your device settings" });
+      setLocRetry(false);
+      return;
+    }
+    const c = getCachedLocation();
+    const label = c?.display || "Auto-detect";
+    const warn = getLocationWarning();
+    switch (warn.kind) {
+      case "unconfirmed":
+        setLoc({
+          label,
+          sub: `Not confirmed since ${formatConfirmedAt(warn.since)} · Tap to update`,
+        });
+        setLocRetry(true);
+        break;
+      case "zone":
+        setLoc({ label, sub: "Your time zone has changed · Tap to update" });
+        setLocRetry(true);
+        break;
+      case "disabled":
+        setLoc({ label, sub: "Location is off on this phone · Tap to retry" });
+        setLocRetry(true);
+        break;
+      default:
+        if (c?.display) setLoc({ label, sub: "Auto-detected from your device" });
+        setLocRetry(false);
+        // Healthy again — a fix landed, so the last failure is history and must
+        // not keep contradicting the row it sits under.
+        setLocFailed(false);
+    }
+  }, []);
 
   useEffect(() => {
     setFontSizeState(getFontSize());
     setAutoPlayState(getAutoPlayNextSurah());
     setPrayer(getPrayerSettings());
-    // Location is auto-detected app-wide (NextPrayerCard / Salah / Prayer Times
-    // all read the same cache). Surface that here read-only — there's no manual
-    // location entry, so we don't imply one.
-    if (getLocationState() === "denied") {
-      setLoc({ label: "Off", sub: "Turn on location in your device settings" });
-    } else {
-      const c = getCachedLocation();
-      if (c?.display) setLoc({ label: c.display, sub: "Auto-detected from your device" });
-    }
+    readLoc();
     setHydrated(true);
-  }, []);
+    window.addEventListener(LOCATION_CONFIDENCE_EVENT, readLoc);
+    window.addEventListener(LOCATION_CHANGED_EVENT, readLoc);
+    return () => {
+      window.removeEventListener(LOCATION_CONFIDENCE_EVENT, readLoc);
+      window.removeEventListener(LOCATION_CHANGED_EVENT, readLoc);
+    };
+  }, [readLoc]);
+
+  const retryLocation = useCallback(async () => {
+    // The row is only tappable in a warn state, which no web/iOS build can
+    // reach — but guard anyway, so this stays a no-op rather than a permission
+    // prompt on hiddenhiqmah.com the day the healthy row is made tappable too.
+    // Its sibling on /prayer-times opens with the same line.
+    if (!isNative || locBusy || locCooling) return;
+    setLocBusy(true);
+    setLocFailed(false);
+    try {
+      // Lazily imported so this screen's chunk doesn't statically pull the
+      // native graph, matching how /prayer-times reaches the same refresher.
+      const { refreshLocation, FORCED_RETRY_COOLDOWN_MS } = await import(
+        "@/lib/mobile/location-refresh"
+      );
+      const res = await refreshLocation({ force: true });
+      // `throttled` means the shared floor refused it — no radio ran and nothing
+      // was learned, so reporting "still no fix" would be a lie about an attempt
+      // that never happened. Just re-arm the cooldown and stay quiet.
+      if (res?.throttled) {
+        setLocCooling(true);
+        if (locCoolTimer.current) clearTimeout(locCoolTimer.current);
+        locCoolTimer.current = setTimeout(
+          () => setLocCooling(false),
+          FORCED_RETRY_COOLDOWN_MS
+        );
+        return;
+      }
+      if (!res) {
+        setLocFailed(true);
+        setLocCooling(true);
+        if (locCoolTimer.current) clearTimeout(locCoolTimer.current);
+        locCoolTimer.current = setTimeout(
+          () => setLocCooling(false),
+          FORCED_RETRY_COOLDOWN_MS
+        );
+      }
+    } finally {
+      setLocBusy(false);
+      readLoc();
+    }
+  }, [isNative, locBusy, locCooling, readLoc]);
 
   // Legacy deep-link from the Home "Tuned for" chip (/settings?section=tuned-for):
   // the Home personalization controls now live on their own nested page, so
@@ -139,8 +247,20 @@ export default function SettingsScreen() {
         <SettingsRow
           icon={MapPin}
           title="Location"
-          subtitle={loc.sub}
+          subtitle={
+            locBusy
+              ? "Updating…"
+              : locFailed
+                ? "Still no fix — try again near a window or outdoors"
+                : loc.sub
+          }
+          // The place we last knew stays on screen throughout: blanking it while
+          // a retry runs hides the very fact the row exists to report.
           rightValue={loc.label}
+          onClick={locRetry ? () => void retryLocation() : undefined}
+          // Dimmed and untappable while the fix runs and through the cooldown,
+          // so the row cannot be used to chain GNSS acquisitions.
+          disabled={locRetry && (locBusy || locCooling)}
         />
         <SettingsRowSelect
           icon={Calculator}
