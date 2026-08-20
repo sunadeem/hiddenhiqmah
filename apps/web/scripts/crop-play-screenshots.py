@@ -19,10 +19,31 @@ gesture navigation instead of three-button — and a silently wrong crop is wors
 than a loud failure, because you would not notice until the listing looked odd.
 
 Usage:
-    python3 scripts/crop-play-screenshots.py <input-dir> [output-dir]
+    python3 scripts/crop-play-screenshots.py <input-dir> [output-dir] [--top N]
 
 Defaults the output to android/play-screenshots/ so the results land beside the
 icon and feature graphic, versioned rather than living in a downloads folder.
+
+--top overrides the top crop, and exists because detection alone CANNOT remove
+the status bar: the clock and the wifi/battery icons make those rows non-uniform,
+so the walk stops at the first of them and leaves the bar in the picture. The
+authoritative height comes from the device itself —
+
+    adb shell dumpsys window | grep -oE 'statusBars frame=\\[[0-9,]+\\]\\[[0-9,]+\\]'
+    -> statusBars frame=[0,0][1080,100]   (Galaxy A17, 450dpi)
+
+so pass --top 100 for that device. --bottom is the same story for the navigation
+bar, which detection also cannot find: the three buttons make the last row
+non-uniform, so the walk returns 0 and the bar is only ever trimmed by whatever
+the ratio maths happens to need.
+
+    adb shell dumpsys window | grep -oE 'navigationBars frame=\[[0-9,]+\]\[[0-9,]+\]'
+    -> navigationBars frame=[0,2205][1080,2340]   => 2340-2205 = 135
+
+    python3 scripts/crop-play-screenshots.py <dir> --top 100 --bottom 135
+
+Guessing either number would silently mangle captures from any other phone,
+which is why they are arguments and not constants.
 """
 
 import sys
@@ -63,12 +84,22 @@ def find_bar(img, from_top: bool, limit: int):
 
 
 def main():
-    if len(sys.argv) < 2:
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    top_override = bottom_override = None
+    for i, a in enumerate(sys.argv):
+        if a in ("--top", "--bottom") and i + 1 < len(sys.argv):
+            val = int(sys.argv[i + 1])
+            if a == "--top":
+                top_override = val
+            else:
+                bottom_override = val
+            args = [x for x in args if x != sys.argv[i + 1]]
+    if not args:
         print(__doc__.strip())
         return 2
-    src = pathlib.Path(sys.argv[1]).expanduser()
+    src = pathlib.Path(args[0]).expanduser()
     here = pathlib.Path(__file__).resolve().parent
-    dst = pathlib.Path(sys.argv[2]).expanduser() if len(sys.argv) > 2 else (
+    dst = pathlib.Path(args[1]).expanduser() if len(args) > 1 else (
         here.parent / "android" / "play-screenshots"
     )
     if not src.is_dir():
@@ -91,8 +122,8 @@ def main():
         w, h = img.size
         # Cap each search at 12% of the height — far more than any real system
         # bar, far less than enough to swallow content.
-        top = find_bar(img, True, int(h * 0.12))
-        bot = find_bar(img, False, int(h * 0.12))
+        top = top_override if top_override is not None else find_bar(img, True, int(h * 0.12))
+        bot = bottom_override if bottom_override is not None else find_bar(img, False, int(h * 0.12))
 
         # If detection alone does not get us under the ratio, take the remainder
         # off the BOTTOM: the top of a screenshot carries the screen title and
