@@ -51,6 +51,74 @@ android {
     }
 }
 
+// A release artifact must never carry the DEV backend. `pnpm build:mobile`
+// reads .env.local (DEV); only `build:mobile:prod` sources .env.prod. Nothing
+// else in the chain objects — next build, cap sync and bundleRelease all
+// succeed either way, and the resulting app launches, signs in and writes data
+// perfectly happily into the wrong database. A signed AAB on this machine
+// contained the dev project on 2026-08-19 while being treated as ready to
+// upload; it was found only because a dev-pointed test build could not see a
+// prod account. The silence was the defect, so this makes it loud.
+//
+// Written in Groovy rather than shelling out to scripts/verify-bundle-env.mjs
+// on purpose: node is not reliably on Gradle's PATH (nvm), and a guard that
+// can fail to run for environmental reasons is not a guard. Same rule, two
+// implementations — the node one is for artifacts and CI, this one is the gate.
+def prodEnvFile = rootProject.file("../.env.prod")
+def assetsPublic = file("src/main/assets/public")
+
+tasks.register("verifyProdBackend") {
+    description = "Fails the build if the web bundle points at anything but the production Supabase project."
+    doLast {
+        if (!prodEnvFile.exists()) {
+            throw new GradleException("verifyProdBackend: apps/web/.env.prod not found — cannot tell which backend is correct, refusing to guess.")
+        }
+        def expected = null
+        prodEnvFile.eachLine { line ->
+            def m = (line =~ /^\s*NEXT_PUBLIC_SUPABASE_URL\s*=\s*["']?(\S+?)["']?\s*$/)
+            if (m.find()) expected = m.group(1)
+        }
+        if (!expected) {
+            throw new GradleException("verifyProdBackend: no NEXT_PUBLIC_SUPABASE_URL in .env.prod.")
+        }
+        if (!assetsPublic.exists()) {
+            throw new GradleException("verifyProdBackend: ${assetsPublic} missing — run `npx cap sync android` first.")
+        }
+        def found = [:]
+        assetsPublic.eachFileRecurse { f ->
+            if (!f.isFile()) return
+            if (!(f.name ==~ /.*\.(js|mjs|cjs|html|json|txt|map|css)$/)) return
+            def matcher = (f.getText("UTF-8") =~ /https:\/\/[a-z0-9]{15,}\.supabase\.co/)
+            while (matcher.find()) {
+                if (!found.containsKey(matcher.group(0))) found[matcher.group(0)] = f.path
+            }
+        }
+        // Finding NOTHING is a failure, not a pass: it means the scan looked in
+        // the wrong place, and a guard that green-lights an empty scan is worse
+        // than no guard.
+        if (found.isEmpty()) {
+            throw new GradleException("verifyProdBackend: no Supabase URL anywhere in the bundle — the sync is stale or empty.")
+        }
+        def wrong = found.findAll { url, where -> url != expected }
+        if (!wrong.isEmpty()) {
+            def detail = wrong.collect { url, where -> "  ${url}\n    first seen in: ${where}" }.join("\n")
+            throw new GradleException(
+                "verifyProdBackend: this bundle would ship a NON-PRODUCTION backend.\n" +
+                detail + "\n  expected only: ${expected}\n" +
+                "  Fix: pnpm mobile:build:prod && npx cap sync android")
+        }
+        logger.lifecycle("verifyProdBackend: OK — ${expected}")
+    }
+}
+
+// Gate every RELEASE packaging path. Debug is deliberately untouched: pointing a
+// debug build at dev is the normal, correct thing to do.
+tasks.configureEach { t ->
+    if (t.name in ["bundleRelease", "assembleRelease", "packageRelease"]) {
+        t.dependsOn("verifyProdBackend")
+    }
+}
+
 repositories {
     flatDir{
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
