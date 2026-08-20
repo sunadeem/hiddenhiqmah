@@ -10,11 +10,11 @@ type Overview = {
   activeSeries: SeriesPoint[];
   signupSeries: SeriesPoint[];
   costSeries: SeriesPoint[];
-  attention: { openReports: number; suspended: number; costSpike: boolean; costToday: number; cost7Avg: number };
+  attention: { openReports: number; openAskReports: number; suspended: number; costSpike: boolean; costToday: number; cost7Avg: number };
   recent: { signups: { label: string; email: string | null; at: string }[]; messages: { label: string; at: string }[] };
 };
 
-export default function OverviewTab({ creds, onGoModeration }: { creds: Creds; onGoModeration: () => void }) {
+export default function OverviewTab({ creds, onGoModeration, onGoAsk }: { creds: Creds; onGoModeration: () => void; onGoAsk: () => void }) {
   const { data, loading, error, refresh } = useAdminSection<Overview>(creds, "overview");
   if (loading && !data) return <Loading />;
   if (error) return <ErrLine msg={error} onRetry={refresh} />;
@@ -22,10 +22,14 @@ export default function OverviewTab({ creds, onGoModeration }: { creds: Creds; o
   const k = data.kpis;
   const a = data.attention;
 
-  const alerts: string[] = [];
-  if (a.openReports > 0) alerts.push(`${a.openReports} open report${a.openReports > 1 ? "s" : ""} to review`);
-  if (a.suspended > 0) alerts.push(`${a.suspended} suspended account${a.suspended > 1 ? "s" : ""}`);
-  if (a.costSpike) alerts.push(`Cost today (${fmtUsd(a.costToday)}) is over 2× the 7-day average`);
+  // Each alert carries its own destination — reported AI answers live on the
+  // Ask tab, not in the Circles moderation queue (different table, and anon
+  // reporters have no user to open a case file on).
+  const alerts: { text: string; go: () => void }[] = [];
+  if (a.openReports > 0) alerts.push({ text: `${a.openReports} open report${a.openReports > 1 ? "s" : ""} to review`, go: onGoModeration });
+  if (a.openAskReports > 0) alerts.push({ text: `${a.openAskReports} reported AI answer${a.openAskReports > 1 ? "s" : ""} to review`, go: onGoAsk });
+  if (a.suspended > 0) alerts.push({ text: `${a.suspended} suspended account${a.suspended > 1 ? "s" : ""}`, go: onGoModeration });
+  if (a.costSpike) alerts.push({ text: `Cost today (${fmtUsd(a.costToday)}) is over 2× the 7-day average`, go: onGoAsk });
 
   return (
     <div className="space-y-8">
@@ -35,10 +39,14 @@ export default function OverviewTab({ creds, onGoModeration }: { creds: Creds; o
       </div>
 
       {alerts.length > 0 && (
-        <button onClick={onGoModeration} className="w-full text-left rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 hover:bg-amber-400/15 transition-colors">
+        <div className="w-full text-left rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4">
           <div className="flex items-center gap-2 text-amber-300 font-semibold text-sm mb-1"><AlertTriangle size={16} /> Needs attention</div>
-          <ul className="text-sm text-themed-muted list-disc pl-6 space-y-0.5">{alerts.map((x, i) => <li key={i}>{x}</li>)}</ul>
-        </button>
+          <ul className="text-sm text-themed-muted list-disc pl-6 space-y-0.5">
+            {alerts.map((x, i) => (
+              <li key={i}><button onClick={x.go} className="text-left hover:text-gold transition-colors">{x.text}</button></li>
+            ))}
+          </ul>
+        </div>
       )}
 
       <Section title="Right now">

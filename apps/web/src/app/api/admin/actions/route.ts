@@ -102,6 +102,20 @@ export async function POST(req: NextRequest) {
         await logEvent(supa, author, action === "resolveReport" ? "report_resolved" : "report_dismissed", { reportId });
         return adminJson({ ok: true });
       }
+      case "resolveAskReport":
+      case "dismissAskReport": {
+        const reportId = String(body.reportId ?? "");
+        if (!reportId) return adminJson({ error: "reportId required" }, 400);
+        const status = action === "resolveAskReport" ? "resolved" : "dismissed";
+        const note = String(body.note ?? "").slice(0, 300) || null;
+        const { error } = await supa.from("ask_reports").update({ status, resolved_at: nowIso, resolution_note: note }).eq("id", reportId);
+        if (error) throw error;
+        // Deliberately NOT logged to moderation_events: that table's user_id is
+        // `not null references auth.users`, and an Ask report can come from a
+        // signed-out device with no auth row at all. Half an audit trail
+        // (signed-in reporters only) would be worse than none.
+        return adminJson({ ok: true });
+      }
       case "setUserNote": {
         const userId = String(body.userId ?? "");
         if (!userId) return adminJson({ error: "userId required" }, 400);

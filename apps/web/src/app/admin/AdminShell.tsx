@@ -60,7 +60,7 @@ export default function AdminShell({ creds, onLogout }: { creds: Creds; onLogout
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-6 pb-24">
-        {tab === "overview" && <OverviewTab creds={creds} onGoModeration={() => setTab("moderation")} />}
+        {tab === "overview" && <OverviewTab creds={creds} onGoModeration={() => setTab("moderation")} onGoAsk={() => setTab("ask")} />}
         {tab === "moderation" && <ModerationTab creds={creds} queue={mod} />}
         {tab === "users" && <UsersTab creds={creds} />}
         {tab === "ask" && <AskTab creds={creds} />}

@@ -68,15 +68,40 @@ Collected · not shared · stored · **optional** · App functionality.
 |---|---|
 | Collected | **Yes** |
 | Shared | **Yes** — Anthropic |
-| Processing | **Ephemeral** |
+| Processing | **Stored** ⚠️ *(was Ephemeral — changed by migration 032)* |
 | Required? | Optional |
-| Purpose | App functionality |
+| Purpose | App functionality · **Fraud prevention, security, and compliance** |
 
-Ask Hiqmah questions go to Anthropic to generate the answer. **We never store the
-question text** — verified: `chat_usage` records only `user_id` / `anon_id` /
-`ip_hash` / token counts (`src/app/api/search/route.ts:982`). So it is genuinely
-collected-and-shared but *ephemeral*, which is a different answer from "stored"
-and worth getting right.
+Ask Hiqmah questions go to Anthropic to generate the answer. On the normal path
+nothing is retained: `chat_usage` still records only `user_id` / `anon_id` /
+`ip_hash` / token counts (`src/app/api/search/route.ts:982`), and an unreported
+turn touches no storage anywhere.
+
+**But this can no longer be answered "Ephemeral."** Google Play's AI-Generated
+Content policy requires an in-app way to report offensive AI output, and a report
+is useless to a moderator without the text being reported. So when — and only
+when — a user taps Report on an answer and confirms, `ask_reports` (migration
+032) stores that **one answer plus the one question that produced it**, with the
+user's reason and optional note, for up to 90 days. Re-reporting the same answer
+does not create a second row — the new reason/note are folded into the existing
+one, so the stored volume per user per answer is bounded.
+
+Play's test for Ephemeral is that data is *"only stored in memory and retained for
+no longer than necessary to service the specific request in real-time."* The form
+takes one processing answer **per data type, not per code path**, so a single
+retained copy makes "Ephemeral" false for the whole type. Answer **Stored**.
+
+Two things this does *not* change:
+
+- **No new sharing disclosure.** Supabase is a processor acting on our
+  instruction, not a third party, and Anthropic already receives the question on
+  the normal path. Reported content is never sent to Anthropic for analysis.
+- **The user-initiated exemption never applied.** Play's "data the user
+  deliberately submits" carve-out sits under *sharing*, not collection.
+
+The added **Fraud prevention, security, and compliance** purpose is the honest
+one for a safety-reporting queue; App functionality stays because the report is
+also how we fix bad answers.
 
 ### App activity → Other user-generated content
 Collected · not shared · stored · optional · App functionality.
@@ -94,6 +119,19 @@ Collected · not shared · stored · optional · App functionality.
 `device_tokens.token` — the APNs/FCM push token, only once notifications are
 granted. Also `chat_usage.ip_hash`, a hashed IP used solely for rate limiting.
 Apple and Google are push *processors* here, not recipients of shared data.
+
+`ask_reports.ip_hash` (migration 032) is the **same already-declared hashed IP,
+derived the same way**, used for the same purpose — rate limiting. It adds no new
+data type and no new answer. `ask_reports.anon_id` is likewise the `chat_usage`
+anon id already covered here.
+
+The cap is two ceilings, not one, and the split matters for a *reporting*
+channel: **20/day per reporter** (the real limit) and **200/day per IP** (a
+backstop, because the anon id is regenerable client-side). A single low per-IP
+cap would have let twenty strangers behind one carrier-grade-NAT or café
+gateway exhaust the Play-mandated reporting channel for everyone else sharing
+that address. Both are enforced in a before-insert trigger under an advisory
+lock, so they cannot be raced.
 
 ---
 
@@ -158,16 +196,73 @@ interpretation with the app as the stake.
   in-app and by policy. `delete_my_account` RPC
   (`src/context/AuthContext.tsx:162`), surfaced at **Settings → Account → Delete
   account**, and documented in the privacy policy's "Data deletion" section.
+  **Ask reports:** a signed-in user's reports carry `user_id` with
+  `on delete cascade`, so they are purged by the same deletion. A signed-out
+  report has no `auth.users` row to cascade from — for those, the **90-day
+  `ask-reports-purge` pg_cron sweep is the only deletion path**, which is exactly
+  what the in-app disclosure and the policy promise. ⚠️ If pg_cron is not
+  installed on the project, migration 032 only raises a notice and the sweep
+  never runs — a stated retention period you don't enforce is worse than none, so
+  verify with
+  `select jobname, active from cron.job where jobname = 'ask-reports-purge';`
+  ⚠️ Equally, **until 032 is applied there is no `ask_reports` table at all**, and
+  the route deliberately fails forward: it logs the full report payload at error
+  level so the report is not simply lost. That means reported content can sit in
+  Vercel runtime logs instead of the table. It is bounded by Vercel's own log
+  retention rather than by the 90-day sweep, which is why the in-app disclosure
+  says "up to 90 days" rather than naming an exact period. **Apply 032 before
+  the build ships and this branch never executes.**
 - **Data collected in-app vs from other sources** → in-app only.
 
 ## Privacy-policy cross-check
 
 The shipped policy (`src/app/privacy/page.tsx`) discloses Supabase, Anthropic,
 aladhan.com **and** OpenStreetMap, so it matches the third parties above. No
-mismatch found.
+third-party mismatch.
+
+🚨 **BLOCKER — three shipped sentences became false with migration 032, and Play
+cross-references Data safety against the policy, so a mismatch is an enforcement
+risk, not a cosmetic one. The policy edit MUST ride in the same build as the
+report button.**
+
+| # | Line | Where |
+|---|---|---|
+| 1 | *"We do not persistently log your queries or answers."* | `privacy/page.tsx:149` |
+| 2 | *"We never store the content of your questions on our servers."* | `privacy/page.tsx:169` |
+| 3 | *"If you never sign in, nothing you do in the app is stored on our servers at all."* | broken specifically because reporting works signed out |
+
+Recommended edits (drafted, **not applied** — see the note below):
+
+- Bump the effective date (currently June 18, 2026).
+- Append to (1): **"The one exception is if you tap Report on an answer — see 'Reporting an AI answer' below."**
+- Append to (2): **"unless you choose to report an answer, which is the only case where a question and answer are saved"**
+- Append to (3): **"with one exception: if you choose to report an AI answer, that report is stored so we can review it"**
+- Add **"and any AI answers you reported"** to the Data-deletion enumeration.
+- Insert a new **"Reporting an AI answer"** section immediately after "Sent to
+  third parties", stating: the three things sent (the answer, the one question
+  that produced it, your reason and note); why the question is needed (a
+  moderator cannot tell a baited prompt from a spontaneous model failure without
+  it); that nothing is sent until you confirm and the screen shows what it will
+  send; the signed-in vs signed-out storage difference; and that reports are used
+  only to review Ask — never for advertising or profiling, never shared outside
+  Hidden Hiqmah, and deleted within 90 days.
 
 ⚠️ **The policy ships inside the iOS bundle**, so any wording change there needs a
 re-archive — worth remembering before editing it to satisfy a Play question.
+
+## Apple
+
+⚠️ There is no Apple App Privacy answer sheet in this repo — only this file.
+Since build 18 is the first App Store submission, the Apple answers are being
+composed in App Store Connect with nothing to check them against. **Recommend
+creating `docs/apple-app-privacy.md` before submitting.**
+
+The honest Apple answer for reports is legitimately *narrower* than Play's:
+declare **User Content → Customer Support**, linked to identity, purpose App
+Functionality, not used for tracking — rather than implying we log all search
+history. Do **not** rely on Apple's optional-disclosure carve-out: its fourth
+criterion (the account name displayed in the submission form) is unsatisfiable
+for signed-out reporters, who have no account name to show.
 
 ## Resolved
 

@@ -9,6 +9,7 @@ import GlobalBanner from "./GlobalBanner";
 import AskHiqmahFloat from "@hidden-hiqmah/ui/components/AskHiqmah";
 import MiniPlayer from "@hidden-hiqmah/ui/components/MiniPlayer";
 import AdhanMiniPlayer from "@hidden-hiqmah/ui/components/AdhanMiniPlayer";
+import { useAuth } from "@/context/AuthContext";
 
 const BARE_ROUTES = ["/ask"];
 
@@ -16,6 +17,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname = usePathname();
+  // Only so the report sheet can name the account a report will be filed
+  // under. packages/ui cannot reach AuthContext, and the float is mounted
+  // here — without this the sheet knows a token is attached but not whose.
+  const { user } = useAuth();
 
   useEffect(() => {
     const saved = localStorage.getItem("sidebar-collapsed");
@@ -74,7 +79,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         <MiniPlayer />
         <AdhanMiniPlayer />
-        <AskHiqmahFloat />
+        <AskHiqmahFloat accountLabel={user?.email ?? undefined} />
       </div>
   );
 }
