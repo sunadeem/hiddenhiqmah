@@ -812,11 +812,15 @@ export default function HadithPage() {
         reference="Bukhari 1:1"
       />
 
-      {/* Search bar */}
+      {/* Search bar. The placeholder is kept short enough to survive a phone
+          width — the previous one, "Search hadiths or references (e.g. bukhari
+          50, muslim 2912)…", was clipped mid-word at "n" on a 390pt screen, so
+          the example it existed to give never arrived. A placeholder nobody can
+          finish reading is worse than a shorter one. */}
       <PageSearch
         value={search}
         onChange={setSearch}
-        placeholder="Search hadiths or references (e.g. bukhari 50, muslim 2912)..."
+        placeholder="Search hadiths — or a reference like bukhari 50"
         className="mb-6"
       />
 
@@ -1219,19 +1223,28 @@ export default function HadithPage() {
             </>
           ) : selectedInfo && currentMeta ? (
             <>
-              <div className="flex items-baseline gap-3 mb-1">
+              {/* flex-wrap is load-bearing, not tidiness. Four items — an English
+                  name, an Arabic name, a grade pill and a link — do not fit one
+                  phone line, and without wrapping the row does not overflow: each
+                  child shrinks and breaks INSIDE itself, so "Sahih al-Bukhari"
+                  splits after the hyphen, صحيح البخاري splits across lines, and
+                  the pill reads "All / Sahih" stacked. Letting whole items move
+                  to the next line, and forbidding a break inside the short ones,
+                  is what keeps a name a name. The quote row above already does
+                  this — this row was the one that missed it. */}
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 mb-1">
                 <h2 className="text-xl font-semibold text-themed">
                   {selectedInfo.name}
                 </h2>
-                <span className="text-lg font-arabic text-gold opacity-70">
+                <span className="text-lg font-arabic text-gold opacity-70 whitespace-nowrap">
                   {selectedInfo.nameAr}
                 </span>
                 {selectedInfo.grade === "Sahih" ? (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400">
+                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 whitespace-nowrap">
                     All Sahih
                   </span>
                 ) : (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400">
+                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 whitespace-nowrap">
                     Mixed grades
                   </span>
                 )}
@@ -1240,7 +1253,7 @@ export default function HadithPage() {
                     setAboutSub("grading");
                     setSelected("about");
                   }}
-                  className="text-[11px] inline-flex items-center gap-1 text-accent hover:text-gold transition-colors"
+                  className="text-[11px] inline-flex items-center gap-1 text-accent hover:text-gold transition-colors whitespace-nowrap"
                 >
                   <Info size={11} />
                   What does this mean?
