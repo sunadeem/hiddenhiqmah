@@ -25,6 +25,10 @@ import {
   setCachedLocation,
   getLocationState,
   setLocationState,
+  getLocationWarning,
+  formatConfirmedAt,
+  LOCATION_CONFIDENCE_EVENT,
+  type LocationWarning,
 } from "@hidden-hiqmah/ui/lib/location-cache";
 import chapters from "@hidden-hiqmah/content/quran/chapters.json";
 import { Skeleton } from "@hidden-hiqmah/ui/components/Skeleton";
@@ -133,6 +137,9 @@ export function NextPrayerCard() {
   const [location, setLocation] = useState("");
   const [nextPrayer, setNextPrayerState] = useState<NextPrayer | null>(null);
   const [countdown, setCountdown] = useState("");
+  // {kind:"none"} everywhere except Android — see ANDROID_TUNING in
+  // lib/mobile/location-refresh. Nothing extra renders when it is "none".
+  const [warn, setWarn] = useState<LocationWarning>({ kind: "none" });
   const fetched = useRef(false);
 
   // Compute prayer times ON-DEVICE from coordinates — the device's location
@@ -288,6 +295,20 @@ export function NextPrayerCard() {
     return () => window.removeEventListener(LOCATION_CHANGED_EVENT, onLocationChanged);
   }, [computeTimes]);
 
+  // Same reason as above, for the other half of the story: a run of failed fixes
+  // changes how much this city can be trusted without changing the city, so it
+  // never reaches LOCATION_CHANGED_EVENT.
+  useEffect(() => {
+    const sync = () => setWarn(getLocationWarning());
+    sync();
+    window.addEventListener(LOCATION_CONFIDENCE_EVENT, sync);
+    window.addEventListener(LOCATION_CHANGED_EVENT, sync);
+    return () => {
+      window.removeEventListener(LOCATION_CONFIDENCE_EVENT, sync);
+      window.removeEventListener(LOCATION_CHANGED_EVENT, sync);
+    };
+  }, []);
+
   useEffect(() => {
     if (!timings) return;
     const tick = () => {
@@ -354,8 +375,21 @@ export function NextPrayerCard() {
             {gregorian}
           </p>
         </div>
+        {/* The city, and — only when we have stopped being sure of it — one
+            qualifier on the same 12px line. This is the most-seen surface in the
+            app and the card is already a Link to /prayer-times, where the
+            explanation and the button live; a paragraph here would be the nag.
+            Nothing is added to the layout while kind === "none". */}
         <p className="text-xs text-themed-muted mb-4 truncate">
           {location || "Next prayer"}
+          {location && warn.kind !== "none" && (
+            <span className={warn.kind === "zone" ? "text-amber-300/90" : "text-gold/80"}>
+              {warn.kind === "unconfirmed" &&
+                ` · not confirmed since ${formatConfirmedAt(warn.since)}`}
+              {warn.kind === "zone" && " · time zone changed — tap to update"}
+              {warn.kind === "disabled" && " · location is off"}
+            </span>
+          )}
         </p>
 
         <div className="flex items-center gap-3 mb-1">
