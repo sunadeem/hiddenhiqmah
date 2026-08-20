@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef, useCallback, Fragment, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Search, Send, Loader2, X, MessageCircleQuestion, Trash2, ExternalLink, Copy, Check, BookOpen, BookMarked } from "lucide-react";
+import { createPortal } from "react-dom";
+import { Search, Send, Loader2, X, MessageCircleQuestion, Trash2, ExternalLink, Copy, Check, Flag, BookOpen, BookMarked } from "lucide-react";
 import { getOrCreateAnonId, getStoredAuthToken } from "../lib/anon-id";
 
 declare global {
   interface Window {
-    Capacitor?: { isNativePlatform?: () => boolean };
+    Capacitor?: { isNativePlatform?: () => boolean; getPlatform?: () => string };
   }
 }
 
@@ -143,6 +144,296 @@ export function CopyButton({ text }: { text: string }) {
     >
       {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
     </button>
+  );
+}
+
+// ── Report button + sheet ─────────────────────────────────────────────────
+//
+// Google Play requires apps that generate content with AI to offer an in-app
+// way to flag offensive output. This is that mechanism, deliberately built to
+// the same visual weight as CopyButton above: Play mandates the ABILITY to
+// flag, never its prominence, so nothing here appears unprompted, animates on
+// render, or shifts layout.
+
+const REPORT_REASONS: { code: string; label: string }[] = [
+  { code: "offensive", label: "Offensive or inappropriate" },
+  { code: "incorrect", label: "Incorrect or misleading" },
+  { code: "source", label: "Wrong or missing source" },
+  { code: "other", label: "Something else" },
+];
+
+/** What the user saw when they tapped the flag. Frozen at OPEN time because
+ *  onAnswer() replaces the whole assistant message object mid-stream — reading
+ *  the live prop at send time can report text the user never saw.
+ *
+ *  `token` is frozen for a different reason: the sheet TELLS the user whether
+ *  the report carries their account, and that sentence is the app's consent
+ *  disclosure. If the disclosure read the token at render time and send() read
+ *  it again later, a session expiring in between would make the sentence false
+ *  in the one direction that matters. Captured once, shown and sent. */
+type ReportSnapshot = { answer: string; question?: string; partial: boolean; token?: string };
+
+function currentPlatform(): string {
+  if (typeof window === "undefined") return "web";
+  return window.Capacitor?.isNativePlatform?.() ? window.Capacitor?.getPlatform?.() || "native" : "web";
+}
+
+export function ReportButton({
+  answer,
+  question,
+  partial,
+  accountLabel,
+  surface = "ask",
+  onOpenHaptic,
+  onSendHaptic,
+}: {
+  answer: string;
+  question?: string;
+  partial?: boolean;
+  /** Signed-in email, shown verbatim in the disclosure. packages/ui can't
+   *  import the app's AuthContext, so the caller passes it. Optional, and the
+   *  disclosure stays truthful without it — whether the report is attributed
+   *  is decided by the stored token, never by whether this prop was passed. */
+  accountLabel?: string;
+  surface?: "ask" | "ask-float";
+  // Haptics live behind an apps/web alias that packages/ui cannot import.
+  onOpenHaptic?: () => void;
+  onSendHaptic?: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [snap, setSnap] = useState<ReportSnapshot | null>(null);
+
+  const showNotice = (m: string) => {
+    setNotice(m);
+    // Stale-timer guard: a second notice must not be wiped by the first one's
+    // timeout (CircleChatSheet idiom).
+    setTimeout(() => setNotice((n) => (n === m ? "" : n)), 2600);
+  };
+
+  const send = async (reason: string | null, note: string) => {
+    const s = snap;
+    setOpen(false);
+    setSnap(null);
+    if (!s) return;
+    onSendHaptic?.();
+    // The route's own ceiling is 10s. Without a client-side abort a request the
+    // network never answers leaves NO pill at all — the sheet is already shut,
+    // so the user is given no confirmation and no error, ever. Fail loudly.
+    const ctl = new AbortController();
+    const killer = setTimeout(() => ctl.abort(), 12000);
+    try {
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      // s.token, not a fresh read: this is the exact credential the disclosure
+      // the user just agreed to describes.
+      if (s.token) headers["Authorization"] = `Bearer ${s.token}`;
+      headers["X-Anon-Id"] = getOrCreateAnonId();
+      const res = await fetch(`${getApiBaseUrl()}/api/ask-report`, {
+        method: "POST",
+        headers,
+        signal: ctl.signal,
+        body: JSON.stringify({
+          answer: s.answer,
+          question: s.question,
+          reason,
+          note: note.trim() || undefined,
+          partial: s.partial,
+          surface,
+          platform: currentPlatform(),
+        }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      showNotice("Reported — we'll review it.");
+      setSent(true);
+      setTimeout(() => setSent(false), 2000);
+    } catch {
+      showNotice("Couldn't send that report.");
+    } finally {
+      clearTimeout(killer);
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setSnap({ answer, question, partial: !!partial, token: getStoredAuthToken() });
+          setOpen(true);
+          onOpenHaptic?.();
+        }}
+        className="p-1 rounded hover:bg-white/10 text-themed-muted/40 hover:text-themed-muted transition-colors"
+        title="Report this answer"
+        aria-label="Report this answer"
+      >
+        {sent ? <Check size={12} className="text-emerald-400" /> : <Flag size={12} />}
+      </button>
+      {open && snap && (
+        <ReportSheet
+          accountLabel={accountLabel}
+          attributed={!!snap.token}
+          onSend={send}
+          onClose={() => {
+            setOpen(false);
+            setSnap(null);
+          }}
+        />
+      )}
+      {notice &&
+        createPortal(
+          <div className="ask-report-notice fixed left-1/2 -translate-x-1/2 z-[96] rounded-full card-bg border sidebar-border px-4 py-2 text-[12px] text-themed shadow-lg">
+            {notice}
+          </div>,
+          document.body
+        )}
+    </>
+  );
+}
+
+function ReportSheet({
+  accountLabel,
+  attributed,
+  onSend,
+  onClose,
+}: {
+  accountLabel?: string;
+  /** True when the request will actually carry a Bearer token. Decided by the
+   *  snapshot, not by `accountLabel`, so a caller that forgets to pass a label
+   *  under-discloses (says "account", omits which) instead of flatly denying
+   *  that an account is attached. */
+  attributed: boolean;
+  onSend: (reason: string | null, note: string) => void;
+  onClose: () => void;
+}) {
+  const [reason, setReason] = useState<string | null>(null);
+  const [note, setNote] = useState("");
+  // Tracks whether OUR history entry is still on the stack, so closing by tap
+  // pops exactly one entry and closing by Android Back pops none.
+  const pushed = useRef(false);
+  // onClose is an inline arrow in the parent, so it is a new function on every
+  // render. Held in a ref and read at call time so the effect below can depend
+  // on NOTHING: keyed on onClose it would re-run on each parent re-render and
+  // push another history entry — and the parent re-renders on every streamed
+  // token, so a sheet opened mid-answer would need dozens of Back presses.
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+
+  // Android Back must dismiss the sheet, not navigate away from the answer.
+  useEffect(() => {
+    const onPop = () => {
+      pushed.current = false;
+      closeRef.current();
+    };
+    pushed.current = true;
+    window.history.pushState({ hiqmahAskReport: true }, "");
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  const dismiss = (fn: () => void) => {
+    if (pushed.current) {
+      pushed.current = false;
+      window.history.back();
+    }
+    fn();
+  };
+
+  const row = "w-full flex items-center gap-3 px-4 py-3.5 text-left text-sm border-t sidebar-border active:bg-[var(--overlay-subtle)] touch-manipulation";
+
+  return createPortal(
+    <div
+      className="ask-report-sheet fixed inset-0 z-[95] flex items-end justify-center"
+      onClick={() => dismiss(onClose)}
+    >
+      <div className="absolute inset-0 bg-black/50" />
+      {/* Two regions, not one scroller. The reason list scrolls; the disclosure
+          and the two actions are PINNED. With everything in one scrolling card
+          (max-h-[80dvh]), one step up in Android's Display size — or a 1.3 font
+          scale, which every Android offers — pushed Send and Cancel past the
+          card's bottom edge with nothing on screen hinting the card scrolled:
+          the Play-mandated submit action simply read as missing. Pinning also
+          guarantees the consent text is on screen whenever Send is. */}
+      <div
+        className="relative w-full max-w-md m-3 rounded-2xl card-bg border sidebar-border overflow-hidden max-h-[88dvh] flex flex-col"
+        style={{ marginBottom: "max(env(safe-area-inset-bottom), 12px)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="min-h-0 overflow-y-auto">
+          <div className="px-4 pt-4 pb-1 text-[15px] font-semibold text-themed">Report this answer</div>
+          <p className="px-4 pb-3 text-[13px] text-themed-muted">
+            Ask Hiqmah&apos;s answers are AI-generated and can be wrong.
+          </p>
+
+          {REPORT_REASONS.map((r) => (
+            <button key={r.code} type="button" onClick={() => setReason(r.code)} className={row}>
+              <span
+                className={`w-[17px] h-[17px] rounded-full border shrink-0 flex items-center justify-center ${
+                  reason === r.code
+                    ? "border-[var(--color-accent2)] bg-[var(--color-accent2)]/20"
+                    : "border-[var(--overlay-medium)]"
+                }`}
+              >
+                {reason === r.code && <span className="w-[7px] h-[7px] rounded-full bg-[var(--color-accent2)]" />}
+              </span>
+              <span className="text-themed">{r.label}</span>
+            </button>
+          ))}
+
+          <div className="px-4 py-3 border-t sidebar-border">
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={2}
+              maxLength={500}
+              placeholder="Add a note (optional)"
+              className="w-full resize-none bg-[var(--color-card)] rounded-xl px-3 py-2 text-themed text-base outline-none border sidebar-border focus:border-[var(--color-accent2)]/45 transition-colors placeholder:text-themed-muted/50"
+            />
+          </div>
+        </div>
+
+        {/* The disclosure sits above Send, on the same screen, with no tap to
+            reveal it: this is the only place the app ever stores Ask content,
+            so the user has to be told before they confirm — not after, and not
+            behind a link. */}
+        <div className="shrink-0 px-4 py-3 border-t sidebar-border">
+          <div className="text-[12px] font-semibold text-themed-muted mb-1">What gets sent</div>
+          <p className="text-[12px] text-themed-muted/80 leading-relaxed">
+            This answer, the question that produced it, your reason and your note. Nothing else from your
+            conversation.
+            <br />
+            {attributed
+              ? accountLabel
+                ? `Sent from your account (${accountLabel}).`
+                : "Sent from your account."
+              : "Sent without an account, from a random ID on this device."}
+            <br />
+            {/* "up to" is load-bearing. Until migration 032 is applied the
+                report is recoverable from server logs rather than stored for a
+                full 90 days, and an exact figure would be a promise the app
+                cannot keep in that window. */}
+            We keep reports for up to 90 days to review them.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => dismiss(() => onSend(reason, note))}
+          className="shrink-0 w-full px-4 py-3.5 text-center text-sm font-semibold text-[var(--color-accent2)] border-t sidebar-border active:bg-[var(--overlay-subtle)] touch-manipulation"
+        >
+          Send report
+        </button>
+        <button
+          type="button"
+          onClick={() => dismiss(onClose)}
+          className="shrink-0 w-full px-4 py-3.5 text-center text-sm text-themed-muted border-t sidebar-border active:bg-[var(--overlay-subtle)] touch-manipulation"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>,
+    document.body
   );
 }
 
@@ -570,11 +861,16 @@ export function AskHiqmahInline({ onOpen }: { onOpen: (query: string) => void })
 
 /* ─── Floating chat panel (global, in AppShell) ─── */
 
-export default function AskHiqmahFloat() {
+export default function AskHiqmahFloat({ accountLabel }: { accountLabel?: string } = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  // Separate from `loading`, which onDelta clears the moment the first token
+  // lands. A report filed between that moment and the final answer event
+  // carries truncated text, and the moderator has to be told so — otherwise
+  // they judge the model on a sentence it never finished writing.
+  const [streaming, setStreaming] = useState(false);
   const [statusText, setStatusText] = useState("Thinking...");
   const [hydrated, setHydrated] = useState(false);
 
@@ -672,6 +968,7 @@ export default function AskHiqmahFloat() {
     const newMessages: Message[] = [...prevMessages, { role: "user", content: userMessage }];
     setMessages(newMessages);
     setLoading(true);
+    setStreaming(false);
     setStatusText("Thinking...");
 
     let streamed = "";
@@ -687,6 +984,7 @@ export default function AskHiqmahFloat() {
             citations: data.citations,
           }]);
           setLoading(false);
+          setStreaming(false);
         },
         (reason) => {
           let content = "I apologize, I was unable to process your question. Please try again.";
@@ -703,12 +1001,14 @@ export default function AskHiqmahFloat() {
           }
           setMessages([...newMessages, { role: "assistant", content }]);
           setLoading(false);
+          setStreaming(false);
         },
         // onDelta — live token streaming (web). The final `answer` event then
         // replaces this with the cleaned content + citations/links.
         (deltaText) => {
           streamed += deltaText;
           setLoading(false);
+          setStreaming(true);
           setMessages([...newMessages, { role: "assistant", content: streamed }]);
         },
       );
@@ -718,6 +1018,7 @@ export default function AskHiqmahFloat() {
         content: "I apologize, I was unable to process your question. Please try again.",
       }]);
       setLoading(false);
+      setStreaming(false);
     }
   }, []);
 
@@ -899,9 +1200,20 @@ export default function AskHiqmahFloat() {
                         </div>
                       )}
 
-                      {/* Copy button for assistant messages */}
+                      {/* Copy + report. Report is LEFT of Copy so Copy stays
+                          pinned to the bubble's right edge exactly where it has
+                          always been — moving it would break muscle memory for a
+                          control everyone uses, to make room for one almost
+                          nobody will. */}
                       {msg.role === "assistant" && (
-                        <div className="mt-2 flex justify-end">
+                        <div className="mt-2 flex justify-end gap-1">
+                          <ReportButton
+                            answer={msg.content}
+                            question={messages[i - 1]?.role === "user" ? messages[i - 1].content : undefined}
+                            partial={streaming && i === messages.length - 1}
+                            accountLabel={accountLabel}
+                            surface="ask-float"
+                          />
                           <CopyButton text={msg.content} />
                         </div>
                       )}

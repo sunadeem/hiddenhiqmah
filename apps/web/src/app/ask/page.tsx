@@ -13,9 +13,11 @@ import {
   renderMarkdown,
   CitationCard,
   CopyButton,
+  ReportButton,
 } from "@hidden-hiqmah/ui/components/AskHiqmah";
 import type { Message } from "@hidden-hiqmah/ui/components/AskHiqmah";
 import { useAuth } from "@/context/AuthContext";
+import { hapticLight, hapticMedium } from "@/lib/mobile/haptics";
 
 const placeholderQuestions = [
   "What is Islam?",
@@ -380,9 +382,24 @@ export default function AskPage() {
                 </div>
               )}
 
-              {/* Copy button */}
+              {/* Copy + report. Report is LEFT of Copy so Copy stays pinned to
+                  the bubble's right edge exactly where it has always been —
+                  moving it would break muscle memory for a control everyone
+                  uses, to make room for one almost nobody will. Rendered under
+                  the same unconditional `assistant` test as Copy: gating it on
+                  streaming/loading/a feature flag would mount it late and widen
+                  the bubble after paint. */}
               {msg.role === "assistant" && (
-                <div className="mt-2 flex justify-end">
+                <div className="mt-2 flex justify-end gap-1">
+                  <ReportButton
+                    answer={msg.content}
+                    question={messages[i - 1]?.role === "user" ? messages[i - 1].content : undefined}
+                    partial={loading && streaming && i === messages.length - 1}
+                    accountLabel={user?.email ?? undefined}
+                    surface="ask"
+                    onOpenHaptic={hapticLight}
+                    onSendHaptic={hapticMedium}
+                  />
                   <CopyButton text={msg.content} />
                 </div>
               )}

@@ -109,6 +109,16 @@ export async function overviewSection(supa: SupabaseClient) {
   } catch {
     suspended = 0;
   }
+  // Reported AI answers (032). Nothing else in the app surfaces these, so this
+  // alert is the only thing that turns Play's "utilize user reports" from
+  // aspiration into practice. Zero when the migration isn't applied yet.
+  let openAskReports = 0;
+  try {
+    const { count, error } = await supa.from("ask_reports").select("*", { count: "exact", head: true }).eq("status", "open");
+    openAskReports = error ? 0 : count ?? 0;
+  } catch {
+    openAskReports = 0;
+  }
   const askTotal = await headCount(supa, "chat_usage");
 
   // Activity union.
@@ -186,6 +196,7 @@ export async function overviewSection(supa: SupabaseClient) {
     costSeries,
     attention: {
       openReports,
+      openAskReports,
       suspended,
       costSpike: cost7Avg > 0 && costOf(tokToday) > 2 * cost7Avg,
       costToday: costOf(tokToday),
@@ -353,6 +364,7 @@ export async function askSection(supa: SupabaseClient) {
   const askTotal = await headCount(supa, "chat_usage");
   const { nameById, emailById } = await fetchNameEmail(supa, users);
   const label = (uid: string) => nameById.get(uid) || emailById.get(uid) || uid.slice(0, 8) + "…";
+  const reports = await askReportsBlock(supa, now, nameById, emailById);
 
   const d24 = now - DAY_MS, d7 = now - 7 * DAY_MS, d30 = now - 30 * DAY_MS;
   let today = 0, w = 0, m = 0, anon30 = 0, msg30 = 0;
@@ -398,6 +410,102 @@ export async function askSection(supa: SupabaseClient) {
     uniqSeries,
     topByCost,
     topByMsgs,
+    reports,
+  };
+}
+
+type AskReportRow = {
+  id: string;
+  user_id: string | null;
+  anon_id: string | null;
+  answer_text: string;
+  question_text: string | null;
+  partial: boolean | null;
+  reason: string | null;
+  note: string | null;
+  surface: string | null;
+  platform: string | null;
+  app_version: string | null;
+  status: string | null;
+  created_at: string;
+};
+
+/** Reported AI answers (migration 032). Probes first and degrades to an empty
+ *  queue + a "run the migration" flag rather than 500-ing the whole Ask tab,
+ *  which works fine today and must keep working before the SQL is applied. */
+async function askReportsBlock(
+  supa: SupabaseClient,
+  now: number,
+  nameById: Map<string, string | null>,
+  emailById: Map<string, string | null>
+) {
+  const empty = { open: 0, shown: 0, last7d: 0, total: 0, migrationMissing: true, rows: [] as unknown[] };
+  const probe = await supa.from("ask_reports").select("id").limit(1);
+  if (probe.error) return empty;
+
+  const cols = "id, user_id, anon_id, answer_text, question_text, partial, reason, note, surface, platform, app_version, status, created_at";
+  const { data, error } = await supa
+    .from("ask_reports")
+    .select(cols)
+    .eq("status", "open")
+    .order("created_at", { ascending: false })
+    .limit(100);
+  if (error) return empty;
+
+  const open = (data ?? []) as unknown as AskReportRow[];
+  // Counted, not measured from the page above. `open.length` saturates at the
+  // 100-row limit, so past 100 the Ask tile said "100" while the Overview alert
+  // (an exact head count) said the true number — and nothing told the admin
+  // that rows were being hidden. `shown` carries the page size separately.
+  let openCount = open.length;
+  try {
+    const { count, error } = await supa
+      .from("ask_reports")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "open");
+    if (!error) openCount = count ?? open.length;
+  } catch {
+    /* keep the page length rather than reporting zero */
+  }
+  const total = await headCount(supa, "ask_reports");
+  let last7d = 0;
+  try {
+    const { count } = await supa
+      .from("ask_reports")
+      .select("*", { count: "exact", head: true })
+      .gte("created_at", isoDaysAgo(7, now));
+    last7d = count ?? 0;
+  } catch {
+    last7d = 0;
+  }
+
+  // Signed-out reporters have no auth.users row, so there is no name to look
+  // up — show enough of the anon id to correlate repeat reporters, no more.
+  const who = (r: AskReportRow) =>
+    r.user_id
+      ? nameById.get(r.user_id) || emailById.get(r.user_id) || r.user_id.slice(0, 8) + "…"
+      : `Guest ····${(r.anon_id ?? "").slice(-4)}`;
+
+  return {
+    open: openCount,
+    shown: open.length,
+    last7d,
+    total,
+    migrationMissing: false,
+    rows: open.map((r) => ({
+      id: r.id,
+      who: who(r),
+      signedIn: !!r.user_id,
+      answer: r.answer_text,
+      question: r.question_text,
+      partial: !!r.partial,
+      reason: r.reason,
+      note: r.note,
+      surface: r.surface,
+      platform: r.platform,
+      appVersion: r.app_version,
+      at: r.created_at,
+    })),
   };
 }
 

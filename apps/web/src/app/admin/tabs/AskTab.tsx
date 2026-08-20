@@ -1,6 +1,7 @@
 "use client";
 
-import { useAdminSection, type Creds } from "../useAdminSection";
+import { useState } from "react";
+import { useAdminSection, postAdmin, type Creds } from "../useAdminSection";
 import { StatTile, Section, Card, LineChart, StackedBar, StackedRow, RankList, Loading, ErrLine, RefreshBtn, fmt, fmtUsd, fmtWhen, type SeriesPoint } from "../ui";
 
 type Tok = { input: number; output: number; cacheRead: number; cacheWrite: number };
@@ -11,7 +12,108 @@ type AskData = {
   messagesStacked: { label: string; date: string; a: number; b: number }[];
   costSeries: SeriesPoint[]; uniqSeries: SeriesPoint[];
   topByCost: { label: string; count: number }[]; topByMsgs: { label: string; count: number }[];
+  reports: {
+    open: number; shown: number; last7d: number; total: number; migrationMissing: boolean;
+    rows: {
+      id: string; who: string; signedIn: boolean; answer: string; question: string | null;
+      partial: boolean; reason: string | null; note: string | null; surface: string | null;
+      platform: string | null; appVersion: string | null; at: string;
+    }[];
+  };
 };
+
+const REASON_LABEL: Record<string, string> = {
+  offensive: "Offensive or inappropriate",
+  incorrect: "Incorrect or misleading",
+  source: "Wrong or missing source",
+  other: "Something else",
+};
+
+/** Reported AI answers (migration 032).
+ *
+ *  ⚠️ Both text blocks below render as plain React children. The CLIENT supplies
+ *  these strings — anyone can POST arbitrary content claiming it is an AI
+ *  answer — so they must never go through dangerouslySetInnerHTML or
+ *  renderMarkdown, and a report is never evidence that the model said this. */
+function ReportedAnswers({ reports, creds, onDone }: { reports: AskData["reports"]; creds: Creds; onDone: () => void }) {
+  const [busy, setBusy] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+
+  const act = async (id: string, action: "resolveAskReport" | "dismissAskReport") => {
+    setBusy(id);
+    setErr(null);
+    try {
+      await postAdmin("/api/admin/actions", creds, { action, reportId: id });
+      onDone();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Action failed");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  if (reports.migrationMissing) {
+    return (
+      <Section title="Reported answers">
+        <Card><p className="text-sm text-themed-muted">Apply migration 032 to enable AI answer reports.</p></Card>
+      </Section>
+    );
+  }
+
+  return (
+    <Section title="Reported answers">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+        <StatTile label="Open" value={fmt(reports.open)} tone={reports.open ? "red" : undefined} />
+        <StatTile label="7 days" value={fmt(reports.last7d)} />
+        <StatTile label="Total" value={fmt(reports.total)} />
+      </div>
+      {err && <p className="text-sm text-red-300 mb-2">{err}</p>}
+      {reports.rows.length === 0 ? (
+        <Card><p className="text-sm text-themed-muted/70">No open reports.</p></Card>
+      ) : (
+        <>
+          <button onClick={() => setExpanded((v) => !v)} className="text-xs text-themed-muted hover:text-gold mb-2">
+            {expanded ? "▾" : "▸"} Open reports ({reports.shown}
+            {/* Say so when the query is paging. Silently showing 100 of N is
+                how a burst of junk buries genuine reports nobody knows exist. */}
+            {reports.open > reports.shown ? ` of ${fmt(reports.open)} — newest first` : ""})
+          </button>
+          {expanded && (
+            <div className="space-y-3">
+              {reports.rows.map((r) => (
+                <Card key={r.id}>
+                  <div className="flex flex-wrap items-center gap-2 text-xs mb-2">
+                    <span className="text-themed-muted/70">{fmtWhen(r.at)}</span>
+                    <span className="text-themed font-medium">{r.reason ? REASON_LABEL[r.reason] ?? r.reason : "No reason given"}</span>
+                    <span className="text-themed-muted/70">· {r.who}</span>
+                    <span className="text-themed-muted/50">· {[r.surface, r.platform, r.appVersion].filter(Boolean).join(" · ") || "—"}</span>
+                    {r.partial && <span className="px-1.5 py-0.5 rounded bg-amber-400/15 text-amber-300 border border-amber-400/30">partial</span>}
+                  </div>
+                  {r.note && <p className="text-sm text-themed mb-2 whitespace-pre-wrap break-words">{r.note}</p>}
+                  {r.question && (
+                    <div className="mb-2">
+                      <div className="text-[11px] uppercase tracking-wide text-themed-muted/60 mb-1">Question</div>
+                      <div className="text-sm text-themed-muted whitespace-pre-wrap break-words rounded-lg bg-[var(--overlay-subtle)] p-2">{r.question}</div>
+                    </div>
+                  )}
+                  <div className="text-[11px] uppercase tracking-wide text-themed-muted/60 mb-1">Reported answer</div>
+                  <div className="text-sm text-themed whitespace-pre-wrap break-words rounded-lg bg-[var(--overlay-subtle)] p-2 max-h-64 overflow-y-auto">{r.answer}</div>
+                  <div className="flex gap-2 mt-3">
+                    <button disabled={busy === r.id} onClick={() => act(r.id, "resolveAskReport")}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-400/30 hover:bg-emerald-500/25 transition-colors disabled:opacity-40">Resolve</button>
+                    <button disabled={busy === r.id} onClick={() => act(r.id, "dismissAskReport")}
+                      className="px-3 py-1.5 rounded-lg text-xs text-themed-muted border sidebar-border hover:text-themed transition-colors disabled:opacity-40">Dismiss</button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </Section>
+  );
+}
 
 export default function AskTab({ creds }: { creds: Creds }) {
   const { data, loading, error, refresh } = useAdminSection<AskData>(creds, "ask");
@@ -27,6 +129,8 @@ export default function AskTab({ creds }: { creds: Creds }) {
         <p className="text-xs text-themed-muted/70">Updated {fmtWhen(data.generatedAt)}</p>
         <RefreshBtn onClick={refresh} loading={loading} />
       </div>
+
+      {data.reports && <ReportedAnswers reports={data.reports} creds={creds} onDone={refresh} />}
 
       <Section title="Ask Hiqmah">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

@@ -548,6 +548,23 @@ body.reader-immersive [data-mini-player] {
   padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
 }
 
+/* The report pill must clear the Ask composer, which reserves 84px for the
+   floating tab bar and drops to 12px when the keyboard is up (see
+   .ask-composer above). Circles' 90px offset lands on top of Ask's composer —
+   these offsets are Ask's own. */
+.ask-report-notice {
+  bottom: calc(env(safe-area-inset-bottom) + 150px);
+}
+.keyboard-open .ask-report-notice {
+  bottom: calc(env(safe-area-inset-bottom) + 78px);
+}
+/* With the keyboard up, a bottom-anchored sheet puts Send underneath it on
+   iOS, where fixed elements don't move with the keyboard. Anchor to the top
+   instead so the primary action stays reachable. */
+.keyboard-open .ask-report-sheet {
+  align-items: flex-start;
+}
+
 /* Fast tooltip */
 .tooltip {
   position: relative;
