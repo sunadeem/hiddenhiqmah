@@ -25,6 +25,7 @@ import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { useOnline } from "@/lib/mobile/useOnline";
 import { WifiOff } from "lucide-react";
 import { useScrollDirection } from "@/lib/mobile/useScrollDirection";
+import { useScrollRestoration } from "@/lib/mobile/useScrollRestoration";
 
 const FULLSCREEN_ROUTES = new Set(["/signin", "/auth/callback", "/auth/reset"]);
 
@@ -44,7 +45,14 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   const playerVisible = (playingVerse !== null || adhanPlaying) && !isSurahReader;
   const online = useOnline();
   const mainRef = useRef<HTMLElement>(null);
-  const scrollDir = useScrollDirection(mainRef);
+  // resync must be handed to the restorer: a restore is one huge downward delta,
+  // which the direction hook would otherwise read as a flick and use to hide the
+  // tab bar + player on every single back navigation.
+  const { dir: scrollDir, resync } = useScrollDirection(mainRef);
+  // True only while a restore is still converging on a page whose content has not
+  // finished growing — the incoming page stays invisible rather than paint a wrong
+  // offset and then jump.
+  const restoreHold = useScrollRestoration(mainRef, resync);
 
   useEffect(() => {
     applyNativeSetup();
@@ -176,7 +184,11 @@ export default function MobileShell({ children }: { children: React.ReactNode })
           <motion.div
             key={pathname}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            /* Still opacity-ONLY. The restore hold keeps this at 0 for at most
+               250ms while a back-restored page is still growing, so the user never
+               sees a clamped offset correct itself. It must never become a
+               transform: that would un-pin sticky descendants in WKWebView. */
+            animate={{ opacity: restoreHold ? 0 : 1 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             /* NO top padding. Above this sits MobileTopBar's --hiqmah-safe-top,
                which on Android already resolves to the REAL display cutout
