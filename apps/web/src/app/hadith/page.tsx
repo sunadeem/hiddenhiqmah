@@ -812,15 +812,18 @@ export default function HadithPage() {
         reference="Bukhari 1:1"
       />
 
-      {/* Search bar. The placeholder is kept short enough to survive a phone
-          width — the previous one, "Search hadiths or references (e.g. bukhari
-          50, muslim 2912)…", was clipped mid-word at "n" on a 390pt screen, so
-          the example it existed to give never arrived. A placeholder nobody can
-          finish reading is worse than a shorter one. */}
+      {/* Search bar. Placeholders are NOT ellipsised — an input clips them dead,
+          mid-word, with no indication anything is missing. The original ran to
+          "…(e.g. bukhari 50, muslim 2912)" and died at "n"; the first attempt at
+          shortening it still died at "bukhar", which is worse than useless
+          because it leaves a fragment that looks like a typo. Roughly 30
+          characters is what survives a 360dp screen at the default font scale,
+          so the example is quoted rather than described. Measure before
+          lengthening this. */}
       <PageSearch
         value={search}
         onChange={setSearch}
-        placeholder="Search hadiths — or a reference like bukhari 50"
+        placeholder="Search, or type “bukhari 50”"
         className="mb-6"
       />
 
