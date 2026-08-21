@@ -37,7 +37,11 @@ import {
   Flower2,
   Compass,
   Timer,
+  Feather,
 } from "lucide-react";
+// Leaf module on purpose — Sidebar is in the root layout, so anything reachable
+// from here ships in the chunk every page loads. Never point this at ./small-deeds.
+import { PAGE_TITLE, PAGE_TITLE_AR, PAGE_SLUG, PAGE_NAV_DESCRIPTION } from "./small-deeds-meta";
 
 export const dailyInspirations = [
   {
@@ -474,6 +478,8 @@ export const navSections: { heading: string; items: NavItem[] }[] = [
       { href: "/qiblah", icon: Compass, title: "Qiblah", titleAr: "القبلة", description: "Find the direction of prayer" },
       { href: "/muslim-daily", icon: ListChecks, title: "Muslim Daily", titleAr: "يوميات المسلم", description: "Morning adhkar, evening routines, checklist" },
       { href: "/dhikr", icon: Repeat, title: "Dhikr", titleAr: "الذكر", description: "Tasbeeh and daily remembrance" },
+      // Title/slug live in ./small-deeds-meta — PAGE_TITLE is the one string to change.
+      { href: PAGE_SLUG, icon: Feather, title: PAGE_TITLE, titleAr: PAGE_TITLE_AR, description: PAGE_NAV_DESCRIPTION },
       { href: "/ramadan", icon: Moon, title: "Ramadan", titleAr: "رمضان", description: "Fasting, Tarawih, Laylatul Qadr" },
       { href: "/zakat", icon: Coins, title: "Zakat", titleAr: "الزكاة", description: "Who pays, what counts, and the calculator" },
       { href: "/hajj", icon: MapPin, title: "Hajj & Umrah", titleAr: "الحج والعمرة", description: "Ihram, umrah walkthrough, the days of Hajj" },
