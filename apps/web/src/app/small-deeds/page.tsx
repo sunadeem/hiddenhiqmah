@@ -16,6 +16,7 @@ import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { HADITH, AYAH, SAY } from "@/data/small-deeds-quotes.generated";
+import { SAY_TRANSLIT } from "@/data/small-deeds-translit";
 import { PAGE_TITLE, PAGE_TITLE_AR, PAGE_SUBTITLE } from "@/data/small-deeds-meta";
 import {
   tabs,
@@ -77,7 +78,18 @@ function SayThis({ deed }: { deed: SmallDeed }) {
         <p className="text-[11px] uppercase tracking-wider text-themed-muted mb-3">
           {deed.say.label ?? "Say"}
         </p>
-        <p className="text-2xl font-arabic text-gold text-right leading-loose">{line.arabic}</p>
+        <p className="text-2xl font-arabic text-gold text-right leading-loose mb-2">
+          {line.arabic}
+        </p>
+        {/* Pronunciation, in /duas' own three-part stack — Arabic, then the
+            Latin, muted and italic and two steps down in size so it reads as an
+            aid to the Arabic rather than a second version of it. A matn block
+            has no English third part: the narration text is deliberately not on
+            the row (see the header of this file), so the citation line closes
+            the stack instead. */}
+        <p className="text-themed-muted italic text-sm leading-relaxed">
+          {SAY_TRANSLIT[deed.say.id]}
+        </p>
         <p className="text-xs text-themed-muted mt-3 leading-relaxed">
           The words alone, taken from <HadithRefText text={line.citation} /> — open the reference to
           read the narration in full.
@@ -130,7 +142,12 @@ function deedHaystack(deed: SmallDeed): string[] {
       fields.push(AYAH[k].textEn, AYAH[k].textTranslit, AYAH[k].citation);
     fields.push(deed.say.label, deed.say.note);
   }
-  if (deed.say?.kind === "matn") fields.push(deed.say.label, SAY[deed.say.id].citation);
+  // The transliteration joins the haystack for the same reason the ayat branch
+  // already puts textTranslit in it: it is the only searchable form of these
+  // words on the page (the Arabic itself is in neither branch's haystack), so
+  // without it "bihamdihi" finds the Qur'an rows and none of the dhikr ones.
+  if (deed.say?.kind === "matn")
+    fields.push(deed.say.label, SAY[deed.say.id].citation, SAY_TRANSLIT[deed.say.id]);
   return fields.filter((f): f is string => Boolean(f));
 }
 
@@ -515,10 +532,21 @@ function SmallDeedsContent() {
 
       {/* One line, above the tabs, because it is true of every row and a reader
           who never opens "How to read this" still has to meet it. No inline link
-          to that tab: it IS one of the two tabs, six millimetres below. */}
+          to that tab: it IS one of the two tabs, six millimetres below.
+
+          ⛔ THE SECOND SENTENCE IS LOAD-BEARING AND SITS HERE, NOT ON THE HOW
+          TAB. Card 4 explains why one formula can be spelt two ways, but the
+          collisions it explains are all on the OTHER tab — the All view is the
+          default and where every ?section= link lands, and it puts "laaa ilaaha
+          illaa" a few rows from "La ilaha illallahu". A reader who never opens
+          How to read this would meet both and conclude the page is careless.
+          This line is what makes the card reachable from where the problem is;
+          it renders above the TabBar, so it is on screen for both tabs. */}
       <p className="text-xs text-themed-muted leading-relaxed mb-4 max-w-2xl">
         Gifts promised for small things — each one checked against the narration it comes from, and
-        linked to its source.
+        linked to its source. The Latin under each line of Arabic is pronunciation only, and it
+        follows whichever narration that row quotes — <em>How to read this</em> says why two rows
+        can spell one formula differently.
       </p>
 
       <TabBar
@@ -631,7 +659,58 @@ function SmallDeedsContent() {
                 </p>
               </ContentCard>
 
+              {/* ⛔ THIS CARD IS NOT OPTIONAL WHILE BOTH SCHEMES SHIP. The
+                  Qur'an blocks take their transliteration from the app's own
+                  Qur'an reader and the dhikr blocks from its dua collection, so
+                  each matches wherever a reader would look that text up — but
+                  the two spell long vowels differently, and the All view (the
+                  default, and where every ?section= link lands) puts them within
+                  a few rows of each other. A reader meets "laaa ilaaha illaa" in
+                  Ayat al-Kursi and "La ilaha illallahu" on the tahlil rows, for
+                  the same words, and has no way to tell that it is a house
+                  convention rather than one of them being wrong. Explain it or
+                  the page looks careless — do not "fix" it by rewriting either
+                  source. The line above the tabs points here, because that is
+                  the tab the collisions are actually on.
+
+                  ⛔ EVERY EXAMPLE BELOW IS A STRING THAT ACTUALLY RENDERS —
+                  CHECK BEFORE EDITING. An earlier version quoted "la ilaha
+                  illa" as what "the tahlil rows" show; all four of them show
+                  "La ilaha illallahu", fused, and the only row carrying the
+                  quoted form is sayyid al-istighfar. It also promised that a
+                  formula is "spelt identically" on every row, which the pause
+                  rule and the wa huwa / wahwa split both contradict. A card
+                  whose whole job is to stop a reader concluding the page is
+                  careless has to be the most literally true thing on it. */}
               <ContentCard delay={0.2}>
+                <h2 className="text-xl font-semibold text-themed mb-2">
+                  4 &middot; Why the Latin is not always the same.
+                </h2>
+                <p className="text-themed-muted text-sm leading-relaxed">
+                  The Latin under each piece of Arabic is a pronunciation aid, never a translation,
+                  and it is spelt to match wherever you would look that text up next: Qur&rsquo;an
+                  passages exactly as this app&rsquo;s Qur&rsquo;an reader spells them, dhikr as its
+                  dua collection does. The two write long vowels differently — <em>laaa ilaaha
+                  illaa</em> in Ayat al-Kursi against <em>La ilaha illallahu</em> on the tahlil rows
+                  — and both say the same thing. Ayat al-Kursi and al-Ikhlas are in the dua
+                  collection as well, in its spelling; on this page they follow the reader.
+                </p>
+                <p className="text-themed-muted text-sm leading-relaxed mt-3">
+                  Among the dhikr, the Latin follows the narration each row quotes, so two rows
+                  carrying one formula can differ by a letter. A word before a pause drops its final
+                  {/* Quoted as JSX expressions, not with &rsquo;: the rows render the
+                      corpus' STRAIGHT apostrophe, and a card that exists to prove the
+                      page is careful must quote what is on the row to the character. */}
+                  vowel — <em>{"SubhanAllahil-'azeem"}</em> where a break follows,{" "}
+                  <em>{"'azeemi"}</em> where the phrase runs straight on. And where two collectors
+                  wrote the same word with different vowels, each row is read as its own Arabic is
+                  written: <em>wa huwa</em> where the ه carries a damma, <em>wahwa</em> — a syllable
+                  shorter — where it carries a sukun. None of those is a slip. Read the Arabic above
+                  each line and it is what is written there.
+                </p>
+              </ContentCard>
+
+              <ContentCard delay={0.25}>
                 <Narration hadithKey={CLOSING_QUOTE} />
               </ContentCard>
 

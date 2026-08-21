@@ -76,8 +76,14 @@ export const DHIKR_CATALOG: DhikrCatalogEntry[] = [
     key: "tahlil_fajr",
     label: "Tahlil after Fajr",
     arabic: "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    // ⛔ MUST STAY === SAY_TRANSLIT["tahlil-ten"] on /small-deeds. This entry's
+    // `arabic` is byte-identical (===) to that block's, two rows of that page
+    // link here, and it shipped four divergent tokens for the one string of
+    // Arabic (sharika/shareeka, hamd/hamdu, yumit/yumeetu, qadir/qadeer). This
+    // is the duas.json spelling, which #tahlil_full above already carries.
+    // Asserted by apps/web/scripts/verify-small-deeds-translit.mjs.
     translit:
-      "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, yuhyi wa yumit, wa huwa 'ala kulli shay'in qadir",
+      "La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu yuhyi wa yumeetu wa huwa 'ala kulli shay'in qadeer",
     english:
       "There is no god but Allah alone, with no partner; His is the dominion and His is the praise; He gives life and causes death, and He is over all things capable — ten times after Fajr, before speaking",
     reference: "Tirmidhi 48:105",
