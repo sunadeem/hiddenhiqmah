@@ -3,31 +3,30 @@
 import { useState, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import PageSearch from "@hidden-hiqmah/ui/components/PageSearch";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import TabBar from "@hidden-hiqmah/ui/components/TabBar";
+import SubTabLayout from "@hidden-hiqmah/ui/components/SubTabLayout";
 import HadithRefText from "@hidden-hiqmah/ui/components/HadithRefText";
 import SourcesCard, { type SourceRef } from "@hidden-hiqmah/ui/components/SourcesCard";
 import VerseHero from "@hidden-hiqmah/ui/components/VerseHero";
 import { textMatch } from "@hidden-hiqmah/ui/lib/search";
 import { useScrollToSection } from "@hidden-hiqmah/ui/hooks/useScrollToSection";
 import { HADITH, AYAH, SAY } from "@/data/small-deeds-quotes.generated";
-import {
-  PAGE_TITLE,
-  PAGE_TITLE_AR,
-  PAGE_SUBTITLE,
-} from "@/data/small-deeds-meta";
+import { PAGE_TITLE, PAGE_TITLE_AR, PAGE_SUBTITLE } from "@/data/small-deeds-meta";
 import {
   tabs,
+  sections,
   groups,
   deeds,
   HERO_QUOTE,
-  SECONDS_LEAD,
+  WORDS_LEAD,
   CLOSING_QUOTE,
-  ISTIGHFAR_COUNTS,
   type TabKey,
+  type SectionKey,
   type SmallDeed,
 } from "@/data/small-deeds";
 
@@ -36,16 +35,18 @@ import {
  * Nothing below authors a quotation. Text comes out of HADITH / AYAH / SAY,
  * which is generated from the verifier's output; the page only decides where to
  * put it.
+ *
+ * ⛔ A DEED ROW NEVER PRINTS HADITH[k].english. The founder's instruction was
+ * "doesn't have to show the source wording, just the hadith/quran reference" —
+ * so the narration text lives one tap away, in the app's own reader, where the
+ * full entry, its Arabic and the collector's remarks already are. The quotes
+ * module stays exactly as generated: it is what the citation verifier asserts
+ * against, and deleting it would delete the proof, not just the prose.
  */
 
-/** One narration, verbatim, with its reference linked into the hadith reader.
- *
- *  `collectorNotes` is set by the generator when the stored entry carries the
- *  collector's own apparatus after the matn — Abu Isa's grading, a mawquf route,
- *  a chapter cross-reference. Saying so on every such narration is the only way
- *  the page's claim about Sunan weighting is kept honest automatically; a
- *  hand-maintained list of "the places where it matters" drifts the moment a
- *  narration is added. */
+/** One narration, verbatim. Used only for the page's two framing quotes — the
+ *  lead over "Words you say" and the closing narration on the How tab. Rows
+ *  never render it. */
 function Narration({ hadithKey }: { hadithKey: string }) {
   const h = HADITH[hadithKey];
   return (
@@ -53,12 +54,6 @@ function Narration({ hadithKey }: { hadithKey: string }) {
       <p className="text-themed text-sm leading-relaxed">{h.english}</p>
       <p className="text-xs text-themed-muted mt-2">
         <HadithRefText text={h.citation} />
-        {h.collectorNotes && (
-          <span className="text-themed-muted/80">
-            {" "}
-            · the collector&rsquo;s own notes on this report follow the text in the entry
-          </span>
-        )}
       </p>
     </blockquote>
   );
@@ -77,18 +72,15 @@ function SayThis({ deed }: { deed: SmallDeed }) {
 
   if (deed.say.kind === "matn") {
     const line = SAY[deed.say.id];
-    // True for every current card, but computed rather than asserted: the
-    // caption must not promise a translation the card does not carry.
-    const translated = deed.quotes.includes(line.hadith);
     return (
-      <div className="rounded-lg p-4 mb-4" style={{ backgroundColor: "var(--color-bg)" }}>
+      <div className="rounded-lg p-4" style={{ backgroundColor: "var(--color-bg)" }}>
         <p className="text-[11px] uppercase tracking-wider text-themed-muted mb-3">
           {deed.say.label ?? "Say"}
         </p>
         <p className="text-2xl font-arabic text-gold text-right leading-loose">{line.arabic}</p>
         <p className="text-xs text-themed-muted mt-3 leading-relaxed">
-          The words alone, taken from <HadithRefText text={line.citation} />
-          {translated ? ", which is quoted in full below with its translation." : "."}
+          The words alone, taken from <HadithRefText text={line.citation} /> — open the reference to
+          read the narration in full.
         </p>
       </div>
     );
@@ -96,7 +88,7 @@ function SayThis({ deed }: { deed: SmallDeed }) {
 
   const { label, note, keys } = deed.say;
   return (
-    <div className="rounded-lg p-4 mb-4 space-y-4" style={{ backgroundColor: "var(--color-bg)" }}>
+    <div className="rounded-lg p-4 space-y-4" style={{ backgroundColor: "var(--color-bg)" }}>
       <div>
         <p className="text-[11px] uppercase tracking-wider text-themed-muted">
           {label ?? "Recite"}
@@ -122,43 +114,33 @@ function SayThis({ deed }: { deed: SmallDeed }) {
   );
 }
 
-/** Every citation a card carries, in the order the card presents them. */
-function deedRefs(deed: SmallDeed): SourceRef[] {
-  const out: SourceRef[] = [];
-  for (const k of [...deed.quotes, ...(deed.also ?? [])]) {
-    out.push({ ref: HADITH[k].citation, desc: HADITH[k].practice });
-  }
-  if (deed.say?.kind === "ayat") {
-    for (const k of deed.say.keys) out.push({ ref: AYAH[k].citation, desc: AYAH[k].practice });
-  }
-  // Defensive: today every Say block is spliced from a narration the card also
-  // quotes, but a Sources list that could silently omit the source of the words
-  // on the card is the wrong shape for this page.
-  if (deed.say?.kind === "matn") {
-    const h = HADITH[SAY[deed.say.id].hadith];
-    out.push({ ref: h.citation, desc: h.practice });
-  }
-  return out;
-}
-
-/** Free text a page search should look inside — including the narrations themselves. */
+/** Free text a page search should look inside.
+ *
+ *  ⛔ HADITH[k].english stays in the haystack even though no row prints it. The
+ *  `effect` lines deliberately carry the narration's own memorable images —
+ *  "foam of the sea", "each qirat like Mount Uhud" — so a hit found through the
+ *  narration still reads as a hit on the row that surfaces. */
 function deedHaystack(deed: SmallDeed): string[] {
-  const fields = [deed.action, deed.cost, deed.caveat, deed.link?.label];
+  const fields = [deed.action, deed.effect, deed.cost, deed.caveatLead, deed.caveat, deed.link?.label];
   for (const k of [...deed.quotes, ...(deed.also ?? [])]) {
     fields.push(HADITH[k].english, HADITH[k].citation, HADITH[k].practice);
   }
   if (deed.say?.kind === "ayat") {
-    for (const k of deed.say.keys) fields.push(AYAH[k].textEn, AYAH[k].textTranslit, AYAH[k].citation);
+    for (const k of deed.say.keys)
+      fields.push(AYAH[k].textEn, AYAH[k].textTranslit, AYAH[k].citation);
     fields.push(deed.say.label, deed.say.note);
   }
   if (deed.say?.kind === "matn") fields.push(deed.say.label, SAY[deed.say.id].citation);
   return fields.filter((f): f is string => Boolean(f));
 }
 
-/** Cards carrying at least one narration whose entry holds the collector's own
- *  notes. Counted rather than written down, so the How-to-Read tab cannot drift
- *  out of step with the data the moment a narration is added or swapped. */
-const markedCards = deeds.filter((d) => d.quotes.some((k) => HADITH[k].collectorNotes)).length;
+/** True when the row has anything at all behind the chevron. Two rows do not
+ *  (fajr-sunnah, isha-fajr-congregation) and they render flat, with no
+ *  affordance — an expander that opens onto nothing is a broken promise about
+ *  the interface. */
+function hasDetail(deed: SmallDeed): boolean {
+  return Boolean(deed.say || deed.caveat || (deed.also && deed.also.length) || deed.link);
+}
 
 function dedupeRefs(refs: SourceRef[]): SourceRef[] {
   const seen = new Set<string>();
@@ -171,7 +153,166 @@ function dedupeRefs(refs: SourceRef[]): SourceRef[] {
   return out;
 }
 
+/* ───────────────────────── the row ─────────────────────────
+ *
+ * The house dense-row idiom: Accordion's visual grammar (card-bg rounded-xl
+ * border sidebar-border, px-4 py-3, gold chevron rotating on open) cloned
+ * locally rather than imported, because this row must do three things Accordion
+ * cannot — carry tappable reference links at rest, carry a caveat line at rest,
+ * and own the DOM id `section-<id>` that ?section= deep links scroll to.
+ */
+
+/** The reference line: citations only, then the cost. This is ask #2 — what the
+ *  founder wants to see is "Bukhari 80:100", not the narration.
+ *
+ *  The † is the page's one automatic honesty mechanism: it is derived from the
+ *  stored entry (HADITH[k].collectorNotes), not from a hand-kept list, so it
+ *  cannot drift out of step the moment a narration is added or swapped. It used
+ *  to sit on the printed narration's reference line; with narrations gone it
+ *  moves here, or it silently disappears. */
+function RefLine({ deed }: { deed: SmallDeed }) {
+  return (
+    <p className="text-[11px] leading-relaxed">
+      {deed.quotes.map((k, i) => (
+        <span key={k}>
+          {i > 0 && <span className="text-themed-muted/50"> · </span>}
+          <HadithRefText text={HADITH[k].citation} />
+          {HADITH[k].collectorNotes && <span className="text-gold/70">&#8224;</span>}
+        </span>
+      ))}
+      <span className="text-themed-muted/50"> · </span>
+      <span className="text-themed-muted">{deed.cost}</span>
+    </p>
+  );
+}
+
+function DeedRow({
+  deed,
+  isOpen,
+  onToggle,
+}: {
+  deed: SmallDeed;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const expandable = hasDetail(deed);
+
+  const head = (
+    <div className="flex items-start gap-3 flex-1 min-w-0">
+      <div className="flex-1 min-w-0">
+        <p
+          className={`text-[15px] font-semibold leading-snug ${
+            isOpen ? "text-gold" : "text-themed"
+          }`}
+        >
+          {deed.action}
+        </p>
+        <p className="text-xs text-themed-muted leading-relaxed mt-1">{deed.effect}</p>
+      </div>
+      {expandable && (
+        <ChevronDown
+          size={16}
+          className={`shrink-0 mt-0.5 text-gold transition-transform ${isOpen ? "rotate-180" : ""}`}
+        />
+      )}
+    </div>
+  );
+
+  return (
+    <div
+      id={`section-${deed.id}`}
+      className="card-bg rounded-xl border sidebar-border overflow-hidden"
+    >
+      {expandable ? (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isOpen}
+          className="w-full flex px-4 pt-3 pb-1.5 text-left touch-manipulation"
+        >
+          {head}
+        </button>
+      ) : (
+        <div className="w-full flex px-4 pt-3 pb-1.5">{head}</div>
+      )}
+
+      {/* Outside the button on purpose: a <button> may not contain links, and
+          these references are links into the app's own reader. */}
+      <div className="px-4 pb-3">
+        <RefLine deed={deed} />
+
+        {/* A row whose plain reading would overclaim is corrected ON the row —
+            never only behind a tap. See caveatVisible in the data file.
+
+            Hidden while the row is open, because the full caveat below opens
+            with the same correction in longer form and a reader met the précis
+            twice, ~400px apart, on every one of these rows. Nothing is lost:
+            the expansion is strictly the larger statement. */}
+        {deed.caveatVisible && deed.caveatLead && !(isOpen && expandable && deed.caveat) && (
+          <p className="mt-2 border-l-2 border-[var(--color-gold)]/40 pl-2.5 text-xs text-themed leading-relaxed">
+            <span className="text-themed-muted">Note — </span>
+            {deed.caveatLead}
+          </p>
+        )}
+      </div>
+
+      <AnimatePresence initial={false}>
+        {isOpen && expandable && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            {/* ⛔ ORDER IS FIXED: Say → caveat → also → link. Several caveats read
+                against the words directly above them, and the "also" line is the
+                second set of references the caveats keep pointing at. */}
+            <div className="mx-4 mb-4 pt-3 space-y-3 border-t sidebar-border">
+              <SayThis deed={deed} />
+
+              {deed.caveat && (
+                <p className="text-xs text-themed-muted leading-relaxed">
+                  <span className="text-themed font-medium">What this does not say. </span>
+                  {deed.caveat}
+                </p>
+              )}
+
+              {deed.also && deed.also.length > 0 && (
+                <p className="text-xs text-themed-muted">
+                  Also narrated:{" "}
+                  <HadithRefText text={deed.also.map((k) => HADITH[k].citation).join("; ")} />
+                </p>
+              )}
+
+              {deed.link && (
+                <Link
+                  href={deed.link.href}
+                  className="inline-block text-xs text-gold hover:text-gold/80 underline underline-offset-2"
+                >
+                  {deed.link.label} →
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 /* ───────────────────────── page ───────────────────────── */
+
+const LIST_SECTIONS = sections.filter((s) => s.key !== "all");
+
+/** The rail. "All" carries a count because it is the default and the answer to
+ *  "how much is on this page"; the five sections do not, because SubTabLayout
+ *  takes no count prop and this page does not get to grow one into the shared
+ *  component. Their sizes show as a count beside each heading inside All. */
+const RAIL: { key: SectionKey; label: string }[] = [
+  { key: "all", label: `All (${deeds.length})` },
+  ...LIST_SECTIONS.map((s) => ({ key: s.key as SectionKey, label: s.label })),
+];
 
 function SmallDeedsContent() {
   useScrollToSection();
@@ -179,115 +320,160 @@ function SmallDeedsContent() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Read ?tab= in the initializer, not an effect — an effect would flash the
+  // Read the URL in the initializers, not an effect — an effect would flash the
   // default tab first on every deep link into the page.
-  const [activeTab, setActiveTab] = useState<TabKey>(() => {
+  const [activeTab, setActiveTab] = useState<TabKey>(() =>
+    searchParams.get("tab") === "how" ? "how" : "deeds"
+  );
+
+  const [activeSub, setActiveSub] = useState<SectionKey>(() => {
+    // ?section=<id> ALWAYS resolves to All. All holds every item, so no id →
+    // section lookup table is needed and no future regrouping can break a link
+    // the founder has already shared.
+    if (searchParams.get("section")) return "all";
     const t = searchParams.get("tab");
-    if (t && tabs.some((x) => x.key === t)) return t as TabKey;
-    // A ?section= link points at one card, and that card only exists inside its
-    // own tab — open the tab that holds it, or the scroll finds nothing.
-    const s = searchParams.get("section");
-    const target = s ? deeds.find((d) => d.id === s) : undefined;
-    return target ? target.tab : "seconds";
+    // Legacy ?tab=seconds|day|moments|calendar. They do not map one-to-one onto
+    // the new sections ("day" splits into prayers + quran), so they land on All
+    // — an approximate landing beats a silent fallback to the wrong list.
+    if (t && t !== "deeds" && t !== "how") return "all";
+    const s = searchParams.get("sub");
+    return s && sections.some((x) => x.key === s) ? (s as SectionKey) : "all";
   });
+
+  // Multi-expand: comparing two rows is the normal reason to open one, and
+  // single-expand would close the row you were comparing against.
+  const [openRows, setOpenRows] = useState<Set<string>>(() => {
+    const s = searchParams.get("section");
+    // A shared link to a qualified item must land showing the qualification.
+    return new Set(s && deeds.some((d) => d.id === s) ? [s] : []);
+  });
+
   const [search, setSearch] = useState("");
+
+  const toggleRow = (id: string) =>
+    setOpenRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const replaceUrl = (tab: TabKey, sub?: SectionKey) => {
+    router.replace(`${pathname}?tab=${tab}${tab === "deeds" && sub ? `&sub=${sub}` : ""}`, {
+      scroll: false,
+    });
+  };
 
   const handleTabChange = (key: string) => {
     setActiveTab(key as TabKey);
-    router.replace(`${pathname}?tab=${key}`, { scroll: false });
+    replaceUrl(key as TabKey, activeSub);
   };
 
+  const handleSubChange = (sub: SectionKey) => {
+    setActiveSub(sub);
+    replaceUrl("deeds", sub);
+  };
+
+  // Search is global, matching /duas: filtering inside the active section would
+  // silently hide matches, and the reader has no way to know it happened. While
+  // a search is running the rail is not rendered at all — see the deeds panel.
+  const searching = search.trim().length >= 2;
+  const effectiveSub: SectionKey = searching ? "all" : activeSub;
+
   const matches = (deed: SmallDeed) => textMatch(search, ...deedHaystack(deed));
-
-  const renderDeed = (deed: SmallDeed, i: number) => (
-    <ContentCard key={deed.id} id={`section-${deed.id}`} delay={Math.min(i * 0.04, 0.3)}>
-      {/* rounded-lg, not rounded-full: the longest cost lines wrap to two lines on a
-          390px screen, and a two-line stadium reads as a layout bug. */}
-      <span className="inline-block text-[11px] px-2.5 py-1 rounded-lg border bg-[var(--color-gold)]/10 text-gold border-[var(--color-gold)]/30 mb-3 leading-relaxed">
-        {deed.cost}
-      </span>
-
-      <h3 className="text-lg font-semibold text-themed mb-4 leading-snug">{deed.action}</h3>
-
-      <SayThis deed={deed} />
-
-      <div className="space-y-4">
-        {deed.quotes.map((k) => (
-          <Narration key={k} hadithKey={k} />
-        ))}
-      </div>
-
-      {deed.also && deed.also.length > 0 && (
-        <p className="text-xs text-themed-muted mt-4">
-          Also narrated:{" "}
-          <HadithRefText text={deed.also.map((k) => HADITH[k].citation).join("; ")} />
-        </p>
-      )}
-
-      {deed.caveat && (
-        <p className="text-xs text-themed-muted leading-relaxed mt-4 pt-3 border-t sidebar-border">
-          <span className="text-themed font-medium">What this does not say. </span>
-          {deed.caveat}
-        </p>
-      )}
-
-      {deed.link && (
-        <div className="mt-4">
-          <Link
-            href={deed.link.href}
-            className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
-          >
-            {deed.link.label} →
-          </Link>
-        </div>
-      )}
-    </ContentCard>
+  const visible = deeds.filter(
+    (d) => (effectiveSub === "all" || d.section === effectiveSub) && matches(d)
   );
 
-  /** A list tab: its items, grouped where the tab uses headings, then sources. */
-  const renderList = (tab: Exclude<TabKey, "how">, lead?: React.ReactNode) => {
-    const visible = deeds.filter((d) => d.tab === tab && matches(d));
-    const groupKeys = Array.from(new Set(visible.map((d) => d.group ?? "")));
-    let n = 0;
+  const renderRow = (deed: SmallDeed) => (
+    <DeedRow
+      key={deed.id}
+      deed={deed}
+      isOpen={openRows.has(deed.id)}
+      onToggle={() => toggleRow(deed.id)}
+    />
+  );
 
+  /** The † footnote, printed only where a † is actually on screen. */
+  const collectorFootnote = (rows: SmallDeed[]) => {
+    if (!rows.some((d) => d.quotes.some((k) => HADITH[k].collectorNotes))) return null;
     return (
-      <>
-        {lead}
+      <p className="text-[11px] text-themed-muted leading-relaxed pt-1">
+        <span className="text-gold/70">&#8224;</span> The collector recorded his own remarks on that
+        report inside the entry — a grading, a competing chain, or a note that some narrators
+        reported it as a Companion&rsquo;s own words. Open the reference to read them. This page
+        never calls a narration sound or weak in its own voice.
+      </p>
+    );
+  };
 
-        {visible.length === 0 && (
-          <p className="text-sm text-themed-muted py-8 text-center">
-            Nothing on this tab matches &ldquo;{search}&rdquo;.
+  /** All: five labelled blocks, one flick. Group headings are suppressed here —
+   *  section labels are already doing that work, and two levels of heading in a
+   *  43-row list is the "all over the place" the founder was describing. */
+  const renderAll = () => (
+    <div className="space-y-6">
+      {LIST_SECTIONS.map((sec) => {
+        const rows = visible.filter((d) => d.section === sec.key);
+        if (rows.length === 0) return null;
+        return (
+          <div key={sec.key}>
+            <h2 className="text-sm font-semibold text-themed">
+              {sec.label}{" "}
+              <span className="text-themed-muted font-normal">({rows.length})</span>
+            </h2>
+            <p className="text-xs text-themed-muted mb-3">{sec.blurb}</p>
+            <div className="space-y-2">{rows.map(renderRow)}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  /** One section: its headings, its rows, its own sources. */
+  const renderSection = (key: Exclude<SectionKey, "all">) => {
+    const rows = visible.filter((d) => d.section === key);
+    const groupKeys = Array.from(new Set(rows.map((d) => d.group ?? "")));
+    return (
+      <div className="space-y-5">
+        {/* The lead. A compact line, not a card: a fourteen-line narration
+            standing between the rail and the first row is the same wall this
+            redesign removed from the rows. The citation still renders — it
+            renders NOWHERE else on the page, and losing it would quietly drop a
+            verified reference — but the narration itself, like every other one
+            here, is one tap away in the reader. */}
+        {key === "words" && (
+          <p className="text-xs text-themed-muted leading-relaxed border-l-2 border-[var(--color-gold)]/40 pl-3">
+            Asked which of their deeds were best — better than gold and silver — he ﷺ named the
+            remembrance of Allah. <HadithRefText text={HADITH[WORDS_LEAD].citation} />
           </p>
         )}
 
         {groupKeys.map((g) => (
-          <div key={g || "ungrouped"} className="space-y-5">
+          <div key={g || "ungrouped"} className="space-y-2">
             {g && (
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-themed-muted pt-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-themed-muted pt-1">
                 {groups[g]}
-              </h2>
+              </h3>
             )}
-            {visible.filter((d) => (d.group ?? "") === g).map((d) => renderDeed(d, n++))}
+            {rows.filter((d) => (d.group ?? "") === g).map(renderRow)}
           </div>
         ))}
 
-        {visible.length > 0 && (
-          <>
-            <ContentCard delay={0.25}>
-              <h3 className="font-semibold text-themed mb-2">Small and constant beats big and once</h3>
-              <Narration hadithKey={CLOSING_QUOTE} />
-            </ContentCard>
-            <SourcesCard
-              sources={dedupeRefs([
-                ...visible.flatMap(deedRefs),
-                { ref: HADITH[CLOSING_QUOTE].citation, desc: HADITH[CLOSING_QUOTE].practice },
-              ])}
-            />
-          </>
-        )}
-      </>
+        {collectorFootnote(rows)}
+
+        {/* ⛔ NO "Sources & References" CARD HERE. It used to close every section
+            and it was the reference dump the rows had just shed, re-attached at
+            the bottom: 21–30% of each section's scroll, and every line of it a
+            citation already tappable on the row above plus a re-write of that
+            row's `effect`. Nothing is orphaned by its removal — every `quotes`
+            key renders in RefLine at rest, every `also` key in the expansion,
+            every AYAH and SAY citation inside its own block, and the lead's
+            citation in the lead. */}
+      </div>
     );
   };
+
+  const activeSection = sections.find((s) => s.key === effectiveSub)!;
 
   const panel = (key: string, children: React.ReactNode) => (
     <motion.div
@@ -306,10 +492,16 @@ function SmallDeedsContent() {
     <div>
       <PageHeader title={PAGE_TITLE} titleAr={PAGE_TITLE_AR} subtitle={PAGE_SUBTITLE} />
 
-      {/* Opening quote — the Prophet's own image for this whole category of deed. */}
+      {/* Opening quote — the Prophet's own image for this whole category of deed.
+          Deliberately the no-Arabic variant of VerseHero (as on /hadith and
+          /sects). This narration's matn runs to three lines at hero type size,
+          which made the card 492px against a house norm of ~324 (/duas) and put
+          the first deed 1.5 screens down a page whose whole job is to be picked
+          from. Nothing is lost: the English and the citation are unchanged, and
+          the Arabic of the two expressions themselves is on the `two-words` row
+          below as a byte-exact Say slice of this same entry. */}
       <VerseHero
         label="The Hadith"
-        arabic={HADITH[HERO_QUOTE].matn[0]}
         text={HADITH[HERO_QUOTE].english}
         reference={HADITH[HERO_QUOTE].citation}
       />
@@ -321,225 +513,131 @@ function SmallDeedsContent() {
         className="mb-4"
       />
 
-      {/* Kept above the tabs on purpose: it is true of every tab, and a reader who
-          never opens "How to Read This" still has to meet it. */}
-      <p className="text-xs text-themed-muted leading-relaxed mb-5 max-w-2xl">
-        Every promise below is quoted from the narration itself and linked to its source, so you
-        can check it. The Scale is Allah&rsquo;s — these are gifts He has promised for small
-        things, not a system with a loophole in it.{" "}
-        <button
-          onClick={() => handleTabChange("how")}
-          className="text-gold hover:text-gold/80 underline underline-offset-2"
-        >
-          How to read this page →
-        </button>
+      {/* One line, above the tabs, because it is true of every row and a reader
+          who never opens "How to read this" still has to meet it. No inline link
+          to that tab: it IS one of the two tabs, six millimetres below. */}
+      <p className="text-xs text-themed-muted leading-relaxed mb-4 max-w-2xl">
+        Gifts promised for small things — each one checked against the narration it comes from, and
+        linked to its source.
       </p>
 
-      <TabBar tabs={[...tabs]} activeTab={activeTab} onTabChange={handleTabChange} className="mb-6" />
+      <TabBar
+        tabs={tabs.map((t) => (t.key === "deeds" ? { ...t, count: deeds.length } : { ...t }))}
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        className="mb-5"
+      />
 
       <AnimatePresence mode="wait">
-        {activeTab === "seconds" &&
+        {activeTab === "deeds" &&
           panel(
-            "seconds",
-            renderList(
-              "seconds",
-              <ContentCard delay={0.05}>
-                <Narration hadithKey={SECONDS_LEAD} />
-                <p className="text-xs text-themed-muted leading-relaxed mt-3">
-                  In this narration the answer he gives is dhikr — the remembrance of Allah — which
-                  is what almost everything on this tab is. Nothing here needs wudu, a direction, a
-                  time of day, or anyone&rsquo;s permission.
+            "deeds",
+            searching ? (
+              /* Results replace the chooser, as on /duas. The rail used to stay
+                 on screen during a search while `effectiveSub` ignored it: taps
+                 changed the URL and lit nothing, then took effect the moment the
+                 search was cleared. A control that does nothing now and
+                 something later is worse than no control. */
+              <>
+                <p className="text-xs text-themed-muted">
+                  Searching all {deeds.length} deeds — {visible.length}{" "}
+                  {visible.length === 1 ? "match" : "matches"} for &ldquo;{search}&rdquo;.
                 </p>
-              </ContentCard>
+                {visible.length === 0 ? (
+                  <p className="text-sm text-themed-muted py-8 text-center">
+                    Nothing matches &ldquo;{search}&rdquo;.
+                  </p>
+                ) : (
+                  <>
+                    {renderAll()}
+                    <div className="mt-5">{collectorFootnote(visible)}</div>
+                  </>
+                )}
+              </>
+            ) : (
+              <SubTabLayout subs={RAIL} activeSub={activeSub} setActiveSub={handleSubChange}>
+                {/* The descriptor under the rail. This is the part that answers
+                    "idek what they mean": the label never has to carry the whole
+                    explanation on its own. */}
+                {activeSub !== "all" && (
+                  <div className="mb-4">
+                    <h2 className="text-base font-semibold text-themed">{activeSection.label}</h2>
+                    <p className="text-xs text-themed-muted mt-0.5">{activeSection.blurb}</p>
+                  </div>
+                )}
+
+                {activeSub === "all" ? (
+                  <>
+                    {renderAll()}
+                    <div className="mt-5">{collectorFootnote(visible)}</div>
+                  </>
+                ) : (
+                  renderSection(activeSub)
+                )}
+              </SubTabLayout>
             )
           )}
-
-        {activeTab === "day" && panel("day", renderList("day"))}
-        {activeTab === "moments" && panel("moments", renderList("moments"))}
-        {activeTab === "calendar" && panel("calendar", renderList("calendar"))}
 
         {activeTab === "how" &&
           panel(
             "how",
             <>
               <ContentCard delay={0.05}>
-                <h2 className="text-xl font-semibold text-themed mb-4">
-                  What this page is, and what it is not
+                <h2 className="text-xl font-semibold text-themed mb-2">
+                  1 &middot; These are gifts, not transactions.
                 </h2>
-                <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
-                  <p>
-                    Every item here is a practice the Prophet ﷺ attached an unusually large reward
-                    to, for an unusually small cost. That disproportion is the whole point of the
-                    page — but it is a disproportion in <em>His</em> generosity, not a flaw in the
-                    accounting. The Scale on the Day of Judgement is real and it is Allah&rsquo;s;
-                    what these narrations describe is what <em>He</em> has said He will weigh
-                    heavily. Nothing on this page is a trick, a hack, or a way around Him.
-                  </p>
-                  <p>
-                    Which is also why you will not find a counter, a checkbox, or a score anywhere
-                    on it. Counting lives on the{" "}
-                    <Link
-                      href="/dhikr"
-                      className="text-gold hover:text-gold/80 underline underline-offset-2"
-                    >
-                      dhikr
-                    </Link>{" "}
-                    page, where counting belongs.
-                  </p>
-                </div>
+                <p className="text-themed-muted text-sm leading-relaxed">
+                  Every promise here is something Allah has said He will give for something small.
+                  It is not a price list and not a way around Him — doing the deed does not put Him
+                  in your debt.
+                </p>
               </ContentCard>
 
+              {/* ⛔ THIS CARD MUST NAME BOTH PLACES A QUALIFICATION CAN LIVE.
+                  It used to name only "Note", which 13 rows carry — licensing
+                  the inference that the other 30 have nothing to qualify. 17
+                  more caveats sit behind the chevron under "What this does not
+                  say", and a reader never told the rows open will not look.
+                  The catalogue of four fiqh disputes that used to close this
+                  paragraph is gone: each one is on its own row's caveat, and it
+                  made this point 2.3× the length of the other two. */}
               <ContentCard delay={0.1}>
-                <h2 className="text-xl font-semibold text-themed mb-4">A promise is not a receipt</h2>
-                <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
-                  <p>
-                    Several narrations here promise forgiveness, a house in Paradise, or entry into
-                    Paradise. They are quoted exactly as narrated and they are not summarised into
-                    headlines, because the moment &ldquo;a house will be built for him in
-                    Paradise&rdquo; becomes &ldquo;you get a house,&rdquo; a gift has been turned
-                    into a purchase.
-                  </p>
-                  <p>
-                    Where a promise is easy to over-read, the card says so under{" "}
-                    <span className="text-themed font-medium">What this does not say</span>. Where
-                    scholars differ — what al-Ikhlas equalling a third of the Qur&rsquo;an means,
-                    what &ldquo;sufficient for him&rdquo; means in the al-Baqarah narration,
-                    whether fasting <em>fi sabil Allah</em> means any day given to Him or a day on
-                    campaign, whether paying toward a masjid earns what building one is promised —
-                    the page states that they differ and takes no side. This app has no named
-                    reviewing scholar yet, which is exactly why that bar is set where it is.
-                  </p>
-                </div>
+                <h2 className="text-xl font-semibold text-themed mb-2">
+                  2 &middot; A promise is not a receipt.
+                </h2>
+                <p className="text-themed-muted text-sm leading-relaxed">
+                  The narrations stand as reported, conditions included:{" "}
+                  <em>said with conviction</em>, <em>without letting your mind wander</em>,{" "}
+                  <em>both habits, not one</em>. Where the plain reading of a row would claim more
+                  than that, the correction is on the row under{" "}
+                  <span className="text-themed font-medium">Note</span>. Open any row and the
+                  fuller version is under{" "}
+                  <span className="text-themed font-medium">What this does not say</span> — that is
+                  also where the page says so, and takes no side, wherever scholars differ.
+                </p>
               </ContentCard>
 
               <ContentCard delay={0.15}>
-                <h2 className="text-xl font-semibold text-themed mb-4">
-                  Where the references come from
+                <h2 className="text-xl font-semibold text-themed mb-2">
+                  3 &middot; The reference tells you where to check.
                 </h2>
-                <div className="space-y-4 text-themed-muted text-sm leading-relaxed">
-                  <p>
-                    Every narration on this page was matched, word for word, against the seven
-                    hadith collections this app ships — Bukhari, Muslim, Abu Dawud, Tirmidhi,
-                    Nasai, Ibn Majah and Musnad Ahmad — and every reference links into the
-                    app&rsquo;s own reader so you can read the entry in full, in context, with its
-                    Arabic. Qur&rsquo;anic text is taken byte-for-byte from the app&rsquo;s own
-                    Qur&rsquo;an. Nothing on the page is quoted from Musnad Ahmad: it was searched
-                    like the rest, but its references are stored in a form the reader cannot open,
-                    and a citation you cannot click is not a citation this page will print.
-                  </p>
-                  <p>
-                    Not all of them carry the same weight. Most are from the two Sahihs. Where a
-                    narration comes from a collection whose compiler recorded his own remarks on
-                    the report — a grading, a competing chain, a note that some narrators reported
-                    it as a Companion&rsquo;s own words — that is marked on the reference line
-                    itself, on every narration it applies to. {markedCards} of the {deeds.length}{" "}
-                    cards on this page carry that mark. Open the reference and the app&rsquo;s
-                    reader shows you those remarks in the entry, in Arabic, where they were
-                    written.
-                  </p>
-                  <p>
-                    That marking is generated from the stored entries, not from a list someone
-                    keeps up to date, because a hand-kept list of &ldquo;the places where it
-                    matters&rdquo; goes stale the first time a narration is added. What the page
-                    does <em>not</em> do is assert a grade: no grader is named, and none of these
-                    narrations is called sound or weak in this app&rsquo;s voice.
-                  </p>
-                </div>
+                <p className="text-themed-muted text-sm leading-relaxed">
+                  Every reference on a row opens this app&rsquo;s own hadith reader or Qur&rsquo;an,
+                  at the entry, in full, in Arabic. A{" "}
+                  <span className="text-gold/70">&#8224;</span> means the collector recorded his own
+                  remarks on that report inside the entry. This page never calls a narration sound
+                  or weak in its own voice, and it has no named reviewing scholar yet — which is
+                  exactly why that bar is set where it is.
+                </p>
               </ContentCard>
 
               <ContentCard delay={0.2}>
-                <h2 className="text-xl font-semibold text-themed mb-4">
-                  Four things you may expect to find here, and why they are not
-                </h2>
-                <ul className="space-y-4 text-themed-muted text-sm leading-relaxed list-none">
-                  <li>
-                    <span className="text-themed font-medium">
-                      Ayat al-Kursi after every obligatory prayer.
-                    </span>{" "}
-                    A very widely taught practice, but the narration for it is not in any of the
-                    collections this app carries, so no reference could be given for it. Ayat
-                    al-Kursi <em>before sleep</em> is narrated in Sahih al-Bukhari and is on the
-                    &ldquo;In Your Day&rdquo; tab instead.
-                  </li>
-                  <li>
-                    <span className="text-themed font-medium">Surah al-Kahf on Friday.</span>{" "}
-                    Likewise reported outside these collections. What is here is the narration that
-                    is in them — the first ten verses, and protection from the Dajjal. For the
-                    Friday practice see{" "}
-                    <Link
-                      href="/salah?tab=prayers&sub=jumuah"
-                      className="text-gold hover:text-gold/80 underline underline-offset-2"
-                    >
-                      Jumu&rsquo;ah
-                    </Link>
-                    .
-                  </li>
-                  <li>
-                    <span className="text-themed font-medium">
-                      Ten thousand istighfar in a day.
-                    </span>{" "}
-                    A contemporary practice, and people find it useful. But there is no narration
-                    fixing that number and none promising anything for it, so it is not written up
-                    here as though there were. The only counts that <em>are</em> narrated are
-                    descriptions of the Prophet&rsquo;s ﷺ own habit, and they do not agree with
-                    each other:
-                    <div className="space-y-3 mt-3">
-                      {ISTIGHFAR_COUNTS.map((k) => (
-                        <Narration key={k} hadithKey={k} />
-                      ))}
-                    </div>
-                    <div className="mt-3">
-                      Seventy in one, a hundred in another. Neither is a target he set for anyone
-                      else, which is the point: a number reported about him is not a number
-                      prescribed to you.
-                    </div>
-                  </li>
-                  <li>
-                    <span className="text-themed font-medium">
-                      Reciting al-Ikhlas three times as a completed Qur&rsquo;an.
-                    </span>{" "}
-                    An inference people draw from the &ldquo;a third of the Qur&rsquo;an&rdquo;
-                    narration. The narration does not say it, so neither does this page.
-                  </li>
-                </ul>
-              </ContentCard>
-
-              <ContentCard delay={0.25}>
-                <h3 className="font-semibold text-themed mb-2">Where these live in full</h3>
-                <p className="text-themed-muted text-sm leading-relaxed">
-                  This page is an index of disproportion, not a replacement for the pages that
-                  teach each practice properly.
-                </p>
-                <div className="flex gap-3 flex-wrap mt-3">
-                  {[
-                    { href: "/dhikr", label: "Dhikr" },
-                    { href: "/salah", label: "Salah" },
-                    { href: "/muslim-daily", label: "Muslim Daily" },
-                    { href: "/tawbah", label: "Tawbah" },
-                    { href: "/duas", label: "Duas" },
-                    { href: "/ramadan", label: "Ramadan" },
-                    { href: "/islamic-calendar", label: "Islamic Calendar" },
-                    { href: "/death-rites", label: "Death & Janazah" },
-                  ].map((l) => (
-                    <Link
-                      key={l.href}
-                      href={l.href}
-                      className="text-xs text-gold hover:text-gold/80 underline underline-offset-2"
-                    >
-                      {l.label} →
-                    </Link>
-                  ))}
-                </div>
-              </ContentCard>
-
-              <ContentCard delay={0.3}>
-                <h3 className="font-semibold text-themed mb-3">The last word</h3>
                 <Narration hadithKey={CLOSING_QUOTE} />
               </ContentCard>
 
               <SourcesCard
                 sources={dedupeRefs(
-                  [CLOSING_QUOTE, SECONDS_LEAD, HERO_QUOTE, ...ISTIGHFAR_COUNTS].map((k) => ({
+                  [CLOSING_QUOTE, HERO_QUOTE].map((k) => ({
                     ref: HADITH[k].citation,
                     desc: HADITH[k].practice,
                   }))
