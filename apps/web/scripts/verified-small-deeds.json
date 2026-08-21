@@ -1,0 +1,1589 @@
+{
+  "generatedBy": "apps/web/scripts/verify-page-citations.mjs",
+  "generatedAt": "2026-08-21T14:43:38.741Z",
+  "summary": {
+    "total": 100,
+    "passed": 100,
+    "failed": 0
+  },
+  "verified": [
+    {
+      "key": "white-days",
+      "practice": "White days 13/14/15 = perpetual fast",
+      "kind": "hadith",
+      "citation": "Abu Dawud 14:137",
+      "collection": "abudawud",
+      "reference": "14:137",
+      "english": "Narrated Qatadah Ibn Malhan al-Qaysi: The Messenger of Allah (ﷺ) used to command us to fast the days of the white (nights): thirteenth, fourteenth and fifteenth of the month. He said: This is like keeping perpetual fast",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ كَثِيرٍ، حَدَّثَنَا هَمَّامٌ، عَنْ أَنَسٍ، أَخِي مُحَمَّدٍ عَنِ ابْنِ مِلْحَانَ الْقَيْسِيِّ، عَنْ أَبِيهِ، قَالَ كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يَأْمُرُنَا أَنْ نَصُومَ الْبِيضَ ثَلاَثَ عَشْرَةَ وَأَرْبَعَ عَشْرَةَ وَخَمْسَ عَشْرَةَ ‏.‏ قَالَ وَقَالَ ‏ \"‏ هُنَّ كَهَيْئَةِ الدَّهْرِ ‏\"‏ ‏.‏",
+      "id": 2449,
+      "source": "packages/content/hadith/abudawud/14.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "white-days-tirmidhi",
+      "practice": "White days — the three named dates (Abu Dharr)",
+      "kind": "hadith",
+      "citation": "Tirmidhi 8:80",
+      "collection": "tirmidhi",
+      "reference": "8:80",
+      "english": "Abu Dharr narrated that :the Messenger of Allah said: \"O Abu Dharr! When you fast three days out of a month, then fast the thirteenth, fourteenth, and fifteenth",
+      "arabic": "حَدَّثَنَا مَحْمُودُ بْنُ غَيْلاَنَ، حَدَّثَنَا أَبُو دَاوُدَ، قَالَ أَنْبَأَنَا شُعْبَةُ، عَنِ الأَعْمَشِ، قَالَ سَمِعْتُ يَحْيَى بْنَ سَامٍ، يُحَدِّثُ عَنْ مُوسَى بْنِ طَلْحَةَ، قَالَ سَمِعْتُ أَبَا ذَرٍّ، يَقُولُ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ يَا أَبَا ذَرٍّ إِذَا صُمْتَ مِنَ الشَّهْرِ ثَلاَثَةَ أَيَّامٍ فَصُمْ ثَلاَثَ عَشْرَةَ وَأَرْبَعَ عَشْرَةَ وَخَمْسَ عَشْرَةَ ‏\"‏ ‏.‏ وَفِي الْبَابِ عَنْ أَبِي قَتَادَةَ وَعَبْدِ اللَّهِ بْنِ عَمْرٍو وَقُرَّةَ بْنِ إِيَاسٍ الْمُزَنِيِّ وَعَبْدِ اللَّهِ بْنِ مَسْعُودٍ وَأَبِي عَقْرَبٍ وَابْنِ عَبَّاسٍ وَعَائِشَةَ وَقَتَادَةَ بْنِ مِلْحَانَ وَعُثْمَانَ بْنِ أَبِي الْعَاصِي وَجَرِيرٍ ‏.‏ قَالَ أَبُو عِيسَى حَدِيثُ أَبِي ذَرٍّ حَدِيثٌ حَسَنٌ ‏.‏ وَقَدْ رُوِيَ فِي بَعْضِ الْحَدِيثِ أَنَّ ‏\"‏ مَنْ صَامَ ثَلاَثَةَ أَيَّامٍ مِنْ كُلِّ شَهْرٍ كَانَ كَمَنْ صَامَ الدَّهْرَ ‏\"‏ ‏.‏",
+      "id": 761,
+      "source": "packages/content/hadith/tirmidhi/8.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَفِي الْبَابِ",
+          "why": "a 'and in the chapter' cross-reference follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَقَدْ رُوِيَ",
+          "why": "a variant-narration note follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "six-shawwal",
+      "practice": "Ramadan + six of Shawwal",
+      "kind": "hadith",
+      "citation": "Muslim 13:264",
+      "collection": "muslim",
+      "reference": "13:264",
+      "english": "Abu Ayyub al-Ansari (Allah be pleased with him) reported Allah's Messenger (ﷺ) as saying:He who observed the fast of Ramadan and then followed it with six (fasts) of Shawwal. it would be as if he fasted perpetually",
+      "arabic": "حَدَّثَنَا يَحْيَى بْنُ أَيُّوبَ، وَقُتَيْبَةُ بْنُ سَعِيدٍ، وَعَلِيُّ بْنُ حُجْرٍ، جَمِيعًا عَنْ إِسْمَاعِيلَ، - قَالَ ابْنُ أَيُّوبَ حَدَّثَنَا إِسْمَاعِيلُ بْنُ جَعْفَرٍ، - أَخْبَرَنِي سَعْدُ بْنُ سَعِيدِ بْنِ قَيْسٍ، عَنْ عُمَرَ، بْنِ ثَابِتِ بْنِ الْحَارِثِ الْخَزْرَجِيِّ عَنْ أَبِي أَيُّوبَ الأَنْصَارِيِّ، - رضى الله عنه - أَنَّهُ حَدَّثَهُ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ صَامَ رَمَضَانَ ثُمَّ أَتْبَعَهُ سِتًّا مِنْ شَوَّالٍ كَانَ كَصِيَامِ الدَّهْرِ ‏\"‏ ‏.‏",
+      "id": 2758,
+      "source": "packages/content/hadith/muslim/13.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "six-shawwal-abudawud",
+      "practice": "Six of Shawwal (Abu Dawud parallel)",
+      "kind": "hadith",
+      "citation": "Abu Dawud 14:121",
+      "collection": "abudawud",
+      "reference": "14:121",
+      "english": "Narrated Abu Ayyub:The Prophet (ﷺ) as saying: If anyone fasts during Ramadan, then follows it with six days in Shawwal, it will be like a perpetual fast",
+      "arabic": "حَدَّثَنَا النُّفَيْلِيُّ، حَدَّثَنَا عَبْدُ الْعَزِيزِ بْنُ مُحَمَّدٍ، عَنْ صَفْوَانَ بْنِ سُلَيْمٍ، وَسَعْدِ بْنِ سَعِيدٍ، عَنْ عُمَرَ بْنِ ثَابِتٍ الأَنْصَارِيِّ، عَنْ أَبِي أَيُّوبَ، صَاحِبِ النَّبِيِّ صلى الله عليه وسلم عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ صَامَ رَمَضَانَ ثُمَّ أَتْبَعَهُ بِسِتٍّ مِنْ شَوَّالٍ فَكَأَنَّمَا صَامَ الدَّهْرَ ‏\"‏ ‏.‏",
+      "id": 2433,
+      "source": "packages/content/hadith/abudawud/14.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "six-shawwal-ibnmajah",
+      "practice": "Six of Shawwal (Ibn Majah parallel)",
+      "kind": "hadith",
+      "citation": "Ibn Majah 7:79",
+      "collection": "ibnmajah",
+      "reference": "7:79",
+      "english": "It was narrated from Abu Ayyub that the Messenger of Allah (ﷺ) said:“Whoever fasts Ramadan then follows it with six days of Shawwal, it is as if he fasted for a lifetime.”",
+      "arabic": "حَدَّثَنَا عَلِيُّ بْنُ مُحَمَّدٍ، حَدَّثَنَا عَبْدُ اللَّهِ بْنُ نُمَيْرٍ، عَنْ سَعْدِ بْنِ سَعِيدٍ، عَنْ عُمَرَ بْنِ ثَابِتٍ، عَنْ أَبِي أَيُّوبَ، قَالَ: قَالَ رَسُولُ اللَّهِ ـ صلى الله عليه وسلم ـ ‏ \"‏ مَنْ صَامَ رَمَضَانَ ثُمَّ أَتْبَعَهُ بِسِتٍّ مِنْ شَوَّالٍ، كَانَ كَصَوْمِ الدَّهْرِ ‏\"‏ ‏.‏",
+      "id": 1716,
+      "source": "packages/content/hadith/ibnmajah/7.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "fast-one-day-70yrs",
+      "practice": "Fasting one day for Allah's sake -> Fire kept seventy years away",
+      "kind": "hadith",
+      "citation": "Bukhari 56:56",
+      "collection": "bukhari",
+      "reference": "56:56",
+      "english": "Narrated Abu Sa`id:I heard the Prophet (ﷺ) saying, \"Indeed, anyone who fasts for one day for Allah's Pleasure, Allah will keep his face away from the (Hell) fire for (a distance covered by a journey of) seventy years",
+      "arabic": "حَدَّثَنَا إِسْحَاقُ بْنُ نَصْرٍ، حَدَّثَنَا عَبْدُ الرَّزَّاقِ، أَخْبَرَنَا ابْنُ جُرَيْجٍ، قَالَ أَخْبَرَنِي يَحْيَى بْنُ سَعِيدٍ، وَسُهَيْلُ بْنُ أَبِي صَالِحٍ، أَنَّهُمَا سَمِعَا النُّعْمَانَ بْنَ أَبِي عَيَّاشٍ، عَنْ أَبِي سَعِيدٍ ـ رضى الله عنه ـ قَالَ سَمِعْتُ النَّبِيَّ صلى الله عليه وسلم يَقُولُ ‏ \"‏ مَنْ صَامَ يَوْمًا فِي سَبِيلِ اللَّهِ بَعَّدَ اللَّهُ وَجْهَهُ عَنِ النَّارِ سَبْعِينَ خَرِيفًا ‏\"‏‏.‏",
+      "id": 2840,
+      "source": "packages/content/hadith/bukhari/56.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "fast-one-day-muslim",
+      "practice": "Fasting one day (Muslim parallel)",
+      "kind": "hadith",
+      "citation": "Muslim 13:217",
+      "collection": "muslim",
+      "reference": "13:217",
+      "english": "Abu Sa'id al Khudri (Allah be pleased with him) reported Allah's Messenger (ﷺ) as saying:Every servant of Allah who observes fast for a day in the way of Allah, Allah would remove, because of this day, his face farther from the Fire (of Hell) to the extent of seventy years' distance",
+      "arabic": "وَحَدَّثَنَا مُحَمَّدُ بْنُ رُمْحِ بْنِ الْمُهَاجِرِ، أَخْبَرَنِي اللَّيْثُ، عَنِ ابْنِ الْهَادِ، عَنْ سُهَيْلِ بْنِ، أَبِي صَالِحٍ عَنِ النُّعْمَانِ بْنِ أَبِي عَيَّاشٍ، عَنْ أَبِي سَعِيدٍ الْخُدْرِيِّ، - رضى الله عنه - قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَا مِنْ عَبْدٍ يَصُومُ يَوْمًا فِي سَبِيلِ اللَّهِ إِلاَّ بَاعَدَ اللَّهُ بِذَلِكَ الْيَوْمِ وَجْهَهُ عَنِ النَّارِ سَبْعِينَ خَرِيفًا ‏\"‏ ‏.‏",
+      "id": 2711,
+      "source": "packages/content/hadith/muslim/13.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "ashura",
+      "practice": "Fasting Ashura -> expiates the previous year",
+      "kind": "hadith",
+      "citation": "Ibn Majah 7:101",
+      "collection": "ibnmajah",
+      "reference": "7:101",
+      "english": "It was narrated from Abu Qatadah that the Messenger of Allah (ﷺ) said:“Fasting the day of ‘Ashura’, I hope, will expiate for the sins of the previous year.”",
+      "arabic": "حَدَّثَنَا أَحْمَدُ بْنُ عَبْدَةَ، أَنْبَأَنَا حَمَّادُ بْنُ زَيْدٍ، حَدَّثَنَا غَيْلاَنُ بْنُ جَرِيرٍ، عَنْ عَبْدِ اللَّهِ بْنِ مَعْبَدٍ الزِّمَّانِيِّ، عَنْ أَبِي قَتَادَةَ، قَالَ: قَالَ رَسُولُ اللَّهِ ـ صلى الله عليه وسلم ـ ‏ \"‏ صِيَامُ يَوْمِ عَاشُورَاءَ إِنِّي أَحْتَسِبُ عَلَى اللَّهِ أَنْ يُكَفِّرَ السَّنَةَ الَّتِي قَبْلَهُ ‏\"‏ ‏.‏",
+      "id": 1738,
+      "source": "packages/content/hadith/ibnmajah/7.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "dhul-hijjah-ten",
+      "practice": "First ten days of Dhul Hijjah",
+      "kind": "hadith",
+      "citation": "Bukhari 13:18",
+      "collection": "bukhari",
+      "reference": "13:18",
+      "english": "Narrated Ibn `Abbas:The Prophet (ﷺ) said, \"No good deeds done on other days are superior to those done on these (first ten days of Dhul Hijja).\" Then some companions of the Prophet (ﷺ) said, \"Not even Jihad?\" He replied, \"Not even Jihad, except that of a man who does it by putting himself and his property in danger (for Allah's sake) and does not return with any of those things",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ عَرْعَرَةَ، قَالَ حَدَّثَنَا شُعْبَةُ، عَنْ سُلَيْمَانَ، عَنْ مُسْلِمٍ الْبَطِينِ، عَنْ سَعِيدِ بْنِ جُبَيْرٍ، عَنِ ابْنِ عَبَّاسٍ، عَنِ النَّبِيِّ صلى الله عليه وسلم أَنَّهُ قَالَ ‏\"‏ مَا الْعَمَلُ فِي أَيَّامِ الْعَشْرِ أَفْضَلَ مِنَ الْعَمَلِ فِي هَذِهِ ‏\"‏‏.‏ قَالُوا وَلاَ الْجِهَادُ قَالَ ‏\"‏ وَلاَ الْجِهَادُ، إِلاَّ رَجُلٌ خَرَجَ يُخَاطِرُ بِنَفْسِهِ وَمَالِهِ فَلَمْ يَرْجِعْ بِشَىْءٍ ‏\"‏‏.‏",
+      "id": 969,
+      "source": "packages/content/hadith/bukhari/13.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "subhanallah-100",
+      "practice": "SubhanAllah wa bihamdihi x100 -> foam of the sea",
+      "kind": "hadith",
+      "citation": "Bukhari 80:100",
+      "collection": "bukhari",
+      "reference": "80:100",
+      "english": "Narrated Abu Huraira:Allah's Messenger (ﷺ) said, \"Whoever says, 'Subhan Allah wa bihamdihi,' one hundred times a day, will be forgiven all his sins even if they were as much as the foam of the sea",
+      "arabic": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ مَسْلَمَةَ، عَنْ مَالِكٍ، عَنْ سُمَىٍّ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ قَالَ سُبْحَانَ اللَّهِ وَبِحَمْدِهِ‏.‏ فِي يَوْمٍ مِائَةَ مَرَّةٍ حُطَّتْ خَطَايَاهُ، وَإِنْ كَانَتْ مِثْلَ زَبَدِ الْبَحْرِ ‏\"‏‏.‏",
+      "id": 6405,
+      "source": "packages/content/hadith/bukhari/80.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "two-words-bukhari",
+      "practice": "Two words light on the tongue, heavy in the balance (Bukhari)",
+      "kind": "hadith",
+      "citation": "Bukhari 80:101",
+      "collection": "bukhari",
+      "reference": "80:101",
+      "english": "Narrated Abu Huraira:The Prophet (ﷺ) said, \"There are two expressions which are very easy for the tongue to say, but they are very heavy in the balance and are very dear to The Beneficent (Allah), and they are, 'Subhan Allah Al- `Azim and 'Subhan Allah wa bihamdihi",
+      "arabic": "حَدَّثَنَا زُهَيْرُ بْنُ حَرْبٍ، حَدَّثَنَا ابْنُ فُضَيْلٍ، عَنْ عُمَارَةَ، عَنْ أَبِي زُرْعَةَ، عَنْ أَبِي هُرَيْرَةَ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ، ثَقِيلَتَانِ فِي الْمِيزَانِ، حَبِيبَتَانِ إِلَى الرَّحْمَنِ، سُبْحَانَ اللَّهِ الْعَظِيمِ، سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ‏\"‏‏.‏",
+      "id": 6406,
+      "source": "packages/content/hadith/bukhari/80.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "two-words-muslim",
+      "practice": "Two words (Muslim parallel)",
+      "kind": "hadith",
+      "citation": "Muslim 48:41",
+      "collection": "muslim",
+      "reference": "48:41",
+      "english": "Abu Huraira reported Allah's Messenger (ﷺ) as saying:Two are the expressions which are light on the tongue, but heavy in scale, dear to the Compassionate One:\" Hallowed be Allah and praise is due to Him\" ;\" Hallowed be Allah, the Great",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ عَبْدِ اللَّهِ بْنِ نُمَيْرٍ، وَزُهَيْرُ بْنُ حَرْبٍ، وَأَبُو كُرَيْبٍ وَمُحَمَّدُ بْنُ طَرِيفٍ الْبَجَلِيُّ قَالُوا حَدَّثَنَا ابْنُ فُضَيْلٍ، عَنْ عُمَارَةَ بْنِ الْقَعْقَاعِ، عَنْ أَبِي زُرْعَةَ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ ثَقِيلَتَانِ فِي الْمِيزَانِ حَبِيبَتَانِ إِلَى الرَّحْمَنِ سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظِيمِ ‏\"‏ ‏.‏",
+      "id": 6846,
+      "source": "packages/content/hadith/muslim/48.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "two-words-tirmidhi",
+      "practice": "Two words (Tirmidhi parallel — 'heavy on the Scale')",
+      "kind": "hadith",
+      "citation": "Tirmidhi 48:98",
+      "collection": "tirmidhi",
+      "reference": "48:98",
+      "english": "Abu Hurairah narrated that:The Messenger of Allah (ﷺ) said: “There are two statements that are light on the tongue, heavy on the Scale, and beloved to Ar-Raḥmān: “Glory is to Allah and the praise; Glory is to Allah, the Magnificent. (Subḥān Allāhi wa biḥamdih, Subḥān Allāhil-Aẓīm)”",
+      "arabic": "حَدَّثَنَا يُوسُفُ بْنُ عِيسَى، حَدَّثَنَا مُحَمَّدُ بْنُ الْفُضَيْلِ، عَنْ عُمَارَةَ بْنِ الْقَعْقَاعِ، عَنْ أَبِي زُرْعَةَ بْنِ عَمْرِو بْنِ جَرِيرٍ، عَنْ أَبِي هُرَيْرَةَ، رضى الله عنه قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ ثَقِيلَتَانِ فِي الْمِيزَانِ حَبِيبَتَانِ إِلَى الرَّحْمَنِ سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظِيمِ ‏\"‏ ‏.‏ قَالَ هَذَا حَدِيثٌ حَسَنٌ غَرِيبٌ صَحِيحٌ ‏.‏",
+      "id": 3467,
+      "source": "packages/content/hadith/tirmidhi/48.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "two-words-ibnmajah",
+      "practice": "Two words (Ibn Majah parallel)",
+      "kind": "hadith",
+      "citation": "Ibn Majah 33:150",
+      "collection": "ibnmajah",
+      "reference": "33:150",
+      "english": "It was narrated from Abu Hurairah that :the Messenger of Allah (ﷺ) said: 'Two words which are light on the tongue and heavy in the Balance, and beloved to the Most Merciful: Subhan-Allah wa bi hamdihi, Subhan-Allahil-'Azim (Glory and praise is to Allah, glory is to Allah the Almighty)",
+      "arabic": "حَدَّثَنَا أَبُو بِشْرٍ، وَعَلِيُّ بْنُ مُحَمَّدٍ، قَالاَ حَدَّثَنَا مُحَمَّدُ بْنُ فُضَيْلٍ، عَنْ عُمَارَةَ بْنِ الْقَعْقَاعِ، عَنْ أَبِي زُرْعَةَ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ ـ صلى الله عليه وسلم ـ ‏ \"‏ كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ ثَقِيلَتَانِ فِي الْمِيزَانِ حَبِيبَتَانِ إِلَى الرَّحْمَنِ سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظِيمِ ‏\"‏ ‏.‏",
+      "id": 3806,
+      "source": "packages/content/hadith/ibnmajah/33.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "tahlil-100-bukhari",
+      "practice": "Tahlil x100 (Bukhari 80:98)",
+      "kind": "hadith",
+      "citation": "Bukhari 80:98",
+      "collection": "bukhari",
+      "reference": "80:98",
+      "english": "Narrated Abu Huraira:Allah's Messenger (ﷺ) said,\" Whoever says: \"La ilaha illal-lah wahdahu la sharika lahu, lahu-l-mulk wa lahul- hamd wa huwa 'ala kulli shai'in qadir,\" one hundred times will get the same reward as given for manumitting ten slaves; and one hundred good deeds will be written in his accounts, and one hundred sins will be deducted from his accounts, and it (his saying) will be a shield for him from Satan on that day till night, and nobody will be able to do a better deed except the one who does more than he",
+      "arabic": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ مَسْلَمَةَ، عَنْ مَالِكٍ، عَنْ سُمَىٍّ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ قَالَ لاَ إِلَهَ إِلاَّ اللَّهُ، وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهْوَ عَلَى كُلِّ شَىْءٍ قَدِيرٌ‏.‏ فِي يَوْمٍ مِائَةَ مَرَّةٍ، كَانَتْ لَهُ عَدْلَ عَشْرِ رِقَابٍ، وَكُتِبَ لَهُ مِائَةُ حَسَنَةٍ، وَمُحِيَتْ عَنْهُ مِائَةُ سَيِّئَةٍ، وَكَانَتْ لَهُ حِرْزًا مِنَ الشَّيْطَانِ يَوْمَهُ ذَلِكَ، حَتَّى يُمْسِيَ، وَلَمْ يَأْتِ أَحَدٌ بِأَفْضَلَ مِمَّا جَاءَ بِهِ إِلاَّ رَجُلٌ عَمِلَ أَكْثَرَ مِنْهُ ‏\"‏‏.‏",
+      "id": 6403,
+      "source": "packages/content/hadith/bukhari/80.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "tahlil-100-bukhari-59",
+      "practice": "Tahlil x100 (Bukhari 59:102)",
+      "kind": "hadith",
+      "citation": "Bukhari 59:102",
+      "collection": "bukhari",
+      "reference": "59:102",
+      "english": "Narrated Abu Huraira:Allah's Messenger (ﷺ) said, \"If one says one-hundred times in one day: \"None has the right to be worshipped but Allah, the Alone Who has no partners, to Him belongs Dominion and to Him belong all the Praises, and He has power over all things (i.e. Omnipotent)\", one will get the reward of manumitting ten slaves, and one-hundred good deeds will be written in his account, and one-hundred bad deeds will be wiped off or erased from his account, and on that day he will be protected from the morning till evening from Satan, and nobody will be superior to him except one who has done more than that which he has done",
+      "arabic": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ يُوسُفَ، أَخْبَرَنَا مَالِكٌ، عَنْ سُمَىٍّ، مَوْلَى أَبِي بَكْرٍ عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ قَالَ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ، وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَىْءٍ قَدِيرٌ‏.‏ فِي يَوْمٍ مِائَةَ مَرَّةٍ، كَانَتْ لَهُ عَدْلَ عَشْرِ رِقَابٍ، وَكُتِبَتْ لَهُ مِائَةُ حَسَنَةٍ، وَمُحِيَتْ عَنْهُ مِائَةُ سَيِّئَةٍ، وَكَانَتْ لَهُ حِرْزًا مِنَ الشَّيْطَانِ يَوْمَهُ ذَلِكَ حَتَّى يُمْسِيَ، وَلَمْ يَأْتِ أَحَدٌ بِأَفْضَلَ مِمَّا جَاءَ بِهِ، إِلاَّ أَحَدٌ عَمِلَ أَكْثَرَ مِنْ ذَلِكَ ‏\"‏‏.‏",
+      "id": 3293,
+      "source": "packages/content/hadith/bukhari/59.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "tahlil-100-muslim",
+      "practice": "Tahlil x100 (Muslim parallel)",
+      "kind": "hadith",
+      "citation": "Muslim 48:38",
+      "collection": "muslim",
+      "reference": "48:38",
+      "english": "Abu Huraira reported Allah's Messenger (ﷺ) as saying:He who uttered these words:\" There is no god but Allah, the One, having no partner with Him. Sovereignty belongs to Him and all the praise is due to Him, and He is Potent over everything\" one hundred times every day there is a reward of emancipating ten slaves for him, and there are recorded hundred virtues to his credit, and hundred vices are blotted out from his scroll, and that is a safeguard for him against the Satan on that day till evening and no one brings anything more excellent than this, except one who has done more than this (who utters these words more than one hundred times and does more good acts) and he who utters:\" Hallowed be Allah, and all praise is due to Him,\" one hundred times a day, his sins are obliterated even if they are equal to the extent of the foam of the ocean",
+      "arabic": "حَدَّثَنَا يَحْيَى بْنُ يَحْيَى، قَالَ قَرَأْتُ عَلَى مَالِكٍ عَنْ سُمَىٍّ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ قَالَ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَىْءٍ قَدِيرٌ ‏.‏ فِي يَوْمٍ مِائَةَ مَرَّةٍ ‏.‏ كَانَتْ لَهُ عَدْلَ عَشْرِ رِقَابٍ وَكُتِبَتْ لَهُ مِائَةُ حَسَنَةٍ وَمُحِيَتْ عَنْهُ مِائَةُ سَيِّئَةٍ وَكَانَتْ لَهُ حِرْزًا مِنَ الشَّيْطَانِ يَوْمَهُ ذَلِكَ حَتَّى يُمْسِيَ وَلَمْ يَأْتِ أَحَدٌ أَفْضَلَ مِمَّا جَاءَ بِهِ إِلاَّ أَحَدٌ عَمِلَ أَكْثَرَ مِنْ ذَلِكَ ‏.‏ وَمَنْ قَالَ سُبْحَانَ اللَّهِ وَبِحَمْدِهِ فِي يَوْمٍ مِائَةَ مَرَّةٍ حُطَّتْ خَطَايَاهُ وَلَوْ كَانَتْ مِثْلَ زَبَدِ الْبَحْرِ ‏\"‏ ‏.‏",
+      "id": 6842,
+      "source": "packages/content/hadith/muslim/48.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "tahlil-100-ibnmajah",
+      "practice": "Tahlil x100 (Ibn Majah parallel)",
+      "kind": "hadith",
+      "citation": "Ibn Majah 33:142",
+      "collection": "ibnmajah",
+      "reference": "33:142",
+      "english": "It was narrated from Abu Hurairah that :the Messenger of Allah(ﷺ) said: \"Whoever says one hundered times each day: La ilaha illahu wahdahu la sharikalahu, wa lahul-mulku wa lahul hamduwa huwa ala kulli shayin qadeer (None has the right to be worshipped but Allah alone, with no partner or associate. His is the dominion, all praise is to Him, and He is able to do all things), it will be equivalent to him freeing ten slaves, and one hundered merits will be recorded for him, and one hundered bad deeds will be erased from (his record), and it will be a protection for him against Satan all day until night comes. No one can do anything better then him except one who says more",
+      "arabic": "حَدَّثَنَا أَبُو بَكْرٍ، حَدَّثَنَا زَيْدُ بْنُ الْحُبَابِ، عَنْ مَالِكِ بْنِ أَنَسٍ، أَخْبَرَنِي سُمَىٌّ، مَوْلَى أَبِي بَكْرٍ عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ ـ صلى الله عليه وسلم ـ ‏ \"‏ مَنْ قَالَ فِي يَوْمٍ مِائَةَ مَرَّةٍ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَىْءٍ قَدِيرٌ كَانَ لَهُ عَدْلَ عَشْرِ رِقَابٍ وَكُتِبَتْ لَهُ مِائَةُ حَسَنَةٍ وَمُحِيَ عَنْهُ مِائَةُ سَيِّئَةٍ وَكُنَّ لَهُ حِرْزًا مِنَ الشَّيْطَانِ سَائِرَ يَوْمِهِ إِلَى اللَّيْلِ وَلَمْ يَأْتِ أَحَدٌ بِأَفْضَلَ مِمَّا أَتَى بِهِ إِلاَّ مَنْ قَالَ أَكْثَرَ ‏\"‏ ‏.‏",
+      "id": 3798,
+      "source": "packages/content/hadith/ibnmajah/33.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "tahlil-ten",
+      "practice": "Tahlil ten times = freeing four slaves",
+      "kind": "hadith",
+      "citation": "Tirmidhi 48:184",
+      "collection": "tirmidhi",
+      "reference": "48:184",
+      "english": "Abu Ayyub Al-Ansari narrated that the Messenger of Allah (ﷺ) said:“Whoever says ten times: ‘None has the right to be worshipped by Allah, Alone, without partner, to Him belongs all that exists, and to Him belongs the praise, [He gives life and causes death,] and He has power over all things, (Lā ilāha illallāh, waḥdahu lā sharīka lahu, lahul-mulku wa lahul-ḥamdu, [yuḥyī wa yumītu,] wa huwa `alā kulli shai’in qadīr)’ it is for him equal to freeing four slaves among the offspring of Isma`il.”",
+      "arabic": "حَدَّثَنَا مُوسَى بْنُ عَبْدِ الرَّحْمَنِ الْكِنْدِيُّ الْكُوفِيُّ، حَدَّثَنَا زَيْدُ بْنُ حُبَابٍ، قَالَ وَأَخْبَرَنِي سُفْيَانُ الثَّوْرِيُّ، عَنْ مُحَمَّدِ بْنِ عَبْدِ الرَّحْمَنِ بْنِ أَبِي لَيْلَى، عَنِ الشَّعْبِيِّ، عَنْ عَبْدِ الرَّحْمَنِ بْنِ أَبِي لَيْلَى، عَنْ أَبِي أَيُّوبَ الأَنْصَارِيِّ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ قَالَ عَشْرَ مَرَّاتٍ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ ‏.‏ كَانَتْ لَهُ عِدْلَ أَرْبَعِ رِقَابٍ مِنْ وَلَدِ إِسْمَاعِيلَ ‏\"‏ ‏.‏ قَالَ وَقَدْ رُوِيَ هَذَا الْحَدِيثُ عَنْ أَبِي أَيُّوبَ مَوْقُوفًا ‏.‏",
+      "id": 3553,
+      "source": "packages/content/hadith/tirmidhi/48.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "وَقَدْ رُوِيَ",
+          "why": "a variant-narration note follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "مَوْقُوفًا",
+          "why": "the collector himself records a MAWQUF (non-prophetic) route for this report"
+        }
+      ]
+    },
+    {
+      "key": "date-palm-planted",
+      "practice": "Subhan Allah al-Azim wa bihamdih -> a date-palm planted in Paradise",
+      "kind": "hadith",
+      "citation": "Tirmidhi 48:95",
+      "collection": "tirmidhi",
+      "reference": "48:95",
+      "english": "Jabir narrated that:The Prophet (ﷺ) said: “Whoever says: ‘Glory is to Allah, the Magnificent, and with His Praise (Subḥān Allāhil-Aẓīm, wa biḥamdih)’ a date-palm tree is planted for him in Paradise.”",
+      "arabic": "حَدَّثَنَا أَحْمَدُ بْنُ مَنِيعٍ، وَغَيْرُ، وَاحِدٍ، قَالُوا حَدَّثَنَا رَوْحُ بْنُ عُبَادَةَ، عَنْ حَجَّاجٍ الصَّوَّافِ، عَنْ أَبِي الزُّبَيْرِ، عَنْ جَابِرٍ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ قَالَ سُبْحَانَ اللَّهِ الْعَظِيمِ وَبِحَمْدِهِ ‏.‏ غُرِسَتْ لَهُ نَخْلَةٌ فِي الْجَنَّةِ ‏\"‏ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ حَسَنٌ صَحِيحٌ غَرِيبٌ لاَ نَعْرِفُهُ إِلاَّ مِنْ حَدِيثِ أَبِي الزُّبَيْرِ عَنْ جَابِرٍ ‏.‏",
+      "id": 3464,
+      "source": "packages/content/hadith/tirmidhi/48.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "four-words-tree",
+      "practice": "Four words -> a tree planted for you in Paradise",
+      "kind": "hadith",
+      "citation": "Ibn Majah 33:151",
+      "collection": "ibnmajah",
+      "reference": "33:151",
+      "english": "It was narrated from Abu Hurairah that :the Messenger of Allah (ﷺ) passed by him when he was planting a plant, and said: \"O Abu Hurairah, what are you planting?\" I said: \"A plant for me.\" He said: \"Shall I not tell you of a plant that is better than this?\" He said: \"Of course, O Messenger of Allah.\" He said: \"Say: 'Subhan-Allah, wal-hamdu-lillah, wa la ilaha illallah, wa Allahu Akbar (Glory is to Allah, praise is to Allah, none has the right to be worshiped but Allah and Allah is the Most Great.)' For each one a tree will be planted for you in Paradise",
+      "arabic": "حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا عَفَّانُ، حَدَّثَنَا حَمَّادُ بْنُ سَلَمَةَ، عَنْ أَبِي سِنَانٍ، عَنْ عُثْمَانَ بْنِ أَبِي سَوْدَةَ، عَنْ أَبِي هُرَيْرَةَ، أَنَّ رَسُولَ اللَّهِ ـ صلى الله عليه وسلم ـ مَرَّ بِهِ وَهُوَ يَغْرِسُ غَرْسًا فَقَالَ ‏\"‏ يَا أَبَا هُرَيْرَةَ مَا الَّذِي تَغْرِسُ ‏\"‏ ‏.‏ قُلْتُ غِرَاسًا لِي ‏.‏ قَالَ ‏\"‏ أَلاَ أَدُلُّكَ عَلَى غِرَاسٍ خَيْرٍ لَكَ مِنْ هَذَا ‏\"‏ ‏.‏ قَالَ بَلَى يَا رَسُولَ اللَّهِ ‏.‏ قَالَ ‏\"‏ قُلْ سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلاَ إِلَهَ إِلاَّ اللَّهُ وَاللَّهُ أَكْبَرُ يُغْرَسْ لَكَ بِكُلِّ وَاحِدَةٍ شَجَرَةٌ فِي الْجَنَّةِ ‏\"‏ ‏.‏",
+      "id": 3807,
+      "source": "packages/content/hadith/ibnmajah/33.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "umm-hani-100s",
+      "practice": "100 takbir + 100 tahmid + 100 tasbih (Umm Hani)",
+      "kind": "hadith",
+      "citation": "Ibn Majah 33:154",
+      "collection": "ibnmajah",
+      "reference": "33:154",
+      "english": "It was narrated that Umm Hani' said:\"I came to the Messenger of Allah (ﷺ) and said: 'O Messenger of Allah, tell me of a (good) deed, for I have become old and weak and overweight.' He said: 'Proclaim the greatness of Allah (say Allahu Akbar) one hundred times, praise Allah (say Al-Hamdu Lillah) one hundred times, and glorify Allah (say Subhan-Allah) one hundred times. (That is) better than one hundred horses bridled and saddled for the sake of Allah, better than one hundred sacrificial camels, and better than (freeing) one hundred slaves",
+      "arabic": "حَدَّثَنَا إِبْرَاهِيمُ بْنُ الْمُنْذِرِ الْحِزَامِيُّ، حَدَّثَنَا أَبُو يَحْيَى، زَكَرِيَّا بْنُ مَنْظُورٍ حَدَّثَنِي مُحَمَّدُ بْنُ عُقْبَةَ بْنِ أَبِي مَالِكٍ، عَنْ أُمِّ هَانِئٍ، قَالَتْ أَتَيْتُ إِلَى رَسُولِ اللَّهِ ـ صلى الله عليه وسلم ـ فَقُلْتُ يَا رَسُولَ اللَّهِ دُلَّنِي عَلَى عَمَلٍ فَإِنِّي قَدْ كَبِرْتُ وَضَعُفْتُ وَبَدَّنْتُ ‏.‏ فَقَالَ ‏ \"‏ كَبِّرِي اللَّهَ مِائَةَ مَرَّةٍ وَاحْمَدِي اللَّهَ مِائَةَ مَرَّةٍ وَسَبِّحِي اللَّهَ مِائَةَ مَرَّةٍ خَيْرٌ مِنْ مِائَةِ فَرَسٍ مُلْجَمٍ مُسْرَجٍ فِي سَبِيلِ اللَّهِ وَخَيْرٌ مِنْ مِائَةِ بَدَنَةٍ وَخَيْرٌ مِنْ مِائَةِ رَقَبَةٍ ‏\"‏ ‏.‏",
+      "id": 3810,
+      "source": "packages/content/hadith/ibnmajah/33.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "salawat-ten-muslim",
+      "practice": "Salawat once -> ten (Muslim)",
+      "kind": "hadith",
+      "citation": "Muslim 4:74",
+      "collection": "muslim",
+      "reference": "4:74",
+      "english": "Abu Huraira reported:The Messenger of Allah (ﷺ) said: He who blesses me once, Allah would bless him ten times",
+      "arabic": "حَدَّثَنَا يَحْيَى بْنُ أَيُّوبَ، وَقُتَيْبَةُ، وَابْنُ، حُجْرٍ قَالُوا حَدَّثَنَا إِسْمَاعِيلُ، - وَهُوَ ابْنُ جَعْفَرٍ - عَنِ الْعَلاَءِ، عَنْ أَبِيهِ، عَنْ أَبِي هُرَيْرَةَ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ صَلَّى عَلَىَّ وَاحِدَةً صَلَّى اللَّهُ عَلَيْهِ عَشْرًا ‏\"‏ ‏.‏",
+      "id": 912,
+      "source": "packages/content/hadith/muslim/4.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "salawat-ten-tirmidhi",
+      "practice": "Salawat once -> ten (Tirmidhi)",
+      "kind": "hadith",
+      "citation": "Tirmidhi 3:33",
+      "collection": "tirmidhi",
+      "reference": "3:33",
+      "english": "Abu Hurairah narrated that :Allah's Messenger said: \"Whoever sends Salat upon me, Allah sends Salat upon him ten times",
+      "arabic": "حَدَّثَنَا عَلِيُّ بْنُ حُجْرٍ، أَخْبَرَنَا إِسْمَاعِيلُ بْنُ جَعْفَرٍ، عَنِ الْعَلاَءِ بْنِ عَبْدِ الرَّحْمَنِ، عَنْ أَبِيهِ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ صَلَّى عَلَىَّ صَلاَةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا ‏\"‏ ‏.‏ قَالَ وَفِي الْبَابِ عَنْ عَبْدِ الرَّحْمَنِ بْنِ عَوْفٍ وَعَامِرِ بْنِ رَبِيعَةَ وَعَمَّارٍ وَأَبِي طَلْحَةَ وَأَنَسٍ وَأُبَىِّ بْنِ كَعْبٍ ‏.‏ قَالَ أَبُو عِيسَى حَدِيثُ أَبِي هُرَيْرَةَ حَدِيثٌ حَسَنٌ صَحِيحٌ ‏.‏ وَرُوِيَ عَنْ سُفْيَانَ الثَّوْرِيِّ وَغَيْرِ وَاحِدٍ مِنْ أَهْلِ الْعِلْمِ قَالُوا صَلاَةُ الرَّبِّ الرَّحْمَةُ وَصَلاَةُ الْمَلاَئِكَةِ الاِسْتِغْفَارُ ‏.‏",
+      "id": 485,
+      "source": "packages/content/hadith/tirmidhi/3.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَفِي الْبَابِ",
+          "why": "a 'and in the chapter' cross-reference follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "salawat-abudawud",
+      "practice": "Salawat once -> ten (Abu Dawud)",
+      "kind": "hadith",
+      "citation": "Abu Dawud 8:115",
+      "collection": "abudawud",
+      "reference": "8:115",
+      "english": "Narrated AbuHurayrah: The Prophet (ﷺ) said: If anyone invokes blessings on me once, Allah will bless him ten times",
+      "arabic": "حَدَّثَنَا سُلَيْمَانُ بْنُ دَاوُدَ الْعَتَكِيُّ، حَدَّثَنَا إِسْمَاعِيلُ بْنُ جَعْفَرٍ، عَنِ الْعَلاَءِ بْنِ عَبْدِ الرَّحْمَنِ، عَنْ أَبِيهِ، عَنْ أَبِي هُرَيْرَةَ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ صَلَّى عَلَىَّ وَاحِدَةً صَلَّى اللَّهُ عَلَيْهِ عَشْرًا ‏\"‏ ‏.‏",
+      "id": 1530,
+      "source": "packages/content/hadith/abudawud/8.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "one-letter-ten",
+      "practice": "One letter of the Quran -> ten like it",
+      "kind": "hadith",
+      "citation": "Tirmidhi 45:36",
+      "collection": "tirmidhi",
+      "reference": "45:36",
+      "english": "Narrated Muhammad bin Ka'b Al-Qurazi:\"I heard 'Abdullah bin Mas'ud saying: 'The Messenger of Allah (ﷺ) said: \"[Whoever recites a letter] from Allah's Book, then he receives the reward from it, and the reward of ten the like of it. I do not say that Alif Lam Mim is a letter, but Alif is a letter, Lam is a letter and Mim is a letter",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ بَشَّارٍ، قَالَ حَدَّثَنَا أَبُو بَكْرٍ الْحَنَفِيُّ، قَالَ حَدَّثَنَا الضَّحَّاكُ بْنُ عُثْمَانَ، عَنْ أَيُّوبَ بْنِ مُوسَى، قَالَ سَمِعْتُ مُحَمَّدَ بْنَ كَعْبٍ الْقُرَظِيَّ، يَقُولُ سَمِعْتُ عَبْدَ اللَّهِ بْنَ مَسْعُودٍ، يَقُولُ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ قَرَأَ حَرْفًا مِنْ كِتَابِ اللَّهِ فَلَهُ بِهِ حَسَنَةٌ وَالْحَسَنَةُ بِعَشْرِ أَمْثَالِهَا لاَ أَقُولُ الم حَرْفٌ وَلَكِنْ أَلِفٌ حَرْفٌ وَلاَمٌ حَرْفٌ وَمِيمٌ حَرْفٌ ‏\"‏ ‏.‏ وَيُرْوَى هَذَا الْحَدِيثُ مِنْ غَيْرِ هَذَا الْوَجْهِ عَنِ ابْنِ مَسْعُودٍ وَرَوَاهُ أَبُو الأَحْوَصِ عَنِ ابْنِ مَسْعُودٍ رَفَعَهُ بَعْضُهُمْ وَوَقَفَهُ بَعْضُهُمْ عَنِ ابْنِ مَسْعُودٍ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ حَسَنٌ صَحِيحٌ غَرِيبٌ مِنْ هَذَا الْوَجْهِ ‏.‏ سَمِعْتُ قُتَيْبَةَ بْنَ سَعِيدٍ يَقُولُ بَلَغَنِي أَنَّ مُحَمَّدَ بْنَ كَعْبٍ الْقُرَظِيَّ وُلِدَ فِي حَيَاةِ النَّبِيِّ صلى الله عليه وسلم وَمُحَمَّدُ بْنُ كَعْبٍ يُكْنَى أَبَا حَمْزَةَ ‏",
+      "id": 2910,
+      "source": "packages/content/hadith/tirmidhi/45.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَرَوَاهُ",
+          "why": "a variant-narration note follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "ikhlas-third-bukhari",
+      "practice": "Al-Ikhlas = one third of the Quran (Bukhari)",
+      "kind": "hadith",
+      "citation": "Bukhari 66:37",
+      "collection": "bukhari",
+      "reference": "66:37",
+      "english": "Narrated Abu Sa`id Al-Khudri:The Prophet (ﷺ) said to his companions, \"Is it difficult for any of you to recite one third of the Qur'an in one night?\" This suggestion was difficult for them so they said, \"Who among us has the power to do so, O Allah's Messenger (ﷺ)?\" Allah's Apostle replied: \" Allah (the) One, the Self-Sufficient Master Whom all creatures need.' (Surat Al-Ikhlas 112.1--to the End) is equal to one third of the Qur'an",
+      "arabic": "حَدَّثَنَا عُمَرُ بْنُ حَفْصٍ، حَدَّثَنَا أَبِي، حَدَّثَنَا الأَعْمَشُ، حَدَّثَنَا إِبْرَاهِيمُ، وَالضَّحَّاكُ الْمَشْرِقِيُّ، عَنْ أَبِي سَعِيدٍ الْخُدْرِيِّ، رضى الله عنه قَالَ قَالَ النَّبِيُّ صلى الله عليه وسلم لأَصْحَابِهِ ‏\"‏ أَيَعْجِزُ أَحَدُكُمْ أَنْ يَقْرَأَ ثُلُثَ الْقُرْآنِ فِي لَيْلَةٍ ‏\"‏‏.‏ فَشَقَّ ذَلِكَ عَلَيْهِمْ وَقَالُوا أَيُّنَا يُطِيقُ ذَلِكَ يَا رَسُولَ اللَّهِ فَقَالَ ‏\"‏ اللَّهُ الْوَاحِدُ الصَّمَدُ ثُلُثُ الْقُرْآنِ ‏\"‏‏.‏ قَالَ أَبُو عَبْدِ اللَّهِ عَنْ إِبْرَاهِيمَ مُرْسَلٌ وَعَنِ الضَّحَّاكِ الْمَشْرِقِيِّ مُسْنَدٌ‏.‏",
+      "id": 5015,
+      "source": "packages/content/hadith/bukhari/66.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "ikhlas-third-tirmidhi",
+      "practice": "Al-Ikhlas = a third of the Quran (Tirmidhi)",
+      "kind": "hadith",
+      "citation": "Tirmidhi 45:25",
+      "collection": "tirmidhi",
+      "reference": "45:25",
+      "english": "Narrated Abu Hurairah:that the Messenger of Allah (ﷺ) said: \"Qul Huwa Allahu Ahad is equal to a third of the Qur'an",
+      "arabic": "حَدَّثَنَا الْعَبَّاسُ بْنُ مُحَمَّدٍ الدُّورِيُّ، قَالَ حَدَّثَنَا خَالِدُ بْنُ مَخْلَدٍ، قَالَ حَدَّثَنَا سُلَيْمَانُ بْنُ بِلاَلٍ، قَالَ حَدَّثَنَا سُهَيْلُ بْنُ أَبِي صَالِحٍ، عَنْ أَبِيهِ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏(‏قُلْ هُوَ اللَّهُ أَحَدٌ ‏)‏ تَعْدِلُ ثُلُثَ الْقُرْآنِ ‏\"‏ ‏.‏ هَذَا حَدِيثٌ حَسَنٌ صَحِيحٌ ‏.‏",
+      "id": 2899,
+      "source": "packages/content/hadith/tirmidhi/45.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "shall-i-not-tell-you",
+      "practice": "Shall I not tell you of the best of your deeds",
+      "kind": "hadith",
+      "citation": "Ibn Majah 33:134",
+      "collection": "ibnmajah",
+      "reference": "33:134",
+      "english": "It was narrated from Abu Darda that the Prophet(ﷺ) said:\"Shall I not tell you of the best of your deeds, the most pleasing to your Sovereign, those that raise you most in status, that are better than your gold and silver, or meeting you enemy (in battle) and you strike their necks and they strike your necks?\" They said: \" WHat is that, O Messenger of Allah?\" He said: \"Remembering Allah(Dhikr)",
+      "arabic": "حَدَّثَنَا يَعْقُوبُ بْنُ حُمَيْدِ بْنِ كَاسِبٍ، حَدَّثَنَا الْمُغِيرَةُ بْنُ عَبْدِ الرَّحْمَنِ، عَنْ عَبْدِ اللَّهِ بْنِ سَعِيدِ بْنِ أَبِي هِنْدٍ، عَنْ زِيَادِ بْنِ أَبِي زِيَادٍ، مَوْلَى ابْنِ عَيَّاشٍ عَنْ أَبِي بَحْرِيَّةَ، عَنْ أَبِي الدَّرْدَاءِ، أَنَّ النَّبِيَّ ـ صلى الله عليه وسلم ـ قَالَ ‏\"‏ أَلاَ أُنَبِّئُكُمْ بِخَيْرِ أَعْمَالِكُمْ وَأَرْضَاهَا عِنْدَ مَلِيكِكُمْ وَأَرْفَعِهَا فِي دَرَجَاتِكُمْ وَخَيْرٍ لَكُمْ مِنْ إِعْطَاءِ الذَّهَبِ وَالْوَرِقِ وَمِنْ أَنْ تَلْقَوْا عَدُوَّكُمْ فَتَضْرِبُوا أَعْنَاقَهُمْ وَيَضْرِبُوا أَعْنَاقَكُمْ ‏\"‏ ‏.‏ قَالُوا وَمَا ذَاكَ يَا رَسُولَ اللَّهِ قَالَ ‏\"‏ ذِكْرُ اللَّهِ ‏\"‏ ‏.‏ وَقَالَ مُعَاذُ بْنُ جَبَلٍ مَا عَمِلَ امْرُؤٌ بِعَمَلٍ أَنْجَى لَهُ مِنْ عَذَابِ اللَّهِ عَزَّ وَجَلَّ مِنْ ذِكْرِ اللَّهِ ‏.‏",
+      "id": 3790,
+      "source": "packages/content/hadith/ibnmajah/33.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "tasbih-33-34",
+      "practice": "33/33/34 after every prescribed prayer",
+      "kind": "hadith",
+      "citation": "Muslim 5:186",
+      "collection": "muslim",
+      "reference": "5:186",
+      "english": "Ka'b b. 'Ujra reported Allah's Messenger (ﷺ) as saying:There are certain ejaculations, the repeaters of which or the performers of which after every prescribed prayer will never be caused disappointment:\" Glory be to Allah\" thirty-three times.\" Praise be to Allah\" thirty-three times, and\" Allah is most Great\" thirty-four times",
+      "arabic": "وَحَدَّثَنَا الْحَسَنُ بْنُ عِيسَى، أَخْبَرَنَا ابْنُ الْمُبَارَكِ، أَخْبَرَنَا مَالِكُ بْنُ مِغْوَلٍ، قَالَ سَمِعْتُ الْحَكَمَ بْنَ عُتَيْبَةَ، يُحَدِّثُ عَنْ عَبْدِ الرَّحْمَنِ بْنِ أَبِي لَيْلَى، عَنْ كَعْبِ بْنِ عُجْرَةَ، عَنْ رَسُولِ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مُعَقِّبَاتٌ لاَ يَخِيبُ قَائِلُهُنَّ - أَوْ فَاعِلُهُنَّ - دُبُرَ كُلِّ صَلاَةٍ مَكْتُوبَةٍ ثَلاَثٌ وَثَلاَثُونَ تَسْبِيحَةً وَثَلاَثٌ وَثَلاَثُونَ تَحْمِيدَةً وَأَرْبَعٌ وَثَلاَثُونَ تَكْبِيرَةً ‏\"‏ ‏.‏",
+      "id": 1349,
+      "source": "packages/content/hadith/muslim/5.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "tasbih-33-33-33-tahlil",
+      "practice": "33/33/33 + tahlil to complete 100 -> foam of the sea",
+      "kind": "hadith",
+      "citation": "Muslim 5:188",
+      "collection": "muslim",
+      "reference": "5:188",
+      "english": "Abu Huraira reported Allah's Messenger (ﷺ) as saying:If anyone extols Allah after every prayer thirty-three times, and praises Allah thirty-three times, and declares His Greatness thirty-three times, ninety-nine times in all, and says to complete a hundred:\" There is no god but Allah, having no partner with Him, to Him belongs sovereignty and to Him is praise due, and He is Potent over everything,\" his sins will be forgiven even If these are as abundant as the foam of the sea",
+      "arabic": "حَدَّثَنِي عَبْدُ الْحَمِيدِ بْنُ بَيَانٍ الْوَاسِطِيُّ، أَخْبَرَنَا خَالِدُ بْنُ عَبْدِ اللَّهِ، عَنْ سُهَيْلٍ، عَنْ أَبِي عُبَيْدٍ الْمَذْحِجِيِّ، - قَالَ مُسْلِمٌ أَبُو عُبَيْدٍ مَوْلَى سُلَيْمَانَ بْنِ عَبْدِ الْمَلِكِ - عَنْ عَطَاءِ بْنِ يَزِيدَ اللَّيْثِيِّ، عَنْ أَبِي هُرَيْرَةَ، عَنْ رَسُولِ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ سَبَّحَ اللَّهَ فِي دُبُرِ كُلِّ صَلاَةٍ ثَلاَثًا وَثَلاَثِينَ وَحَمِدَ اللَّهَ ثَلاَثًا وَثَلاَثِينَ وَكَبَّرَ اللَّهَ ثَلاَثًا وَثَلاَثِينَ فَتِلْكَ تِسْعَةٌ وَتِسْعُونَ وَقَالَ تَمَامَ الْمِائَةِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَىْءٍ قَدِيرٌ غُفِرَتْ خَطَايَاهُ وَإِنْ كَانَتْ مِثْلَ زَبَدِ الْبَحْرِ ‏\"‏ ‏.‏",
+      "id": 1352,
+      "source": "packages/content/hadith/muslim/5.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "tahlil-after-prayer-bukhari",
+      "practice": "Tahlil after every compulsory prayer (Bukhari)",
+      "kind": "hadith",
+      "citation": "Bukhari 10:236",
+      "collection": "bukhari",
+      "reference": "10:236",
+      "english": "Narrated Warrad:(the clerk of Al-Mughira bin Shu`ba) Once Al-Mughira dictated to me in a letter addressed to Muawiya that the Prophet (ﷺ) used to say after every compulsory prayer, \"La ilaha illa l-lahu wahdahu la sharika lahu, lahu l-mulku wa lahu l-hamdu, wa huwa `ala kulli shay'in qadir. Allahumma la mani`a lima a`taita, wa la mu`tiya lima mana`ta, wa la yanfa`u dhal-jaddi minka l-jadd. [There is no Deity but Allah, Alone, no Partner to Him. His is the Kingdom and all praise, and Omnipotent is He. O Allah! Nobody can hold back what you gave, nobody can give what You held back, and no struggler's effort can benefit against You].\" And Al-Hasan said, \"Al-jadd' means prosperity [??]",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ يُوسُفَ، قَالَ حَدَّثَنَا سُفْيَانُ، عَنْ عَبْدِ الْمَلِكِ بْنِ عُمَيْرٍ، عَنْ وَرَّادٍ، كَاتِبِ الْمُغِيرَةِ بْنِ شُعْبَةَ قَالَ أَمْلَى عَلَىَّ الْمُغِيرَةُ بْنُ شُعْبَةَ فِي كِتَابٍ إِلَى مُعَاوِيَةَ أَنَّ النَّبِيَّ صلى الله عليه وسلم كَانَ يَقُولُ فِي دُبُرِ كُلِّ صَلاَةٍ مَكْتُوبَةٍ ‏ \"‏ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ، وَلَهُ الْحَمْدُ، وَهْوَ عَلَى كُلِّ شَىْءٍ قَدِيرٌ، اللَّهُمَّ لاَ مَانِعَ لِمَا أَعْطَيْتَ، وَلاَ مُعْطِيَ لِمَا مَنَعْتَ، وَلاَ يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ ‏\"‏‏.‏ وَقَالَ شُعْبَةُ عَنْ عَبْدِ الْمَلِكِ بِهَذَا، وَعَنِ الْحَكَمِ عَنِ الْقَاسِمِ بْنِ مُخَيْمِرَةَ عَنْ وَرَّادٍ بِهَذَا‏.‏ وَقَالَ الْحَسَنُ الْجَدُّ غِنًى‏.‏",
+      "id": 844,
+      "source": "packages/content/hadith/bukhari/10.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "ten-ten-ten",
+      "practice": "Ten/ten/ten after every prayer — easy, but few act on them",
+      "kind": "hadith",
+      "citation": "Abu Dawud 43:293",
+      "collection": "abudawud",
+      "reference": "43:293",
+      "english": "Narrated Abdullah ibn Amr: The Prophet (ﷺ) said: There are two qualities or characteristics which will not be returned by any Muslim without his entering Paradise. While they are easy, those who act upon them are few. One should say: \"Glory be to Allah\" ten times after every prayer, \"Praise be to Allah\" ten times and \"Allah is Most Great\" ten times. That is a hundred and fifty on the tongue, but one thousand and five hundred on the scale. When he goes to bed, he should say: \"Allah is Most Great\" thirty-four times, \"Praise be to Allah\" thirty-three times, and Glory be to Allah thirty-three times, for that is a hundred on the tongue and a thousand on the scale. (He said:) I saw the Messenger of Allah (ﷺ) counting them on his hand. The people asked: Messenger of Allah! How is it that while they are easy, those who act upon them are few? He replied: The Devil comes to one of you when he goes to bed and he makes him sleep, before he utters them, and he comes to him while he is engaged in prayer and calls a need to his mind before he utters them",
+      "arabic": "حَدَّثَنَا حَفْصُ بْنُ عُمَرَ، حَدَّثَنَا شُعْبَةُ، عَنْ عَطَاءِ بْنِ السَّائِبِ، عَنْ أَبِيهِ، عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏\"‏ خَصْلَتَانِ أَوْ خَلَّتَانِ لاَ يُحَافِظُ عَلَيْهِمَا عَبْدٌ مُسْلِمٌ إِلاَّ دَخَلَ الْجَنَّةَ هُمَا يَسِيرٌ وَمَنْ يَعْمَلُ بِهِمَا قَلِيلٌ يُسَبِّحُ فِي دُبُرِ كُلِّ صَلاَةٍ عَشْرًا وَيَحْمَدُ عَشْرًا وَيُكَبِّرُ عَشْرًا فَذَلِكَ خَمْسُونَ وَمِائَةٌ بِاللِّسَانِ وَأَلْفٌ وَخَمْسُمِائَةٍ فِي الْمِيزَانِ وَيُكَبِّرُ أَرْبَعًا وَثَلاَثِينَ إِذَا أَخَذَ مَضْجَعَهُ وَيَحْمَدُ ثَلاَثًا وَثَلاَثِينَ وَيُسَبِّحُ ثَلاَثًا وَثَلاَثِينَ فَذَلِكَ مِائَةٌ بِاللِّسَانِ وَأَلْفٌ فِي الْمِيزَانِ ‏\"‏ ‏.‏ فَلَقَدْ رَأَيْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَعْقِدُهَا بِيَدِهِ قَالُوا يَا رَسُولَ اللَّهِ كَيْفَ هُمَا يَسِيرٌ وَمَنْ يَعْمَلُ بِهِمَا قَلِيلٌ قَالَ ‏\"‏ يَأْتِي أَحَدَكُمْ - يَعْنِي الشَّيْطَانَ - فِي مَنَامِهِ فَيُنَوِّمُهُ قَبْلَ أَنْ يَقُولَهُ وَيَأْتِيهِ فِي صَلاَتِهِ فَيُذَكِّرُهُ حَاجَةً قَبْلَ أَنْ يَقُولَهَا ‏\"‏ ‏.‏",
+      "id": 5065,
+      "source": "packages/content/hadith/abudawud/43.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "fajr-sunnah-muslim",
+      "practice": "Two rakahs of Fajr — dearer than the whole world (Muslim)",
+      "kind": "hadith",
+      "citation": "Muslim 6:119",
+      "collection": "muslim",
+      "reference": "6:119",
+      "english": "A'isha reported that the Messenger of Allah (ﷺ) said about the two (supererogatory) rak'ahs of the dawn:They are dearer to me than the whole world",
+      "arabic": "وَحَدَّثَنَا يَحْيَى بْنُ حَبِيْبٍ، حَدَّثَنَا مُعْتَمِرٌ، قَالَ قَالَ أَبِي حَدَّثَنَا قَتَادَةُ، عَنْ زُرَارَةَ، عَنْ سَعْدِ بْنِ هِشَامٍ، عَنْ عَائِشَةَ، عَنِ النَّبِيِّ صلى الله عليه وسلم أَنَّهُ قَالَ فِي شَأْنِ الرَّكْعَتَيْنِ عِنْدَ طُلُوعِ الْفَجْرِ ‏ \"‏ لَهُمَا أَحَبُّ إِلَىَّ مِنَ الدُّنْيَا جَمِيعًا ‏\"‏ ‏.‏",
+      "id": 1689,
+      "source": "packages/content/hadith/muslim/6.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "fajr-sunnah-tirmidhi",
+      "practice": "Two rakahs of Fajr — better than the world and what is in it (Tirmidhi)",
+      "kind": "hadith",
+      "citation": "Tirmidhi 2:269",
+      "collection": "tirmidhi",
+      "reference": "2:269",
+      "english": "Aishah narrated that :Allah's Messenger (S) said: \"The two Rak'ah of Fajr are better than the world and what is in it",
+      "arabic": "حَدَّثَنَا صَالِحُ بْنُ عَبْدِ اللَّهِ التِّرْمِذِيُّ، حَدَّثَنَا أَبُو عَوَانَةَ، عَنْ قَتَادَةَ، عَنْ زُرَارَةَ بْنِ أَوْفَى، عَنْ سَعْدِ بْنِ هِشَامٍ، عَنْ عَائِشَةَ، قَالَتْ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ رَكْعَتَا الْفَجْرِ خَيْرٌ مِنَ الدُّنْيَا وَمَا فِيهَا ‏\"‏ ‏.‏ قَالَ وَفِي الْبَابِ عَنْ عَلِيٍّ وَابْنِ عُمَرَ وَابْنِ عَبَّاسٍ ‏.‏ قَالَ أَبُو عِيسَى حَدِيثُ عَائِشَةَ حَدِيثٌ حَسَنٌ صَحِيحٌ ‏.‏ وَقَدْ رَوَى أَحْمَدُ بْنُ حَنْبَلٍ عَنْ صَالِحِ بْنِ عَبْدِ اللَّهِ التِّرْمِذِيِّ حَدِيثَ عَائِشَةَ ‏.‏",
+      "id": 416,
+      "source": "packages/content/hadith/tirmidhi/2.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَفِي الْبَابِ",
+          "why": "a 'and in the chapter' cross-reference follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "twelve-rakah-muslim",
+      "practice": "Twelve rakahs -> a house in Paradise (Muslim)",
+      "kind": "hadith",
+      "citation": "Muslim 6:124",
+      "collection": "muslim",
+      "reference": "6:124",
+      "english": "Umm Habiba (the wife of the Holy Prophet) reported Allah's Messenger (ﷺ) as saying:A house will be built in Paradise, for anyone who prays in a day and a night twelve rak'ahs; and she added: I have never abandoned (observing them) since I heard it from the Messenger of Allah (ﷺ). Some of the other narrators said the same words: I have never abandoned (observing them) since I heard (from so and so)",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ عَبْدِ اللَّهِ بْنِ نُمَيْرٍ، حَدَّثَنَا أَبُو خَالِدٍ، - يَعْنِي سُلَيْمَانَ بْنَ حَيَّانَ - عَنْ دَاوُدَ بْنِ أَبِي هِنْدٍ، عَنِ النُّعْمَانِ بْنِ سَالِمٍ، عَنْ عَمْرِو بْنِ أَوْسٍ، قَالَ حَدَّثَنِي عَنْبَسَةُ بْنُ أَبِي سُفْيَانَ، فِي مَرَضِهِ الَّذِي مَاتَ فِيهِ بِحَدِيثٍ يُتَسَارُّ إِلَيْهِ قَالَ سَمِعْتُ أُمَّ حَبِيبَةَ تَقُولُ سَمِعْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ ‏ \"‏ مَنْ صَلَّى اثْنَتَىْ عَشْرَةَ رَكْعَةً فِي يَوْمٍ وَلَيْلَةٍ بُنِيَ لَهُ بِهِنَّ بَيْتٌ فِي الْجَنَّةِ ‏\"‏ ‏.‏ قَالَتْ أُمُّ حَبِيبَةَ فَمَا تَرَكْتُهُنَّ مُنْذُ سَمِعْتُهُنَّ مِنْ رَسُولِ اللَّهِ صلى الله عليه وسلم ‏.‏ وَقَالَ عَنْبَسَةُ فَمَا تَرَكْتُهُنَّ مُنْذُ سَمِعْتُهُنَّ مِنْ أُمِّ حَبِيبَةَ ‏.‏ وَقَالَ عَمْرُو بْنُ أَوْسٍ مَا تَرَكْتُهُنَّ مُنْذُ سَمِعْتُهُنَّ مِنْ عَنْبَسَةَ ‏.‏ وَقَالَ النُّعْمَانُ بْنُ سَالِمٍ مَا تَرَكْتُهُنَّ مُنْذُ سَمِعْتُهُنَّ مِنْ عَمْرِو بْنِ أَوْسٍ ‏.‏",
+      "id": 1694,
+      "source": "packages/content/hadith/muslim/6.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "twelve-rakah-muslim-126",
+      "practice": "Twelve rakahs (Muslim 6:126)",
+      "kind": "hadith",
+      "citation": "Muslim 6:126",
+      "collection": "muslim",
+      "reference": "6:126",
+      "english": "Umm Habiba, the wife of the Messenger of Allah (ﷺ), reported Allah's Messenger (ﷺ) as saying:If any Muslim servant (of Allah) prays for the sake of Allah twelve rak'ahs (of Sunan) every day, over and above the obligatory ones, Allah will build for him a house in Paradise, or a house will be built for him in Paradise; and I have not abandoned observing them after (hearing it from the Messenger of Allah). (So said also 'Amr and Nu'man)",
+      "arabic": "وَحَدَّثَنَا مُحَمَّدُ بْنُ بَشَّارٍ، حَدَّثَنَا مُحَمَّدُ بْنُ جَعْفَرٍ، حَدَّثَنَا شُعْبَةُ، عَنِ النُّعْمَانِ بْنِ سَالِمٍ، عَنْ عَمْرِو بْنِ أَوْسٍ، عَنْ عَنْبَسَةَ بْنِ أَبِي سُفْيَانَ، عَنْ أُمِّ حَبِيبَةَ، زَوْجِ النَّبِيِّ صلى الله عليه وسلم أَنَّهَا قَالَتْ سَمِعْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ ‏ \"‏ مَا مِنْ عَبْدٍ مُسْلِمٍ يُصَلِّي لِلَّهِ كُلَّ يَوْمٍ ثِنْتَىْ عَشْرَةَ رَكْعَةً تَطَوُّعًا غَيْرَ فَرِيضَةٍ إِلاَّ بَنَى اللَّهُ لَهُ بَيْتًا فِي الْجَنَّةِ أَوْ إِلاَّ بُنِيَ لَهُ بَيْتٌ فِي الْجَنَّةِ ‏\"‏ ‏.‏ قَالَتْ أُمُّ حَبِيبَةَ فَمَا بَرِحْتُ أُصَلِّيهِنَّ بَعْدُ ‏.‏ وَقَالَ عَمْرٌو مَا بَرِحْتُ أُصَلِّيهِنَّ بَعْدُ ‏.‏ وَقَالَ النُّعْمَانُ مِثْلَ ذَلِكَ ‏.‏",
+      "id": 1696,
+      "source": "packages/content/hadith/muslim/6.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "twelve-rakah-breakdown",
+      "practice": "Twelve rakahs — the 4+2+2+2+2 breakdown (Nasai)",
+      "kind": "hadith",
+      "citation": "Nasai 20:198",
+      "collection": "nasai",
+      "reference": "20:198",
+      "english": "It was narrated from Aishah that:The Messenger of Allah (ﷺ) said: \"Whoever persists in praying twelve rak'ahs each day and night, Allah, the Mighty and Sublime, will build for him a house in Paradise: Four before Zuhr and two after Zuhr, two rak'ahs after Maghrib, two rak'ahs after Isha' and two rak'ahs of Fajr",
+      "arabic": "أَخْبَرَنَا أَحْمَدُ بْنُ يَحْيَى، قَالَ حَدَّثَنَا مُحَمَّدُ بْنُ بِشْرٍ، قَالَ حَدَّثَنَا أَبُو يَحْيَى، إِسْحَاقُ بْنُ سُلَيْمَانَ الرَّازِيُّ عَنِ الْمُغِيرَةِ بْنِ زِيَادٍ، عَنْ عَطَاءِ بْنِ أَبِي رَبَاحٍ، عَنْ عَائِشَةَ، رضى الله عنها عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ ثَابَرَ عَلَى اثْنَتَىْ عَشْرَةَ رَكْعَةً بَنَى اللَّهُ عَزَّ وَجَلَّ لَهُ بَيْتًا فِي الْجَنَّةِ أَرْبَعًا قَبْلَ الظُّهْرِ وَرَكْعَتَيْنِ بَعْدَ الظُّهْرِ وَرَكْعَتَيْنِ بَعْدَ الْمَغْرِبِ وَرَكْعَتَيْنِ بَعْدَ الْعِشَاءِ وَرَكْعَتَيْنِ قَبْلَ الْفَجْرِ ‏\"‏ ‏.‏",
+      "id": 1795,
+      "source": "packages/content/hadith/nasai/20.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "twelve-rakah-breakdown-tirmidhi",
+      "practice": "Twelve rakahs breakdown (Tirmidhi 2:267)",
+      "kind": "hadith",
+      "citation": "Tirmidhi 2:267",
+      "collection": "tirmidhi",
+      "reference": "2:267",
+      "english": "Aishah narrated that Allah's Messenger (S) said:\"Whoever is regular with twelve Rak'ah of Sunnah (prayer), Allah will build a house for him in Paradise: Four Rak'ah before Zuhr, two Rak'ah after it, two Rak'ah after Maghrib, two Rak'ah after Isha, and two Rak'ah before Fajr",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ رَافِعٍ النَّيْسَابُورِيُّ، حَدَّثَنَا إِسْحَاقُ بْنُ سُلَيْمَانَ الرَّازِيُّ، حَدَّثَنَا الْمُغِيرَةُ بْنُ زِيَادٍ، عَنْ عَطَاءٍ، عَنْ عَائِشَةَ، قَالَتْ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ ثَابَرَ عَلَى ثِنْتَىْ عَشْرَةَ رَكْعَةً مِنَ السُّنَّةِ بَنَى اللَّهُ لَهُ بَيْتًا فِي الْجَنَّةِ أَرْبَعِ رَكَعَاتٍ قَبْلَ الظُّهْرِ وَرَكْعَتَيْنِ بَعْدَهَا وَرَكْعَتَيْنِ بَعْدَ الْمَغْرِبِ وَرَكْعَتَيْنِ بَعْدَ الْعِشَاءِ وَرَكْعَتَيْنِ قَبْلَ الْفَجْرِ ‏\"‏ ‏.‏ قَالَ وَفِي الْبَابِ عَنْ أُمِّ حَبِيبَةَ وَأَبِي هُرَيْرَةَ وَأَبِي مُوسَى وَابْنِ عُمَرَ ‏.‏ قَالَ أَبُو عِيسَى حَدِيثُ عَائِشَةَ حَدِيثٌ غَرِيبٌ مِنْ هَذَا الْوَجْهِ ‏.‏ وَمُغِيرَةُ بْنُ زِيَادٍ قَدْ تَكَلَّمَ فِيهِ بَعْضُ أَهْلِ الْعِلْمِ مِنْ قِبَلِ حِفْظِهِ ‏.‏",
+      "id": 414,
+      "source": "packages/content/hadith/tirmidhi/2.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَفِي الْبَابِ",
+          "why": "a 'and in the chapter' cross-reference follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "two-cool-bukhari",
+      "practice": "The two cool prayers -> Paradise (Bukhari)",
+      "kind": "hadith",
+      "citation": "Bukhari 9:50",
+      "collection": "bukhari",
+      "reference": "9:50",
+      "english": "Narrated Abu Bakr bin Abi Musa:My father said, \"Allah's Messenger (ﷺ) said, 'Whoever prays the two cool prayers (`Asr and Fajr) will go to Paradise",
+      "arabic": "حَدَّثَنَا هُدْبَةُ بْنُ خَالِدٍ، قَالَ حَدَّثَنَا هَمَّامٌ، حَدَّثَنِي أَبُو جَمْرَةَ، عَنْ أَبِي بَكْرِ بْنِ أَبِي مُوسَى، عَنْ أَبِيهِ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ صَلَّى الْبَرْدَيْنِ دَخَلَ الْجَنَّةَ ‏\"‏‏.‏ وَقَالَ ابْنُ رَجَاءٍ حَدَّثَنَا هَمَّامٌ عَنْ أَبِي جَمْرَةَ أَنَّ أَبَا بَكْرِ بْنَ عَبْدِ اللَّهِ بْنِ قَيْسٍ أَخْبَرَهُ بِهَذَا‏.‏ حَدَّثَنَا إِسْحَاقُ، عَنْ حَبَّانَ، حَدَّثَنَا هَمَّامٌ، حَدَّثَنَا أَبُو جَمْرَةَ، عَنْ أَبِي بَكْرِ بْنِ عَبْدِ اللَّهِ، عَنْ أَبِيهِ، عَنِ النَّبِيِّ صلى الله عليه وسلم مِثْلَهُ‏.‏",
+      "id": 574,
+      "source": "packages/content/hadith/bukhari/9.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "two-cool-muslim",
+      "practice": "The two cool prayers (Muslim)",
+      "kind": "hadith",
+      "citation": "Muslim 5:271",
+      "collection": "muslim",
+      "reference": "5:271",
+      "english": "Abu Bakr reported on the authority of his father that the Messenger of Allah (ﷺ) said:He who observed two prayers at two cool (hours) would enter Paradise",
+      "arabic": "وَحَدَّثَنَا هَدَّابُ بْنُ خَالِدٍ الأَزْدِيُّ، حَدَّثَنَا هَمَّامُ بْنُ يَحْيَى، حَدَّثَنِي أَبُو جَمْرَةَ الضُّبَعِيُّ، عَنْ أَبِي بَكْرٍ، عَنْ أَبِيهِ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ صَلَّى الْبَرْدَيْنِ دَخَلَ الْجَنَّةَ ‏\"‏ ‏.‏",
+      "id": 1438,
+      "source": "packages/content/hadith/muslim/5.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "before-sunrise-sunset-nasai",
+      "practice": "Prayer before sunrise and before sunset -> never enter the Fire (Nasai)",
+      "kind": "hadith",
+      "citation": "Nasai 5:24",
+      "collection": "nasai",
+      "reference": "5:24",
+      "english": "It was narrated from Abu Bakr bin 'Umarah bin Ruwaibah Ath-Thaqafi that his father said:\"I heard the Messenger of Allah (ﷺ) say: 'He will never enter the Fire, the one who prays before the sun rises and before it sets",
+      "arabic": "أَخْبَرَنَا مَحْمُودُ بْنُ غَيْلاَنَ، قَالَ حَدَّثَنَا وَكِيعٌ، قَالَ حَدَّثَنَا مِسْعَرٌ، وَابْنُ أَبِي خَالِدٍ، وَالْبَخْتَرِيُّ بْنُ أَبِي الْبَخْتَرِيُّ، كُلُّهُمْ سَمِعُوهُ مِنْ أَبِي بَكْرِ بْنِ عُمَارَةَ بْنِ، رُوَيْبَةَ الثَّقَفِيِّ، عَنْ أَبِيهِ، قَالَ سَمِعْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ ‏ \"‏ لَنْ يَلِجَ النَّارَ مَنْ صَلَّى قَبْلَ طُلُوعِ الشَّمْسِ وَقَبْلَ غُرُوبِهَا ‏\"‏ ‏.‏",
+      "id": 471,
+      "source": "packages/content/hadith/nasai/5.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "before-sunrise-sunset-abudawud",
+      "practice": "Prayer before sunrise and before sunset (Abu Dawud)",
+      "kind": "hadith",
+      "citation": "Abu Dawud 2:37",
+      "collection": "abudawud",
+      "reference": "2:37",
+      "english": "Narrated Umarah ibn Ruwaybah: A man from Basrah said: Tell me what you heard from the Messenger of Allah (ﷺ). He said: I heard the Messenger of Allah (ﷺ) say: No one will enter Hell who has prayed before the rising of the sun and before its setting (meaning the dawn and the afternoon prayers). He said three times: Have you heard it from him? He replied: Yes, each time saying: My ears heard it and my heart memorised it. The man then said: And I heard him (the Prophet) say that",
+      "arabic": "حَدَّثَنَا مُسَدَّدٌ، حَدَّثَنَا يَحْيَى، عَنْ إِسْمَاعِيلَ بْنِ أَبِي خَالِدٍ، حَدَّثَنَا أَبُو بَكْرِ بْنُ عُمَارَةَ بْنِ رُؤَيْبَةَ، عَنْ أَبِيهِ، قَالَ سَأَلَهُ رَجُلٌ مِنْ أَهْلِ الْبَصْرَةِ فَقَالَ أَخْبِرْنِي مَا سَمِعْتَ مِنْ رَسُولِ اللَّهِ صلى الله عليه وسلم قَالَ سَمِعْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ ‏ \"‏ لاَ يَلِجُ النَّارَ رَجُلٌ صَلَّى قَبْلَ طُلُوعِ الشَّمْسِ وَقَبْلَ أَنْ تَغْرُبَ ‏\"‏ ‏.‏ قَالَ أَنْتَ سَمِعْتَهُ مِنْهُ ثَلاَثَ مَرَّاتٍ ‏.‏ قَالَ نَعَمْ ‏.‏ كُلَّ ذَلِكَ يَقُولُ سَمِعَتْهُ أُذُنَاىَ وَوَعَاهُ قَلْبِي ‏.‏ فَقَالَ الرَّجُلُ وَأَنَا سَمِعْتُهُ صلى الله عليه وسلم يَقُولُ ذَلِكَ ‏.‏",
+      "id": 427,
+      "source": "packages/content/hadith/abudawud/2.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "isha-fajr-congregation",
+      "practice": "Isha + Fajr in congregation = praying the whole night",
+      "kind": "hadith",
+      "citation": "Muslim 5:324",
+      "collection": "muslim",
+      "reference": "5:324",
+      "english": "Abd al-Rahman b. Abd 'Amr reported:'Uthman b. 'Affan (narrated the mosque after evening prayer and sat alone. I also sat alone with him, so he said: 0, son of my brother, I heard the Messenger of Allah (ﷺ) say: He who observed the 'Isha' prayer in congregation, it was as if he prayed up to midnight, and he who prayed the morning prayer in congregation, it was as if he prayed the whole night",
+      "arabic": "حَدَّثَنَا إِسْحَاقُ بْنُ إِبْرَاهِيمَ، أَخْبَرَنَا الْمُغِيرَةُ بْنُ سَلَمَةَ الْمَخْزُومِيُّ، حَدَّثَنَا عَبْدُ الْوَاحِدِ، - وَهُوَ ابْنُ زِيَادٍ - حَدَّثَنَا عُثْمَانُ بْنُ حَكِيمٍ، حَدَّثَنَا عَبْدُ الرَّحْمَنِ بْنُ أَبِي عَمْرَةَ، قَالَ دَخَلَ عُثْمَانُ بْنُ عَفَّانَ الْمَسْجِدَ بَعْدَ صَلاَةِ الْمَغْرِبِ فَقَعَدَ وَحْدَهُ فَقَعَدْتُ إِلَيْهِ فَقَالَ يَا ابْنَ أَخِي سَمِعْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ ‏ \"‏ مَنْ صَلَّى الْعِشَاءَ فِي جَمَاعَةٍ فَكَأَنَّمَا قَامَ نِصْفَ اللَّيْلِ وَمَنْ صَلَّى الصُّبْحَ فِي جَمَاعَةٍ فَكَأَنَّمَا صَلَّى اللَّيْلَ كُلَّهُ ‏\"‏ ‏.‏",
+      "id": 1491,
+      "source": "packages/content/hadith/muslim/5.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "post-fajr-hajj-umrah",
+      "practice": "Fajr in jamaah + dhikr till sunrise + two rakahs -> Hajj and Umrah reward",
+      "kind": "hadith",
+      "citation": "Tirmidhi 6:43",
+      "collection": "tirmidhi",
+      "reference": "6:43",
+      "english": "Anas bin Malik narrated that :the Messenger of Allah said: \"Whoever prays Fajr in congregation, then sits remembering Allah until the sun has risen, then he prays two Rak'ah, then for him is the reward like that of a Hajj and Umrah.\" He said: \"The Messenger of Allah said: 'Complete, complete, complete",
+      "arabic": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ مُعَاوِيَةَ الْجُمَحِيُّ الْبَصْرِيُّ، حَدَّثَنَا عَبْدُ الْعَزِيزِ بْنُ مُسْلِمٍ، حَدَّثَنَا أَبُو ظِلاَلٍ، عَنْ أَنَسِ بْنِ مَالِكٍ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ مَنْ صَلَّى الْغَدَاةَ فِي جَمَاعَةٍ ثُمَّ قَعَدَ يَذْكُرُ اللَّهَ حَتَّى تَطْلُعَ الشَّمْسُ ثُمَّ صَلَّى رَكْعَتَيْنِ كَانَتْ لَهُ كَأَجْرِ حَجَّةٍ وَعُمْرَةٍ ‏\"‏ ‏.‏ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ تَامَّةٍ تَامَّةٍ تَامَّةٍ ‏\"‏ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ حَسَنٌ غَرِيبٌ ‏.‏ قَالَ وَسَأَلْتُ مُحَمَّدَ بْنَ إِسْمَاعِيلَ عَنْ أَبِي ظِلاَلٍ فَقَالَ هُوَ مُقَارِبُ الْحَدِيثِ ‏.‏ قَالَ مُحَمَّدٌ وَاسْمُهُ هِلاَلٌ ‏.‏",
+      "id": 586,
+      "source": "packages/content/hadith/tirmidhi/6.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "wudu-two-rakah",
+      "practice": "Wudu + two rakahs without distraction -> past sins forgiven",
+      "kind": "hadith",
+      "citation": "Bukhari 4:25",
+      "collection": "bukhari",
+      "reference": "4:25",
+      "english": "Narrated Humran: (the slave of 'Uthman) I saw 'Uthman bin 'Affan asking for a tumbler of water (and when it was brought) he poured water over his hands and washed them thrice and then put his right hand in the water container and rinsed his mouth, washed his nose by putting water in it and then blowing it out. then he washed his face and forearms up to the elbows thrice, passed his wet hands over his head and washed his feet up to the ankles thrice. Then he said, \"Allah's Messenger (ﷺ) said 'If anyone performs ablution like that of mine and offers a two-rak'at prayer during which he does not think of anything else (not related to the present prayer) then his past sins will be forgiven",
+      "arabic": "حَدَّثَنَا عَبْدُ الْعَزِيزِ بْنُ عَبْدِ اللَّهِ الأُوَيْسِيُّ، قَالَ حَدَّثَنِي إِبْرَاهِيمُ بْنُ سَعْدٍ، عَنِ ابْنِ شِهَابٍ، أَنَّ عَطَاءَ بْنَ يَزِيدَ، أَخْبَرَهُ أَنَّ حُمْرَانَ مَوْلَى عُثْمَانَ أَخْبَرَهُ أَنَّهُ، رَأَى عُثْمَانَ بْنَ عَفَّانَ دَعَا بِإِنَاءٍ، فَأَفْرَغَ عَلَى كَفَّيْهِ ثَلاَثَ مِرَارٍ فَغَسَلَهُمَا، ثُمَّ أَدْخَلَ يَمِينَهُ فِي الإِنَاءِ فَمَضْمَضَ، وَاسْتَنْشَقَ، ثُمَّ غَسَلَ وَجْهَهُ ثَلاَثًا، وَيَدَيْهِ إِلَى الْمِرْفَقَيْنِ ثَلاَثَ مِرَارٍ، ثُمَّ مَسَحَ بِرَأْسِهِ، ثُمَّ غَسَلَ رِجْلَيْهِ ثَلاَثَ مِرَارٍ إِلَى الْكَعْبَيْنِ، ثُمَّ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ تَوَضَّأَ نَحْوَ وُضُوئِي هَذَا، ثُمَّ صَلَّى رَكْعَتَيْنِ، لاَ يُحَدِّثُ فِيهِمَا نَفْسَهُ، غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ ‏\"‏‏.‏",
+      "id": 159,
+      "source": "packages/content/hadith/bukhari/4.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "wudu-shahadah",
+      "practice": "Wudu done well + the shahadah -> the eight gates",
+      "kind": "hadith",
+      "citation": "Muslim 2:20",
+      "collection": "muslim",
+      "reference": "2:20",
+      "english": "Uqba b. 'Amir reported:We were entrusted with the task of tending the camels. On my turn when I came back in the evening after grazing them in the pastures, I found Allah's Messenger (ﷺ) stand and address the people. I heard these words of his: If any Muslim performs ablution well, then stands and prays two rak'ahs setting about them with his heart as well as his face, Paradise would be guaranteed to him. I said: What a fine thing is this! And a narrator who was before me said: The first was better than even this. When I cast a glance, I saw that it was 'Umar who said: I see that you have just come and observed: If anyone amongst you performs the ablution, and then completes the ablution well and then says: I testify that there is no god but Allah and that Muhammad is the servant of Allah and His Messenger, the eight gates of Paradise would be opened for him and he may enter by whichever of them he wishes",
+      "arabic": "حَدَّثَنِي مُحَمَّدُ بْنُ حَاتِمِ بْنِ مَيْمُونٍ، حَدَّثَنَا عَبْدُ الرَّحْمَنِ بْنُ مَهْدِيٍّ، حَدَّثَنَا مُعَاوِيَةُ بْنُ صَالِحٍ، عَنْ رَبِيعَةَ، - يَعْنِي ابْنَ يَزِيدَ - عَنْ أَبِي إِدْرِيسَ الْخَوْلاَنِيِّ، عَنْ عُقْبَةَ بْنِ عَامِرٍ، ح وَحَدَّثَنِي أَبُو عُثْمَانَ، عَنْ جُبَيْرِ بْنِ نُفَيْرٍ، عَنْ عُقْبَةَ بْنِ عَامِرٍ، قَالَ كَانَتْ عَلَيْنَا رِعَايَةُ الإِبِلِ فَجَاءَتْ نَوْبَتِي فَرَوَّحْتُهَا بِعَشِيٍّ فَأَدْرَكْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم قَائِمًا يُحَدِّثُ النَّاسَ فَأَدْرَكْتُ مِنْ قَوْلِهِ ‏\"‏ مَا مِنْ مُسْلِمٍ يَتَوَضَّأُ فَيُحْسِنُ وُضُوءَهُ ثُمَّ يَقُومُ فَيُصَلِّي رَكْعَتَيْنِ مُقْبِلٌ عَلَيْهِمَا بِقَلْبِهِ وَوَجْهِهِ إِلاَّ وَجَبَتْ لَهُ الْجَنَّةُ ‏\"‏ ‏.‏ قَالَ فَقُلْتُ مَا أَجْوَدَ هَذِهِ ‏.‏ فَإِذَا قَائِلٌ بَيْنَ يَدَىَّ يَقُولُ الَّتِي قَبْلَهَا أَجْوَدُ ‏.‏ فَنَظَرْتُ فَإِذَا عُمَرُ قَالَ إِنِّي قَدْ رَأَيْتُكَ جِئْتَ آنِفًا قَالَ ‏\"‏ مَا مِنْكُمْ مِنْ أَحَدٍ يَتَوَضَّأُ فَيُبْلِغُ - أَوْ فَيُسْبِغُ - الْوُضُوءَ ثُمَّ يَقُولُ أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا عَبْدُ اللَّهِ وَرَسُولُهُ إِلاَّ فُتِحَتْ لَهُ أَبْوَابُ الْجَنَّةِ الثَّمَانِيَةُ يَدْخُلُ مِنْ أَيِّهَا شَاءَ ‏\"‏ ‏.‏",
+      "id": 553,
+      "source": "packages/content/hadith/muslim/2.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "ayat-kursi-sleep-bukhari-66",
+      "practice": "Ayat al-Kursi before sleep (Bukhari 66:32)",
+      "kind": "hadith",
+      "citation": "Bukhari 66:32",
+      "collection": "bukhari",
+      "reference": "66:32",
+      "english": "Narrated Abu Huraira:Allah's Messenger (ﷺ) ordered me to guard the Zakat revenue of Ramadan. Then somebody came to me and started stealing from the foodstuff. I caught him and said, \"I will take you to Allah's Messenger (ﷺ)!\" Then Abu Huraira described the whole narration and said: That person said (to me), \"(Please don't take me to Allah's Messenger (ﷺ) and I will tell you a few words by which Allah will benefit you.) When you go to your bed, recite Ayat-al-Kursi, (2.255) for then there will be a guard from Allah who will protect you all night long, and Satan will not be able to come near you till dawn.\" (When the Prophet (ﷺ) heard the story) he said (to me), \"He (who came to you at night) told you the truth although he is a liar; and it was Satan",
+      "arabic": "وَقَالَ عُثْمَانُ بْنُ الْهَيْثَمِ حَدَّثَنَا عَوْفٌ، عَنْ مُحَمَّدِ بْنِ سِيرِينَ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ قَالَ وَكَّلَنِي رَسُولُ اللَّهِ صلى الله عليه وسلم بِحِفْظِ زَكَاةِ رَمَضَانَ فَأَتَانِي آتٍ فَجَعَلَ يَحْثُو مِنَ الطَّعَامِ فَأَخَذْتُهُ فَقُلْتُ لأَرْفَعَنَّكَ إِلَى رَسُولِ اللَّهِ صلى الله عليه وسلم فَقَصَّ الْحَدِيثَ فَقَالَ إِذَا أَوَيْتَ إِلَى فِرَاشِكَ فَاقْرَأْ آيَةَ الْكُرْسِيِّ لَنْ يَزَالَ مَعَكَ مِنَ اللَّهِ حَافِظٌ وَلاَ يَقْرَبُكَ شَيْطَانٌ حَتَّى تُصْبِحَ‏.‏ وَقَالَ النَّبِيُّ صلى الله عليه وسلم ‏ \"‏ صَدَقَكَ وَهْوَ كَذُوبٌ ذَاكَ شَيْطَانٌ ‏\"‏‏.‏",
+      "id": 5010,
+      "source": "packages/content/hadith/bukhari/66.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "ayat-kursi-sleep-bukhari-59",
+      "practice": "Ayat al-Kursi before sleep (Bukhari 59:84)",
+      "kind": "hadith",
+      "citation": "Bukhari 59:84",
+      "collection": "bukhari",
+      "reference": "59:84",
+      "english": "Narrated Muhammad bin Sirin:Abu Huraira said, \"Allah's Messenger (ﷺ) put me in charge of the Zakat of Ramadan (i.e. Zakat-ul-Fitr). Someone came to me and started scooping some of the foodstuff of (Zakat) with both hands. I caught him and told him that I would take him to Allah's Messenger (ﷺ).\" Then Abu Huraira told the whole narration and added \"He (i.e. the thief) said, 'Whenever you go to your bed, recite the Verse of \"Al-Kursi\" (2.255) for then a guardian from Allah will be guarding you, and Satan will not approach you till dawn.' \" On that the Prophet (ﷺ) said, \"He told you the truth, though he is a liar, and he (the thief) himself was the Satan",
+      "arabic": "وَقَالَ عُثْمَانُ بْنُ الْهَيْثَمِ حَدَّثَنَا عَوْفٌ، عَنْ مُحَمَّدِ بْنِ سِيرِينَ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ قَالَ وَكَّلَنِي رَسُولُ اللَّهِ صلى الله عليه وسلم بِحِفْظِ زَكَاةِ رَمَضَانَ، فَأَتَانِي آتٍ، فَجَعَلَ يَحْثُو مِنَ الطَّعَامِ، فَأَخَذْتُهُ فَقُلْتُ لأَرْفَعَنَّكَ إِلَى رَسُولِ اللَّهِ صلى الله عليه وسلم‏.‏ فَذَكَرَ الْحَدِيثَ فَقَالَ إِذَا أَوَيْتَ إِلَى فِرَاشِكَ فَاقْرَأْ آيَةَ الْكُرْسِيِّ لَنْ يَزَالَ عَلَيْكَ مِنَ اللَّهِ حَافِظٌ، وَلاَ يَقْرَبُكَ شَيْطَانٌ حَتَّى تُصْبِحَ‏.‏ فَقَالَ النَّبِيُّ صلى الله عليه وسلم ‏ \"‏ صَدَقَكَ وَهْوَ كَذُوبٌ، ذَاكَ شَيْطَانٌ ‏\"‏‏.‏",
+      "id": 3275,
+      "source": "packages/content/hadith/bukhari/59.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "ayat-kursi-master",
+      "practice": "Ayat al-Kursi — master of the ayat",
+      "kind": "hadith",
+      "citation": "Tirmidhi 45:4",
+      "collection": "tirmidhi",
+      "reference": "45:4",
+      "english": "Narrated Abu Hurairah:that the Messenger of Allah (ﷺ): \"For everything there is a hump (pinnacle) and the hump (pinnacle) of the Qur'an is Surat Al-Baqarah, in it there is an Ayah which is the master of the Ayat in the Qur'an; [it is] Ayat Al-Kursi",
+      "arabic": "حَدَّثَنَا مَحْمُودُ بْنُ غَيْلاَنَ، قَالَ حَدَّثَنَا حُسَيْنٌ الْجُعْفِيُّ، عَنْ زَائِدَةَ، عَنْ حَكِيمِ بْنِ جُبَيْرٍ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ لِكُلِّ شَيْءٍ سَنَامٌ وَإِنَّ سَنَامَ الْقُرْآنِ سُورَةُ الْبَقَرَةِ وَفِيهَا آيَةٌ هِيَ سَيِّدَةُ آىِ الْقُرْآنِ هِيَ آيَةُ الْكُرْسِيِّ ‏\"‏ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ غَرِيبٌ لاَ نَعْرِفُهُ إِلاَّ مِنْ حَدِيثِ حَكِيمِ بْنِ جُبَيْرٍ ‏.‏ وَقَدْ تَكَلَّمَ شُعْبَةُ فِي حَكِيمِ بْنِ جُبَيْرٍ وَضَعَّفَهُ ‏.‏",
+      "id": 2878,
+      "source": "packages/content/hadith/tirmidhi/45.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "ayat-kursi-morning-evening",
+      "practice": "Ayat al-Kursi morning and evening -> protected",
+      "kind": "hadith",
+      "citation": "Tirmidhi 45:5",
+      "collection": "tirmidhi",
+      "reference": "45:5",
+      "english": "Narrated Abu Hurairah:that the Messenger of Allah (ﷺ) said: \"Whoever recites Ha Mim Al-Mu'min - up to - To Him is the return (40:1-3) and Ayat Al-Kursi when he reaches (gets up in) the morning, he will be protected by them until the evening. And whoever recites them when he reaches the evening, he will be protected by them until the morning",
+      "arabic": "حَدَّثَنَا يَحْيَى بْنُ الْمُغِيرَةِ أَبُو سَلَمَةَ الْمَخْزُومِيُّ الْمَدَنِيُّ، قَالَ حَدَّثَنَا ابْنُ أَبِي فُدَيْكٍ، عَنْ عَبْدِ الرَّحْمَنِ بْنِ أَبِي بَكْرٍ الْمُلَيْكِيِّ، عَنْ زُرَارَةَ بْنِ مُصْعَبٍ، عَنْ أَبِي سَلَمَةَ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ مَنْ قَرَأَ حم الْمُؤْمِنَ إِلَى ‏:‏ ‏(‏إِلَيْهِ الْمَصِيرُ ‏)‏ وَآيَةَ الْكُرْسِيِّ حِينَ يُصْبِحُ حُفِظَ بِهِمَا حَتَّى يُمْسِيَ وَمَنْ قَرَأَهُمَا حِينَ يُمْسِيَ حُفِظَ بِهِمَا حَتَّى يُصْبِحَ ‏\"‏ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ غَرِيبٌ ‏.‏ وَقَدْ تَكَلَّمَ بَعْضُ أَهْلِ الْعِلْمِ فِي عَبْدِ الرَّحْمَنِ بْنِ أَبِي بَكْرِ بْنِ أَبِي مُلَيْكَةَ الْمُلَيْكِيِّ مِنْ قِبَلِ حِفْظِهِ ‏.‏ وَزُرَارَةُ بْنُ مُصْعَبٍ هُوَ ابْنُ عَبْدِ الرَّحْمَنِ بْنِ عَوْفٍ وَهُوَ جَدُّ أَبِي مُصْعَبٍ الْمَدَنِيِّ ‏.‏",
+      "id": 2879,
+      "source": "packages/content/hadith/tirmidhi/45.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "baqarah-last-two-bukhari-66",
+      "practice": "Last two verses of al-Baqarah (Bukhari 66:31)",
+      "kind": "hadith",
+      "citation": "Bukhari 66:31",
+      "collection": "bukhari",
+      "reference": "66:31",
+      "english": "Narrated Abu Mas'ud: The Prophet (ﷺ) said, \"If somebody recited the last two Verses of Surat Al-Baqara at night, that will be sufficient for him",
+      "arabic": "حَدَّثَنَا أَبُو نُعَيْمٍ، حَدَّثَنَا سُفْيَانُ، عَنْ مَنْصُورٍ، عَنْ إِبْرَاهِيمَ، عَنْ عَبْدِ الرَّحْمَنِ بْنِ يَزِيدَ، عَنْ أَبِي مَسْعُودٍ ـ رضى الله عنه ـ قَالَ قَالَ النَّبِيُّ صلى الله عليه وسلم ‏ \"‏ مَنْ قَرَأَ بِالآيَتَيْنِ مِنْ آخِرِ سُورَةِ الْبَقَرَةِ فِي لَيْلَةٍ كَفَتَاهُ‏\"‏‏.‏",
+      "id": 5009,
+      "source": "packages/content/hadith/bukhari/66.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "baqarah-last-two-bukhari-64",
+      "practice": "Last two verses of al-Baqarah (Bukhari 64:59)",
+      "kind": "hadith",
+      "citation": "Bukhari 64:59",
+      "collection": "bukhari",
+      "reference": "64:59",
+      "english": "Narrated Abu Masud Al-Badri:Allah's Messenger (ﷺ) said, \"It is sufficient for one to recite the last two Verses of Surat-al-Baqara at night",
+      "arabic": "حَدَّثَنَا مُوسَى، حَدَّثَنَا أَبُو عَوَانَةَ، عَنِ الأَعْمَشِ، عَنْ إِبْرَاهِيمَ، عَنْ عَبْدِ الرَّحْمَنِ بْنِ يَزِيدَ، عَنْ عَلْقَمَةَ، عَنْ أَبِي مَسْعُودٍ الْبَدْرِيِّ ـ رضى الله عنه ـ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ الآيَتَانِ مِنْ آخِرِ سُورَةِ الْبَقَرَةِ مَنْ قَرَأَهُمَا فِي لَيْلَةٍ كَفَتَاهُ ‏\"‏‏.‏ قَالَ عَبْدُ الرَّحْمَنِ فَلَقِيتُ أَبَا مَسْعُودٍ وَهْوَ يَطُوفُ بِالْبَيْتِ، فَسَأَلْتُهُ فَحَدَّثَنِيهِ‏.‏",
+      "id": 4008,
+      "source": "packages/content/hadith/bukhari/64.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "baqarah-last-two-muslim",
+      "practice": "Last two verses of al-Baqarah (Muslim)",
+      "kind": "hadith",
+      "citation": "Muslim 6:306",
+      "collection": "muslim",
+      "reference": "6:306",
+      "english": "Abd al-Rahman b. Yazid reported:I met Abu Mas'ud near the House (Ka'ba) and said to him: A hadith has been conveyed to me on your authority about the two (concluding verses of Surah al-Baqara. He said: Yes. The Messenger of Allah (ﷺ) (in fact) said: Anyone who recites the two verses at the end of Surah al-Baqara at night, they would suffice for him",
+      "arabic": "وَحَدَّثَنَا أَحْمَدُ بْنُ يُونُسَ، حَدَّثَنَا زُهَيْرٌ، حَدَّثَنَا مَنْصُورٌ، عَنْ إِبْرَاهِيمَ، عَنْ عَبْدِ الرَّحْمَنِ، بْنِ يَزِيدَ قَالَ لَقِيتُ أَبَا مَسْعُودٍ عِنْدَ الْبَيْتِ فَقُلْتُ حَدِيثٌ بَلَغَنِي عَنْكَ فِي الآيَتَيْنِ فِي سُورَةِ الْبَقَرَةِ ‏.‏ فَقَالَ نَعَمْ ‏.‏ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ الآيَتَانِ مِنْ آخِرِ سُورَةِ الْبَقَرَةِ مَنْ قَرَأَهُمَا فِي لَيْلَةٍ كَفَتَاهُ ‏\"‏ ‏.‏",
+      "id": 1878,
+      "source": "packages/content/hadith/muslim/6.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "mulk-tirmidhi",
+      "practice": "Surah al-Mulk — thirty ayat that intercede (Tirmidhi)",
+      "kind": "hadith",
+      "citation": "Tirmidhi 45:17",
+      "collection": "tirmidhi",
+      "reference": "45:17",
+      "english": "Narrated Abu Hurairah:that the Prophet (ﷺ) said: \"Indeed there is a Surah in the Qur'an of thirty Ayat, which intercedes for a man until he is forgiven. It is [Surah] Tabarak Alladhi Biyadihil-Mulk",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ بَشَّارٍ، قَالَ حَدَّثَنَا مُحَمَّدُ بْنُ جَعْفَرٍ، قَالَ حَدَّثَنَا شُعْبَةُ، عَنْ قَتَادَةَ، عَنْ عَبَّاسٍ الْجُشَمِيِّ، عَنْ أَبِي هُرَيْرَةَ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ إِنَّ سُورَةً مِنَ الْقُرْآنِ ثَلاَثُونَ آيَةً شَفَعَتْ لِرَجُلٍ حَتَّى غُفِرَ لَهُ وَهِيَ سُورَةُ تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ ‏\"‏ ‏.‏ هَذَا حَدِيثٌ حَسَنٌ ‏.‏",
+      "id": 2891,
+      "source": "packages/content/hadith/tirmidhi/45.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "mulk-ibnmajah",
+      "practice": "Surah al-Mulk — thirty verses (Ibn Majah)",
+      "kind": "hadith",
+      "citation": "Ibn Majah 33:130",
+      "collection": "ibnmajah",
+      "reference": "33:130",
+      "english": "It was narrated from Abu Hurairah that the Prophet (ﷺ) said:\"There is a surah in the Qur'an, with thirty verses, which will intercede for its companion (the one who recites it) until he is forgiven: Tabarakal-ladhi bi yadihil mulk (Blessed is He in Whose Hand is the Dominion)",
+      "arabic": "حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا أَبُو أُسَامَةَ، عَنْ شُعْبَةَ، عَنْ قَتَادَةَ، عَنْ عَبَّاسٍ الْجُشَمِيِّ، عَنْ أَبِي هُرَيْرَةَ، عَنِ النَّبِيِّ ـ صلى الله عليه وسلم ـ قَالَ ‏\"‏ إِنَّ سُورَةً فِي الْقُرْآنِ ثَلاَثُونَ آيَةً شَفَعَتْ لِصَاحِبِهَا حَتَّى غُفِرَ لَهُ ‏{تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ}‏ ‏\"‏ ‏.‏",
+      "id": 3786,
+      "source": "packages/content/hadith/ibnmajah/33.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "kahf-ten-muslim",
+      "practice": "First ten verses of al-Kahf -> protected from the Dajjal (Muslim)",
+      "kind": "hadith",
+      "citation": "Muslim 6:311",
+      "collection": "muslim",
+      "reference": "6:311",
+      "english": "Abu Darda' reported Allah's Apostle (ﷺ) as saying:If anyone learns by heart the first ten verses of the Surah al-Kahf, he will be protected from the Dajjal",
+      "arabic": "وَحَدَّثَنَا مُحَمَّدُ بْنُ الْمُثَنَّى، حَدَّثَنَا مُعَاذُ بْنُ هِشَامٍ، حَدَّثَنِي أَبِي، عَنْ قَتَادَةَ، عَنْ سَالِمِ، بْنِ أَبِي الْجَعْدِ الْغَطَفَانِيِّ عَنْ مَعْدَانَ بْنِ أَبِي طَلْحَةَ الْيَعْمَرِيِّ، عَنْ أَبِي الدَّرْدَاءِ، أَنَّ النَّبِيَّ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنْ حَفِظَ عَشْرَ آيَاتٍ مِنْ أَوَّلِ سُورَةِ الْكَهْفِ عُصِمَ مِنَ الدَّجَّالِ ‏\"‏",
+      "id": 1883,
+      "source": "packages/content/hadith/muslim/6.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "kahf-ten-abudawud",
+      "practice": "Ten verses of al-Kahf -> protected from the Dajjal (Abu Dawud)",
+      "kind": "hadith",
+      "citation": "Abu Dawud 39:33",
+      "collection": "abudawud",
+      "reference": "39:33",
+      "english": "Abu al-Darda’ reported the prophet (ﷺ) as saying :If anyone memorizes ten verses from the beginning of surat al-Kahf, he will be protected from the trial of Dajjal (Antichrist). Abu Dawud said: In this way Hashim al-dastawa’I transmitted it from Qatadah, but he said : “If anyone memorizes the closing verses of surat al-Kahf.” Shu’bah narrated from Qatadah the words “from the end of al-Kahf",
+      "arabic": "حَدَّثَنَا حَفْصُ بْنُ عُمَرَ، حَدَّثَنَا هَمَّامٌ، حَدَّثَنَا قَتَادَةُ، عَنْ سَالِمِ بْنِ أَبِي الْجَعْدِ، عَنْ مَعْدَانَ بْنِ أَبِي طَلْحَةَ، عَنْ حَدِيثِ أَبِي الدَّرْدَاءِ، يَرْوِيهِ عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏\"‏ مَنْ حَفِظَ عَشْرَ آيَاتٍ مِنْ أَوَّلِ سُورَةِ الْكَهْفِ عُصِمَ مِنْ فِتْنَةِ الدَّجَّالِ ‏\"‏ ‏.‏ قَالَ أَبُو دَاوُدَ وَكَذَا قَالَ هِشَامٌ الدَّسْتَوَائِيُّ عَنْ قَتَادَةَ إِلاَّ أَنَّهُ قَالَ ‏\"‏ مَنْ حَفِظَ مِنْ خَوَاتِيمِ سُورَةِ الْكَهْفِ ‏\"‏ ‏.‏ وَقَالَ شُعْبَةُ عَنْ قَتَادَةَ ‏\"‏ مِنْ آخِرِ الْكَهْفِ ‏\"‏ ‏.‏",
+      "id": 4323,
+      "source": "packages/content/hadith/abudawud/39.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "istighfar-distress-abudawud",
+      "practice": "Istighfar -> a way out of every distress (Abu Dawud)",
+      "kind": "hadith",
+      "citation": "Abu Dawud 8:103",
+      "collection": "abudawud",
+      "reference": "8:103",
+      "english": "Narrated Abdullah ibn Abbas: The Prophet (ﷺ) said: If anyone continually asks pardon, Allah will appoint for him a way out of every distress, and a relief from every anxiety, and will provide for him from where he did not reckon",
+      "arabic": "حَدَّثَنَا هِشَامُ بْنُ عَمَّارٍ، حَدَّثَنَا الْوَلِيدُ بْنُ مُسْلِمٍ، حَدَّثَنَا الْحَكَمُ بْنُ مُصْعَبٍ، حَدَّثَنَا مُحَمَّدُ بْنُ عَلِيِّ بْنِ عَبْدِ اللَّهِ بْنِ عَبَّاسٍ، عَنْ أَبِيهِ، أَنَّهُ حَدَّثَهُ عَنِ ابْنِ عَبَّاسٍ، أَنَّهُ حَدَّثَهُ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَنْ لَزِمَ الاِسْتِغْفَارَ جَعَلَ اللَّهُ لَهُ مِنْ كُلِّ ضِيقٍ مَخْرَجًا وَمِنْ كُلِّ هَمٍّ فَرَجًا وَرَزَقَهُ مِنْ حَيْثُ لاَ يَحْتَسِبُ ‏\"‏ ‏.‏",
+      "id": 1518,
+      "source": "packages/content/hadith/abudawud/8.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "istighfar-distress-ibnmajah",
+      "practice": "Istighfar -> relief from every worry (Ibn Majah)",
+      "kind": "hadith",
+      "citation": "Ibn Majah 33:163",
+      "collection": "ibnmajah",
+      "reference": "33:163",
+      "english": "It was narrated from 'Abdullah bin 'Abbas that :the Messenger of Allah said: \"Whoever persists in asking for forgiveness, Allah will grant him relief from every worry, and a way out from every hardship, and will grant him provision from (sources) he could never imagine",
+      "arabic": "حَدَّثَنَا هِشَامُ بْنُ عَمَّارٍ، حَدَّثَنَا الْوَلِيدُ بْنُ مُسْلِمٍ، حَدَّثَنَا الْحَكَمُ بْنُ مُصْعَبٍ، عَنْ مُحَمَّدِ بْنِ عَلِيِّ بْنِ عَبْدِ اللَّهِ بْنِ عَبَّاسٍ، أَنَّهُ حَدَّثَهُ عَنْ عَبْدِ اللَّهِ بْنِ عَبَّاسٍ، قَالَ قَالَ رَسُولُ اللَّهِ ـ صلى الله عليه وسلم ـ ‏ \"‏ مَنْ لَزِمَ الاِسْتِغْفَارَ جَعَلَ اللَّهُ لَهُ مِنْ كُلِّ هَمٍّ فَرَجًا وَمِنْ كُلِّ ضِيقٍ مَخْرَجًا وَرَزَقَهُ مِنْ حَيْثُ لاَ يَحْتَسِبُ ‏\"‏ ‏.‏",
+      "id": 3819,
+      "source": "packages/content/hadith/ibnmajah/33.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "sayyid-istighfar-bukhari",
+      "practice": "Sayyid al-Istighfar (Bukhari)",
+      "kind": "hadith",
+      "citation": "Bukhari 80:3",
+      "collection": "bukhari",
+      "reference": "80:3",
+      "english": "Narrated Shaddad bin Aus:The Prophet (ﷺ) said \"The most superior way of asking for forgiveness from Allah is: 'Allahumma anta Rabbi la ilaha illa anta, Khalaqtani wa ana `Abduka, wa ana `ala `ahdika wa wa`dika mastata`tu, A`udhu bika min Sharri ma sana`tu, abu'u Laka bini`matika `alaiya, wa abu'u laka bidhanbi faghfir lee fa innahu la yaghfiru adhdhunuba illa anta.\" The Prophet (ﷺ) added. \"If somebody recites it during the day with firm faith in it, and dies on the same day before the evening, he will be from the people of Paradise; and if somebody recites it at night with firm faith in it, and dies before the morning, he will be from the people of Paradise",
+      "arabic": "حَدَّثَنَا أَبُو مَعْمَرٍ، حَدَّثَنَا عَبْدُ الْوَارِثِ، حَدَّثَنَا الْحُسَيْنُ، حَدَّثَنَا عَبْدُ اللَّهِ بْنُ بُرَيْدَةَ، عَنْ بُشَيْرِ بْنِ كَعْبٍ الْعَدَوِيِّ، قَالَ حَدَّثَنِي شَدَّادُ بْنُ أَوْسٍ ـ رضى الله عنه ـ عَنِ النَّبِيِّ صلى الله عليه وسلم ‏\"‏ سَيِّدُ الاِسْتِغْفَارِ أَنْ تَقُولَ اللَّهُمَّ أَنْتَ رَبِّي، لاَ إِلَهَ إِلاَّ أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَىَّ وَأَبُوءُ لَكَ بِذَنْبِي، فَاغْفِرْ لِي، فَإِنَّهُ لاَ يَغْفِرُ الذُّنُوبَ إِلاَّ أَنْتَ ‏\"‏‏.‏ قَالَ ‏\"‏ وَمَنْ قَالَهَا مِنَ النَّهَارِ مُوقِنًا بِهَا، فَمَاتَ مِنْ يَوْمِهِ قَبْلَ أَنْ يُمْسِيَ، فَهُوَ مِنْ أَهْلِ الْجَنَّةِ، وَمَنْ قَالَهَا مِنَ اللَّيْلِ وَهْوَ مُوقِنٌ بِهَا، فَمَاتَ قَبْلَ أَنْ يُصْبِحَ، فَهْوَ مِنْ أَهْلِ الْجَنَّةِ ‏\"‏‏.‏",
+      "id": 6306,
+      "source": "packages/content/hadith/bukhari/80.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "sayyid-istighfar-tirmidhi",
+      "practice": "Sayyid al-Istighfar — chief of supplications for forgiveness (Tirmidhi)",
+      "kind": "hadith",
+      "citation": "Tirmidhi 48:24",
+      "collection": "tirmidhi",
+      "reference": "48:24",
+      "english": "Shaddad bin Aws narrated that:The Prophet (ﷺ) said to him: “Should I not direct you to the chief of supplications for forgiveness? ‘O Allah, You are my Lord, there is none worthy of worship except You, You created me and I am Your slave. I am adhering to Your covenant and Your promise as much as I am able to, I seek refuge in You from the evil of what I have done. I admit to You your blessings upon me, and I admit to my sins. So forgive me, for there is none who can forgive sins except You (Allāhumma anta rabbī lā ilāha illā anta, khalaqtanī wa ana `abduka, wa ana `alā `ahdika wa wa`dika ma-staṭa`tu. A`ūdhu bika min sharri ma ṣana`tu, wa abū'u ilayka bini`matika `alayya wa a`tarifu bidhunūbī faghfirlī dhunūbī innahu lā yaghfirudh-dhunūba illā ant).’ None of you says it when he reaches the evening, and a decree comes upon him before he reaches morning, except that Paradise becomes obligatory upon him. And none says it when he reaches the morning, and a decree comes upon him before he reaches evening, except that Paradise becomes obligatory for him.”",
+      "arabic": "حَدَّثَنَا الْحُسَيْنُ بْنُ حُرَيْثٍ، حَدَّثَنَا عَبْدُ الْعَزِيزِ بْنُ أَبِي حَازِمٍ، عَنْ كَثِيرِ بْنِ زَيْدٍ، عَنْ عُثْمَانَ بْنِ رَبِيعَةَ، عَنْ شَدَّادِ بْنِ أَوْسٍ، رضى الله عنه أَنَّ النَّبِيَّ صلى الله عليه وسلم قَالَ لَهُ ‏ \"‏ أَلاَ أَدُلُّكَ عَلَى سَيِّدِ الاِسْتِغْفَارِ اللَّهُمَّ أَنْتَ رَبِّي لاَ إِلَهَ إِلاَّ أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ وَأَبُوءُ إِلَيْكَ بِنِعْمَتِكَ عَلَىَّ وَأَعْتَرِفُ بِذُنُوبِي فَاغْفِرْ لِي ذُنُوبِي إِنَّهُ لاَ يَغْفِرُ الذُّنُوبَ إِلاَّ أَنْتَ ‏.‏ لاَ يَقُولُهَا أَحَدُكُمْ حِينَ يُمْسِي فَيَأْتِي عَلَيْهِ قَدَرٌ قَبْلَ أَنْ يُصْبِحَ إِلاَّ وَجَبَتْ لَهُ الْجَنَّةُ وَلاَ يَقُولُهَا حِينَ يُصْبِحُ فَيَأْتِي عَلَيْهِ قَدَرٌ قَبْلَ أَنْ يُمْسِيَ إِلاَّ وَجَبَتْ لَهُ الْجَنَّةُ ‏\"‏ ‏.‏ قَالَ وَفِي الْبَابِ عَنْ أَبِي هُرَيْرَةَ وَابْنِ عُمَرَ وَابْنِ مَسْعُودٍ وَابْنِ أَبْزَى وَبُرَيْدَةَ رضى الله عنهم ‏.‏ قَالَ وَهَذَا حَدِيثٌ حَسَنٌ غَرِيبٌ ‏.‏ وَعَبْدُ الْعَزِيزِ بْنُ أَبِي حَازِمٍ هُوَ ابْنُ أَبِي حَازِمٍ الزَّاهِدِ ‏.‏ وَقَدْ رُوِيَ هَذَا الْحَدِيثُ مِنْ غَيْرِ هَذَا الْوَجْهِ عَنْ شَدَّادِ بْنِ أَوْسٍ رضى الله عنه ‏.‏",
+      "id": 3393,
+      "source": "packages/content/hadith/tirmidhi/48.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَفِي الْبَابِ",
+          "why": "a 'and in the chapter' cross-reference follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَقَدْ رُوِيَ",
+          "why": "a variant-narration note follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "prophet-70x-bukhari",
+      "practice": "The Prophet's own istighfar — more than seventy times a day (Bukhari)",
+      "kind": "hadith",
+      "citation": "Bukhari 80:4",
+      "collection": "bukhari",
+      "reference": "80:4",
+      "english": "Narrated Abu Huraira:I heard Allah's Messenger (ﷺ) saying.\" By Allah! I ask for forgiveness from Allah and turn to Him in repentance more than seventy times a day",
+      "arabic": "حَدَّثَنَا أَبُو الْيَمَانِ، أَخْبَرَنَا شُعَيْبٌ، عَنِ الزُّهْرِيِّ، قَالَ أَخْبَرَنِي أَبُو سَلَمَةَ بْنُ عَبْدِ الرَّحْمَنِ، قَالَ قَالَ أَبُو هُرَيْرَةَ سَمِعْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ ‏ \"‏ وَاللَّهِ إِنِّي لأَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ فِي الْيَوْمِ أَكْثَرَ مِنْ سَبْعِينَ مَرَّةً ‏\"‏‏.‏",
+      "id": 6307,
+      "source": "packages/content/hadith/bukhari/80.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "prophet-70x-tirmidhi",
+      "practice": "The Prophet's own istighfar — seventy times a day (Tirmidhi)",
+      "kind": "hadith",
+      "citation": "Tirmidhi 47:311",
+      "collection": "tirmidhi",
+      "reference": "47:311",
+      "english": "Narrated Az-Zuhri:from Abu Salamah, from Abu Hurairah [may Allah be pleased with him] (regarding): 'And seek forgiveness for your sins, and also for the believing men and women (47:19).' That the Messenger of Allah (ﷺ) said: \"Indeed I ask Allah for forgiveness seventy times a day",
+      "arabic": "حَدَّثَنَا عَبْدُ بْنُ حُمَيْدٍ، حَدَّثَنَا عَبْدُ الرَّزَّاقِ، أَخْبَرَنَا مَعْمَرٌ، عَنِ الزُّهْرِيِّ، عَنْ أَبِي سَلَمَةَ، عَنْ أَبِي هُرَيْرَةَ، رضى الله عنه ‏:‏ ‏(‏واسْتَغْفِرْ لِذَنْبِكَ وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ ‏)‏ فَقَالَ النَّبِيُّ صلى الله عليه وسلم ‏\"‏ إِنِّي لأَسْتَغْفِرُ اللَّهَ فِي الْيَوْمِ سَبْعِينَ مَرَّةً ‏\"‏ ‏.‏ قَالَ هَذَا حَدِيثٌ حَسَنٌ صَحِيحٌ ‏.‏ - وَيُرْوَى عَنْ أَبِي هُرَيْرَةَ أَيْضًا عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏\"‏ إِنِّي لأَسْتَغْفِرُ اللَّهَ فِي الْيَوْمِ مِائَةَ مَرَّةٍ ‏\"‏ ‏.‏ وَقَدْ رُوِيَ مِنْ غَيْرِ وَجْهٍ عَنِ النَّبِيِّ صلى الله عليه وسلم ‏\"‏ إِنِّي لأَسْتَغْفِرُ اللَّهَ فِي الْيَوْمِ مِائَةَ مَرَّةٍ ‏\"‏ ‏.‏ وَرَوَاهُ مُحَمَّدُ بْنُ عَمْرٍو عَنْ أَبِي سَلَمَةَ عَنْ أَبِي هُرَيْرَةَ ‏.‏",
+      "id": 3259,
+      "source": "packages/content/hadith/tirmidhi/47.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَقَدْ رُوِيَ",
+          "why": "a variant-narration note follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَرَوَاهُ",
+          "why": "a variant-narration note follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "not-confirmed-sinner",
+      "practice": "He who asks pardon is not a confirmed sinner",
+      "kind": "hadith",
+      "citation": "Abu Dawud 8:99",
+      "collection": "abudawud",
+      "reference": "8:99",
+      "english": "Narrated AbuBakr as-Siddiq: The Prophet (ﷺ) said: He who asks pardon is not a confirmed sinner, even if he returns to his sin seventy times a day",
+      "arabic": "حَدَّثَنَا النُّفَيْلِيُّ، حَدَّثَنَا مَخْلَدُ بْنُ يَزِيدَ، حَدَّثَنَا عُثْمَانُ بْنُ وَاقِدٍ الْعُمَرِيُّ، عَنْ أَبِي نُصَيْرَةَ، عَنْ مَوْلًى، لأَبِي بَكْرٍ الصِّدِّيقِ عَنْ أَبِي بَكْرٍ الصِّدِّيقِ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ مَا أَصَرَّ مَنِ اسْتَغْفَرَ وَإِنْ عَادَ فِي الْيَوْمِ سَبْعِينَ مَرَّةً ‏\"‏ ‏.‏",
+      "id": 1514,
+      "source": "packages/content/hadith/abudawud/8.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "charity-every-joint-56-198",
+      "practice": "Charity on every joint — good word, every step, removing harm (Bukhari 56:198)",
+      "kind": "hadith",
+      "citation": "Bukhari 56:198",
+      "collection": "bukhari",
+      "reference": "56:198",
+      "english": "Narrated Abu Huraira:Allah's Messenger (ﷺ) said, \"There is a (compulsory) Sadaqa (charity) to be given for every joint of the human body (as a sign of gratitude to Allah) everyday the sun rises. To judge justly between two persons is regarded as Sadaqa, and to help a man concerning his riding animal by helping him to ride it or by lifting his luggage on to it, is also regarded as Sadaqa, and (saying) a good word is also Sadaqa, and every step taken on one's way to offer the compulsory prayer (in the mosque) is also Sadaqa and to remove a harmful thing from the way is also Sadaqa",
+      "arabic": "حَدَّثَنِي إِسْحَاقُ، أَخْبَرَنَا عَبْدُ الرَّزَّاقِ، أَخْبَرَنَا مَعْمَرٌ، عَنْ هَمَّامٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ كُلُّ سُلاَمَى مِنَ النَّاسِ عَلَيْهِ صَدَقَةٌ كُلَّ يَوْمٍ تَطْلُعُ فِيهِ الشَّمْسُ، يَعْدِلُ بَيْنَ الاِثْنَيْنِ صَدَقَةٌ، وَيُعِينُ الرَّجُلَ عَلَى دَابَّتِهِ، فَيَحْمِلُ عَلَيْهَا، أَوْ يَرْفَعُ عَلَيْهَا مَتَاعَهُ صَدَقَةٌ، وَالْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ، وَكُلُّ خَطْوَةٍ يَخْطُوهَا إِلَى الصَّلاَةِ صَدَقَةٌ، وَيُمِيطُ الأَذَى عَنِ الطَّرِيقِ صَدَقَةٌ ‏\"‏‏.‏",
+      "id": 2989,
+      "source": "packages/content/hadith/bukhari/56.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "charity-every-joint-56-106",
+      "practice": "Charity obligatory every day on every joint (Bukhari 56:106)",
+      "kind": "hadith",
+      "citation": "Bukhari 56:106",
+      "collection": "bukhari",
+      "reference": "56:106",
+      "english": "Narrated Abu Huraira:The Prophet (ﷺ) said, \"Charity is obligatory everyday on every joint of a human being. If one helps a person in matters concerning his riding animal by helping him to ride it or by lifting his luggage on to it, all this will be regarded as charity. A good word, and every step one takes to offer the compulsory Congregational prayer, is regarded as charity; and guiding somebody on the road is regarded as charity",
+      "arabic": "حَدَّثَنِي إِسْحَاقُ بْنُ نَصْرٍ، حَدَّثَنَا عَبْدُ الرَّزَّاقِ، عَنْ مَعْمَرٍ، عَنْ هَمَّامٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ كُلُّ سُلاَمَى عَلَيْهِ صَدَقَةٌ كُلَّ يَوْمٍ، يُعِينُ الرَّجُلَ فِي دَابَّتِهِ يُحَامِلُهُ عَلَيْهَا أَوْ يَرْفَعُ عَلَيْهَا مَتَاعَهُ صَدَقَةٌ، وَالْكَلِمَةُ الطَّيِّبَةُ، وَكُلُّ خَطْوَةٍ يَمْشِيهَا إِلَى الصَّلاَةِ صَدَقَةٌ، وَدَلُّ الطَّرِيقِ صَدَقَةٌ ‏\"‏‏.‏",
+      "id": 2891,
+      "source": "packages/content/hadith/bukhari/56.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "charity-every-joint-53-17",
+      "practice": "Charity for every joint, every day the sun rises (Bukhari 53:17)",
+      "kind": "hadith",
+      "citation": "Bukhari 53:17",
+      "collection": "bukhari",
+      "reference": "53:17",
+      "english": "Narrated Abu Huraira:Allah's Messenger (ﷺ) said, \"There is a Sadaqa to be given for every joint of the human body; and for every day on which the sun rises there is a reward of a Sadaqa (i.e. charitable gift) for the one who establishes justice among people",
+      "arabic": "حَدَّثَنَا إِسْحَاقُ، أَخْبَرَنَا عَبْدُ الرَّزَّاقِ، أَخْبَرَنَا مَعْمَرٌ، عَنْ هَمَّامٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ كُلُّ سُلاَمَى مِنَ النَّاسِ عَلَيْهِ صَدَقَةٌ، كُلَّ يَوْمٍ تَطْلُعُ فِيهِ الشَّمْسُ يَعْدِلُ بَيْنَ النَّاسِ صَدَقَةٌ ‏\"‏‏.‏",
+      "id": 2707,
+      "source": "packages/content/hadith/bukhari/53.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "smile-charity",
+      "practice": "Your smiling in the face of your brother is charity",
+      "kind": "hadith",
+      "citation": "Tirmidhi 27:62",
+      "collection": "tirmidhi",
+      "reference": "27:62",
+      "english": "Abu Dharr narrated that the Messenger of Allah said :\"Your smiling in the face of your brother is charity, commanding good and forbidding evil is charity, your giving directions to a man lost in the land is charity for you. Your seeing for a man with bad sight is a charity for you, your removal of a rock, a thorn or a bone from the road is charity for you. Your pouring what remains from your bucket into the bucket of your brother is charity for you",
+      "arabic": "حَدَّثَنَا عَبَّاسُ بْنُ عَبْدِ الْعَظِيمِ الْعَنْبَرِيُّ، حَدَّثَنَا النَّضْرُ بْنُ مُحَمَّدٍ الْجُرَشِيُّ الْيَمَامِيُّ، حَدَّثَنَا عِكْرِمَةُ بْنُ عَمَّارٍ، حَدَّثَنَا أَبُو زُمَيْلٍ، عَنْ مَالِكِ بْنِ مَرْثَدٍ، عَنْ أَبِيهِ، عَنْ أَبِي ذَرٍّ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏ \"‏ تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ وَأَمْرُكَ بِالْمَعْرُوفِ وَنَهْيُكَ عَنِ الْمُنْكَرِ صَدَقَةٌ وَإِرْشَادُكَ الرَّجُلَ فِي أَرْضِ الضَّلاَلِ لَكَ صَدَقَةٌ وَبَصَرُكَ لِلرَّجُلِ الرَّدِيءِ الْبَصَرِ لَكَ صَدَقَةٌ وَإِمَاطَتُكَ الْحَجَرَ وَالشَّوْكَةَ وَالْعَظْمَ عَنِ الطَّرِيقِ لَكَ صَدَقَةٌ وَإِفْرَاغُكَ مِنْ دَلْوِكَ فِي دَلْوِ أَخِيكَ لَكَ صَدَقَةٌ ‏\"‏ ‏.‏ قَالَ وَفِي الْبَابِ عَنِ ابْنِ مَسْعُودٍ وَجَابِرٍ وَحُذَيْفَةَ وَعَائِشَةَ وَأَبِي هُرَيْرَةَ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ حَسَنٌ غَرِيبٌ ‏.‏ وَأَبُو زُمَيْلٍ اسْمُهُ سِمَاكُ بْنُ الْوَلِيدِ الْحَنَفِيُّ ‏.‏",
+      "id": 1956,
+      "source": "packages/content/hadith/tirmidhi/27.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَفِي الْبَابِ",
+          "why": "a 'and in the chapter' cross-reference follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "belittle-good",
+      "practice": "Don't consider anything insignificant — a cheerful countenance",
+      "kind": "hadith",
+      "citation": "Muslim 45:187",
+      "collection": "muslim",
+      "reference": "45:187",
+      "english": "Abu Dharr reported:Allah's Apostle (ﷺ) said to me: Don't consider anything insignificant out of good things even if it is that you meet your brother with a cheerful countenance",
+      "arabic": "حَدَّثَنِي أَبُو غَسَّانَ الْمِسْمَعِيُّ، حَدَّثَنَا عُثْمَانُ بْنُ عُمَرَ، حَدَّثَنَا أَبُو عَامِرٍ، - يَعْنِي الْخَزَّازَ - عَنْ أَبِي عِمْرَانَ الْجَوْنِيِّ، عَنْ عَبْدِ اللَّهِ بْنِ الصَّامِتِ، عَنْ أَبِي ذَرٍّ، قَالَ قَالَ لِيَ النَّبِيُّ صلى الله عليه وسلم ‏ \"‏ لاَ تَحْقِرَنَّ مِنَ الْمَعْرُوفِ شَيْئًا وَلَوْ أَنْ تَلْقَى أَخَاكَ بِوَجْهٍ طَلْقٍ ‏\"‏ ‏.‏",
+      "id": 6690,
+      "source": "packages/content/hadith/muslim/45.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "bone-from-road-abudawud",
+      "practice": "Removal of a bone from the road — the humblest branch of faith",
+      "kind": "hadith",
+      "citation": "Abu Dawud 42:81",
+      "collection": "abudawud",
+      "reference": "42:81",
+      "english": "Abu Hurairah reported the Messenger of Allah (May peace be upon him) as saying :Faith has over seventy branches, the most excellent of which is the declaration that there is no god but Allah, and the humblest of which is the removal of a bone from the road. And modesty is a branch of faith",
+      "arabic": "حَدَّثَنَا مُوسَى بْنُ إِسْمَاعِيلَ، حَدَّثَنَا حَمَّادٌ، أَخْبَرَنَا سُهَيْلُ بْنُ أَبِي صَالِحٍ، عَنْ عَبْدِ اللَّهِ بْنِ دِينَارٍ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ الإِيمَانُ بِضْعٌ وَسَبْعُونَ أَفْضَلُهَا قَوْلُ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَدْنَاهَا إِمَاطَةُ الْعَظْمِ عَنِ الطَّرِيقِ وَالْحَيَاءُ شُعْبَةٌ مِنَ الإِيمَانِ ‏\"‏ ‏.‏",
+      "id": 4676,
+      "source": "packages/content/hadith/abudawud/42.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "harm-from-road-muslim",
+      "practice": "Removal of something objectionable from the road (Muslim)",
+      "kind": "hadith",
+      "citation": "Muslim 5:71",
+      "collection": "muslim",
+      "reference": "5:71",
+      "english": "Abu Dharr reported:The Apostle of Allah (ﷺ) said: The deeds of my people, good and bad, were presented before me, and I found the removal of something objectionable from the road among their good deeds, and the sputum mucus left unburied in the mosque among their evil deeds",
+      "arabic": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ مُحَمَّدِ بْنِ أَسْمَاءَ الضُّبَعِيُّ، وَشَيْبَانُ بْنُ فَرُّوخَ، قَالاَ حَدَّثَنَا مَهْدِيُّ بْنُ مَيْمُونٍ، حَدَّثَنَا وَاصِلٌ، مَوْلَى أَبِي عُيَيْنَةَ عَنْ يَحْيَى بْنِ عُقَيْلٍ، عَنْ يَحْيَى بْنِ يَعْمَرَ، عَنْ أَبِي الأَسْوَدِ الدِّيلِيِّ، عَنْ أَبِي ذَرٍّ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏ \"‏ عُرِضَتْ عَلَىَّ أَعْمَالُ أُمَّتِي حَسَنُهَا وَسَيِّئُهَا فَوَجَدْتُ فِي مَحَاسِنِ أَعْمَالِهَا الأَذَى يُمَاطُ عَنِ الطَّرِيقِ وَوَجَدْتُ فِي مَسَاوِي أَعْمَالِهَا النُّخَاعَةَ تَكُونُ فِي الْمَسْجِدِ لاَ تُدْفَنُ ‏\"‏ ‏.‏",
+      "id": 1233,
+      "source": "packages/content/hadith/muslim/5.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "answer-muadhdhin",
+      "practice": "Answer the muadhdhin, then salawat, then ask al-Wasila",
+      "kind": "hadith",
+      "citation": "Muslim 4:13",
+      "collection": "muslim",
+      "reference": "4:13",
+      "english": "Abdullah b. Amr b. al-As reported Allah's Messenger (ﷺ) as saying:When you hear the Mu'adhdhin, repeat what he says, then invoke a blessing on me, for everyone who invokes a blessing on me will receive ten blessings from Allah; then beg from Allah al-Wasila for me, which is a rank in Paradise fitting for only one of Allah's servants, and I hope that I may be that one. If anyone who asks that I be given the Wasila, he will be assured of my intercession",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ سَلَمَةَ الْمُرَادِيُّ، حَدَّثَنَا عَبْدُ اللَّهِ بْنُ وَهْبٍ، عَنْ حَيْوَةَ، وَسَعِيدِ بْنِ أَبِي أَيُّوبَ، وَغَيْرِهِمَا، عَنْ كَعْبِ بْنِ عَلْقَمَةَ، عَنْ عَبْدِ الرَّحْمَنِ بْنِ جُبَيْرٍ، عَنْ عَبْدِ اللَّهِ بْنِ عَمْرِو بْنِ الْعَاصِ، أَنَّهُ سَمِعَ النَّبِيَّ صلى الله عليه وسلم يَقُولُ ‏ \"‏ إِذَا سَمِعْتُمُ الْمُؤَذِّنَ فَقُولُوا مِثْلَ مَا يَقُولُ ثُمَّ صَلُّوا عَلَىَّ فَإِنَّهُ مَنْ صَلَّى عَلَىَّ صَلاَةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا ثُمَّ سَلُوا اللَّهَ لِيَ الْوَسِيلَةَ فَإِنَّهَا مَنْزِلَةٌ فِي الْجَنَّةِ لاَ تَنْبَغِي إِلاَّ لِعَبْدٍ مِنْ عِبَادِ اللَّهِ وَأَرْجُو أَنْ أَكُونَ أَنَا هُوَ فَمَنْ سَأَلَ لِيَ الْوَسِيلَةَ حَلَّتْ لَهُ الشَّفَاعَةُ ‏\"‏ ‏.‏",
+      "id": 849,
+      "source": "packages/content/hadith/muslim/4.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "visit-sick-tirmidhi",
+      "practice": "Visiting the sick -> seventy thousand angels",
+      "kind": "hadith",
+      "citation": "Tirmidhi 10:5",
+      "collection": "tirmidhi",
+      "reference": "10:5",
+      "english": "Thuwair [and he is Ibn Abi Fakhitah] narrated that :His father said: \"Ali took me by the hand and said: 'Come with us to pay a visit to Al-Hasan.' So we found that Abu Musa was with him.' Ali - peace be upon him - said: 'O Abu Musa! Did you come to visit (the sick) or merely (stop by to) visit?' He said: 'No, to visit (the sick).' So Ali said: 'I heard the Messenger of Allah saying: \"No Muslim visits (the sick) Muslims in the morning, except that sevety-thousand angels, sent Salat upon him until the evening, and he does not visit at night except that seventy thousand angels sent Salat upon him until the morning, and there will be a garden for him in Paradise",
+      "arabic": "حَدَّثَنَا أَحْمَدُ بْنُ مَنِيعٍ، حَدَّثَنَا الْحُسَيْنُ بْنُ مُحَمَّدٍ، حَدَّثَنَا إِسْرَائِيلُ، عَنْ ثُوَيْرٍ، هُوَ ابْنُ أَبِي فَاخِتَةَ عَنْ أَبِيهِ، قَالَ أَخَذَ عَلِيٌّ بِيَدِي قَالَ انْطَلِقْ بِنَا إِلَى الْحَسَنِ نَعُودُهُ ‏.‏ فَوَجَدْنَا عِنْدَهُ أَبَا مُوسَى فَقَالَ عَلِيٌّ عَلَيْهِ السَّلاَمُ أَعَائِدًا جِئْتَ يَا أَبَا مُوسَى أَمْ زَائِرًا فَقَالَ لاَ بَلْ عَائِدًا ‏.‏ فَقَالَ عَلِيٌّ سَمِعْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ ‏ \"‏ مَا مِنْ مُسْلِمٍ يَعُودُ مُسْلِمًا غُدْوَةً إِلاَّ صَلَّى عَلَيْهِ سَبْعُونَ أَلْفَ مَلَكٍ حَتَّى يُمْسِيَ وَإِنْ عَادَهُ عَشِيَّةً إِلاَّ صَلَّى عَلَيْهِ سَبْعُونَ أَلْفَ مَلَكٍ حَتَّى يُصْبِحَ وَكَانَ لَهُ خَرِيفٌ فِي الْجَنَّةِ ‏\"‏ ‏.‏ قَالَ أَبُو عِيسَى هَذَا حَدِيثٌ حَسَنٌ غَرِيبٌ وَقَدْ رُوِيَ عَنْ عَلِيٍّ هَذَا الْحَدِيثُ مِنْ غَيْرِ وَجْهٍ مِنْهُمْ مَنْ وَقَفَهُ وَلَمْ يَرْفَعْهُ ‏.‏ وَأَبُو فَاخِتَةَ اسْمُهُ سَعِيدُ بْنُ عِلاَقَةَ ‏.‏",
+      "id": 969,
+      "source": "packages/content/hadith/tirmidhi/10.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "هَذَا حَدِيثٌ",
+          "why": "a grading verdict (hadha hadithun ...) follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "وَقَدْ رُوِيَ",
+          "why": "a variant-narration note follows the matn"
+        },
+        {
+          "field": "arabic",
+          "marker": "مَنْ وَقَفَهُ وَلَمْ يَرْفَعْهُ",
+          "why": "the collector himself records that some narrators reported this MAWQUF (a Companion's own words), not marfu' to the Prophet"
+        }
+      ]
+    },
+    {
+      "key": "visit-sick-abudawud",
+      "practice": "Visiting the sick (Abu Dawud 21:10 — the reference the editor flagged)",
+      "kind": "hadith",
+      "citation": "Abu Dawud 21:10",
+      "collection": "abudawud",
+      "reference": "21:10",
+      "english": "Narrated 'Ali:If a man visits a patient in the evening, seventy thousand angels come along with him seeking forgiveness from Allah for him till the morning, and he will have a garden in the Paradise",
+      "arabic": "حَدَّثَنَا مُحَمَّدُ بْنُ كَثِيرٍ، أَخْبَرَنَا شُعْبَةُ، عَنِ الْحَكَمِ، عَنْ عَبْدِ اللَّهِ بْنِ نَافِعٍ، عَنْ عَلِيٍّ، قَالَ مَا مِنْ رَجُلٍ يَعُودُ مَرِيضًا مُمْسِيًا إِلاَّ خَرَجَ مَعَهُ سَبْعُونَ أَلْفَ مَلَكٍ يَسْتَغْفِرُونَ لَهُ حَتَّى يُصْبِحَ وَكَانَ لَهُ خَرِيفٌ فِي الْجَنَّةِ وَمَنْ أَتَاهُ مُصْبِحًا خَرَجَ مَعَهُ سَبْعُونَ أَلْفَ مَلَكٍ يَسْتَغْفِرُونَ لَهُ حَتَّى يُمْسِيَ وَكَانَ لَهُ خَرِيفٌ فِي الْجَنَّةِ ‏.‏",
+      "id": 3098,
+      "source": "packages/content/hadith/abudawud/21.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "janazah-qirat-bukhari",
+      "practice": "Janazah -> one qirat / two qirats (Bukhari 23:81)",
+      "kind": "hadith",
+      "citation": "Bukhari 23:81",
+      "collection": "bukhari",
+      "reference": "23:81",
+      "english": "Narrated Abu Huraira:that Allah's Messenger (ﷺ) said, \"Whoever attends the funeral procession till he offers the funeral prayer for it, will get a reward equal to one Qirat, and whoever accompanies it till burial, will get a reward equal to two Qirats.\" It was asked, \"What are two Qirats?\" He replied, \"Like two huge mountains",
+      "arabic": "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ مَسْلَمَةَ، قَالَ قَرَأْتُ عَلَى ابْنِ أَبِي ذِئْبٍ عَنْ سَعِيدِ بْنِ أَبِي سَعِيدٍ الْمَقْبُرِيِّ، عَنْ أَبِيهِ، أَنَّهُ سَأَلَ أَبَا هُرَيْرَةَ ـ رضى الله عنه ـ فَقَالَ سَمِعْتُ النَّبِيَّ صلى الله عليه وسلم‏.‏ حَدَّثَنَا أَحْمَدُ بْنُ شَبِيبِ بْنِ سَعِيدٍ، قَالَ حَدَّثَنِي أَبِي، حَدَّثَنَا يُونُسُ، قَالَ ابْنُ شِهَابٍ وَحَدَّثَنِي عَبْدُ الرَّحْمَنِ الأَعْرَجُ، أَنَّ أَبَا هُرَيْرَةَ ـ رضى الله عنه ـ قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ مَنْ شَهِدَ الْجَنَازَةَ حَتَّى يُصَلِّيَ عَلَيْهَا فَلَهُ قِيرَاطٌ، وَمَنْ شَهِدَ حَتَّى تُدْفَنَ كَانَ لَهُ قِيرَاطَانِ ‏\"‏‏.‏ قِيلَ وَمَا الْقِيرَاطَانِ قَالَ ‏\"‏ مِثْلُ الْجَبَلَيْنِ الْعَظِيمَيْنِ ‏\"‏‏.‏",
+      "id": 1325,
+      "source": "packages/content/hadith/bukhari/23.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "janazah-uhud",
+      "practice": "Each qirat like Mount Uhud (Bukhari 2:40)",
+      "kind": "hadith",
+      "citation": "Bukhari 2:40",
+      "collection": "bukhari",
+      "reference": "2:40",
+      "english": "Narrated Abu Huraira: Allah's Messenger (ﷺ) said, \"(A believer) who accompanies the funeral procession of a Muslim out of sincere faith and hoping to attain Allah's reward and remains with it till the funeral prayer is offered and the burial ceremonies are over, he will return with a reward of two Qirats. Each Qirat is like the size of the (Mount) Uhud. He who offers the funeral prayer only and returns before the burial, will return with the reward of one Qirat only",
+      "arabic": "حَدَّثَنَا أَحْمَدُ بْنُ عَبْدِ اللَّهِ بْنِ عَلِيٍّ الْمَنْجُوفِيُّ، قَالَ حَدَّثَنَا رَوْحٌ، قَالَ حَدَّثَنَا عَوْفٌ، عَنِ الْحَسَنِ، وَمُحَمَّدٍ، عَنْ أَبِي هُرَيْرَةَ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ مَنِ اتَّبَعَ جَنَازَةَ مُسْلِمٍ إِيمَانًا وَاحْتِسَابًا، وَكَانَ مَعَهُ حَتَّى يُصَلَّى عَلَيْهَا، وَيَفْرُغَ مِنْ دَفْنِهَا، فَإِنَّهُ يَرْجِعُ مِنَ الأَجْرِ بِقِيرَاطَيْنِ، كُلُّ قِيرَاطٍ مِثْلُ أُحُدٍ، وَمَنْ صَلَّى عَلَيْهَا ثُمَّ رَجَعَ قَبْلَ أَنْ تُدْفَنَ فَإِنَّهُ يَرْجِعُ بِقِيرَاطٍ ‏\"‏‏.‏ تَابَعَهُ عُثْمَانُ الْمُؤَذِّنُ قَالَ حَدَّثَنَا عَوْفٌ عَنْ مُحَمَّدٍ عَنْ أَبِي هُرَيْرَةَ عَنِ النَّبِيِّ صلى الله عليه وسلم نَحْوَهُ‏.‏",
+      "id": 47,
+      "source": "packages/content/hadith/bukhari/2.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "janazah-muslim",
+      "practice": "Janazah qirats (Muslim)",
+      "kind": "hadith",
+      "citation": "Muslim 11:70",
+      "collection": "muslim",
+      "reference": "11:70",
+      "english": "Abu Huraira reported Allah's Apostle (ﷺ) as saying:He who offered prayer over the dead, but did not follow the bier, for him is the reward of one qirat, and he who followed it, for him is the reward of two qirats. It was asked what the qirats were. He said: The smaller amongst the two is equivalent to Uhud",
+      "arabic": "وَحَدَّثَنِي مُحَمَّدُ بْنُ حَاتِمٍ، حَدَّثَنَا بَهْزٌ، حَدَّثَنَا وُهَيْبٌ، حَدَّثَنِي سُهَيْلٌ، عَنْ أَبِيهِ، عَنْ أَبِي هُرَيْرَةَ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ ‏\"‏ مَنْ صَلَّى عَلَى جَنَازَةٍ وَلَمْ يَتْبَعْهَا فَلَهُ قِيرَاطٌ فَإِنْ تَبِعَهَا فَلَهُ قِيرَاطَانِ ‏\"‏ ‏.‏ قِيلَ وَمَا الْقِيرَاطَانِ قَالَ ‏\"‏ أَصْغَرُهُمَا مِثْلُ أُحُدٍ ‏\"‏ .‏",
+      "id": 2192,
+      "source": "packages/content/hadith/muslim/11.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "build-masjid",
+      "practice": "Building a masjid -> a house in Paradise",
+      "kind": "hadith",
+      "citation": "Muslim 5:29",
+      "collection": "muslim",
+      "reference": "5:29",
+      "english": "Ubaidullah al-Khaulini reported:'Uthman b. 'Affan listened to the opinion of the people (which was not favourable) when he rebuilt the mosque of the Messenger of Allah (ﷺ). Thereupon he said: You have not been fair to me for I have heard from the Messenger of Allah (ﷺ) saying: He who built a mosque for Allah, the Exalted, Allah would build for him a house in Paradise. Bukair said: I think he (the Holy Prophet) said: While he seeks the pleasure of Allah (by building the mosque). And in the narration of Ibn 'Isa (the words are):\" (a house) like that (mosque) in Paradise",
+      "arabic": "حَدَّثَنِي هَارُونُ بْنُ سَعِيدٍ الأَيْلِيُّ، وَأَحْمَدُ بْنُ عِيسَى، قَالاَ حَدَّثَنَا ابْنُ وَهْبٍ، أَخْبَرَنِي عَمْرٌو، أَنَّ بُكَيْرًا، حَدَّثَهُ أَنَّ عَاصِمَ بْنَ عُمَرَ بْنِ قَتَادَةَ حَدَّثَهُ أَنَّهُ، سَمِعَ عُبَيْدَ اللَّهِ الْخَوْلاَنِيَّ، يَذْكُرُ أَنَّهُ سَمِعَ عُثْمَانَ بْنَ عَفَّانَ، عِنْدَ قَوْلِ النَّاسِ فِيهِ حِينَ بَنَى مَسْجِدَ الرَّسُولِ صلى الله عليه وسلم ‏.‏ إِنَّكُمْ قَدْ أَكْثَرْتُمْ وَإِنِّي سَمِعْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ ‏\"‏ مَنْ بَنَى مَسْجِدًا لِلَّهِ تَعَالَى - قَالَ بُكَيْرٌ حَسِبْتُ أَنَّهُ قَالَ - يَبْتَغِي بِهِ وَجْهَ اللَّهِ - بَنَى اللَّهُ لَهُ بَيْتًا فِي الْجَنَّةِ ‏\"‏ ‏.‏ وَقَالَ ابْنُ عِيسَى فِي رِوَايَتِهِ ‏\"‏ مِثْلَهُ فِي الْجَنَّةِ ‏\"‏ ‏.‏",
+      "id": 1189,
+      "source": "packages/content/hadith/muslim/5.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "most-regular-deeds",
+      "practice": "The most beloved deeds are the most constant, though few",
+      "kind": "hadith",
+      "citation": "Bukhari 81:54",
+      "collection": "bukhari",
+      "reference": "81:54",
+      "english": "Narrated `Aisha:The Prophet (ﷺ) was asked, \"What deeds are loved most by Allah?\" He said, \"The most regular constant deeds even though they may be few.\" He added, 'Don't take upon yourselves, except the deeds which are within your ability",
+      "arabic": "حَدَّثَنِي مُحَمَّدُ بْنُ عَرْعَرَةَ، حَدَّثَنَا شُعْبَةُ، عَنْ سَعْدِ بْنِ إِبْرَاهِيمَ، عَنْ أَبِي سَلَمَةَ، عَنْ عَائِشَةَ ـ رضى الله عنها ـ أَنَّهَا قَالَتْ سُئِلَ النَّبِيُّ صلى الله عليه وسلم أَىُّ الأَعْمَالِ أَحَبُّ إِلَى اللَّهِ قَالَ ‏\"‏ أَدْوَمُهَا وَإِنْ قَلَّ ‏\"‏‏.‏ وَقَالَ ‏\"‏ اكْلَفُوا مِنَ الأَعْمَالِ مَا تُطِيقُونَ ‏\"‏‏.‏",
+      "id": 6465,
+      "source": "packages/content/hadith/bukhari/81.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "salawat-formula-bukhari",
+      "practice": "The salawat itself — 'how do we invoke blessings on you?'",
+      "kind": "hadith",
+      "citation": "Bukhari 65:319",
+      "collection": "bukhari",
+      "reference": "65:319",
+      "english": "Narrated Ka`b bin Ujra:It was said, \"O Allah's Messenger (ﷺ)! We know how to greet you, but how to invoke Allah for you?\" The Prophet said, \"Say: Allahumma salli ala Muhammadin wa'ala `Ali Muhammaddin, kama sallaita 'ala all Ibrahim, innaka Hamidun Majid",
+      "arabic": "حَدَّثَنِي سَعِيدُ بْنُ يَحْيَى، حَدَّثَنَا أَبِي، حَدَّثَنَا مِسْعَرٌ، عَنِ الْحَكَمِ، عَنِ ابْنِ أَبِي لَيْلَى، عَنْ كَعْبِ بْنِ عُجْرَةَ ـ رضى الله عنه ـ قِيلَ يَا رَسُولَ اللَّهِ، أَمَّا السَّلاَمُ عَلَيْكَ فَقَدْ عَرَفْنَاهُ فَكَيْفَ الصَّلاَةُ قَالَ ‏ \"‏ قُولُوا اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ ‏\"‏‏.‏",
+      "id": 4797,
+      "source": "packages/content/hadith/bukhari/65.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "salawat-formula-ibnmajah",
+      "practice": "The salawat itself (Ka'b b. 'Ujrah)",
+      "kind": "hadith",
+      "citation": "Ibn Majah 5:102",
+      "collection": "ibnmajah",
+      "reference": "5:102",
+      "english": "It was narrated that Hakam said:“I heard Ibn Abi Laila say: ‘Ka’b bin ‘Ujrah met me and said: “Shall I not give you a gift? The Messenger of Allah (ﷺ) came out to us and we said: ‘We know what it means to send greetings on you, but what does it mean to send peace and blessings upon you?’ He said: ‘Say: Allahumma salli ‘ala Muhammadin wa ‘ala ali Muhammadin, kama sallayta ‘ala Ibrahima, innaka Hamidun Majid; Allahumma barik ‘ala Muhammadin wa ‘ala ali Muhammadin, kama barakta ‘ala Ibrahima, innaka Hamidun Majid (O Allah, send your grace, honour and mercy upon Muhammad and upon the family of Muhammad, as You sent Your grace, honour and mercy upon Ibrahim, You are indeed Praiseworthy, Most Glorious. O Allah, send Your blessings upon Muhammad and the family of Muhammad, as You sent Your blessings upon Ibrahim, You are indeed Praiseworthy, Most Glorious).’”",
+      "arabic": "حَدَّثَنَا عَلِيُّ بْنُ مُحَمَّدٍ، حَدَّثَنَا وَكِيعٌ، حَدَّثَنَا شُعْبَةُ، ح وَحَدَّثَنَا مُحَمَّدُ بْنُ بَشَّارٍ، حَدَّثَنَا عَبْدُ الرَّحْمَنِ بْنُ مَهْدِيٍّ، وَمُحَمَّدُ بْنُ جَعْفَرٍ، قَالاَ حَدَّثَنَا شُعْبَةُ، عَنِ الْحَكَمِ، قَالَ سَمِعْتُ ابْنَ أَبِي لَيْلَى، قَالَ لَقِيَنِي كَعْبُ بْنُ عُجْرَةَ فَقَالَ أَلاَ أُهْدِي لَكَ هَدِيَّةً خَرَجَ عَلَيْنَا رَسُولُ اللَّهِ ـ صلى الله عليه وسلم ـ فَقُلْنَا قَدْ عَرَفْنَا السَّلاَمَ عَلَيْكَ فَكَيْفَ الصَّلاَةُ عَلَيْكَ قَالَ ‏ \"‏ قُولُوا اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى، إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ. اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ ‏\"‏ ‏.‏",
+      "id": 904,
+      "source": "packages/content/hadith/ibnmajah/5.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "mulk-bedtime-tirmidhi",
+      "practice": "The Prophet's own bedtime recitation: as-Sajdah and al-Mulk",
+      "kind": "hadith",
+      "citation": "Tirmidhi 48:35",
+      "collection": "tirmidhi",
+      "reference": "48:35",
+      "english": "Jabir said:“The Prophet would not sleep until he reached Tanzil as-Sajdah and Tabarak.”",
+      "arabic": "حَدَّثَنَا هِشَامُ بْنُ يُونُسَ الْكُوفِيُّ، حَدَّثَنَا الْمُحَارِبِيُّ، عَنْ لَيْثٍ، عَنْ أَبِي الزُّبَيْرِ، عَنْ جَابِرٍ، رضى الله عنه قَالَ كَانَ النَّبِيُّ صلى الله عليه وسلم لاَ يَنَامُ حَتَّى يَقْرَأَ بِتَنْزِيلَ السَّجْدَةِ وَبِتَبَارَكَ ‏.‏ قَالَ أَبُو عِيسَى هَكَذَا رَوَى سُفْيَانُ وَغَيْرُ وَاحِدٍ هَذَا الْحَدِيثَ عَنْ لَيْثٍ عَنْ أَبِي الزُّبَيْرِ عَنْ جَابِرٍ عَنِ النَّبِيِّ صلى الله عليه وسلم نَحْوَهُ ‏.‏ وَرَوَى زُهَيْرٌ هَذَا الْحَدِيثَ عَنْ أَبِي الزُّبَيْرِ قَالَ قُلْتُ لَهُ سَمِعْتَهُ مِنْ جَابِرٍ قَالَ لَمْ أَسْمَعْهُ مِنْ جَابِرٍ إِنَّمَا سَمِعْتُهُ مِنْ صَفْوَانَ أَوِ ابْنِ صَفْوَانَ ‏.‏ وَرَوَى شَبَابَةُ عَنْ مُغِيرَةَ بْنِ مُسْلِمٍ عَنْ أَبِي الزُّبَيْرِ عَنْ جَابِرٍ نَحْوَ حَدِيثِ لَيْثٍ ‏.‏",
+      "id": 3404,
+      "source": "packages/content/hadith/tirmidhi/48.json",
+      "normalization": "none",
+      "warnings": [
+        {
+          "field": "arabic",
+          "marker": "قَالَ أَبُو عِيسَى",
+          "why": "Abu Isa's grading comment follows the matn"
+        }
+      ]
+    },
+    {
+      "key": "istighfar-100-muslim",
+      "practice": "The Prophet's istighfar — a hundred times a day",
+      "kind": "hadith",
+      "citation": "Muslim 48:52",
+      "collection": "muslim",
+      "reference": "48:52",
+      "english": "Al-Agharr al-Muzani, who was one amongst the Companions (of the Holy Prophet) reported that Allah's Messenger (ﷺ) said:There is (at times) some sort of shade upon my heart, and I seek forgiveness from Allah a hundred times a day",
+      "arabic": "حَدَّثَنَا يَحْيَى بْنُ يَحْيَى، وَقُتَيْبَةُ بْنُ سَعِيدٍ، وَأَبُو الرَّبِيعِ الْعَتَكِيُّ، جَمِيعًا عَنْ حَمَّادٍ، قَالَ يَحْيَى أَخْبَرَنَا حَمَّادُ بْنُ زَيْدٍ، عَنْ ثَابِتٍ، عَنْ أَبِي بُرْدَةَ، عَنِ الأَغَرِّ الْمُزَنِيِّ، - وَكَانَتْ لَهُ صُحْبَةٌ - أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ ‏ \"‏ إِنَّهُ لَيُغَانُ عَلَى قَلْبِي وَإِنِّي لأَسْتَغْفِرُ اللَّهَ فِي الْيَوْمِ مِائَةَ مَرَّةٍ ‏\"‏ ‏.‏",
+      "id": 6858,
+      "source": "packages/content/hadith/muslim/48.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "istighfar-100-ibnmajah",
+      "practice": "The Prophet's istighfar — a hundred times a day",
+      "kind": "hadith",
+      "citation": "Ibn Majah 33:159",
+      "collection": "ibnmajah",
+      "reference": "33:159",
+      "english": "It was narrated from Abu Hurairah that :the Messenger of Allah (saas) said: 'I seek the forgiveness of Allah and repent to Him one hundred times each day",
+      "arabic": "حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا مُحَمَّدُ بْنُ بِشْرٍ، عَنْ مُحَمَّدِ بْنِ عَمْرٍو، عَنْ أَبِي سَلَمَةَ، عَنْ أَبِي هُرَيْرَةَ، قَالَ قَالَ رَسُولُ اللَّهِ ـ صلى الله عليه وسلم ـ ‏ \"‏ إِنِّي لأَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ فِي الْيَوْمِ مِائَةَ مَرَّةٍ ‏\"‏ ‏.‏",
+      "id": 3815,
+      "source": "packages/content/hadith/ibnmajah/33.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "three-days-lifetime-nasai",
+      "practice": "Three days of each month = fasting a lifetime",
+      "kind": "hadith",
+      "citation": "Nasai 22:320",
+      "collection": "nasai",
+      "reference": "22:320",
+      "english": "It was narrated that Abu Dharr said:\"The Messenger of Allah said: 'Whoever fasts for three days of each month, he has fasted for a whole lifetime.' Then he said: Allah has spoken the truth in His book: Whoever brings a good deed shall have ten times the like thereof to his credit",
+      "arabic": "أَخْبَرَنَا عَلِيُّ بْنُ الْحَسَنِ اللاَّنِيُّ، بِالْكُوفَةِ عَنْ عَبْدِ الرَّحِيمِ، - وَهُوَ ابْنُ سُلَيْمَانَ - عَنْ عَاصِمٍ الأَحْوَلِ، عَنْ أَبِي عُثْمَانَ، عَنْ أَبِي ذَرٍّ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم ‏\"‏ مَنْ صَامَ ثَلاَثَةَ أَيَّامٍ مِنَ الشَّهْرِ فَقَدْ صَامَ الدَّهْرَ كُلَّهُ ‏\"‏ ‏.‏ ثُمَّ قَالَ ‏\"‏ صَدَقَ اللَّهُ فِي كِتَابِهِ ‏{‏ مَنْ جَاءَ بِالْحَسَنَةِ فَلَهُ عَشْرُ أَمْثَالِهَا ‏}‏ ‏\"‏ ‏.‏",
+      "id": 2409,
+      "source": "packages/content/hadith/nasai/22.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "three-days-any-dates",
+      "practice": "'Aishah: he did not mind which days of the month he fasted",
+      "kind": "hadith",
+      "citation": "Abu Dawud 14:141",
+      "collection": "abudawud",
+      "reference": "14:141",
+      "english": "Mu'adhah (al-'Adawiyyah) said:I asked 'Aishah: Would the Messenger of Allah (ﷺ) fast three days every month ? She replied: Yes. I asked: Which days in the month he used to fast ? She replied: He did not care which days of the month he fasted",
+      "arabic": "حَدَّثَنَا مُسَدَّدٌ، حَدَّثَنَا عَبْدُ الْوَارِثِ، عَنْ يَزِيدَ الرِّشْكِ، عَنْ مُعَاذَةَ، قَالَتْ قُلْتُ لِعَائِشَةَ أَكَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يَصُومُ مِنْ كُلِّ شَهْرٍ ثَلاَثَةَ أَيَّامٍ قَالَتْ نَعَمْ ‏.‏ قُلْتُ مِنْ أَىِّ شَهْرٍ كَانَ يَصُومُ قَالَتْ مَا كَانَ يُبَالِي مِنْ أَىِّ أَيَّامِ الشَّهْرِ كَانَ يَصُومُ ‏.‏",
+      "id": 2453,
+      "source": "packages/content/hadith/abudawud/14.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "three-days-monday-thursday",
+      "practice": "Umm Salamah: three days beginning Monday or Thursday",
+      "kind": "hadith",
+      "citation": "Abu Dawud 14:140",
+      "collection": "abudawud",
+      "reference": "14:140",
+      "english": "Narrated Umm Salamah, Ummul Mu'minin: Hunaydah al-Khuza'i reported on the authority of her mother who said: I entered upon Umm Salamah and asked her about fasting. She said: The Messenger of Allah (ﷺ) used to command me to fast three days every month beginning with Monday or Thursday",
+      "arabic": "حَدَّثَنَا زُهَيْرُ بْنُ حَرْبٍ، حَدَّثَنَا مُحَمَّدُ بْنُ فُضَيْلٍ، حَدَّثَنَا الْحَسَنُ بْنُ عُبَيْدِ اللَّهِ، عَنْ هُنَيْدَةَ الْخُزَاعِيِّ، عَنْ أُمِّهِ، قَالَتْ دَخَلْتُ عَلَى أُمِّ سَلَمَةَ فَسَأَلْتُهَا عَنِ الصِّيَامِ فَقَالَتْ كَانَ رَسُولُ اللَّهِ صلى الله عليه وسلم يَأْمُرُنِي أَنْ أَصُومَ ثَلاَثَةَ أَيَّامٍ مِنْ كُلِّ شَهْرٍ أَوَّلُهَا الاِثْنَيْنِ وَالْخَمِيسِ ‏.‏",
+      "id": 2452,
+      "source": "packages/content/hadith/abudawud/14.json",
+      "normalization": "none",
+      "warnings": []
+    },
+    {
+      "key": "ayat-al-kursi",
+      "practice": "Ayat al-Kursi",
+      "kind": "quran",
+      "citation": "Quran 2:255",
+      "reference": "2:255",
+      "textAr": "ٱللَّهُ لَآ إِلَـٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ ۚ لَا تَأْخُذُهُۥ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُۥ مَا فِى ٱلسَّمَـٰوَٰتِ وَمَا فِى ٱلْأَرْضِ ۗ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَىْءٍ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ ۚ وَسِعَ كُرْسِيُّهُ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۖ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا ۚ وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ",
+      "textEn": "Allah: none has the right to be worshiped except Him, the Ever-Living, All-Sustaining. Neither drowsiness overtakes Him nor sleep. To Him belongs all that is in the heavens and all that is on earth. Who is there that can intercede with Him except with His permission? He knows what was before them and what will be after them, while they encompass nothing of His knowledge, except what He wills. His Kursī [i.e., footstool] extends over the heavens and earth, and safeguarding of both does not weary Him, for He is the Most High, the Most Great.",
+      "textTranslit": "Allahu laaa ilaaha illaa Huwal Haiyul Qaiyoom; laa taakhuzuhoo sinatunw wa laa nawm; lahoo maa fissamaawaati wa maa fil ard; man zal lazee yashfa'u indahooo illaa bi-iznih; ya'lamu maa baina aydeehim wa mww khalfahum wa laa yuheetoona bishai'im min 'ilmihee illaa bimaa shaaa'; wasi'a Kursiyyuhus samaawaati wal arda wa laa ya'ooduho hifzuhumaa; wa Huwal Aliyyul 'Azeem",
+      "source": "packages/content/quran/verses/2.json"
+    },
+    {
+      "key": "baqarah-285",
+      "practice": "Al-Baqarah 285",
+      "kind": "quran",
+      "citation": "Quran 2:285",
+      "reference": "2:285",
+      "textAr": "ءَامَنَ ٱلرَّسُولُ بِمَآ أُنزِلَ إِلَيْهِ مِن رَّبِّهِۦ وَٱلْمُؤْمِنُونَ ۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰٓئِكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِّن رُّسُلِهِۦ ۚ وَقَالُوا۟ سَمِعْنَا وَأَطَعْنَا ۖ غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ ٱلْمَصِيرُ",
+      "textEn": "The Messenger believes in what has been sent down to him from his Lord, as do the believers. All of them believe in Allah, His angels, His Books, and His messengers, [saying], “We make no distinction between any of His messengers.” And they say, “We hear and obey. Grant us Your forgiveness, our Lord, and to You is the [final] destination.”",
+      "textTranslit": "Aamanar-Rasoolu bimaaa unzila ilaihi mir-Rabbihee walmu'minoon; kullun aamana billaahi wa Malaaa'ikathihee wa Kutubhihee wa Rusulih laa nufarriqu baina ahadim-mir-Rusulihee wa qaaloo sami'naa wa ata'naa ghufraanaka Rabbanaa wa ilaikal-maseer",
+      "source": "packages/content/quran/verses/2.json"
+    },
+    {
+      "key": "baqarah-286",
+      "practice": "Al-Baqarah 286",
+      "kind": "quran",
+      "citation": "Quran 2:286",
+      "reference": "2:286",
+      "textAr": "لَا يُكَلِّفُ ٱللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا ٱكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَآ إِن نَّسِينَآ أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَآ إِصْرًا كَمَا حَمَلْتَهُۥ عَلَى ٱلَّذِينَ مِن قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِۦ ۖ وَٱعْفُ عَنَّا وَٱغْفِرْ لَنَا وَٱرْحَمْنَآ ۚ أَنتَ مَوْلَىٰنَا فَٱنصُرْنَا عَلَى ٱلْقَوْمِ ٱلْكَـٰفِرِينَ",
+      "textEn": "Allah does not burden any soul greater than it can bear. For it is what it has earned, and against it is what it has incurred. “Our Lord, do not hold us accountable if we forget or fall into error. Our Lord, do not place on us such a burden as You have placed on those before us. Our Lord, do not burden us with that which we cannot bear. Pardon us, forgive us, and have mercy on us. You are our Protector, so give us victory over the disbelieving people.”",
+      "textTranslit": "Laa yukalliful-laahu nafsan illaa wus'ahaa; lahaa maa kasabat wa 'alaihaa maktasabat; Rabbanaa la tu'aakhiznaa in naseenaaa aw akhtaanaa; Rabbanaa wa laa tahmil-'alainaaa isran kamaa hamaltahoo 'alal-lazeena min qablinaa; Rabbanaa wa laa tuhammilnaa maa laa taaqata lanaa bih wa'fu 'annaa waghfir lanaa warhamnaa; Anta mawlaanaa fansurnaa 'alal qawmil kaafireen",
+      "source": "packages/content/quran/verses/2.json"
+    },
+    {
+      "key": "ikhlas-1",
+      "practice": "Al-Ikhlas 1",
+      "kind": "quran",
+      "citation": "Quran 112:1",
+      "reference": "112:1",
+      "textAr": "قُلْ هُوَ ٱللَّهُ أَحَدٌ",
+      "textEn": "Say: “He is Allah, the One;",
+      "textTranslit": "Qul huwal laahu ahad",
+      "source": "packages/content/quran/verses/112.json"
+    },
+    {
+      "key": "ikhlas-2",
+      "practice": "Al-Ikhlas 2",
+      "kind": "quran",
+      "citation": "Quran 112:2",
+      "reference": "112:2",
+      "textAr": "ٱللَّهُ ٱلصَّمَدُ",
+      "textEn": "Allah, the Eternal Refuge.",
+      "textTranslit": "Allah hus-samad",
+      "source": "packages/content/quran/verses/112.json"
+    },
+    {
+      "key": "ikhlas-3",
+      "practice": "Al-Ikhlas 3",
+      "kind": "quran",
+      "citation": "Quran 112:3",
+      "reference": "112:3",
+      "textAr": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+      "textEn": "He neither begets nor is He begotten,",
+      "textTranslit": "Lam yalid wa lam yoolad",
+      "source": "packages/content/quran/verses/112.json"
+    },
+    {
+      "key": "ikhlas-4",
+      "practice": "Al-Ikhlas 4",
+      "kind": "quran",
+      "citation": "Quran 112:4",
+      "reference": "112:4",
+      "textAr": "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
+      "textEn": "and there is none comparable to Him.”",
+      "textTranslit": "Wa lam yakul-lahu kufuwan ahad",
+      "source": "packages/content/quran/verses/112.json"
+    },
+    {
+      "key": "kahf-1",
+      "practice": "Al-Kahf 1",
+      "kind": "quran",
+      "citation": "Quran 18:1",
+      "reference": "18:1",
+      "textAr": "ٱلْحَمْدُ لِلَّهِ ٱلَّذِىٓ أَنزَلَ عَلَىٰ عَبْدِهِ ٱلْكِتَـٰبَ وَلَمْ يَجْعَل لَّهُۥ عِوَجَا ۜ",
+      "textEn": "All praise be to Allah Who has sent down upon His slave the Book, and has not allowed any crookedness therein,",
+      "textTranslit": "Alhamdu lillaahil lazeee anzala 'alaa 'abdihil kitaaba wa lam yaj'al lahoo 'iwajaa",
+      "source": "packages/content/quran/verses/18.json"
+    },
+    {
+      "key": "mulk-1",
+      "practice": "Al-Mulk 1",
+      "kind": "quran",
+      "citation": "Quran 67:1",
+      "reference": "67:1",
+      "textAr": "تَبَـٰرَكَ ٱلَّذِى بِيَدِهِ ٱلْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَىْءٍ قَدِيرٌ",
+      "textEn": "Blessed is He in Whose Hand is the dominion, and He is Most Capable of all things.",
+      "textTranslit": "Tabaarakal lazee biyadihil mulku wa huwa 'alaa kulli shai-in qadeer",
+      "source": "packages/content/quran/verses/67.json"
+    },
+    {
+      "key": "ghafir-1",
+      "practice": "Ghafir 40:1",
+      "kind": "quran",
+      "citation": "Quran 40:1",
+      "reference": "40:1",
+      "textAr": "حمٓ",
+      "textEn": "Hā Mīm.",
+      "textTranslit": "Haa-Meeem",
+      "source": "packages/content/quran/verses/40.json"
+    },
+    {
+      "key": "ghafir-2",
+      "practice": "Ghafir 40:2",
+      "kind": "quran",
+      "citation": "Quran 40:2",
+      "reference": "40:2",
+      "textAr": "تَنزِيلُ ٱلْكِتَـٰبِ مِنَ ٱللَّهِ ٱلْعَزِيزِ ٱلْعَلِيمِ",
+      "textEn": "The revelation of this Book is from Allah, the All-Mighty, the All-Knowing,",
+      "textTranslit": "Tanzeelul Kitaabi minal laahil Azeezil 'Aleem",
+      "source": "packages/content/quran/verses/40.json"
+    },
+    {
+      "key": "ghafir-3",
+      "practice": "Ghafir 40:3",
+      "kind": "quran",
+      "citation": "Quran 40:3",
+      "reference": "40:3",
+      "textAr": "غَافِرِ ٱلذَّنۢبِ وَقَابِلِ ٱلتَّوْبِ شَدِيدِ ٱلْعِقَابِ ذِى ٱلطَّوْلِ ۖ لَآ إِلَـٰهَ إِلَّا هُوَ ۖ إِلَيْهِ ٱلْمَصِيرُ",
+      "textEn": "the Forgiver of sin and Accepter of repentance, the Severe in punishment and Infinite in bounty. None has the right to be worshiped except Him. To Him is the final return.",
+      "textTranslit": "Ghaafiriz zambi wa qaabilit tawbi shadeedil 'iqaabi zit tawli laaa ilaaha illaa Huwa ilaihil maseer",
+      "source": "packages/content/quran/verses/40.json"
+    }
+  ],
+  "dropped": []
+}

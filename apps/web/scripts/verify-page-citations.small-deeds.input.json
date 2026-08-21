@@ -1,0 +1,682 @@
+{
+  "hadith": [
+    {
+      "key": "white-days",
+      "practice": "White days 13/14/15 = perpetual fast",
+      "collection": "abudawud",
+      "reference": "14:137",
+      "english": "to fast the days of the white (nights): thirteenth, fourteenth and fifteenth of the month. He said: This is like keeping perpetual fast"
+    },
+    {
+      "key": "white-days-tirmidhi",
+      "practice": "White days — the three named dates (Abu Dharr)",
+      "collection": "tirmidhi",
+      "reference": "8:80",
+      "english": "When you fast three days out of a month, then fast the thirteenth, fourteenth, and fifteenth"
+    },
+    {
+      "key": "six-shawwal",
+      "practice": "Ramadan + six of Shawwal",
+      "collection": "muslim",
+      "reference": "13:264",
+      "english": "He who observed the fast of Ramadan and then followed it with six (fasts) of Shawwal. it would be as if he fasted perpetually"
+    },
+    {
+      "key": "six-shawwal-abudawud",
+      "practice": "Six of Shawwal (Abu Dawud parallel)",
+      "collection": "abudawud",
+      "reference": "14:121",
+      "english": "If anyone fasts during Ramadan, then follows it with six days in Shawwal, it will be like a perpetual fast"
+    },
+    {
+      "key": "six-shawwal-ibnmajah",
+      "practice": "Six of Shawwal (Ibn Majah parallel)",
+      "collection": "ibnmajah",
+      "reference": "7:79",
+      "english": "Whoever fasts Ramadan then follows it with six days of Shawwal, it is as if he fasted for a lifetime"
+    },
+    {
+      "key": "fast-one-day-70yrs",
+      "practice": "Fasting one day for Allah's sake -> Fire kept seventy years away",
+      "collection": "bukhari",
+      "reference": "56:56",
+      "english": "Allah will keep his face away from the (Hell) fire for (a distance covered by a journey of) seventy years"
+    },
+    {
+      "key": "fast-one-day-muslim",
+      "practice": "Fasting one day (Muslim parallel)",
+      "collection": "muslim",
+      "reference": "13:217",
+      "english": "Allah would remove, because of this day, his face farther from the Fire (of Hell) to the extent of seventy years' distance"
+    },
+    {
+      "key": "ashura",
+      "practice": "Fasting Ashura -> expiates the previous year",
+      "collection": "ibnmajah",
+      "reference": "7:101",
+      "english": "will expiate for the sins of the previous year"
+    },
+    {
+      "key": "dhul-hijjah-ten",
+      "practice": "First ten days of Dhul Hijjah",
+      "collection": "bukhari",
+      "reference": "13:18",
+      "english": "No good deeds done on other days are superior to those done on these"
+    },
+    {
+      "key": "subhanallah-100",
+      "practice": "SubhanAllah wa bihamdihi x100 -> foam of the sea",
+      "collection": "bukhari",
+      "reference": "80:100",
+      "english": "Whoever says, 'Subhan Allah wa bihamdihi,' one hundred times a day, will be forgiven all his sins even if they were as much as the foam of the sea"
+    },
+    {
+      "key": "two-words-bukhari",
+      "practice": "Two words light on the tongue, heavy in the balance (Bukhari)",
+      "collection": "bukhari",
+      "reference": "80:101",
+      "english": "There are two expressions which are very easy for the tongue to say, but they are very heavy in the balance and are very dear to The Beneficent"
+    },
+    {
+      "key": "two-words-muslim",
+      "practice": "Two words (Muslim parallel)",
+      "collection": "muslim",
+      "reference": "48:41",
+      "english": "Two are the expressions which are light on the tongue, but heavy in scale, dear to the Compassionate One"
+    },
+    {
+      "key": "two-words-tirmidhi",
+      "practice": "Two words (Tirmidhi parallel — 'heavy on the Scale')",
+      "collection": "tirmidhi",
+      "reference": "48:98",
+      "english": "There are two statements that are light on the tongue, heavy on the Scale, and beloved to Ar-Ra"
+    },
+    {
+      "key": "two-words-ibnmajah",
+      "practice": "Two words (Ibn Majah parallel)",
+      "collection": "ibnmajah",
+      "reference": "33:150",
+      "english": "Two words which are light on the tongue and heavy in the Balance, and beloved to the Most Merciful"
+    },
+    {
+      "key": "tahlil-100-bukhari",
+      "practice": "Tahlil x100 (Bukhari 80:98)",
+      "collection": "bukhari",
+      "reference": "80:98",
+      "english": "one hundred times will get the same reward as given for manumitting ten slaves; and one hundred good deeds will be written in his accounts"
+    },
+    {
+      "key": "tahlil-100-bukhari-59",
+      "practice": "Tahlil x100 (Bukhari 59:102)",
+      "collection": "bukhari",
+      "reference": "59:102",
+      "english": "If one says one-hundred times in one day: \"None has the right to be worshipped but Allah, the Alone Who has no partners"
+    },
+    {
+      "key": "tahlil-100-muslim",
+      "practice": "Tahlil x100 (Muslim parallel)",
+      "collection": "muslim",
+      "reference": "48:38",
+      "english": "one hundred times every day there is a reward of emancipating ten slaves for him"
+    },
+    {
+      "key": "tahlil-100-ibnmajah",
+      "practice": "Tahlil x100 (Ibn Majah parallel)",
+      "collection": "ibnmajah",
+      "reference": "33:142",
+      "english": "it will be equivalent to him freeing ten slaves, and one hundered merits will be recorded for him"
+    },
+    {
+      "key": "tahlil-ten",
+      "practice": "Tahlil ten times = freeing four slaves",
+      "collection": "tirmidhi",
+      "reference": "48:184",
+      "english": "equal to freeing four slaves among the offspring of Isma`il"
+    },
+    {
+      "key": "date-palm-planted",
+      "practice": "Subhan Allah al-Azim wa bihamdih -> a date-palm planted in Paradise",
+      "collection": "tirmidhi",
+      "reference": "48:95",
+      "english": "a date-palm tree is planted for him in Paradise"
+    },
+    {
+      "key": "four-words-tree",
+      "practice": "Four words -> a tree planted for you in Paradise",
+      "collection": "ibnmajah",
+      "reference": "33:151",
+      "english": "Shall I not tell you of a plant that is better than this?"
+    },
+    {
+      "key": "umm-hani-100s",
+      "practice": "100 takbir + 100 tahmid + 100 tasbih (Umm Hani)",
+      "collection": "ibnmajah",
+      "reference": "33:154",
+      "english": "better than one hundred horses bridled and saddled"
+    },
+    {
+      "key": "salawat-ten-muslim",
+      "practice": "Salawat once -> ten (Muslim)",
+      "collection": "muslim",
+      "reference": "4:74",
+      "english": "He who blesses me once, Allah would bless him ten times"
+    },
+    {
+      "key": "salawat-ten-tirmidhi",
+      "practice": "Salawat once -> ten (Tirmidhi)",
+      "collection": "tirmidhi",
+      "reference": "3:33",
+      "english": "Whoever sends Salat upon me, Allah sends Salat upon him ten times"
+    },
+    {
+      "key": "salawat-abudawud",
+      "practice": "Salawat once -> ten (Abu Dawud)",
+      "collection": "abudawud",
+      "reference": "8:115",
+      "english": "If anyone invokes blessings on me once, Allah will bless him ten times"
+    },
+    {
+      "key": "one-letter-ten",
+      "practice": "One letter of the Quran -> ten like it",
+      "collection": "tirmidhi",
+      "reference": "45:36",
+      "english": "from Allah's Book, then he receives the reward from it, and the reward of ten the like of it"
+    },
+    {
+      "key": "ikhlas-third-bukhari",
+      "practice": "Al-Ikhlas = one third of the Quran (Bukhari)",
+      "collection": "bukhari",
+      "reference": "66:37",
+      "english": "is equal to one third of the Qur'an"
+    },
+    {
+      "key": "ikhlas-third-tirmidhi",
+      "practice": "Al-Ikhlas = a third of the Quran (Tirmidhi)",
+      "collection": "tirmidhi",
+      "reference": "45:25",
+      "english": "Qul Huwa Allahu Ahad is equal to a third of the Qur'an"
+    },
+    {
+      "key": "shall-i-not-tell-you",
+      "practice": "Shall I not tell you of the best of your deeds",
+      "collection": "ibnmajah",
+      "reference": "33:134",
+      "english": "Shall I not tell you of the best of your deeds"
+    },
+    {
+      "key": "tasbih-33-34",
+      "practice": "33/33/34 after every prescribed prayer",
+      "collection": "muslim",
+      "reference": "5:186",
+      "english": "the repeaters of which or the performers of which after every prescribed prayer will never be caused disappointment"
+    },
+    {
+      "key": "tasbih-33-33-33-tahlil",
+      "practice": "33/33/33 + tahlil to complete 100 -> foam of the sea",
+      "collection": "muslim",
+      "reference": "5:188",
+      "english": "his sins will be forgiven even If these are as abundant as the foam of the sea"
+    },
+    {
+      "key": "tahlil-after-prayer-bukhari",
+      "practice": "Tahlil after every compulsory prayer (Bukhari)",
+      "collection": "bukhari",
+      "reference": "10:236",
+      "english": "after every compulsory prayer"
+    },
+    {
+      "key": "ten-ten-ten",
+      "practice": "Ten/ten/ten after every prayer — easy, but few act on them",
+      "collection": "abudawud",
+      "reference": "43:293",
+      "english": "While they are easy, those who act upon them are few"
+    },
+    {
+      "key": "fajr-sunnah-muslim",
+      "practice": "Two rakahs of Fajr — dearer than the whole world (Muslim)",
+      "collection": "muslim",
+      "reference": "6:119",
+      "english": "They are dearer to me than the whole world"
+    },
+    {
+      "key": "fajr-sunnah-tirmidhi",
+      "practice": "Two rakahs of Fajr — better than the world and what is in it (Tirmidhi)",
+      "collection": "tirmidhi",
+      "reference": "2:269",
+      "english": "The two Rak'ah of Fajr are better than the world and what is in it"
+    },
+    {
+      "key": "twelve-rakah-muslim",
+      "practice": "Twelve rakahs -> a house in Paradise (Muslim)",
+      "collection": "muslim",
+      "reference": "6:124",
+      "english": "A house will be built in Paradise, for anyone who prays in a day and a night twelve rak'ahs"
+    },
+    {
+      "key": "twelve-rakah-muslim-126",
+      "practice": "Twelve rakahs (Muslim 6:126)",
+      "collection": "muslim",
+      "reference": "6:126",
+      "english": "twelve rak'ahs (of Sunan) every day, over and above the obligatory ones, Allah will build for him a house in Paradise"
+    },
+    {
+      "key": "twelve-rakah-breakdown",
+      "practice": "Twelve rakahs — the 4+2+2+2+2 breakdown (Nasai)",
+      "collection": "nasai",
+      "reference": "20:198",
+      "english": "Four before Zuhr and two after Zuhr, two rak'ahs after Maghrib, two rak'ahs after Isha' and two rak'ahs of Fajr"
+    },
+    {
+      "key": "twelve-rakah-breakdown-tirmidhi",
+      "practice": "Twelve rakahs breakdown (Tirmidhi 2:267)",
+      "collection": "tirmidhi",
+      "reference": "2:267",
+      "english": "Four Rak'ah before Zuhr, two Rak'ah after it, two Rak'ah after Maghrib, two Rak'ah after Isha, and two Rak'ah before Fajr"
+    },
+    {
+      "key": "two-cool-bukhari",
+      "practice": "The two cool prayers -> Paradise (Bukhari)",
+      "collection": "bukhari",
+      "reference": "9:50",
+      "english": "Whoever prays the two cool prayers (`Asr and Fajr) will go to Paradise"
+    },
+    {
+      "key": "two-cool-muslim",
+      "practice": "The two cool prayers (Muslim)",
+      "collection": "muslim",
+      "reference": "5:271",
+      "english": "He who observed two prayers at two cool (hours) would enter Paradise"
+    },
+    {
+      "key": "before-sunrise-sunset-nasai",
+      "practice": "Prayer before sunrise and before sunset -> never enter the Fire (Nasai)",
+      "collection": "nasai",
+      "reference": "5:24",
+      "english": "He will never enter the Fire, the one who prays before the sun rises and before it sets"
+    },
+    {
+      "key": "before-sunrise-sunset-abudawud",
+      "practice": "Prayer before sunrise and before sunset (Abu Dawud)",
+      "collection": "abudawud",
+      "reference": "2:37",
+      "english": "No one will enter Hell who has prayed before the rising of the sun and before its setting"
+    },
+    {
+      "key": "isha-fajr-congregation",
+      "practice": "Isha + Fajr in congregation = praying the whole night",
+      "collection": "muslim",
+      "reference": "5:324",
+      "english": "as if he prayed the whole night"
+    },
+    {
+      "key": "post-fajr-hajj-umrah",
+      "practice": "Fajr in jamaah + dhikr till sunrise + two rakahs -> Hajj and Umrah reward",
+      "collection": "tirmidhi",
+      "reference": "6:43",
+      "english": "then sits remembering Allah until the sun has risen, then he prays two Rak'ah, then for him is the reward like that of a Hajj and Umrah"
+    },
+    {
+      "key": "wudu-two-rakah",
+      "practice": "Wudu + two rakahs without distraction -> past sins forgiven",
+      "collection": "bukhari",
+      "reference": "4:25",
+      "english": "his past sins will be forgiven"
+    },
+    {
+      "key": "wudu-shahadah",
+      "practice": "Wudu done well + the shahadah -> the eight gates",
+      "collection": "muslim",
+      "reference": "2:20",
+      "english": "the eight gates of Paradise would be opened for him and he may enter by whichever of them he wishes"
+    },
+    {
+      "key": "ayat-kursi-sleep-bukhari-66",
+      "practice": "Ayat al-Kursi before sleep (Bukhari 66:32)",
+      "collection": "bukhari",
+      "reference": "66:32",
+      "english": "recite Ayat-al-Kursi, (2.255) for then there will be a guard from Allah who will protect you all night long, and Satan will not be able to come near you till dawn"
+    },
+    {
+      "key": "ayat-kursi-sleep-bukhari-59",
+      "practice": "Ayat al-Kursi before sleep (Bukhari 59:84)",
+      "collection": "bukhari",
+      "reference": "59:84",
+      "english": "for then a guardian from Allah will be guarding you, and Satan will not approach you till dawn"
+    },
+    {
+      "key": "ayat-kursi-master",
+      "practice": "Ayat al-Kursi — master of the ayat",
+      "collection": "tirmidhi",
+      "reference": "45:4",
+      "english": "in it there is an Ayah which is the master of the Ayat in the Qur'an; [it is] Ayat Al-Kursi"
+    },
+    {
+      "key": "ayat-kursi-morning-evening",
+      "practice": "Ayat al-Kursi morning and evening -> protected",
+      "collection": "tirmidhi",
+      "reference": "45:5",
+      "english": "and Ayat Al-Kursi when he reaches (gets up in) the morning, he will be protected by them until the evening"
+    },
+    {
+      "key": "baqarah-last-two-bukhari-66",
+      "practice": "Last two verses of al-Baqarah (Bukhari 66:31)",
+      "collection": "bukhari",
+      "reference": "66:31",
+      "english": "If somebody recited the last two Verses of Surat Al-Baqara at night, that will be sufficient for him"
+    },
+    {
+      "key": "baqarah-last-two-bukhari-64",
+      "practice": "Last two verses of al-Baqarah (Bukhari 64:59)",
+      "collection": "bukhari",
+      "reference": "64:59",
+      "english": "It is sufficient for one to recite the last two Verses of Surat-al-Baqara at night"
+    },
+    {
+      "key": "baqarah-last-two-muslim",
+      "practice": "Last two verses of al-Baqarah (Muslim)",
+      "collection": "muslim",
+      "reference": "6:306",
+      "english": "Anyone who recites the two verses at the end of Surah al-Baqara at night, they would suffice for him"
+    },
+    {
+      "key": "mulk-tirmidhi",
+      "practice": "Surah al-Mulk — thirty ayat that intercede (Tirmidhi)",
+      "collection": "tirmidhi",
+      "reference": "45:17",
+      "english": "Indeed there is a Surah in the Qur'an of thirty Ayat, which intercedes for a man until he is forgiven"
+    },
+    {
+      "key": "mulk-ibnmajah",
+      "practice": "Surah al-Mulk — thirty verses (Ibn Majah)",
+      "collection": "ibnmajah",
+      "reference": "33:130",
+      "english": "There is a surah in the Qur'an, with thirty verses, which will intercede for its companion (the one who recites it) until he is forgiven"
+    },
+    {
+      "key": "kahf-ten-muslim",
+      "practice": "First ten verses of al-Kahf -> protected from the Dajjal (Muslim)",
+      "collection": "muslim",
+      "reference": "6:311",
+      "english": "If anyone learns by heart the first ten verses of the Surah al-Kahf, he will be protected from the Dajjal"
+    },
+    {
+      "key": "kahf-ten-abudawud",
+      "practice": "Ten verses of al-Kahf -> protected from the Dajjal (Abu Dawud)",
+      "collection": "abudawud",
+      "reference": "39:33",
+      "english": "If anyone memorizes ten verses from the beginning of surat al-Kahf, he will be protected from the trial of Dajjal"
+    },
+    {
+      "key": "istighfar-distress-abudawud",
+      "practice": "Istighfar -> a way out of every distress (Abu Dawud)",
+      "collection": "abudawud",
+      "reference": "8:103",
+      "english": "If anyone continually asks pardon, Allah will appoint for him a way out of every distress, and a relief from every anxiety, and will provide for him from where he did not reckon"
+    },
+    {
+      "key": "istighfar-distress-ibnmajah",
+      "practice": "Istighfar -> relief from every worry (Ibn Majah)",
+      "collection": "ibnmajah",
+      "reference": "33:163",
+      "english": "Whoever persists in asking for forgiveness, Allah will grant him relief from every worry, and a way out from every hardship, and will grant him provision from (sources) he could never imagine"
+    },
+    {
+      "key": "sayyid-istighfar-bukhari",
+      "practice": "Sayyid al-Istighfar (Bukhari)",
+      "collection": "bukhari",
+      "reference": "80:3",
+      "english": "The most superior way of asking for forgiveness from Allah is"
+    },
+    {
+      "key": "sayyid-istighfar-tirmidhi",
+      "practice": "Sayyid al-Istighfar — chief of supplications for forgiveness (Tirmidhi)",
+      "collection": "tirmidhi",
+      "reference": "48:24",
+      "english": "Should I not direct you to the chief of supplications for forgiveness?"
+    },
+    {
+      "key": "prophet-70x-bukhari",
+      "practice": "The Prophet's own istighfar — more than seventy times a day (Bukhari)",
+      "collection": "bukhari",
+      "reference": "80:4",
+      "english": "I ask for forgiveness from Allah and turn to Him in repentance more than seventy times a day"
+    },
+    {
+      "key": "prophet-70x-tirmidhi",
+      "practice": "The Prophet's own istighfar — seventy times a day (Tirmidhi)",
+      "collection": "tirmidhi",
+      "reference": "47:311",
+      "english": "Indeed I ask Allah for forgiveness seventy times a day"
+    },
+    {
+      "key": "not-confirmed-sinner",
+      "practice": "He who asks pardon is not a confirmed sinner",
+      "collection": "abudawud",
+      "reference": "8:99",
+      "english": "He who asks pardon is not a confirmed sinner, even if he returns to his sin seventy times a day"
+    },
+    {
+      "key": "charity-every-joint-56-198",
+      "practice": "Charity on every joint — good word, every step, removing harm (Bukhari 56:198)",
+      "collection": "bukhari",
+      "reference": "56:198",
+      "english": "There is a (compulsory) Sadaqa (charity) to be given for every joint of the human body (as a sign of gratitude to Allah) everyday the sun rises"
+    },
+    {
+      "key": "charity-every-joint-56-106",
+      "practice": "Charity obligatory every day on every joint (Bukhari 56:106)",
+      "collection": "bukhari",
+      "reference": "56:106",
+      "english": "Charity is obligatory everyday on every joint of a human being"
+    },
+    {
+      "key": "charity-every-joint-53-17",
+      "practice": "Charity for every joint, every day the sun rises (Bukhari 53:17)",
+      "collection": "bukhari",
+      "reference": "53:17",
+      "english": "There is a Sadaqa to be given for every joint of the human body; and for every day on which the sun rises there is a reward of a Sadaqa"
+    },
+    {
+      "key": "smile-charity",
+      "practice": "Your smiling in the face of your brother is charity",
+      "collection": "tirmidhi",
+      "reference": "27:62",
+      "english": "Your smiling in the face of your brother is charity"
+    },
+    {
+      "key": "belittle-good",
+      "practice": "Don't consider anything insignificant — a cheerful countenance",
+      "collection": "muslim",
+      "reference": "45:187",
+      "english": "Don't consider anything insignificant out of good things even if it is that you meet your brother with a cheerful countenance"
+    },
+    {
+      "key": "bone-from-road-abudawud",
+      "practice": "Removal of a bone from the road — the humblest branch of faith",
+      "collection": "abudawud",
+      "reference": "42:81",
+      "english": "the humblest of which is the removal of a bone from the road"
+    },
+    {
+      "key": "harm-from-road-muslim",
+      "practice": "Removal of something objectionable from the road (Muslim)",
+      "collection": "muslim",
+      "reference": "5:71",
+      "english": "I found the removal of something objectionable from the road among their good deeds"
+    },
+    {
+      "key": "answer-muadhdhin",
+      "practice": "Answer the muadhdhin, then salawat, then ask al-Wasila",
+      "collection": "muslim",
+      "reference": "4:13",
+      "english": "When you hear the Mu'adhdhin, repeat what he says, then invoke a blessing on me"
+    },
+    {
+      "key": "visit-sick-tirmidhi",
+      "practice": "Visiting the sick -> seventy thousand angels",
+      "collection": "tirmidhi",
+      "reference": "10:5",
+      "english": "No Muslim visits (the sick) Muslims in the morning, except that sevety-thousand angels, sent Salat upon him until the evening"
+    },
+    {
+      "key": "visit-sick-abudawud",
+      "practice": "Visiting the sick (Abu Dawud 21:10 — the reference the editor flagged)",
+      "collection": "abudawud",
+      "reference": "21:10",
+      "english": "If a man visits a patient in the evening, seventy thousand angels come along with him seeking forgiveness from Allah for him till the morning"
+    },
+    {
+      "key": "janazah-qirat-bukhari",
+      "practice": "Janazah -> one qirat / two qirats (Bukhari 23:81)",
+      "collection": "bukhari",
+      "reference": "23:81",
+      "english": "Whoever attends the funeral procession till he offers the funeral prayer for it, will get a reward equal to one Qirat, and whoever accompanies it till burial, will get a reward equal to two Qirats"
+    },
+    {
+      "key": "janazah-uhud",
+      "practice": "Each qirat like Mount Uhud (Bukhari 2:40)",
+      "collection": "bukhari",
+      "reference": "2:40",
+      "english": "Qirat is like the size of the (Mount) Uhud"
+    },
+    {
+      "key": "janazah-muslim",
+      "practice": "Janazah qirats (Muslim)",
+      "collection": "muslim",
+      "reference": "11:70",
+      "english": "He who offered prayer over the dead, but did not follow the bier, for him is the reward of one qirat"
+    },
+    {
+      "key": "build-masjid",
+      "practice": "Building a masjid -> a house in Paradise",
+      "collection": "muslim",
+      "reference": "5:29",
+      "english": "Allah would build for him a house in Paradise"
+    },
+    {
+      "key": "most-regular-deeds",
+      "practice": "The most beloved deeds are the most constant, though few",
+      "collection": "bukhari",
+      "reference": "81:54",
+      "english": "The most regular constant deeds even though they may be few"
+    },
+    {
+      "key": "salawat-formula-bukhari",
+      "practice": "The salawat itself — 'how do we invoke blessings on you?'",
+      "collection": "bukhari",
+      "reference": "65:319",
+      "english": "Say: Allahumma salli ala Muhammadin wa'ala `Ali Muhammaddin, kama sallaita 'ala all Ibrahim, innaka Hamidun Majid"
+    },
+    {
+      "key": "salawat-formula-ibnmajah",
+      "practice": "The salawat itself (Ka'b b. 'Ujrah)",
+      "collection": "ibnmajah",
+      "reference": "5:102",
+      "english": "Say: Allahumma salli ‘ala Muhammadin wa ‘ala ali Muhammadin, kama sallayta ‘ala Ibrahima, innaka Hamidun Majid; Allahumma barik ‘ala Muhammadin wa ‘ala ali Muhammadin, kama barakta ‘ala Ibrahima, innaka Hamidun Majid (O Allah, send your grace, honour and mercy upon Muhammad and upon the family of Muhammad, as You sent Your grace, honour and mercy upon Ibrahim, You are indeed Praiseworthy, Most Glorious. O Allah, send Your blessings upon Muhammad and the family of Muhammad, as You sent Your blessings upon Ibrahim, You are indeed Praiseworthy, Most Glorious)"
+    },
+    {
+      "key": "mulk-bedtime-tirmidhi",
+      "practice": "The Prophet's own bedtime recitation: as-Sajdah and al-Mulk",
+      "collection": "tirmidhi",
+      "reference": "48:35",
+      "english": "The Prophet would not sleep until he reached Tanzil as-Sajdah and Tabarak.”"
+    },
+    {
+      "key": "istighfar-100-muslim",
+      "practice": "The Prophet's istighfar — a hundred times a day",
+      "collection": "muslim",
+      "reference": "48:52",
+      "english": "There is (at times) some sort of shade upon my heart, and I seek forgiveness from Allah a hundred times a day"
+    },
+    {
+      "key": "istighfar-100-ibnmajah",
+      "practice": "The Prophet's istighfar — a hundred times a day",
+      "collection": "ibnmajah",
+      "reference": "33:159",
+      "english": "I seek the forgiveness of Allah and repent to Him one hundred times each day"
+    },
+    {
+      "key": "three-days-lifetime-nasai",
+      "practice": "Three days of each month = fasting a lifetime",
+      "collection": "nasai",
+      "reference": "22:320",
+      "english": "Whoever fasts for three days of each month, he has fasted for a whole lifetime."
+    },
+    {
+      "key": "three-days-any-dates",
+      "practice": "'Aishah: he did not mind which days of the month he fasted",
+      "collection": "abudawud",
+      "reference": "14:141",
+      "english": "Which days in the month he used to fast ? She replied: He did not care which days of the month he fasted"
+    },
+    {
+      "key": "three-days-monday-thursday",
+      "practice": "Umm Salamah: three days beginning Monday or Thursday",
+      "collection": "abudawud",
+      "reference": "14:140",
+      "english": "used to command me to fast three days every month beginning with Monday or Thursday"
+    }
+  ],
+  "quran": [
+    {
+      "key": "ayat-al-kursi",
+      "practice": "Ayat al-Kursi",
+      "ref": "2:255"
+    },
+    {
+      "key": "baqarah-285",
+      "practice": "Al-Baqarah 285",
+      "ref": "2:285"
+    },
+    {
+      "key": "baqarah-286",
+      "practice": "Al-Baqarah 286",
+      "ref": "2:286"
+    },
+    {
+      "key": "ikhlas-1",
+      "practice": "Al-Ikhlas 1",
+      "ref": "112:1"
+    },
+    {
+      "key": "ikhlas-2",
+      "practice": "Al-Ikhlas 2",
+      "ref": "112:2"
+    },
+    {
+      "key": "ikhlas-3",
+      "practice": "Al-Ikhlas 3",
+      "ref": "112:3"
+    },
+    {
+      "key": "ikhlas-4",
+      "practice": "Al-Ikhlas 4",
+      "ref": "112:4"
+    },
+    {
+      "key": "kahf-1",
+      "practice": "Al-Kahf 1",
+      "ref": "18:1"
+    },
+    {
+      "key": "mulk-1",
+      "practice": "Al-Mulk 1",
+      "ref": "67:1"
+    },
+    {
+      "key": "ghafir-1",
+      "practice": "Ghafir 40:1",
+      "ref": "40:1"
+    },
+    {
+      "key": "ghafir-2",
+      "practice": "Ghafir 40:2",
+      "ref": "40:2"
+    },
+    {
+      "key": "ghafir-3",
+      "practice": "Ghafir 40:3",
+      "ref": "40:3"
+    }
+  ]
+}
