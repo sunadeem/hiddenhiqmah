@@ -1097,13 +1097,13 @@ const commonQuestions: CommonQuestion[] = [
     q: "Do animals or pets enter Paradise?",
     answer:
       "The Quran mentions that on the Day of Resurrection 'wild beasts are gathered' (Quran 81:5), and it describes birds in Paradise. But whether a particular pet is reunited with its owner is not settled by an explicit authentic text, and scholars have differed. What is certain is that the people of Paradise 'will have therein all what they wish for' (Quran 50:35); the specifics beyond the texts are left to Allah's knowledge.",
-    note: "The reunion of a specific pet is a scholarly-summary point, not an established narration — flagged for founder review.",
+    note: "The reunion of a specific pet is a point of scholarly discussion, not an established narration.",
   },
   {
     q: "What about people who never received the message?",
     answer:
       "Allah is perfectly just: 'nor do We punish until We have sent a messenger' (Quran 17:15). For those who lived where the message never authentically reached them — the people of the fatrah — the position of most scholars is that they will be tested on the Day of Judgement, and whoever obeys will enter Paradise. The exact mechanism is a matter of scholarly discussion; what is certain is that no one will be wronged.",
-    note: "The 'test on the Day of Judgement' position is a scholarly summary of the majority view — consult a scholar; flagged for founder review.",
+    note: "The 'test on the Day of Judgement' position is a summary of the majority view rather than a single explicit text — worth asking a scholar you trust about the specifics.",
   },
 ];
 

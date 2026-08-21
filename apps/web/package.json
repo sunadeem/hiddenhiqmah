@@ -8,13 +8,14 @@
     "dev": "next dev",
     "build:search-index": "node ../../scripts/build-hadith-index.mjs",
     "build": "next build",
-    "build:mobile": "BUILD_TARGET=mobile next build",
-    "build:mobile:prod": "set -a && . ./.env.prod && set +a && BUILD_TARGET=mobile next build",
+    "build:mobile": "node scripts/verify-no-internal-copy.mjs && BUILD_TARGET=mobile next build",
+    "build:mobile:prod": "set -a && . ./.env.prod && set +a && node scripts/verify-no-internal-copy.mjs && BUILD_TARGET=mobile next build",
     "start": "next start",
     "lint": "eslint",
     "verify:bundle": "node scripts/verify-bundle-env.mjs android/app/src/main/assets/public ios/App/App/public",
     "release:android": "pnpm build:mobile:prod && npx cap sync android && node scripts/verify-bundle-env.mjs android/app/src/main/assets/public && cd android && ./gradlew bundleRelease && cd .. && node scripts/verify-bundle-env.mjs android/app/build/outputs/bundle/release/app-release.aab",
-    "release:ios": "pnpm build:mobile:prod && npx cap sync ios && node scripts/verify-bundle-env.mjs ios/App/App/public"
+    "release:ios": "pnpm build:mobile:prod && npx cap sync ios && node scripts/verify-bundle-env.mjs ios/App/App/public",
+    "verify:copy": "node scripts/verify-no-internal-copy.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
