@@ -48,7 +48,87 @@ const PRAYER_LABEL: Record<PrayerKey, string> = {
   isha: "Isha",
 };
 
+// One constant serves both platforms. iOS loads `adhan.caf` from the app
+// bundle; Android resolves a sound by RESOURCE BASE NAME — AssetUtil strips the
+// extension — so the same string finds `res/raw/adhan.m4a`. That file is the
+// iOS 25s clip transcoded to AAC (298KB), so the two platforms sound identical
+// and the full 3-minute adhan.mp3 is not shipped twice.
 const ADHAN_SOUND = "adhan.caf";
+
+// ── Android notification channels ─────────────────────────────────────────
+//
+// From Android 8 the CHANNEL owns importance, sound and vibration — a
+// notification cannot override them, and a per-notification `sound` is ignored
+// entirely. Scheduling without a channelId (which is what this file did) drops
+// everything onto Capacitor's implicit "default" channel at IMPORTANCE_DEFAULT:
+// a sound, but NO heads-up banner and NO vibration. That asymmetry is why an
+// FCM push was noticed on a real device (its channel is importance 4) while
+// every prayer notification would have arrived silently in the shade.
+//
+// ⚠️ A channel is IMMUTABLE once created. createChannel on an existing id is
+// silently ignored, so importance/sound CANNOT be raised in place — hence the
+// _v1 suffix. To change one of these, bump the suffix to mint a new channel;
+// editing the values alone would be a no-op on every device that already ran
+// the app, which is the failure mode this comment exists to prevent.
+//
+// Splitting by kind is also what lets someone mute the daily verse without
+// muting the adhan — impossible while everything shared one channel.
+const CH_ADHAN = "hiqmah_adhan_v1";
+const CH_PRAYER = "hiqmah_prayer_v1";
+const CH_DAILY = "hiqmah_daily_v1";
+const CH_EVENTS = "hiqmah_events_v1";
+
+let channelsReady = false;
+
+/** Create the Android channels. No-op on iOS, and after the first success. */
+async function ensureChannels(): Promise<void> {
+  if (channelsReady) return;
+  if (Capacitor.getPlatform() !== "android") {
+    channelsReady = true;
+    return;
+  }
+  // NOTE: CH_ADHAN is deliberately absent. It is created natively in
+  // AdhanChannel.java from MainActivity.onCreate, because the plugin's
+  // createChannel() hard-codes USAGE_NOTIFICATION audio attributes, which Do Not
+  // Disturb and the silent-ringer both suppress — the adhan needs USAGE_ALARM to
+  // survive Bedtime mode at Fajr. Creating it here too would be harmless (a
+  // channel that exists is not recreated) but would be a trap: if the native
+  // call ever regressed, this would silently register the id with the wrong
+  // attributes and freeze them, since a channel is immutable once created.
+  const channels = [
+    {
+      id: CH_PRAYER,
+      name: "Prayer times",
+      description: "Prayer times and the 15-minute heads-up before each",
+      importance: 4 as const,
+      vibration: true,
+    },
+    {
+      id: CH_DAILY,
+      name: "Daily reminders",
+      description: "Today's verse, hadith, reflection and the streak nudge",
+      importance: 4 as const,
+      vibration: true,
+    },
+    {
+      id: CH_EVENTS,
+      name: "Islamic dates",
+      description: "Jumu'ah, Ramadan, Eid, the white days and other occasions",
+      importance: 4 as const,
+      vibration: true,
+    },
+  ];
+  for (const c of channels) {
+    try {
+      await LocalNotifications.createChannel({ visibility: 1, ...c });
+    } catch (e) {
+      // Keep going: a channel that fails to create falls back to "default",
+      // which is degraded but still delivers. Silence here would hide it.
+      console.error("[notifications] createChannel failed", c.id, e);
+    }
+  }
+  channelsReady = true;
+}
 // Per-prayer adhan body — a short, authentic reminder for each prayer. Fajr,
 // Asr and Isha use prayer-specific hadith (verified against the local hadith
 // corpus: Muslim 657, Bukhari 552, Muslim 656). Dhuhr and Maghrib quote their
@@ -89,18 +169,30 @@ const JUMUAH_HOUR = 9; // 9:30 AM Friday — before most congregations
 const JUMUAH_MINUTE = 30;
 const LAST_ACTIVE_KEY = "hiqmah-daily-last-active"; // YYYY-MM-DD of last checklist activity
 const DAYS_AHEAD = 10;
-const MAX_NOTIFICATIONS = 63; // stay under iOS's 64 pending cap (1 slot margin)
-// Engagement notifs (verse/hadith/reminder/streak) only cover a short window so
-// they can never crowd out the adhan within the 64-pending cap.
-const ENGAGEMENT_DAYS = 3;
-// Per-tier slot budgets (filled in tier order, each also bounded by
-// MAX_NOTIFICATIONS). Adhan is protected first, then pre-prayer, then a few
-// engagement nudges, then Islamic-event notices last. Unused higher-tier budget
-// is NOT borrowed down — adhan coverage is guaranteed. Events are sparse (a
-// handful across 60 days), so tier 4 never approaches its cap in practice.
-// Sum = MAX_NOTIFICATIONS so every tier gets its share (events would otherwise be
-// starved — adhan trimmed 40→35 = a still-generous 7 days, refilled on each open).
-const TIER_CAPS: Record<number, number> = { 1: 35, 2: 14, 3: 6, 4: 8 };
+
+// ── Pending-notification budgets ──────────────────────────────────────────
+//
+// iOS enforces a hard 64-pending limit per app. Android's is ~500. This file
+// applied the iOS number to BOTH, which starved the Android schedule badly:
+// with 63 slots split {1:35, 2:14, 3:6, 4:8}, the six tier-3 slots were taken
+// by whichever engagement nudges came soonest, so Jumu'ah — also tier 3 — never
+// got a slot at all, and the nudges themselves ran out after ~1.3 days.
+//
+// Resolved per-platform at CALL time, not module load: this module is imported
+// during the static export, where Capacitor reports "web".
+const IOS_MAX = 63; // 64-pending cap, one slot of margin
+const ANDROID_MAX = 400; // comfortably inside Android's ~500
+// Filled in tier order, so a lower-priority nudge can never displace the adhan.
+// Unused budget is NOT borrowed down — adhan coverage stays guaranteed.
+const IOS_TIER_CAPS: Record<number, number> = { 1: 35, 2: 14, 3: 6, 4: 8 };
+const ANDROID_TIER_CAPS: Record<number, number> = { 1: 120, 2: 120, 3: 100, 4: 60 };
+// How far ahead the engagement nudges (verse/hadith/reflection/streak) run. On
+// iOS this stays short so they cannot crowd the adhan out of 64 slots; Android
+// has the headroom to match the prayer horizon, which matters because NOTHING
+// re-arms the schedule until the app is next opened.
+const IOS_ENGAGEMENT_DAYS = 3;
+
+const isAndroid = () => Capacitor.getPlatform() === "android";
 
 type Timings = Record<string, string>;
 
@@ -270,24 +362,52 @@ export async function openExactAlarmSettings(): Promise<boolean> {
 export async function scheduleAllNotifications(
   promptIfNeeded = false
 ): Promise<void> {
+  // The whole body runs unguarded below, and it is long: prayer maths, calendar
+  // building, localStorage reads, plugin calls. A throw anywhere past the cancel
+  // leaves the user with an EMPTY schedule and no symptom whatsoever — the app
+  // looks fine and simply never notifies again. Nothing surfaces that, so this
+  // boundary exists to make the failure at least visible in a log.
+  try {
+    await scheduleAllNotificationsImpl(promptIfNeeded);
+  } catch (e) {
+    console.error(
+      "[notifications] scheduleAllNotifications threw — the schedule may now be empty",
+      e
+    );
+  }
+}
+
+async function scheduleAllNotificationsImpl(
+  promptIfNeeded = false
+): Promise<void> {
   if (!Capacitor.isNativePlatform()) return;
 
   const L = LocalNotifications;
 
-  // Always clear our previously-scheduled notifications first.
-  try {
-    const pending = await L.getPending();
-    if (pending.notifications.length) {
-      await L.cancel({
-        notifications: pending.notifications.map((n) => ({ id: n.id })),
-      });
-    }
-  } catch {
-    // ignore
-  }
-
-  // Resolve permission, tracking whether the user JUST granted it (so we can
-  // fire an immediate adhan confirmation as a "it works" preview).
+  // ── Permission FIRST. Only then touch the existing schedule. ────────────
+  //
+  // ⭐ This ORDER is load-bearing; it is not stylistic.
+  //
+  // This function used to cancel every pending notification at the top, before
+  // resolving permission. Because the permission check below returns early, an
+  // app open while notifications were denied EMPTIED the schedule and refilled
+  // nothing. Worse, the plugin rejects the whole schedule() call when
+  // notifications are disabled (LocalNotificationManager.java: areNotificationsEnabled),
+  // so there was no path that could repair it.
+  //
+  // That turned a completely ordinary sequence into permanent silence:
+  //
+  //     deny at onboarding  ->  later enable notifications in Android Settings
+  //     (which runs NONE of our code)  ->  never notified again, because only a
+  //     foreground app open re-arms the schedule.
+  //
+  // It is exactly what happened on the founder's device: notifications were off
+  // from install on 08-18 until 08-21 23:59:44, were granted from the Settings
+  // app, and not one local notification had ever been delivered — verified
+  // against the alarm delivery history, which held only WIDGET_REFRESH entries.
+  //
+  // Resolving permission first makes a denied run a NO-OP instead of a
+  // destructive one, so an existing good schedule survives.
   let granted = false;
   let newlyGranted = false;
   if (promptIfNeeded) {
@@ -307,9 +427,57 @@ export async function scheduleAllNotifications(
   }
   if (!granted) return;
 
+  // Channels must exist before anything is scheduled onto them: a notification
+  // naming a channel that does not exist falls back to "default" and loses its
+  // sound and importance.
+  await ensureChannels();
+
+  // ── Capture what is scheduled. Do NOT cancel it yet. ────────────────────
+  //
+  // Moving the permission gate above the cancel fixed one failure mode. It did
+  // not fix the shape: anything that goes wrong in the ~290 lines between here
+  // and the schedule() call still leaves the device with ZERO notifications and
+  // no symptom — the same defect as the original bug, one layer down.
+  //
+  // And it is reachable. schedule() rejects the ENTIRE call when
+  // areNotificationsEnabled() is false (LocalNotificationManager.java:132-138),
+  // which is a DIFFERENT check from the POST_NOTIFICATIONS grant gated on above
+  // and can disagree with it. One rejection would destroy a full schedule and
+  // replace it with nothing, on every app open, forever.
+  //
+  // So: schedule first, then retire only what the new schedule did not reuse.
+  // Safe because schedule() dismisses and re-arms each id in place
+  // (LocalNotificationManager.java:148-150), so reusing an id overwrites rather
+  // than duplicating.
+  let previouslyPending: number[] = [];
+  try {
+    previouslyPending = (await L.getPending()).notifications.map((n) => n.id);
+  } catch (e) {
+    console.error("[notifications] getPending failed", e);
+  }
+  const cancelIds = async (ids: number[]) => {
+    if (!ids.length) return;
+    try {
+      await L.cancel({ notifications: ids.map((id) => ({ id })) });
+    } catch (e) {
+      console.error("[notifications] cancel failed", e);
+    }
+  };
+
   const prefs = getNotificationPrefs();
   const settings = getPrayerSettings();
   const loc = getCachedLocation();
+
+  // Per-platform budgets (see the constants above for why these differ).
+  const android = isAndroid();
+  // Reserve a slot for the newly-granted confirmation ping, which is appended
+  // AFTER the tier loop. Without this, a first-grant run on iOS hands the system
+  // 64 requests — exactly Apple's cap — and the "one slot of margin" documented
+  // on IOS_MAX is silently spent.
+  const maxNotifications =
+    (android ? ANDROID_MAX : IOS_MAX) - (newlyGranted ? 1 : 0);
+  const tierCaps = android ? ANDROID_TIER_CAPS : IOS_TIER_CAPS;
+  const engagementDays = android ? DAYS_AHEAD : IOS_ENGAGEMENT_DAYS;
 
   const anyAdhan =
     prefs.adhanEnabled && PRAYER_KEYS.some((k) => prefs.adhanPerPrayer[k]);
@@ -329,8 +497,12 @@ export async function scheduleAllNotifications(
     !prefs.jumuah &&
     !prefs.streak &&
     !wantEvents
-  )
+  ) {
+    // Every category is off, so an empty schedule is the CORRECT end state —
+    // one of only two places a bare cancel is right.
+    await cancelIds(previouslyPending);
     return;
+  }
 
   const now = new Date();
   type Notif = {
@@ -338,7 +510,8 @@ export async function scheduleAllNotifications(
     title: string;
     body: string;
     schedule: { at: Date; allowWhileIdle?: boolean };
-    sound?: string;
+    sound?: string; // iOS only — on Android 8+ the CHANNEL owns the sound
+    channelId?: string; // Android only — ignored by iOS
     url?: string; // deep-link target on tap
     tier: 1 | 2 | 3 | 4; // 1=adhan (protected), 2=pre-prayer, 3=engagement, 4=Islamic events
     // iOS delivery priority. Adhan is time-sensitive so Focus/Sleep/DND don't
@@ -383,6 +556,7 @@ export async function scheduleAllNotifications(
             body: adhanForThis ? ADHAN_BODY[pk] : `It's time for ${PRAYER_LABEL[pk]} prayer.`,
             schedule: { at },
             sound: adhanForThis ? ADHAN_SOUND : undefined,
+            channelId: adhanForThis ? CH_ADHAN : CH_PRAYER,
             url: "/salah",
             tier: 1,
             interruptionLevel: adhanForThis ? "timeSensitive" : undefined,
@@ -396,6 +570,7 @@ export async function scheduleAllNotifications(
               title: `${PRAYER_LABEL[pk]} in ${PRE_PRAYER_MINUTES} min`,
               body: `Get ready for ${PRAYER_LABEL[pk]} prayer.`,
               schedule: { at: pre },
+              channelId: CH_PRAYER,
               url: "/salah",
               tier: 2,
             });
@@ -408,7 +583,7 @@ export async function scheduleAllNotifications(
   // ── Daily verse / hadith (independent — either or both can be enabled) ──
   // Verse in the morning, hadith at lunch — staggered so they never collide.
   if (wantDaily) {
-    for (let i = 0; i <= ENGAGEMENT_DAYS; i++) {
+    for (let i = 0; i <= engagementDays; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);
       if (prefs.todaysVerse) {
@@ -422,6 +597,7 @@ export async function scheduleAllNotifications(
               title: "Today's Verse",
               body: `${insp.english} — ${insp.reference}`,
               schedule: { at },
+              channelId: CH_DAILY,
               url: urlForInspiration(insp),
               tier: 3,
             });
@@ -438,6 +614,7 @@ export async function scheduleAllNotifications(
               title: "Today's Hadith",
               body: `${insp.english} — ${insp.reference}`,
               schedule: { at },
+              channelId: CH_DAILY,
               url: urlForInspiration(insp),
               tier: 3,
             });
@@ -448,7 +625,7 @@ export async function scheduleAllNotifications(
 
   // ── Today's Reminder (the day's reflection — matches the Reminders tab) ──
   if (wantReminder) {
-    for (let i = 0; i <= ENGAGEMENT_DAYS; i++) {
+    for (let i = 0; i <= engagementDays; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);
       const at = new Date(day);
@@ -462,6 +639,7 @@ export async function scheduleAllNotifications(
         title: "Today's Reminder",
         body: `${r.textEn} — ${ref}`,
         schedule: { at },
+        channelId: CH_DAILY,
         url: "/muslim-daily?tab=reminders",
         tier: 3,
       });
@@ -482,8 +660,12 @@ export async function scheduleAllNotifications(
         title: "Jumu'ah Mubarak",
         body: "Read Surah Al-Kahf and prepare for Jumu'ah prayer.",
         schedule: { at },
-        url: "/quran/18",
-        tier: 3,
+        channelId: CH_EVENTS,
+        // Tier 4, not 3. As a tier-3 item it competed with the daily nudges for
+        // six iOS slots and lost on time-ordering EVERY week — Jumu'ah simply
+        // never scheduled. It belongs with the other calendar-driven notices,
+        // which are sparse enough that it always gets a slot there.
+        tier: 4,
       });
     }
   }
@@ -496,7 +678,7 @@ export async function scheduleAllNotifications(
     } catch {
       // ignore
     }
-    for (let i = 0; i <= ENGAGEMENT_DAYS; i++) {
+    for (let i = 0; i <= engagementDays; i++) {
       const day = new Date(now);
       day.setDate(day.getDate() + i);
       const at = new Date(day);
@@ -508,6 +690,7 @@ export async function scheduleAllNotifications(
         title: "Keep your streak going",
         body: "You haven't completed today's checklist yet — a little before the day ends keeps your streak alive.",
         schedule: { at },
+        channelId: CH_DAILY,
         url: "/muslim-daily",
         tier: 3,
       });
@@ -529,6 +712,7 @@ export async function scheduleAllNotifications(
         title: ev.title,
         body: ev.body,
         schedule: { at: ev.at },
+        channelId: CH_EVENTS,
         url: ev.url,
         tier: 4,
       });
@@ -541,15 +725,33 @@ export async function scheduleAllNotifications(
   // coverage.
   notifs.sort((a, b) => a.schedule.at.getTime() - b.schedule.at.getTime());
   const toSchedule: Notif[] = [];
+  const candidates: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  const scheduled: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
   for (const tier of [1, 2, 3, 4] as const) {
     let taken = 0;
     for (const n of notifs) {
       if (n.tier !== tier) continue;
-      if (toSchedule.length >= MAX_NOTIFICATIONS) break;
-      if (taken >= TIER_CAPS[tier]) break;
+      candidates[tier]++;
+      if (toSchedule.length >= maxNotifications || taken >= tierCaps[tier]) {
+        continue;
+      }
       toSchedule.push(n);
       taken++;
     }
+    scheduled[tier] = taken;
+  }
+  // A TRIMMED tier is by design — on iOS the caps always bind, so warning on
+  // every trim would fire on every launch and drown the signal it exists to
+  // carry. A tier that gets ZERO despite having candidates is STARVATION, which
+  // is precisely how Jumu'ah went missing every single week without a symptom.
+  const starved = ([1, 2, 3, 4] as const).filter(
+    (t) => scheduled[t] === 0 && candidates[t] > 0
+  );
+  if (starved.length) {
+    console.warn(
+      "[notifications] TIER STARVED — 0 scheduled despite candidates:",
+      starved.map((t) => `tier${t}=0/${candidates[t]}`).join(" ")
+    );
   }
 
   // First-time confirmation: a quick ping so the user knows notifications work,
@@ -561,11 +763,17 @@ export async function scheduleAllNotifications(
       title: "Notifications on",
       body: "You're all set — you'll get the reminders you've turned on, in shā' Allah.",
       schedule: { at: new Date(now.getTime() + 4000) },
+      channelId: CH_PRAYER, // not CH_ADHAN — this must not play the 25s adhan
       tier: 1,
     });
   }
 
-  if (!toSchedule.length) return;
+  if (!toSchedule.length) {
+    // Nothing to schedule (e.g. every candidate time is in the past) — the
+    // second and last place an unconditional cancel is correct.
+    await cancelIds(previouslyPending);
+    return;
+  }
 
   try {
     await L.schedule({
@@ -590,12 +798,24 @@ export async function scheduleAllNotifications(
         // such wakeups per app per hour — far more than five prayers a day.
         schedule: { ...n.schedule, allowWhileIdle: true },
         ...(n.sound ? { sound: n.sound } : {}),
+        // Android 8+ takes importance, sound and vibration from the CHANNEL and
+        // ignores the per-notification `sound` above; iOS ignores channelId.
+        // Both are sent so each platform picks up the one it honours.
+        ...(n.channelId ? { channelId: n.channelId } : {}),
         ...(n.interruptionLevel ? { interruptionLevel: n.interruptionLevel } : {}),
         ...(n.url ? { extra: { url: n.url } } : {}),
       })),
     });
+    // Only now retire the leftovers: ids the new schedule did not reuse. If
+    // schedule() threw, we never get here and the OLD schedule stays live —
+    // degraded (stale prayer times) but never silent, which is the whole point.
+    const fresh = new Set(toSchedule.map((n) => n.id));
+    await cancelIds(previouslyPending.filter((id) => !fresh.has(id)));
   } catch (e) {
-    console.error("[notifications] schedule failed", e);
+    console.error(
+      "[notifications] schedule failed — previous schedule left intact",
+      e
+    );
   }
 }
 

@@ -13,6 +13,13 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(HeadingBridge.class);
         registerPlugin(PlaybackBridge.class);
         registerPlugin(WidgetBridge.class);
+
+        // Must run before the WebView can call ensureChannels(): a channel is
+        // immutable once created, so whichever side registers the id first wins
+        // permanently. Capacitor's createChannel() would freeze the adhan on
+        // USAGE_NOTIFICATION, which Do Not Disturb silences. See AdhanChannel.
+        AdhanChannel.ensure(this);
+
         super.onCreate(savedInstanceState);
     }
 }
