@@ -18,6 +18,7 @@ import { registerDeepLinkHandler } from "@/lib/mobile/deeplinks";
 import { syncWidgetData } from "@/lib/mobile/widgets";
 import { registerPush, flushPendingPushToken } from "@/lib/mobile/push";
 import { App as CapApp } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 import { useLegacyImport } from "@/lib/daily/useLegacyImport";
 import { useHifzImport } from "@/lib/hifz/hifzImport";
 import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
@@ -116,6 +117,50 @@ export default function MobileShell({ children }: { children: React.ReactNode })
     return () => cleanup?.();
   }, []);
 
+  // ── Android hardware / gesture BACK ────────────────────────────────────
+  //
+  // A tester could not leave the app at all: "there's no back or home button —
+  // you can only open the app switcher and swipe it away."
+  //
+  // The cause is not a missing button. Every Android device has back and home
+  // (three-button or gesture nav), so a device-capability check would be the
+  // wrong fix — and an in-app "exit" control is not an Android idiom. The cause
+  // is that NOTHING handled back, so Capacitor's default ran: webView.goBack()
+  // whenever history exists, exit only when it does not. In a Next.js SPA every
+  // navigation pushes an entry, so after browsing thirty screens back walks
+  // through all thirty and, in practice, never exits. On a gesture-nav phone,
+  // where back is a swipe you might repeat a few times and give up on, that
+  // reads exactly as "there is no way out".
+  //
+  // The Android convention this restores:
+  //   deeper than a tab root  -> go back one screen
+  //   on a secondary tab root -> return to Home
+  //   on Home                 -> leave the app
+  //
+  // A query string counts as "deeper" even at a tab root: an overlay opened by
+  // deep link (the qibla widget opens the compass sheet on Home) lives in the
+  // URL, and back must dismiss it rather than quitting the app underneath it.
+  //
+  // NOTE for useScrollRestoration: back still funnels through popstate, because
+  // this calls router.back() rather than history manipulation. That file's
+  // backward-detection depends on the funnel, so keep it that way.
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    CapApp.addListener("backButton", () => {
+      const deeper = !isTabRoot(pathname) || window.location.search.length > 1;
+      if (deeper) {
+        router.back();
+      } else if (pathname !== "/") {
+        router.push("/");
+      } else {
+        void CapApp.exitApp();
+      }
+    }).then((handle) => {
+      cleanup = () => void handle.remove();
+    });
+    return () => cleanup?.();
+  }, [pathname, router]);
+
   // On sign-in, migrate signed-out local Daily data into Supabase (once).
   useLegacyImport();
   // Same for signed-out local Hifz data (cards + reviews + plan), preserving SRS state.
@@ -133,7 +178,16 @@ export default function MobileShell({ children }: { children: React.ReactNode })
 
   // Edge-swipe-back: a left-edge → right drag navigates back (iOS-style),
   // since the WKWebView SPA has no native back gesture. Only on non-tab-roots.
+  //
+  // ⭐ iOS ONLY, and that gate is the point. Android gesture navigation has its
+  // OWN left-edge back swipe, on the same edge. Ungated, a single swipe fired
+  // BOTH — the system back and this handler's router.back() — so every back
+  // gesture jumped back two screens. Invisible on a three-button device (no
+  // system edge gesture exists there), which is why it survived device testing;
+  // a tester on gesture nav would just experience back as erratic.
+  const edgeSwipeEnabled = Capacitor.getPlatform() === "ios";
   const onTouchStart = (e: React.TouchEvent) => {
+    if (!edgeSwipeEnabled) return;
     const t = e.touches[0];
     edgeSwipe.current =
       !isTabRoot(pathname) && t.clientX <= 24

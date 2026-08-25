@@ -378,12 +378,31 @@ function get<T>(key: string, fallback: T): T {
   }
 }
 
+/**
+ * Fired after any stored value changes, with the storage key in `detail.key`.
+ *
+ * This exists so account sync can push a changed section without storage.ts
+ * having to know Supabase exists — this file stays dependency-free and the
+ * sync layer (apps/web/src/lib/sync/prefsSync.ts) subscribes from outside.
+ * Emitted from the single set() below, so all call sites are covered and a new
+ * setter cannot forget to announce itself.
+ */
+export const STORAGE_CHANGED_EVENT = "hiqmah:storage-changed";
+
 function set(key: string, value: unknown) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
     // storage full or unavailable
+    return; // nothing changed, so do not announce a change
+  }
+  try {
+    window.dispatchEvent(
+      new CustomEvent(STORAGE_CHANGED_EVENT, { detail: { key } })
+    );
+  } catch {
+    // CustomEvent unavailable — writing already succeeded, so this is best-effort
   }
 }
 
@@ -410,6 +429,21 @@ export function isBookmarked(type: string, id: string): boolean {
   return getBookmarks().some((b) => b.type === type && b.id === id);
 }
 
+/**
+ * Replace the whole bookmark list. For account sync only — normal code should
+ * use addBookmark/removeBookmark.
+ *
+ * Sync needs this because merging two devices is a UNION over the full list, and
+ * add/remove can only express one change at a time. Union, not last-writer-wins:
+ * bookmarks are things a person deliberately saved, so the merge must never be
+ * able to delete one. The cost is that a removal on device A can be resurrected
+ * by device B still holding it — the right trade, since re-deleting a bookmark
+ * is trivial and losing a year of them is not.
+ */
+export function replaceBookmarks(list: Bookmark[]) {
+  set(KEYS.bookmarks, list);
+}
+
 // ─── Reading Progress ───
 
 export function getProgress(): ReadingProgress {
@@ -432,6 +466,18 @@ export function setLastPosition(surahId: number, verseNum: number) {
   progress.lastSurah = surahId;
   progress.lastVerse = verseNum;
   set(KEYS.progress, progress);
+}
+
+/**
+ * Replace reading progress wholesale. For account sync only.
+ *
+ * `surahsRead` is cumulative and has no other restore path — rebuilding it means
+ * physically reopening every surah — so sync unions it. lastSurah/lastVerse are
+ * a cursor rather than a record and self-heal on the next tap, so those take the
+ * newer value instead.
+ */
+export function replaceProgress(p: ReadingProgress) {
+  set(KEYS.progress, p);
 }
 
 // ─── Font Size ───
