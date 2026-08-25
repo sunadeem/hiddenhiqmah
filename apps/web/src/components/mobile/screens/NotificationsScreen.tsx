@@ -24,6 +24,7 @@ import {
 } from "@hidden-hiqmah/ui/lib/storage";
 import { rescheduleNotificationsDebounced } from "@/lib/mobile/notifications";
 import { markPushPrefsDirty } from "@/lib/mobile/push";
+import { applyRemoteValue } from "@/lib/sync/prefsSync";
 import { supabase } from "@/lib/supabase";
 import {
   SettingsSection,
@@ -70,7 +71,13 @@ export default function NotificationsScreen() {
           patch.reengagementPush = row.reengagement_push;
         if (typeof row.circle_push === "boolean") patch.circleChat = row.circle_push;
         if (Object.keys(patch).length) {
-          setNotificationPrefs(patch);
+          // Wrapped because this is the SERVER's value being written locally,
+          // not a user tapping a toggle. Unwrapped it is indistinguishable from
+          // an edit — it creates the prefs key and fires the storage change
+          // event — so account sync would record a local "edit" here and then
+          // push this device's DEFAULTS for every other notification setting
+          // over the account's real ones.
+          applyRemoteValue(() => setNotificationPrefs(patch));
           setNotif((n) => (n ? { ...n, ...patch } : n));
         }
       } catch {

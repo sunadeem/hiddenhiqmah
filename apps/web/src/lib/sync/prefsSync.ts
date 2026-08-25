@@ -192,10 +192,16 @@ function preferNewest<T extends object>(
   if (!remote) return local;
   // Never let untouched defaults beat a real stored choice.
   if (!ctx.localWritten) return remote;
-  // Both sides are real. Prefer whichever was edited later; when local has no
-  // recorded edit time, prefer local (it is at least a deliberate write, and the
-  // user is holding this device).
-  if (ctx.localTouchedAt && ctx.remoteUpdatedAt > ctx.localTouchedAt) {
+  // The key exists, but no user edit was ever recorded against it — so it was
+  // created by something applying SERVER data locally (the notifications screen
+  // hydrating push flags, or a previous merge). That is not this device's
+  // opinion, so the account's copy wins.
+  //
+  // Safe only because touches are recorded regardless of session: a signed-out
+  // user's genuine choice DOES leave a timestamp, so it is not caught here.
+  if (!ctx.localTouchedAt) return remote;
+  // Both sides are real user edits: the later one wins.
+  if (ctx.remoteUpdatedAt > ctx.localTouchedAt) {
     return { ...local, ...remote };
   }
   return { ...remote, ...local };
@@ -237,6 +243,42 @@ const TOUCH_KEY = "hiqmah-sync-touched";
  * async window to leak through.
  */
 let applyingRemote = false;
+
+/**
+ * Apply a value that came from the SERVER, without it counting as a user edit.
+ *
+ * Needed because prefsSync is not the only thing that writes server data into
+ * local storage: the notifications screen hydrates the push flags from
+ * `profiles` on mount and calls setNotificationPrefs with them. That write is
+ * indistinguishable from a user tapping a toggle — it creates the storage key
+ * and fires the change event — so without this wrapper it would stamp a touch
+ * and push this device's DEFAULTS for every other field over the account copy.
+ * Exactly the class of bug preferNewest exists to prevent, arriving through a
+ * different door.
+ */
+export function applyRemoteValue(fn: () => void): void {
+  applyingRemote = true;
+  try {
+    fn();
+  } finally {
+    applyingRemote = false;
+  }
+}
+
+/**
+ * Whether a session exists. Touches are recorded ALWAYS; pushes happen only
+ * while signed in.
+ *
+ * Recording only while signed in was wrong in a way that matters: a signed-out
+ * user's deliberate choice would leave no local clock, so the merge could not
+ * tell it apart from a value that had merely arrived from sync — and had to
+ * guess. Recording always means "no touch" is unambiguous: this device has
+ * never had a user edit for that section, so the account's copy should win.
+ */
+let signedIn = false;
+export function setPrefsSyncSignedIn(v: boolean) {
+  signedIn = v;
+}
 
 function readTouches(): Record<string, number> {
   try {
@@ -386,7 +428,10 @@ export function startPrefsSync(): () => void {
     if (!s) return; // not a synced key
     // Stamp the edit BEFORE debouncing, so a change made and then immediately
     // backgrounded still leaves a local clock for the next merge to compare.
+    // Recorded even while signed out — see setPrefsSyncSignedIn.
     recordTouch(s.name);
+    // ...but only a signed-in device has anywhere to push it.
+    if (!signedIn) return;
     const pending = timers.get(s.name);
     if (pending) clearTimeout(pending);
     timers.set(

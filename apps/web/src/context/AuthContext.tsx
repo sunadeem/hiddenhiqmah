@@ -9,7 +9,11 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
-import { syncPrefsOnSignIn, startPrefsSync } from "@/lib/sync/prefsSync";
+import {
+  syncPrefsOnSignIn,
+  startPrefsSync,
+  setPrefsSyncSignedIn,
+} from "@/lib/sync/prefsSync";
 
 type AuthState = {
   session: Session | null;
@@ -136,11 +140,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Push local preference edits up while signed in, debounced. Detached from the
-  // effect above so it starts and stops with the session rather than the mount.
+  // Record local preference edits ALWAYS, and push them while signed in.
+  //
+  // Mounted unconditionally rather than gated on the session, deliberately: the
+  // merge distinguishes "this device never had a user edit" from "the user chose
+  // this", and a signed-out choice has to leave a timestamp or the two become
+  // indistinguishable and the merge has to guess. Pushing is still gated — see
+  // setPrefsSyncSignedIn.
+  useEffect(() => startPrefsSync(), []);
   useEffect(() => {
-    if (!session) return;
-    return startPrefsSync();
+    setPrefsSyncSignedIn(!!session);
   }, [session]);
 
   const signInWithEmail = useCallback(async (email: string) => {
