@@ -21,6 +21,7 @@ import { App as CapApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { useLegacyImport } from "@/lib/daily/useLegacyImport";
 import { useHifzImport } from "@/lib/hifz/hifzImport";
+import { useJournalImport } from "@/lib/journal/journalImport";
 import { useQuranAudio } from "@hidden-hiqmah/ui/context/QuranAudioContext";
 import { useAdhanAudio } from "@hidden-hiqmah/ui/context/AdhanAudioContext";
 import { useOnline } from "@/lib/mobile/useOnline";
@@ -165,6 +166,8 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   useLegacyImport();
   // Same for signed-out local Hifz data (cards + reviews + plan), preserving SRS state.
   useHifzImport();
+  // Same for signed-out local Journal entries, preserving the date each was written.
+  useJournalImport();
 
   // Soft gate (App Store 5.1.1(i)): the app is fully browsable signed-out — Qur'ān,
   // hadith, prayer times, du'ās all work on-device with a local fallback. Only

@@ -1,7 +1,9 @@
 // localStorage-backed JournalAdapter for signed-out users (and child profiles on
 // a shared device). Mirrors createLocalHifzAdapter: plain CRUD over a namespaced
 // key, newest-first. On sign-in the primary profile switches to the Supabase
-// adapter; this device-only data is left untouched (never auto-deleted).
+// adapter and journalImport copies this store up once, clearing it only after the
+// remote write succeeds. Child-profile stores (namespaced keys) are never imported
+// and never auto-deleted — they stay device-only.
 
 import type {
   JournalAdapter,

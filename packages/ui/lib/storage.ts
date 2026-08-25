@@ -1,6 +1,22 @@
 // localStorage utility for bookmarks, reading progress, and user preferences
 
-export type BookmarkType = "verse" | "hadith" | "dua" | "dhikr" | "name" | "topic" | "page";
+// "reflection" is DISPLAY-ONLY and is never written to this store. Saved
+// reflections live in their own place (reminder_saves in Supabase, or
+// hiqmah-reminder-saves locally) because the heart on the Reflections deck owns
+// them; the bookmarks page merges them in for rendering so everything a person
+// saved appears in one list. It belongs in this union so that merge is typed
+// honestly rather than cast past the compiler — but addBookmark must never
+// receive one, or the same save would exist in two stores that immediately
+// disagree.
+export type BookmarkType =
+  | "verse"
+  | "hadith"
+  | "dua"
+  | "dhikr"
+  | "name"
+  | "topic"
+  | "page"
+  | "reflection";
 
 export type Bookmark = {
   type: BookmarkType;
