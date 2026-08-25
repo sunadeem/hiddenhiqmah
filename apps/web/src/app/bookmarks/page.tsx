@@ -3,10 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bookmark, Trash2, X, BookOpen, ScrollText, FileText, HandHeart, Repeat, Star, Lightbulb } from "lucide-react";
+import { Bookmark, Trash2, X, BookOpen, ScrollText, FileText, HandHeart, Repeat, Star, Lightbulb, Heart } from "lucide-react";
 import PageHeader from "@hidden-hiqmah/ui/components/PageHeader";
 import ContentCard from "@hidden-hiqmah/ui/components/ContentCard";
 import { getBookmarks, removeBookmark, type Bookmark as BookmarkData } from "@hidden-hiqmah/ui/lib/storage";
+import { useReminderSaves } from "@/lib/daily/useReminderSaves";
+import remindersData from "@hidden-hiqmah/content/reminders.json";
+import type { Reminder } from "@hidden-hiqmah/ui/lib/reminders";
+
+const ALL_REMINDERS = remindersData as unknown as Reminder[];
 
 function formatRelativeTime(timestamp: number): string {
   const now = Date.now();
@@ -60,13 +65,26 @@ const typeConfig: Record<string, { label: string; pluralLabel: string; icon: typ
   name: { label: "Name of Allah", pluralLabel: "Names of Allah", icon: Star, color: "text-gold" },
   topic: { label: "Topic", pluralLabel: "Topics", icon: Lightbulb, color: "text-sky-400" },
   page: { label: "Page", pluralLabel: "Pages", icon: FileText, color: "text-blue-400" },
+  reflection: { label: "Reflection", pluralLabel: "Reflections", icon: Heart, color: "text-rose-400" },
 };
 
-const groupOrder = ["verse", "hadith", "dua", "dhikr", "name", "topic", "page"];
+const groupOrder = ["verse", "hadith", "dua", "dhikr", "name", "topic", "page", "reflection"];
 
 export default function BookmarksPage() {
   const [bookmarks, setBookmarks] = useState<BookmarkData[]>([]);
   const [mounted, setMounted] = useState(false);
+
+  // Saved reflections live in their OWN store — reminder_saves in Supabase when
+  // signed in, localStorage when not — entirely separate from the bookmark list
+  // above. Until now nothing rendered them anywhere, so hearting a reflection
+  // wrote a row, filled the heart and vanished: the save had no destination, and
+  // people reasonably reported it as "the heart doesn't save".
+  //
+  // They are merged in here rather than being copied into the bookmark list,
+  // deliberately: two writers to one store would mean two sources of truth for
+  // the same save, and the heart on the Reflections deck would drift out of sync
+  // with this page the moment either side changed.
+  const { saved, toggle } = useReminderSaves();
 
   useEffect(() => {
     setBookmarks(getBookmarks());
@@ -74,6 +92,12 @@ export default function BookmarksPage() {
   }, []);
 
   const handleRemove = (type: string, id: string) => {
+    // Reflections are not bookmarks — unsaving one has to go back through the
+    // hook that owns them, or the row survives and it reappears on reload.
+    if (type === "reflection") {
+      toggle(id);
+      return;
+    }
     removeBookmark(type, id);
     setBookmarks(getBookmarks());
   };
@@ -82,10 +106,34 @@ export default function BookmarksPage() {
     if (!confirm("Remove all bookmarks?")) return;
     bookmarks.forEach((b) => removeBookmark(b.type, b.id));
     setBookmarks([]);
+    // Saved reflections are cleared too — they are shown here, so leaving them
+    // behind after "remove all" would look like the clear silently failed.
+    saved.forEach((id) => toggle(id));
   };
 
-  // Group bookmarks by type
-  const grouped = bookmarks.reduce<Record<string, BookmarkData[]>>((acc, b) => {
+  // Saved reflections, shaped as bookmarks so they group and render like the rest.
+  const savedReflections: BookmarkData[] = [...saved]
+    .map((id) => ALL_REMINDERS.find((r) => r.id === id))
+    .filter((r): r is Reminder => Boolean(r))
+    .map((r) => ({
+      type: "reflection",
+      id: r.id,
+      title: r.textEn,
+      subtitle: r.sourceKind === "quran" ? `Qur'an ${r.sourceRef}` : r.sourceRef,
+      href: "/muslim-daily?tab=reminders",
+      // reminder_saves records no saved-at time, so there is nothing honest to
+      // show. 0 renders as the epoch, which would be a visible lie — the card
+      // omits the timestamp for reflections instead (see below).
+      timestamp: 0,
+    }));
+
+  // Everything shown on this page, from BOTH stores. The count and the empty
+  // state below must read this rather than `bookmarks`, or a user whose only
+  // saves are reflections is told they have none while the page lists them.
+  const allItems = [...bookmarks, ...savedReflections];
+
+  // Group by type
+  const grouped = allItems.reduce<Record<string, BookmarkData[]>>((acc, b) => {
     if (!acc[b.type]) acc[b.type] = [];
     acc[b.type].push(b);
     return acc;
@@ -101,10 +149,10 @@ export default function BookmarksPage() {
         subtitle="Your saved verses, hadiths, duas, and more"
       />
 
-      {mounted && bookmarks.length > 0 && (
+      {mounted && allItems.length > 0 && (
         <div className="flex items-center justify-between mb-6">
           <p className="text-sm text-themed-muted">
-            {bookmarks.length} saved item{bookmarks.length !== 1 ? "s" : ""}
+            {allItems.length} saved item{allItems.length !== 1 ? "s" : ""}
           </p>
           <button
             onClick={handleClearAll}
@@ -116,13 +164,14 @@ export default function BookmarksPage() {
         </div>
       )}
 
-      {mounted && bookmarks.length === 0 && (
+      {mounted && allItems.length === 0 && (
         <ContentCard delay={0.1}>
           <div className="text-center py-12">
             <Bookmark size={48} className="mx-auto text-themed-muted/30 mb-4" />
-            <h3 className="text-lg font-semibold text-themed mb-2">No bookmarks yet</h3>
+            <h3 className="text-lg font-semibold text-themed mb-2">Nothing saved yet</h3>
             <p className="text-themed-muted text-sm max-w-md mx-auto">
-              Bookmark verses, hadiths, duas, and more across the site to save them here.
+              Bookmark verses, hadiths and du&apos;ās, or tap the heart on a reflection —
+              everything you save lands here.
             </p>
           </div>
         </ContentCard>
@@ -169,9 +218,15 @@ export default function BookmarksPage() {
                               <span className={`text-xs px-2 py-0.5 rounded-full border ${config.color} border-current/20 bg-current/5`}>
                                 {config.label}
                               </span>
-                              <span className="text-[10px] text-themed-muted/50">
-                                {formatRelativeTime(bookmark.timestamp)}
-                              </span>
+                              {/* reminder_saves stores no saved-at time, so a
+                                  reflection has nothing honest to show here —
+                                  rendering timestamp 0 would claim 1970. Omit it
+                                  rather than invent one. */}
+                              {bookmark.timestamp > 0 && (
+                                <span className="text-[10px] text-themed-muted/50">
+                                  {formatRelativeTime(bookmark.timestamp)}
+                                </span>
+                              )}
                             </div>
                             <h3 className="text-sm font-medium text-themed group-hover:text-gold transition-colors truncate">
                               {bookmark.title}

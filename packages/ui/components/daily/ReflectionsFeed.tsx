@@ -31,6 +31,11 @@ export function ReflectionsFeed({
   onHaptic?: () => void;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  // Saved-only view. Hearting a reflection wrote a row and filled the heart, and
+  // that was the end of it — nothing in the app listed what you had saved, so a
+  // save was effectively write-only and only findable by scrolling back to the
+  // exact card. This is the in-context half of the fix; /bookmarks is the other.
+  const [savedOnly, setSavedOnly] = useState(false);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -46,17 +51,26 @@ export function ReflectionsFeed({
     return REMINDER_THEMES.filter((t) => present.has(t.key));
   }, [reminders]);
 
-  const list = useMemo(
-    () => (selected.size === 0 ? reminders : reminders.filter((r) => selected.has(r.theme))),
-    [reminders, selected]
-  );
+  const list = useMemo(() => {
+    const byTheme =
+      selected.size === 0 ? reminders : reminders.filter((r) => selected.has(r.theme));
+    return savedOnly ? byTheme.filter((r) => savedIds.has(r.id)) : byTheme;
+  }, [reminders, selected, savedOnly, savedIds]);
 
-  const isAll = selected.size === 0;
+  // "All" means genuinely unfiltered. The daily rotation is a position within the
+  // WHOLE deck, so it is meaningless once a filter is applied — a saved-only view
+  // opens on its first card instead.
+  const isAll = selected.size === 0 && !savedOnly;
   const startIndex = useMemo(
     () => (isAll ? dailyIndex(today, list.length) : 0),
     [isAll, today, list.length]
   );
-  const selectionKey = useMemo(() => [...selected].sort().join("|"), [selected]);
+  // savedOnly participates so toggling it re-snaps the deck to the start; without
+  // it the track would keep a scroll offset pointing past the end of a short list.
+  const selectionKey = useMemo(
+    () => [...selected].sort().join("|") + (savedOnly ? "|saved" : ""),
+    [selected, savedOnly]
+  );
 
   const scrollToIndex = (i: number, smooth: boolean) => {
     const el = trackRef.current;
@@ -145,8 +159,9 @@ export function ReflectionsFeed({
 
   return (
     <div className="space-y-3">
+      <div className="flex items-center gap-2">
       {/* Theme filter — multiselect dropdown */}
-      <div className="relative z-50">
+      <div className="relative z-50 flex-1 min-w-0">
         <button
           type="button"
           onClick={() => {
@@ -200,8 +215,43 @@ export function ReflectionsFeed({
         )}
       </div>
 
+        {/* Saved-only toggle. Sits beside the theme filter rather than inside the
+            dropdown because it is a different axis — themes narrow WHAT the deck
+            is about, this narrows it to what you kept. */}
+        <button
+          type="button"
+          aria-pressed={savedOnly}
+          aria-label={savedOnly ? "Show all reflections" : "Show only saved reflections"}
+          onClick={() => {
+            onHaptic?.();
+            setSavedOnly((v) => !v);
+          }}
+          className={`shrink-0 flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-sm font-medium touch-manipulation ${
+            savedOnly
+              ? "bg-[var(--color-gold)]/10 border-[var(--color-gold)]/40 text-gold"
+              : "card-bg sidebar-border text-themed"
+          }`}
+        >
+          <Heart size={15} className={savedOnly ? "fill-current" : ""} />
+          <span>Saved</span>
+        </button>
+      </div>
+
+      {/* Saved-only with nothing kept yet. Without this the deck renders as an
+          empty, zero-height track and the screen just looks broken. */}
+      {list.length === 0 && (
+        <div className="card-bg rounded-2xl border sidebar-border p-8 text-center">
+          <Heart size={22} className="text-gold mx-auto mb-2" />
+          <p className="text-themed font-semibold">Nothing saved yet</p>
+          <p className="text-themed-muted text-sm mt-1">
+            Tap the heart on a reflection to keep it here.
+          </p>
+        </div>
+      )}
+
       {/* Swipe deck */}
       <div
+        hidden={list.length === 0}
         ref={trackRef}
         onScroll={onScroll}
         className="flex items-start overflow-x-auto overflow-y-hidden snap-x snap-mandatory -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overscroll-x-contain transition-[height] duration-200"
@@ -224,7 +274,7 @@ export function ReflectionsFeed({
       </div>
 
       {/* Position + nav */}
-      <div className="flex items-center justify-between px-1">
+      <div className="flex items-center justify-between px-1" hidden={list.length === 0}>
         <button
           type="button"
           onClick={() => go(-1)}
