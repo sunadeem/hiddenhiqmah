@@ -20,6 +20,11 @@
 // for anything a person authored, merging UNIONS rather than picking a winner,
 // because resurrecting a deleted bookmark is trivial and eating a year of them
 // is not. Only cursors and true preferences take newest-wins.
+//
+// EVERY server round-trip in this file goes through runExclusive(). Sign-in and
+// the debounced pushes both do read-modify-write against one jsonb row, so two
+// of them overlapping would interleave a stale read with a fresh write — the
+// exact clobber the per-section RPC exists to prevent, reintroduced client-side.
 
 import { supabase } from "@/lib/supabase";
 import {
@@ -34,6 +39,9 @@ import {
   getNotificationPrefs,
   setNotificationPrefs,
   STORAGE_CHANGED_EVENT,
+  STORAGE_KEYS,
+  SYNC_OWNER_KEY,
+  SYNC_TOUCH_KEY,
   type Bookmark,
   type ReadingProgress,
   type KidsProgress,
@@ -61,15 +69,34 @@ type MergeCtx = {
   remoteUpdatedAt: number;
 };
 
-/** One synced unit. `merge` must be pure and must never throw. */
+/**
+ * One synced unit.
+ *
+ * `merge` must be pure and must never throw — it is handed a value that came
+ * off the network, so it takes `unknown` rather than `T` and coerces. A section
+ * whose merge throws gets caught and retired for the rest of the run, so one
+ * malformed remote blob would otherwise stop that section syncing entirely
+ * until someone reinstalled.
+ */
 type Section<T> = {
   name: string;
   /** Storage keys whose write means this section is dirty. */
   keys: string[];
   read: () => T;
   write: (merged: T) => void;
-  /** Combine local and remote. `remote` is undefined on the first ever sync. */
-  merge: (local: T, remote: T | undefined, ctx: MergeCtx) => T;
+  /** Combine local and untrusted remote. `remote` is undefined on the first sync. */
+  merge: (local: T, remote: unknown, ctx: MergeCtx) => T;
+  /**
+   * True when the merge is a UNION, i.e. the local value alone is not a legal
+   * thing to send. See pushLocalChange: these can never be pushed raw.
+   */
+  union: boolean;
+  /**
+   * Re-apply removals the user made on THIS device since the last reconcile,
+   * which a union would otherwise resurrect straight out of the account copy.
+   * Only sections with a delete affordance need it (bookmarks).
+   */
+  reapplyRemovals?: (merged: T, local: T, baseline: unknown) => T;
 };
 
 /** Erase the element type so differently-typed sections share one array. */
@@ -77,14 +104,117 @@ function section<T>(s: Section<T>): Section<unknown> {
   return s as unknown as Section<unknown>;
 }
 
+// ── Coercion at the network boundary ────────────────────────────────────────
+//
+// The remote blob is jsonb that some older/newer/half-written client produced.
+// The merges below index into it and spread it, so a string where an array was
+// expected is a TypeError — and a throw retires that section. Coercing here
+// makes a malformed remote value degrade to "ignore remote", which is always
+// safe: the local copy is then pushed and repairs the row.
+
+function asArray<T>(v: unknown): T[] {
+  return Array.isArray(v) ? (v as T[]) : [];
+}
+
+/** A plain object, or {} — never an array, which spreads into numeric keys. */
+function asRecord(v: unknown): Record<string, unknown> {
+  return v && typeof v === "object" && !Array.isArray(v)
+    ? (v as Record<string, unknown>)
+    : {};
+}
+
+/** Only the entries whose value is a number — quiz scores, flashcard buckets. */
+function asNumberMap(v: unknown): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [k, val] of Object.entries(asRecord(v))) {
+    if (typeof val === "number" && Number.isFinite(val)) out[k] = val;
+  }
+  return out;
+}
+
+function asStringMap(v: unknown): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, val] of Object.entries(asRecord(v))) {
+    if (typeof val === "string") out[k] = val;
+  }
+  return out;
+}
+
+/**
+ * Primitives only, one type at a time — these feed `new Set([...a, ...b])`,
+ * which de-duplicates nothing for objects and would happily produce a
+ * memorizedSurahs list containing the string "3" alongside the number 3.
+ */
+function asStrings(v: unknown): string[] {
+  return asArray<unknown>(v).filter((x): x is string => typeof x === "string");
+}
+
+function asNumbers(v: unknown): number[] {
+  return asArray<unknown>(v).filter(
+    (x): x is number => typeof x === "number" && Number.isFinite(x)
+  );
+}
+
+/**
+ * Structural equality, used to decide whether a push is worth making.
+ *
+ * Keys whose value is `undefined` are ignored on both sides: JSON.stringify
+ * drops them, so a local `{lastVerse: undefined}` and a server blob with no
+ * `lastVerse` are the same value. Without that, readingProgress would look
+ * different from itself on every comparison and push forever.
+ */
+/**
+ * May this device publish this section at all?
+ *
+ * ⭐ A device that has never written the key is holding DEFAULTS, not a choice.
+ *
+ * The equality-skip below cannot catch that case: when the account has no copy
+ * yet, `deepEqual(merged, undefined)` is false, so the push fires — and
+ * preferNewest returns `local` when there is no remote. So a fresh install
+ * publishes ISNA + Shafiʿi as the ACCOUNT's prayer settings, with a brand-new
+ * timestamp. The phone that actually holds the user's Hanafi choice then signs
+ * in, sees a remote copy stamped later than its own edit, and newest-wins hands
+ * it the defaults.
+ *
+ * That is the original bug this whole module exists to prevent, arriving through
+ * the "remote absent" door instead of the merge. So: stay silent until this
+ * device has an opinion of its own. Once the account HAS a copy, publishing is
+ * fine — the merge has already decided what the value should be.
+ */
+function mayPublish(ctx: MergeCtx, remoteHasSection: boolean): boolean {
+  return ctx.localWritten || remoteHasSection;
+}
+
+function deepEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  // Absent is absent: an untouched section reads as undefined here, null there.
+  if (a == null || b == null) return a == null && b == null;
+  if (typeof a !== "object" || typeof b !== "object") return false;
+  const aArr = Array.isArray(a);
+  if (aArr !== Array.isArray(b)) return false;
+  if (aArr) {
+    const x = a as unknown[];
+    const y = b as unknown[];
+    return x.length === y.length && x.every((v, i) => deepEqual(v, y[i]));
+  }
+  const x = a as Record<string, unknown>;
+  const y = b as Record<string, unknown>;
+  for (const k of new Set([...Object.keys(x), ...Object.keys(y)])) {
+    if (!deepEqual(x[k], y[k])) return false;
+  }
+  return true;
+}
+
 /**
  * Union bookmarks by type+id, keeping the EARLIEST timestamp so "saved on" does
  * not drift later every time two devices sync.
  */
-function mergeBookmarks(local: Bookmark[], remote: Bookmark[] | undefined): Bookmark[] {
-  if (!remote?.length) return local;
+function mergeBookmarks(local: Bookmark[], remote: unknown): Bookmark[] {
+  const mine = asArray<Bookmark>(local);
+  const theirs = asArray<Bookmark>(remote);
+  if (!theirs.length) return mine;
   const byKey = new Map<string, Bookmark>();
-  for (const b of [...remote, ...local]) {
+  for (const b of [...theirs, ...mine]) {
     if (!b || typeof b.id !== "string" || typeof b.type !== "string") continue;
     const k = `${b.type}:${b.id}`;
     const seen = byKey.get(k);
@@ -94,34 +224,73 @@ function mergeBookmarks(local: Bookmark[], remote: Bookmark[] | undefined): Book
   return [...byKey.values()].sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
 }
 
+function bookmarkKey(b: Bookmark): string {
+  return `${b?.type}:${b?.id}`;
+}
+
+/**
+ * A union can add but never subtract, so on its own it makes DELETION
+ * impossible: tap remove, and the next push pulls the account copy, unions the
+ * bookmark straight back in, and writes it to this device.
+ *
+ * `baseline` is the last value this device and the server agreed on. Anything
+ * in it that the local list no longer has was removed here, deliberately, since
+ * that agreement — so it is dropped from the merged result instead of being
+ * resurrected. Absent baseline (first run of the process) means we have no
+ * evidence of a removal and fall back to the pure union, which is the safe
+ * direction: the worst case is a bookmark that has to be deleted twice.
+ */
+function reapplyBookmarkRemovals(
+  merged: Bookmark[],
+  local: Bookmark[],
+  baseline: unknown
+): Bookmark[] {
+  const before = asArray<Bookmark>(baseline);
+  if (!before.length) return merged;
+  const stillHere = new Set(asArray<Bookmark>(local).map(bookmarkKey));
+  const removed = new Set<string>();
+  for (const b of before) {
+    const k = bookmarkKey(b);
+    if (!stillHere.has(k)) removed.add(k);
+  }
+  if (!removed.size) return merged;
+  return merged.filter((b) => !removed.has(bookmarkKey(b)));
+}
+
 /**
  * surahsRead is cumulative and has no other restore path — rebuilding it means
  * physically reopening every surah — so it unions. lastSurah/lastVerse is a
  * cursor, not a record; it self-heals on the next tap, so local wins when set
  * and remote only fills a gap.
  */
-function mergeProgress(
-  local: ReadingProgress,
-  remote: ReadingProgress | undefined
-): ReadingProgress {
+function mergeProgress(local: ReadingProgress, remote: unknown): ReadingProgress {
+  const r = asRecord(remote);
   const surahs = new Set<number>([
-    ...(Array.isArray(remote?.surahsRead) ? remote.surahsRead : []),
-    ...(Array.isArray(local.surahsRead) ? local.surahsRead : []),
+    ...asNumbers(r.surahsRead),
+    ...asNumbers(local?.surahsRead),
   ]);
-  const hasLocalCursor = typeof local.lastSurah === "number";
+  const hasLocalCursor = typeof local?.lastSurah === "number";
   return {
     surahsRead: [...surahs].sort((a, b) => a - b),
-    lastSurah: hasLocalCursor ? local.lastSurah : remote?.lastSurah,
-    lastVerse: hasLocalCursor ? local.lastVerse : remote?.lastVerse,
+    lastSurah: hasLocalCursor
+      ? local.lastSurah
+      : typeof r.lastSurah === "number"
+        ? r.lastSurah
+        : undefined,
+    lastVerse: hasLocalCursor
+      ? local.lastVerse
+      : typeof r.lastVerse === "number"
+        ? r.lastVerse
+        : undefined,
   };
 }
 
 function mergeSoonest(
-  a: Record<string, string> | undefined,
-  b: Record<string, string> | undefined
+  a: Record<string, string>,
+  b: Record<string, string>
 ): Record<string, string> {
-  const out: Record<string, string> = { ...(b ?? {}) };
-  for (const [k, v] of Object.entries(a ?? {})) {
+  const out: Record<string, string> = { ...b };
+  for (const [k, v] of Object.entries(a)) {
     out[k] = out[k] && out[k] < v ? out[k] : v;
   }
   return out;
@@ -133,39 +302,74 @@ function mergeSoonest(
  * card — a merge that reset a card to "new" would silently restart a child's
  * memorisation, which is precisely the loss this sync exists to prevent.
  */
-function mergeKids(local: KidsProgress, remote: KidsProgress | undefined): KidsProgress {
-  if (!remote) return local;
-  const maxNum = (a?: number, b?: number) => Math.max(a ?? 0, b ?? 0);
-  const union = <T,>(a?: T[], b?: T[]) => [...new Set([...(a ?? []), ...(b ?? [])])];
+function mergeKids(local: KidsProgress, remote: unknown): KidsProgress {
+  if (!remote || typeof remote !== "object" || Array.isArray(remote)) return local;
+  const r = remote as Partial<KidsProgress>;
+  const maxNum = (a?: number, b?: number) =>
+    Math.max(typeof a === "number" ? a : 0, typeof b === "number" ? b : 0);
+  const unionStrings = (a: unknown, b: unknown) => [
+    ...new Set([...asStrings(a), ...asStrings(b)]),
+  ];
+  const unionNumbers = (a: unknown, b: unknown) => [
+    ...new Set([...asNumbers(a), ...asNumbers(b)]),
+  ];
 
-  const buckets: Record<string, number> = { ...(remote.flashcardBuckets ?? {}) };
-  for (const [card, bucket] of Object.entries(local.flashcardBuckets ?? {})) {
+  const buckets = asNumberMap(r.flashcardBuckets);
+  for (const [card, bucket] of Object.entries(asNumberMap(local?.flashcardBuckets))) {
     buckets[card] = Math.max(buckets[card] ?? 0, bucket);
   }
-  const scores: Record<string, number> = { ...(remote.quizScores ?? {}) };
-  for (const [quiz, score] of Object.entries(local.quizScores ?? {})) {
+  const scores = asNumberMap(r.quizScores);
+  for (const [quiz, score] of Object.entries(asNumberMap(local?.quizScores))) {
     scores[quiz] = Math.max(scores[quiz] ?? 0, score);
   }
   // A completed day stays completed: `true` wins from either side.
-  const checklist: Record<string, boolean> = { ...(remote.dailyChecklist ?? {}) };
-  for (const [k, v] of Object.entries(local.dailyChecklist ?? {})) {
+  const checklist: Record<string, boolean> = {};
+  for (const [k, v] of Object.entries(asRecord(r.dailyChecklist))) {
     if (v) checklist[k] = true;
   }
-  const localNewer = (local.lastActiveDate ?? "") >= (remote.lastActiveDate ?? "");
+  for (const [k, v] of Object.entries(asRecord(local?.dailyChecklist))) {
+    if (v) checklist[k] = true;
+  }
+  const localDate = typeof local?.lastActiveDate === "string" ? local.lastActiveDate : "";
+  const remoteDate = typeof r.lastActiveDate === "string" ? r.lastActiveDate : "";
+  const localNewer = localDate >= remoteDate;
+  // ⚠️ streak and lastActiveDate are ONE fact and must come from ONE side.
+  // Taking the max streak and the later date independently invents a pair that
+  // never existed on either device — "a 40-day streak as of today" built from a
+  // 40 that was true last week and a date from a device that only has 2. That
+  // pair is not merely cosmetic: updateKidsStreak() reads it back and decides
+  // "continue" vs "reset" from lastActiveDate, so the fabricated streak then
+  // keeps incrementing. Same-day is the one safe exception — the dates already
+  // agree, so the higher count is consistent with both.
+  const sameDay = localDate === remoteDate;
+  const streak = sameDay
+    ? maxNum(local?.streak, r.streak)
+    : localNewer
+      ? local?.streak
+      : r.streak;
+  // A junk value here is not cosmetic: the kids screens switch on it, so an
+  // unrecognised group renders no lesson set at all. Fall back to this device's.
+  const remoteAge =
+    r.ageGroup === "little" || r.ageGroup === "explorer" || r.ageGroup === "scholar"
+      ? r.ageGroup
+      : undefined;
   return {
     // Age group is a choice, not a score — most recently active side wins.
-    ageGroup: localNewer ? local.ageGroup : remote.ageGroup,
-    stars: maxNum(local.stars, remote.stars),
-    streak: maxNum(local.streak, remote.streak),
-    lastActiveDate: localNewer ? local.lastActiveDate : remote.lastActiveDate,
-    completedLessons: union(local.completedLessons, remote.completedLessons),
-    memorizedSurahs: union(local.memorizedSurahs, remote.memorizedSurahs),
+    ageGroup: localNewer ? local?.ageGroup : (remoteAge ?? local?.ageGroup),
+    stars: maxNum(local?.stars, r.stars),
+    streak: typeof streak === "number" ? streak : 0,
+    lastActiveDate: localNewer ? localDate : remoteDate,
+    completedLessons: unionStrings(local?.completedLessons, r.completedLessons),
+    memorizedSurahs: unionNumbers(local?.memorizedSurahs, r.memorizedSurahs),
     flashcardBuckets: buckets,
     // Review dates follow their bucket; keep whichever is scheduled sooner so a
     // card cannot be pushed out of rotation by a stale copy.
-    flashcardNextReview: mergeSoonest(local.flashcardNextReview, remote.flashcardNextReview),
+    flashcardNextReview: mergeSoonest(
+      asStringMap(local?.flashcardNextReview),
+      asStringMap(r.flashcardNextReview)
+    ),
     dailyChecklist: checklist,
-    badges: union(local.badges, remote.badges),
+    badges: unionStrings(local?.badges, r.badges),
     quizScores: scores,
   };
 }
@@ -184,14 +388,13 @@ function mergeKids(local: KidsProgress, remote: KidsProgress | undefined): KidsP
  * outright. Only once both sides are real user edits does the newer timestamp
  * decide.
  */
-function preferNewest<T extends object>(
-  local: T,
-  remote: T | undefined,
-  ctx: MergeCtx
-): T {
-  if (!remote) return local;
+function preferNewest<T extends object>(local: T, remote: unknown, ctx: MergeCtx): T {
+  // A non-object remote cannot be spread into a settings blob without producing
+  // nonsense (a string spreads into numeric keys), so treat it as absent.
+  if (!remote || typeof remote !== "object" || Array.isArray(remote)) return local;
+  const r = remote as T;
   // Never let untouched defaults beat a real stored choice.
-  if (!ctx.localWritten) return remote;
+  if (!ctx.localWritten) return r;
   // The key exists, but no user edit was ever recorded against it — so it was
   // created by something applying SERVER data locally (the notifications screen
   // hydrating push flags, or a previous merge). That is not this device's
@@ -199,12 +402,12 @@ function preferNewest<T extends object>(
   //
   // Safe only because touches are recorded regardless of session: a signed-out
   // user's genuine choice DOES leave a timestamp, so it is not caught here.
-  if (!ctx.localTouchedAt) return remote;
+  if (!ctx.localTouchedAt) return r;
   // Both sides are real user edits: the later one wins.
   if (ctx.remoteUpdatedAt > ctx.localTouchedAt) {
-    return { ...local, ...remote };
+    return { ...local, ...r };
   }
-  return { ...remote, ...local };
+  return { ...r, ...local };
 }
 
 /**
@@ -221,15 +424,6 @@ function rawPresent(key: string): boolean {
     return false;
   }
 }
-
-/**
- * Local edit times per section, so newest-wins has a local clock to compare.
- *
- * Recorded when a section's storage key is written by the app (see
- * startPrefsSync), NOT when sync itself writes it — a sync-write is not a user
- * edit, and treating it as one would let a device keep winning forever.
- */
-const TOUCH_KEY = "hiqmah-sync-touched";
 
 /**
  * True while sync is writing merged data into local storage.
@@ -280,9 +474,22 @@ export function setPrefsSyncSignedIn(v: boolean) {
   signedIn = v;
 }
 
+/**
+ * Local edit times per section, so newest-wins has a local clock to compare.
+ *
+ * Recorded when a section's storage key is written by the app (see
+ * startPrefsSync), NOT when sync itself writes it — a sync-write is not a user
+ * edit, and treating it as one would let a device keep winning forever.
+ *
+ * The key lives in storage.ts's KEYS (as does the owner key below) so that
+ * "Clear local data" wipes it with everything else. It used to be a string
+ * literal here, which survived the wipe: the next sync then compared a fresh,
+ * empty section against edit timestamps from data that no longer existed and
+ * happily declared this device the winner.
+ */
 function readTouches(): Record<string, number> {
   try {
-    const raw = window.localStorage.getItem(TOUCH_KEY);
+    const raw = window.localStorage.getItem(SYNC_TOUCH_KEY);
     return raw ? (JSON.parse(raw) as Record<string, number>) : {};
   } catch {
     return {};
@@ -293,7 +500,7 @@ function recordTouch(section: string) {
   try {
     const all = readTouches();
     all[section] = Date.now();
-    window.localStorage.setItem(TOUCH_KEY, JSON.stringify(all));
+    window.localStorage.setItem(SYNC_TOUCH_KEY, JSON.stringify(all));
   } catch {
     // best-effort: a missing touch time degrades to "prefer local", not to loss
   }
@@ -302,48 +509,68 @@ function recordTouch(section: string) {
 const SECTIONS: Section<unknown>[] = [
   section<PrayerSettings>({
     name: "prayerSettings",
-    keys: ["hiqmah-prayer-settings"],
+    keys: [STORAGE_KEYS.prayerSettings],
     read: getPrayerSettings,
     write: (m) => setPrayerSettings(m),
     merge: preferNewest,
+    union: false,
   }),
   section<NotificationPrefs>({
     name: "notificationPrefs",
-    keys: ["hiqmah-notifications"],
+    keys: [STORAGE_KEYS.notifications],
     read: getNotificationPrefs,
     write: (m) => setNotificationPrefs(m),
     merge: preferNewest,
+    union: false,
   }),
   section<Bookmark[]>({
     name: "bookmarks",
-    keys: ["hiqmah-bookmarks"],
+    keys: [STORAGE_KEYS.bookmarks],
     read: getBookmarks,
     write: (m) => replaceBookmarks(m),
     merge: mergeBookmarks,
+    union: true,
+    reapplyRemovals: reapplyBookmarkRemovals,
   }),
   section<ReadingProgress>({
     name: "readingProgress",
-    keys: ["hiqmah-reading-progress"],
+    keys: [STORAGE_KEYS.progress],
     read: getProgress,
     write: (m) => replaceProgress(m),
     merge: mergeProgress,
+    union: true,
   }),
   section<KidsProgress>({
     name: "kidsProgress",
-    keys: ["hiqmah-kids-progress"],
+    keys: [STORAGE_KEYS.kidsProgress],
     read: getKidsProgress,
     write: (m) => updateKidsProgress(m),
     merge: mergeKids,
+    union: true,
   }),
 ];
 
-type RemoteSection = { data?: unknown; updatedAt?: string };
+const BY_NAME = new Map(SECTIONS.map((s) => [s.name, s]));
 
-async function fetchRemote(): Promise<Record<string, RemoteSection>> {
+/**
+ * The last value this device and the server are known to have agreed on, per
+ * section. Feeds reapplyRemovals — see reapplyBookmarkRemovals for why a union
+ * needs it. In memory only: it is evidence about THIS run, and a stale one
+ * across restarts would delete things rather than merely fail to.
+ */
+const reconciled = new Map<string, unknown>();
+
+type RemoteSection = { data?: unknown; updatedAt?: string };
+type RemoteSections = Record<string, RemoteSection>;
+
+async function fetchRemote(): Promise<RemoteSections> {
   // maybeSingle: no row is the normal first-sync case, not an error.
   const { data, error } = await supabase.from("user_prefs").select("sections").maybeSingle();
   if (error) throw error;
-  return (data?.sections ?? {}) as Record<string, RemoteSection>;
+  const sections = (data?.sections ?? {}) as unknown;
+  // The column is `not null default '{}'`, but a hand-edited row (or a future
+  // shape change) must not take the whole sync down with a spread of a scalar.
+  return asRecord(sections) as RemoteSections;
 }
 
 async function pushSection(name: string, data: unknown): Promise<void> {
@@ -355,51 +582,344 @@ async function pushSection(name: string, data: unknown): Promise<void> {
   if (error) throw error;
 }
 
+function buildCtx(
+  s: Section<unknown>,
+  remote: RemoteSection | undefined,
+  touches: Record<string, number>
+): MergeCtx {
+  const remoteAt = Date.parse(remote?.updatedAt ?? "");
+  return {
+    // Any of the section's keys being present means this device has written it.
+    localWritten: s.keys.some(rawPresent),
+    localTouchedAt: touches[s.name] ?? 0,
+    remoteUpdatedAt: Number.isNaN(remoteAt) ? 0 : remoteAt,
+  };
+}
+
+/** Write merged data locally without it counting as a user edit. */
+function applyLocally(s: Section<unknown>, merged: unknown): void {
+  applyingRemote = true;
+  try {
+    s.write(merged);
+  } finally {
+    // Reset in a finally: a throw from write() must not leave the flag stuck
+    // on, which would silently disable touch-recording for the whole session.
+    applyingRemote = false;
+  }
+}
+
+// ── Serialisation ───────────────────────────────────────────────────────────
+
+/**
+ * One server conversation at a time.
+ *
+ * supabase-js re-emits SIGNED_IN on session recovery and on refocus, so the
+ * sign-in sync fires on essentially every app foreground; the debounced pushes
+ * fire independently. Both are read-modify-write over one row, so overlapping
+ * runs can interleave a stale read with a fresh write — sending, for example, a
+ * bookmark union computed before another run's addition landed. Queuing them is
+ * enough: these are five small RPCs, never a hot path.
+ */
+let queue: Promise<unknown> = Promise.resolve();
+function runExclusive<T>(fn: () => Promise<T>): Promise<T> {
+  const run = queue.then(fn, fn);
+  queue = run.catch(() => {});
+  return run;
+}
+
+/**
+ * How long a full sign-in sync stays "already done" for the same user.
+ *
+ * Without it, every foreground pays a fetch plus five RPCs. The cost is not
+ * only network: a push re-stamps the section's updatedAt, so the server clock
+ * would drift from "when the user last edited this" towards "when this phone
+ * was last opened" — and newest-wins then hands the argument to whichever
+ * device was opened most recently rather than whichever was edited last.
+ * (Skipping equal pushes fixes most of that; this stops the rest.)
+ */
+const MIN_SYNC_INTERVAL_MS = 60_000;
+let lastSyncUser: string | null = null;
+let lastSyncAt = 0;
+
+// ── Account ownership ───────────────────────────────────────────────────────
+
+function readOwner(): string | null {
+  try {
+    return window.localStorage.getItem(SYNC_OWNER_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeOwner(userId: string): void {
+  try {
+    window.localStorage.setItem(SYNC_OWNER_KEY, userId);
+  } catch {
+    // best effort — worst case is a redundant clear on the next account switch
+  }
+}
+
+/**
+ * Forget the previous account's synced state before merging a different one.
+ *
+ * Sign-out leaves everything in localStorage. Sign in as somebody else on the
+ * same device — a shared family phone, a support session, a tester — and the
+ * merge treats the FIRST account's bookmarks, kids progress and prayer settings
+ * as this device's own opinion: it unions them into the second account and
+ * pushes them there, permanently. Nothing about that is recoverable from the
+ * second account's side, so the keys go before a single merge runs.
+ *
+ * Only the synced keys and the sync bookkeeping — the rest of storage (theme,
+ * font size, home layout) is genuinely per-device and nobody's private data.
+ */
+function clearPreviousAccountState(): void {
+  try {
+    for (const s of SECTIONS) for (const k of s.keys) window.localStorage.removeItem(k);
+    // The touch map is per-account too: keeping it would let the previous
+    // owner's edit times decide newest-wins for the new owner's data.
+    window.localStorage.removeItem(SYNC_TOUCH_KEY);
+    window.localStorage.removeItem(SYNC_OWNER_KEY);
+  } catch {
+    // ignore — an unavailable localStorage means there is nothing to leak
+  }
+  reconciled.clear();
+}
+
+// ── Dependents of a merged preference ───────────────────────────────────────
+
+/**
+ * The three notification preferences that are ALSO columns on `profiles`,
+ * because the send routes read the columns, not this device's localStorage.
+ */
+const MIRRORED_PUSH_PREFS: { key: keyof NotificationPrefs; rpc: string }[] = [
+  { key: "circleChat", rpc: "set_my_circle_push" },
+  { key: "duaPush", rpc: "set_my_dua_push" },
+  { key: "reengagementPush", rpc: "set_my_reengagement_push" },
+];
+
+/**
+ * Re-mirror any of the three remote-push flags the merge changed.
+ *
+ * These are the only synced settings with a second server-side copy. The merge
+ * can flip one — pulling down "weekly duʿā off" chosen on another device — but
+ * the SENDER never looks at user_prefs, so without this the server keeps
+ * sending a push the user has already switched off everywhere they can see it.
+ * Only changed flags are sent, so the normal foreground sync issues no RPCs.
+ *
+ * supabase.rpc() resolves errors instead of throwing, so a failure has to be
+ * read off `error` or it is lost silently; on failure we hand off to push.ts's
+ * dirty flag, which re-asserts the local truth on the next foreground.
+ */
+async function mirrorPushPrefs(
+  before: NotificationPrefs,
+  after: NotificationPrefs
+): Promise<void> {
+  const changed = MIRRORED_PUSH_PREFS.filter((m) => before[m.key] !== after[m.key]);
+  if (!changed.length) return;
+  let failed = false;
+  for (const m of changed) {
+    try {
+      const { error } = await supabase.rpc(m.rpc, { p_enabled: after[m.key] === true });
+      if (error) failed = true;
+    } catch {
+      failed = true; // network threw before postgrest could answer
+    }
+  }
+  if (failed) {
+    try {
+      const { markPushPrefsDirty } = await import("@/lib/mobile/push");
+      markPushPrefsDirty();
+    } catch {
+      // push.ts is native-only surface; on web there is nothing to re-assert
+    }
+  }
+}
+
+/**
+ * Re-arm everything that was computed from the OLD preference values.
+ *
+ * Merging the account's real settings into storage is only half the job: the
+ * local notification schedule was built at app start from the previous values,
+ * and the widgets render from a blob published into the App Group. Neither
+ * re-reads storage on its own. So pulling down a user's actual Hanafi madhhab
+ * fixed the Asr time shown in the app while the ADHAN kept firing at the old
+ * Shafiʿi time, and the Lock Screen kept showing it, until the next cold start
+ * — which is the headline failure this whole feature exists to prevent, still
+ * present after the fix. Settings screens already do exactly this on a user
+ * edit (SettingsScreen.updatePrayer, NotificationsScreen.updateNotif).
+ *
+ * Dynamically imported so this module stays free of the native plugins on web:
+ * a static import would pull @capacitor/local-notifications into every bundle
+ * that touches auth. Both functions no-op off-native, so no platform check is
+ * needed here.
+ *
+ * promptIfNeeded stays FALSE: this runs on sign-in, in the background, and a
+ * permission dialog with no user action behind it is both baffling and a wasted
+ * one-shot prompt.
+ */
+async function rearmPreferenceDependents(
+  prayerChanged: boolean,
+  notifChanged: boolean
+): Promise<void> {
+  if (prayerChanged || notifChanged) {
+    try {
+      const { scheduleAllNotifications } = await import("@/lib/mobile/notifications");
+      await scheduleAllNotifications(false);
+    } catch (e) {
+      console.error("[prefsSync] could not re-arm notifications after merge", e);
+    }
+  }
+  // Widgets render prayer times and the streak; notification toggles are not an
+  // input to that payload, so only a prayer-settings change forces a republish.
+  if (prayerChanged) {
+    try {
+      const { syncWidgetData } = await import("@/lib/mobile/widgets");
+      await syncWidgetData({ force: true });
+    } catch (e) {
+      console.error("[prefsSync] could not refresh widget data after merge", e);
+    }
+  }
+}
+
+// ── Sign-in sync ────────────────────────────────────────────────────────────
+
 /**
  * Pull the account's copy, merge it into local, push the result back.
  *
- * Call once per sign-in. Merging BOTH ways in a single pass is what makes the
- * first sign-in on a new phone safe: whatever the device already had survives
- * (someone who bookmarked things before signing in keeps them), and whatever the
- * account held appears. The push afterwards is what puts a previously
- * local-only install onto the server for the first time.
+ * Call on sign-in with the id of the user who just signed in. Merging BOTH ways
+ * in a single pass is what makes the first sign-in on a new phone safe:
+ * whatever the device already had survives (someone who bookmarked things
+ * before signing in keeps them), and whatever the account held appears. The
+ * push afterwards is what puts a previously local-only install onto the server
+ * for the first time.
  *
  * Sections are independent — one failure must not stop the rest — so each is
  * caught on its own. Failures log and retry on the next sign-in rather than
  * surfacing: a preference that syncs late does not deserve a modal.
  */
-export async function syncPrefsOnSignIn(): Promise<void> {
-  let remote: Record<string, RemoteSection>;
+export async function syncPrefsOnSignIn(userId: string): Promise<void> {
+  if (typeof window === "undefined" || !userId) return;
+  // Callers fire-and-forget, so anything that escapes the per-section catches
+  // (a rejection from the shared queue, say) would surface as an unhandled
+  // rejection — noise in a crash reporter for something the next foreground
+  // retries anyway.
+  return runExclusive(() => runSignInSync(userId)).catch((e) => {
+    console.error("[prefsSync] sign-in sync failed", e);
+  });
+}
+
+async function runSignInSync(userId: string): Promise<void> {
+  // supabase-js re-emits SIGNED_IN on token refresh and on session recovery, so
+  // this is called on essentially every foreground. Nothing local changes in
+  // between that the debounced push has not already sent.
+  if (lastSyncUser === userId && Date.now() - lastSyncAt < MIN_SYNC_INTERVAL_MS) return;
+
+  const previousOwner = readOwner();
+  if (previousOwner && previousOwner !== userId) clearPreviousAccountState();
+  // Claimed BEFORE the merge, not after: a crash or a killed app mid-merge must
+  // not leave the previous owner recorded, or the next sign-in would wipe the
+  // state we just merged for this user.
+  writeOwner(userId);
+
+  let remote: RemoteSections;
   try {
     remote = await fetchRemote();
   } catch (e) {
+    // Leave lastSyncAt alone so the next foreground retries instead of waiting
+    // out the interval on a sync that never happened.
     console.error("[prefsSync] could not read account prefs", e);
     return;
   }
+
   const touches = readTouches();
+  const prayerBefore = getPrayerSettings();
+  const notifBefore = getNotificationPrefs();
+
   for (const s of SECTIONS) {
     try {
-      const remoteAt = Date.parse(remote[s.name]?.updatedAt ?? "");
-      const ctx: MergeCtx = {
-        // Any of the section's keys being present means this device has written it.
-        localWritten: s.keys.some(rawPresent),
-        localTouchedAt: touches[s.name] ?? 0,
-        remoteUpdatedAt: Number.isNaN(remoteAt) ? 0 : remoteAt,
-      };
-      const merged = s.merge(s.read(), remote[s.name]?.data, ctx);
-      applyingRemote = true;
-      try {
-        s.write(merged);
-      } finally {
-        // Reset in a finally: a throw from write() must not leave the flag stuck
-        // on, which would silently disable touch-recording for the whole session.
-        applyingRemote = false;
+      const local = s.read();
+      const ctx = buildCtx(s, remote[s.name], touches);
+      let merged = s.merge(local, remote[s.name]?.data, ctx);
+      if (s.reapplyRemovals) {
+        merged = s.reapplyRemovals(merged, local, reconciled.get(s.name));
       }
-      await pushSection(s.name, merged);
+      if (!deepEqual(merged, local)) applyLocally(s, merged);
+      // Skip a push that would change nothing. Beyond the wasted round-trip, a
+      // no-op push re-stamps updatedAt, turning the server's "when this was last
+      // edited" into "when this phone was last opened" — which is the value
+      // newest-wins compares against.
+      if (
+        mayPublish(ctx, remote[s.name] !== undefined) &&
+        !deepEqual(merged, remote[s.name]?.data)
+      ) {
+        await pushSection(s.name, merged);
+      }
+      reconciled.set(s.name, merged);
     } catch (e) {
       console.error(`[prefsSync] section "${s.name}" failed`, e);
     }
   }
+
+  const prayerAfter = getPrayerSettings();
+  const notifAfter = getNotificationPrefs();
+  await mirrorPushPrefs(notifBefore, notifAfter);
+  await rearmPreferenceDependents(
+    !deepEqual(prayerBefore, prayerAfter),
+    !deepEqual(notifBefore, notifAfter)
+  );
+
+  lastSyncUser = userId;
+  lastSyncAt = Date.now();
+}
+
+// ── Live pushes ─────────────────────────────────────────────────────────────
+
+/**
+ * Send one section's local change to the account.
+ *
+ * ⭐ A union section can NEVER be pushed raw. set_pref_section replaces the
+ * whole section, so pushing this device's bookmark list overwrites the
+ * account's — deleting every bookmark that only exists on another phone, which
+ * is precisely the loss mergeBookmarks was written to prevent. Saving one
+ * bookmark on a new phone would have wiped the other phone's entire library.
+ * So union sections take the same pull-merge-write-push path as sign-in; the
+ * extra read is the price of the guarantee.
+ *
+ * preferNewest sections have no such hazard: the whole point is that one side
+ * wins outright, and this device's value IS the newest — the user just typed
+ * it. The RPC's own updatedAt guard drops it if the server somehow has newer.
+ */
+async function pushLocalChange(s: Section<unknown>): Promise<void> {
+  if (!s.union) {
+    const local = s.read();
+    await pushSection(s.name, local);
+    reconciled.set(s.name, local);
+    return;
+  }
+  const remote = await fetchRemote();
+  const touches = readTouches();
+  const local = s.read();
+  const ctx = buildCtx(s, remote[s.name], touches);
+  let merged = s.merge(local, remote[s.name]?.data, ctx);
+  if (s.reapplyRemovals) {
+    merged = s.reapplyRemovals(merged, local, reconciled.get(s.name));
+  }
+  if (!deepEqual(merged, local)) applyLocally(s, merged);
+  // Same guard as the sign-in path — though a debounced push almost always
+  // follows a real edit (which sets localWritten), so this is belt and braces.
+  if (
+    mayPublish(ctx, remote[s.name] !== undefined) &&
+    !deepEqual(merged, remote[s.name]?.data)
+  ) {
+    await pushSection(s.name, merged);
+  }
+  reconciled.set(s.name, merged);
+}
+
+function schedulePush(s: Section<unknown>): void {
+  void runExclusive(() => pushLocalChange(s)).catch((e) =>
+    console.error(`[prefsSync] push "${s.name}" failed`, e)
+  );
 }
 
 /**
@@ -438,9 +958,7 @@ export function startPrefsSync(): () => void {
       s.name,
       setTimeout(() => {
         timers.delete(s.name);
-        void pushSection(s.name, s.read()).catch((e) =>
-          console.error(`[prefsSync] push "${s.name}" failed`, e)
-        );
+        schedulePush(s);
       }, 1500)
     );
   };
@@ -448,7 +966,17 @@ export function startPrefsSync(): () => void {
   window.addEventListener(STORAGE_CHANGED_EVENT, onChange);
   return () => {
     window.removeEventListener(STORAGE_CHANGED_EVENT, onChange);
-    for (const t of timers.values()) clearTimeout(t);
+    // FLUSH, never discard. A pending timer holds an edit the user has already
+    // made — a bookmark they deleted, a madhhab they changed — and clearing it
+    // drops that edit permanently while the UI shows it as saved. The next sync
+    // then merges the SERVER's older copy back in and the change appears to
+    // undo itself. Teardown here is a React effect re-running, not the process
+    // ending, so the push has ample time to land.
+    for (const [name, t] of timers) {
+      clearTimeout(t);
+      const s = BY_NAME.get(name);
+      if (s && signedIn) schedulePush(s);
+    }
     timers.clear();
   };
 }

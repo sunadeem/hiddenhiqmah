@@ -33,7 +33,27 @@ export type ReadingProgress = {
   lastVerse?: number;
 };
 
-const KEYS = {
+/**
+ * Bookkeeping for account sync (apps/web/src/lib/sync/prefsSync.ts): the last
+ * local edit time per synced section, and the account id whose data is
+ * currently on this device.
+ *
+ * Declared HERE, and listed in KEYS below, so "Clear local data" wipes them
+ * with everything else. They started life as string literals inside prefsSync
+ * and therefore survived the wipe — after which the next sync compared a fresh,
+ * empty device against edit timestamps belonging to data that no longer
+ * existed, and let those stale clocks win. Exported so the sync layer uses the
+ * one definition rather than re-typing the strings.
+ */
+export const SYNC_TOUCH_KEY = "hiqmah-sync-touched";
+export const SYNC_OWNER_KEY = "hiqmah-sync-owner";
+
+/**
+ * Every key this module owns. Exported as STORAGE_KEYS so account sync can name
+ * the keys it syncs without duplicating the strings — a duplicate that drifts
+ * means sync silently stops noticing a section's writes.
+ */
+export const STORAGE_KEYS = {
   bookmarks: "hiqmah-bookmarks",
   progress: "hiqmah-reading-progress",
   fontSize: "hiqmah-font-size",
@@ -47,7 +67,11 @@ const KEYS = {
   prayerSettings: "hiqmah-prayer-settings",
   homePrefs: "hiqmah-home-prefs",
   syncPrompt: "hiqmah-sync-prompt",
+  syncTouched: SYNC_TOUCH_KEY,
+  syncOwner: SYNC_OWNER_KEY,
 } as const;
+
+const KEYS = STORAGE_KEYS;
 
 export type VisitStats = {
   lastVisit?: string;

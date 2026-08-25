@@ -111,6 +111,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     })();
 
+    // Work kicked off from the auth callback, deferred out of it — see below.
+    const deferred = new Set<ReturnType<typeof setTimeout>>();
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, newSession) => {
@@ -129,14 +132,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Fire-and-forget: sign-in must never block on this, and a section that
       // fails retries on the next sign-in. See lib/sync/prefsSync.ts for the
       // per-section merge rules.
-      if (event === "SIGNED_IN" && newSession) {
-        void syncPrefsOnSignIn();
+      //
+      // ⚠️ Deferred with setTimeout(…, 0) because the sync calls supabase — and
+      // calling supabase from INSIDE an onAuthStateChange callback can deadlock
+      // (the client holds its auth lock for the duration of the callback, and
+      // any request that then needs to read or refresh the session waits on a
+      // lock its own caller is holding; supabase-js documents this explicitly).
+      // Yielding to the macrotask queue lets the callback return and the lock
+      // release before the first query goes out.
+      //
+      // The user id is passed rather than re-read later: it is the identity that
+      // triggered this run, and prefsSync compares it against the account whose
+      // data is on the device to decide whether to wipe first.
+      if (event === "SIGNED_IN" && newSession?.user) {
+        const uid = newSession.user.id;
+        const t = setTimeout(() => {
+          deferred.delete(t);
+          void syncPrefsOnSignIn(uid);
+        }, 0);
+        deferred.add(t);
       }
     });
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
+      for (const t of deferred) clearTimeout(t);
+      deferred.clear();
     };
   }, []);
 
@@ -148,9 +170,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // indistinguishable and the merge has to guess. Pushing is still gated — see
   // setPrefsSyncSignedIn.
   useEffect(() => startPrefsSync(), []);
+  // Keyed on the user ID, never on the session object. `session` is REPLACED on
+  // every token refresh (hourly) even though the signed-in user has not
+  // changed, so a session-keyed effect re-runs constantly — harmless here, but
+  // anything with a teardown that touches pending sync work would tear it down
+  // on the refresh, silently dropping an edit the user had just made.
+  const userId = session?.user?.id ?? null;
   useEffect(() => {
-    setPrefsSyncSignedIn(!!session);
-  }, [session]);
+    setPrefsSyncSignedIn(!!userId);
+  }, [userId]);
 
   const signInWithEmail = useCallback(async (email: string) => {
     const emailRedirectTo =
