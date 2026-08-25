@@ -173,9 +173,11 @@ export function useScrollRestoration(
 
   // ---- backward detection -------------------------------------------------
   // All three back entry points funnel into popstate and no forward path does:
-  // Android hardware/gesture back falls through to webView.goBack() (no backButton
-  // listener is registered anywhere in the app), the edge-swipe in MobileShell
-  // calls router.back(), and MobileTopBar's chevron calls router.back().
+  // Android hardware/gesture back is handled by the backButton listener in
+  // MobileShell, which calls router.back() — it deliberately does NOT touch
+  // history directly, precisely so this funnel keeps holding; the edge-swipe in
+  // MobileShell calls router.back(), and MobileTopBar's chevron calls
+  // router.back().
   useEffect(() => {
     const onPop = () => {
       const l = window.location;

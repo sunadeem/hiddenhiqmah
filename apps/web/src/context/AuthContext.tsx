@@ -9,6 +9,7 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { syncPrefsOnSignIn, startPrefsSync } from "@/lib/sync/prefsSync";
 
 type AuthState = {
   session: Session | null;
@@ -108,9 +109,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    } = supabase.auth.onAuthStateChange((event, newSession) => {
       if (!mounted) return;
       setSession(newSession);
+
+      // ⭐ Pull the account's preferences down and merge them into this device.
+      //
+      // Until this existed, signing in restored a user's IDENTITY and nothing
+      // else: settings, bookmarks, kids progress and reading progress all lived
+      // in localStorage with no server copy and no hydrate step, so a new phone
+      // showed defaults. Worst case was silent, not cosmetic — prayer method and
+      // Asr madhhab reset to ISNA/Shafiʿi, moving Asr by up to 90 minutes with
+      // nothing on screen to indicate it.
+      //
+      // Fire-and-forget: sign-in must never block on this, and a section that
+      // fails retries on the next sign-in. See lib/sync/prefsSync.ts for the
+      // per-section merge rules.
+      if (event === "SIGNED_IN" && newSession) {
+        void syncPrefsOnSignIn();
+      }
     });
 
     return () => {
@@ -118,6 +135,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
     };
   }, []);
+
+  // Push local preference edits up while signed in, debounced. Detached from the
+  // effect above so it starts and stops with the session rather than the mount.
+  useEffect(() => {
+    if (!session) return;
+    return startPrefsSync();
+  }, [session]);
 
   const signInWithEmail = useCallback(async (email: string) => {
     const emailRedirectTo =
