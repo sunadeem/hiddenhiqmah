@@ -11,6 +11,10 @@ const config: CapacitorConfig = {
     contentInset: 'never',
     backgroundColor: '#000000',
   },
+  // NOTE: Capacitor's config has no per-platform `plugins` override — only the
+  // root `plugins` block is read, so SplashScreen settings here apply to BOTH
+  // platforms. Android's second splash is suppressed at runtime instead; see
+  // hideAndroidSplash() in lib/mobile/setup.ts.
   plugins: {
     StatusBar: {
       style: 'LIGHT',

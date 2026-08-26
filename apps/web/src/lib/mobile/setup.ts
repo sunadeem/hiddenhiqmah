@@ -12,8 +12,54 @@ let viewportObserverAttached = false;
  * Run once on app start to apply native-only configuration.
  * Safe to call on web — guards each call with isNativePlatform().
  */
+/**
+ * Dismiss Capacitor's splash immediately on Android. No-op on iOS and web.
+ *
+ * ⭐ ANDROID SHOWS TWO SPLASHES; THIS SUPPRESSES THE SECOND.
+ *
+ *   1. The Android 12+ SYSTEM splash (windowSplashScreenAnimatedIcon in
+ *      values/styles.xml) draws splash_icon at roughly 304px from a ~323px
+ *      source — a downscale, so it is sharp.
+ *   2. Then Capacitor's own splash draws a COMPLETELY DIFFERENT asset,
+ *      drawable-port-<dpi>/splash.png, for launchShowDuration plus the fade.
+ *
+ * (2) is where the quality went, and it is measured rather than assumed: those
+ * assets were authored to canvas ratios instead of device resolutions, so a
+ * 1080x2340 phone lands in the xxhdpi bucket, gets 960x1600, and CENTER_CROP
+ * scales it 1.46x to cover the screen — dragging a 222px mark up to ~325px.
+ * Even the xxxhdpi variant upscales 1.22x. So the sharp system splash flashed
+ * past and the soft one sat there for 1.8s. That second one is what people
+ * actually saw, and what compared badly with iOS — which ships a 2732x2732
+ * asset with a 366px mark rendered at ~343px, a slight DOWNSCALE.
+ *
+ * Android 12+ provides a splash already, so the second is redundant as well as
+ * worse. iOS keeps its own: it has no system splash and its asset is correctly
+ * sized for the job.
+ *
+ * Done here rather than in capacitor.config.ts because Capacitor has no
+ * per-platform `plugins` override — the root block applies to both platforms,
+ * and lowering launchShowDuration there would take iOS's splash with it.
+ *
+ * The splash.png assets are deliberately left in place, unused, until a device
+ * confirms this is right.
+ */
+async function hideAndroidSplash() {
+  if (Capacitor.getPlatform() !== "android") return;
+  try {
+    const { SplashScreen } = await import("@capacitor/splash-screen");
+    await SplashScreen.hide();
+  } catch {
+    // Best-effort: if it fails the old behaviour returns (a soft splash for
+    // 1.5s), which is cosmetic — never a reason to break app start.
+  }
+}
+
 export async function applyNativeSetup() {
   if (!Capacitor.isNativePlatform()) return;
+
+  // First, before any of the layout work below: the sooner this runs, the less
+  // of the redundant second splash is visible.
+  void hideAndroidSplash();
 
   // Mark the document so globals.css can scope native-only styling.
   // The website's <html> never gets this class, so .native rules are
