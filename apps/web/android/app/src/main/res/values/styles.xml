@@ -66,7 +66,21 @@
          on that emulator - the same undistorted size as the 305x457 on 12+. -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+        <!-- ⭐ VECTOR, not the drawable-<dpi>/splash_icon.png rasters.
+             MEASURED on a 450dpi Galaxy A17: the bitmap path renders the mark at
+             303x455 with an edge energy of 5.72, while a clean resample of the
+             SAME source file to the SAME pixel size gives 9.71 — Android's splash
+             pipeline destroys ~41% of the edge detail, apparently resampling
+             twice (drawable -> internal icon bitmap -> window).
+             No raster asset can fix that: simulating the device's bilinear scale
+             from xhdpi, xxhdpi AND xxxhdpi all land near 11, roughly double what
+             the device actually produces. A vector is rasterised once, directly
+             at the target size, so there is no bitmap resample to lose detail in.
+             The artwork is unchanged — a faithful vectorisation of the original
+             mark, not a redesign (a redesign was tried in build 6 and reverted).
+             The splash_icon.png rasters are deliberately LEFT IN PLACE, unused,
+             until a device confirms this. -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon_vector</item>
 
         <!-- Belt and braces, not load-bearing. This is the attribute
              core-splashscreen reads to setTheme() the activity back to its real
