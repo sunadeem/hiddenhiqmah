@@ -97,7 +97,10 @@ function StreakCard({ streaks }: { streaks: Streaks }) {
         <span>Streak</span>
       </div>
       <p className="text-2xl font-bold text-themed leading-none">
-        {streak} <span className="text-base font-normal text-themed-muted">days</span>
+        {streak}{" "}
+        <span className="text-base font-normal text-themed-muted">
+          {streak === 1 ? "day" : "days"}
+        </span>
       </p>
       <p className="text-xs text-themed-muted mt-1">Today&apos;s checklist →</p>
     </Link>
