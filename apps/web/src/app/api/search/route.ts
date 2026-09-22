@@ -935,7 +935,10 @@ export async function POST(req: NextRequest) {
         while ((linkMatch = linkRegex.exec(text)) !== null) {
           links.push({ label: linkMatch[1].trim(), href: linkMatch[2].trim() });
         }
-        text = text.replace(/\[\[link:[^\]]+\]\]/g, "").trim();
+        // Eat the whitespace BEFORE the marker as well. Without the [ \t]* the
+        // model's natural "...as narrated [[link:..|/x]]." strips to "narrated ."
+        // — an orphaned space sitting in front of the punctuation.
+        text = text.replace(/[ \t]*\[\[link:[^\]]+\]\]/g, "").trim();
 
         // Extract [[cite:N]] markers to determine which citations Claude actually wants to include
         const citedIndices = new Set<number>();
@@ -944,7 +947,19 @@ export async function POST(req: NextRequest) {
         while ((citeMatch = citeRegex.exec(text)) !== null) {
           citedIndices.add(parseInt(citeMatch[1], 10));
         }
-        text = text.replace(/\[\[cite:\d+\]\]/g, "").trim();
+        // Same fix, and this is the one that was actually visible: the model writes
+        // "...from Allah [[cite:1]]." and the old strip left "from Allah ." — a space
+        // stranded before the full stop, on the app's most scrutinised surface.
+        //
+        // ⚠️ Deliberately NOT applied to cleanForStream() above. That function is
+        // load-bearing for the delta protocol: flushDeltas only sends when
+        // clean.length > emittedLen and slices from emittedLen, so the cleaned PREFIX
+        // must never shrink. Stripping the marker ALONE returns the text to exactly
+        // the prefix already emitted, which is precisely why it is stable; eating the
+        // preceding space would pull it below emittedLen and the next character would
+        // never be sent. The streamed text is replaced by this final payload, so the
+        // artifact is transient there and permanent here.
+        text = text.replace(/[ \t]*\[\[cite:\d+\]\]/g, "").trim();
 
         // Only include citations that Claude explicitly referenced
         const filteredCitations: Citation[] = [];
