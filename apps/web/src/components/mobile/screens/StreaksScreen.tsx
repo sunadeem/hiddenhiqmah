@@ -156,7 +156,7 @@ export default function StreaksScreen() {
               {pause
                 ? "Held while you're on a break"
                 : streaks.overallBest > streaks.overallCurrent
-                ? `Best: ${streaks.overallBest} days · may Allah accept it`
+                ? `Best: ${streaks.overallBest} ${streaks.overallBest === 1 ? "day" : "days"} · may Allah accept it`
                 : "May Allah accept it"}
             </p>
             {streaks.prayerCurrent > 0 && (
