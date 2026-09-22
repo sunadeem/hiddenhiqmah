@@ -88,9 +88,9 @@ export const dailyInspirations = [
   },
   {
     type: "Quran",
-    arabic: "إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
-    english: "Indeed, with hardship comes ease.",
-    reference: "Quran 94:6",
+    arabic: "وَإِذَا سَأَلَكَ عِبَادِى عَنِّى فَإِنِّى قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ ٱلدَّاعِ إِذَا دَعَانِ ۖ فَلْيَسْتَجِيبُوا۟ لِى وَلْيُؤْمِنُوا۟ بِى لَعَلَّهُمْ يَرْشُدُونَ",
+    english: "When My slaves ask you concerning Me, I am indeed near. I respond to the call of the supplicant when he calls upon Me; so they should respond to Me and believe in Me, so that they may be guided.",
+    reference: "Quran 2:186",
   },
   {
     type: "Quran",
@@ -196,9 +196,9 @@ export const dailyInspirations = [
   },
   {
     type: "Quran",
-    arabic: "وَإِذَا سَأَلَكَ عِبَادِى عَنِّى فَإِنِّى قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ ٱلدَّاعِ إِذَا دَعَانِ ۖ فَلْيَسْتَجِيبُوا۟ لِى وَلْيُؤْمِنُوا۟ بِى لَعَلَّهُمْ يَرْشُدُونَ",
-    english: "When My slaves ask you concerning Me, I am indeed near. I respond to the call of the supplicant when he calls upon Me; so they should respond to Me and believe in Me, so that they may be guided.",
-    reference: "Quran 2:186",
+    arabic: "إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
+    english: "Indeed, with hardship comes ease.",
+    reference: "Quran 94:6",
   },
   {
     type: "Quran",
