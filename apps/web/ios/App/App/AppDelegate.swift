@@ -23,10 +23,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // ⚠️ The app runs under the UIScene lifecycle (SceneDelegate.swift, required
-    // by the iOS 27 SDK), so UIKit does NOT call the five lifecycle methods below.
-    // They are empty template stubs and nothing depends on them; app-state work
-    // belongs in SceneDelegate or on the UIApplication notifications, which are
-    // still posted under scenes.
+    // by the iOS 27 SDK), so UIKit does NOT call the four active/background/
+    // foreground methods below. applicationWillTerminate IS still delivered here.
+    // All five are empty template stubs and nothing depends on them; app-state
+    // work belongs in SceneDelegate or on the UIApplication notifications, which
+    // are still posted under scenes.
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
