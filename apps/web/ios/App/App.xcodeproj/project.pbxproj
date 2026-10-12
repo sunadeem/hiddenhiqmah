@@ -23,6 +23,7 @@
 		D6E7A1B2C3D400000000000D /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000004 /* SharedData.swift */; };
 		D6E7A1B2C3D400000000000E /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000008 /* WidgetBridge.swift */; };
 		D6E7A1B2C3D400000000000F /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000009 /* MainViewController.swift */; };
+		D6E7A1B2C3D40000000000B2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D40000000000B1 /* SceneDelegate.swift */; };
 		D6E7A1B2C3D4000000000010 /* HiqmahWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D4000000000007 /* HiqmahWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D6E7A1B2C3D400000000001D /* QiblaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D400000000001C /* QiblaWidget.swift */; };
 		D6E7A1B2C3D400000000001F /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E7A1B2C3D400000000001E /* StreakWidget.swift */; };
@@ -76,6 +77,7 @@
 		D6E7A1B2C3D4000000000007 /* HiqmahWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HiqmahWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6E7A1B2C3D4000000000008 /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBridge.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000009 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		D6E7A1B2C3D40000000000B1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D400000000001C /* QiblaWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QiblaWidget.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D400000000001E /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
 		D6E7A1B2C3D4000000000020 /* CountdownWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownWidget.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				D6E7A1B2C3D4000000000009 /* MainViewController.swift */,
+				D6E7A1B2C3D40000000000B1 /* SceneDelegate.swift */,
 				D6E7A1B2C3D4000000000008 /* WidgetBridge.swift */,
 				D6E7A1B2C3D40000000000A1 /* HeadingBridge.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
@@ -274,6 +277,7 @@
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				D6E7A1B2C3D400000000000F /* MainViewController.swift in Sources */,
+				D6E7A1B2C3D40000000000B2 /* SceneDelegate.swift in Sources */,
 				D6E7A1B2C3D400000000000E /* WidgetBridge.swift in Sources */,
 				D6E7A1B2C3D40000000000A2 /* HeadingBridge.swift in Sources */,
 			);

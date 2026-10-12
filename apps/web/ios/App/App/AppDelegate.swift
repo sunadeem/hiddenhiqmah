@@ -22,6 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    // ⚠️ The app runs under the UIScene lifecycle (SceneDelegate.swift, required
+    // by the iOS 27 SDK), so UIKit does NOT call the five lifecycle methods below.
+    // They are empty template stubs and nothing depends on them; app-state work
+    // belongs in SceneDelegate or on the UIApplication notifications, which are
+    // still posted under scenes.
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -33,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part o#imageLiteral(resourceName: "simulator_screenshot_6D05002F-D1D8-4064-B0B5-F7DFD8DA498C.png")f the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -44,6 +49,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    // ⚠️ NOT the live path. Under the UIScene lifecycle UIKit delivers links to
+    // SceneDelegate (willConnectTo on a cold start, openURLContexts while
+    // running) and never calls these two. Kept only as a fallback should the
+    // scene manifest ever fail to engage; remove once the scene path has been
+    // confirmed on a device.
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         // Called when the app was launched with a url. Feel free to add additional processing here,
         // but if you want the App API to support tracking app url opens, make sure to keep this call
