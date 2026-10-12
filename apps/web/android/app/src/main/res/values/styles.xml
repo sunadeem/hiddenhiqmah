@@ -78,8 +78,9 @@
              at the target size, so there is no bitmap resample to lose detail in.
              The artwork is unchanged — a faithful vectorisation of the original
              mark, not a redesign (a redesign was tried in build 6 and reverted).
-             The splash_icon.png rasters are deliberately LEFT IN PLACE, unused,
-             until a device confirms this. -->
+             The old drawable-<dpi>/splash_icon.png rasters were kept, unused,
+             until build 9 confirmed the vector on a device, then removed in
+             build 10 - so nothing named splash_icon exists any more. -->
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon_vector</item>
 
         <!-- Belt and braces, not load-bearing. This is the attribute
